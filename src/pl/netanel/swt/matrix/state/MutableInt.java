@@ -1,7 +1,7 @@
 package pl.netanel.swt.matrix.state;
 
 
-class MutableInt extends MutableNumber<Integer> {
+class MutableInt extends MutableNumber<MutableInt> {
 	private static final long serialVersionUID = 1L;
 	
 	int value;
@@ -10,6 +10,16 @@ class MutableInt extends MutableNumber<Integer> {
 		this.value = value;
 	}
 
+	@Override
+	public String toString() {
+		return Integer.toString(value);
+	}
+	
+	@Override
+	public MutableInt copy() {
+		return new MutableInt(value);
+	}
+	
 	@Override
 	public int intValue() {
 		return value;
@@ -31,8 +41,9 @@ class MutableInt extends MutableNumber<Integer> {
 	}
 
 	@Override
-	public void setValue(Integer value) {
-		this.value = value;
+	public MutableInt set(Number value) {
+		this.value = value.intValue();
+		return this;
 	}
 	
 	@Override
@@ -40,8 +51,45 @@ class MutableInt extends MutableNumber<Integer> {
 		return value;
 	}
 
-	public void setValue(int value) {
+	public void set(int value) {
 		this.value = value;
 	}
+
+	@Override
+	public MutableInt increment() {
+		value++;
+		return this;
+	}
+
+	@Override
+	public MutableInt decrement() {
+		value--;
+		return this;
+	}
+
+	@Override
+	public MutableInt add(MutableInt n) {
+		value += n.value;
+		return this;
+	}
+
+	@Override
+	public MutableInt subtract(MutableInt n) {
+		value -= n.value;
+		return this;
+	}
+
+	@Override
+	public MutableInt multiply(MutableInt n) {
+		value *= n.value;
+		return this;
+	}
+
+	@Override
+	public MutableInt divide(MutableInt n) {
+		value /= n.value;
+		return this;
+	}
+
 	
 }

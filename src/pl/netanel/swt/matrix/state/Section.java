@@ -1,5 +1,7 @@
 package pl.netanel.swt.matrix.state;
 
+import pl.netanel.util.Preconditions;
+
 
 /**
  * Contains the application state of an axis section.
@@ -11,12 +13,13 @@ public class Section {
 	MutableNumber itemCount; 
 	boolean defaultResizable, defaultMoveable, defaultHideable; 
 	boolean isNavigationEnabled, isVisible;
-	NumberMath<? extends Number> math;
+	Math<? extends Number> math;
 	
 	
 	public Section(Class<? extends Number> numberClass) {
 		super();
-		math = NumberMath.get(numberClass);
+		Preconditions.checkNotNullWithName(numberClass, "numberClass");
+		math = Math.get(numberClass);
 		itemCount = math.create(0);
 	}
 	
@@ -30,7 +33,7 @@ public class Section {
 	}
 
 	public void setItemCount(Number itemCount) {
-		this.itemCount.setValue(itemCount);
+		this.itemCount.set(itemCount);
 	}
 
 	public boolean isDefaultResizable() {
