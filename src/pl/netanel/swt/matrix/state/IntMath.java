@@ -2,6 +2,7 @@ package pl.netanel.swt.matrix.state;
 
 class IntMath extends Math<MutableInt> {
 
+	private static final MutableInt ZERO = new MutableInt(0);
 	private static IntMath instance = new IntMath();
 
 	public static IntMath getInstance() {
@@ -13,6 +14,16 @@ class IntMath extends Math<MutableInt> {
 		return new MutableInt(value);
 	}
 
+	@Override
+	public MutableInt create(Number value) {
+		return new MutableInt(value.intValue());
+	}
+	
+	@Override
+	public MutableInt ZERO() {
+		return ZERO;
+	}
+	
 	@Override
 	public int compare(MutableInt x, MutableInt y) {
 		return x.value == y.value ? 0 : x.value > y.value ? 1 : -1;

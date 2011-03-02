@@ -21,15 +21,29 @@ abstract class Math<N extends MutableNumber> {
 	public static final int CROSS = 11;
 
 
-	public static Math<? extends Number> get(Class<? extends Number> numberClass) {
+	public static Math<? extends Number> getInstance(Class<? extends Number> numberClass) {
 		if (numberClass == int.class) 				return IntMath.getInstance(); 
 //		else if (numberClass == long.class) 		return LongMath.getInstance(); 
 //		else if	(numberClass == BigInteger.class) 	return BigIntegerMath.getInstance();
 		else throw new IllegalArgumentException("Cannot do arithmetics on " + numberClass);
 	}
 
-	public abstract N create(int value);
+	public MutableNumber getMutable(Number n) {
+		if (n instanceof MutableNumber) return (MutableNumber) n;
+		return create(n);
+	}
 
+	public abstract N create(int value);
+	public abstract N create(Number n);
+
+	public abstract N decrement(N n);
+	public abstract N increment(N n);
+	public abstract N add(N x, N y);
+	public abstract N subtract(N x, N y);
+	public abstract N multiply(N x, N y);
+	public abstract N divide(N x, N y);
+	
+	public abstract N ZERO();
 	
 	/*------------------------------------------------------------------------
 	 * Comparison 
@@ -93,17 +107,5 @@ abstract class Math<N extends MutableNumber> {
 		}
 		return min;
 	}
-	
-	/*------------------------------------------------------------------------
-	 * Operations 
-	 */
-
-	public abstract N decrement(N y);
-	public abstract N increment(N x);
-	public abstract N add(N x, N y);
-	public abstract N subtract(N x, N y);
-	public abstract N multiply(N x, N y);
-	public abstract N divide(N x, N y);
-	
 	
 }

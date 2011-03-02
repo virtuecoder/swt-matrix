@@ -264,6 +264,32 @@ public class NumberSetTest {
 		assertEquals(false, constains(set, 2, 5));
 	}
 	
+	@Test
+	public void addSorted() throws Exception {
+		NumberSet set = new NumberSet(IntMath.getInstance(), true);
+		
+		assertTrue(add(set, 5));
+		assertFalse(add(set, 5));
+		assertTrue(add(set, 3));
+		assertEquals("3, 5", set.toString());
+		
+		add(set, 4);
+		assertEquals("3-5", set.toString());
+	}
+	
+	@Test
+	public void addUnsorted() throws Exception {
+		NumberSet set = new NumberSet(IntMath.getInstance(), false);
+		
+		assertTrue(add(set, 5));
+		assertFalse(add(set, 5));
+		assertTrue(add(set, 3));
+		assertEquals("5, 3", set.toString());
+		
+		add(set, 4);
+		assertEquals("3-5", set.toString());
+	}
+	
 
 	static private boolean constains(NumberSet set, int n) {
 		return set.contains(number(n));

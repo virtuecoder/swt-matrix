@@ -13,20 +13,22 @@ import java.util.ArrayList;
  */
 class NumberSet<N extends MutableNumber> {
 	protected Math math;
-	ArrayList<Extent<N>> items;
-	ArrayList<Extent<N>> toRemove;
-	protected Extent modified;
-	boolean sorted;
-	protected transient int modCount;
+	protected boolean sorted;
+	protected ArrayList<Extent<N>> items;
+	protected ArrayList<Extent<N>> toRemove;
 	
-	public NumberSet(Math factory) {
-		this(factory, false);
+	protected Extent modified;
+	protected transient int modCount;
+
+	
+	public NumberSet(Math math) {
+		this(math, false);
 	}
 	
-	public NumberSet(Math factory, boolean sorted) {
-		items = new ArrayList<Extent<N>>();
+	public NumberSet(Math math, boolean sorted) {
 		this.sorted = sorted;
-		this.math = factory;
+		this.math = math;
+		items = new ArrayList<Extent<N>>();
 		toRemove = new ArrayList<Extent<N>>();
 	};
 	
@@ -63,6 +65,16 @@ class NumberSet<N extends MutableNumber> {
 		return false;
 	}
 	
+	/**
+	 * Shortcut for <code>add(n, n)</code>.
+	 * <p>
+	 * Instead of adding a range of numbers one at a time it is recommended to
+	 * add them with <code>add(start, end)</code> method.
+	 * 
+	 * @param n number to be added.
+	 * @return true if the receiver has been modified by this operation, or false otherwise
+	 * @see #add(MutableNumber, MutableNumber)
+	 */
 	public boolean add(MutableNumber n) {
 		return add(n, n);
 	}
@@ -110,7 +122,7 @@ class NumberSet<N extends MutableNumber> {
 			if (quit) break;
 		}
 		if (modified == null) {
-			items.add(new Extent(start.copy(), end.copy()));
+			items.add(i, new Extent(start.copy(), end.copy()));
 		}
 		for (Extent e: toRemove) {
 			items.remove(e); 
@@ -120,8 +132,8 @@ class NumberSet<N extends MutableNumber> {
 		return true;
 	}
 	
-	public void addAll(NumberSet<N> selection) {
-		for (Extent<N> e: selection.items) {
+	public void addAll(NumberSet<N> set) {
+		for (Extent<N> e: set.items) {
 			add(e);
 		}
 	}
@@ -134,21 +146,26 @@ class NumberSet<N extends MutableNumber> {
 		modified.end.set(math.max(end, modified.end, existing.end));
 	}
 	
+	/**
+	 * Shortcut for <code>remove(n, n)</code>.
+	 * <p>
+	 * Instead of removing a range of numbers one at a time it is recommended to
+	 * remove them with <code>remove(start, end)</code> method.
+	 * 
+	 * @param n number to remove
+	 * @return true if the receiver has been modified by this operation, 
+	 * or false otherwise
+	 * @see #remove(MutableNumber, MutableNumber)
+	 */
+	public boolean remove(MutableNumber n) {
+		return remove(n, n);
+	}
 	
-	public boolean remove(Object o) {
-		// Check and adjust the type of the argument 
-		if (o instanceof Extent) {
-			Extent remove = (Extent) o;
-			return remove(remove.start, remove.end);
-		}
-		else if (o instanceof MutableNumber) {
-			return remove((MutableNumber) o, (MutableNumber) o);
-		}
-		return false;
+	public boolean remove(Extent e) {
+		return remove(e.start, e.end);
 	}
 	
 	public boolean remove(MutableNumber start, MutableNumber end) {
-		toRemove.clear();
 		boolean modified = false;
 		int i = 0;
 		
@@ -185,9 +202,25 @@ class NumberSet<N extends MutableNumber> {
 		for (Extent e: toRemove) {
 			items.remove(e); 
 		}
+		toRemove.clear();
 		if (modified) modCount++;
 		return modified;
 	}
+	
+	public boolean removeAll(NumberSet<N> set) {
+		boolean removed = false;
+		if (set == this) {
+			removed = !items.isEmpty();
+			items.clear();
+			return removed;
+		}
+		for (Extent<N> e: set.items) {
+			removed = removed || remove(e);
+		}
+		if (removed) modCount++;
+		return removed;
+	}
+
 	
 	/**
 	 * Return total number of numbers in this set.
@@ -226,9 +259,20 @@ class NumberSet<N extends MutableNumber> {
 	}
 	
 	
+	/**
+	 * Removes all of the elements from this set (optional operation). The set
+	 * will be empty after this call returns.
+	 */
 	public void clear() {
 		items.clear();
 		modCount++;
+	}
+	
+	public void replace(NumberSet set) {
+		items.clear();
+		for (Extent<N> e: items) {
+			items.add(e.copy());
+		}
 	}
 
 	public boolean isEmpty() {
@@ -236,26 +280,20 @@ class NumberSet<N extends MutableNumber> {
 	}
 
 
-	public boolean removeAll(NumberSet selection2) {
-		boolean removed = false;
-		if (selection2 == this) {
-			removed = !items.isEmpty();
-			items.clear();
-			return removed;
-		}
-		for (Object extent: selection2.items) {
-			removed = removed || remove(extent);
-		}
-		if (removed) modCount++;
-		return removed;
-	}
-
 	public NumberSet copy() {
 		NumberSet copy = new NumberSet(math);
 		for (Extent e: items) {
 			copy.items.add(e.copy());
 		}
 		return copy;
+	}
+
+	public void change(MutableNumber start, MutableNumber end, boolean add) {
+		if (add) {
+			add(start, end);
+		} else {
+			remove(start, end);
+		}
 	}
 
 	
