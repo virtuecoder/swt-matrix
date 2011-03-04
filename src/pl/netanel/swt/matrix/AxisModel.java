@@ -3,6 +3,7 @@ package pl.netanel.swt.matrix;
 import java.util.ArrayList;
 
 import pl.netanel.util.Arrays;
+import pl.netanel.util.Preconditions;
 
 public class AxisModel {
 	private static final Section[] EMPTY = new Section[] {};
@@ -17,6 +18,7 @@ public class AxisModel {
 	}
 
 	public AxisModel(Class<Integer> numberClass, Section ...sections) {
+		Preconditions.checkArgument(sections.length > 0, "Model must have at least one section");
 		this.numberClass = numberClass;
 		this.sections = new ArrayList(sections.length);
 		for (int i = 0; i < sections.length; i++) {
@@ -65,6 +67,10 @@ public class AxisModel {
 	
 	private Section[] toArray() {
 		return sections.toArray(EMPTY);
+	}
+
+	public int getZIndex(Section section) {
+		return Arrays.indexOf(zOrder, section);
 	}
 
 	

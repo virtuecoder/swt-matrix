@@ -27,6 +27,9 @@ public class ModelPainter extends TextPainter {
 		selectionBackground, selectionForeground;
 	private final Zone zone;
 	private boolean shouldHighlight;
+
+//	private int lineWidth0, lineWidth1;
+//	private Color lineColor;
 	
 	public ModelPainter(Zone zone) {
 		this.zone = zone;
@@ -75,12 +78,10 @@ public class ModelPainter extends TextPainter {
 		
 //		align0 = model.getVerticalAlignment(item0, item1);
 //		align1 = model.getHorizontalAlignment(item0, item1);
-//		
-//		Color foreground = Util.notNull(model.getForeground(item0, item1), matrix.getForeground()); 
-//		if (!foreground.equals(lastForeground)) {
-//			lastForeground = foreground;
-//			gc.setForeground(foreground);
-//		}
+
+//		lineWidth0 = zone.section0.getLineWidth(index0);
+//		lineWidth1 = zone.section1.getLineWidth(index1);
+//		lineColor = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 	}
 	
 	@Override
@@ -89,6 +90,11 @@ public class ModelPainter extends TextPainter {
 			gc.fillRectangle(x, y, width, height);
 		}
 		super.paint(x, y, width, height);
+		
+//		// Paint lines
+//		gc.setBackground(lastBackground = lineColor);
+//		gc.fillRectangle(x + width, y, lineWidth0, y + height + lineWidth1);
+//		gc.fillRectangle(x, y + height, x + width + lineWidth0, lineWidth1);
 	}
 	
 //	@Override

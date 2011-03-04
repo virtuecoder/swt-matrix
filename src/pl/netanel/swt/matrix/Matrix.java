@@ -120,6 +120,7 @@ public class Matrix extends Canvas {
 				painter.clean();
 			}
 			
+			
 			// Paint column lines
 			seq = layout1.lineSequence(dock1, zone.section1);
 			for (Painter painter: zone.linePainters1) {
@@ -130,6 +131,7 @@ public class Matrix extends Canvas {
 				}
 				painter.clean();
 			}
+			
 		}
 	}
 

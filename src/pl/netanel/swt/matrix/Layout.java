@@ -408,7 +408,18 @@ class Layout {
 				items.add(item); // = dir.getItem());
 				lines.add(bound1);
 				cells.add(bound2);
-				if (!sections.contains(dir.section)) sections.add(dir.section);
+				if (!sections.contains(dir.section)) {
+//					// Decide from which section line at the edge is to be drawn.  
+//					if (!sections.isEmpty()) {
+//						Section lastSection = sections.get(sections.size() - 1);
+//						if (model.getZIndex(lastSection) > model.getZIndex(item.section)) {
+//							AxisItem item2 = item.copy();
+//							item.section = lastSection;
+//							items.add(item2);
+//						}
+//					}
+					sections.add(dir.section);
+				}
 
 				if (canTrim && innerWidth > maxWidth) break;
 				item = dir.next();
@@ -598,7 +609,7 @@ class Layout {
 		return null;
 	}
 
-	
+
 	
 	public LayoutSequence cellSequence(Dock dock, Section section) {
 		if (isComputingRequired) compute();
@@ -635,7 +646,20 @@ class Layout {
 		}
 		
 		public boolean next() {
-			if (i == bounds.size() || !items.get(i).section.equals(section)) return false;
+			if (i >= bounds.size()) return false;
+			Section section2 = items.get(i).section;
+			if (!section2.equals(section)) {
+				if (items.size() == bounds.size() && 
+					model.getZIndex(section2) < model.getZIndex(item.section)) 
+				{
+					item = item.copy();
+					item.index.increment();
+					bound = bounds.get(i);
+					i = bounds.size();
+					return true;
+				}
+				return false;
+			}
 			bound = bounds.get(i);
 			item = items.get(i++);
 			return true;
