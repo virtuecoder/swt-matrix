@@ -1,0 +1,94 @@
+package pl.netanel.swt.matrix;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+
+import pl.netanel.swt.Resources;
+import pl.netanel.swt.FontWidthCache;
+import pl.netanel.util.Arrays;
+
+/**
+ * Facilitates text drawing parameterized by align, margin, and text content obviously.
+ *
+ * @author jacek.p.kolodziejczyk@gmail.com
+ * @created 2010-06-13
+ */
+public class TextPainter extends Painter {
+	private static int[] EXTENT_ALIGN = {SWT.RIGHT, SWT.END, SWT.BOTTOM, SWT.CENTER};
+	public static enum TextClipMethod {DOTS_IN_THE_MIDDLE, DOTS_AT_THE_END, CUT, NONE};
+	
+	public String text;
+	public int alignY, alignX;
+	public int marginY, marginX;
+	public TextClipMethod textClipMethod;
+	
+	private Font lastFont;
+	private int[] extentCache;
+	private Point extent;
+	private boolean isClipped;
+	
+	public TextPainter() {
+		super();
+		marginY = 0; marginX = 4;
+		alignY = SWT.BEGINNING; alignX = SWT.BEGINNING;
+		textClipMethod = TextClipMethod.DOTS_IN_THE_MIDDLE;
+	}
+
+	/**
+	 * Sets the the default foreground color and vertical string extent.
+	 */
+	@Override
+	public void init() {
+		gc.setBackground(Resources.getColor(SWT.COLOR_LIST_BACKGROUND));
+		gc.setForeground(Resources.getColor(SWT.COLOR_LIST_FOREGROUND));
+		extentCache = FontWidthCache.get(gc, gc.getFont());
+		extent = new Point(-1, gc.stringExtent("ty").y);
+	}
+	
+	@Override
+	public void clean() {
+		if (isClipped) {
+			gc.setClipping((Rectangle) null);
+		}
+	}
+
+	/**
+	 * For performance reasons it is assumed that the vertical string extent 
+	 * is constant for a given font.
+	 */
+	@Override
+	public void paint(int x, int y, int width, int height) {
+		// It is impossible to print anything when cell is to small 
+		if (width < 4 || height < 4) return;
+		
+		if (text == null) return;
+		
+		if (textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
+			text = FontWidthCache.shortenTextMiddle(text, width - marginX * 2, extent, extentCache);			
+		} 
+		else if (textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
+			text = FontWidthCache.shortenTextEnd(text, width - marginX * 2, extent, extentCache);			
+		} 
+		// Compute extent only when font changes or text horizontal align is center or right  
+		else if (lastFont != null && lastFont != gc.getFont() || Arrays.contains(EXTENT_ALIGN, alignX)) {
+			extent = gc.stringExtent(text);
+		}
+		
+		// Clipping
+		if (textClipMethod == TextClipMethod.CUT || extent.x > width || extent.y > height) {
+			gc.setClipping(x, y, width, height);
+			isClipped = true;
+		} else if (isClipped) {
+			gc.setClipping((Rectangle) null);
+			isClipped = false;
+		}
+		
+		x += alignDelta(alignX, width, extent.x, marginX);
+		y += alignDelta(alignY, height, extent.y, marginY);
+		
+		gc.drawString(text, x, y, true);
+//		lastFont = gc.getFont();
+	}
+}

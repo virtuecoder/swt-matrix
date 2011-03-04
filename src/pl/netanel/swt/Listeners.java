@@ -1,0 +1,56 @@
+package pl.netanel.swt;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TypedListener;
+
+import pl.netanel.util.HashMapArrayList;
+
+public class Listeners {
+	final private HashMapArrayList<Integer, Listener> listeners;
+	final private ArrayList<Event> events;
+	
+	public Listeners() {
+		events = new ArrayList<Event>();
+		listeners = new HashMapArrayList();
+	}
+
+	public void add(int type, Listener listener) {
+		listeners.add(type, listener);
+	}
+	
+	public void remove(int type, Object listener) {
+		List<Listener> list = listeners.get(type);
+		for (int i = list.size(); i-- > 0;) {
+			Listener listener2 = list.get(i); 
+			if (listener2 != listener && listener2 instanceof TypedListener) {
+				listener2 = (Listener) ((TypedListener) listener2).getEventListener();
+			}
+			if (listener2 == listener) {
+				list.remove(i);
+				return;
+			}
+		}
+	}
+
+	public void add(Event event) {
+		events.add(event);
+	}
+	
+	public void sendEvents() {
+		ArrayList<Event> copy = (ArrayList<Event>) events.clone();
+		events.clear();
+		for (Event e: copy) {
+			sendEvent(e);
+		}
+	}
+
+	public void sendEvent(Event e) {
+		for (Listener listener: listeners.get(e.type)) {
+			listener.handleEvent(e);
+		}
+	}
+}
