@@ -13,8 +13,10 @@ public class Snippet {
 		shell.setLayout(new FillLayout());
 		
 		Matrix matrix = new Matrix(shell, SWT.NONE);
-		matrix.getModel1().getBody().setCount(1000);
-		matrix.getModel0().getBody().setCount(1000);
+		matrix.getAxis1().getBody().setCount(1000);
+		matrix.getAxis0().getBody().setCount(1000);
+		matrix.getAxis0().setHeaderVisible(true);
+		matrix.getAxis0().setHeaderVisible(false);
 		
 		shell.setBounds(200, 100, 1024, 768);
 		shell.open();

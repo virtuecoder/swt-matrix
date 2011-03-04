@@ -43,13 +43,13 @@ public class MatrixModel {
 //							BackgroundPainter.getDefaultBodySelectionColor()));
 					zone.cellPainters.add(new ModelPainter(zone));
 				}
-				else if (section0.equals(header0) && section1.equals(header1)) {
-					zone.cellPainters.add(new DefaultBackgroundPainter(zone, 
-							Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND), null));
-					Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
-					zone.linePainters0.get(LinePainter.class).setBackground(color);
-					zone.linePainters1.get(LinePainter.class).setBackground(color);
-				}
+//				else if (section0.equals(header0) && section1.equals(header1)) {
+//					zone.cellPainters.add(new DefaultBackgroundPainter(zone, 
+//							Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND), null));
+//					Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
+//					zone.linePainters0.get(LinePainter.class).setBackground(color);
+//					zone.linePainters1.get(LinePainter.class).setBackground(color);
+//				}
 				else if (section0.equals(header0) || section1.equals(header1)) {
 					setHeaderStyle(zone);
 				}
@@ -63,11 +63,9 @@ public class MatrixModel {
 	
 	
 	private Zone setHeaderStyle(Zone zone) {
-		DefaultBackgroundPainter backgroundPainter = new DefaultBackgroundPainter(zone,
-				Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND), 
-				Painter.getDefaultHeaderSelectionColor());
-		
-		zone.cellPainters.add(backgroundPainter);
+		zone.setDefaultForeground(Resources.getColor(SWT.COLOR_WIDGET_FOREGROUND));
+		zone.setDefaultBackground(Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND));
+		zone.setSelectionBackground(Painter.getDefaultHeaderSelectionColor());
 		zone.cellPainters.add(new ModelPainter(zone));
 		Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
 		zone.linePainters0.get(LinePainter.class).setBackground(color);

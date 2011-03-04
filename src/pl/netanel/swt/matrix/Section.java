@@ -51,7 +51,7 @@ public class Section<N extends MutableNumber> {
 		selection = new NumberQueueSet(math);
 		lastSelection = new NumberQueueSet(math);
 		
-		isNavigationEnabled = true;
+		isNavigationEnabled = isVisible = true;
 	}
 	
 
@@ -73,11 +73,15 @@ public class Section<N extends MutableNumber> {
 		this.count.set(count);
 		order.setCount(count);
 	}
-	
+
 	public MutableNumber getVisibleCount() {
 		return math.subtract(count, hidden.getCount());
 	}
 
+	public boolean isEmpty() {
+		return order.items.isEmpty();
+	}
+	
 
 	public boolean isDefaultResizable() {
 		return defaultResizable;
@@ -584,6 +588,7 @@ public class Section<N extends MutableNumber> {
 	public int getLineWidth(Number index) {
 		return getLineWidth(math.getMutable(index));
 	}
+
 
 
 }

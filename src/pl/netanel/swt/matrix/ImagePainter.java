@@ -27,6 +27,10 @@ public class ImagePainter extends Painter {
 	}
 
 
+	/*------------------------------------------------------------------------
+	 * Builder pattern 
+	 */
+
 	public ImagePainter align(int alignX, int alignY) {
 		this.alignX = alignX;
 		this.alignY = alignY;

@@ -1,6 +1,7 @@
 package pl.netanel.swt.matrix;
 
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
 
 import pl.netanel.swt.Listeners;
@@ -52,6 +53,7 @@ public class Zone {
 	private boolean isSelectionEnabled;
 	
 	private Color defaultBackground, defaultForeground, selectionBackground, selectionForeground;
+	private final Rectangle bounds;
 
 	private Zone(int id) {
 		this.type = id;
@@ -62,6 +64,7 @@ public class Zone {
 		linePainters1.add(new LinePainter());
 		listeners = new Listeners();
 		isSelectionEnabled = true;
+		bounds = new Rectangle(0, 0, 0, 0);
 	}
 
 	public Zone(Section section0, Section section1) {
@@ -74,16 +77,17 @@ public class Zone {
 
 	@Override
 	public String toString() {
-		return "zone " + (
-			type == ANY ? "ANY" :
-			type == BODY ? "BODY" :
-			type == TOP_LEFT ? "TOP_LEFT" :
-			type == ROW_HEADER ? "ROW_HEADER" :
-			type == COLUMN_HEADER ? "COLUMN_HEADER" : "?"
+		return section0.toString() + " " + section1.toString();
+//		return "zone " + (
+//			type == ANY ? "ANY" :
+//			type == BODY ? "BODY" :
+//			type == TOP_LEFT ? "TOP_LEFT" :
+//			type == ROW_HEADER ? "ROW_HEADER" :
+//			type == COLUMN_HEADER ? "COLUMN_HEADER" : "?"
 //				id == BOTTOM_RIGHT ? "BOTTOM_RIGHT" :
 //				id == ROW_FOOTER ? "ROW_FOOTER" :
 //				id == COLUMN_FOOTER ? "COLUMN_FOOTER" :
-		);
+//		);
 	}
 	
 	/**
@@ -179,4 +183,20 @@ public class Zone {
 		return selectionForeground;
 	}
 
+	public Rectangle getBounds() {
+		return bounds;
+	}
+
+	public void setBounds(int x, int y, int width, int height) {
+		bounds.x = x;
+		bounds.y = y;
+		bounds.width = width;
+		bounds.height = height;
+	}
+
+	public boolean isVisible() {
+		return section0.isVisible() && section1.isVisible();
+	}
+
+	
 }

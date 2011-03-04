@@ -23,7 +23,8 @@ import org.eclipse.swt.graphics.Color;
 public class ModelPainter extends TextPainter {
 	private static final MutableBigInteger ONE = new MutableBigInteger(BigInteger.ONE);
 	
-	private Color lastForeground, lastBackground, selectionBackground, selectionForeground;
+	private Color lastForeground, lastBackground, defaultBackground, background,  
+		selectionBackground, selectionForeground;
 	private final Zone zone;
 	private boolean shouldHighlight;
 	
@@ -34,7 +35,7 @@ public class ModelPainter extends TextPainter {
 	@Override
 	public void init() {
 		super.init();
-		lastBackground = zone.getDefaultBackground();
+		lastBackground = defaultBackground = zone.getDefaultBackground();
 		lastForeground = zone.getDefaultForeground();
 		selectionBackground = zone.getSelectionBackground();
 		selectionForeground = zone.getSelectionForeground();
@@ -44,6 +45,7 @@ public class ModelPainter extends TextPainter {
 		shouldHighlight = zone.is(Zone.BODY) || 
 			BigIntegerMath.getInstance().compare(zone.getSelectionCount(), ONE) != 0;
 		
+		gc.fillRectangle(zone.getBounds());
 	}
 
 	@Override
@@ -60,7 +62,7 @@ public class ModelPainter extends TextPainter {
 			gc.setForeground(lastForeground = foreground);
 		}
 		
-		Color background = isSelected 
+		background = isSelected 
 				? selectionBackground
 				: zone.getBackground(index0, index1);
 		
@@ -83,6 +85,9 @@ public class ModelPainter extends TextPainter {
 	
 	@Override
 	public void paint(int x, int y, int width, int height) {
+		if (!background.equals(defaultBackground)) {
+			gc.fillRectangle(x, y, width, height);
+		}
 		super.paint(x, y, width, height);
 	}
 	

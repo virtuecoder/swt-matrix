@@ -37,7 +37,7 @@ abstract class Direction {
 		seq.init();
 		seq.set(item.index);
 		seq.level = 1;
-		level = skipWithoutCurrent && !section.isNavigationEnabled() ? 0 : 1;
+		level = !section.isVisible() || skipWithoutCurrent && !section.isNavigationEnabled() ? 0 : 1;
 		pending = false;
 		return hasMore = nextItem(null);
 	}
@@ -81,7 +81,7 @@ abstract class Direction {
 				if (hasNextSection()) {
 					i += sign;
 					section = sections.get(i);
-					if (skipWithoutCurrent && !section.isNavigationEnabled()) {
+					if (!section.isVisible() || skipWithoutCurrent && !section.isNavigationEnabled()) {
 						lastSection = i - sign;
 						continue;
 					}

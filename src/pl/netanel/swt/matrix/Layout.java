@@ -672,10 +672,13 @@ class Layout {
 		Cache cache = getCache(dock);
 		int first = -1, last = -1;
 		for (int i = 0, size = cache.items.size(); i < size; i++) {
-			if (first == -1 && cache.items.get(i).section.equals(section)) {
-				first = i;
+			if (cache.items.get(i).section.equals(section)) {
+				if (first == -1) {
+					first = i;
+				}
 			} else if (first != -1) {
 				last = i;
+				break;
 			}
 		}
 		Bound b = cache.lines.get(last == -1 ? cache.items.size() - 1 : last);

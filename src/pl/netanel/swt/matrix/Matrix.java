@@ -55,8 +55,8 @@ public class Matrix extends Canvas {
 	private void setModel(MatrixModel model) {
 		this.model = model;
 		
-		axis0 = new Axis(model.getModel0());
-		axis1 = new Axis(model.getModel1());
+		axis0 = new Axis(this, 0);
+		axis1 = new Axis(this, 1);
 		layout0 = axis0.layout;
 		layout1 = axis1.layout;
 		
@@ -94,20 +94,20 @@ public class Matrix extends Canvas {
 		for (Section section0: layout0.getSections(dock0)) {
 			for (Section section1: layout1.getSections(dock1)) {
 				Zone zone = model.getZone(section0, section1);
-				if (zone == null) continue;
+				if (zone == null || !zone.isVisible()) continue;
 
-				// Paint cells
-				paintCells(gc, zone.cellPainters, 
-						layout0.cellSequence(dock0, section0),
-						layout1.cellSequence(dock1, section1) );
-				
-				
 				Bound b0 = layout0.getBound(dock0, section0);
 				Bound b1 = layout1.getBound(dock1, section1);
 				LayoutSequence seq;
 				
 				// Paint row lines
+				zone.setBounds(b1.distance, b0.distance, b1.width, b0.width);
 				gc.setClipping(b1.distance, b0.distance, b1.width, b0.width);
+				
+				// Paint cells
+				paintCells(gc, zone.cellPainters, 
+						layout0.cellSequence(dock0, section0),
+						layout1.cellSequence(dock1, section1) );
 				
 				seq = layout0.lineSequence(dock0, section0);
 				for (Painter painter: zone.linePainters0) {
@@ -189,20 +189,17 @@ public class Matrix extends Canvas {
 		
 	}
 	
+	public Axis getAxis0() {
+		return axis0;
+	}
+	
+	public Axis getAxis1() {
+		return axis1;
+	}
+	
 	public MatrixModel getModel() {
 		return model;
 	}
-	
-	public AxisModel getModel0() {
-		return model.getModel0();
-	}
-
-	public AxisModel getModel1() {
-		return model.getModel1();
-	}
-
-
-	
 	
 	
 	
@@ -227,4 +224,6 @@ public class Matrix extends Canvas {
 		
 		throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e); 
 	}
+
+	
 }
