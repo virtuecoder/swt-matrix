@@ -12,11 +12,11 @@ public class Snippet {
 		Shell shell = new Shell();
 		shell.setLayout(new FillLayout());
 		
-		Matrix matrix = new Matrix(shell, SWT.NONE);
+		Matrix matrix = new Matrix(shell, SWT.BORDER);
 		matrix.getAxis1().getBody().setCount(1000);
 		matrix.getAxis0().getBody().setCount(1000);
 		matrix.getAxis0().setHeaderVisible(true);
-		matrix.getAxis0().setHeaderVisible(false);
+		matrix.getAxis1().setHeaderVisible(true);
 		
 		shell.setBounds(200, 100, 1024, 768);
 		shell.open();

@@ -2,12 +2,14 @@ package pl.netanel.swt.matrix;
 
 import java.util.ArrayList;
 
+import pl.netanel.util.Arrays;
+
 public class AxisModel {
 	private static final Section[] EMPTY = new Section[] {};
 	
 	private final ArrayList<Section> sections;
 	private final Class<Integer> numberClass;
-	private Section[] layerOrder;
+	private Section[] zOrder;
 	private Section body, header;
 	
 	public AxisModel() {
@@ -24,6 +26,17 @@ public class AxisModel {
 		}
 		body = sections.length > 1 ? sections[1] : sections.length == 1 ? sections[0] : null;
 		header = sections.length > 1 ? sections[0] : null;
+		
+		// Calculate z-order
+		zOrder = new Section[sections.length];
+		int j = 0;
+		int bodyIndex = Arrays.indexOf(sections, body);
+		for (int i = bodyIndex, imax = sections.length; i < imax; i++) {
+			zOrder[j++] = sections[i];
+		}
+		for (int i = bodyIndex; i-- > 0;) {
+			zOrder[j++] = sections[i];
+		}
 	}
 
 	public Class<? extends Number> getNumberClass() {
@@ -46,7 +59,7 @@ public class AxisModel {
 	}
 
 	public Section[] getSectionLayerOrder() {
-		return layerOrder == null ? toArray() : layerOrder;
+		return zOrder;
 	}
 
 	

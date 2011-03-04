@@ -23,6 +23,7 @@ public class Section<N extends MutableNumber> {
 	private final NumberSet hideable;
 	private final IntAxisState cellWidth;
 	private final IntAxisState lineWidth;
+	private final ObjectAxisState<MutableNumber> cellSpan;
 	
 	private final NumberQueueSet selection;
 	private final NumberQueueSet lastSelection;
@@ -47,6 +48,7 @@ public class Section<N extends MutableNumber> {
 		
 		cellWidth = new IntAxisState(math, DEFAULT_CELL_WIDTH);
 		lineWidth = new IntAxisState(math, DEFAULT_LINE_WIDTH);
+		cellSpan = new ObjectAxisState(math, 1);
 		
 		selection = new NumberQueueSet(math);
 		lastSelection = new NumberQueueSet(math);
@@ -82,7 +84,6 @@ public class Section<N extends MutableNumber> {
 		return order.items.isEmpty();
 	}
 	
-
 	public boolean isDefaultResizable() {
 		return defaultResizable;
 	}
@@ -163,6 +164,7 @@ public class Section<N extends MutableNumber> {
 		return hideable.contains(index) != defaultHideable;
 	}
 	
+	
 	public void setSelected(MutableNumber start, MutableNumber end, boolean flag) {
 		selection.change(start, end, flag);
 	}
@@ -213,6 +215,15 @@ public class Section<N extends MutableNumber> {
 		return lineWidth.getDefault();
 	}
 	
+	
+	public void setCellSpan(MutableNumber index, MutableNumber value) {
+		cellSpan.setValue(index, value);
+	}
+	
+	public MutableNumber getCellSpan(MutableNumber index) {
+		return cellSpan.getValue(index);
+	}
+
 
 	public MutableNumber getPosition(MutableNumber index) {
 		if (hidden.contains(index)) return null;

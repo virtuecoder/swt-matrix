@@ -632,13 +632,12 @@ class Layout {
 			for (i = 0; i < items.size(); i++) {
 				if (items.get(i).section.equals(section)) break;
 			}
-			i--;
 		}
 		
 		public boolean next() {
-			if (++i == bounds.size() || !items.get(i).section.equals(section)) return false;
+			if (i == bounds.size() || !items.get(i).section.equals(section)) return false;
 			bound = bounds.get(i);
-			item = items.get(i);
+			item = items.get(i++);
 			return true;
 		}
 		
@@ -655,16 +654,12 @@ class Layout {
 		}
 	}
 
-	public List<Section> getSections(Dock dock) {
-		ArrayList a = new ArrayList();
+	public boolean contains(Dock dock, Section section) {
 		List<Section> sections = getCache(dock).sections;
-		Section[] order = model.getSectionLayerOrder();
-		for (int i = 0; i < order.length; i++) {
-			if (sections.contains(order[i])) {
-				a.add(order[i]);
-			}
+		if (sections.contains(section)) {
+			return true;
 		}
-		return a;
+		return false;
 	}
 
 	// TODO cache the section bonds in a dock 
@@ -686,7 +681,6 @@ class Layout {
 			new Bound(cache.lines.get(first).distance, b.distance + b.width);
 	}
 
-	
 	
 //	class ItemSequence {
 //		Section section;

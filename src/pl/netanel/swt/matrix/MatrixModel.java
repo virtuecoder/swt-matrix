@@ -1,18 +1,21 @@
 package pl.netanel.swt.matrix;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
 import pl.netanel.swt.Resources;
+import pl.netanel.util.ImmutableIterator;
 
-public class MatrixModel {
+public class MatrixModel implements Iterable<Zone> {
 
 	private final AxisModel model1;
 	private final AxisModel model0;
 	private final ArrayList<Zone> zones;
 	private Zone body; //, columnHeader, rowHeader;
+	private int[] zOrder;
 
 	public MatrixModel(AxisModel model0, AxisModel model1, Zone ...zones) {
 		this.model0 = model0;
@@ -30,33 +33,64 @@ public class MatrixModel {
 			for (Section section1: model1.getSections()) {
 				Zone zone = getZone(section0, section1);
 				if (zone == null) {
-					zone = new Zone(section0, section1);
+					zone = createZone(section0, section1);
 					this.zones.add(zone);
 
-					if (section0.equals(body0) && section1.equals(body1)) {
-						model1.getBody().setDefaultCellWidth(50);
-					}
+					section1.setDefaultCellWidth(50);
 				}
 				if (section0.equals(body0) && section1.equals(body1)) {
 					body = zone;
-//					zone.cellPainters.add(new DefaultBackgroundPainter(zone, null, 
-//							BackgroundPainter.getDefaultBodySelectionColor()));
 					zone.cellPainters.add(new ModelPainter(zone));
 				}
-//				else if (section0.equals(header0) && section1.equals(header1)) {
-//					zone.cellPainters.add(new DefaultBackgroundPainter(zone, 
-//							Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND), null));
-//					Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
-//					zone.linePainters0.get(LinePainter.class).setBackground(color);
-//					zone.linePainters1.get(LinePainter.class).setBackground(color);
-//				}
 				else if (section0.equals(header0) || section1.equals(header1)) {
 					setHeaderStyle(zone);
 				}
-			}	
+			}
 		}
+		calculateZOrder();
 	}
 	
+	private void calculateZOrder() {
+		zOrder = new int[zones.size()];
+		Section[] sections0 = model0.getSectionLayerOrder();
+		Section[] sections1 = model1.getSectionLayerOrder();
+		int k = 0;
+		for (int i = 0, imax = sections0.length; i < imax; i++) {
+			for (int j = 0, jmax = sections1.length; j < jmax; j++) {
+				zOrder[k++] = zones.indexOf(getZone(sections0[i], sections1[j]));
+			}			
+		}
+	}
+
+	private Zone createZone(Section section0, Section section1) {
+		Zone zone = null;
+		if (section0.equals(model0.getHeader()) && section1.equals(model1.getHeader())) {
+			zone = new Zone(section0, section1) {
+				public String getText(MutableNumber index0, MutableNumber index1) {
+					return null;
+				};
+			};
+		}
+		else if (section0.equals(model0.getBody()) && section1.equals(model1.getHeader())) {
+			zone = new Zone(section0, section1) {
+				public String getText(MutableNumber index0, MutableNumber index1) {
+					return index0.toString();
+				};
+			};
+		}
+		else if (section0.equals(model0.getHeader()) && section1.equals(model1.getBody())) {
+			zone = new Zone(section0, section1) {
+				public String getText(MutableNumber index0, MutableNumber index1) {
+					return index1.toString();
+				};
+			};
+		} 
+		else {
+			zone = new Zone(section0, section1);
+		}
+		return zone;
+	}
+
 	public MatrixModel() {
 		this(new AxisModel(), new AxisModel());
 	}
@@ -124,6 +158,24 @@ public class MatrixModel {
 	
 	public AxisModel getModel1() {
 		return model1;
+	}
+
+	@Override
+	public Iterator<Zone> iterator() {
+		return new ImmutableIterator<Zone>() {
+			int i;
+			
+			@Override
+			public boolean hasNext() {
+				return i < zones.size();
+			}
+
+			@Override
+			public Zone next() {
+				return zones.get(zOrder[i++]);
+			}
+			
+		};
 	}
 
 }

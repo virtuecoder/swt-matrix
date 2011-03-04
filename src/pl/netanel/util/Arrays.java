@@ -1,5 +1,6 @@
 package pl.netanel.util;
 
+
 /**
  * Arrays utilities.
  *
@@ -103,5 +104,14 @@ public class Arrays {
 			if (a[i].equals(value)) return true;
 		}
 		return false;
+	}
+
+	public static <T> int indexOf(T[] a, T  item) {
+		for (int i = 0; i < a.length; i++) {
+			if (a[i].equals(item)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 }

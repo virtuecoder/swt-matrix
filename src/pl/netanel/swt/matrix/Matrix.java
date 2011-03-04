@@ -91,44 +91,44 @@ public class Matrix extends Canvas {
 	}
 
 	private void paintDock(GC gc, Dock dock0, Dock dock1) {
-		for (Section section0: layout0.getSections(dock0)) {
-			for (Section section1: layout1.getSections(dock1)) {
-				Zone zone = model.getZone(section0, section1);
-				if (zone == null || !zone.isVisible()) continue;
+		for (Zone zone: model) {
+			if (!layout0.contains(dock0, zone.section0) ||
+				!layout1.contains(dock1, zone.section1) ) continue;
+			
+//				if (zone == null || !zone.isVisible()) continue;
 
-				Bound b0 = layout0.getBound(dock0, section0);
-				Bound b1 = layout1.getBound(dock1, section1);
-				LayoutSequence seq;
-				
-				// Paint row lines
-				zone.setBounds(b1.distance, b0.distance, b1.width, b0.width);
-				gc.setClipping(b1.distance, b0.distance, b1.width, b0.width);
-				
-				// Paint cells
-				paintCells(gc, zone.cellPainters, 
-						layout0.cellSequence(dock0, section0),
-						layout1.cellSequence(dock1, section1) );
-				
-				seq = layout0.lineSequence(dock0, section0);
-				for (Painter painter: zone.linePainters0) {
-					if (!painter.isEnabled()) continue;
-					painter.init(gc);
-					for (seq.init(); seq.next();) {
-						painter.paint(b1.distance, seq.getDistance(), b1.width, seq.getWidth());
-					}
-					painter.clean();
+			Bound b0 = layout0.getBound(dock0, zone.section0);
+			Bound b1 = layout1.getBound(dock1, zone.section1);
+			
+			zone.setBounds(b1.distance, b0.distance, b1.width, b0.width);
+//			gc.setClipping(b1.distance, b0.distance, b1.width, b0.width);
+			
+			// Paint cells
+			paintCells(gc, zone.cellPainters, 
+					layout0.cellSequence(dock0, zone.section0),
+					layout1.cellSequence(dock1, zone.section1) );
+			
+			// Paint row lines
+			LayoutSequence seq;
+			seq = layout0.lineSequence(dock0, zone.section0);
+			for (Painter painter: zone.linePainters0) {
+				if (!painter.isEnabled()) continue;
+				painter.init(gc);
+				for (seq.init(); seq.next();) {
+					painter.paint(b1.distance, seq.getDistance(), b1.width, seq.getWidth());
 				}
-				
-				// Paint column lines
-				seq = layout1.lineSequence(dock1, section1);
-				for (Painter painter: zone.linePainters1) {
-					if (!painter.isEnabled()) continue;
-					painter.init(gc);
-					for (seq.init(); seq.next();) {
-						painter.paint(seq.getDistance(), b0.distance, seq.getWidth(), b0.width);
-					}
-					painter.clean();
+				painter.clean();
+			}
+			
+			// Paint column lines
+			seq = layout1.lineSequence(dock1, zone.section1);
+			for (Painter painter: zone.linePainters1) {
+				if (!painter.isEnabled()) continue;
+				painter.init(gc);
+				for (seq.init(); seq.next();) {
+					painter.paint(seq.getDistance(), b0.distance, seq.getWidth(), b0.width);
 				}
+				painter.clean();
 			}
 		}
 	}
