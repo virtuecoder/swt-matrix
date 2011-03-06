@@ -188,6 +188,15 @@ class CellSet {
 		items1.add(new Extent(start1, end1));
 	}
 	
+	public void change(MutableNumber start0, MutableNumber end0, 
+			MutableNumber start1, MutableNumber end1, boolean add) 
+	{
+		if (add) {
+			add(start0, end0, start1, end1);
+		} else {
+			remove(start0, end0, start1, end1);
+		}
+	}
 
 	public boolean isEmpty() {
 		return items0.isEmpty();

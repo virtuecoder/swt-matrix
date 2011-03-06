@@ -1,7 +1,7 @@
 package pl.netanel.swt.matrix;
 
 
-public class NumberOrder<N extends MutableNumber> extends NumberSet<N> {
+class NumberOrder<N extends MutableNumber> extends NumberSet<N> {
 
 	private final MutableNumber count, last;
 

@@ -1,5 +1,7 @@
 package pl.netanel.swt.matrix;
 
+import java.math.BigInteger;
+
 
 
 /**
@@ -7,7 +9,7 @@ package pl.netanel.swt.matrix;
  * 
  * @author Jacek Kolodziejczyk created 01-03-2011
  */
-public abstract class Math<N extends MutableNumber> {
+abstract class Math<N extends MutableNumber> {
 
 	public static final int BEFORE = 1;
 	public static final int ADJACENT_BEFORE = 2;
@@ -22,10 +24,10 @@ public abstract class Math<N extends MutableNumber> {
 	public static final int CROSS = 11;
 
 
-	public static Math<? extends Number> getInstance(Class<? extends Number> numberClass) {
+	public static Math getInstance(Class numberClass) {
 		if (numberClass == int.class) 				return IntMath.getInstance(); 
 //		else if (numberClass == long.class) 		return LongMath.getInstance(); 
-//		else if	(numberClass == BigInteger.class) 	return BigIntegerMath.getInstance();
+		else if	(numberClass == BigInteger.class) 	return BigIntegerMath.getInstance();
 		else throw new IllegalArgumentException("Cannot do arithmetics on " + numberClass);
 	}
 

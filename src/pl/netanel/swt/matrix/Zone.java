@@ -122,6 +122,21 @@ public class Zone {
 		return cellSelection.contains(index0, index1);
 	}
 	
+	public void setSelectedAll(boolean selected) {
+		cellSelection.change(
+			section0.math.ZERO(), section0.getLast(), 
+			section1.math.ZERO(), section1.getLast(), selected);
+	}
+
+	public void backupSelection() {
+		lastSelection = cellSelection.copy();
+	}
+	
+	public void restoreSelection() {
+		cellSelection = lastSelection.copy();
+	}
+
+	
 	/**
 	 * Returns the number of selected cells in this zone.
 	 * <p>

@@ -1,15 +1,15 @@
 package pl.netanel.swt.matrix;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import pl.netanel.util.Arrays;
-import pl.netanel.util.Preconditions;
 
-public class AxisModel {
+public class AxisModel implements Iterable<Section> {
 	private static final Section[] EMPTY = new Section[] {};
 	
 	private final ArrayList<Section> sections;
-	private final Class<Integer> numberClass;
+	private final Class<? extends Number> numberClass;
 	private Section[] zOrder;
 	private Section body, header;
 	
@@ -17,8 +17,8 @@ public class AxisModel {
 		this(int.class, new Section(int.class), new Section(int.class));
 	}
 
-	public AxisModel(Class<Integer> numberClass, Section ...sections) {
-		Preconditions.checkArgument(sections.length > 0, "Model must have at least one section");
+	public AxisModel(Class<? extends Number> numberClass, Section ...sections) {
+		//Preconditions.checkArgument(sections.length > 0, "Model must have at least one section");
 		this.numberClass = numberClass;
 		this.sections = new ArrayList(sections.length);
 		for (int i = 0; i < sections.length; i++) {
@@ -26,18 +26,22 @@ public class AxisModel {
 			section.index = i;
 			this.sections.add(section);
 		}
-		body = sections.length > 1 ? sections[1] : sections.length == 1 ? sections[0] : null;
-		header = sections.length > 1 ? sections[0] : null;
+		if (sections.length == 0) {
+			this.sections.add(body = new Section(numberClass));
+		} else {
+			body = sections.length > 1 ? sections[1] : sections.length == 1 ? sections[0] : null;
+			header = sections.length > 1 ? sections[0] : null;
+		}
 		
 		// Calculate z-order
-		zOrder = new Section[sections.length];
+		zOrder = new Section[this.sections.size()];
 		int j = 0;
-		int bodyIndex = Arrays.indexOf(sections, body);
-		for (int i = bodyIndex, imax = sections.length; i < imax; i++) {
-			zOrder[j++] = sections[i];
+		int bodyIndex = this.sections.indexOf(body);
+		for (int i = bodyIndex, imax = this.sections.size(); i < imax; i++) {
+			zOrder[j++] = this.sections.get(i);
 		}
 		for (int i = bodyIndex; i-- > 0;) {
-			zOrder[j++] = sections[i];
+			zOrder[j++] = this.sections.get(i);
 		}
 	}
 
@@ -71,6 +75,17 @@ public class AxisModel {
 
 	public int getZIndex(Section section) {
 		return Arrays.indexOf(zOrder, section);
+	}
+
+	@Override
+	public Iterator<Section> iterator() {
+		return sections.iterator();
+	}
+
+	
+	public void setSelected(AxisItem start, AxisItem end, boolean selected) {
+		
+		
 	}
 
 	

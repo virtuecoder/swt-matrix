@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author Jacek
  * @created 09-11-2010
  */
-public class NumberSet<N extends MutableNumber> {
+class NumberSet<N extends MutableNumber> {
 	protected Math math;
 	protected boolean sorted;
 	ArrayList<Extent<N>> items;

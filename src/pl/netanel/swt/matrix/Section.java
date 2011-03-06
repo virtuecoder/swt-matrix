@@ -583,7 +583,6 @@ public class Section<N extends MutableNumber> {
 		return isSelected(math.getMutable(index));
 	}
 
-	
 	public void setCellWidth(Number start, Number end, int width) {
 		setCellWidth(math.getMutable(start), math.getMutable(end), width);
 	}
@@ -599,6 +598,11 @@ public class Section<N extends MutableNumber> {
 	public int getLineWidth(Number index) {
 		return getLineWidth(math.getMutable(index));
 	}
+
+	public MutableNumber getLast() {
+		return math.decrement(getCount());
+	}
+
 
 
 

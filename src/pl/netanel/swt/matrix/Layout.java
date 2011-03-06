@@ -185,7 +185,7 @@ class Layout {
 		return direction instanceof Forward ? backward : forward;
 	}
 	
-	private int comparePosition(AxisItem item1, AxisItem item2) {
+	int comparePosition(AxisItem item1, AxisItem item2) {
 		int diff = item1.section.index - item2.section.index;
 		if (diff != 0) return diff; 
 		return item1.section.comparePosition(item1.index, item2.index);
@@ -703,6 +703,10 @@ class Layout {
 		Bound b = cache.lines.get(last == -1 ? cache.items.size() - 1 : last);
 		return first == -1 ? new Bound(0, 0) :
 			new Bound(cache.lines.get(first).distance, b.distance + b.width);
+	}
+
+	public boolean isEmpty() {
+		return head.isEmpty() && main.isEmpty() && tail.isEmpty();
 	}
 
 	

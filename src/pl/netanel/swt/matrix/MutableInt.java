@@ -2,7 +2,7 @@ package pl.netanel.swt.matrix;
 
 
 
-public class MutableInt extends MutableNumber<MutableInt> {
+class MutableInt extends MutableNumber<MutableInt> {
 	private static final long serialVersionUID = 1L;
 	
 	int value;

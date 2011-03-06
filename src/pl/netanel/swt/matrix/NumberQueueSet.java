@@ -29,7 +29,7 @@ import pl.netanel.util.Preconditions;
  * @author Jacek created 23-02-2011
  */
 //TODO Complete with other collection methods like addAll, etc.
-public class NumberQueueSet<N extends MutableNumber> extends NumberSet<N> {
+class NumberQueueSet<N extends MutableNumber> extends NumberSet<N> {
 	
 	public NumberQueueSet(Math math) {
 		super(math);

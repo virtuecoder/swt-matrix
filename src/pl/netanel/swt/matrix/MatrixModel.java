@@ -178,4 +178,10 @@ public class MatrixModel implements Iterable<Zone> {
 		};
 	}
 
+	public void setSelectedAll(boolean selected) {
+		for (Zone zone: zones) {
+			zone.setSelectedAll(selected);
+		}
+	}
+
 }

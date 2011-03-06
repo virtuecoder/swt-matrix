@@ -2,7 +2,7 @@ package pl.netanel.swt.matrix;
 
 import java.math.BigInteger;
 
-public class MutableBigInteger extends MutableNumber<MutableBigInteger> {
+class MutableBigInteger extends MutableNumber<MutableBigInteger> {
 	private static final long serialVersionUID = 1L;
 	
 	BigInteger value;

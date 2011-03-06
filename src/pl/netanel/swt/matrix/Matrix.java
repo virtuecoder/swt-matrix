@@ -1,8 +1,13 @@
 package pl.netanel.swt.matrix;
 
 import java.math.BigDecimal;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
@@ -16,12 +21,14 @@ import pl.netanel.swt.matrix.Layout.LayoutSequence;
 
 public class Matrix extends Canvas {
 
-	private MatrixModel model;
-	private Axis axis0, axis1;
+	MatrixModel model;
+	Axis axis0, axis1;
 	private Layout layout0, layout1;
 	private Rectangle area; 
 	private Painter backgroundPainter, navigationPainter;
-
+	MatrixListener listener;
+	private ScheduledExecutorService executor;
+	
 	public Matrix(Composite parent, int style) {
 		this(parent, style, new MatrixModel());
 	}
@@ -50,6 +57,14 @@ public class Matrix extends Canvas {
 		
 		addListener(SWT.Paint, listener);
 		addListener(SWT.Resize,	listener);
+		
+		addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+//				if (executor != null) executor.shutdownNow();
+			}
+		});
+		this.listener = new MatrixListener(this);
 	}
 
 	private void setModel(MatrixModel model) {
@@ -61,12 +76,15 @@ public class Matrix extends Canvas {
 		layout1 = axis1.layout;
 		
 		Zone body = model.getBody();
-		if (body.getDefaultBackground() == null) {
-			body.setDefaultBackground(getBackground());
-		}
+//		if (body.getDefaultBackground() == null) {
+//			body.setDefaultBackground(getBackground());
+//		}
 		if (body.getDefaultForeground() == null) {
 			body.setDefaultForeground(getForeground());
 		}
+		
+		listener.setLayout(layout0, layout1);
+		
 	}
 
 	
@@ -209,6 +227,19 @@ public class Matrix extends Canvas {
 	 * Helper 
 	 */
 
+	ScheduledExecutorService getExecutor() {
+		if (executor == null || executor.isShutdown()) {
+			// TODO Catch exceptions from tasks
+			executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
+				@Override
+				public Thread newThread(Runnable r) {
+					return new Thread(r, "matrix thread");
+				}
+			});
+		}
+		return executor;
+	}
+	
 	/**
 	 * Stops the executor and re-throws wrapped in RuntimeException
 	 */
@@ -227,5 +258,6 @@ public class Matrix extends Canvas {
 		throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e); 
 	}
 
+	
 	
 }
