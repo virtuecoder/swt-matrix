@@ -31,7 +31,7 @@ public class TextPainter extends Painter {
 	
 	public TextPainter() {
 		super();
-		marginY = 0; marginX = 4;
+		marginY = 1; marginX = 4;
 		alignY = SWT.BEGINNING; alignX = SWT.BEGINNING;
 		textClipMethod = TextClipMethod.DOTS_IN_THE_MIDDLE;
 	}

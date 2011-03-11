@@ -7,11 +7,10 @@ import pl.netanel.swt.Resources;
 
 
 public class LinePainter extends Painter {
-	public Color backgroundColor;
+	public Color color;
 	
-
 	public LinePainter() {
-		backgroundColor = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
+		color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 	}
 
 	@Override
@@ -20,20 +19,22 @@ public class LinePainter extends Painter {
 	 * is used due to possibility of line having width greater then 1.
 	 */
 	protected void init() {
-		gc.setBackground(backgroundColor);
+		gc.setBackground(color);
 	}
 	
 	@Override
 	public void paint(int x, int y, int width, int height) {
 		gc.fillRectangle(x, y, width, height);
 	}
-	
-	public void setBackground(Color color) {
-		backgroundColor = color;
-	}
 
-	public Color getBackground() {
-		return backgroundColor;
+	
+	/*------------------------------------------------------------------------
+	 * Color 
+	 */
+
+	public LinePainter color(Color color) {
+		this.color = color;
+		return this;
 	}
 
 }

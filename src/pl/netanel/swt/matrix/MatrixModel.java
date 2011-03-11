@@ -117,8 +117,8 @@ public class MatrixModel implements Iterable<Zone> {
 		zone.setSelectionBackground(Painter.getDefaultHeaderSelectionColor());
 		zone.cellPainters.add(new ModelPainter(zone));
 		Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
-		zone.linePainters0.get(LinePainter.class).setBackground(color);
-		zone.linePainters1.get(LinePainter.class).setBackground(color);
+		zone.linePainters0.get(LinePainter.class).color(color);
+		zone.linePainters1.get(LinePainter.class).color(color);
 		return zone;
 	}
 	

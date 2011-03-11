@@ -50,7 +50,7 @@ public class TestUtil {
 			if (i != 1) section.setNavigationEnabled(false);
 			section.setCount(count[i]);
 		}
-		Layout layout = new Layout(new AxisModel(int.class, sections));
+		Layout layout = new Layout(new AxisModel(sections));
 		return layout;
 	}
 

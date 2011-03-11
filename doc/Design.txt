@@ -1,0 +1,34 @@
+Main concepts
+- Matrix, MatrixAxis
+- Cell and line
+- AxisLayout
+- Index
+- Section
+- Zone
+- Dock
+- Painters
+
+
+
+Performance
+- Loop inversion: loop painters -> loop cells -> paint
+- Caching the layout computation results, paint does not recompute widths, distances, visible indexes
+- Caching results of GC.stringExtent for single characters of each font used in TextPainter.
+
+Indexes
+model index - original index that numbers the items in the model
+order index - position of the model index in the order sequence
+visible index - position of the model index in the order seqence after hiding some items
+The letter one matches with what the user sees on the screen.
+
+Selection and reordering is limited to the scope a single section only.
+
+Freezing 
+
+Command
+
+Item reordering
+
+Indexes to selection are interim (position in order sequence ignoring hiding). 
+This is to naturaly support a scenario of for example selecting extent 
+from column 4 to column 6 including a hidden column 5 in between. 

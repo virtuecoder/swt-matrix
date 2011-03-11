@@ -20,10 +20,6 @@ public class SectionTest {
 		new Section(float.class);
 	}
 	
-	@Test(expected = NullPointerException.class)
-	public void createNull() throws Exception {
-		new Section(null);
-	}
 	
 	@Test
 	public void itemCount() throws Exception {

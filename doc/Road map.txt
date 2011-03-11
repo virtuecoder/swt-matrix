@@ -1,0 +1,60 @@
+- decide about Zone.getSelectionCount() vs. Matrix.getSelectionCount(Zone) and Section.getSelectionCount();
+
+
+? constructor style options SWT.CHECK, SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT
+- remove binding
+
+- dynamic item adding/removing
+- thread safety
+- immutable indexes
+
+- cell editors
+- multicell edit
+- Matrix reloaded
+
+- Typed events, ensure event properties compatibility with SWT Table
+- tooltips
+- styles
+- column chooser
+- tree, item children
+- cell span
+- column grouping
+- CTRL+SHIFT for selection
+- traverse out of the matrix on tab
+- trigger selection event on selection
+- trigger move/resize event on move/resize
+- MCMD.COPY, MCMD.PASTE default cut/copy/paste works against excel
+- sorting indicator
+- quick search
+
+- eliminate scroll bar shaking
+- pixel scrolling
+- catch exceptions in auto scroll thread
+- remove autoscroll thread when finished
+- scrolling animation
+- moving animation
+- move not continuous selection of items
+- auto filters example
+
+Model
+- list of POJO
+- glazed list integration
+- filtering 
+- sorting
+- validation
+
+Less priority
+- Text shortening by dots at the end 
+- Nebula Grid API proxy
+- Performance: All painters use global method to set foreground/background which is only run if the latest color is defferent then the current one.
+? Fast cursor paint on matrix.redraw(x,y,w,h,);
+? Sequence, IntSequence(from, to), collection sequence, descending, remove, insert before, insert after.
+
+
+//		Preconditions.checkState(total.compareTo(factory.create(head.count + tail.count)) >= 0,
+//				MessageFormat.format("Sum of freeze item count for head: {0} and tail: {1} must be lower or equal to total item count: {2} ", 
+//						head.count, tail.count, total));
+
+
+===============================================================================
+

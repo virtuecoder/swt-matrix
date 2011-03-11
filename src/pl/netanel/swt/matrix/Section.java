@@ -35,9 +35,11 @@ public class Section<N extends MutableNumber> {
 	int index; 
 	
 	public Section(Class<? extends Number> numberClass) {
+		this(Math.getInstance(numberClass));
+	}
+	Section(Math math) {
 		super();
-		Preconditions.checkNotNullWithName(numberClass, "numberClass");
-		math = Math.getInstance(numberClass);
+		this.math = math;
 		count = math.create(0);
 		
 		order = new NumberOrder(math);

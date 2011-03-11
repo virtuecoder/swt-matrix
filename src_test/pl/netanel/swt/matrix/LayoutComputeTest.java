@@ -56,7 +56,7 @@ public class LayoutComputeTest {
 		Section section0 = new Section(int.class);
 		Section section1 = new Section(int.class);
 		Section section2 = new Section(int.class);
-		AxisModel model = new AxisModel(int.class, section0, section1, section2);
+		AxisModel model = new AxisModel(section0, section1, section2);
 		section0.setCount(1); // header
 		section1.setCount(5); // body
 		section2.setCount(1); // footer

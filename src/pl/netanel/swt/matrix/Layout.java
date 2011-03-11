@@ -34,7 +34,7 @@ class Layout {
 	public Layout(AxisModel model) {
 		Preconditions.checkArgument(model.getSections().length > 0, "Layout must have at least one section");
 		this.model = model;
-		math = Math.getInstance(model.getNumberClass());
+		math = model.math;
 		Section[] sections2 = model.getSections();
 		sections = new ArrayList<Section>(sections2.length);
 		for (int i = 0; i < sections2.length; i++) {

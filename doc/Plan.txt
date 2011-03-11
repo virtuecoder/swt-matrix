@@ -1,0 +1,63 @@
+
+
+To do
+- Decide about features in release 0.1
+- Test
+- Complete jdoc
+- Build / obfuscate
+- Find examples of similiar web sites 
+- Choose technology for the web site
+  - CMS/Wiki
+  - Ticket
+  - Discussion group
+- Make the web site
+- Write first couple of blogs
+- Licence management software
+- Find resellers
+  
+Marketing
+  - Social: twitter, facebook
+  
+Web site structure
+- Documentation
+  - Quick start
+  - Features
+  - Manual / Overview / Introduction / Design / Architecture
+  - Tutorials
+  - Snippets
+  - API
+- Download
+- Purchase
+- Blog
+- Contact
+  - Forum
+  - Ticket system
+    - Bugs 
+    - Feature requests
+
+Another structure from http://www.metawidget.org/:
+- Get started
+  - Overview
+  - News
+  - Download
+  - Documentation
+  - Support
+- Get involved
+  - Blogs and Articles
+  - Complete our Survey
+  - Contributing
+  - Issue Tracker
+  - Code Coverage
+    
+    
+Features
+- By category
+- By release / priority
+
+
+Example sites:
+- http://www.devexpress.com/Products/NET/Controls/WinForms/Grid/
+- http://eclipse.pfgrid.com/Index_Eclipse.aspx
+- http://ydl.net/eclipse_cuda_plugin/userdoc.shtml
+- http://www.excelsior-usa.com/
+- http://www.myeclipseide.com/

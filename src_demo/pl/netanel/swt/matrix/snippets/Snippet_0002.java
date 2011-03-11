@@ -55,7 +55,7 @@ public class Snippet_0002 {
 					: Integer.toString(value.length());
 			}
 		};
-		Zone columnHeader = new Zone(rowModel.getBody(), colModel.getHeader(), Zone.COLUMN_HEADER) {
+		Zone columnHeader = new Zone(rowModel.getHeader(), colModel.getBody(), Zone.COLUMN_HEADER) {
 			@Override
 			public String getText(MutableNumber index0, MutableNumber index1) {
 				return index1.intValue() == 0 ? "Value" : "Length";
@@ -66,6 +66,7 @@ public class Snippet_0002 {
 
 		final Matrix matrix = new Matrix(shell, SWT.V_SCROLL, model);
 		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		matrix.getAxis0().setHeaderVisible(true);
 		
 		Button add = new Button(shell, SWT.PUSH);
 		add.setText("Add");
@@ -77,6 +78,7 @@ public class Snippet_0002 {
 				matrix.refresh();
 			}
 		});
+		
 		Button remove = new Button(shell, SWT.PUSH);
 		remove.setText("Remove");
 		remove.addSelectionListener(new SelectionAdapter() {
