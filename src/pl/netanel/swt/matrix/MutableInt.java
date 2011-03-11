@@ -1,5 +1,7 @@
 package pl.netanel.swt.matrix;
 
+import java.math.BigInteger;
+
 
 
 class MutableInt extends MutableNumber<MutableInt> {
@@ -114,6 +116,11 @@ class MutableInt extends MutableNumber<MutableInt> {
 	public MutableInt add(int n) {
 		value += n;
 		return this;
+	}
+
+	@Override
+	public BigInteger toBigInteger() {
+		return BigInteger.valueOf(value);
 	}
 
 }

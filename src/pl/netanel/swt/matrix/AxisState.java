@@ -20,7 +20,7 @@ abstract class AxisState {
 
 	protected int indexOf(MutableNumber index) {
 		for (int i = 0; i < extents.size(); i++) {
-			if (math.contains(extents.get(i), index)) {
+			if (Extent.contains(math, extents.get(i), index)) {
 				return i;
 			}
 		}

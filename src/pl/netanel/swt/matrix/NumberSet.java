@@ -50,7 +50,7 @@ class NumberSet<N extends MutableNumber> {
 	
 	public boolean contains(MutableNumber n) {
 		for (Extent e: items) {
-			if (math.contains(e, n)) {
+			if (Extent.contains(math, e, n)) {
 				return true;
 			}
 		}
@@ -59,7 +59,7 @@ class NumberSet<N extends MutableNumber> {
 	
 	public boolean contains(Extent o) {
 		for (Extent e: items) {
-			if (math.contains(e, o)) {
+			if (Extent.contains(math, e, o.start) && Extent.contains(math, e, o.end)) {
 				return true;
 			}
 		}
@@ -299,7 +299,7 @@ class NumberSet<N extends MutableNumber> {
 
 	public int getExtentIndex(MutableNumber n) {
 		for (int i = 0, size = items.size(); i < size; i++) {
-			if (math.contains(items.get(i), n)) {
+			if (Extent.contains(math, items.get(i), n)) {
 				return i;
 			}
 		}

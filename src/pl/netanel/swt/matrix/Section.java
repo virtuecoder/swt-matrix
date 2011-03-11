@@ -233,7 +233,7 @@ public class Section<N extends MutableNumber> {
 		
 		for (int i = 0, size = order.items.size(); i < size; i++) {
 			Extent<N> e = order.items.get(i);
-			boolean contains = math.contains(e, index);
+			boolean contains = Extent.contains(math, e, index);
 			hiddenCount.add(hidden.getCount(e.start, contains ? index : e.end));
 			if (contains) {
 				return pos2.add(index).subtract(e.start).subtract(hiddenCount);
@@ -356,16 +356,16 @@ public class Section<N extends MutableNumber> {
 				nextHidden(lastInExtent);
 
 				// If inside of hidden move beyond
-				if (he != null && math.contains(he, number2)) {
+				if (he != null && Extent.contains(math, he, number2)) {
 					if (!skipHidden(count, lastInExtent)) return false;
 				} 
 				else {
-					limit = he == null || math.contains(he, number2) ? lastInExtent : start(he);
+					limit = he == null || Extent.contains(math, he, number2) ? lastInExtent : start(he);
 					d.set(math.min(subtract(limit, number2), count));
 					add(number2, d);
 					count.subtract(d);
 				}
-				if (he != null && math.contains(he, number2)) {
+				if (he != null && Extent.contains(math, he, number2)) {
 					if (!skipHidden(count, lastInExtent)) return false;
 				}			
 				moved = math.compare(number2, last) != 0;

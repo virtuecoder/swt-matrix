@@ -1,13 +1,10 @@
 package pl.netanel.swt.matrix;
 
-import java.math.BigInteger;
-
-public abstract class MutableNumber<N extends MutableNumber> extends Number {
+public abstract class MutableNumber<N extends MutableNumber> extends BigNumber<N> {
 	private static final long serialVersionUID = 1L;
 	
 	public abstract N copy();
 
-	abstract Number getValue();
 	abstract N set(Number n);
 	
 	abstract N increment();
@@ -19,9 +16,5 @@ public abstract class MutableNumber<N extends MutableNumber> extends Number {
 	abstract N divide(N n);
 
 	abstract N add(int n);
-
-	public BigInteger toBigInteger() {
-		return new BigInteger(getValue().toString());
-	}
 
 }

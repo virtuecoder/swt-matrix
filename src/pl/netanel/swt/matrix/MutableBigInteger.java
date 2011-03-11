@@ -112,4 +112,14 @@ class MutableBigInteger extends MutableNumber<MutableBigInteger> {
 		return value.doubleValue();
 	}
 
+	@Override
+	public BigInteger toBigInteger() {
+		return value;
+	}
+
+	
+	public void add(BigInteger n) {
+		value = value.add(n);
+	}
+
 }

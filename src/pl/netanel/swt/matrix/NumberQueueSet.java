@@ -132,7 +132,7 @@ class NumberQueueSet<N extends MutableNumber> extends NumberSet<N> {
 	 */
 	public boolean contains(MutableNumber index) {
 		for (Extent e: items) {
-			if (math.contains(e, index)) {
+			if (Extent.contains(math, e, index)) {
 				return true;
 			}
 		}

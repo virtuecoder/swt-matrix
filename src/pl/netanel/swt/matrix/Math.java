@@ -77,12 +77,8 @@ abstract class Math<N extends MutableNumber> {
 		else 											return INSIDE; 
 	}
 	
-	public boolean contains(Extent<N> e, N n) {
-		return compare(e.start, n) <= 0 && compare(n, e.end) <= 0;
-	}
-
-	public boolean contains(Extent<N> e, Extent<N> o) {
-		return contains(e, o.start) && contains(e, o.end);
+	public boolean contains(N start, N end, N n) {
+		return compare(start, n) <= 0 && compare(n, end) <= 0;
 	}
 
 	public N max(N x, N y) {
@@ -111,9 +107,5 @@ abstract class Math<N extends MutableNumber> {
 			}
 		}
 		return min;
-	}
-
-	public N count(Extent<N> e) {
-		return (N) create(e.end).subtract(e.start).increment();
 	}
 }

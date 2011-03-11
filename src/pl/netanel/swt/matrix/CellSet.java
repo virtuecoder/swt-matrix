@@ -1,5 +1,6 @@
 package pl.netanel.swt.matrix;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 import pl.netanel.util.IntArray;
@@ -42,8 +43,8 @@ class CellSet {
 	public boolean contains(MutableNumber index0, MutableNumber index1) {
 		int size = items0.size();
 		for (int i = 0; i < size; i++) {
-			if (math0.contains(items0.get(i), index0) &&
-				math1.contains(items1.get(i), index1)) 
+			if (Extent.contains(math0, items0.get(i), index0) &&
+				Extent.contains(math1, items1.get(i), index1)) 
 			{
 				return true;
 			}
@@ -212,11 +213,15 @@ class CellSet {
 		MutableBigInteger count = math.create(0);
 		int size = items0.size();
 		for (int i = 0; i < size; i++) {
-			MutableBigInteger x = math.create(math0.count(items0.get(i)));
-			MutableBigInteger y = math.create(math1.count(items1.get(i)));
-			count.add(math.multiply(x, y));
+			BigInteger x = count(items0.get(i));
+			BigInteger y = count(items1.get(i));
+			count.add(x.multiply(y));
 		}
 		return count;
+	}
+	
+	private BigInteger count(Extent e) {
+		return e.end.toBigInteger().subtract(e.start.toBigInteger()).add(BigInteger.ONE);
 	}
 
 	public int size() {

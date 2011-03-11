@@ -195,7 +195,7 @@ public class Zone {
 	
 	public void setForeground(MutableNumber index0, MutableNumber index1, Color color) {
 	}
-	public Color getForeground(MutableNumber index0, MutableNumber index1) {
+	public Color getForeground(BigNumber index0, BigNumber index1) {
 		return defaultForeground;
 	}
 	public void setDefaultForeground(Color color) {

@@ -18,5 +18,13 @@ public class Extent<N extends MutableNumber> {
 	public Extent copy() {
 		return new Extent(start.copy(), end.copy());
 	}
+
+	public static boolean contains(Math math, Extent e, MutableNumber n) {
+		return math.contains(e.start, e.end, n);
+	}
+
+	public static MutableNumber count(Math math, Extent e) {
+		return math.create(e.end).subtract(e.start).increment();
+	}
 	
 }

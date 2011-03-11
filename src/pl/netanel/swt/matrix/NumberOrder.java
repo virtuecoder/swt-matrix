@@ -51,7 +51,7 @@ class NumberOrder<N extends MutableNumber> extends NumberSet<N> {
 		int i = 0;
 		for (; i < items.size(); i++) {
 			Extent e = items.get(i);
-			if (math.contains(e, target)) {
+			if (Extent.contains(math, e, target)) {
 				if (math.compare(target, e.start) == 0) {
 					break;
 				} 
@@ -85,7 +85,7 @@ class NumberOrder<N extends MutableNumber> extends NumberSet<N> {
 			
 		MutableNumber sum = math.create(0);	
 		for (Extent e: items) {
-			if (math.contains(e, modelIndex)) {
+			if (Extent.contains(math, e, modelIndex)) {
 				return math.subtract(modelIndex, e.start).add(sum);
 			}
 			sum.add(e.end).subtract(e.start).increment();
