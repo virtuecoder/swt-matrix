@@ -52,7 +52,7 @@ public class ModelPainter extends TextPainter {
 		
 		shouldHighlight = !zone.is(Zone.BODY) || 
 			zone.getSelectionCount().compareTo(BigInteger.ONE) != 0;
-
+		gc.setAdvanced(false);
 	}
 
 	@Override

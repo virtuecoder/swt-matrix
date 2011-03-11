@@ -23,7 +23,8 @@ public class Snippet {
 		matrix.getAxis0().setHeaderVisible(true);
 		matrix.getAxis1().setHeaderVisible(true);
 		
-		shell.setBounds(200, 100, 1024, 768);
+		
+		shell.setBounds(200, 20, 1024, 768);
 		shell.open();
 		Display display = shell.getDisplay();
 		while (!shell.isDisposed()) {

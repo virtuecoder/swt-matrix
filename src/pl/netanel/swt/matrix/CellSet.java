@@ -108,8 +108,8 @@ class CellSet {
 			} 
 		}
 		if (insertNew) {
-			items0.add(new Extent(start0, end0));
-			items1.add(new Extent(start1, end1));
+			items0.add(new Extent(start0.copy(), end0.copy()));
+			items1.add(new Extent(start1.copy(), end1.copy()));
 		}
 	}
 	

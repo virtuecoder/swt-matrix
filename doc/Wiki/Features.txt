@@ -1,0 +1,14 @@
+## Features
+
+Axis item is a row or a column.
+
+### Axis
+* Separate axis sections: header, body, footer, etc.
+* **Unlimited** number of items in a section
+* Auto numbering of item header text 
+* Block selection of axis items with full key/mouse bindings and accelerating autoscroll
+
+### Matrix
+* Cell navigation (current cell marker) with full key/mouse bindings
+* Block cell selection with full key/mouse bindings and accelerating autoscroll
+* Configurable key/mouse bindings.

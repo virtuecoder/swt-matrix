@@ -6,10 +6,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.Resources;
-import pl.netanel.swt.matrix.AxisModel;
 import pl.netanel.swt.matrix.Matrix;
-import pl.netanel.swt.matrix.MatrixModel;
-import pl.netanel.swt.matrix.MutableNumber;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.painter.BorderPainter;
@@ -27,29 +24,24 @@ public class Snippet_0013 {
 		shell.setLayout(new FillLayout());
 		Display display = shell.getDisplay();
 		
-		final AxisModel rowModel = new AxisModel(new Section(int.class) {
-			@Override
-			public int getLineWidth(MutableNumber index) {
-				return 3;
-			}
-		});
-		rowModel.getBody().setCount(10);
+		Matrix matrix = new Matrix(shell, SWT.NONE);
 		
-		AxisModel colModel = new AxisModel(new Section(int.class) {
-			@Override
-			public int getLineWidth(MutableNumber index) {
-				return 3;
-			}
-		});
-		colModel.getBody().setCount(4);
-		colModel.getBody().setDefaultCellWidth(50);
+		Section rowBody = matrix.getModel().getModel0().getBody();
+		rowBody.setDefaultLineWidth(3);
+		rowBody.setCount(10);
 		
-		MatrixModel model = new MatrixModel(rowModel, colModel);
-		Matrix matrix = new Matrix(shell, SWT.NONE, model);
+		Section colBody = matrix.getModel().getModel1().getBody();
+		colBody.setCount(4);
+		colBody.setDefaultLineWidth(3);
+		colBody.setDefaultCellWidth(50);
+		
 		Zone body = matrix.getModel().getBody();
 		body.linePainters0.get(LinePainter.class).setEnabled(false);
 		body.linePainters1.get(LinePainter.class).setEnabled(false);
 		body.cellPainters.add(new BorderPainter().color(Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW)));
+		
+		// Change the current cell marker to extend outside
+		matrix.setNavigationPainter(new BorderPainter(2).offset(-2));
 		
 		shell.open();
 		while (!shell.isDisposed()) {

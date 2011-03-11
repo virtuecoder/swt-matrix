@@ -37,6 +37,9 @@ public class AxisModel implements Iterable<Section> {
 		} else {
 			body = sections.length > 1 ? sections[1] : sections.length == 1 ? sections[0] : null;
 			header = sections.length > 1 ? sections[0] : null;
+			if (header != null) {
+				header.setNavigationEnabled(false);
+			}
 		}
 		
 		// Calculate z-order
@@ -58,10 +61,22 @@ public class AxisModel implements Iterable<Section> {
 		return header;
 	}
 
-	public void setBody(Section body) {
-		this.body = body;
+	public void setBody(Section section) {
+		this.body = section;
 	}
-
+	
+	public void setHeader(Section section) {
+		this.header = section;
+	}
+	
+	public int getSectionCount() {
+		return sections.size();
+	}
+	
+	public Section getSection(int i) {
+		return sections.get(i);
+	}
+	
 	public Section[] getSections() {
 		return toArray();
 	}
@@ -69,14 +84,14 @@ public class AxisModel implements Iterable<Section> {
 	public Section[] getSectionLayerOrder() {
 		return zOrder;
 	}
+	
+	public int getZIndex(Section section) {
+		return Arrays.indexOf(zOrder, section);
+	}
 
 	
 	private Section[] toArray() {
 		return sections.toArray(EMPTY);
-	}
-
-	public int getZIndex(Section section) {
-		return Arrays.indexOf(zOrder, section);
 	}
 
 	@Override
@@ -99,6 +114,27 @@ public class AxisModel implements Iterable<Section> {
 		}
 	}
 
+	public void clearSelection() {
+		for (int i = 0, imax = sections.size(); i < imax; i++) {
+			Section section = sections.get(i);
+			section.setSelected(false);
+		}
+	}
+
+	
+	AxisItem getLastItem() {
+		for (int i = sections.size(); i-- > 0;) {
+			Section section = sections.get(i);
+			if (section.isEmpty()) continue;
+			return new AxisItem(section, math.decrement(section.getCount()));
+		}
+		return getFirstItem();
+	}
+
+	AxisItem getFirstItem() {
+		return new AxisItem(sections.get(0), math.create(0));
+	}
+
 	int comparePosition(AxisItem item1, AxisItem item2) {
 		int diff = item1.section.index - item2.section.index;
 		if (diff != 0) return diff; 
@@ -106,7 +142,12 @@ public class AxisModel implements Iterable<Section> {
 	}
 	
 	
-	class ItemSequence {
+	/**
+	 * Iterates over extents between the start and end items. 
+	 * 
+	 * @author Jacek Kolodziejczyk created 11-03-2011
+	 */
+	class ExtentSequence {
 		Section section;
 		MutableNumber start, end;
 		private int i, istart, iend, sectionIndex, lastSectionIndex;
@@ -132,7 +173,8 @@ public class AxisModel implements Iterable<Section> {
 			if (i >= items.size()) {
 				sectionIndex++;
 				if (sectionIndex > lastSectionIndex) return false;
-				items = sections.get(sectionIndex).order.items;
+				section = sections.get(sectionIndex);
+				items = section.order.items;
 				i = 0;
 			}
 			Extent e = items.get(i);	
@@ -147,4 +189,5 @@ public class AxisModel implements Iterable<Section> {
 			return true;
 		}
 	}
+
 }

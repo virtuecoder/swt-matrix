@@ -718,6 +718,7 @@ class Layout {
 			if (i >= bounds.size()) return false;
 			Section section2 = items.get(i).section;
 			if (!section2.equals(section)) {
+				// Make sure last line is included between sections  
 				if (items.size() == bounds.size() && 
 					model.getZIndex(section2) < model.getZIndex(item.section)) 
 				{
@@ -769,9 +770,14 @@ class Layout {
 				break;
 			}
 		}
-		Bound b = cache.lines.get(last == -1 ? cache.items.size() - 1 : last);
-		return first == -1 ? new Bound(0, 0) :
-			new Bound(cache.lines.get(first).distance, b.distance + b.width);
+		if (first == -1) {
+			return new Bound(0, 0);
+		} else {
+			Bound b = cache.lines.get(last == -1 ? cache.items.size() - 1 : last);
+			int distance = cache.lines.get(first).distance;
+			return new Bound(distance, b.distance + b.width - distance);
+			
+		}
 	}
 	
 	public Bound getBound(AxisItem item) {

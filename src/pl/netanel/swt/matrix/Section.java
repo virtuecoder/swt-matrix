@@ -167,12 +167,16 @@ public class Section<N extends MutableNumber> {
 	}
 	
 	
-	public void setSelected(MutableNumber start, MutableNumber end, boolean flag) {
-		selection.change(start, end, flag);
+	public void setSelected(MutableNumber start, MutableNumber end, boolean selected) {
+		selection.change(start, end, selected);
 	}
 	
-	public boolean isSelected(MutableNumber index) {
-		return selection.contains(index);
+	public void setSelected(boolean selected) {
+		if (selected) {
+			selection.add(math.ZERO(), getLast());
+		} else {
+			selection.clear();
+		}
 	}
 	
 	public void backupSelection() {
@@ -181,6 +185,10 @@ public class Section<N extends MutableNumber> {
 	
 	public void restoreSelection() {
 		selection.replace(lastSelection);
+	}
+	
+	public boolean isSelected(MutableNumber index) {
+		return selection.contains(index);
 	}
 	
 	
@@ -619,8 +627,5 @@ public class Section<N extends MutableNumber> {
 	public MutableNumber getLast() {
 		return math.decrement(getCount());
 	}
-
-
-
 
 }

@@ -131,25 +131,7 @@ public class Zone {
 	}
 
 	
-	public boolean isSelected(MutableNumber index0, MutableNumber index1) {
-		return cellSelection.contains(index0, index1);
-	}
-	
-	public void setSelectedAll(boolean selected) {
-		cellSelection.change(
-			section0.math.ZERO(), section0.getLast(), 
-			section1.math.ZERO(), section1.getLast(), selected);
-	}
-
-	public void backupSelection() {
-		lastSelection = cellSelection.copy();
-	}
-	
-	public void restoreSelection() {
-		cellSelection = lastSelection.copy();
-	}
-
-	
+		
 	/**
 	 * Returns the number of selected cells in this zone.
 	 * <p>
@@ -226,16 +208,41 @@ public class Zone {
 		return section0.isVisible() && section1.isVisible();
 	}
 
+	
+	public boolean isSelected(MutableNumber index0, MutableNumber index1) {
+		return cellSelection.contains(index0, index1);
+	}
+	
 	public void setSelected(
 			MutableNumber start0, MutableNumber end0,
-			MutableNumber start1, MutableNumber end1, boolean select) {
+			MutableNumber start1, MutableNumber end1, boolean selected) {
 		
-		if (select) {
+		if (selected) {
 			cellSelection.add(start0, end0, start1, end1);
 		} else {
 			cellSelection.remove(start0, end0, start1, end1);			
 		}
 	}
+
+	public void setSelected(boolean selected) {
+		if (selected) {
+			cellSelection.add(
+					section0.math.ZERO(), section0.getLast(), 
+					section1.math.ZERO(), section1.getLast());
+		} else {
+			cellSelection.clear();
+			lastSelection.clear();
+		}
+	}
+	
+	public void backupSelection() {
+		lastSelection = cellSelection.copy();
+	}
+	
+	public void restoreSelection() {
+		cellSelection = lastSelection.copy();
+	}
+	
 
 	
 }

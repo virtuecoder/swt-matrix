@@ -19,8 +19,16 @@ public class TestUtil {
 		return new Extent(number(start), number(end));
 	}
 	
+	static Extent extent(int n) {
+		return new Extent(number(n), number(n));
+	}
+	
 	public static AxisItem item(Section section, int index) {
 		return new AxisItem(section, number(index));
+	}
+	
+	public static AxisItem item(AxisModel model, int section, int index) {
+		return new AxisItem(model.getSection(section), number(index));
 	}
 	
 	static NumberSet indexSet() {

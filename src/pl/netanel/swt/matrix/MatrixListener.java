@@ -280,7 +280,7 @@ class MatrixListener implements Listener {
 		}
 
 		public void setCurrentItem() {
-			if (item != null && item.section.isNavigationEnabled()) {
+			if (item != null) { // && item.section.isNavigationEnabled()) {
 				layout.setCurrentItem(item);
 			}
 		}
@@ -316,16 +316,28 @@ class MatrixListener implements Listener {
 				}
 			}
 			
-			boolean ctrlSelection = 
-				commandId == SELECT_COLUMN2 || commandId == SELECT_TO_COLUMN2 ||
-				commandId == SELECT_ROW2 || commandId == SELECT_TO_ROW2;
-			
 			// Make sure start < end 
 			if (model.comparePosition(last, item) > 0) {
 				AxisItem tmp = last; last = item; item = tmp;
 			}
 
+			boolean ctrlSelection = 
+				commandId == SELECT_COLUMN2 || commandId == SELECT_TO_COLUMN2 ||
+				commandId == SELECT_ROW2 || commandId == SELECT_TO_ROW2;
+			
+			if (!ctrlSelection) {
+				model.clearSelection();
+				matrix.model.setSelected(false);
+			}
+			
 			model.setSelected(last, item, !(ctrlSelection && isSelected(last)));
+			if (axisIndex == 0) {
+				AxisModel model1 = matrix.model.getModel1();
+				matrix.model.setSelected(last, item, model1.getFirstItem(), model1.getLastItem(), true);
+			} else {
+				AxisModel model0 = matrix.model.getModel0();
+				matrix.model.setSelected(model0.getFirstItem(), model0.getLastItem(), last, item, true);
+			}
 			addEvent(SWT.Selection);
 		}
 		
@@ -555,7 +567,7 @@ class MatrixListener implements Listener {
 //		System.out.println("execute " + commandId);
 		switch (commandId) {
 		case RESIZE_PACK:		state0.pack(); state1.pack(); break;
-		case SELECT_ALL:		matrix.model.setSelectedAll(true); return;
+		case SELECT_ALL:		matrix.model.setSelected(true); matrix.redraw(); return;
 		}
 		
 		if (!isSelectable()) return;
@@ -667,7 +679,7 @@ class MatrixListener implements Listener {
 		}
 		else {
 			if (!ctrlSelection) {
-				matrix.model.setSelectedAll(false);
+				matrix.model.setSelected(false);
 			}
 			matrix.model.setSelected(state0.last, state0.item, state1.last, state1.item, true);			
 		}

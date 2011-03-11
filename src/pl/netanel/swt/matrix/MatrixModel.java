@@ -7,7 +7,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
 import pl.netanel.swt.Resources;
-import pl.netanel.swt.matrix.AxisModel.ItemSequence;
+import pl.netanel.swt.matrix.AxisModel.ExtentSequence;
 import pl.netanel.swt.matrix.painter.LinePainter;
 import pl.netanel.swt.matrix.painter.ModelPainter;
 import pl.netanel.swt.matrix.painter.Painter;
@@ -196,12 +196,12 @@ public class MatrixModel implements Iterable<Zone> {
 		};
 	}
 
-	public void setSelectedAll(boolean selected) {
+	public void setSelected(boolean selected) {
 		for (Zone zone: zones) {
-			zone.setSelectedAll(selected);
+			zone.setSelected(selected);
 		}
 	}
-
+	
 	public void setSelected (
 			AxisItem start0, AxisItem end0, 
 			AxisItem start1, AxisItem end1, boolean selected) {
@@ -233,14 +233,14 @@ public class MatrixModel implements Iterable<Zone> {
 	class ExtentPairSequence {
 		Section section0, section1;
 		MutableNumber start0, end0, start1, end1;
-		ItemSequence seq0, seq1;
+		ExtentSequence seq0, seq1;
 		boolean empty;
 		private AxisItem startItem1;
 		private AxisItem endItem1;
 		
 		public ExtentPairSequence() {
-			seq0 = model0.new ItemSequence();
-			seq1 = model1.new ItemSequence();
+			seq0 = model0.new ExtentSequence();
+			seq1 = model1.new ExtentSequence();
 		}
 
 		public void init(AxisItem start0, AxisItem end0, AxisItem start1, AxisItem end1) {
@@ -273,5 +273,6 @@ public class MatrixModel implements Iterable<Zone> {
 			return true;
 		}
 	}
+
 	
 }

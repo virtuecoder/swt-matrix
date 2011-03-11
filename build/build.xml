@@ -1,0 +1,21 @@
+<project name="Matrix" default="ftp" basedir=".">
+
+	<target name="ftp" description="copy all project files to ftp site">
+		<zip destfile="matrix.zip"
+		  basedir=".."
+		  includes="**"
+			excludes="build\matrix.zip"
+    />
+		
+	  <ftp 
+	  	 server="www.netanel.pl"
+	     remotedir="git"
+       userid="u60772810"
+		   password="jackolo">		   
+		
+			 <fileset dir=".\" includes="matrix.zip"/>
+		</ftp>
+	</target>
+
+
+</project>

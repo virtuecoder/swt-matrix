@@ -31,8 +31,8 @@ public class BorderPainter extends Painter {
 		
 		int x = x2 + outerOffset + lineWidth / 2;
 		int y = y2 + outerOffset + lineWidth / 2;
-		int w = width - outerOffset - lineWidth + 1;
-		int h = height - outerOffset - lineWidth + 1;
+		int w = width - 2 * outerOffset - lineWidth;
+		int h = height - 2 * outerOffset - lineWidth;
 		
 		// Draw rectangles from startOffset to endOffset compared to the cell bounds
 		gc.setLineWidth(lineWidth);
