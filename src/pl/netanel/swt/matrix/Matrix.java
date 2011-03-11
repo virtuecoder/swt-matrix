@@ -228,10 +228,37 @@ public class Matrix extends Canvas {
 //		layout0.compute();
 //		layout1.compute();
 		
-//		updateScrollBars();
+		updateScrollBars();
 		
 	}
 	
+	/**
+	 * Called on resize or item count change.
+	 */
+	private void updateScrollBars() {
+		area = getClientArea();
+		
+		// Update the scroll bars visibility
+		// If at one of the scroll bar visibility has changed then update the other one also
+		if (axis1.updateScrollBarVisibility(area.width)) {
+			area = getClientArea();
+			axis0.updateScrollBarVisibility(area.height);
+			axis1.updateScrollBarVisibility(area.width);
+			area = getClientArea();
+		}
+		else if (axis0.updateScrollBarVisibility(area.height)) {
+			area = getClientArea();			 
+			axis1.updateScrollBarVisibility(area.width);
+			axis0.updateScrollBarVisibility(area.height);
+			area = getClientArea();
+		}
+		
+		axis1.updateScrollBarValues(area.width);
+		axis0.updateScrollBarValues(area.height);
+		
+		area = getClientArea();
+	}
+
 	public Axis getAxis0() {
 		return axis0;
 	}
@@ -243,7 +270,6 @@ public class Matrix extends Canvas {
 	public MatrixModel getModel() {
 		return model;
 	}
-	
 	
 	
 	
@@ -281,6 +307,15 @@ public class Matrix extends Canvas {
 		
 		throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e); 
 	}
+
+	public void refresh() {
+		layout0.compute();
+		layout1.compute();
+		updateScrollBars();
+		redraw();
+	}
+
+	
 
 	
 	

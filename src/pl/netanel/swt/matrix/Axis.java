@@ -23,7 +23,7 @@ public class Axis {
 		layout = new Layout(model);
 		listeners = new Listeners();
 		
-		scrollBar = axisIndex == 0 ? matrix.getHorizontalBar() : matrix.getVerticalBar();
+		scrollBar = axisIndex == 0 ? matrix.getVerticalBar() : matrix.getHorizontalBar();
 		if (scrollBar != null) {
 			scrollBar.addListener(SWT.Selection, new Listener() {
 				private int selection = -1;
@@ -70,4 +70,49 @@ public class Axis {
 		scrollBar.setSelection(layout.getScrollPosition());
 		scrollBar.setThumb(layout.getScrollThumb());
 	}
+
+	public AxisItem getCurrentItem() {
+		return layout.current;
+	}
+	
+
+	/**
+	 * Update the scroll bar visibility.
+	 * 
+	 * @param size
+	 * @return true if the visibility has changed/
+	 */
+	protected boolean updateScrollBarVisibility(int size) {
+		if (scrollBar == null) return false;
+		boolean b = scrollBar.getVisible();
+		scrollBar.setVisible(layout.isScrollRequired());
+		return b != scrollBar.isVisible();
+	}
+
+	/**
+	 * Calibrates the scroll bar after change of display area size or the number of items.
+	 * 
+	 * @param size
+	 * @return true if the visibility of the scroll bar has change to allow
+	 *         recalculation of the matrix visibility information.
+	 */
+	protected void updateScrollBarValues(int size) {
+		// Quit if there is no scroll bar or the visible area is not initialized
+		if (scrollBar == null || size == 0) return;
+	
+		layout.setViewportSize(size);
+		int min = layout.getScrollMin();
+		int max = layout.getScrollMax();
+		int thumb = layout.getScrollThumb();
+		if (thumb == max) thumb = max-1;
+		if (thumb == 0) thumb = 1;
+		// Extend the maximum to show the last trimmed element
+		if (thumb <= 1) { 
+			thumb = 1;
+			max++;
+		}
+		scrollBar.setValues(layout.getScrollPosition(), min, max, thumb, 1, thumb);
+	}
+
+
 }

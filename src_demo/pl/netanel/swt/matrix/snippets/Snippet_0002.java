@@ -1,40 +1,92 @@
 package pl.netanel.swt.matrix.snippets;
 
+import java.util.ArrayList;
+
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.AxisModel;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.MatrixModel;
+import pl.netanel.swt.matrix.MutableNumber;
 import pl.netanel.swt.matrix.Zone;
 
 /**
- * Creates matrix with the given model.
+ * Creates matrix with a custom model.
  * 
  * @author Jacek Kolodziejczyk created 03-03-2011
  */
 public class Snippet_0002 {
+	
 	public static void main(String[] args) {
 		Shell shell = new Shell();
-		shell.setLayout(new FillLayout());
+		shell.setLayout(new GridLayout(2, false));
 		
-		AxisModel rowModel = new AxisModel();
-		rowModel.getBody().setCount(10);
+		final ArrayList<String> list = new ArrayList<String>();
+		list.add(Integer.toString(1));
+		list.add(Integer.toString(2));
+		list.add(Integer.toString(3));
+		list.add(Integer.toString(4));
+		
+		final AxisModel rowModel = new AxisModel();
+		rowModel.getBody().setCount(4);
 		
 		AxisModel colModel = new AxisModel();
-		colModel.getBody().setCount(4);
+		colModel.getBody().setCount(2);
 		colModel.getBody().setDefaultCellWidth(50);
 		
-		Zone body = new Zone(rowModel.getBody(), colModel.getBody(), Zone.BODY);
-		Zone columnHeader = new Zone(rowModel.getBody(), colModel.getHeader(), Zone.COLUMN_HEADER);
-		Zone rowHeader = new Zone(rowModel.getHeader(), colModel.getBody(), Zone.ROW_HEADER);
+		Zone body = new Zone(rowModel.getBody(), colModel.getBody(), Zone.BODY) {
+			/*
+			 * Cache the list value the iteration guarantees to go by all columns 
+			 * before going to the next row.
+			 */
+			String value;
+			
+			@Override
+			public String getText(MutableNumber index0, MutableNumber index1) {
+				return index1.intValue() == 0 
+					? value = list.get(index0.intValue())
+					: Integer.toString(value.length());
+			}
+		};
+		Zone columnHeader = new Zone(rowModel.getBody(), colModel.getHeader(), Zone.COLUMN_HEADER) {
+			@Override
+			public String getText(MutableNumber index0, MutableNumber index1) {
+				return index1.intValue() == 0 ? "Value" : "Length";
+			}
+		};
 		
-		MatrixModel model = new MatrixModel(rowModel, colModel, 
-				body, columnHeader, rowHeader);
+		MatrixModel model = new MatrixModel(rowModel, colModel, body, columnHeader);
 
-		new Matrix(shell, SWT.NONE, model);
+		final Matrix matrix = new Matrix(shell, SWT.V_SCROLL, model);
+		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		
+		Button add = new Button(shell, SWT.PUSH);
+		add.setText("Add");
+		add.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				list.add(Integer.toString(Integer.parseInt(list.get(list.size() - 1)) + 1));
+				rowModel.getBody().setCount(list.size());
+				matrix.refresh();
+			}
+		});
+		Button remove = new Button(shell, SWT.PUSH);
+		remove.setText("Remove");
+		remove.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				list.remove(matrix.getAxis0().getCurrentItem().index.intValue());
+				rowModel.getBody().setCount(list.size());
+				matrix.refresh();
+			}
+		});
 		
 		shell.setBounds(400, 200, 400, 300);
 		shell.open();
