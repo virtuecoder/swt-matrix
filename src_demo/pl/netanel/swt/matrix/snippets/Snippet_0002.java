@@ -27,9 +27,9 @@ public class Snippet_0002 {
 		colModel.getBody().setCount(4);
 		colModel.getBody().setDefaultCellWidth(50);
 		
-		Zone body = new Zone(rowModel.getBody(), colModel.getBody());
-		Zone columnHeader = new Zone(rowModel.getBody(), colModel.getHeader());
-		Zone rowHeader = new Zone(rowModel.getHeader(), colModel.getBody());
+		Zone body = new Zone(rowModel.getBody(), colModel.getBody(), Zone.BODY);
+		Zone columnHeader = new Zone(rowModel.getBody(), colModel.getHeader(), Zone.COLUMN_HEADER);
+		Zone rowHeader = new Zone(rowModel.getHeader(), colModel.getBody(), Zone.ROW_HEADER);
 		
 		MatrixModel model = new MatrixModel(rowModel, colModel, 
 				body, columnHeader, rowHeader);

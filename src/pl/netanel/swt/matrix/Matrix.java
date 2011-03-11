@@ -37,6 +37,8 @@ public class Matrix extends Canvas {
 		super(parent, style | SWT.DOUBLE_BUFFERED);
 		setBackground(Resources.getColor(SWT.COLOR_LIST_BACKGROUND));
 		setForeground(Resources.getColor(SWT.COLOR_LIST_FOREGROUND));
+		navigationPainter = new BorderPainter(2);
+		
 		
 		setModel(model);
 		
@@ -64,7 +66,7 @@ public class Matrix extends Canvas {
 //				if (executor != null) executor.shutdownNow();
 			}
 		});
-		this.listener = new MatrixListener(this);
+		
 	}
 
 	private void setModel(MatrixModel model) {
@@ -83,8 +85,17 @@ public class Matrix extends Canvas {
 			body.setDefaultForeground(getForeground());
 		}
 		
+		this.listener = new MatrixListener(this);
 		listener.setLayout(layout0, layout1);
-		
+		selectCurrent();
+	}
+	
+	private void selectCurrent() {
+		layout0.compute();
+		layout1.compute();
+		if (model.getBody().isSelectionEnabled() && layout0.current != null && layout1.current != null) {
+			model.setSelected(layout0.current, layout0.current, layout1.current, layout1.current, true);
+		}
 	}
 
 	
@@ -97,6 +108,14 @@ public class Matrix extends Canvas {
 		paint(gc, backgroundPainter, area.x, area.y, area.width, area.height);
 
 		paintDock(gc, Dock.MAIN, Dock.MAIN);
+		
+		if (layout0.current != null && layout1.current != null) {
+			Bound b0 = layout0.getBound(layout0.current);
+			Bound b1 = layout1.getBound(layout1.current);
+			if (b0 != null && b1 != null) {
+				paint(gc, navigationPainter, b1.distance, b0.distance, b1.width, b0.width);
+			}
+		}
 		
 		System.out.println(BigDecimal.valueOf(System.nanoTime() - t, 6).toString());
 	}
@@ -202,6 +221,7 @@ public class Matrix extends Canvas {
 		
 		layout0.setViewportSize(area.height);
 		layout1.setViewportSize(area.width);
+		selectCurrent();
 //		layout0.compute();
 //		layout1.compute();
 		
@@ -220,6 +240,7 @@ public class Matrix extends Canvas {
 	public MatrixModel getModel() {
 		return model;
 	}
+	
 	
 	
 	

@@ -16,7 +16,7 @@ public class Section<N extends MutableNumber> {
 	
 	final Math math;
 	private final MutableNumber count;
-	private final NumberOrder<N> order;
+	final NumberOrder<N> order;
 	private final NumberSet<N> hidden;
 	private final NumberSet resizable;
 	private final NumberSet moveable;
@@ -41,7 +41,7 @@ public class Section<N extends MutableNumber> {
 		count = math.create(0);
 		
 		order = new NumberOrder(math);
-		hidden = new NumberSet(math);
+		hidden = new NumberSet(math, true);
 		resizable = new NumberSet(math);
 		moveable = new NumberSet(math);
 		hideable = new NumberSet(math);
@@ -236,10 +236,10 @@ public class Section<N extends MutableNumber> {
 			boolean contains = math.contains(e, index);
 			hiddenCount.add(hidden.getCount(e.start, contains ? index : e.end));
 			if (contains) {
-				return pos1.add(index).subtract(e.start).subtract(hiddenCount);
+				return pos2.add(index).subtract(e.start).subtract(hiddenCount);
 			}
 			pos1.set(pos2);
-			pos2.add(e.end).subtract(e.start).increment().subtract(hiddenCount);
+			pos2.add(e.end).subtract(e.start).increment(); //.subtract(hiddenCount);
 		}
 		return null;
 	}
@@ -248,21 +248,36 @@ public class Section<N extends MutableNumber> {
 	public MutableNumber getByPosition(MutableNumber position) {
 		if (math.compare(position, getVisibleCount()) >= 0) return null;
 		
+		MutableNumber pos1 = math.create(0);
+		MutableNumber pos2 = math.create(0);
+		
+		for (int i = 0, size = order.items.size(); i < size; i++) {
+			Extent<N> e = order.items.get(i);
+			pos2.add(e.end).subtract(e.start).subtract(hidden.getCount(e.start, e.end));
+			if (math.compare(pos2, position) >= 0) {
+				MutableNumber count = hidden.getCount(e.start, pos1);
+				return pos1.subtract(position).negate().add(e.start).add(count);
+			}
+			pos2.increment();
+			pos1.set(pos2); 
+		}
+		return null;
+		
 //		ForwardOrderIterator it = order.new ForwardOrderIterator();
-//		Index hiddenCount = factory.zero();
-//		Index pos1 = factory.zero();
-//		Index pos2 = factory.zero();
+//		MutableNumber hiddenCount = factory.zero();
+//		MutableNumber pos1 = factory.zero();
+//		MutableNumber pos2 = factory.zero();
 //		while (it.hasNext()) {
 //			Extent extent = it.next();
 //			pos1.set(it.pos1).subtract(hiddenCount);
 //			hiddenCount.add(hidden.getCount(extent.getStart(), extent.getEnd()));
 //			pos2.set(it.pos2).subtract(hiddenCount);
 //			if (pos2.compareTo(position) >= 0) {
-//				Index count = hidden.getCount(extent.getStart(), pos1);
+//				MutableNumber count = hidden.getCount(extent.getStart(), pos1);
 //				return pos1.subtract(position).negate().add(extent.getStart()).add(count);
 //			}
 //		}		
-		return null;
+//		return null;
 
 	}
 

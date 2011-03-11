@@ -7,6 +7,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
 import pl.netanel.swt.Resources;
+import pl.netanel.swt.matrix.AxisModel.ItemSequence;
 import pl.netanel.util.ImmutableIterator;
 
 public class MatrixModel implements Iterable<Zone> {
@@ -16,6 +17,7 @@ public class MatrixModel implements Iterable<Zone> {
 	private final ArrayList<Zone> zones;
 	private Zone body; //, columnHeader, rowHeader;
 	private int[] zOrder;
+	private ExtentPairSequence seq;
 
 	public MatrixModel(AxisModel model0, AxisModel model1, Zone ...zones) {
 		this.model0 = model0;
@@ -48,6 +50,8 @@ public class MatrixModel implements Iterable<Zone> {
 			}
 		}
 		calculateZOrder();
+		
+		seq = new ExtentPairSequence();
 	}
 	
 	private void calculateZOrder() {
@@ -64,29 +68,37 @@ public class MatrixModel implements Iterable<Zone> {
 
 	private Zone createZone(Section section0, Section section1) {
 		Zone zone = null;
-		if (section0.equals(model0.getHeader()) && section1.equals(model1.getHeader())) {
-			zone = new Zone(section0, section1) {
+		Section header0 = model0.getHeader();
+		Section header1 = model1.getHeader();
+		Section body0 = model0.getBody();
+		Section body1 = model1.getBody();
+		if (section0.equals(header0) && section1.equals(header1)) {
+			zone = new Zone(section0, section1, Zone.TOP_LEFT) {
 				public String getText(MutableNumber index0, MutableNumber index1) {
 					return null;
 				};
 			};
-		}
-		else if (section0.equals(model0.getBody()) && section1.equals(model1.getHeader())) {
-			zone = new Zone(section0, section1) {
-				public String getText(MutableNumber index0, MutableNumber index1) {
-					return index0.toString();
+		} else {
+			if (section0.equals(body0) && section1.equals(header1)) {
+				zone = new Zone(section0, section1, Zone.ROW_HEADER) {
+					public String getText(MutableNumber index0, MutableNumber index1) {
+						return index0.toString();
+					};
 				};
-			};
-		}
-		else if (section0.equals(model0.getHeader()) && section1.equals(model1.getBody())) {
-			zone = new Zone(section0, section1) {
-				public String getText(MutableNumber index0, MutableNumber index1) {
-					return index1.toString();
+			}
+			else if (section0.equals(header0) && section1.equals(body1)) {
+				zone = new Zone(section0, section1, Zone.COLUMN_HEADER) {
+					public String getText(MutableNumber index0, MutableNumber index1) {
+						return index1.toString();
+					};
 				};
-			};
-		} 
-		else {
-			zone = new Zone(section0, section1);
+			} 
+			else if (section0.equals(body0) && section1.equals(body1)) {
+				zone = new Zone(section0, section1, Zone.BODY);
+			}
+			else {
+				zone = new Zone(section0, section1, Zone.NONE);
+			}
 		}
 		return zone;
 	}
@@ -160,6 +172,9 @@ public class MatrixModel implements Iterable<Zone> {
 		return model1;
 	}
 
+	/**
+	 * Zone iterator
+	 */
 	@Override
 	public Iterator<Zone> iterator() {
 		return new ImmutableIterator<Zone>() {
@@ -184,4 +199,76 @@ public class MatrixModel implements Iterable<Zone> {
 		}
 	}
 
+	public void setSelected (
+			AxisItem start0, AxisItem end0, 
+			AxisItem start1, AxisItem end1, boolean selected) {
+		
+		// Make sure start < end 
+		AxisItem tmp;
+		if (model0.comparePosition(start0, end0) > 0) {
+			tmp = start0; start0 = end0; end0 = tmp;
+		}
+		if (model1.comparePosition(start1, end1) > 0) {
+			tmp = start1; start1 = end1; end1 = tmp;
+		}
+	
+		seq.init(start0, end0, start1, end1);
+		while (seq.next()) {
+			Zone zone = getZone(seq.section0, seq.section1);
+			if (zone.isSelectionEnabled()) {
+				zone.setSelected(seq.start0, seq.end0, seq.start1, seq.end1, selected);
+			}	
+		}
+	}
+	
+	/**
+	 * Iterates over all extents within the boundaries defined 
+	 * by items passed to the init() method. 
+	 * 
+	 * @author Jacek created 21-02-2011
+	 */
+	class ExtentPairSequence {
+		Section section0, section1;
+		MutableNumber start0, end0, start1, end1;
+		ItemSequence seq0, seq1;
+		boolean empty;
+		private AxisItem startItem1;
+		private AxisItem endItem1;
+		
+		public ExtentPairSequence() {
+			seq0 = model0.new ItemSequence();
+			seq1 = model1.new ItemSequence();
+		}
+
+		public void init(AxisItem start0, AxisItem end0, AxisItem start1, AxisItem end1) {
+			
+			startItem1 = start1;
+			endItem1 = end1;
+			seq0.init(start0, end0);
+			seq1.init(start1, end1);
+			empty = !seq0.next();
+			this.section0 = seq0.section;
+			this.start0 = seq0.start;
+			this.end0 = seq0.end;
+		}
+		
+		public boolean next() {
+			if (empty) return false; 
+			
+			if (!seq1.next()) {
+				if (!seq0.next()) {
+					return false;
+				}
+				this.section0 = seq0.section;
+				this.start0 = seq0.start;
+				this.end0 = seq0.end;
+				seq1.init(startItem1, endItem1);
+			}
+			section1 = seq1.section;
+			start1 = seq1.start;
+			end1 = seq1.end;
+			return true;
+		}
+	}
+	
 }

@@ -16,8 +16,8 @@ public class Snippet {
 		Shell shell = new Shell();
 		shell.setLayout(new FillLayout());
 		
-		Matrix matrix = new Matrix(shell, SWT.BORDER, new MatrixModel(
-				new AxisModel(BigInteger.class), new AxisModel(BigInteger.class)));
+		Matrix matrix = new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, 
+				new MatrixModel(new AxisModel(BigInteger.class), new AxisModel(BigInteger.class)));
 		matrix.getAxis1().getBody().setCount(new BigInteger("1000000000000000"));
 		matrix.getAxis0().getBody().setCount(new BigInteger("1000000000000000"));
 		matrix.getAxis0().setHeaderVisible(true);

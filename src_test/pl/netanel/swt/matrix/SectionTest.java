@@ -155,7 +155,64 @@ public class SectionTest {
 	}
 	
 	
+	@Test
+	public void getPosition() throws Exception {
+		Section section = new Section(int.class);
+		section.setCount(10);
+		section.setHidden(2, 4, true);
+		section.move(6, 9, 3);
+		assertSequence("0, 1, 6, 7, 8, 9, 5", section.new Forward());
+		
+		assertEquals("0", section.getPosition(number(0)).toString());
+		assertEquals("1", section.getPosition(number(1)).toString());
+		assertEquals("2", section.getPosition(number(6)).toString());
+		assertEquals("3", section.getPosition(number(7)).toString());
+		assertEquals("4", section.getPosition(number(8)).toString());
+		assertEquals("5", section.getPosition(number(9)).toString());
+		assertEquals("6", section.getPosition(number(5)).toString());
+		assertEquals(null, section.getPosition(number(2)));
+		assertEquals(null, section.getPosition(number(3)));
+		assertEquals(null, section.getPosition(number(4)));
+		assertEquals(null, section.getPosition(number(20)));
+		
+		// Hide first
+		section.setHidden(0, true);
+		assertEquals(null, section.getPosition(number(0)));
+		assertEquals("0", section.getPosition(number(1)).toString());
+		
+		// Hide last
+		section.setHidden(5, true);
+		assertEquals(null, section.getPosition(number(5)));
+		assertEquals("4", section.getPosition(number(9)).toString());
+		
+	}
 	
+	@Test
+	public void getByPosition() throws Exception {
+		Section section = new Section(int.class);
+		section.setCount(10);
+		section.setHidden(2, 4, true);
+		section.move(6, 9, 3);
+		assertSequence("0, 1, 6, 7, 8, 9, 5", section.new Forward());
+		
+		assertEquals("0", section.getByPosition(number(0)).toString());
+		assertEquals("1", section.getByPosition(number(1)).toString());
+		assertEquals("6", section.getByPosition(number(2)).toString());
+		assertEquals("7", section.getByPosition(number(3)).toString());
+		assertEquals("8", section.getByPosition(number(4)).toString());
+		assertEquals("9", section.getByPosition(number(5)).toString());
+		assertEquals("5", section.getByPosition(number(6)).toString());
+		assertEquals(null, section.getByPosition(number(20)));
+		
+		// Hide first
+		section.setHidden(0, true);
+		assertEquals("1", section.getByPosition(number(0)).toString());
+		
+		// Hide last
+		section.setHidden(5, true);
+		assertEquals("9", section.getByPosition(number(4)).toString());
+		
+	}
 	
 	private static void assertSequence(String expected, SectionSequence seq) {
 		StringBuilder sb = new StringBuilder();

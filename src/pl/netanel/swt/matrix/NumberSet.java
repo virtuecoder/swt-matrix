@@ -107,8 +107,8 @@ class NumberSet<N extends MutableNumber> {
 			int compare = math.compare(item.start, item.end, start, end);
 			
 			switch (compare) {
-			case AFTER: 
-			case BEFORE: 		if (sorted) {quit = true; break; } else {continue;}
+			case AFTER: 		if (sorted) {quit = true; } break; 
+//			case BEFORE: 		break;
 			case EQUAL:
 			case OVERLAP:		return false;
 			

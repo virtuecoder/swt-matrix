@@ -124,9 +124,9 @@ class Layout {
 		head.compute(viewportSize);
 		tail.compute(viewportSize - head.innerWidth);
 		
-		if (!head.isEmpty() && comparePosition(origin, forward.min) < 0) {
+		if (!head.isEmpty() && model.comparePosition(origin, forward.min) < 0) {
 			origin = forward.getItem();
-		} else if (!tail.isEmpty() && comparePosition(origin, backward.min) > 0) {
+		} else if (!tail.isEmpty() && model.comparePosition(origin, backward.min) > 0) {
 			origin = backward.getItem();
 		}
 		dir.set(origin);
@@ -185,16 +185,47 @@ class Layout {
 		return direction instanceof Forward ? backward : forward;
 	}
 	
-	int comparePosition(AxisItem item1, AxisItem item2) {
-		int diff = item1.section.index - item2.section.index;
-		if (diff != 0) return diff; 
-		return item1.section.comparePosition(item1.index, item2.index);
-	}
-	
 	int compare(AxisItem item1, AxisItem item2) {
 		int diff = item1.section.index - item2.section.index;
 		if (diff != 0) return diff;
 		return math.compare(item1.index, item2.index);
+	}
+	
+	
+	
+	/*------------------------------------------------------------------------
+	 * Navigation 
+	 */
+
+	public void setCurrentItem(AxisItem item) {
+		if (isComputingRequired) compute();
+		
+    		 if (forwardNavigator.set(item))  	current = forwardNavigator.getItem();
+		else if (backwardNavigator.set(item))   current = backwardNavigator.getItem();
+		else 									current = null;
+	}
+	
+	/**
+	 * Return true if the current item has changed.
+	 * @param move
+	 * @return 
+	 * @return
+	 */
+	// TODO Performance: prevent computation if current does not change
+	public boolean moveCurrentItem(Move move) {
+		AxisItem current2 = null;
+		switch (move) {
+		case HOME: 				current2 = forwardNavigator.first(); break;
+		case END: 				current2 = backwardNavigator.first(); break;
+		case NEXT: 				current2 = nextItem(current, forwardNavigator); break;
+		case PREVIOUS: 			current2 = nextItem(current, backwardNavigator); break;
+		case NEXT_PAGE:			show(current); current = nextPage(current, forwardNavigator); return true;
+		case PREVIOUS_PAGE:		show(current); current = nextPage(current, backwardNavigator); return true;
+		}
+		if (current2 != null) {
+			show(current = current2);
+		}
+		return true;
 	}
 	
 	/*------------------------------------------------------------------------
@@ -205,10 +236,10 @@ class Layout {
 		if (item == null) return;
 		if (isComputingRequired) compute();
 		
-		if (comparePosition(item, endNoTrim) > 0) {
+		if (model.comparePosition(item, endNoTrim) > 0) {
 			compute(item, backward);
 		} 
-		else if (comparePosition(item, start) < 0) {
+		else if (model.comparePosition(item, start) < 0) {
 			compute(item, forward);
 		} 
 		// else it is visible already
@@ -564,6 +595,25 @@ class Layout {
 				dock == Dock.HEAD ? head : tail;
 	}
 	
+	private Cache getCache(int distance) {
+		return distance < main.distance && !head.isEmpty() ? head :
+			   distance > tail.distance && !tail.isEmpty() ? tail : main;
+	}
+	
+	private Cache getCache(Section section, MutableNumber index) {
+		for (Cache cache: new Cache[] {head, main, tail}) {
+			int len = cache.cells.size();
+			for (int i = 0; i < len; i++) {
+				AxisItem item = cache.items.get(i);
+				if (item.section.equals(section) && math.compare(item.index, index) == 0) {
+					return cache;
+				}
+			}
+		}
+		return null;
+	}
+
+	
 //	private Cache getCache(int distance) {
 //		return distance < main.distance && !head.isEmpty() ? head :
 //			   distance > tail.distance && !tail.isEmpty() ? tail : main;
@@ -609,6 +659,25 @@ class Layout {
 		return null;
 	}
 
+	/**
+	 * Gets n-th item from the viewport caches that meets the condition:
+	 * lines[n].distance < distance <= cells[n].(distance + width)
+	 * @param distance in the viewport
+	 * @return
+	 */
+	public AxisItem getItemByDistance(int distance) {
+		Cache cache = getCache(distance);
+		AxisItem item = null;
+		for (int i = 0; i < cache.cells.size(); i++) {
+			Bound bounds = cache.cells.get(i);
+			item = cache.items.get(i);
+			if (distance <= bounds.distance + bounds.width) {
+				return item;
+			}
+		}
+		return item;
+//		return getBeyond && !cache.isEmpty() ? cache.items.get(cache.items.size() - 2) : null;
+	}
 
 	
 	public LayoutSequence cellSequence(Dock dock, Section section) {
@@ -704,48 +773,23 @@ class Layout {
 		return first == -1 ? new Bound(0, 0) :
 			new Bound(cache.lines.get(first).distance, b.distance + b.width);
 	}
+	
+	public Bound getBound(AxisItem item) {
+		Cache cache = getCache(item.section, item.index);
+		if (cache == null) return null;
+		for (int i = 0, size = cache.cells.size(); i < size; i++) {
+			if (cache.items.get(i).equals(item)) {
+				return cache.cells.get(i);
+			}
+		}
+		return null;
+	}
+
 
 	public boolean isEmpty() {
 		return head.isEmpty() && main.isEmpty() && tail.isEmpty();
 	}
 
-	
-//	class ItemSequence {
-//		Section section;
-//		MutableNumber start, end;
-//		private int i, istart, iend;
-//		private ArrayList<Extent> items;
-//		private AxisItem startItem, endItem;
-//		
-//		void init(AxisItem startItem, AxisItem endItem) {
-//			this.startItem = startItem;
-//			this.endItem = endItem;
-//			istart = startItem.section.order.items.isEmpty() ? 0 : sl.order.getExtentIndex(startItem.index);
-//			iend = endItem.section.order.items.isEmpty() ? 0 : sl.order.getExtentIndex(endItem.index);
-//			
-//			section = startItem.section;
-//			items = sections[section].order.items;
-//			i = istart;
-//		}
-//		
-//		boolean next() {
-//			if (i >= items.size()) {
-//				section++;
-//				if (section > endItem.section) return false;
-//				items = sections[section].order.items;
-//				i = 0;
-//			}
-//			Extent e = items.get(i);	
-//			start = section == startItem.section && i == istart ? 
-//					startItem.index : e.getStart();
-//			end = section == endItem.section && i == iend ? 
-//					endItem.index : e.getEnd();
-//			if (i >= iend && end.compareTo(endItem.index) == 0) {
-//				i = items.size();
-//			}
-//			i++;
-//			return true;
-//		}
-//	}
+		
 
 }

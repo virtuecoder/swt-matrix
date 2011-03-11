@@ -10,6 +10,11 @@ public class Extent<N extends MutableNumber> {
 		this.end = end;
 	}
 
+	@Override
+	public String toString() {
+		return start.toString() + "-" + end.toString();
+	}
+	
 	public Extent copy() {
 		return new Extent(start.copy(), end.copy());
 	}

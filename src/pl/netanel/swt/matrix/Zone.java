@@ -1,10 +1,13 @@
 package pl.netanel.swt.matrix;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
 
 import pl.netanel.swt.Listeners;
+import pl.netanel.swt.Resources;
 
 
 /**
@@ -67,14 +70,19 @@ public class Zone {
 		bounds = new Rectangle(0, 0, 0, 0);
 	}
 
-	public Zone(Section section0, Section section1) {
-		this(NONE);
+	public Zone(Section section0, Section section1, int type) {
+		this(type);
 		this.section0 = section0;
 		this.section1 = section1;
 		cellSelection = new CellSet(section0.math, section1.math);
 		lastSelection = new CellSet(section0.math, section1.math);
+		
+		RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
+		RGB whiteColor = Resources.getColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
+		RGB color = Painter.blend(selectionColor, whiteColor, 40);
+		selectionBackground = Resources.getColor(color);
 	}
-
+	
 	@Override
 	public String toString() {
 		return section0.toString() + " " + section1.toString();
@@ -211,6 +219,17 @@ public class Zone {
 
 	public boolean isVisible() {
 		return section0.isVisible() && section1.isVisible();
+	}
+
+	public void setSelected(
+			MutableNumber start0, MutableNumber end0,
+			MutableNumber start1, MutableNumber end1, boolean select) {
+		
+		if (select) {
+			cellSelection.add(start0, end0, start1, end1);
+		} else {
+			cellSelection.remove(start0, end0, start1, end1);			
+		}
 	}
 
 	
