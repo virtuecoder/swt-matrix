@@ -1,8 +1,11 @@
-package pl.netanel.swt.matrix;
+package pl.netanel.swt.matrix.painter;
 
 import java.math.BigInteger;
 
 import org.eclipse.swt.graphics.Color;
+
+import pl.netanel.swt.matrix.MutableNumber;
+import pl.netanel.swt.matrix.Zone;
 
 
 /**
@@ -21,7 +24,6 @@ import org.eclipse.swt.graphics.Color;
  * @author Jacek created 07-02-2011
  */
 public class ModelPainter extends TextPainter {
-	private static final MutableBigInteger ONE = new MutableBigInteger(BigInteger.ONE);
 	
 	private Color lastForeground, lastBackground, defaultBackground, background,  
 		selectionBackground, selectionForeground;
@@ -49,7 +51,7 @@ public class ModelPainter extends TextPainter {
 		}
 		
 		shouldHighlight = !zone.is(Zone.BODY) || 
-			BigIntegerMath.getInstance().compare(zone.getSelectionCount(), ONE) != 0;
+			zone.getSelectionCount().compareTo(BigInteger.ONE) != 0;
 
 	}
 

@@ -6,8 +6,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.Resources;
-import pl.netanel.swt.matrix.BorderPainter;
 import pl.netanel.swt.matrix.Matrix;
+import pl.netanel.swt.matrix.painter.BorderPainter;
 
 /**
  * Draw custom current navigation cell marker.

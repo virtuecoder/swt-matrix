@@ -1,7 +1,8 @@
-package pl.netanel.swt.matrix;
+package pl.netanel.swt.matrix.painter;
 
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+
 
 public class ImagePainter extends Painter {
 	public Image image;

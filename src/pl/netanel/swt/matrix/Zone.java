@@ -1,5 +1,7 @@
 package pl.netanel.swt.matrix;
 
+import java.math.BigInteger;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -8,6 +10,9 @@ import org.eclipse.swt.widgets.Listener;
 
 import pl.netanel.swt.Listeners;
 import pl.netanel.swt.Resources;
+import pl.netanel.swt.matrix.painter.LinePainter;
+import pl.netanel.swt.matrix.painter.Painter;
+import pl.netanel.swt.matrix.painter.Painters;
 
 
 /**
@@ -153,11 +158,11 @@ public class Zone {
 	 * 
 	 * @return {@link BigIntegerMutableNumber} with the count of selected cells
 	 */
-	public MutableBigInteger getSelectionCount() {
+	public BigInteger getSelectionCount() {
 		if (!isSelectionEnabled()) {
-			return BigIntegerMath.getInstance().create(0);
+			return BigInteger.ZERO;
 		}
-		return cellSelection.getCount();
+		return cellSelection.getCount().value;
 	}
 	
 	public CellSequence getSelection() {

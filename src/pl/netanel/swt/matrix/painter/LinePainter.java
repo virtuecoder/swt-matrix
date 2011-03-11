@@ -1,4 +1,4 @@
-package pl.netanel.swt.matrix;
+package pl.netanel.swt.matrix.painter;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;

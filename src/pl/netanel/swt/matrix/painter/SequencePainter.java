@@ -1,4 +1,5 @@
-package pl.netanel.swt.matrix;
+package pl.netanel.swt.matrix.painter;
+
 
 public abstract class SequencePainter extends Painter {
 	

@@ -1,8 +1,9 @@
-package pl.netanel.swt.matrix;
+package pl.netanel.swt.matrix.painter;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
+
 
 public class BorderPainter extends Painter {
 	public int radius;

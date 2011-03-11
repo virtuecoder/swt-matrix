@@ -1,4 +1,4 @@
-package pl.netanel.swt.matrix;
+package pl.netanel.swt.matrix.painter;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -6,6 +6,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 
 import pl.netanel.swt.Resources;
+import pl.netanel.swt.matrix.MutableNumber;
 
 
 
@@ -21,7 +22,6 @@ import pl.netanel.swt.Resources;
 public abstract class Painter {
 	protected GC gc;
 	protected boolean enabled = true;
-	protected boolean itemIncluded;
 //	protected SizeMeter meter;
 
 	/**
@@ -32,7 +32,6 @@ public abstract class Painter {
 	 */
 	public final void init(GC gc) {
 		this.gc = gc;
-		itemIncluded = true;
 		init();
 	};
 
@@ -85,13 +84,6 @@ public abstract class Painter {
 		return enabled;
 	}
 
-	public void setItemExcluded(boolean itemExcluded) {
-		this.itemIncluded = itemExcluded;
-	}
-
-	public boolean isItemIncluded() {
-		return itemIncluded;
-	}
 
 	
 //	public SizeMeter getSizeMeter() {

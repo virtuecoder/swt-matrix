@@ -8,6 +8,9 @@ import org.eclipse.swt.graphics.Color;
 
 import pl.netanel.swt.Resources;
 import pl.netanel.swt.matrix.AxisModel.ItemSequence;
+import pl.netanel.swt.matrix.painter.LinePainter;
+import pl.netanel.swt.matrix.painter.ModelPainter;
+import pl.netanel.swt.matrix.painter.Painter;
 import pl.netanel.util.ImmutableIterator;
 
 public class MatrixModel implements Iterable<Zone> {

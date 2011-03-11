@@ -17,6 +17,9 @@ import org.eclipse.swt.widgets.Listener;
 
 import pl.netanel.swt.Resources;
 import pl.netanel.swt.matrix.Layout.LayoutSequence;
+import pl.netanel.swt.matrix.painter.BorderPainter;
+import pl.netanel.swt.matrix.painter.Painter;
+import pl.netanel.swt.matrix.painter.Painters;
 
 
 public class Matrix extends Canvas {

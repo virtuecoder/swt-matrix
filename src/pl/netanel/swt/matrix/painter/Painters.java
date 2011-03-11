@@ -1,4 +1,4 @@
-package pl.netanel.swt.matrix;
+package pl.netanel.swt.matrix.painter;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -7,8 +7,8 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.ImagePainter;
 import pl.netanel.swt.matrix.Matrix;
+import pl.netanel.swt.matrix.painter.ImagePainter;
 
 /**
  * Draw custom background for the whole matrix.
