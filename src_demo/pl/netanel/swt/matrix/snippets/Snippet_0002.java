@@ -68,6 +68,7 @@ public class Snippet_0002 {
 		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		matrix.getAxis0().setHeaderVisible(true);
 		
+		
 		Button add = new Button(shell, SWT.PUSH);
 		add.setText("Add");
 		add.addSelectionListener(new SelectionAdapter() {
