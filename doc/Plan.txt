@@ -34,20 +34,6 @@ Web site structure
   - Ticket system
     - Bugs 
     - Feature requests
-
-Another structure from http://www.metawidget.org/:
-- Get started
-  - Overview
-  - News
-  - Download
-  - Documentation
-  - Support
-- Get involved
-  - Blogs and Articles
-  - Complete our Survey
-  - Contributing
-  - Issue Tracker
-  - Code Coverage
     
     
 Features

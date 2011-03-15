@@ -11,7 +11,7 @@ import org.junit.Test;
 import pl.netanel.swt.matrix.MutableInt;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Section.Forward;
-import pl.netanel.swt.matrix.Section.SectionSequence;
+import pl.netanel.swt.matrix.Section.IndexSequence;
 
 public class SectionTest {
 	
@@ -79,7 +79,7 @@ public class SectionTest {
 		Section section = new Section(int.class);
 		section.setCount(5);
 		section.move(1, 2, 4);
-		SectionSequence seq = section.new Forward();
+		IndexSequence seq = section.new Forward();
 		assertSequence("0, 3, 1, 2, 4", seq);
 		section.setHidden(2, true);
 		assertSequence("0, 3, 1, 4", seq);
@@ -98,7 +98,7 @@ public class SectionTest {
 		Section section = new Section(int.class);
 		section.setCount(5);
 		section.move(1, 2, 4);
-		SectionSequence seq = section.new Backward();
+		IndexSequence seq = section.new Backward();
 		assertSequence("4, 2, 1, 3, 0", seq);
 		section.setHidden(2, true);
 		assertSequence("4, 1, 3, 0", seq);
@@ -136,7 +136,7 @@ public class SectionTest {
 		Section section = new Section(int.class);
 		section.setCount(5);
 		section.move(1, 2, 4);
-		SectionSequence seq = section.new Backward();
+		IndexSequence seq = section.new Backward();
 		assertSequence("4, 2, 1, 3, 0", seq);
 
 		section.setHidden(2, true);
@@ -210,7 +210,7 @@ public class SectionTest {
 		
 	}
 	
-	private static void assertSequence(String expected, SectionSequence seq) {
+	private static void assertSequence(String expected, IndexSequence seq) {
 		StringBuilder sb = new StringBuilder();
 		for (seq.init(); seq.next();) {
 			if (sb.length() > 0) sb.append(", ");

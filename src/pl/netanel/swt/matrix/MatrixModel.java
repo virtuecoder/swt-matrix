@@ -108,6 +108,7 @@ public class MatrixModel implements Iterable<Zone> {
 
 	public MatrixModel() {
 		this(new AxisModel(), new AxisModel());
+		model0.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_X);
 	}
 	
 	

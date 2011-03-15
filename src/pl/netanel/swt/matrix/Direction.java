@@ -2,14 +2,14 @@ package pl.netanel.swt.matrix;
 
 import java.util.List;
 
-import pl.netanel.swt.matrix.Section.SectionSequence;
+import pl.netanel.swt.matrix.Section.IndexSequence;
 
 
 abstract class Direction {
 	protected final List<Section> sections;
 	protected final Math math;
 	Section section;
-	SectionSequence seq;
+	IndexSequence seq;
 	int i, level, sign;
 	AxisItem freeze, min, start;
 	boolean pending, moved, hasMore, skipWithoutCurrent;

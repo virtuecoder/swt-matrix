@@ -3,6 +3,7 @@ package pl.netanel.swt.matrix;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -65,7 +66,7 @@ public class Matrix extends Canvas {
 		addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
-//				if (executor != null) executor.shutdownNow();
+				if (executor != null) executor.shutdownNow();
 			}
 		});
 		
@@ -294,15 +295,15 @@ public class Matrix extends Canvas {
 	 */
 	protected void rethrow(Throwable e) {
 		// Stop auto scroll
-//		if (executor != null) {
-//			Matrix.this.listener.state0.autoScroll.stop();
-//			Matrix.this.listener.state1.autoScroll.stop();
-//			executor.shutdown();
-//			try {
-//				executor.awaitTermination(1, TimeUnit.SECONDS);
-//			} 
-//			catch (InterruptedException e1) { }
-//		}
+		if (executor != null) {
+			Matrix.this.listener.state0.autoScroll.stop();
+			Matrix.this.listener.state1.autoScroll.stop();
+			executor.shutdown();
+			try {
+				executor.awaitTermination(1, TimeUnit.SECONDS);
+			} 
+			catch (InterruptedException e1) { }
+		}
 		
 		throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e); 
 	}

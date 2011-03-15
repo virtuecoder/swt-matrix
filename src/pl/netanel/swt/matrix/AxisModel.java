@@ -13,6 +13,7 @@ public class AxisModel implements Iterable<Section> {
 	private final ArrayList<Section> sections;
 	private Section[] zOrder;
 	private Section body, header;
+	private int autoScrollOffset;
 
 	
 	public AxisModel() {
@@ -52,6 +53,8 @@ public class AxisModel implements Iterable<Section> {
 		for (int i = bodyIndex; i-- > 0;) {
 			zOrder[j++] = this.sections.get(i);
 		}
+		
+		autoScrollOffset = M.AUTOSCROLL_OFFSET_y;
 	}
 
 	public Section getBody() {
@@ -114,10 +117,10 @@ public class AxisModel implements Iterable<Section> {
 		}
 	}
 
-	public void clearSelection() {
+	public void setSelected(boolean selected) {
 		for (int i = 0, imax = sections.size(); i < imax; i++) {
 			Section section = sections.get(i);
-			section.setSelected(false);
+			section.setSelected(selected);
 		}
 	}
 
@@ -190,4 +193,25 @@ public class AxisModel implements Iterable<Section> {
 		}
 	}
 
+
+	public int getAutoScrollOffset() {
+		return autoScrollOffset;
+	}
+
+	public void setAutoScrollOffset(int autoScrollOffset) {
+		this.autoScrollOffset = autoScrollOffset;
+	}
+
+	/**
+	 * Sets the hidden state of selected indexes in each section.
+	 * @param hidden new hiding state
+	 */
+	public void setHidden(boolean hidden) {
+		for (int i = 0, imax = sections.size(); i < imax; i++) {
+			Section section = sections.get(i);
+			section.setHidden(hidden);
+		}
+	}
+	
+	
 }

@@ -25,8 +25,8 @@ public class Section<N extends MutableNumber> {
 	private final IntAxisState lineWidth;
 	private final ObjectAxisState<MutableNumber> cellSpan;
 	
-	private final NumberQueueSet selection;
-	private final NumberQueueSet lastSelection;
+	private final NumberQueueSet<N> selection;
+	private final NumberQueueSet<N> lastSelection;
 
 	
 	private boolean defaultResizable, defaultMoveable, defaultHideable; 
@@ -297,7 +297,7 @@ public class Section<N extends MutableNumber> {
 	
 	
 	
-	public SectionSequence getSequence(int sign) {
+	public IndexSequence getSequence(int sign) {
 		return sign > 0 ? new Forward() : new Backward();
 	}
 
@@ -306,7 +306,7 @@ public class Section<N extends MutableNumber> {
 	 * Iterates over section items in their order and skipping the hidden ones.
 	 * Iteration yields nothing if the section is not visible. 
 	 */
-	public abstract class SectionSequence {
+	public abstract class IndexSequence {
 		public MutableNumber number, number2, lastInExtent, last, d;
 		protected int i, h;
 		public int level;
@@ -315,7 +315,7 @@ public class Section<N extends MutableNumber> {
 		public boolean moved;
 		
 		
-		public SectionSequence() {
+		public IndexSequence() {
 			super();
 			number = math.create(0);
 			number2 = math.create(0);
@@ -449,7 +449,7 @@ public class Section<N extends MutableNumber> {
 		}
 	}
 	
-	public class Forward extends SectionSequence {
+	public class Forward extends IndexSequence {
 		
 		public Forward() {
 			sign = 1;
@@ -495,7 +495,7 @@ public class Section<N extends MutableNumber> {
 			return e.end;
 		}
 	}
-	public class Backward extends SectionSequence {
+	public class Backward extends IndexSequence {
 		
 		public Backward() {
 			sign = -1;
@@ -626,6 +626,13 @@ public class Section<N extends MutableNumber> {
 
 	public MutableNumber getLast() {
 		return math.decrement(getCount());
+	}
+	
+	public void setHidden(boolean flag) {
+		for (int i = 0, imax = selection.items.size(); i < imax; i++) {
+			Extent<N> e = selection.items.get(i);
+			setHidden(e.start, e.end, flag);
+		}
 	}
 
 }

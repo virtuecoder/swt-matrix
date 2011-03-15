@@ -244,6 +244,15 @@ class Layout {
 		} 
 		// else it is visible already
 	}
+	
+	AxisItem scroll(MutableNumber itemCount, Direction direction) {
+		if (isComputingRequired) compute();
+		AxisItem start2 = nextItem(start, itemCount, direction);
+		if (start2 == null || compare(start2, start) == 0) return null;
+		start = start2;
+		compute();
+		return direction instanceof Forward ? end : start;
+	}
 
 	public void scrollTo(AxisItem item) {
 		if (item.equals(start) || isOutOfBounds(item)) return;
@@ -337,9 +346,10 @@ class Layout {
 		return true;
 	}
 
-	public int getAutoScrollOffset(int lastDistance, int distance, int margin) {
+	public int getAutoScrollOffset(int lastDistance, int distance) {
 		if (lastDistance < main.distance || lastDistance > main.distance + main.outerWidth) return 0;
 		
+		int margin = model.getAutoScrollOffset();
 		int offset = distance - (tail.distance - margin);
 		if (offset > 0 && lastDistance < distance && compare(endNoTrim, backward.min) < 0) {
 			return offset;
@@ -357,6 +367,13 @@ class Layout {
 		direction.set(item);
 		return direction.next();
 	}
+
+	AxisItem nextItem(AxisItem item, MutableNumber itemCount, Direction direction) {
+		// TODO skip the hidden items
+		if (!direction.init()) return item;
+		direction.set(item);
+		return direction.next(math.create(itemCount));
+	}
 	
 	private AxisItem nextPage(AxisItem item, Direction direction) {
 		if (item == null) item = direction.first();
@@ -372,6 +389,7 @@ class Layout {
 		}
 		return opposite.start;
 	}
+	
 	
 	/**
 	 * Override this method to throw IndexOutOfBoundsException 

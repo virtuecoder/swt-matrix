@@ -11,11 +11,11 @@ public class M {
 	public static final int FORWARD = 1; 				
 	public static final int BACKWARD = -1;
 	
-	public static final int X_RESIZE_MARGIN = 3;
-	public static final int Y_RESIZE_MARGIN = 2;
-	public static final int X_AUTOSCROLL_MARGIN = 8;
-	public static final int Y_AUTOSCROLL_MARGIN = 6;
-	public static final int AUTO_SCROLL_DELAY = 500;
+	public static final int RESIZE_OFFSET_X = 3;
+	public static final int RESIZE_OFFSET_y = 2;
+	public static final int AUTOSCROLL_OFFSET_X = 8;
+	public static final int AUTOSCROLL_OFFSET_y = 6;
+	public static final int AUTOSCROLL_RATE = 50;
 
 	
 	/*

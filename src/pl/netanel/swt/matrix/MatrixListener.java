@@ -1,17 +1,19 @@
 package pl.netanel.swt.matrix;
 
+import static java.lang.Math.*;
 import static pl.netanel.swt.matrix.M.*;
 
 import java.util.ArrayList;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import pl.netanel.swt.Resources;
-import pl.netanel.swt.matrix.Move;
 import pl.netanel.swt.Listeners;
+import pl.netanel.swt.Resources;
 
 /**
  * Redirects events to listeners attached to zones.
@@ -138,7 +140,7 @@ class MatrixListener implements Listener {
 		Event mouseMoveEvent;
 		Cursor resizeCursor;
 		int headerId, resizeStartDistance, resizeCellWidth, newCellWidth, distance, lastDistance;
-//		AutoScroll autoScroll;
+		AutoScroll autoScroll;
 
 		public AxisListener(int axisIndex) {
 			this.axisIndex = axisIndex;
@@ -156,9 +158,9 @@ class MatrixListener implements Listener {
 		public void setItem(Event e) {
 			if (e.type == SWT.MouseMove) {
 				distance = axisIndex == 0 ? e.y : e.x;
-				AxisItem item2 = /*autoScroll.future != null && autoScroll.item != null  
+				AxisItem item2 = autoScroll.future != null && autoScroll.item != null  
 					? autoScroll.item  
-					:*/ layout.getItemByDistance(distance);
+					: layout.getItemByDistance(distance);
 				
 				if (item2 != null) {
 					itemModified = layout.compare(item, item2) != 0;
@@ -175,15 +177,6 @@ class MatrixListener implements Listener {
 			
 			switch (e.type) {
 			case SWT.MouseMove:
-//				AxisItem item2 = autoScroll.future != null && autoScroll.item != null  
-//						? autoScroll.item  
-//						: layout.getItemByDistance(distance);
-//				if (item2 == null || item == null) return;
-////				Strings.println(item, item2);
-//				itemModified = layout.compareTo(item, item2) != 0;
-//				item = item2;
-//				
-//				mouseMoveEvent = e;
 				if (mouseDown) {
 					handleDrag(e);
 				} 
@@ -242,7 +235,7 @@ class MatrixListener implements Listener {
 				if (cursor == Resources.getCursor(SWT.CURSOR_HAND)) {
 					matrix.setCursor(cursor = null);
 				}
-//				autoScroll.stop();
+				autoScroll.stop();
 				break;
 			}
 		}
@@ -261,7 +254,7 @@ class MatrixListener implements Listener {
 			else {
 				// Auto-scroll
 				if (!(e.data instanceof AxisItem[])) {
-//					autoScroll.handle();
+					autoScroll.handle();
 				}
 
 				// Move item
@@ -296,7 +289,7 @@ class MatrixListener implements Listener {
 			return item.section.isSelected(item.index);
 		}
 		
-		public void select(int commandId) {
+		public void setSelected(int commandId) {
 			if (last == null || item == null) return;
 //			if (last.section != item.section) return;
 			
@@ -326,7 +319,7 @@ class MatrixListener implements Listener {
 				commandId == SELECT_ROW2 || commandId == SELECT_TO_ROW2;
 			
 			if (!ctrlSelection) {
-				model.clearSelection();
+				model.setSelected(false);
 				matrix.model.setSelected(false);
 			}
 			
@@ -391,7 +384,8 @@ class MatrixListener implements Listener {
 		}
 
 		public void hide(boolean b) {
-//			axis.hide(b);
+			model.setHidden(b);
+			layout.isComputingRequired = true;
 		}
 		
 		
@@ -399,92 +393,92 @@ class MatrixListener implements Listener {
 		 * Auto-scrolling
 		 */
 		
-//		class AutoScroll implements Runnable {
-//			ScheduledFuture<?> future;
-//			int offset, nextCycleCount, cycleCount, itemCount;
-//			AxisItem item;
-//			MutableNumber itemCountIndex;
-//			
-//			public AutoScroll() {
-//				itemCountIndex = layout.math.create(1);
-//			}
-//
-//			public void handle() {
-//				offset = layout.getAutoScrollOffset(lastDistance, distance);
-//				if (offset != 0 ) { 
-//					int m = model.getAutoscrollMargin();
-//					
-//					// TODO Improve the auto scroll formula to get slower close the edge, exponential 
-//					itemCount = (int) (abs(offset) - m * 1.25 + 1);
-//					if (itemCount > 1) {
-//						nextCycleCount = cycleCount = 0;
-//					} else {
-//						nextCycleCount = max(20 - 16 * abs(offset) / m, 0);
-//						itemCount = 1; // in case it is 0
-//					}
-//					
-//					// TODO Prevent blocking thread in case of exception in paint)
-//					if (future == null) {
-//						future = matrix.getExecutor().scheduleAtFixedRate(
-//							autoScroll, 0, 50, TimeUnit.MILLISECONDS);
-//					}
-//				} else {
-//					stop();
-//				}
-//			}
-//
-//			/**
-//			 * Runs in a separate thread
-//			 */
-//			@Override
-//			public void run() {
-//				if (matrix.isDisposed()) return;
-//				matrix.getDisplay().asyncExec(new Runnable() {
-//					public void run() {
-//						try {
-//							if (matrix.isDisposed()) return;
-//							doRun();
-//						} 
-//						catch (Throwable e) {
-//							matrix.rethrow(e);
-//						}
-//					}
-//				});
-//			}
-//			
-//			/**
-//			 * Runs in a separate thread
-//			 */
-//			private void doRun() {
-//				if (cycleCount > 0) {
-//					cycleCount--;
-//				} 
-//				else if (offset != 0) {
-//					cycleCount = nextCycleCount;
-//					
-//					item = layout.scroll(itemCountIndex.set(itemCount), 
-//							offset > 0 ? layout.forward : layout.backward);
-//					if (item != null) {
-//						matrix.redraw();
-//						axis.scroll();
-//						
-//						/* In order for the mouse move commands to execute during auto scroll, 
-//					       like drag selection for example */
-//						AxisItem[] data = new AxisItem[2];
-//						data[axisIndex] = item;
-//						mouseMoveEvent.data = data;
-//						matrix.notifyListeners(SWT.MouseMove, mouseMoveEvent);
-//					}
-//				}
-//			}
-//			
-//			void stop() {
-//				if (future != null && future.cancel(true)) {
-//					future = null;
-//					item = null;
-//				}
-//			}
-//		}
+		class AutoScroll implements Runnable {
+			ScheduledFuture<?> future;
+			int offset, nextCycleCount, cycleCount, itemCount;
+			AxisItem item;
+			MutableNumber itemCountIndex;
+			
+			public AutoScroll() {
+				itemCountIndex = layout.math.create(1);
+			}
+
+			public void handle() {
+				offset = layout.getAutoScrollOffset(lastDistance, distance);
+				if (offset != 0 ) { 
+					int m = model.getAutoScrollOffset();
+					
+					// TODO Improve the auto scroll formula to get slower close the edge, exponential 
+					itemCount = (int) (abs(offset) - m * 1.25 + 1);
+					if (itemCount > 1) {
+						nextCycleCount = cycleCount = 0;
+					} else {
+						nextCycleCount = max(20 - 16 * abs(offset) / m, 0);
+						itemCount = 1; // in case it is 0
+					}
+					
+					// TODO Prevent blocking thread in case of exception in paint)
+					if (future == null) {
+						future = matrix.getExecutor().scheduleAtFixedRate(
+							autoScroll, 0, M.AUTOSCROLL_RATE, TimeUnit.MILLISECONDS);
+					}
+				} else {
+					stop();
+				}
+			}
+
+			/**
+			 * Runs in a separate thread
+			 */
+			@Override
+			public void run() {
+				if (matrix.isDisposed()) return;
+				matrix.getDisplay().asyncExec(new Runnable() {
+					public void run() {
+						try {
+							if (matrix.isDisposed()) return;
+							doRun();
+						} 
+						catch (Throwable e) {
+							matrix.rethrow(e);
+						}
+					}
+				});
+			}
+			
+			/**
+			 * Runs in a separate thread
+			 */
+			private void doRun() {
+				if (cycleCount > 0) {
+					cycleCount--;
+				} 
+				else if (offset != 0) {
+					cycleCount = nextCycleCount;
+					
+					item = layout.scroll(itemCountIndex.set(itemCount), 
+							offset > 0 ? layout.forward : layout.backward);
+					if (item != null) {
+						matrix.redraw();
+						axis.scroll();
+						
+						/* In order for the mouse move commands to execute during auto scroll, 
+					       like drag selection for example */
+						AxisItem[] data = new AxisItem[2];
+						data[axisIndex] = item;
+						mouseMoveEvent.data = data;
+						matrix.notifyListeners(SWT.MouseMove, mouseMoveEvent);
+					}
+				}
+			}
+			
+			void stop() {
+				if (future != null && future.cancel(true)) {
+					future = null;
+					item = null;
+				}
+			}
+		}
 	}
 	
 	
@@ -582,10 +576,10 @@ class MatrixListener implements Listener {
 		
 		switch (commandId) {
 		// Header Selection
-		case SELECT_ROW:		case SELECT_ROW2:		state0.select(commandId); break;	
-		case SELECT_COLUMN: 	case SELECT_COLUMN2: 	state1.select(commandId); break;
-		case SELECT_TO_ROW:		case SELECT_TO_ROW2:	state0.select(commandId); break;	
-		case SELECT_TO_COLUMN:	case SELECT_TO_COLUMN2:	state1.select(commandId); break;
+		case SELECT_ROW:		case SELECT_ROW2:		state0.setSelected(commandId); break;	
+		case SELECT_COLUMN: 	case SELECT_COLUMN2: 	state1.setSelected(commandId); break;
+		case SELECT_TO_ROW:		case SELECT_TO_ROW2:	state0.setSelected(commandId); break;	
+		case SELECT_TO_COLUMN:	case SELECT_TO_COLUMN2:	state1.setSelected(commandId); break;
 			
 		// Hiding
 		case HIDE:				state0.hide(true);  state1.hide(true);  break; 
@@ -725,8 +719,8 @@ class MatrixListener implements Listener {
 		state0.model = layout0.model;
 		state1.layout = layout1;
 		state1.model = layout1.model;
-//		state0.autoScroll = state0.new AutoScroll();
-//		state1.autoScroll = state1.new AutoScroll();
+		state0.autoScroll = state0.new AutoScroll();
+		state1.autoScroll = state1.new AutoScroll();
 	}
 }
 
