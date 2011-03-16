@@ -3,7 +3,7 @@ package pl.netanel.swt.matrix;
 import java.util.ArrayList;
 
 
-class ObjectAxisState<T, N extends MutableNumber> extends AxisState<N> {
+class ObjectAxisState<T> extends AxisState {
 	T defaultValue, value;
 	ArrayList<T> values;
 	
@@ -54,7 +54,7 @@ class ObjectAxisState<T, N extends MutableNumber> extends AxisState<N> {
 		return i == -1 ? null: values.get(i);
 	}
 	
-	public void setValue(Extent<N> extent, T value) {
+	public void setValue(Extent extent, T value) {
 		setValue(extent.start, extent.end, value);
 	}
 	

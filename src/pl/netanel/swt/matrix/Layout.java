@@ -504,7 +504,7 @@ class Layout {
 		}
 
 		Bound lastLine(Section section, Number index) {
-			Number index2 = section.math.increment(index);
+			MutableNumber index2 = section.math.create(index).increment();
 			Bound bound = new Bound(0, section.getLineWidth(index2));
 			lines.add(bound);
 			items.add(new AxisItem(section, index2));
@@ -655,7 +655,7 @@ class Layout {
 		for (int i = 0, size = sections.size(); i < size; i++) {
 			Section section = sections.get(i);
 			if (item.section.equals(section)) {
-				return position.add(section.getPosition(item.index));
+				return position.add(math.getValue(section.getPosition(item.index.getValue())));
 			}
 			position.add(section.getVisibleCount());
 		}
@@ -740,8 +740,7 @@ class Layout {
 				if (items.size() == bounds.size() && 
 					model.getZIndex(section2) < model.getZIndex(item.section)) 
 				{
-					item = item.copy();
-					item.index.increment();
+					item = new AxisItem(item.section, math.create(item.index).increment());
 					bound = bounds.get(i);
 					i = bounds.size();
 					return true;

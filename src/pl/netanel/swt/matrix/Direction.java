@@ -44,7 +44,7 @@ abstract class Direction {
 	
 	public AxisItem getItem() {
 		pending = false;
-		return hasMore ? new AxisItem(section, seq.index().copy()) : null;
+		return hasMore ? new AxisItem(section, math.create(seq.index())) : null;
 	}
 	
 	public AxisItem first() {

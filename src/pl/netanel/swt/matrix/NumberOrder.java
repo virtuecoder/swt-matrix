@@ -1,28 +1,28 @@
 package pl.netanel.swt.matrix;
 
 
-class NumberOrder<N extends MutableNumber> extends NumberSet<N> {
+class NumberOrder extends NumberSet {
 
 	private final MutableNumber count, last;
 
-	public NumberOrder(Math<N> math) {
+	public NumberOrder(Math math) {
 		super(math);
 		count = math.create(0);
 		last = math.create(0);
 	}
 
 	public void setCount(Number newCount) {
-		int compare = math.compare(newCount, count);
+		int compare = math.compare(math.getValue(newCount), count.getValue());
 		if (compare < 0) {
 			remove(newCount, last);
 			last.set(newCount).decrement();
 		} 
 		else if (compare > 0) {
-			Number newLast = math.decrement(newCount);
+			MutableNumber newLast = math.create(newCount).decrement();
 			if (items.isEmpty()) {
-				items.add(new Extent(count.copy(), math.create(newLast)));
+				items.add(new Extent(count.copy(), newLast));
 			} else {
-				Extent<N> e = items.get(items.size() - 1);
+				Extent e = items.get(items.size() - 1);
 				if (math.compare(e.end, last) == 0) {
 					e.end.set(newLast);
 				} else {
@@ -50,7 +50,7 @@ class NumberOrder<N extends MutableNumber> extends NumberSet<N> {
 		// Find the position i to insert
 		int i = 0;
 		for (; i < items.size(); i++) {
-			Extent<N> e = items.get(i);
+			Extent e = items.get(i);
 			if (math.contains(e.start, e.end, target)) {
 				if (math.compare(target, e.start) == 0) {
 					break;
@@ -58,7 +58,7 @@ class NumberOrder<N extends MutableNumber> extends NumberSet<N> {
 				else {
 					MutableNumber end2 = math.create(e.end);
 					e.end.set(target).decrement();
-					items.add(++i, new Extent(target, end2));
+					items.add(++i, new Extent(math.create(target), end2));
 					break;
 				}
 			}
@@ -70,8 +70,8 @@ class NumberOrder<N extends MutableNumber> extends NumberSet<N> {
 
 	private void mergeAdjacentExtents() {
 		for (int i = items.size(); i-- > 1;) {
-			Extent<N> e1 = items.get(i-1);
-			Extent<N> e2 = items.get(i);
+			Extent e1 = items.get(i-1);
+			Extent e2 = items.get(i);
 			if (math.compare(math.increment(e1.end), e2.start) == 0) {
 				e1.end.set(e2.end);
 				items.remove(i);
@@ -83,10 +83,10 @@ class NumberOrder<N extends MutableNumber> extends NumberSet<N> {
 		if (math.compare(modelIndex, count) >= 0 || 
 			math.compare(modelIndex, math.ZERO()) < 0) return modelIndex;
 			
-		N sum = math.create(0);	
-		for (Extent<N> e: items) {
+		MutableNumber sum = math.create(0);	
+		for (Extent e: items) {
 			if (math.contains(e.start, e.end, modelIndex)) {
-				return sum.add(math.subtract(modelIndex, e.start));
+				return sum.add(math.getValue(modelIndex)).subtract(e.start);
 			}
 			sum.add(e.end).subtract(e.start).increment();
 		}

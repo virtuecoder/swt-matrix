@@ -98,7 +98,9 @@ public class Matrix extends Canvas {
 		layout0.compute();
 		layout1.compute();
 		if (model.getBody().isSelectionEnabled() && layout0.current != null && layout1.current != null) {
-			model.setSelected(layout0.current, layout0.current, layout1.current, layout1.current, true);
+			Zone zone = model.getZone(layout0.current.section, layout1.current.section);
+			zone.setSelected(layout0.current.index, layout0.current.index, 
+					layout1.current.index, layout1.current.index, true);
 		}
 	}
 

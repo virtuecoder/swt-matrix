@@ -65,7 +65,8 @@ class BigIntegerMath extends Math<MutableBigInteger> {
 	
 	@Override
 	public int compare(Number x, Number y) {
-		return ((BigInteger) x).compareTo((BigInteger) y);
+		return ((BigInteger) getValue(x)).compareTo(((BigInteger) getValue(y)));
+//		return ((BigInteger) x).compareTo((BigInteger) y);
 	}
 
 	@Override
@@ -81,6 +82,13 @@ class BigIntegerMath extends Math<MutableBigInteger> {
 	@Override
 	public Number subtract(Number x, Number y) {
 		return ((BigInteger) x).subtract((BigInteger) y);
+	}
+
+	@Override
+	public Number getValue(Number n) {
+		if (n instanceof BigInteger) return n;
+		if (n instanceof MutableBigInteger) return ((MutableBigInteger) n).value;
+		return new BigInteger(n.toString());
 	}
 
 }

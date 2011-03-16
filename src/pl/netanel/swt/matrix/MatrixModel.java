@@ -77,21 +77,21 @@ public class MatrixModel implements Iterable<Zone> {
 		Section body1 = model1.getBody();
 		if (section0.equals(header0) && section1.equals(header1)) {
 			zone = new Zone(section0, section1, Zone.TOP_LEFT) {
-				public String getText(MutableNumber index0, MutableNumber index1) {
+				public String getText(Number index0, Number index1) {
 					return null;
 				};
 			};
 		} else {
 			if (section0.equals(body0) && section1.equals(header1)) {
 				zone = new Zone(section0, section1, Zone.ROW_HEADER) {
-					public String getText(MutableNumber index0, MutableNumber index1) {
+					public String getText(Number index0, Number index1) {
 						return index0.toString();
 					};
 				};
 			}
 			else if (section0.equals(header0) && section1.equals(body1)) {
 				zone = new Zone(section0, section1, Zone.COLUMN_HEADER) {
-					public String getText(MutableNumber index0, MutableNumber index1) {
+					public String getText(Number index0, Number index1) {
 						return index1.toString();
 					};
 				};
@@ -203,7 +203,7 @@ public class MatrixModel implements Iterable<Zone> {
 		}
 	}
 	
-	public void setSelected (
+	void setSelected (
 			AxisItem start0, AxisItem end0, 
 			AxisItem start1, AxisItem end1, boolean selected) {
 		
@@ -233,7 +233,7 @@ public class MatrixModel implements Iterable<Zone> {
 	 */
 	class ExtentPairSequence {
 		Section section0, section1;
-		MutableNumber start0, end0, start1, end1;
+		Number start0, end0, start1, end1;
 		ExtentSequence seq0, seq1;
 		boolean empty;
 		private AxisItem startItem1;

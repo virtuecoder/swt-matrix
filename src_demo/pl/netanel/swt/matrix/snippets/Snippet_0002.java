@@ -14,7 +14,6 @@ import org.eclipse.swt.widgets.Shell;
 import pl.netanel.swt.matrix.AxisModel;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.MatrixModel;
-import pl.netanel.swt.matrix.MutableNumber;
 import pl.netanel.swt.matrix.Zone;
 
 /**
@@ -49,7 +48,7 @@ public class Snippet_0002 {
 			String value;
 			
 			@Override
-			public String getText(MutableNumber index0, MutableNumber index1) {
+			public String getText(Number index0, Number index1) {
 				return index1.intValue() == 0 
 					? value = list.get(index0.intValue())
 					: Integer.toString(value.length());
@@ -57,7 +56,7 @@ public class Snippet_0002 {
 		};
 		Zone columnHeader = new Zone(rowModel.getHeader(), colModel.getBody(), Zone.COLUMN_HEADER) {
 			@Override
-			public String getText(MutableNumber index0, MutableNumber index1) {
+			public String getText(Number index0, Number index1) {
 				return index1.intValue() == 0 ? "Value" : "Length";
 			}
 		};
@@ -85,8 +84,8 @@ public class Snippet_0002 {
 		remove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				list.remove(matrix.getAxis0().getCurrentItem().index.intValue());
-				rowModel.getBody().setCount(list.size());
+				list.remove(matrix.getAxis0().getNavigationIndex().intValue());
+				matrix.getAxis0().getNavigationSection().setCount(list.size());
 				matrix.refresh();
 			}
 		});

@@ -6,6 +6,6 @@ package pl.netanel.swt.matrix;
  * @author Jacek
  * @created 20-10-2010
  */
-public enum Dock {
+enum Dock {
 	MAIN, TAIL, HEAD 
 }

@@ -59,6 +59,10 @@ abstract class Math<N extends MutableNumber> {
 	
 	public abstract int compare(Number x, Number y);
 	
+	public int compare(N x, N y) {
+		return compare(x.getValue(), y.getValue());
+	}
+	
 	public int compare(Number start1, Number end1, Number start2, Number end2) {
 		if (compare(end1, start2) < 0) {
 			if (compare(increment(end1), start2) == 0)	return ADJACENT_BEFORE;
@@ -80,8 +84,14 @@ abstract class Math<N extends MutableNumber> {
 		else 											return INSIDE; 
 	}
 	
+	
 	public boolean contains(Number start, Number end, Number n) {
 		return compare(start, n) <= 0 && compare(n, end) <= 0;
+	}
+	
+	public boolean contains(N start, N end, Number n) {
+		return compare(start.getValue(), getValue(n)) <= 0 && 
+			   compare(getValue(n), end.getValue()) <= 0;
 	}
 
 	public Number max(Number x, Number y) {
@@ -111,4 +121,6 @@ abstract class Math<N extends MutableNumber> {
 		}
 		return min;
 	}
+
+	abstract public Number getValue(Number n);
 }

@@ -6,21 +6,21 @@ import java.util.ArrayList;
 
 import pl.netanel.util.IntArray;
 
-abstract class AxisState<N extends MutableNumber> {
-	private final Math<N> math;
-	private final ArrayList<Extent<N>>extents;
+abstract class AxisState {
+	private final Math math;
+	private final ArrayList<Extent>extents;
 	private final IntArray toRemove;
 
 	
-	public AxisState(Math<N> math) {
+	public AxisState(Math math) {
 		this.math = math;
-		extents = new ArrayList<Extent<N>>();
+		extents = new ArrayList<Extent>();
 		toRemove = new IntArray();
 	}
 
 	protected int indexOf(Number index) {
 		for (int i = 0; i < extents.size(); i++) {
-			Extent<N> e = extents.get(i);
+			Extent e = extents.get(i);
 			if (math.contains(e.start, e.end, index)) {
 				return i;
 			}
@@ -29,7 +29,7 @@ abstract class AxisState<N extends MutableNumber> {
 	}
 
 	protected void doSetValue(Number start, Number end) {
-		Extent<N> e, modified = null;
+		Extent e, modified = null;
 		toRemove.clear();
 		boolean quit = false;
 		int i = 0; 
@@ -47,7 +47,7 @@ abstract class AxisState<N extends MutableNumber> {
 				if (sameValue) return;
 				else {
 					if (ee > 0) {
-						extents.add(i+1, new Extent(math.increment(end), e.end.copy()));
+						extents.add(i+1, new Extent(math.create(end).increment(), e.end.copy()));
 						addValue(i, i+1);
 					}
 					if (ss < 0) {

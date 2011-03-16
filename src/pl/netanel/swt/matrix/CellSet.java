@@ -13,18 +13,18 @@ import pl.netanel.util.IntArray;
  * @author Jacek
  * @created 15-11-2010
  */
-class CellSet<N0 extends MutableNumber, N1 extends MutableNumber> {
-	final ArrayList<Extent<N0>> items0;
-	final ArrayList<Extent<N1>> items1;
-	final Math<N0> math0;
-	final Math<N1> math1;
+class CellSet {
+	final ArrayList<Extent> items0;
+	final ArrayList<Extent> items1;
+	final Math math0;
+	final Math math1;
 	private boolean insertNew;
 	
 	public CellSet(Math math0, Math math1) {
 		this.math0 = math0;
 		this.math1 = math1;
-		items0 = new ArrayList<Extent<N0>>();
-		items1 = new ArrayList<Extent<N1>>();
+		items0 = new ArrayList<Extent>();
+		items1 = new ArrayList<Extent>();
 	}
 
 	@Override
@@ -45,8 +45,8 @@ class CellSet<N0 extends MutableNumber, N1 extends MutableNumber> {
 	public boolean contains(Number index0, Number index1) {
 		int size = items0.size();
 		for (int i = 0; i < size; i++) {
-			Extent<N0> e1 = items0.get(i);
-			Extent<N1> e2 = items1.get(i);
+			Extent e1 = items0.get(i);
+			Extent e2 = items1.get(i);
 			if (math0.contains(e1.start, e1.end, index0) &&
 				math1.contains(e2.start, e2.end, index1)) 
 			{
@@ -63,11 +63,11 @@ class CellSet<N0 extends MutableNumber, N1 extends MutableNumber> {
 		
 		int size = items0.size();
 		for (;i < size; i++) {
-			Extent<N0> item0 = items0.get(i);
-			Extent<N1> item1 = items1.get(i);
+			Extent item0 = items0.get(i);
+			Extent item1 = items1.get(i);
 			
-			MutableNumber start0a = item0.start, end0a = item0.end, 
-				  start1a = item1.start, end1a = item1.end;
+			Number start0a = math0.getValue(item0.start), end0a = math0.getValue(item0.end), 
+				  start1a = math1.getValue(item1.start), end1a = math1.getValue(item1.end);
 			
 			int es0 = math0.compare(end0, start0a);
 			int se0 = math0.compare(start0, end0a);
@@ -121,7 +121,7 @@ class CellSet<N0 extends MutableNumber, N1 extends MutableNumber> {
 		}
 	}
 	
-	void extend(Extent<? extends MutableNumber> e, Number start, Number end) {
+	void extend(Extent e, Number start, Number end) {
 		e.start.set(math0.min(e.start, start));
 		e.end.set(math1.max(e.end, end));
 		insertNew = false;
@@ -133,8 +133,8 @@ class CellSet<N0 extends MutableNumber, N1 extends MutableNumber> {
 		
 		int size = items0.size();
 		for (;i < size; i++) {
-			Extent<N0> item0 = items0.get(i);
-			Extent<N1> item1 = items1.get(i);
+			Extent item0 = items0.get(i);
+			Extent item1 = items1.get(i);
 			
 			Number start0a = item0.start, end0a = item0.end, 
 				  start1a = item1.start, end1a = item1.end;
@@ -228,7 +228,7 @@ class CellSet<N0 extends MutableNumber, N1 extends MutableNumber> {
 		return count;
 	}
 	
-	private BigInteger count(Extent<? extends MutableNumber> e) {
+	private BigInteger count(Extent e) {
 		return e.end.toBigInteger().subtract(e.start.toBigInteger()).add(BigInteger.ONE);
 	}
 
@@ -240,8 +240,8 @@ class CellSet<N0 extends MutableNumber, N1 extends MutableNumber> {
 		CellSet copy = new CellSet(math0, math1);
 		int size = size();
 		for (int i = 0; i < size; i++) {
-			Extent<N0> e0 = items0.get(i);
-			Extent<N1> e1 = items1.get(i);
+			Extent e0 = items0.get(i);
+			Extent e1 = items1.get(i);
 			copy.items0.add(new Extent(math0.create(e0.start), math0.create(e0.end)));
 			copy.items1.add(new Extent(math1.create(e1.start), math1.create(e1.end)));
 		}

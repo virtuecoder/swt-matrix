@@ -114,5 +114,13 @@ public class Axis {
 		scrollBar.setValues(layout.getScrollPosition(), min, max, thumb, 1, thumb);
 	}
 
+	public Number getNavigationIndex() {
+		return layout.current == null ? null : layout.current.index;
+	}
+
+	public Section getNavigationSection() {
+		return layout.current == null ? null : layout.current.section;
+	}
+
 
 }

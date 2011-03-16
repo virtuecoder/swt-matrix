@@ -9,11 +9,11 @@ import pl.netanel.util.Preconditions;
  * Only visible items are cached in the memory. They are created on demand 
  * when the axis layout is computed.
  */
-public class AxisItem {
+class AxisItem {
 	public Section section;
-	public Number index;
+	public MutableNumber index;
 	
-	public AxisItem(Section section, Number index) {
+	public AxisItem(Section section, MutableNumber index) {
 		Preconditions.checkNotNullWithName(index, "index");
 		this.section = section;
 		this.index = index;

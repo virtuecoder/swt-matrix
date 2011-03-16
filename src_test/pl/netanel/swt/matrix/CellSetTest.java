@@ -18,7 +18,7 @@ import pl.netanel.util.Arrays;
  * @author Jacek created 15-02-2011
  */
 public class CellSetTest {
-	private CellSet<MutableInt, MutableInt> set;
+	private CellSet set;
 
 	@Before
 	public void _beforeEach() {
@@ -625,14 +625,14 @@ public class CellSetTest {
 	private void result(String ...expected) {
 		result(set, expected);
 	}
-	private void result(CellSet<MutableInt, MutableInt> set, String ...expected) {
+	private void result(CellSet set, String ...expected) {
 		ArrayList<ArrayList<Boolean>> data = new ArrayList<ArrayList<Boolean>>();
 		int size = set.items0.size();
 		int max = 0;
 		
 		for (int i = 0; i < size; i++) {
-			Extent<MutableInt> item0 = set.items0.get(i);
-			Extent<MutableInt> item1 = set.items1.get(i);
+			Extent item0 = set.items0.get(i);
+			Extent item1 = set.items1.get(i);
 			for (int j = 0; j <= item0.end.intValue(); j++) {
 				ArrayList<Boolean> line;
 				if (j >= data.size()) {

@@ -17,11 +17,11 @@ import pl.netanel.util.Sequence;
  * @see Sequence
  * @author Jacek created 21-02-2011
  */
-public class CellSequence<N0 extends MutableNumber, N1 extends MutableNumber> implements Sequence {
-	CellSet<N0, N1> set;
+public class CellSequence implements Sequence {
+	CellSet set;
 	int i, size;
-	Extent<N0> e0;
-	Extent<N1> e1;
+	Extent e0;
+	Extent e1;
 	MutableNumber index0, index1;
 	
 	
@@ -61,23 +61,19 @@ public class CellSequence<N0 extends MutableNumber, N1 extends MutableNumber> im
 	
 	/**
 	 * Returns row axis index of the current cell. 
-	 * The index value is mutated by the sequence iteration 
-	 * to avoid performance penalty for new MutableNumber object creation on each iteration step. 
 	 * 
 	 * @return row axis index
 	 */
-	public MutableNumber index0() {
-		return index0;
+	public Number index0() {
+		return index0.getValue();
 	}
 
 	/**
 	 * Return column axis index of the current cell. 
-	 * The index value is mutated by the sequence iteration
-	 * to avoid performance penalty for new MutableNumber object creation on each iteration step.
 	 * 
 	 * @return column axis index 
 	 */
-	public MutableNumber index1() {
-		return index1;
+	public Number index1() {
+		return index1.getValue();
 	}
 }

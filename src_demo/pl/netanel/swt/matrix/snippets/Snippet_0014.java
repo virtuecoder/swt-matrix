@@ -9,7 +9,6 @@ import org.eclipse.swt.widgets.Shell;
 import pl.netanel.swt.Resources;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.MatrixModel;
-import pl.netanel.swt.matrix.MutableNumber;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.painter.BackgroundPainter;
@@ -55,7 +54,7 @@ public class Snippet_0014 {
 				bounds = body.getBounds();
 			}
 			@Override
-			public void beforePaint(MutableNumber index0, MutableNumber index1) {
+			public void beforePaint(Number index0, Number index1) {
 				skip = index1.intValue() > 0;
 				alter = index0.intValue() % 2 == 1;
 			}

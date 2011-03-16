@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+	<property name="dest" location="../jdoc" />
+	
+	<target name="javadoc">
+		<delete includeEmptyDirs="true">
+			<fileset dir="${dest}" includes="*/**"/>
+		</delete>
+		
+		<javadoc 
+			access="protected" 
+			author="false" 
+			sourcepath="..\src"
+			excludepackagenames="pl.netanel.swt, pl.netanel.util"
+			destdir="${dest}"
+			splitindex="true" 
+			use="true" 
+			version="false" />
+	</target>
+</project>
+
+
+<!--
+classpath="C:\Dev\Java\eclipse\plugins\org.junit_3.8.2.v3_8_2_v20100427-1100\junit.jar;C:\Dev\Java\eclipse\plugins\org.eclipse.swt.win32.win32.x86_3.6.1.v3655c.jar;C:\Dev\Java\eclipse\plugins\org.junit_4.8.1.v4_8_1_v20100427-1100\junit.jar;C:\Dev\Java\java_lib\commons-net-2.2\commons-net-2.2.jar;C:\Dev\Java\eclipse\plugins\org.hamcrest.core_1.1.0.v20090501071000.jar" destdir="jdoc" doctitle="SWT Matrix" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="pl.netanel.swt.matrix.painter" source="1.6" sourcefiles="src/pl/netanel/swt/matrix/NumberQueueSet.java,src/pl/netanel/swt/matrix/Extent.java,src/pl/netanel/swt/matrix/MutableNumber.java,src/pl/netanel/swt/matrix/NumberSet.java,src/pl/netanel/swt/matrix/Bound.java,src/pl/netanel/swt/matrix/Direction.java,src/pl/netanel/swt/matrix/Matrix.java,src/pl/netanel/swt/matrix/BigIntegerMath.java,src/pl/netanel/swt/matrix/CellSequence.java,src/pl/netanel/swt/matrix/Layout.java,src/pl/netanel/swt/matrix/AxisState.java,src/pl/netanel/swt/matrix/MatrixModel.java,src/pl/netanel/swt/matrix/MutableBigInteger.java,src/pl/netanel/swt/matrix/IntMath.java,src/pl/netanel/swt/matrix/Binding.java,src/pl/netanel/swt/matrix/Zone.java,src/pl/netanel/swt/matrix/AxisItem.java,src/pl/netanel/swt/matrix/Math.java,src/pl/netanel/swt/matrix/Section.java,src/pl/netanel/swt/matrix/MutableInt.java,src/pl/netanel/swt/matrix/IntAxisState.java,src/pl/netanel/swt/matrix/Axis.java,src/pl/netanel/swt/matrix/CellSet.java,src/pl/netanel/swt/matrix/Move.java,src/pl/netanel/swt/matrix/AxisModel.java,src/pl/netanel/swt/matrix/M.java,src/pl/netanel/swt/matrix/NumberOrder.java,src/pl/netanel/swt/matrix/MatrixListener.java,src/pl/netanel/swt/matrix/Dock.java,src/pl/netanel/swt/matrix/ObjectAxisState.java"
+-->

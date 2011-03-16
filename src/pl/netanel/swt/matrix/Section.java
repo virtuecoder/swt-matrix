@@ -7,24 +7,24 @@ import java.util.List;
  * 
  * @author Jacek Kolodziejczyk created 02-03-2011
  */
-public class Section<N extends MutableNumber> {
+public class Section {
 
 	static final int DEFAULT_CELL_WIDTH = 16;
 	static final int DEFAULT_LINE_WIDTH = 1;
 	
 	final Math math;
 	private final MutableNumber count;
-	final NumberOrder<N> order;
-	private final NumberSet<N> hidden;
+	final NumberOrder order;
+	private final NumberSet hidden;
 	private final NumberSet resizable;
 	private final NumberSet moveable;
 	private final NumberSet hideable;
 	private final IntAxisState cellWidth;
 	private final IntAxisState lineWidth;
-	private final ObjectAxisState<Number, N> cellSpan;
+	private final ObjectAxisState<Number> cellSpan;
 	
-	private final NumberQueueSet<N> selection;
-	private final NumberQueueSet<N> lastSelection;
+	private final NumberQueueSet selection;
+	private final NumberQueueSet lastSelection;
 
 	
 	private boolean defaultResizable, defaultMoveable, defaultHideable; 
@@ -76,7 +76,7 @@ public class Section<N extends MutableNumber> {
 		order.setCount(count);
 	}
 
-	public Number getVisibleCount() {
+	MutableNumber getVisibleCount() {
 		return math.subtract(count, hidden.getCount());
 	}
 
@@ -240,11 +240,11 @@ public class Section<N extends MutableNumber> {
 		MutableNumber pos2 = math.create(0);
 		
 		for (int i = 0, size = order.items.size(); i < size; i++) {
-			Extent<N> e = order.items.get(i);
+			Extent e = order.items.get(i);
 			boolean contains = math.contains(e.start, e.end, index);
 			hiddenCount.add(hidden.getCount(e.start, contains ? index : e.end));
 			if (contains) {
-				return pos2.add(index).subtract(e.start).subtract(hiddenCount);
+				return pos2.add(math.getValue(index)).subtract(e.start).subtract(hiddenCount);
 			}
 			pos1.set(pos2);
 			pos2.add(e.end).subtract(e.start).increment(); //.subtract(hiddenCount);
@@ -253,14 +253,14 @@ public class Section<N extends MutableNumber> {
 	}
 
 	
-	public Number getByPosition(Number position) {
+	MutableNumber getByPosition(Number position) {
 		if (math.compare(position, getVisibleCount()) >= 0) return null;
 		
 		MutableNumber pos1 = math.create(0);
 		MutableNumber pos2 = math.create(0);
 		
 		for (int i = 0, size = order.items.size(); i < size; i++) {
-			Extent<N> e = order.items.get(i);
+			Extent e = order.items.get(i);
 			pos2.add(e.end).subtract(e.start).subtract(hidden.getCount(e.start, e.end));
 			if (math.compare(pos2, position) >= 0) {
 				Number count = hidden.getCount(e.start, pos1);
@@ -304,12 +304,12 @@ public class Section<N extends MutableNumber> {
 	 * Iterates over section items in their order and skipping the hidden ones.
 	 * Iteration yields nothing if the section is not visible. 
 	 */
-	public abstract class IndexSequence {
+	abstract class IndexSequence {
 		public MutableNumber number, number2, lastInExtent, last, d;
 		protected int i, h;
 		public int level;
 		protected int sign;
-		protected Extent<N> extent, he;
+		protected Extent extent, he;
 		public boolean moved;
 		
 		
@@ -356,7 +356,7 @@ public class Section<N extends MutableNumber> {
 		
 	
 		private boolean nextNumber(MutableNumber count) {
-			Number limit = null;
+			MutableNumber limit = null;
 
 			number2.set(number).add(sign);
 			count.decrement();
@@ -370,8 +370,8 @@ public class Section<N extends MutableNumber> {
 				else {
 					limit = he == null || math.contains(he.start, he.end, number2) ? 
 							lastInExtent : start(he);
-					d.set(math.min(subtract(limit, number2), count));
-					add(number2, d);
+					d.set(math.min(subtract(limit, number2).getValue(), count.getValue()));
+					add(number2, d.getValue());
 					count.subtract(d);
 				}
 				if (he != null && math.contains(he.start, he.end, number2)) {
@@ -387,10 +387,10 @@ public class Section<N extends MutableNumber> {
 		}
 		
 
-		private void nextHidden(Number lastIndex) {
+		private void nextHidden(MutableNumber lastIndex) {
 			while (true) {
 				if (he != null) {
-					Number start = start(he), end = end(he);
+					MutableNumber start = start(he), end = end(he);
 					if (compare(start, number2) <= 0 && compare(number2, end) <= 0 || 
 						compare(start, number2) > 0 && compare(start, lastIndex) <= 0) break;
 				}
@@ -418,14 +418,14 @@ public class Section<N extends MutableNumber> {
 			return extent != null && compare(number, lastInExtent) < 0;// && compare(index, nullIndex) != 0; 
 		}
 
-		protected abstract int compare(Number x, Number y);
+		protected abstract int compare(MutableNumber x, MutableNumber y);
 		protected abstract void add(MutableNumber x, Number y);
-		protected abstract Number subtract(Number x, Number y);
+		protected abstract MutableNumber subtract(MutableNumber x, MutableNumber y);
 		protected abstract boolean hasNextExtent();
 		protected abstract boolean hasNextHidden();
-		protected abstract int firstIndex(List<Extent<N>> items);
-		protected abstract Number start(Extent<N> e);
-		protected abstract Number end(Extent<N> e);
+		protected abstract int firstIndex(List<Extent> items);
+		protected abstract MutableNumber start(Extent e);
+		protected abstract MutableNumber end(Extent e);
 
 
 		public Number index() {
@@ -448,15 +448,15 @@ public class Section<N extends MutableNumber> {
 		}
 	}
 	
-	public class Forward extends IndexSequence {
+	class Forward extends IndexSequence {
 		
 		public Forward() {
 			sign = 1;
 		}
 
 		@Override
-		protected int compare(Number x, Number y) {
-			return math.compare(x, y);
+		protected int compare(MutableNumber x, MutableNumber y) {
+			return math.compare(math.getValue(x), math.getValue(y));
 		}
 		
 		@Override
@@ -465,7 +465,7 @@ public class Section<N extends MutableNumber> {
 		}
 		
 		@Override
-		protected Number subtract(Number x, Number y) {
+		protected MutableNumber subtract(MutableNumber x, MutableNumber y) {
 			return math.subtract(x, y);
 		}
 		
@@ -480,29 +480,29 @@ public class Section<N extends MutableNumber> {
 		}
 		
 		@Override
-		protected int firstIndex(List<Extent<N>> items) {
+		protected int firstIndex(List<Extent> items) {
 			return -1;
 		}
 		
 		@Override
-		protected Number start(Extent<N> e) {
+		protected MutableNumber start(Extent e) {
 			return e.start;
 		}
 
 		@Override
-		protected Number end(Extent<N> e) {
+		protected MutableNumber end(Extent e) {
 			return e.end;
 		}
 	}
-	public class Backward extends IndexSequence {
+	class Backward extends IndexSequence {
 		
 		public Backward() {
 			sign = -1;
 		}
 		
 		@Override
-		protected int compare(Number x, Number y) {
-			return math.compare(y, x);
+		protected int compare(MutableNumber x, MutableNumber y) {
+			return math.compare(math.getValue(y), math.getValue(x));
 		}
 		
 		@Override
@@ -512,7 +512,7 @@ public class Section<N extends MutableNumber> {
 		
 
 		@Override
-		protected Number subtract(Number x, Number y) {
+		protected MutableNumber subtract(MutableNumber x, MutableNumber y) {
 			return math.subtract(y, x);
 		}
 		
@@ -528,17 +528,17 @@ public class Section<N extends MutableNumber> {
 		}
 		
 		@Override
-		protected int firstIndex(List<Extent<N>> items) {
+		protected int firstIndex(List<Extent> items) {
 			return items.size();
 		}
 		
 		@Override
-		protected Number start(Extent<N> e) {
+		protected MutableNumber start(Extent e) {
 			return e.end;
 		}
 		
 		@Override
-		protected Number end(Extent<N> e) {
+		protected MutableNumber end(Extent e) {
 			return e.start;
 		}
 	}
@@ -549,11 +549,11 @@ public class Section<N extends MutableNumber> {
 	
 	public void setHidden(boolean flag) {
 		for (int i = 0, imax = selection.items.size(); i < imax; i++) {
-			Extent<N> e = selection.items.get(i);
+			Extent e = selection.items.get(i);
 			setHidden(e.start, e.end, flag);
 		}
 	}
-	public MutableNumber getLastIndex() {
+	public Number getLastIndex() {
 		return math.decrement(count);
 	}
 

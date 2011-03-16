@@ -90,4 +90,9 @@ class IntMath extends Math<MutableInt> {
 		return x.intValue() - y.intValue();
 	}
 
+	@Override
+	public Number getValue(Number n) {
+		return n.intValue();
+	}
+
 }
