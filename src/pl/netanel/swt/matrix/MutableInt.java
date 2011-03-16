@@ -123,4 +123,16 @@ class MutableInt extends MutableNumber<MutableInt> {
 		return BigInteger.valueOf(value);
 	}
 
+	@Override
+	MutableInt add(Number n) {
+		value += n.intValue();
+		return this;
+	}
+
+	@Override
+	MutableInt subtract(Number n) {
+		value -= n.intValue();
+		return this;
+	}
+
 }

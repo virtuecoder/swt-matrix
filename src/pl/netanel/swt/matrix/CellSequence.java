@@ -17,10 +17,11 @@ import pl.netanel.util.Sequence;
  * @see Sequence
  * @author Jacek created 21-02-2011
  */
-public class CellSequence implements Sequence {
-	CellSet set;
+public class CellSequence<N0 extends MutableNumber, N1 extends MutableNumber> implements Sequence {
+	CellSet<N0, N1> set;
 	int i, size;
-	Extent e0, e1;
+	Extent<N0> e0;
+	Extent<N1> e1;
 	MutableNumber index0, index1;
 	
 	

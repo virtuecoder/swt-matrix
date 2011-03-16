@@ -62,10 +62,25 @@ class BigIntegerMath extends Math<MutableBigInteger> {
 	public MutableBigInteger ONE() {
 		return ONE;
 	}
+	
+	@Override
+	public int compare(Number x, Number y) {
+		return ((BigInteger) x).compareTo((BigInteger) y);
+	}
 
 	@Override
-	public int compare(MutableBigInteger x, MutableBigInteger y) {
-		return x.value.compareTo(y.value);
+	public Number decrement(Number n) {
+		return ((BigInteger) n).subtract(BigInteger.ONE);
+	}
+
+	@Override
+	public Number increment(Number n) {
+		return ((BigInteger) n).add(BigInteger.ONE);
+	}
+
+	@Override
+	public Number subtract(Number x, Number y) {
+		return ((BigInteger) x).subtract((BigInteger) y);
 	}
 
 }

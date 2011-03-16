@@ -136,9 +136,9 @@ public class Zone {
 	 * Returns the number of selected cells in this zone.
 	 * <p>
 	 * If the cell selection is disabled the it always returns a 
-	 * {@link BigIntegerMutableNumber} with zero value.
+	 * {@link BigIntegerNumber} with zero value.
 	 * 
-	 * @return {@link BigIntegerMutableNumber} with the count of selected cells
+	 * @return {@link BigIntegerNumber} with the count of selected cells
 	 */
 	public BigInteger getSelectionCount() {
 		if (!isSelectionEnabled()) {
@@ -151,14 +151,14 @@ public class Zone {
 		return new CellSequence(cellSelection.copy());
 	}
 
-	public String getText(MutableNumber index0, MutableNumber index1) {
+	public String getText(Number index0, Number index1) {
 		return index0.toString() + ", " + index1.toString();
 	}
 	
 	
-	public void setBackground(MutableNumber index0, MutableNumber index1, Color color) {
+	public void setBackground(Number index0, Number index1, Color color) {
 	}
-	public Color getBackground(MutableNumber index0, MutableNumber index1) {
+	public Color getBackground(Number index0, Number index1) {
 		return defaultBackground;
 	}
 	public void setDefaultBackground(Color color) {
@@ -175,9 +175,9 @@ public class Zone {
 	}
 	
 	
-	public void setForeground(MutableNumber index0, MutableNumber index1, Color color) {
+	public void setForeground(Number index0, Number index1, Color color) {
 	}
-	public Color getForeground(BigNumber index0, BigNumber index1) {
+	public Color getForeground(Number index0, Number index1) {
 		return defaultForeground;
 	}
 	public void setDefaultForeground(Color color) {
@@ -209,13 +209,13 @@ public class Zone {
 	}
 
 	
-	public boolean isSelected(MutableNumber index0, MutableNumber index1) {
+	public boolean isSelected(Number index0, Number index1) {
 		return cellSelection.contains(index0, index1);
 	}
 	
 	public void setSelected(
-			MutableNumber start0, MutableNumber end0,
-			MutableNumber start1, MutableNumber end1, boolean selected) {
+			Number start0, Number end0,
+			Number start1, Number end1, boolean selected) {
 		
 		if (selected) {
 			cellSelection.add(start0, end0, start1, end1);
@@ -227,8 +227,8 @@ public class Zone {
 	public void setSelected(boolean selected) {
 		if (selected) {
 			cellSelection.add(
-					section0.math.ZERO(), section0.getLast(), 
-					section1.math.ZERO(), section1.getLast());
+					section0.math.ZERO(), section0.getLastIndex(), 
+					section1.math.ZERO(), section1.getLastIndex());
 		} else {
 			cellSelection.clear();
 			lastSelection.clear();

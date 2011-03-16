@@ -122,4 +122,16 @@ class MutableBigInteger extends MutableNumber<MutableBigInteger> {
 		value = value.add(n);
 	}
 
+	@Override
+	MutableBigInteger add(Number n) {
+		value = value.add((BigInteger) n);
+		return this;
+	}
+
+	@Override
+	MutableBigInteger subtract(Number n) {
+		value = value.subtract((BigInteger) n);
+		return this;
+	}
+
 }

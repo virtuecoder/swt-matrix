@@ -5,24 +5,24 @@ class NumberOrder<N extends MutableNumber> extends NumberSet<N> {
 
 	private final MutableNumber count, last;
 
-	public NumberOrder(Math math) {
+	public NumberOrder(Math<N> math) {
 		super(math);
 		count = math.create(0);
 		last = math.create(0);
 	}
 
-	public void setCount(MutableNumber newCount) {
+	public void setCount(Number newCount) {
 		int compare = math.compare(newCount, count);
 		if (compare < 0) {
 			remove(newCount, last);
 			last.set(newCount).decrement();
 		} 
 		else if (compare > 0) {
-			MutableNumber newLast = math.decrement(newCount);
+			Number newLast = math.decrement(newCount);
 			if (items.isEmpty()) {
-				items.add(new Extent(count.copy(), newLast));
+				items.add(new Extent(count.copy(), math.create(newLast)));
 			} else {
-				Extent e = items.get(items.size() - 1);
+				Extent<N> e = items.get(items.size() - 1);
 				if (math.compare(e.end, last) == 0) {
 					e.end.set(newLast);
 				} else {
@@ -36,13 +36,13 @@ class NumberOrder<N extends MutableNumber> extends NumberSet<N> {
 		count.set(newCount);
 	}
 
-	public void move(MutableNumber start, MutableNumber end, MutableNumber target) {
+	public void move(Number start, Number end, Number target) {
 		// Adjust the target if subject contains it
 		if (math.compare(start, target) <= 0 && math.compare(target, end) <= 0) {
 //			target = math.increment(end);
 			return;
 		} else {
-			target = target.copy();
+			target = math.create(target);
 		}
 		
 		remove(start, end);
@@ -50,8 +50,8 @@ class NumberOrder<N extends MutableNumber> extends NumberSet<N> {
 		// Find the position i to insert
 		int i = 0;
 		for (; i < items.size(); i++) {
-			Extent e = items.get(i);
-			if (Extent.contains(math, e, target)) {
+			Extent<N> e = items.get(i);
+			if (math.contains(e.start, e.end, target)) {
 				if (math.compare(target, e.start) == 0) {
 					break;
 				} 
@@ -64,14 +64,14 @@ class NumberOrder<N extends MutableNumber> extends NumberSet<N> {
 			}
 		}
 
-		items.add(i, new Extent(start.copy(), end.copy()));
+		items.add(i, new Extent(math.create(start), math.create(end)));
 		mergeAdjacentExtents();
 	}
 
 	private void mergeAdjacentExtents() {
 		for (int i = items.size(); i-- > 1;) {
-			Extent e1 = items.get(i-1);
-			Extent e2 = items.get(i);
+			Extent<N> e1 = items.get(i-1);
+			Extent<N> e2 = items.get(i);
 			if (math.compare(math.increment(e1.end), e2.start) == 0) {
 				e1.end.set(e2.end);
 				items.remove(i);
@@ -79,14 +79,14 @@ class NumberOrder<N extends MutableNumber> extends NumberSet<N> {
 		}
 	}
 
-	public MutableNumber indexOf(MutableNumber modelIndex) {
+	public Number indexOf(Number modelIndex) {
 		if (math.compare(modelIndex, count) >= 0 || 
 			math.compare(modelIndex, math.ZERO()) < 0) return modelIndex;
 			
-		MutableNumber sum = math.create(0);	
-		for (Extent e: items) {
-			if (Extent.contains(math, e, modelIndex)) {
-				return math.subtract(modelIndex, e.start).add(sum);
+		N sum = math.create(0);	
+		for (Extent<N> e: items) {
+			if (math.contains(e.start, e.end, modelIndex)) {
+				return sum.add(math.subtract(modelIndex, e.start));
 			}
 			sum.add(e.end).subtract(e.start).increment();
 		}

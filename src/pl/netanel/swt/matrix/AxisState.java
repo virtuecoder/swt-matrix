@@ -6,29 +6,30 @@ import java.util.ArrayList;
 
 import pl.netanel.util.IntArray;
 
-abstract class AxisState {
-	private final Math math;
-	private final ArrayList<Extent>extents;
+abstract class AxisState<N extends MutableNumber> {
+	private final Math<N> math;
+	private final ArrayList<Extent<N>>extents;
 	private final IntArray toRemove;
 
 	
-	public AxisState(Math math) {
+	public AxisState(Math<N> math) {
 		this.math = math;
-		extents = new ArrayList<Extent>();
+		extents = new ArrayList<Extent<N>>();
 		toRemove = new IntArray();
 	}
 
-	protected int indexOf(MutableNumber index) {
+	protected int indexOf(Number index) {
 		for (int i = 0; i < extents.size(); i++) {
-			if (Extent.contains(math, extents.get(i), index)) {
+			Extent<N> e = extents.get(i);
+			if (math.contains(e.start, e.end, index)) {
 				return i;
 			}
 		}
 		return -1;
 	}
 
-	protected void doSetValue(MutableNumber start, MutableNumber end) {
-		Extent e, modified = null;
+	protected void doSetValue(Number start, Number end) {
+		Extent<N> e, modified = null;
 		toRemove.clear();
 		boolean quit = false;
 		int i = 0; 
@@ -51,7 +52,7 @@ abstract class AxisState {
 					}
 					if (ss < 0) {
 						e.end.set(start).decrement();
-						modified = new Extent(start.copy(), end.copy());
+						modified = new Extent(math.create(start), math.create(end));
 						extents.add(++i, modified);
 						addValue(i);
 						;
@@ -92,7 +93,7 @@ abstract class AxisState {
 		}
 		
 		if (modified == null) {
-			extents.add(i, new Extent(start.copy(), end.copy()));
+			extents.add(i, new Extent(math.create(start), math.create(end)));
 			addValue(i);
 		}
 		

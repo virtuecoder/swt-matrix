@@ -1,6 +1,6 @@
 package pl.netanel.swt.matrix;
 
-public abstract class MutableNumber<N extends MutableNumber> extends BigNumber<N> {
+abstract class MutableNumber<N extends MutableNumber> extends BigNumber<N> {
 	private static final long serialVersionUID = 1L;
 	
 	public abstract N copy();
@@ -16,5 +16,7 @@ public abstract class MutableNumber<N extends MutableNumber> extends BigNumber<N
 	abstract N divide(N n);
 
 	abstract N add(int n);
+	abstract N add(Number n);
+	abstract N subtract(Number n);
 
 }

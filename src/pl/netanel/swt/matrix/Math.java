@@ -49,14 +49,17 @@ abstract class Math<N extends MutableNumber> {
 	public abstract N ZERO();
 	public abstract N ONE();
 
+	public abstract Number decrement(Number n);
+	public abstract Number increment(Number n);
+	public abstract Number subtract(Number x, Number y);
 	
 	/*------------------------------------------------------------------------
 	 * Comparison 
 	 */
 	
-	public abstract int compare(N x, N y);
+	public abstract int compare(Number x, Number y);
 	
-	public int compare(N start1, N end1, N start2, N end2) {
+	public int compare(Number start1, Number end1, Number start2, Number end2) {
 		if (compare(end1, start2) < 0) {
 			if (compare(increment(end1), start2) == 0)	return ADJACENT_BEFORE;
 			else 										return BEFORE;
@@ -77,20 +80,20 @@ abstract class Math<N extends MutableNumber> {
 		else 											return INSIDE; 
 	}
 	
-	public boolean contains(N start, N end, N n) {
+	public boolean contains(Number start, Number end, Number n) {
 		return compare(start, n) <= 0 && compare(n, end) <= 0;
 	}
 
-	public N max(N x, N y) {
+	public Number max(Number x, Number y) {
 		return compare(x, y) < 0 ? y : x;
 	}
 	
-	public N min(N x, N y) {
+	public Number min(Number x, Number y) {
 		return compare(x, y) > 0 ? y : x;
 	}
 	
-	public N max(N ...n) {
-		N max = n[0];
+	public Number max(Number ...n) {
+		Number max = n[0];
 		for (int i = 1; i < n.length; i++) {
 			if (compare(n[i], max) > 0) {
 				max = n[i];
@@ -99,8 +102,8 @@ abstract class Math<N extends MutableNumber> {
 		return max;
 	}
 	
-	public N min(N ...n) {
-		N min = n[0];
+	public Number min(Number ...n) {
+		Number min = n[0];
 		for (int i = 1; i < n.length; i++) {
 			if (compare(n[i], min) < 0) {
 				min = n[i];

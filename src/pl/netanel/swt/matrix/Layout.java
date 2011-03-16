@@ -503,8 +503,8 @@ class Layout {
 			} 
 		}
 
-		Bound lastLine(Section section, MutableNumber index) {
-			MutableNumber index2 = section.math.increment(index);
+		Bound lastLine(Section section, Number index) {
+			Number index2 = section.math.increment(index);
 			Bound bound = new Bound(0, section.getLineWidth(index2));
 			lines.add(bound);
 			items.add(new AxisItem(section, index2));

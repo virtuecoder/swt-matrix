@@ -13,16 +13,18 @@ import pl.netanel.util.IntArray;
  * @author Jacek
  * @created 15-11-2010
  */
-class CellSet {
-	final ArrayList<Extent> items0, items1;
-	final Math math0, math1;
+class CellSet<N0 extends MutableNumber, N1 extends MutableNumber> {
+	final ArrayList<Extent<N0>> items0;
+	final ArrayList<Extent<N1>> items1;
+	final Math<N0> math0;
+	final Math<N1> math1;
 	private boolean insertNew;
 	
 	public CellSet(Math math0, Math math1) {
 		this.math0 = math0;
 		this.math1 = math1;
-		items0 = new ArrayList<Extent>();
-		items1 = new ArrayList<Extent>();
+		items0 = new ArrayList<Extent<N0>>();
+		items1 = new ArrayList<Extent<N1>>();
 	}
 
 	@Override
@@ -40,11 +42,13 @@ class CellSet {
 		return sb.toString();
 	}
 
-	public boolean contains(MutableNumber index0, MutableNumber index1) {
+	public boolean contains(Number index0, Number index1) {
 		int size = items0.size();
 		for (int i = 0; i < size; i++) {
-			if (Extent.contains(math0, items0.get(i), index0) &&
-				Extent.contains(math1, items1.get(i), index1)) 
+			Extent<N0> e1 = items0.get(i);
+			Extent<N1> e2 = items1.get(i);
+			if (math0.contains(e1.start, e1.end, index0) &&
+				math1.contains(e2.start, e2.end, index1)) 
 			{
 				return true;
 			}
@@ -53,14 +57,14 @@ class CellSet {
 	}
 	
 
-	public void add(MutableNumber start0, MutableNumber end0, MutableNumber start1, MutableNumber end1) {
+	public void add(Number start0, Number end0, Number start1, Number end1) {
 		insertNew = true;
 		int i = 0;
 		
 		int size = items0.size();
 		for (;i < size; i++) {
-			Extent item0 = items0.get(i);
-			Extent item1 = items1.get(i);
+			Extent<N0> item0 = items0.get(i);
+			Extent<N1> item1 = items1.get(i);
 			
 			MutableNumber start0a = item0.start, end0a = item0.end, 
 				  start1a = item1.start, end1a = item1.end;
@@ -90,45 +94,49 @@ class CellSet {
 				// Crossing
 				else {
 					if (ss0 < 0) {
-						insert(start0.copy(), math0.decrement(item0.start), start1.copy(), end1.copy());
+						insert(math0.create(start0), math0.decrement(item0.start), 
+								math1.create(start1), math1.create(end1));
 						start0 = start0a;
 					}
 					if (ee0 > 0) {
-						insert(math0.increment(item0.end), end0.copy(), start1.copy(), end1.copy());
+						insert(math0.increment(item0.end), math1.create(end0), 
+								math1.create(start1), math1.create(end1));
 						end0 = end0a;
 					}
 					if (ss1 < 0) {
-						insert(start0.copy(), end0.copy(), start1.copy(), math1.decrement(item1.start));
+						insert(math0.create(start0), math1.create(end0), 
+								math1.create(start1), math1.decrement(item1.start));
 					}
 					if (ee1 > 0) {
-						insert(start0.copy(), end0.copy(), math1.increment(item1.end), end1.copy());
+						insert(math0.create(start0), math1.create(end0), 
+								math1.increment(item1.end), math1.create(end1));
 					}
 					insertNew = false;
 				}
 			} 
 		}
 		if (insertNew) {
-			items0.add(new Extent(start0.copy(), end0.copy()));
-			items1.add(new Extent(start1.copy(), end1.copy()));
+			items0.add(new Extent(math0.create(start0), math1.create(end0)));
+			items1.add(new Extent(math0.create(start1), math1.create(end1)));
 		}
 	}
 	
-	void extend(Extent e, MutableNumber start, MutableNumber end) {
+	void extend(Extent<? extends MutableNumber> e, Number start, Number end) {
 		e.start.set(math0.min(e.start, start));
 		e.end.set(math1.max(e.end, end));
 		insertNew = false;
 	}
 	
-	public void remove(MutableNumber start0, MutableNumber end0, MutableNumber start1, MutableNumber end1) {
+	public void remove(Number start0, Number end0, Number start1, Number end1) {
 		IntArray toRemove = new IntArray();
 		int i = 0;
 		
 		int size = items0.size();
 		for (;i < size; i++) {
-			Extent item0 = items0.get(i);
-			Extent item1 = items1.get(i);
+			Extent<N0> item0 = items0.get(i);
+			Extent<N1> item1 = items1.get(i);
 			
-			MutableNumber start0a = item0.start, end0a = item0.end, 
+			Number start0a = item0.start, end0a = item0.end, 
 				  start1a = item1.start, end1a = item1.end;
 			
 			
@@ -184,9 +192,9 @@ class CellSet {
 		}
 	}
 	
-	private void insert(MutableNumber start0, MutableNumber end0, MutableNumber start1, MutableNumber end1) {
-		items0.add(new Extent(start0, end0));
-		items1.add(new Extent(start1, end1));
+	private void insert(Number start0, Number end0, Number start1, Number end1) {
+		items0.add(new Extent(math0.create(start0), math1.create(end0)));
+		items1.add(new Extent(math0.create(start1), math1.create(end1)));
 	}
 	
 	public void change(MutableNumber start0, MutableNumber end0, 
@@ -220,7 +228,7 @@ class CellSet {
 		return count;
 	}
 	
-	private BigInteger count(Extent e) {
+	private BigInteger count(Extent<? extends MutableNumber> e) {
 		return e.end.toBigInteger().subtract(e.start.toBigInteger()).add(BigInteger.ONE);
 	}
 
@@ -232,8 +240,10 @@ class CellSet {
 		CellSet copy = new CellSet(math0, math1);
 		int size = size();
 		for (int i = 0; i < size; i++) {
-			copy.items0.add(items0.get(i).copy());
-			copy.items1.add(items1.get(i).copy());
+			Extent<N0> e0 = items0.get(i);
+			Extent<N1> e1 = items1.get(i);
+			copy.items0.add(new Extent(math0.create(e0.start), math0.create(e0.end)));
+			copy.items1.add(new Extent(math1.create(e1.start), math1.create(e1.end)));
 		}
 		return copy;
 	}

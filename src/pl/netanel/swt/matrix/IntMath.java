@@ -33,8 +33,10 @@ class IntMath extends Math<MutableInt> {
 	}
 	
 	@Override
-	public int compare(MutableInt x, MutableInt y) {
-		return x.value == y.value ? 0 : x.value > y.value ? 1 : -1;
+	public int compare(Number x, Number y) {
+		int v1 = x.intValue();
+		int v2 = y.intValue();
+		return v1 == v2 ? 0 : v1 > v2 ? 1 : -1;
 	}
 
 	
@@ -70,6 +72,22 @@ class IntMath extends Math<MutableInt> {
 	@Override
 	public MutableInt divide(MutableInt x, MutableInt y) {
 		return new MutableInt(x.value / y.value);
+	}
+
+	
+	@Override
+	public Number decrement(Number n) {
+		return n.intValue() - 1;
+	}
+
+	@Override
+	public Number increment(Number n) {
+		return n.intValue() + 1;
+	}
+	
+	@Override
+	public Number subtract(Number x, Number y) {
+		return x.intValue() - y.intValue();
 	}
 
 }

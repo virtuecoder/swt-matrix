@@ -6,7 +6,6 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 
 import pl.netanel.swt.Resources;
-import pl.netanel.swt.matrix.MutableNumber;
 
 
 
@@ -52,7 +51,7 @@ public abstract class Painter {
 	 * @param n0
 	 * @param n2
 	 */
-	public void beforePaint(MutableNumber index0, MutableNumber index1) { }
+	public void beforePaint(Number index0, Number index1) { }
 	
 	public abstract void paint(int x, int y, int width, int height);
 	
@@ -61,7 +60,7 @@ public abstract class Painter {
 	 * @param item0
 	 * @param item1
 	 */
-	public void afterPaint(MutableNumber index0, MutableNumber index1) { }
+	public void afterPaint(Number index0, Number index1) { }
 	
 	
 	/**

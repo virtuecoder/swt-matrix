@@ -47,7 +47,7 @@ class NumberQueueSet<N extends MutableNumber> extends NumberSet<N> {
 	 * @return @return true if the receiever has been modified by this operation, 
 	 * or false otherwise
 	 */
-	public boolean add(MutableNumber start, MutableNumber end) {
+	public boolean add(Number start, Number end) {
 		Preconditions.checkNotNullWithName(start, "Start index");
 		Preconditions.checkNotNullWithName(end, "End index");
 		
@@ -55,7 +55,7 @@ class NumberQueueSet<N extends MutableNumber> extends NumberSet<N> {
 		int i = 0;
 		
 		for (;i <= last; i++) {
-			Extent item = items.get(i);
+			Extent<N> item = items.get(i);
 			int location = math.compare(start, end, item.start, item.end);
 			
 			switch (location) {
@@ -71,7 +71,7 @@ class NumberQueueSet<N extends MutableNumber> extends NumberSet<N> {
 				break; 
 			}
 		}
-		items.add(new Extent(start.copy(), end.copy()));
+		items.add(new Extent(math.create(start), math.create(end)));
 		return true;
 	}
 
@@ -87,7 +87,7 @@ class NumberQueueSet<N extends MutableNumber> extends NumberSet<N> {
 	 * or false otherwise
 	 */
 	// TODO Optimize: merge if adjacent after remove
-	public boolean remove(MutableNumber start, MutableNumber end) {
+	public boolean remove(Number start, Number end) {
 		Preconditions.checkNotNullWithName(start, "Start index");
 		Preconditions.checkNotNullWithName(end, "End index");
 		
@@ -95,7 +95,7 @@ class NumberQueueSet<N extends MutableNumber> extends NumberSet<N> {
 		int i = 0;
 		
 		for (;i <= last; i++) {
-			Extent item = items.get(i);
+			Extent<N> item = items.get(i);
 			int location = math.compare(start, end, item.start, item.end);
 			
 			switch (location) {
@@ -130,9 +130,9 @@ class NumberQueueSet<N extends MutableNumber> extends NumberSet<N> {
 	 * @param index element whose presence in this set is to be tested
 	 * @return true if this list contains the specified element
 	 */
-	public boolean contains(MutableNumber index) {
-		for (Extent e: items) {
-			if (Extent.contains(math, e, index)) {
+	public boolean contains(Number index) {
+		for (Extent<N> e: items) {
+			if (math.contains(e.start, e.end, index)) {
 				return true;
 			}
 		}
@@ -155,8 +155,8 @@ class NumberQueueSet<N extends MutableNumber> extends NumberSet<N> {
 	 */
 	public NumberQueueSet copy() {
 		NumberQueueSet copy = new NumberQueueSet(math);
-		for (Extent e: items) {
-			copy.items.add(e.copy());
+		for (Extent<N> e: items) {
+			copy.items.add(new Extent(math.create(e.start), math.create(e.end)));
 		}
 		return copy;
 	}

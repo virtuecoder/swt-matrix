@@ -6,7 +6,7 @@ import java.util.Iterator;
 import pl.netanel.util.Arrays;
 import pl.netanel.util.Preconditions;
 
-public class AxisModel implements Iterable<Section> {
+public class AxisModel<N extends MutableNumber> implements Iterable<Section> {
 	private static final Section[] EMPTY = new Section[] {};
 	
 	final Math math;
@@ -112,7 +112,8 @@ public class AxisModel implements Iterable<Section> {
 		for (int i = start.section.index; i <= end.section.index; i++) {
 			Section section = sections.get(i);
 			MutableNumber startIndex = i == start.section.index ? start.index : math.ZERO();
-			MutableNumber endIndex = i == end.section.index ? end.index : math.increment(section.getCount());
+			MutableNumber endIndex = i == end.section.index ? end.index : 
+				math.create(math.increment(section.getCount()));
 			section.setSelected(startIndex, endIndex, select);
 		}
 	}

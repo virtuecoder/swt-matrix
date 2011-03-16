@@ -3,8 +3,6 @@ package pl.netanel.swt.matrix.painter;
 import java.math.BigInteger;
 
 import org.eclipse.swt.graphics.Color;
-
-import pl.netanel.swt.matrix.MutableNumber;
 import pl.netanel.swt.matrix.Zone;
 
 
@@ -56,7 +54,7 @@ public class ModelPainter extends TextPainter {
 	}
 
 	@Override
-	public void beforePaint(MutableNumber index0, MutableNumber index1) {
+	public void beforePaint(Number index0, Number index1) {
 		super.beforePaint(index0, index1);
 		
 		boolean isSelected = zone.isSelected(index0, index1) && shouldHighlight;

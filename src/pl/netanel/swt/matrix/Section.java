@@ -2,8 +2,6 @@ package pl.netanel.swt.matrix;
 
 import java.util.List;
 
-import pl.netanel.util.Preconditions;
-
 /**
  * Uses plain Number parameters which are validated in preconditions.
  * 
@@ -23,7 +21,7 @@ public class Section<N extends MutableNumber> {
 	private final NumberSet hideable;
 	private final IntAxisState cellWidth;
 	private final IntAxisState lineWidth;
-	private final ObjectAxisState<MutableNumber> cellSpan;
+	private final ObjectAxisState<Number, N> cellSpan;
 	
 	private final NumberQueueSet<N> selection;
 	private final NumberQueueSet<N> lastSelection;
@@ -69,16 +67,16 @@ public class Section<N extends MutableNumber> {
 	 */
 
 
-	public MutableNumber getCount() {
+	public Number getCount() {
 		return count;
 	}
 
-	public void setCount(MutableNumber count) {
+	public void setCount(Number count) {
 		this.count.set(count);
 		order.setCount(count);
 	}
 
-	public MutableNumber getVisibleCount() {
+	public Number getVisibleCount() {
 		return math.subtract(count, hidden.getCount());
 	}
 
@@ -126,54 +124,54 @@ public class Section<N extends MutableNumber> {
 		this.isNavigationEnabled = isCurrentMarkerEnabled;
 	}
 
-	public void move(MutableNumber start, MutableNumber end, MutableNumber target) {
+	public void move(Number start, Number end, Number target) {
 		order.move(start, end, target);
 	}
 	
-	public void setHidden(MutableNumber start, MutableNumber end, boolean flag) {
+	public void setHidden(Number start, Number end, boolean flag) {
 		hidden.change(start, end, flag);
 	}
 	
-	public boolean isHidden(MutableNumber index) {
+	public boolean isHidden(Number index) {
 		return hidden.contains(index);
 	}
 	
-	public MutableNumber getHiddenCount(MutableNumber start, MutableNumber end) {
+	public Number getHiddenCount(Number start, Number end) {
 		return hidden.getCount(start, end);
 	}
 	
-	public void setMoveable(MutableNumber start, MutableNumber end, boolean flag) {
+	public void setMoveable(Number start, Number end, boolean flag) {
 		moveable.change(start, end, flag != defaultMoveable);
 	}
 	
-	public boolean isMoveable(MutableNumber index) {
+	public boolean isMoveable(Number index) {
 		return moveable.contains(index) != defaultMoveable;
 	}
 	
-	public void setResizable(MutableNumber start, MutableNumber end, boolean flag) {
+	public void setResizable(Number start, Number end, boolean flag) {
 		resizable.change(start, end, flag != defaultResizable);
 	}
 	
-	public boolean isResizable(MutableNumber index) {
+	public boolean isResizable(Number index) {
 		return resizable.contains(index) != defaultResizable;
 	}
 	
-	public void setHideable(MutableNumber start, MutableNumber end, boolean flag) {
+	public void setHideable(Number start, Number end, boolean flag) {
 		hideable.change(start, end, flag != defaultHideable);
 	}
 	
-	public boolean isHideable(MutableNumber index) {
+	public boolean isHideable(Number index) {
 		return hideable.contains(index) != defaultHideable;
 	}
 	
 	
-	public void setSelected(MutableNumber start, MutableNumber end, boolean selected) {
+	public void setSelected(Number start, Number end, boolean selected) {
 		selection.change(start, end, selected);
 	}
 	
 	public void setSelected(boolean selected) {
 		if (selected) {
-			selection.add(math.ZERO(), getLast());
+			selection.add(math.ZERO(), math.decrement(count));
 		} else {
 			selection.clear();
 		}
@@ -187,25 +185,25 @@ public class Section<N extends MutableNumber> {
 		selection.replace(lastSelection);
 	}
 	
-	public boolean isSelected(MutableNumber index) {
+	public boolean isSelected(Number index) {
 		return selection.contains(index);
 	}
 	
 	
 	
-	public void setCellWidth(MutableNumber start, MutableNumber end, int width) {
+	public void setCellWidth(Number start, Number end, int width) {
 		cellWidth.setValue(start, end, width);
 	}
 	
-	public int getCellWidth(MutableNumber index) {
+	public int getCellWidth(Number index) {
 		return cellWidth.getValue(index);
 	}
 	
-	public void setLineWidth(MutableNumber start, MutableNumber end, int width) {
+	public void setLineWidth(Number start, Number end, int width) {
 		lineWidth.setValue(start, end, width);
 	}
 	
-	public int getLineWidth(MutableNumber index) {
+	public int getLineWidth(Number index) {
 		return lineWidth.getValue(index);
 	}
 	
@@ -226,16 +224,16 @@ public class Section<N extends MutableNumber> {
 	}
 	
 	
-	public void setCellSpan(MutableNumber index, MutableNumber value) {
+	public void setCellSpan(Number index, Number value) {
 		cellSpan.setValue(index, value);
 	}
 	
-	public MutableNumber getCellSpan(MutableNumber index) {
+	public Number getCellSpan(Number index) {
 		return cellSpan.getValue(index);
 	}
 
 
-	public MutableNumber getPosition(MutableNumber index) {
+	public Number getPosition(Number index) {
 		if (hidden.contains(index)) return null;
 		MutableNumber hiddenCount = math.create(0);
 		MutableNumber pos1 = math.create(0);
@@ -243,7 +241,7 @@ public class Section<N extends MutableNumber> {
 		
 		for (int i = 0, size = order.items.size(); i < size; i++) {
 			Extent<N> e = order.items.get(i);
-			boolean contains = Extent.contains(math, e, index);
+			boolean contains = math.contains(e.start, e.end, index);
 			hiddenCount.add(hidden.getCount(e.start, contains ? index : e.end));
 			if (contains) {
 				return pos2.add(index).subtract(e.start).subtract(hiddenCount);
@@ -255,7 +253,7 @@ public class Section<N extends MutableNumber> {
 	}
 
 	
-	public MutableNumber getByPosition(MutableNumber position) {
+	public Number getByPosition(Number position) {
 		if (math.compare(position, getVisibleCount()) >= 0) return null;
 		
 		MutableNumber pos1 = math.create(0);
@@ -265,7 +263,7 @@ public class Section<N extends MutableNumber> {
 			Extent<N> e = order.items.get(i);
 			pos2.add(e.end).subtract(e.start).subtract(hidden.getCount(e.start, e.end));
 			if (math.compare(pos2, position) >= 0) {
-				MutableNumber count = hidden.getCount(e.start, pos1);
+				Number count = hidden.getCount(e.start, pos1);
 				return pos1.subtract(position).negate().add(e.start).add(count);
 			}
 			pos2.increment();
@@ -274,16 +272,16 @@ public class Section<N extends MutableNumber> {
 		return null;
 		
 //		ForwardOrderIterator it = order.new ForwardOrderIterator();
-//		MutableNumber hiddenCount = factory.zero();
-//		MutableNumber pos1 = factory.zero();
-//		MutableNumber pos2 = factory.zero();
+//		Number hiddenCount = factory.zero();
+//		Number pos1 = factory.zero();
+//		Number pos2 = factory.zero();
 //		while (it.hasNext()) {
 //			Extent extent = it.next();
 //			pos1.set(it.pos1).subtract(hiddenCount);
 //			hiddenCount.add(hidden.getCount(extent.getStart(), extent.getEnd()));
 //			pos2.set(it.pos2).subtract(hiddenCount);
 //			if (pos2.compareTo(position) >= 0) {
-//				MutableNumber count = hidden.getCount(extent.getStart(), pos1);
+//				Number count = hidden.getCount(extent.getStart(), pos1);
 //				return pos1.subtract(position).negate().add(extent.getStart()).add(count);
 //			}
 //		}		
@@ -291,7 +289,7 @@ public class Section<N extends MutableNumber> {
 
 	}
 
-	public int comparePosition(MutableNumber n1, MutableNumber n2) {
+	public int comparePosition(Number n1, Number n2) {
 		return math.compare(order.indexOf(n1), order.indexOf(n2));
 	}
 	
@@ -311,7 +309,7 @@ public class Section<N extends MutableNumber> {
 		protected int i, h;
 		public int level;
 		protected int sign;
-		protected Extent extent, he;
+		protected Extent<N> extent, he;
 		public boolean moved;
 		
 		
@@ -358,7 +356,7 @@ public class Section<N extends MutableNumber> {
 		
 	
 		private boolean nextNumber(MutableNumber count) {
-			MutableNumber limit = null;
+			Number limit = null;
 
 			number2.set(number).add(sign);
 			count.decrement();
@@ -366,16 +364,17 @@ public class Section<N extends MutableNumber> {
 				nextHidden(lastInExtent);
 
 				// If inside of hidden move beyond
-				if (he != null && Extent.contains(math, he, number2)) {
+				if (he != null && math.contains(he.start, he.end, number2)) {
 					if (!skipHidden(count, lastInExtent)) return false;
 				} 
 				else {
-					limit = he == null || Extent.contains(math, he, number2) ? lastInExtent : start(he);
+					limit = he == null || math.contains(he.start, he.end, number2) ? 
+							lastInExtent : start(he);
 					d.set(math.min(subtract(limit, number2), count));
 					add(number2, d);
 					count.subtract(d);
 				}
-				if (he != null && Extent.contains(math, he, number2)) {
+				if (he != null && math.contains(he.start, he.end, number2)) {
 					if (!skipHidden(count, lastInExtent)) return false;
 				}			
 				moved = math.compare(number2, last) != 0;
@@ -388,10 +387,10 @@ public class Section<N extends MutableNumber> {
 		}
 		
 
-		private void nextHidden(MutableNumber lastIndex) {
+		private void nextHidden(Number lastIndex) {
 			while (true) {
 				if (he != null) {
-					MutableNumber start = start(he), end = end(he);
+					Number start = start(he), end = end(he);
 					if (compare(start, number2) <= 0 && compare(number2, end) <= 0 || 
 						compare(start, number2) > 0 && compare(start, lastIndex) <= 0) break;
 				}
@@ -419,17 +418,17 @@ public class Section<N extends MutableNumber> {
 			return extent != null && compare(number, lastInExtent) < 0;// && compare(index, nullIndex) != 0; 
 		}
 
-		protected abstract int compare(MutableNumber x, MutableNumber y);
-		protected abstract void add(MutableNumber x, MutableNumber y);
-		protected abstract MutableNumber subtract(MutableNumber x, MutableNumber y);
+		protected abstract int compare(Number x, Number y);
+		protected abstract void add(MutableNumber x, Number y);
+		protected abstract Number subtract(Number x, Number y);
 		protected abstract boolean hasNextExtent();
 		protected abstract boolean hasNextHidden();
 		protected abstract int firstIndex(List<Extent<N>> items);
-		protected abstract MutableNumber start(Extent e);
-		protected abstract MutableNumber end(Extent e);
+		protected abstract Number start(Extent<N> e);
+		protected abstract Number end(Extent<N> e);
 
 
-		public MutableNumber index() {
+		public Number index() {
 			return number;
 		}
 
@@ -438,7 +437,7 @@ public class Section<N extends MutableNumber> {
 			return next(math.create(1));
 		}
 
-		public void set(MutableNumber index) {
+		public void set(Number index) {
 			i = order.getExtentIndex(index);
 			if (i == -1) return;
 			extent = order.items.get(i);
@@ -456,17 +455,17 @@ public class Section<N extends MutableNumber> {
 		}
 
 		@Override
-		protected int compare(MutableNumber x, MutableNumber y) {
+		protected int compare(Number x, Number y) {
 			return math.compare(x, y);
 		}
 		
 		@Override
-		protected void add(MutableNumber x, MutableNumber y) {
+		protected void add(MutableNumber x, Number y) {
 			x.add(y);
 		}
 		
 		@Override
-		protected MutableNumber subtract(MutableNumber x, MutableNumber y) {
+		protected Number subtract(Number x, Number y) {
 			return math.subtract(x, y);
 		}
 		
@@ -486,12 +485,12 @@ public class Section<N extends MutableNumber> {
 		}
 		
 		@Override
-		protected MutableNumber start(Extent e) {
+		protected Number start(Extent<N> e) {
 			return e.start;
 		}
 
 		@Override
-		protected MutableNumber end(Extent e) {
+		protected Number end(Extent<N> e) {
 			return e.end;
 		}
 	}
@@ -502,18 +501,18 @@ public class Section<N extends MutableNumber> {
 		}
 		
 		@Override
-		protected int compare(MutableNumber x, MutableNumber y) {
+		protected int compare(Number x, Number y) {
 			return math.compare(y, x);
 		}
 		
 		@Override
-		protected void add(MutableNumber x, MutableNumber y) {
+		protected void add(MutableNumber x, Number y) {
 			x.subtract(y);
 		}
 		
 
 		@Override
-		protected MutableNumber subtract(MutableNumber x, MutableNumber y) {
+		protected Number subtract(Number x, Number y) {
 			return math.subtract(y, x);
 		}
 		
@@ -534,98 +533,18 @@ public class Section<N extends MutableNumber> {
 		}
 		
 		@Override
-		protected MutableNumber start(Extent e) {
+		protected Number start(Extent<N> e) {
 			return e.end;
 		}
 		
 		@Override
-		protected MutableNumber end(Extent e) {
+		protected Number end(Extent<N> e) {
 			return e.start;
 		}
 	}
 
-	
-	
-	
-	/*------------------------------------------------------------------------
-	 * Derived methods
-	 */
-	
-	public Section setCount(Number count) {
-		Preconditions.checkNotNull(count);
-		MutableNumber count2 = math.getMutable(count);
-		Preconditions.checkArgument(math.compare(count2, math.ZERO()) >= 0,
-				"Item count must be greater or equal to zero");
-		setCount(count2);
-		return this;
-	}
-
-	public void move(Number start, Number end, Number target) {
-		move(math.getMutable(start), math.getMutable(end), math.getMutable(target));
-	}
-	
 	public void setHidden(Number index, boolean flag) {
 		setHidden(index, index, flag);
-	}
-	
-	public void setHidden(Number start, Number end, boolean flag) {
-		setHidden(math.getMutable(start), math.getMutable(end), flag);
-	}
-	
-	public boolean isHidden(Number index) {
-		return isHidden(math.getMutable(index));
-	}
-	
-	public void setMoveable(Number start, Number end, boolean flag) {
-		setMoveable(math.getMutable(start), math.getMutable(end), flag);
-	}
-	
-	public boolean isMoveable(Number index) {
-		return isMoveable(math.getMutable(index));
-	}
-	
-	public void setResizable(Number start, Number end, boolean flag) {
-		setResizable(math.getMutable(start), math.getMutable(end), flag);
-	}
-	
-	public boolean isResizable(Number index) {
-		return isResizable(math.getMutable(index));
-	}
-	
-	public void setHideable(Number start, Number end, boolean flag) {
-		setHideable(math.getMutable(start), math.getMutable(end), flag);
-	}
-	
-	public boolean isHideable(Number index) {
-		return isHideable(math.getMutable(index));
-	}
-	
-	public void setSelected(Number start, Number end, boolean flag) {
-		setSelected(math.getMutable(start), math.getMutable(end), flag);
-	}
-	
-	public boolean isSelected(Number index) {
-		return isSelected(math.getMutable(index));
-	}
-
-	public void setCellWidth(Number start, Number end, int width) {
-		setCellWidth(math.getMutable(start), math.getMutable(end), width);
-	}
-	
-	public int getCellWidth(Number index) {
-		return getCellWidth(math.getMutable(index));
-	}
-	
-	public void setLineWidth(Number start, Number end, int width) {
-		setLineWidth(math.getMutable(start), math.getMutable(end), width);
-	}
-
-	public int getLineWidth(Number index) {
-		return getLineWidth(math.getMutable(index));
-	}
-
-	public MutableNumber getLast() {
-		return math.decrement(getCount());
 	}
 	
 	public void setHidden(boolean flag) {
@@ -633,6 +552,9 @@ public class Section<N extends MutableNumber> {
 			Extent<N> e = selection.items.get(i);
 			setHidden(e.start, e.end, flag);
 		}
+	}
+	public MutableNumber getLastIndex() {
+		return math.decrement(count);
 	}
 
 }

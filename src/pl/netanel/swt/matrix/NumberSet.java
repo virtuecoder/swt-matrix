@@ -13,12 +13,12 @@ import java.util.ArrayList;
  * @created 09-11-2010
  */
 class NumberSet<N extends MutableNumber> {
-	protected Math math;
+	protected Math<N> math;
 	protected boolean sorted;
 	ArrayList<Extent<N>> items;
-	protected ArrayList<Extent<N>> toRemove;
+	protected ArrayList<Extent> toRemove;
 	
-	protected Extent modified;
+	protected Extent<N> modified;
 	protected transient int modCount;
 
 	
@@ -30,13 +30,13 @@ class NumberSet<N extends MutableNumber> {
 		this.sorted = sorted;
 		this.math = math;
 		items = new ArrayList<Extent<N>>();
-		toRemove = new ArrayList<Extent<N>>();
+		toRemove = new ArrayList<Extent>();
 	};
 	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for (Extent e: items) {
+		for (Extent<N> e: items) {
 			if (sb.length() > 0) sb.append(", ");
 			if (math.compare(e.start, e.end) == 0) {
 				sb.append(e.start);
@@ -48,18 +48,18 @@ class NumberSet<N extends MutableNumber> {
 	}
 	
 	
-	public boolean contains(MutableNumber n) {
-		for (Extent e: items) {
-			if (Extent.contains(math, e, n)) {
+	public boolean contains(Number n) {
+		for (Extent<N> e: items) {
+			if (math.contains(e.start, e.end, n)) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public boolean contains(Extent o) {
-		for (Extent e: items) {
-			if (Extent.contains(math, e, o.start) && Extent.contains(math, e, o.end)) {
+	public boolean contains(Extent<N> o) {
+		for (Extent<N> e: items) {
+			if (math.contains(e.start, e.end, o.start) && math.contains(e.start, e.end, o.end)) {
 				return true;
 			}
 		}
@@ -76,15 +76,15 @@ class NumberSet<N extends MutableNumber> {
 	 * @return true if the receiver has been modified by this operation, or false otherwise
 	 * @see #add(MutableNumber, MutableNumber)
 	 */
-	public boolean add(MutableNumber n) {
+	public boolean add(Number n) {
 		return add(n, n);
 	}
 	
-	public boolean add(Extent e) {
+	public boolean add(Extent<N> e) {
 		return add(e.start, e.end);
 	}
 	
-	public boolean add(MutableNumber start, MutableNumber end) {
+	public boolean add(Number start, Number end) {
 
 /*
  * Cases
@@ -103,7 +103,7 @@ class NumberSet<N extends MutableNumber> {
 		int i = 0;
 		
 		for (;i < items.size(); i++) {
-			Extent item = items.get(i);
+			Extent<N> item = items.get(i);
 			int compare = math.compare(item.start, item.end, start, end);
 			
 			switch (compare) {
@@ -123,7 +123,7 @@ class NumberSet<N extends MutableNumber> {
 			if (quit) break;
 		}
 		if (modified == null) {
-			items.add(i, new Extent(start.copy(), end.copy()));
+			items.add(i, new Extent(math.create(start), math.create(end)));
 		}
 		for (Extent e: toRemove) {
 			items.remove(e); 
@@ -134,13 +134,13 @@ class NumberSet<N extends MutableNumber> {
 	}
 	
 	public void addAll(NumberSet<N> set) {
-		for (Extent<N> e: set.items) {
+		for (Extent e: set.items) {
 			add(e);
 		}
 	}
 
 
-	protected void extendItem(Extent existing, MutableNumber start, MutableNumber end) {
+	protected void extendItem(Extent<N> existing, Number start, Number end) {
 		if (modified == null) modified = existing;
 		else toRemove.add(0, existing);
 		modified.start.set(math.min(start, modified.start, existing.start));
@@ -158,15 +158,15 @@ class NumberSet<N extends MutableNumber> {
 	 * or false otherwise
 	 * @see #remove(MutableNumber, MutableNumber)
 	 */
-	public boolean remove(MutableNumber n) {
+	public boolean remove(Number n) {
 		return remove(n, n);
 	}
 	
-	public boolean remove(Extent e) {
+	public boolean remove(Extent<N> e) {
 		return remove(e.start, e.end);
 	}
 	
-	public boolean remove(MutableNumber start, MutableNumber end) {
+	public boolean remove(Number start, Number end) {
 		boolean modified = false;
 		int i = 0;
 		
@@ -194,7 +194,7 @@ class NumberSet<N extends MutableNumber> {
 				break;
 				
 			case INSIDE:
-				MutableNumber newEnd = item.end.copy();
+				Number newEnd = item.end.copy();
 				item.end.set(math.max(math.decrement(start), item.start));
 				items.add(i+1, new Extent(math.increment(end), newEnd));
 			}
@@ -215,7 +215,7 @@ class NumberSet<N extends MutableNumber> {
 			items.clear();
 			return removed;
 		}
-		for (Extent<N> e: set.items) {
+		for (Extent e: set.items) {
 			removed = removed || remove(e);
 		}
 		if (removed) modCount++;
@@ -229,7 +229,7 @@ class NumberSet<N extends MutableNumber> {
 	 */
 	public MutableNumber getCount() {
 		MutableNumber sum = math.create(0);
-		for (Extent e: items) {
+		for (Extent<N> e: items) {
 			sum.add(e.end).subtract(e.start).increment();
 		}
 		return sum;
@@ -241,9 +241,9 @@ class NumberSet<N extends MutableNumber> {
 	 * @param end
 	 * @return
 	 */
-	public MutableNumber getCount(MutableNumber start, MutableNumber end) {
+	public MutableNumber getCount(Number start, Number end) {
 		MutableNumber sum = math.create(0);
-		for (Extent e: items) {
+		for (Extent<N> e: items) {
 			switch (math.compare(e.start, e.end, start, end)) {
 			case BEFORE:				
 			case ADJACENT_BEFORE:	continue;
@@ -272,7 +272,7 @@ class NumberSet<N extends MutableNumber> {
 	public void replace(NumberSet set) {
 		items.clear();
 		for (Extent<N> e: items) {
-			items.add(e.copy());
+			items.add(new Extent(math.create(e.start), math.create(e.end)));
 		}
 	}
 
@@ -283,13 +283,13 @@ class NumberSet<N extends MutableNumber> {
 
 	public NumberSet copy() {
 		NumberSet copy = new NumberSet(math);
-		for (Extent e: items) {
-			copy.items.add(e.copy());
+		for (Extent<N> e: items) {
+			copy.items.add(new Extent(math.create(e.start), math.create(e.end)));
 		}
 		return copy;
 	}
 
-	public void change(MutableNumber start, MutableNumber end, boolean add) {
+	public void change(Number start, Number end, boolean add) {
 		if (add) {
 			add(start, end);
 		} else {
@@ -297,9 +297,10 @@ class NumberSet<N extends MutableNumber> {
 		}
 	}
 
-	public int getExtentIndex(MutableNumber n) {
+	public int getExtentIndex(Number n) {
 		for (int i = 0, size = items.size(); i < size; i++) {
-			if (Extent.contains(math, items.get(i), n)) {
+			Extent<N> e = items.get(i);
+			if (math.contains(e.start, e.end, n)) {
 				return i;
 			}
 		}
