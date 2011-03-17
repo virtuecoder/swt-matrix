@@ -148,7 +148,7 @@ abstract class DirectionIndexSequence implements Sequence {
 		return next(this.section.math.create(1));
 	}
 
-	void set(MutableNumber index) {
+	void set(Number index) {
 		i = this.section.order.getExtentIndex(index);
 		if (i == -1) return;
 		extent = this.section.order.items.get(i);
@@ -177,7 +177,7 @@ abstract class DirectionIndexSequence implements Sequence {
 		
 		@Override
 		protected MutableNumber subtract(MutableNumber x, MutableNumber y) {
-			return math.subtract(x, y);
+			return math.create(x).subtract(y);
 		}
 		
 		@Override
@@ -226,7 +226,7 @@ abstract class DirectionIndexSequence implements Sequence {
 
 		@Override
 		protected MutableNumber subtract(MutableNumber x, MutableNumber y) {
-			return math.subtract(y, x);
+			return math.create(y).subtract(x);
 		}
 		
 		

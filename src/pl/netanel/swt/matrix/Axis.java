@@ -106,7 +106,7 @@ public class Axis {
 	}
 
 	public Number getNavigationIndex() {
-		return layout.current == null ? null : layout.current.index.getValue();
+		return layout.current == null ? null : layout.current.index;
 	}
 
 	public Section getNavigationSection() {

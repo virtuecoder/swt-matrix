@@ -198,9 +198,9 @@ class MatrixListener implements Listener {
 					if (resizeItem != null) {
 						resizing = true;
 						resizeStartDistance = distance;
-						resizeCellWidth = resizeItem.section.getCellWidth(resizeItem.index.getValue());
+						resizeCellWidth = resizeItem.section.getCellWidth(resizeItem.index);
 					}
-					else if (item.section.isSelected(item.index.getValue()) && item.section.isMoveable(item.index.getValue())) {
+					else if (item.section.isSelected(item.index) && item.section.isMoveable(item.index)) {
 						// Start moving
 						moving = true;
 						matrix.setCursor(cursor = Resources.getCursor(SWT.CURSOR_HAND));
@@ -245,7 +245,7 @@ class MatrixListener implements Listener {
 			if (resizing && resizeItem != null) {
 				newCellWidth = resizeCellWidth + distance - resizeStartDistance;
 				if (newCellWidth < 1) newCellWidth = 1;
-				resizeItem.section.setCellWidth(resizeItem.index.getValue(), resizeItem.index.getValue(), newCellWidth);
+				resizeItem.section.setCellWidth(resizeItem.index, resizeItem.index, newCellWidth);
 				layout.compute();
 				matrix.redraw();
 				addEvent(SWT.Resize);
@@ -286,7 +286,7 @@ class MatrixListener implements Listener {
 		}
 		
 		private boolean isSelected(AxisItem item) {
-			return item.section.isSelected(item.index.getValue());
+			return item.section.isSelected(item.index);
 		}
 		
 		public void setSelected(int commandId) {

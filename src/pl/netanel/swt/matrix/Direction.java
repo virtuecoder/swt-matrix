@@ -43,7 +43,7 @@ abstract class Direction {
 	
 	public AxisItem getItem() {
 		pending = false;
-		return hasMore ? new AxisItem(section, math.create(seq.index())) : null;
+		return hasMore ? new AxisItem(section, seq.index().getValue()) : null;
 	}
 	
 	public AxisItem first() {

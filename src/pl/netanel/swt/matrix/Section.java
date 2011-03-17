@@ -1,6 +1,5 @@
 package pl.netanel.swt.matrix;
 
-import java.math.BigInteger;
 import java.util.Iterator;
 
 import pl.netanel.util.ImmutableIterator;
@@ -24,7 +23,7 @@ import pl.netanel.util.ImmutableIterator;
  * 
  * @author Jacek Kolodziejczyk created 02-03-2011
  */
-public class Section {
+public class Section<N extends Number> {
 
 	static final int DEFAULT_CELL_WIDTH = 16;
 	static final int DEFAULT_LINE_WIDTH = 1;
@@ -52,11 +51,11 @@ public class Section {
 	/**
 	 * The default constructor utilizing BigInteger indexing.
 	 */
-	public Section() {
-		this(Math.getInstance(BigInteger.class));
+	Section() {
+		this(Math.getInstance(int.class));
 	}
 	
-	Section(Class<? extends Number> numberClass) {
+	public Section(Class<N> numberClass) {
 		this(Math.getInstance(numberClass));
 	}
 	
@@ -102,7 +101,7 @@ public class Section {
 	}
 
 	Number getVisibleCount() {
-		return math.subtract(count, hidden.getCount()).getValue();
+		return math.create(count).subtract(hidden.getCount()).getValue();
 	}
 
 	public boolean isEmpty() {

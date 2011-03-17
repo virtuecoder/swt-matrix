@@ -99,8 +99,8 @@ public class Matrix extends Canvas {
 		layout1.compute();
 		if (model.getBody().isSelectionEnabled() && layout0.current != null && layout1.current != null) {
 			Zone zone = model.getZone(layout0.current.section, layout1.current.section);
-			Number index0 = layout0.current.index.getValue();
-			Number index1 = layout1.current.index.getValue();
+			Number index0 = layout0.current.index;
+			Number index1 = layout1.current.index;
 			zone.setSelected(index0, index0, index1, index1, true);
 		}
 	}
@@ -185,11 +185,11 @@ public class Matrix extends Canvas {
 			painter.init(gc);
 			for (seq0.init(); seq0.next();) {
 				for (seq1.init(); seq1.next();) {
-					painter.beforePaint(seq0.item.index.getValue(), seq1.item.index.getValue());
+					painter.beforePaint(seq0.item.index, seq1.item.index);
 					Bound b0 = seq0.bound;
 					Bound b1 = seq1.bound;
 					painter.paint(b1.distance, b0.distance, b1.width, b0.width);
-					painter.afterPaint(seq0.item.index.getValue(), seq1.item.index.getValue());
+					painter.afterPaint(seq0.item.index, seq1.item.index);
 				}
 			}
 			painter.clean();

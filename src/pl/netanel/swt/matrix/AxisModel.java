@@ -17,7 +17,7 @@ public class AxisModel implements Iterable<Section> {
 
 	
 	public AxisModel() {
-		this(new Section(int.class), new Section(int.class));
+		this(new Section(), new Section());
 	}
 	
 	public AxisModel(Class<? extends Number> numberClass) {
@@ -111,8 +111,8 @@ public class AxisModel implements Iterable<Section> {
 		
 		for (int i = start.section.index; i <= end.section.index; i++) {
 			Section section = sections.get(i);
-			Number startIndex = i == start.section.index ? start.index.getValue() : math.ZERO_VALUE();
-			Number endIndex = i == end.section.index ? end.index.getValue() : 
+			Number startIndex = i == start.section.index ? start.index : math.ZERO_VALUE();
+			Number endIndex = i == end.section.index ? end.index : 
 				math.increment(section.getCount());
 			section.setSelected(startIndex, endIndex, select);
 		}
@@ -130,19 +130,19 @@ public class AxisModel implements Iterable<Section> {
 		for (int i = sections.size(); i-- > 0;) {
 			Section section = sections.get(i);
 			if (section.isEmpty()) continue;
-			return new AxisItem(section, math.create(section.getCount()).decrement());
+			return new AxisItem(section, math.decrement(section.getCount()));
 		}
 		return getFirstItem();
 	}
 
 	AxisItem getFirstItem() {
-		return new AxisItem(sections.get(0), math.create(0));
+		return new AxisItem(sections.get(0), math.create(0).getValue());
 	}
 
 	int comparePosition(AxisItem item1, AxisItem item2) {
 		int diff = item1.section.index - item2.section.index;
 		if (diff != 0) return diff; 
-		return item1.section.comparePosition(item1.index.getValue(), item2.index.getValue());
+		return item1.section.comparePosition(item1.index, item2.index);
 	}
 	
 	
@@ -153,7 +153,7 @@ public class AxisModel implements Iterable<Section> {
 	 */
 	class ExtentSequence {
 		Section section;
-		MutableNumber start, end;
+		MutableNumber start, end, startItemIndex, endItemIndex;
 		private int i, istart, iend, sectionIndex, lastSectionIndex;
 		private ArrayList<Extent> items;
 		private AxisItem startItem, endItem;
@@ -165,6 +165,8 @@ public class AxisModel implements Iterable<Section> {
 				startItem.section.order.getExtentIndex(startItem.index);
 			iend = endItem.section.order.items.isEmpty() ? 0 : 
 				endItem.section.order.getExtentIndex(endItem.index);
+			startItemIndex = math.create(startItem.index);
+			endItemIndex = math.create(endItem.index);
 			
 			section = startItem.section;
 			sectionIndex = sections.indexOf(section); 
@@ -183,10 +185,10 @@ public class AxisModel implements Iterable<Section> {
 			}
 			Extent e = items.get(i);	
 			start = section == startItem.section && i == istart ? 
-					startItem.index : e.start;
+					startItemIndex : e.start;
 			end = section == endItem.section && i == iend ? 
-					endItem.index : e.end;
-			if (i >= iend && math.compare(end, endItem.index) == 0) {
+					endItemIndex : e.end;
+			if (i >= iend && math.compare(end, endItemIndex) == 0) {
 				i = items.size();
 			}
 			i++;

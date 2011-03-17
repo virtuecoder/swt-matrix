@@ -27,35 +27,6 @@ class BigIntegerMath extends Math<MutableBigInteger, BigInteger> {
 		return new MutableBigInteger(mn.toBigInteger());
 	}
 
-	@Override
-	public MutableBigInteger decrement(MutableBigInteger n) {
-		return new MutableBigInteger(n.value.subtract(BigInteger.ONE));
-	}
-
-	@Override
-	public MutableBigInteger increment(MutableBigInteger n) {
-		return new MutableBigInteger(n.value.add(BigInteger.ONE));
-	}
-
-	@Override
-	public MutableBigInteger add(MutableBigInteger x, MutableBigInteger y) {
-		return new MutableBigInteger(x.value.add(y.value));
-	}
-
-	@Override
-	public MutableBigInteger subtract(MutableBigInteger x, MutableBigInteger y) {
-		return new MutableBigInteger(x.value.subtract(y.value));
-	}
-
-	@Override
-	public MutableBigInteger multiply(MutableBigInteger x, MutableBigInteger y) {
-		return new MutableBigInteger(x.value.multiply(y.value));
-	}
-
-	@Override
-	public MutableBigInteger divide(MutableBigInteger x, MutableBigInteger y) {
-		return new MutableBigInteger(x.value.divide(y.value));
-	}
 
 	@Override
 	public BigInteger ZERO_VALUE() {

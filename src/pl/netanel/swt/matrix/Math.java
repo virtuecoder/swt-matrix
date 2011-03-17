@@ -35,13 +35,6 @@ abstract class Math<MN extends MutableNumber<MN, N>, N extends Number> {
 	public abstract MN create(Number n);
 	public abstract MN create(MutableNumber n);
 
-	public abstract MN decrement(MN n);
-	public abstract MN increment(MN n);
-	public abstract MN add(MN x, MN y);
-	public abstract MN subtract(MN x, MN y);
-	public abstract MN multiply(MN x, MN y);
-	public abstract MN divide(MN x, MN y);
-	
 	public abstract MN ZERO();
 	public abstract MN ONE();
 	
@@ -90,6 +83,10 @@ abstract class Math<MN extends MutableNumber<MN, N>, N extends Number> {
 	
 	public boolean contains(Extent e, MutableNumber mn) {
 		return contains((N) e.start(), (N) e.end(), (N) mn.getValue());
+	}
+	
+	public boolean contains(Extent e, Number n) {
+		return contains((N) e.start(), (N) e.end(), (N) n);
 	}
 	
 	public boolean contains(MN start, MN end, N n) {

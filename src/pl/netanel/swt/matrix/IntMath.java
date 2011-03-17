@@ -61,36 +61,6 @@ class IntMath extends Math<MutableInt, Integer> {
 	 * Operations
 	 */
 	
-	@Override
-	public MutableInt decrement(MutableInt n) {
-		return new MutableInt(n.value - 1);
-	}
-
-	@Override
-	public MutableInt increment(MutableInt n) {
-		return new MutableInt(n.value + 1);
-	}
-
-	@Override
-	public MutableInt add(MutableInt x, MutableInt y) {
-		return new MutableInt(x.value + y.value);
-	}
-
-	@Override
-	public MutableInt subtract(MutableInt x, MutableInt y) {
-		return new MutableInt(x.value - y.value);
-	}
-
-	@Override
-	public MutableInt multiply(MutableInt x, MutableInt y) {
-		return new MutableInt(x.value * y.value);
-	}
-
-	@Override
-	public MutableInt divide(MutableInt x, MutableInt y) {
-		return new MutableInt(x.value / y.value);
-	}
-
 	
 	@Override
 	public Integer decrement(Number n) {

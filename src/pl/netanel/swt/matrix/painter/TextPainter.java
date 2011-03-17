@@ -17,7 +17,7 @@ import pl.netanel.util.Arrays;
  */
 public class TextPainter extends Painter {
 	private static int[] EXTENT_ALIGN = {SWT.RIGHT, SWT.END, SWT.BOTTOM, SWT.CENTER};
-	public static enum TextClipMethod {DOTS_IN_THE_MIDDLE, DOTS_AT_THE_END, CUT, NONE};
+	static enum TextClipMethod {DOTS_IN_THE_MIDDLE, DOTS_AT_THE_END, CUT, NONE};
 	
 	public String text;
 	public int alignY, alignX;
@@ -85,8 +85,22 @@ public class TextPainter extends Painter {
 			isClipped = false;
 		}
 		
-		x += alignDelta(alignX, width, extent.x, marginX);
-		y += alignDelta(alignY, height, extent.y, marginY);
+		switch (alignX) {
+		case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP: 
+			x += marginX; break;
+		case SWT.CENTER:
+			x += (width - extent.x) / 2; break; 
+		case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
+			x += width - extent.x - marginX; break;
+		}
+		switch (alignY) {
+		case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
+			y += marginY; break;
+		case SWT.CENTER:
+			y += (height - extent.y) / 2; break; 
+		case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
+			y += height - extent.y - marginY; break;
+		}
 		
 		gc.drawString(text, x, y, true);
 //		lastFont = gc.getFont();

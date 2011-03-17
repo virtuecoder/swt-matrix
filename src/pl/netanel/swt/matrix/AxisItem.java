@@ -11,9 +11,9 @@ import pl.netanel.util.Preconditions;
  */
 class AxisItem {
 	public Section section;
-	public MutableNumber index;
+	public Number index;
 	
-	public AxisItem(Section section, MutableNumber index) {
+	public AxisItem(Section section, Number index) {
 		Preconditions.checkNotNullWithName(index, "index");
 		this.section = section;
 		this.index = index;

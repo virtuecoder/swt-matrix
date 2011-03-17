@@ -73,7 +73,7 @@ class NumberOrder extends NumberSet {
 		for (int i = items.size(); i-- > 1;) {
 			Extent e1 = items.get(i-1);
 			Extent e2 = items.get(i);
-			if (math.compare(math.increment(e1.end).getValue(), e2.start()) == 0) {
+			if (math.compare(math.increment(e1.end()), e2.start()) == 0) {
 				e1.end.set(e2.end);
 				items.remove(i);
 			}

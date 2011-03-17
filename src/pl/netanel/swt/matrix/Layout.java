@@ -56,8 +56,8 @@ class Layout {
 		tail = new CountCache(backward);
 		
 		Section section = sections2[0];
-		start = new AxisItem(section, math.create(0));
-		zeroItem = new AxisItem(section, math.create(0));
+		start = new AxisItem(section, math.ZERO_VALUE());
+		zeroItem = new AxisItem(section, math.ZERO_VALUE());
 		forwardNavigator.init();
 		current = forwardNavigator.getItem();
 		total = math.create(0);
@@ -396,7 +396,7 @@ class Layout {
 	 * in case index is not lower then the section count.  
 	 */
 	protected boolean isOutOfBounds(AxisItem item) {
-		return math.compare(item.index.getValue(), item.section.getCount()) >= 0;
+		return math.compare(item.index, item.section.getCount()) >= 0;
 	}
 
 	
@@ -444,7 +444,7 @@ class Layout {
 			Bound bound1, bound2;
 
 			if (dir instanceof Backward) {
-				lastLine(dir.section, dir.seq.index());
+				lastLine(dir.section, dir.seq.index().getValue());
 			}
 			for (int i = 0; condition() && item != null; i++) {
 				bound1 = new Bound(0, dir.section.getLineWidth(dir.seq.index().getValue()));
@@ -503,9 +503,9 @@ class Layout {
 			} 
 		}
 
-		Bound lastLine(Section section, MutableNumber index) {
-			MutableNumber index2 = section.math.create(index).increment();
-			Bound bound = new Bound(0, section.getLineWidth(index2.getValue()));
+		Bound lastLine(Section section, Number index) {
+			Number index2 = section.math.increment(index);
+			Bound bound = new Bound(0, section.getLineWidth(index2));
 			lines.add(bound);
 			items.add(new AxisItem(section, index2));
 			return bound;
@@ -618,7 +618,7 @@ class Layout {
 			   distance > tail.distance && !tail.isEmpty() ? tail : main;
 	}
 	
-	private Cache getCache(Section section, MutableNumber index) {
+	private Cache getCache(Section section, Number index) {
 		for (Cache cache: new Cache[] {head, main, tail}) {
 			int len = cache.cells.size();
 			for (int i = 0; i < len; i++) {
@@ -655,7 +655,7 @@ class Layout {
 		for (int i = 0, size = sections.size(); i < size; i++) {
 			Section section = sections.get(i);
 			if (item.section.equals(section)) {
-				return position.add(math.getValue(section.getPosition(item.index.getValue())));
+				return position.add(math.getValue(section.getPosition(item.index)));
 			}
 			position.add(section.getVisibleCount());
 		}
@@ -671,7 +671,7 @@ class Layout {
 			pos1.set(pos2);
 			pos2.add(section.getVisibleCount());
 			if (math.compare(pos2, position) > 0) {
-				return new AxisItem(section, math.create(section.getByPosition(pos1.subtract(position).negate().getValue())));
+				return new AxisItem(section, section.getByPosition(pos1.subtract(position).negate().getValue()));
 			}
 		}
 		return null;
@@ -740,7 +740,7 @@ class Layout {
 				if (items.size() == bounds.size() && 
 					model.getZIndex(section2) < model.getZIndex(item.section)) 
 				{
-					item = new AxisItem(item.section, math.create(item.index).increment());
+					item = new AxisItem(item.section, math.increment(item.index));
 					bound = bounds.get(i);
 					i = bounds.size();
 					return true;

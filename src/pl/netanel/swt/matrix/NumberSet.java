@@ -297,7 +297,7 @@ class NumberSet {
 		}
 	}
 
-	public int getExtentIndex(MutableNumber n) {
+	public int getExtentIndex(Number n) {
 		for (int i = 0, size = items.size(); i < size; i++) {
 			Extent e = items.get(i);
 			if (math.contains(e, n)) {

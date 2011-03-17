@@ -24,11 +24,11 @@ public class TestUtil {
 	}
 	
 	public static AxisItem item(Section section, int index) {
-		return new AxisItem(section, number(index));
+		return new AxisItem(section, index);
 	}
 	
 	public static AxisItem item(AxisModel model, int section, int index) {
-		return new AxisItem(model.getSection(section), number(index));
+		return new AxisItem(model.getSection(section), index);
 	}
 	
 	static NumberSet indexSet() {
