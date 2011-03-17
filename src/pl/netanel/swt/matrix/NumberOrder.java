@@ -83,7 +83,7 @@ class NumberOrder extends NumberSet {
 	public Number indexOf(Number modelIndex) {
 //		System.out.println(modelIndex.getClass());
 		if (math.compare(modelIndex, count.getValue()) >= 0 || 
-			math.compare(modelIndex, math.ZERO().getValue()) < 0) return modelIndex;
+			math.compare(modelIndex, math.ZERO_VALUE()) < 0) return modelIndex;
 			
 		MutableNumber sum = math.create(0);	
 		for (Extent e: items) {

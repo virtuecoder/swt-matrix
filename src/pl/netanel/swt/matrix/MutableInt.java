@@ -35,26 +35,6 @@ class MutableInt extends MutableNumber<MutableInt, Integer> {
 	}
 	
 	@Override
-	public int intValue() {
-		return value;
-	}
-
-	@Override
-	public long longValue() {
-		return value;
-	}
-
-	@Override
-	public float floatValue() {
-		return value;
-	}
-
-	@Override
-	public double doubleValue() {
-		return value;
-	}
-
-	@Override
 	public MutableInt set(Number value) {
 		this.value = value.intValue();
 		return this;
@@ -65,8 +45,14 @@ class MutableInt extends MutableNumber<MutableInt, Integer> {
 		return value;
 	}
 
-	public void set(int value) {
+	public MutableInt set(int value) {
 		this.value = value;
+		return this;
+	}
+	
+	public MutableInt set(MutableNumber n) {
+		this.value = n.getValue().intValue();
+		return this;
 	}
 
 	@Override
@@ -133,6 +119,16 @@ class MutableInt extends MutableNumber<MutableInt, Integer> {
 	MutableInt subtract(Number n) {
 		value -= n.intValue();
 		return this;
+	}
+
+	@Override
+	int intValue() {
+		return value;
+	}
+
+	@Override
+	MutableInt min(MutableInt n) {
+		return value <= n.value ? this : n; 
 	}
 
 }

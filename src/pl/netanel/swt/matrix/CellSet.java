@@ -61,36 +61,33 @@ class CellSet {
 		insertNew = true;
 		int i = 0;
 		
-		Number start0a = math0.getValue(start0), 		end0a = math0.getValue(end0), 
-			   start1a = math1.getValue(start1), 		end1a = math1.getValue(end1);
-		
 		int size = items0.size();
 		for (;i < size; i++) {
 			Extent item0 = items0.get(i);
 			Extent item1 = items1.get(i);
 			
-			Number start0b = math0.getValue(item0.start), 	end0b = math0.getValue(item0.end), 
-	 			   start1b = math1.getValue(item1.start), 	end1b = math1.getValue(item1.end);
+			Number start0b = item0.start.getValue(), 	end0b = item0.end.getValue(), 
+	 			   start1b = item1.start.getValue(), 	end1b = item1.end.getValue();
 			
-			int es0 = math0.compare(end0a, start0b);
-			int se0 = math0.compare(start0a, end0b);
-			int es1 = math1.compare(end1a, start1b);
-			int se1 = math1.compare(start1a, end1b);
+			int es0 = math0.compare(end0, start0b);
+			int se0 = math0.compare(start0, end0b);
+			int es1 = math1.compare(end1, start1b);
+			int se1 = math1.compare(start1, end1b);
 			// Intersect
 			if (es0 >= 0 && se0 <= 0 && es1 >= 0 && se1 <= 0) {
-				int ss0 = math0.compare(start0a, start0b);
-				int ee0 = math0.compare(end0a, end0b);
-				int ss1 = math1.compare(start1a, start1b);
-				int ee1 = math1.compare(end1a, end1b);
+				int ss0 = math0.compare(start0, start0b);
+				int ee0 = math0.compare(end0, end0b);
+				int ss1 = math1.compare(start1, start1b);
+				int ee1 = math1.compare(end1, end1b);
 				
 				// Overlaps
 				boolean overlaps0 = ss0 <= 0 && ee0 >= 0; 
 				boolean overlaps1 = ss1 <= 0 && ee1 >= 0; 
 				if (overlaps0 && overlaps1) {
-					item0.start.set(start0a = math0.min(start0a, start0b));
-					item0.end.set(end0a = math0.max(end0a, end0b));
-					item1.start.set(start1a = math1.min(start1a, start1b));
-					item1.end.set(end1a = math1.max(end1a, end1b));
+					item0.start.set(start0 = math0.min(start0, start0b));
+					item0.end.set(end0 = math0.max(end0, end0b));
+					item1.start.set(start1 = math1.min(start1, start1b));
+					item1.end.set(end1 = math1.max(end1, end1b));
 					insertNew = false;
 				} 
 				// Inside
@@ -100,30 +97,26 @@ class CellSet {
 				// Crossing
 				else {
 					if (ss0 < 0) {
-						insert(math0.create(start0a), math0.decrement(start0b), 
-								math1.create(start1a), math1.create(end1a));
-						start0a = start0b;
+						insert(start0, math0.decrement(start0b), start1, end1);
+						start0 = start0b;
 					}
 					if (ee0 > 0) {
-						insert(math0.increment(end0b), math1.create(end0a), 
-								math1.create(start1a), math1.create(end1a));
-						end0a = end0b;
+						insert(math0.increment(end0b), end0, start1, end1);
+						end0 = end0b;
 					}
 					if (ss1 < 0) {
-						insert(math0.create(start0a), math1.create(end0a), 
-								math1.create(start1a), math1.decrement(start1b));
+						insert(start0, end0, start1, math1.decrement(start1b));
 					}
 					if (ee1 > 0) {
-						insert(math0.create(start0a), math1.create(end0a), 
-								math1.increment(end1b), math1.create(end1a));
+						insert(start0, end0, math1.increment(end1b), end1);
 					}
 					insertNew = false;
 				}
 			} 
 		}
 		if (insertNew) {
-			items0.add(new Extent(math0.create(start0a), math1.create(end0a)));
-			items1.add(new Extent(math0.create(start1a), math1.create(end1a)));
+			items0.add(new Extent(math0.create(start0), math1.create(end0)));
+			items1.add(new Extent(math0.create(start1), math1.create(end1)));
 		}
 	}
 	
@@ -131,30 +124,27 @@ class CellSet {
 		IntArray toRemove = new IntArray();
 		int i = 0;
 
-		Number start0a = math0.getValue(start0), 		end0a = math0.getValue(end0), 
-			   start1a = math1.getValue(start1), 		end1a = math1.getValue(end1);
-		
 		int size = items0.size();
 		for (;i < size; i++) {
 			Extent item0 = items0.get(i);
 			Extent item1 = items1.get(i);
 			
-			Number start0b = math0.getValue(item0.start), end0b = math0.getValue(item0.end), 
-				   start1b = math1.getValue(item1.start), end1b = math1.getValue(item1.end);
+			Number start0b = item0.start.getValue(), end0b = item0.end.getValue(), 
+				   start1b = item1.start.getValue(), end1b = item1.end.getValue();
 			
 			
-			int es0 = math0.compare(end0a, start0b);
-			int se0 = math0.compare(start0a, end0b);
-			int es1 = math1.compare(end1a, start1b);
-			int se1 = math1.compare(start1a, end1b);
+			int es0 = math0.compare(end0, start0b);
+			int se0 = math0.compare(start0, end0b);
+			int es1 = math1.compare(end1, start1b);
+			int se1 = math1.compare(start1, end1b);
 			
 			// Separate
 			if (es0 < 0 || se0 > 0 || es1 < 0 || se1 > 0) continue;
 			
-			int ss0 = math0.compare(start0a, start0b);
-			int ee0 = math0.compare(end0a, end0b);
-			int ss1 = math1.compare(start1a, start1b);
-			int ee1 = math1.compare(end1a, end1b);
+			int ss0 = math0.compare(start0, start0b);
+			int ee0 = math0.compare(end0, end0b);
+			int ss1 = math1.compare(start1, start1b);
+			int ee1 = math1.compare(end1, end1b);
 			
 			// Overlap
 			if (ss0 <= 0 && ee0 >= 0 && ss1 <= 0 && ee1 >= 0) {
@@ -166,25 +156,25 @@ class CellSet {
 
 			if (ss0 > 0) {
 				// Add lines before the removal start
-				insert(start0b, math0.decrement(start0a), start1b, end1b);
-				start0b = start0a;
+				insert(start0b, math0.decrement(start0), start1b, end1b);
+				start0b = start0;
 				remove = true;
 			}
 			if (ee0 < 0) {
 				// Add lines after the removal start
-				insert(math0.increment(end0a), end0b, start1b, end1b);
-				end0b = end0a;
+				insert(math0.increment(end0), end0b, start1b, end1b);
+				end0b = end0;
 				remove = true;
 			}
 			
 			if (ss1 > 0) {
 				// Add lines before the removal start
-				insert(start0b, end0b, start1b, math1.decrement(start1a));
+				insert(start0b, end0b, start1b, math1.decrement(start1));
 				remove = true;
 			}
 			if (ee1 < 0) {
 				// Add lines after the removal start
-				insert(start0b, end0b, math1.increment(end1a), end1b);
+				insert(start0b, end0b, math1.increment(end1), end1b);
 				remove = true;
 			}
 			if (remove) toRemove.add(i);
@@ -200,15 +190,15 @@ class CellSet {
 		items1.add(new Extent(math0.create(start1), math1.create(end1)));
 	}
 	
-	public void change(MutableNumber start0, MutableNumber end0, 
-			MutableNumber start1, MutableNumber end1, boolean add) 
-	{
-		if (add) {
-			add(start0, end0, start1, end1);
-		} else {
-			remove(start0, end0, start1, end1);
-		}
-	}
+//	public void change(MutableNumber start0, MutableNumber end0, 
+//			MutableNumber start1, MutableNumber end1, boolean add) 
+//	{
+//		if (add) {
+//			add(start0, end0, start1, end1);
+//		} else {
+//			remove(start0, end0, start1, end1);
+//		}
+//	}
 
 	public boolean isEmpty() {
 		return items0.isEmpty();
@@ -251,14 +241,14 @@ class CellSet {
 		return copy;
 	}
 	
-//	int intersect(MutableNumber start0a, MutableNumber end0a, MutableNumber start1a, MutableNumber end1a, 
+//	int intersect(MutableNumber start0, MutableNumber end0, MutableNumber start1, MutableNumber end1, 
 //			MutableNumber start0b, MutableNumber end0b, MutableNumber start1b, MutableNumber end1b) 
 //	{
-//		int es0 = math.compare(end0a, start0b);
-//		int es1 = math.compare(end1a, start1b);
+//		int es0 = math.compare(end0, start0b);
+//		int es1 = math.compare(end1, start1b);
 //		MutableNumber start0c, end0c, start1c, end1c; // intersection index
-//		if (math.compare(end0a, start0b) >= 0 && math.compare(start0a, end0b) <= 0 &&
-//			math.compare(end1a, start1b) >= 0 && math.compare(start1a, end1b) <= 0) 
+//		if (math.compare(end0, start0b) >= 0 && math.compare(start0, end0b) <= 0 &&
+//			math.compare(end1, start1b) >= 0 && math.compare(start1, end1b) <= 0) 
 //		{
 //			return 
 //		}

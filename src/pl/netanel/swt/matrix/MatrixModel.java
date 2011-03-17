@@ -220,7 +220,7 @@ public class MatrixModel implements Iterable<Zone> {
 		while (seq.next()) {
 			Zone zone = getZone(seq.section0, seq.section1);
 			if (zone.isSelectionEnabled()) {
-				zone.setSelected(seq.start0, seq.end0, seq.start1, seq.end1, selected);
+				zone.setSelected(seq.start0.getValue(), seq.end0.getValue(), seq.start1.getValue(), seq.end1.getValue(), selected);
 			}	
 		}
 	}
@@ -233,7 +233,7 @@ public class MatrixModel implements Iterable<Zone> {
 	 */
 	class ExtentPairSequence {
 		Section section0, section1;
-		Number start0, end0, start1, end1;
+		MutableNumber start0, end0, start1, end1;
 		ExtentSequence seq0, seq1;
 		boolean empty;
 		private AxisItem startItem1;

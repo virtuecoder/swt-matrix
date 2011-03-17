@@ -111,9 +111,9 @@ public class AxisModel implements Iterable<Section> {
 		
 		for (int i = start.section.index; i <= end.section.index; i++) {
 			Section section = sections.get(i);
-			Number startIndex = i == start.section.index ? start.index : math.ZERO();
-			Number endIndex = i == end.section.index ? end.index : 
-				math.create(math.increment(section.getCount()));
+			Number startIndex = i == start.section.index ? start.index.getValue() : math.ZERO_VALUE();
+			Number endIndex = i == end.section.index ? end.index.getValue() : 
+				math.increment(section.getCount());
 			section.setSelected(startIndex, endIndex, select);
 		}
 	}

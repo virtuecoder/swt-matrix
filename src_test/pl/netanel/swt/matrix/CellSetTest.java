@@ -1,7 +1,6 @@
 package pl.netanel.swt.matrix;
 
 import static org.junit.Assert.*;
-import static pl.netanel.swt.matrix.TestUtil.*;
 
 import java.util.ArrayList;
 
@@ -59,7 +58,7 @@ public class CellSetTest {
 	
 	@Test
 	public void testOfTest5() throws Exception {
-		set.add(number(1), number(1), number(1), number(1));
+		set.add(1, 1, 1, 1);
 		result(	"∟∟"	, 
 				"∟■"	);
 	}
@@ -456,8 +455,8 @@ public class CellSetTest {
 	
 	@Test
 	public void removeCorner2() throws Exception {
-		set.add(number(0), number(2), number(2), number(3));
-		set.remove(number(2), number(4), number(0), number(2));
+		set.add(0, 2, 2, 3);
+		set.remove(2, 4, 0, 2);
 		result( "∟∟■■"	,
 				"∟∟■■"	,
 				"∟∟∟■" 	);
@@ -567,7 +566,7 @@ public class CellSetTest {
 //	private void subset(int start0, int end0, int start1, int end1, String ...expected) {
 //		Math f = IntMath.getInstance();
 //		CellSet subset = new CellSet(f, f);
-//		set.subset(number(start0), number(end0), number(start1), number(end1), subset);
+//		set.subset(start0, end0, start1, end1, subset);
 //		result(subset, expected);
 //	}
 	
@@ -576,7 +575,7 @@ public class CellSetTest {
 	}
 
 	void add(int start0, int end0, int start1, int end1) {
-		set.add(number(start0), number(end0), number(start1), number(end1));
+		set.add(start0, end0, start1, end1);
 	}
 	
 	private void insert(String ...lines) {

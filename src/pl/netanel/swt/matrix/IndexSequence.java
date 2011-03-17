@@ -43,7 +43,7 @@ public class IndexSequence implements Sequence {
 	 */
 	public boolean next() {
 		if (size == 0) return false;
-		if (set.math.compare(index.increment(), e.end()) > 0) {
+		if (set.math.compare(index.increment(), e.end) > 0) {
 			if (++i >= size) return false;
 			e = set.items.get(i);
 			index.set(e.start);
@@ -61,6 +61,6 @@ public class IndexSequence implements Sequence {
 	}
 
 	boolean hasNext() {
-		return i < size - 1 || set.math.compare(index.increment(), e.end()) < 0;
+		return i < size - 1 || set.math.compare(index.increment(), e.end) < 0;
 	}
 }

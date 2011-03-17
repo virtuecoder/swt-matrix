@@ -6,7 +6,6 @@ class BigIntegerMath extends Math<MutableBigInteger, BigInteger> {
 
 	private static final MutableBigInteger ZERO = new MutableBigInteger(BigInteger.ZERO);
 	private static final MutableBigInteger ONE = new MutableBigInteger(BigInteger.ONE);
-	
 	private static BigIntegerMath instance = new BigIntegerMath();
 
 	public static BigIntegerMath getInstance() {
@@ -20,7 +19,12 @@ class BigIntegerMath extends Math<MutableBigInteger, BigInteger> {
 
 	@Override
 	public MutableBigInteger create(Number n) {
-		return new MutableBigInteger(new BigInteger(n.toString()));
+		return new MutableBigInteger(getValue(n));
+	}
+	
+	@Override
+	public MutableBigInteger create(MutableNumber mn) {
+		return new MutableBigInteger(mn.toBigInteger());
 	}
 
 	@Override
@@ -54,10 +58,20 @@ class BigIntegerMath extends Math<MutableBigInteger, BigInteger> {
 	}
 
 	@Override
+	public BigInteger ZERO_VALUE() {
+		return BigInteger.ZERO;
+	}
+
+	@Override
+	public BigInteger ONE_VALUE() {
+		return BigInteger.ONE;
+	}
+	
+	@Override
 	public MutableBigInteger ZERO() {
 		return ZERO;
 	}
-
+	
 	@Override
 	public MutableBigInteger ONE() {
 		return ONE;
@@ -92,7 +106,7 @@ class BigIntegerMath extends Math<MutableBigInteger, BigInteger> {
 	@Override
 	public BigInteger getValue(Number n) {
 		if (n instanceof BigInteger) return (BigInteger) n;
-		if (n instanceof MutableBigInteger) return ((MutableBigInteger) n).value;
+//		if (n instanceof MutableBigInteger) return ((MutableBigInteger) n).value;
 		return new BigInteger(n.toString());
 	}
 

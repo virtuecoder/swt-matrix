@@ -1,5 +1,5 @@
 bin/*
 data/*
-jdoc/*
+javadoc/*
 src_tmp/*
 build/matrix.zip

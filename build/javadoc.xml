@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="javadoc">
-	<property name="dest" location="../jdoc" />
+	<property name="dest" location="../javadoc" />
 	
 	<target name="javadoc">
 		<delete includeEmptyDirs="true">
-			<fileset dir="${dest}" includes="*/**"/>
+			<fileset dir="${dest}" includes="*/**" excludes="images/**"/>
 		</delete>
 		
 		<javadoc 
@@ -16,7 +16,11 @@
 			splitindex="true" 
 			use="true" 
 			version="false" 
-			Windowtitle="SWT Matrix - API javadoc" />
+			windowtitle="SWT Matrix - API javadoc" 
+		  doctitle="SWT Matrix 0.01 API">
+			
+			<bottom><![CDATA[<i>Copyright &#169; 2011 netanel. All Rights Reserved.</i>]]></bottom>
+		</javadoc>
 	</target>
 </project>
 

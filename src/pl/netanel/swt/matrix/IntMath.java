@@ -5,6 +5,8 @@ class IntMath extends Math<MutableInt, Integer> {
 
 	private static final MutableInt ZERO = new MutableInt(0);
 	private static final MutableInt ONE = new MutableInt(1);
+	private static final Integer ZERO_VALUE = Integer.valueOf(0);
+	private static final Integer ONE_VALUE = Integer.valueOf(1);
 	
 	private static IntMath instance = new IntMath();
 
@@ -20,6 +22,21 @@ class IntMath extends Math<MutableInt, Integer> {
 	@Override
 	public MutableInt create(Number value) {
 		return new MutableInt(value.intValue());
+	}
+	
+	@Override
+	public MutableInt create(MutableNumber mn) {
+		return new MutableInt(mn instanceof MutableInt ? ((MutableInt) mn).value : mn.getValue().intValue());
+	}
+	
+	@Override
+	public Integer ZERO_VALUE() {
+		return ZERO_VALUE;
+	}
+	
+	@Override
+	public Integer ONE_VALUE() {
+		return ONE_VALUE;
 	}
 	
 	@Override

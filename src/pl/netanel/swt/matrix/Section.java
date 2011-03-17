@@ -1,17 +1,26 @@
 package pl.netanel.swt.matrix;
 
+import java.math.BigInteger;
 import java.util.Iterator;
 
 import pl.netanel.util.ImmutableIterator;
 
 
 /**
- * Section represents a continues segment of an {@link Axis}, like header, body, footer.<br> 
- * It contains a number of items.
+ * Section represents a continuous segment of an {@link Axis}, for example a header, body, footer.<br>
+ * It contains a number of items.<br>
+ * <img src="../../../../images/Section.png"/>
+ *
  * <p> 
+ * Section has boolean flags for visibility and navigation enablement. 
+ * On the diagram above the current item is 0 in body section of column axis and 2 in the body section of row axis.
+ * Only one item on the axis can the be the current one, as opposed to each section having its own current item.  
  * <p>
- * Item attributes (cell width, line width, moveable, resizable, hideable, hidden, selected 
- * Items can be selected, moved, hidden, resized. 
+ * Item attributes include cell width, line width, moveable, resizable, hideable, hidden, selected. 
+ * To optimize data storage of those attributes one value can be set for a range of items enclosed between  
+ * the start and end items. Also default values can be defined to save memory. If 1000000 items have the same width,
+ * then its a waste to store 1000000 ints with the same values.
+ *  
  * 
  * @author Jacek Kolodziejczyk created 02-03-2011
  */
@@ -40,7 +49,14 @@ public class Section {
 	
 	int index; 
 	
-	public Section(Class<? extends Number> numberClass) {
+	/**
+	 * The default constructor utilizing BigInteger indexing.
+	 */
+	public Section() {
+		this(Math.getInstance(BigInteger.class));
+	}
+	
+	Section(Class<? extends Number> numberClass) {
 		this(Math.getInstance(numberClass));
 	}
 	
@@ -77,7 +93,7 @@ public class Section {
 
 
 	public Number getCount() {
-		return count;
+		return count.getValue();
 	}
 
 	public void setCount(Number count) {
@@ -85,8 +101,8 @@ public class Section {
 		order.setCount(count);
 	}
 
-	MutableNumber getVisibleCount() {
-		return math.subtract(count, hidden.getCount());
+	Number getVisibleCount() {
+		return math.subtract(count, hidden.getCount()).getValue();
 	}
 
 	public boolean isEmpty() {
@@ -146,7 +162,7 @@ public class Section {
 	}
 	
 	public Number getHiddenCount(Number start, Number end) {
-		return hidden.getCount(start, end);
+		return hidden.getCount(start, end).getValue();
 	}
 	
 	public void setMoveable(Number start, Number end, boolean flag) {
@@ -180,7 +196,7 @@ public class Section {
 	
 	public void setSelected(boolean selected) {
 		if (selected) {
-			selection.add(math.ZERO(), math.decrement(count));
+			selection.add(math.ZERO_VALUE(), math.decrement(count.getValue()));
 		} else {
 			selection.clear();
 		}
@@ -196,6 +212,10 @@ public class Section {
 	
 	public boolean isSelected(Number index) {
 		return selection.contains(index);
+	}
+	
+	public Number getSelectionCount() {
+		return selection.getCount().getValue();
 	}
 	
 	public Iterator<Number> getSelection() {
@@ -257,7 +277,7 @@ public class Section {
 			boolean contains = math.contains(e.start(), e.end(), index);
 			hiddenCount.add(hidden.getCount(e.start(), contains ? index : e.end()));
 			if (contains) {
-				return pos2.add(math.getValue(index)).subtract(e.start).subtract(hiddenCount);
+				return pos2.add(index).subtract(e.start).subtract(hiddenCount).getValue();
 			}
 			pos1.set(pos2);
 			pos2.add(e.end).subtract(e.start).increment(); //.subtract(hiddenCount);
@@ -266,8 +286,8 @@ public class Section {
 	}
 
 	
-	public MutableNumber getByPosition(Number position) {
-		if (math.compare(position, getVisibleCount().getValue()) >= 0) return null;
+	public Number getByPosition(Number position) {
+		if (math.compare(position, getVisibleCount()) >= 0) return null;
 		
 		MutableNumber pos1 = math.create(0);
 		MutableNumber pos2 = math.create(0);
@@ -276,8 +296,8 @@ public class Section {
 			Extent e = order.items.get(i);
 			pos2.add(e.end).subtract(e.start).subtract(hidden.getCount(e.start(), e.end()));
 			if (math.compare(pos2.getValue(), position) >= 0) {
-				Number count = hidden.getCount(e.start(), pos1.getValue());
-				return pos1.subtract(position).negate().add(e.start).add(count);
+				MutableNumber count = hidden.getCount(e.start(), pos1.getValue());
+				return pos1.subtract(position).negate().add(e.start).add(count).getValue();
 			}
 			pos2.increment();
 			pos1.set(pos2); 
@@ -297,11 +317,11 @@ public class Section {
 	public void setHidden(boolean flag) {
 		for (int i = 0, imax = selection.items.size(); i < imax; i++) {
 			Extent e = selection.items.get(i);
-			setHidden(e.start, e.end, flag);
+			setHidden(e.start(), e.end(), flag);
 		}
 	}
 	public Number getLastIndex() {
-		return math.decrement(count);
+		return math.decrement(count.getValue());
 	}
 
 	

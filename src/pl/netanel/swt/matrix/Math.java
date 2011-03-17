@@ -31,13 +31,9 @@ abstract class Math<MN extends MutableNumber<MN, N>, N extends Number> {
 		else throw new IllegalArgumentException("Cannot do arithmetics on " + numberClass);
 	}
 
-	public MutableNumber getMutable(Number n) {
-		if (n instanceof MutableNumber) return (MutableNumber) n;
-		return create(n);
-	}
-
 	public abstract MN create(int value);
 	public abstract MN create(Number n);
+	public abstract MN create(MutableNumber n);
 
 	public abstract MN decrement(MN n);
 	public abstract MN increment(MN n);
@@ -48,6 +44,9 @@ abstract class Math<MN extends MutableNumber<MN, N>, N extends Number> {
 	
 	public abstract MN ZERO();
 	public abstract MN ONE();
+	
+	public abstract N ZERO_VALUE();
+	public abstract N ONE_VALUE();
 
 	public abstract N decrement(Number n);
 	public abstract N increment(Number n);
@@ -127,4 +126,8 @@ abstract class Math<MN extends MutableNumber<MN, N>, N extends Number> {
 	}
 
 	abstract public N getValue(Number n);
+
+	public MN min(MN x, MN y) {
+		return x.min(y);
+	}
 }

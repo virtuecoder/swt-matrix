@@ -80,7 +80,7 @@ abstract class DirectionIndexSequence implements Sequence {
 			else {
 				limit = he == null || this.section.math.contains(he, number2) ? 
 						lastInExtent : start(he);
-				d.set(this.section.math.min(subtract(limit, number2).getValue(), count.getValue()));
+				d.set(this.section.math.min(subtract(limit, number2), count));
 				add(number2, d.getValue());
 				count.subtract(d);
 			}
@@ -138,7 +138,7 @@ abstract class DirectionIndexSequence implements Sequence {
 	protected abstract MutableNumber end(Extent e);
 
 
-	public Number index() {
+	public MutableNumber index() {
 		return number;
 	}
 
@@ -148,7 +148,7 @@ abstract class DirectionIndexSequence implements Sequence {
 		return next(this.section.math.create(1));
 	}
 
-	void set(Number index) {
+	void set(MutableNumber index) {
 		i = this.section.order.getExtentIndex(index);
 		if (i == -1) return;
 		extent = this.section.order.items.get(i);
@@ -167,7 +167,7 @@ abstract class DirectionIndexSequence implements Sequence {
 
 		@Override
 		protected int compare(MutableNumber x, MutableNumber y) {
-			return math.compare(math.getValue(x), math.getValue(y));
+			return math.compare(x, y);
 		}
 		
 		@Override
@@ -215,7 +215,7 @@ abstract class DirectionIndexSequence implements Sequence {
 		
 		@Override
 		protected int compare(MutableNumber x, MutableNumber y) {
-			return math.compare(math.getValue(y), math.getValue(x));
+			return math.compare(y, x);
 		}
 		
 		@Override

@@ -62,7 +62,7 @@ class NumberQueueSet extends NumberSet {
 			case EQUAL: 			if (i == last) return false;
 			case OVERLAP:			items.remove(i); i--; last--; break;
 			case ADJACENT_AFTER: 	
-			case CROSS_AFTER:		start = item.start; items.remove(i); i--; last--; break;
+			case CROSS_AFTER:		start = item.start.getValue(); items.remove(i); i--; last--; break;
 			case CROSS_BEFORE:		item.start.set(math.increment(end)); break;
 			case INSIDE:
 				items.add(++i, new Extent(math.create(end).increment(), item.end.copy()));

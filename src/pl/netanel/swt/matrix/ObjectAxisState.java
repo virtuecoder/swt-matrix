@@ -55,7 +55,7 @@ class ObjectAxisState<T> extends AxisState {
 	}
 	
 	public void setValue(Extent extent, T value) {
-		setValue(extent.start, extent.end, value);
+		setValue(extent.start(), extent.end(), value);
 	}
 	
 	public void setValue(Number from, Number to, T value) {

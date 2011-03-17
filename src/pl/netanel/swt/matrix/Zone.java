@@ -232,8 +232,8 @@ public class Zone {
 	public void setSelected(boolean selected) {
 		if (selected) {
 			cellSelection.add(
-					section0.math.ZERO(), section0.getLastIndex(), 
-					section1.math.ZERO(), section1.getLastIndex());
+					section0.math.ZERO_VALUE(), section0.getLastIndex(), 
+					section1.math.ZERO_VALUE(), section1.getLastIndex());
 		} else {
 			cellSelection.clear();
 			lastSelection.clear();

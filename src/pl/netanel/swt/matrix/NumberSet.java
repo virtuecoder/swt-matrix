@@ -272,7 +272,7 @@ class NumberSet {
 	public void replace(NumberSet set) {
 		items.clear();
 		for (Extent e: items) {
-			items.add(new Extent(math.create(e.start), math.create(e.end)));
+			items.add(new Extent(math.create(e.start()), math.create(e.end())));
 		}
 	}
 
@@ -284,7 +284,7 @@ class NumberSet {
 	public NumberSet copy() {
 		NumberSet copy = new NumberSet(math);
 		for (Extent e: items) {
-			copy.items.add(new Extent(math.create(e.start), math.create(e.end)));
+			copy.items.add(new Extent(math.create(e.start()), math.create(e.end())));
 		}
 		return copy;
 	}
@@ -297,10 +297,10 @@ class NumberSet {
 		}
 	}
 
-	public int getExtentIndex(Number n) {
+	public int getExtentIndex(MutableNumber n) {
 		for (int i = 0, size = items.size(); i < size; i++) {
 			Extent e = items.get(i);
-			if (math.contains(e.start(), e.end(), math.getValue(n))) {
+			if (math.contains(e, n)) {
 				return i;
 			}
 		}

@@ -37,7 +37,7 @@ public class TestUtil {
 	
 	static NumberSet indexSet(int start, int end) {
 		NumberSet set = new NumberSet(IntMath.getInstance());
-		set.add(number(start), number(end));
+		set.add(start, end);
 		return set;
 	}
 	

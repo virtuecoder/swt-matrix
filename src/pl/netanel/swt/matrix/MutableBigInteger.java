@@ -40,7 +40,13 @@ class MutableBigInteger extends MutableNumber<MutableBigInteger, BigInteger> {
 
 	@Override
 	MutableBigInteger set(Number n) {
-		value = new BigInteger(n.toString());
+		value = n instanceof BigInteger ? (BigInteger) n : new BigInteger(n.toString());
+		return this;
+	}
+	
+	@Override
+	MutableBigInteger set(MutableNumber n) {
+		value = n instanceof MutableBigInteger ? n.toBigInteger() : new BigInteger(n.toString());
 		return this;
 	}
 
@@ -93,26 +99,6 @@ class MutableBigInteger extends MutableNumber<MutableBigInteger, BigInteger> {
 	}
 
 	@Override
-	public int intValue() {
-		return value.intValue();
-	}
-
-	@Override
-	public long longValue() {
-		return value.longValue();
-	}
-
-	@Override
-	public float floatValue() {
-		return value.floatValue();
-	}
-
-	@Override
-	public double doubleValue() {
-		return value.doubleValue();
-	}
-
-	@Override
 	public BigInteger toBigInteger() {
 		return value;
 	}
@@ -132,6 +118,16 @@ class MutableBigInteger extends MutableNumber<MutableBigInteger, BigInteger> {
 	MutableBigInteger subtract(Number n) {
 		value = value.subtract((BigInteger) n);
 		return this;
+	}
+
+	@Override
+	int intValue() {
+		return value.intValue();
+	}
+
+	@Override
+	MutableBigInteger min(MutableBigInteger n) {
+		return value.compareTo(n.value) <= 0 ? this : n; 
 	}
 
 }
