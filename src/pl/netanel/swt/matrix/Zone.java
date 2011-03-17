@@ -213,6 +213,11 @@ public class Zone {
 		return cellSelection.contains(index0, index1);
 	}
 	
+	
+	boolean isSelected(MutableNumber index0, MutableNumber index1) {
+		return cellSelection.contains(index0.getValue(), index1.getValue());
+	}
+	
 	public void setSelected(
 			Number start0, Number end0,
 			Number start1, Number end1, boolean selected) {

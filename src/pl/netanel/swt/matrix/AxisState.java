@@ -21,7 +21,7 @@ abstract class AxisState {
 	protected int indexOf(Number index) {
 		for (int i = 0; i < extents.size(); i++) {
 			Extent e = extents.get(i);
-			if (math.contains(e.start, e.end, index)) {
+			if (math.contains(e.start(), e.end(), index)) {
 				return i;
 			}
 		}
@@ -36,9 +36,9 @@ abstract class AxisState {
 		for (; i < extents.size(); i++) {
 			e = extents.get(i);
 			boolean sameValue = equalValue(i);
-			int compare = math.compare(e.start, e.end, start, end);
-			int ss = math.compare(e.start, start);
-			int ee = math.compare(e.end, end);
+			int compare = math.compare(e.start(), e.end(), start, end);
+			int ss = math.compare(e.start(), start);
+			int ee = math.compare(e.end(), end);
 			switch(compare) {
 			case AFTER:					break;
 			case BEFORE:				continue;
@@ -69,8 +69,8 @@ abstract class AxisState {
 					// enlarge
 					if (modified == null) modified = e;
 					else toRemove.add(i);
-					modified.start.set(math.min(start, modified.start, e.start));
-					modified.end.set(math.max(end, modified.end, e.end));
+					modified.start.set(math.min(start, modified.start(), e.start()));
+					modified.end.set(math.max(end, modified.end(), e.end()));
 					
 				} else {
 					// shrink

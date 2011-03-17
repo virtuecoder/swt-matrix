@@ -24,8 +24,8 @@ public class Snippet_0010 {
 		Display display = shell.getDisplay();
 		
 		Matrix matrix = new Matrix(shell, SWT.NONE);
-		matrix.getAxis1().getBody().setCount(40);
-		matrix.getAxis0().getBody().setCount(1000);
+		matrix.getModel1().getBody().setCount(40);
+		matrix.getModel0().getBody().setCount(1000);
 		
 		matrix.getModel().getBody().setDefaultForeground(matrix.getBackground());
 		

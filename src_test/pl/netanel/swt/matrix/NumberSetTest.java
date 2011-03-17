@@ -295,7 +295,7 @@ public class NumberSetTest {
 	
 
 	static private boolean constains(NumberSet set, int n) {
-		return set.contains(number(n));
+		return set.contains(n);
 	}
 
 	static private boolean constains(NumberSet set, int start, int end) {
@@ -307,23 +307,23 @@ public class NumberSetTest {
 	}
 	
 	static private int count(NumberSet set, int start, int end) {
-		return set.getCount(number(start), number(end)).intValue();
+		return set.getCount(start, end).intValue();
 	}
 
 	static private boolean add(NumberSet set, int n) {
-		return set.add(number(n));
+		return set.add(n);
 	}
 	
 	static private boolean add(NumberSet set, int start, int end) {
-		return set.add(number(start), number(end));
+		return set.add(start, end);
 	}
 	
 	static private boolean remove(NumberSet set, int n) {
-		return set.remove(number(n));
+		return set.remove(n);
 	}
 	
 	static private boolean remove(NumberSet set, int start, int end) {
-		return set.remove(number(start), number(end));
+		return set.remove(start, end);
 	}
 
 

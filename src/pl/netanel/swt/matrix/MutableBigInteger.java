@@ -2,7 +2,7 @@ package pl.netanel.swt.matrix;
 
 import java.math.BigInteger;
 
-class MutableBigInteger extends MutableNumber<MutableBigInteger> {
+class MutableBigInteger extends MutableNumber<MutableBigInteger, BigInteger> {
 	private static final long serialVersionUID = 1L;
 	
 	BigInteger value;
@@ -34,7 +34,7 @@ class MutableBigInteger extends MutableNumber<MutableBigInteger> {
 	}
 
 	@Override
-	Number getValue() {
+	BigInteger getValue() {
 		return value;
 	}
 

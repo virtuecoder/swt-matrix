@@ -57,7 +57,7 @@ public class ModelPainter extends TextPainter {
 	public void beforePaint(Number index0, Number index1) {
 		super.beforePaint(index0, index1);
 		
-		boolean isSelected = zone.isSelected(index0, index1) && shouldHighlight;
+		boolean isSelected = shouldHighlight && zone.isSelected(index0, index1);
 		Color foreground = isSelected 
 				? selectionForeground
 				: zone.getForeground(index0, index1);

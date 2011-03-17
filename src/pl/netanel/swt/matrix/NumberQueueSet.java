@@ -56,7 +56,7 @@ class NumberQueueSet extends NumberSet {
 		
 		for (;i <= last; i++) {
 			Extent item = items.get(i);
-			int location = math.compare(start, end, item.start, item.end);
+			int location = math.compare(start, end, item.start(), item.end());
 			
 			switch (location) {
 			case EQUAL: 			if (i == last) return false;
@@ -96,7 +96,7 @@ class NumberQueueSet extends NumberSet {
 		
 		for (;i <= last; i++) {
 			Extent item = items.get(i);
-			int location = math.compare(start, end, item.start, item.end);
+			int location = math.compare(start, end, item.start(), item.end());
 			
 			switch (location) {
 			case EQUAL: 			
@@ -132,7 +132,7 @@ class NumberQueueSet extends NumberSet {
 	 */
 	public boolean contains(Number index) {
 		for (Extent e: items) {
-			if (math.contains(e.start, e.end, index)) {
+			if (math.contains(e.start(), e.end(), index)) {
 				return true;
 			}
 		}

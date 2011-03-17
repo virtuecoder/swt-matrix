@@ -184,7 +184,7 @@ public class Matrix extends Canvas {
 			painter.init(gc);
 			for (seq0.init(); seq0.next();) {
 				for (seq1.init(); seq1.next();) {
-					painter.beforePaint(seq0.item.index, seq1.item.index);
+					painter.beforePaint(seq0.item.index.getValue(), seq1.item.index.getValue());
 					Bound b0 = seq0.bound;
 					Bound b1 = seq1.bound;
 					painter.paint(b1.distance, b0.distance, b1.width, b0.width);
@@ -262,16 +262,24 @@ public class Matrix extends Canvas {
 		area = getClientArea();
 	}
 
+	public MatrixModel getModel() {
+		return model;
+	}
+	
+	public AxisModel getModel0() {
+		return model.getModel0();
+	}
+	
+	public AxisModel getModel1() {
+		return model.getModel1();
+	}
+	
 	public Axis getAxis0() {
 		return axis0;
 	}
 	
 	public Axis getAxis1() {
 		return axis1;
-	}
-	
-	public MatrixModel getModel() {
-		return model;
 	}
 	
 	
@@ -318,6 +326,7 @@ public class Matrix extends Canvas {
 		redraw();
 	}
 
+	
 	
 
 	

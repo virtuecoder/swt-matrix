@@ -38,7 +38,7 @@ class NumberSet {
 		StringBuilder sb = new StringBuilder();
 		for (Extent e: items) {
 			if (sb.length() > 0) sb.append(", ");
-			if (math.compare(e.start, e.end) == 0) {
+			if (math.compare(e.start(), e.end()) == 0) {
 				sb.append(e.start);
 			} else {
 				sb.append(e.start).append("-").append(e.end);
@@ -50,7 +50,7 @@ class NumberSet {
 	
 	public boolean contains(Number n) {
 		for (Extent e: items) {
-			if (math.contains(e.start, e.end, n)) {
+			if (math.contains(e.start(), e.end(), n)) {
 				return true;
 			}
 		}
@@ -59,7 +59,7 @@ class NumberSet {
 	
 	public boolean contains(Extent o) {
 		for (Extent e: items) {
-			if (math.contains(e.start, e.end, o.start) && math.contains(e.start, e.end, o.end)) {
+			if (math.contains(e.start(), e.end(), o.start()) && math.contains(e.start(), e.end(), o.end())) {
 				return true;
 			}
 		}
@@ -81,7 +81,7 @@ class NumberSet {
 	}
 	
 	public boolean add(Extent e) {
-		return add(e.start, e.end);
+		return add(e.start(), e.end());
 	}
 	
 	public boolean add(Number start, Number end) {
@@ -104,7 +104,7 @@ class NumberSet {
 		
 		for (;i < items.size(); i++) {
 			Extent item = items.get(i);
-			int compare = math.compare(item.start, item.end, start, end);
+			int compare = math.compare(item.start(), item.end(), start, end);
 			
 			switch (compare) {
 			case AFTER: 		if (sorted) {quit = true; } break; 
@@ -143,8 +143,8 @@ class NumberSet {
 	protected void extendItem(Extent existing, Number start, Number end) {
 		if (modified == null) modified = existing;
 		else toRemove.add(0, existing);
-		modified.start.set(math.min(start, modified.start, existing.start));
-		modified.end.set(math.max(end, modified.end, existing.end));
+		modified.start.set(math.min(start, modified.start(), existing.start()));
+		modified.end.set(math.max(end, modified.end(), existing.end()));
 	}
 	
 	/**
@@ -163,7 +163,7 @@ class NumberSet {
 	}
 	
 	public boolean remove(Extent e) {
-		return remove(e.start, e.end);
+		return remove(e.start(), e.end());
 	}
 	
 	public boolean remove(Number start, Number end) {
@@ -173,7 +173,7 @@ class NumberSet {
 		for (;i < items.size(); i++) {
 			Extent item = items.get(i);
 			
-			int location = math.compare(start, end, item.start, item.end);
+			int location = math.compare(start, end, item.start(), item.end());
 			switch (location) {
 			case AFTER: 			continue;
 			case BEFORE: 		
@@ -185,7 +185,7 @@ class NumberSet {
 				break;
 				
 			case CROSS_AFTER:	
-				item.end.set(math.max(math.decrement(start), item.start));
+				item.end.set(math.max(math.decrement(start), item.start()));
 				break;
 				
 			case EQUAL:	
@@ -195,7 +195,7 @@ class NumberSet {
 				
 			case INSIDE:
 				MutableNumber newEnd = item.end.copy();
-				item.end.set(math.max(math.decrement(start), item.start));
+				item.end.set(math.max(math.decrement(start), item.start()));
 				items.add(i+1, new Extent(math.create(end).increment(), newEnd));
 			}
 			modified = modified || location >= OVERLAP; 
@@ -244,7 +244,7 @@ class NumberSet {
 	public MutableNumber getCount(Number start, Number end) {
 		MutableNumber sum = math.create(0);
 		for (Extent e: items) {
-			switch (math.compare(e.start, e.end, start, end)) {
+			switch (math.compare(e.start(), e.end(), start, end)) {
 			case BEFORE:				
 			case ADJACENT_BEFORE:	continue;
 			case AFTER:				
@@ -300,7 +300,7 @@ class NumberSet {
 	public int getExtentIndex(Number n) {
 		for (int i = 0, size = items.size(); i < size; i++) {
 			Extent e = items.get(i);
-			if (math.contains(e.start.getValue(), e.end.getValue(), math.getValue(n))) {
+			if (math.contains(e.start(), e.end(), math.getValue(n))) {
 				return i;
 			}
 		}

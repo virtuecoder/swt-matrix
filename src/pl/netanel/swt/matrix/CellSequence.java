@@ -1,6 +1,5 @@
 package pl.netanel.swt.matrix;
 
-import pl.netanel.util.Sequence;
 
 /**
  * Allows iteration over a set of cells.
@@ -47,8 +46,8 @@ public class CellSequence implements Sequence {
 	 */
 	public boolean next() {
 		if (size == 0) return false;
-		if (set.math1.compare(index1.increment(), e1.end) > 0) {
-			if (set.math0.compare(index0.increment(), e0.end) > 0) {
+		if (set.math1.compare(index1.increment().getValue(), e1.end()) > 0) {
+			if (set.math0.compare(index0.increment().getValue(), e0.end()) > 0) {
 				if (++i >= size) return false;
 				e0 = set.items0.get(i);
 				e1 = set.items1.get(i);

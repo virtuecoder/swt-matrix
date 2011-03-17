@@ -3,19 +3,19 @@ package pl.netanel.swt.matrix;
 
 class NumberOrder extends NumberSet {
 
-	private final MutableNumber count, last;
+	private final MutableNumber count; 
+	private Number last;
 
 	public NumberOrder(Math math) {
 		super(math);
 		count = math.create(0);
-		last = math.create(0);
 	}
 
 	public void setCount(Number newCount) {
-		int compare = math.compare(math.getValue(newCount), count.getValue());
+		int compare = math.compare(newCount, count.getValue());
 		if (compare < 0) {
 			remove(newCount, last);
-			last.set(newCount).decrement();
+			last = math.decrement(newCount);
 		} 
 		else if (compare > 0) {
 			MutableNumber newLast = math.create(newCount).decrement();
@@ -23,13 +23,13 @@ class NumberOrder extends NumberSet {
 				items.add(new Extent(count.copy(), newLast));
 			} else {
 				Extent e = items.get(items.size() - 1);
-				if (math.compare(e.end, last) == 0) {
+				if (math.compare(e.end(), last) == 0) {
 					e.end.set(newLast);
 				} else {
 					items.add(new Extent(count.copy(), newLast));
 				}
 			}
-			last.set(newLast);
+			last = newLast.getValue();
 		} else {
 			return;
 		}
@@ -41,9 +41,10 @@ class NumberOrder extends NumberSet {
 		if (math.compare(start, target) <= 0 && math.compare(target, end) <= 0) {
 //			target = math.increment(end);
 			return;
-		} else {
-			target = math.create(target);
-		}
+		} 
+//		else {
+//			target = math.create(target);
+//		}
 		
 		remove(start, end);
 		
@@ -51,8 +52,8 @@ class NumberOrder extends NumberSet {
 		int i = 0;
 		for (; i < items.size(); i++) {
 			Extent e = items.get(i);
-			if (math.contains(e.start, e.end, target)) {
-				if (math.compare(target, e.start) == 0) {
+			if (math.contains(e.start(), e.end(), target)) {
+				if (math.compare(target, e.start()) == 0) {
 					break;
 				} 
 				else {
@@ -72,7 +73,7 @@ class NumberOrder extends NumberSet {
 		for (int i = items.size(); i-- > 1;) {
 			Extent e1 = items.get(i-1);
 			Extent e2 = items.get(i);
-			if (math.compare(math.increment(e1.end), e2.start) == 0) {
+			if (math.compare(math.increment(e1.end).getValue(), e2.start()) == 0) {
 				e1.end.set(e2.end);
 				items.remove(i);
 			}
@@ -80,13 +81,14 @@ class NumberOrder extends NumberSet {
 	}
 
 	public Number indexOf(Number modelIndex) {
-		if (math.compare(modelIndex, count) >= 0 || 
-			math.compare(modelIndex, math.ZERO()) < 0) return modelIndex;
+//		System.out.println(modelIndex.getClass());
+		if (math.compare(modelIndex, count.getValue()) >= 0 || 
+			math.compare(modelIndex, math.ZERO().getValue()) < 0) return modelIndex;
 			
 		MutableNumber sum = math.create(0);	
 		for (Extent e: items) {
-			if (math.contains(e.start, e.end, modelIndex)) {
-				return sum.add(math.getValue(modelIndex)).subtract(e.start);
+			if (math.contains(e.start(), e.end(), modelIndex)) {
+				return sum.add(math.getValue(modelIndex)).subtract(e.start).getValue();
 			}
 			sum.add(e.end).subtract(e.start).increment();
 		}

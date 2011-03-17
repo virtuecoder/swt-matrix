@@ -671,7 +671,7 @@ class Layout {
 			pos1.set(pos2);
 			pos2.add(section.getVisibleCount());
 			if (math.compare(pos2, position) > 0) {
-				return new AxisItem(section, section.getByPosition(pos1.subtract(position).negate()));
+				return new AxisItem(section, section.getByPosition(pos1.subtract(position).negate().getValue()));
 			}
 		}
 		return null;

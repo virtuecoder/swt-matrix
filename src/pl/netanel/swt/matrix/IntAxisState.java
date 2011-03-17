@@ -49,7 +49,7 @@ public class IntAxisState extends AxisState {
 	}
 	
 	public void setValue(Extent extent, int value) {
-		setValue(extent.start, extent.end, value);
+		setValue(extent.start(), extent.end(), value);
 	}
 	
 	public void setValue(Number from, Number to, int value) {

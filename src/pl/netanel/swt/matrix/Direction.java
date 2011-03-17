@@ -2,14 +2,13 @@ package pl.netanel.swt.matrix;
 
 import java.util.List;
 
-import pl.netanel.swt.matrix.Section.IndexSequence;
 
 
 abstract class Direction {
 	protected final List<Section> sections;
 	protected final Math math;
 	Section section;
-	IndexSequence seq;
+	DirectionIndexSequence seq;
 	int i, level, sign;
 	AxisItem freeze, min, start;
 	boolean pending, moved, hasMore, skipWithoutCurrent;
@@ -33,7 +32,7 @@ abstract class Direction {
 	public boolean set(AxisItem item) {
 		i = sections.indexOf(item.section);
 		section = item.section;
-		seq = section.getSequence(sign);
+		seq = getSequence(section, sign);
 		seq.init();
 		seq.set(item.index);
 		seq.level = 1;
@@ -85,7 +84,7 @@ abstract class Direction {
 						lastSection = i - sign;
 						continue;
 					}
-					seq = section.getSequence(sign);
+					seq = getSequence(section, sign);
 					seq.init();
 					level++;
 				} else {
@@ -108,6 +107,14 @@ abstract class Direction {
 		}
 	}
 	
+
+	
+	public DirectionIndexSequence getSequence(Section section2, int sign) {
+		return sign > 0 
+			? new DirectionIndexSequence.Forward(section) 
+			: new DirectionIndexSequence.Backward(section);
+	}
+
 	
 
 	static class Forward extends Direction {

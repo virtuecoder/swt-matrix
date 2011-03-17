@@ -1,17 +1,8 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.*;
-import static pl.netanel.swt.matrix.TestUtil.*;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-
-import pl.netanel.swt.matrix.MutableInt;
-import pl.netanel.swt.matrix.Section;
-import pl.netanel.swt.matrix.Section.Forward;
-import pl.netanel.swt.matrix.Section.IndexSequence;
 
 public class SectionTest {
 	
@@ -30,192 +21,21 @@ public class SectionTest {
 		section.setCount(3);
 		assertEquals(3, section.getCount().intValue());
 		
-		section.setCount(4L);
-		assertEquals(4, section.getCount().intValue());
-		
-		section.setCount(5.2f);
-		assertEquals(5, section.getCount().intValue());
-		
-		section.setCount(new BigInteger("6"));
-		assertEquals(6, section.getCount().intValue());
-		
-		section.setCount(new BigDecimal("7.3"));
-		assertEquals(7, section.getCount().intValue());
-		
-		section.setCount(new MutableInt(8));
-		assertEquals(8, section.getCount().intValue());
-	}
-	
-	@Test
-	public void hide() throws Exception {
-		Section section = new Section(int.class);
-		section.setHidden(1, 2, true);
-		
-		assertFalse(section.isHidden(0));
-		assertTrue(section.isHidden(1));
-		assertTrue(section.isHidden(2));
-		assertFalse(section.isHidden(3));
-		
-		section.setHidden(1, 1, false);
-		assertFalse(section.isHidden(1));
-		assertTrue(section.isHidden(2));
-	}
-	
-	@Test
-	public void sequence() throws Exception {
-		Section section = new Section(int.class);
-		Forward seq = section.new Forward();
-		assertSequence("", seq);
-		
-		section.setCount(1);
-		assertSequence("0", seq);
-		
-		section.setCount(5);
-		assertSequence("0, 1, 2, 3, 4", seq);
-	}
-	
-	@Test
-	public void sequenceHiddenMoved() throws Exception {
-		Section section = new Section(int.class);
-		section.setCount(5);
-		section.move(1, 2, 4);
-		IndexSequence seq = section.new Forward();
-		assertSequence("0, 3, 1, 2, 4", seq);
-		section.setHidden(2, true);
-		assertSequence("0, 3, 1, 4", seq);
-		section.setHidden(1, true);
-		assertSequence("0, 3, 4", seq);
-		section.setHidden(4, true);
-		assertSequence("0, 3", seq);
-		section.setHidden(0, true);
-		assertSequence("3", seq);
-		section.setHidden(3, true);
-		assertSequence("", seq);
-	}
-	
-	@Test
-	public void sequenceHiddenMovedBackward() throws Exception {
-		Section section = new Section(int.class);
-		section.setCount(5);
-		section.move(1, 2, 4);
-		IndexSequence seq = section.new Backward();
-		assertSequence("4, 2, 1, 3, 0", seq);
-		section.setHidden(2, true);
-		assertSequence("4, 1, 3, 0", seq);
-		section.setHidden(1, true);
-		assertSequence("4, 3, 0", seq);
-		section.setHidden(4, true);
-		assertSequence("3, 0", seq);
-		section.setHidden(0, true);
-		assertSequence("3", seq);
-		section.setHidden(3, true);
-		assertSequence("", seq);
-	}
-	
-	@Test
-	public void sequenceNextCount() throws Exception {
-		Section section = new Section(int.class);
-		section.setCount(5);
-		section.move(1, 2, 4);
-		Forward seq = section.new Forward();
-		assertSequence("0, 3, 1, 2, 4", seq);
-
-		section.setHidden(2, true);
-		
-		seq.init();
-		assertTrue(seq.next(number(4)));
-		assertEquals(4, seq.index().intValue());
-
-		seq.init();
-		seq.next(number(10));
-		assertEquals(4, seq.index().intValue());
-	}
-	
-	@Test
-	public void sequenceNextCountBackward() throws Exception {
-		Section section = new Section(int.class);
-		section.setCount(5);
-		section.move(1, 2, 4);
-		IndexSequence seq = section.new Backward();
-		assertSequence("4, 2, 1, 3, 0", seq);
-
-		section.setHidden(2, true);
-		
-		seq.init();
-		assertTrue(seq.next(number(4)));
-		assertEquals(0, seq.index().intValue());
-		
-		seq.init();
-		seq.next(number(10));
-		assertEquals(0, seq.index().intValue());
+//		section.setCount(4L);
+//		assertEquals(4, section.getCount().intValue());
+//		
+//		section.setCount(5.2f);
+//		assertEquals(5, section.getCount().intValue());
+//		
+//		section.setCount(new BigInteger("6"));
+//		assertEquals(6, section.getCount().intValue());
+//		
+//		section.setCount(new BigDecimal("7.3"));
+//		assertEquals(7, section.getCount().intValue());
+//		
+//		section.setCount(new MutableInt(8));
+//		assertEquals(8, section.getCount().intValue());
 	}
 	
 	
-	@Test
-	public void getPosition() throws Exception {
-		Section section = new Section(int.class);
-		section.setCount(10);
-		section.setHidden(2, 4, true);
-		section.move(6, 9, 3);
-		assertSequence("0, 1, 6, 7, 8, 9, 5", section.new Forward());
-		
-		assertEquals("0", section.getPosition(number(0)).toString());
-		assertEquals("1", section.getPosition(number(1)).toString());
-		assertEquals("2", section.getPosition(number(6)).toString());
-		assertEquals("3", section.getPosition(number(7)).toString());
-		assertEquals("4", section.getPosition(number(8)).toString());
-		assertEquals("5", section.getPosition(number(9)).toString());
-		assertEquals("6", section.getPosition(number(5)).toString());
-		assertEquals(null, section.getPosition(number(2)));
-		assertEquals(null, section.getPosition(number(3)));
-		assertEquals(null, section.getPosition(number(4)));
-		assertEquals(null, section.getPosition(number(20)));
-		
-		// Hide first
-		section.setHidden(0, true);
-		assertEquals(null, section.getPosition(number(0)));
-		assertEquals("0", section.getPosition(number(1)).toString());
-		
-		// Hide last
-		section.setHidden(5, true);
-		assertEquals(null, section.getPosition(number(5)));
-		assertEquals("4", section.getPosition(number(9)).toString());
-		
-	}
-	
-	@Test
-	public void getByPosition() throws Exception {
-		Section section = new Section(int.class);
-		section.setCount(10);
-		section.setHidden(2, 4, true);
-		section.move(6, 9, 3);
-		assertSequence("0, 1, 6, 7, 8, 9, 5", section.new Forward());
-		
-		assertEquals("0", section.getByPosition(number(0)).toString());
-		assertEquals("1", section.getByPosition(number(1)).toString());
-		assertEquals("6", section.getByPosition(number(2)).toString());
-		assertEquals("7", section.getByPosition(number(3)).toString());
-		assertEquals("8", section.getByPosition(number(4)).toString());
-		assertEquals("9", section.getByPosition(number(5)).toString());
-		assertEquals("5", section.getByPosition(number(6)).toString());
-		assertEquals(null, section.getByPosition(number(20)));
-		
-		// Hide first
-		section.setHidden(0, true);
-		assertEquals("1", section.getByPosition(number(0)).toString());
-		
-		// Hide last
-		section.setHidden(5, true);
-		assertEquals("9", section.getByPosition(number(4)).toString());
-		
-	}
-	
-	private static void assertSequence(String expected, IndexSequence seq) {
-		StringBuilder sb = new StringBuilder();
-		for (seq.init(); seq.next();) {
-			if (sb.length() > 0) sb.append(", ");
-			sb.append(seq.index());
-		}
-		assertEquals(expected, sb.toString());
-	}
 }

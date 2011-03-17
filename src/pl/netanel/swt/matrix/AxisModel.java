@@ -103,7 +103,7 @@ public class AxisModel implements Iterable<Section> {
 	}
 
 	
-	public void setSelected(AxisItem start, AxisItem end, boolean select) {
+	void setSelected(AxisItem start, AxisItem end, boolean select) {
 		// Make sure start < end 
 		if (comparePosition(start, end) > 0) {
 			AxisItem tmp = start; start = end; end = tmp;
@@ -142,7 +142,7 @@ public class AxisModel implements Iterable<Section> {
 	int comparePosition(AxisItem item1, AxisItem item2) {
 		int diff = item1.section.index - item2.section.index;
 		if (diff != 0) return diff; 
-		return item1.section.comparePosition(item1.index, item2.index);
+		return item1.section.comparePosition(item1.index.getValue(), item2.index.getValue());
 	}
 	
 	

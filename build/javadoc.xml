@@ -15,7 +15,8 @@
 			destdir="${dest}"
 			splitindex="true" 
 			use="true" 
-			version="false" />
+			version="false" 
+			Windowtitle="SWT Matrix - API javadoc" />
 	</target>
 </project>
 

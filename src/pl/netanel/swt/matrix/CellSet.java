@@ -47,8 +47,8 @@ class CellSet {
 		for (int i = 0; i < size; i++) {
 			Extent e1 = items0.get(i);
 			Extent e2 = items1.get(i);
-			if (math0.contains(e1.start, e1.end, index0) &&
-				math1.contains(e2.start, e2.end, index1)) 
+			if (math0.contains(e1.start(), e1.end(), index0) &&
+				math1.contains(e2.start(), e2.end(), index1)) 
 			{
 				return true;
 			}
@@ -61,31 +61,37 @@ class CellSet {
 		insertNew = true;
 		int i = 0;
 		
+		Number start0a = math0.getValue(start0), 		end0a = math0.getValue(end0), 
+			   start1a = math1.getValue(start1), 		end1a = math1.getValue(end1);
+		
 		int size = items0.size();
 		for (;i < size; i++) {
 			Extent item0 = items0.get(i);
 			Extent item1 = items1.get(i);
 			
-			Number start0a = math0.getValue(item0.start), end0a = math0.getValue(item0.end), 
-				  start1a = math1.getValue(item1.start), end1a = math1.getValue(item1.end);
+			Number start0b = math0.getValue(item0.start), 	end0b = math0.getValue(item0.end), 
+	 			   start1b = math1.getValue(item1.start), 	end1b = math1.getValue(item1.end);
 			
-			int es0 = math0.compare(end0, start0a);
-			int se0 = math0.compare(start0, end0a);
-			int es1 = math1.compare(end1, start1a);
-			int se1 = math1.compare(start1, end1a);
+			int es0 = math0.compare(end0a, start0b);
+			int se0 = math0.compare(start0a, end0b);
+			int es1 = math1.compare(end1a, start1b);
+			int se1 = math1.compare(start1a, end1b);
 			// Intersect
 			if (es0 >= 0 && se0 <= 0 && es1 >= 0 && se1 <= 0) {
-				int ss0 = math0.compare(start0, start0a);
-				int ee0 = math0.compare(end0, end0a);
-				int ss1 = math1.compare(start1, start1a);
-				int ee1 = math1.compare(end1, end1a);
+				int ss0 = math0.compare(start0a, start0b);
+				int ee0 = math0.compare(end0a, end0b);
+				int ss1 = math1.compare(start1a, start1b);
+				int ee1 = math1.compare(end1a, end1b);
 				
 				// Overlaps
 				boolean overlaps0 = ss0 <= 0 && ee0 >= 0; 
 				boolean overlaps1 = ss1 <= 0 && ee1 >= 0; 
 				if (overlaps0 && overlaps1) {
-					extend(item0, start0, end0);
-					extend(item1, start1, end1);
+					item0.start.set(start0a = math0.min(start0a, start0b));
+					item0.end.set(end0a = math0.max(end0a, end0b));
+					item1.start.set(start1a = math1.min(start1a, start1b));
+					item1.end.set(end1a = math1.max(end1a, end1b));
+					insertNew = false;
 				} 
 				// Inside
 				else if (ss0 >= 0 && ee0 <= 0 && ss1 >= 0 && ee1 <= 0) {
@@ -94,64 +100,61 @@ class CellSet {
 				// Crossing
 				else {
 					if (ss0 < 0) {
-						insert(math0.create(start0), math0.decrement(item0.start), 
-								math1.create(start1), math1.create(end1));
-						start0 = start0a;
+						insert(math0.create(start0a), math0.decrement(start0b), 
+								math1.create(start1a), math1.create(end1a));
+						start0a = start0b;
 					}
 					if (ee0 > 0) {
-						insert(math0.increment(item0.end), math1.create(end0), 
-								math1.create(start1), math1.create(end1));
-						end0 = end0a;
+						insert(math0.increment(end0b), math1.create(end0a), 
+								math1.create(start1a), math1.create(end1a));
+						end0a = end0b;
 					}
 					if (ss1 < 0) {
-						insert(math0.create(start0), math1.create(end0), 
-								math1.create(start1), math1.decrement(item1.start));
+						insert(math0.create(start0a), math1.create(end0a), 
+								math1.create(start1a), math1.decrement(start1b));
 					}
 					if (ee1 > 0) {
-						insert(math0.create(start0), math1.create(end0), 
-								math1.increment(item1.end), math1.create(end1));
+						insert(math0.create(start0a), math1.create(end0a), 
+								math1.increment(end1b), math1.create(end1a));
 					}
 					insertNew = false;
 				}
 			} 
 		}
 		if (insertNew) {
-			items0.add(new Extent(math0.create(start0), math1.create(end0)));
-			items1.add(new Extent(math0.create(start1), math1.create(end1)));
+			items0.add(new Extent(math0.create(start0a), math1.create(end0a)));
+			items1.add(new Extent(math0.create(start1a), math1.create(end1a)));
 		}
-	}
-	
-	void extend(Extent e, Number start, Number end) {
-		e.start.set(math0.min(e.start, start));
-		e.end.set(math1.max(e.end, end));
-		insertNew = false;
 	}
 	
 	public void remove(Number start0, Number end0, Number start1, Number end1) {
 		IntArray toRemove = new IntArray();
 		int i = 0;
+
+		Number start0a = math0.getValue(start0), 		end0a = math0.getValue(end0), 
+			   start1a = math1.getValue(start1), 		end1a = math1.getValue(end1);
 		
 		int size = items0.size();
 		for (;i < size; i++) {
 			Extent item0 = items0.get(i);
 			Extent item1 = items1.get(i);
 			
-			Number start0a = item0.start, end0a = item0.end, 
-				  start1a = item1.start, end1a = item1.end;
+			Number start0b = math0.getValue(item0.start), end0b = math0.getValue(item0.end), 
+				   start1b = math1.getValue(item1.start), end1b = math1.getValue(item1.end);
 			
 			
-			int es0 = math0.compare(end0, start0a);
-			int se0 = math0.compare(start0, end0a);
-			int es1 = math1.compare(end1, start1a);
-			int se1 = math1.compare(start1, end1a);
+			int es0 = math0.compare(end0a, start0b);
+			int se0 = math0.compare(start0a, end0b);
+			int es1 = math1.compare(end1a, start1b);
+			int se1 = math1.compare(start1a, end1b);
 			
 			// Separate
 			if (es0 < 0 || se0 > 0 || es1 < 0 || se1 > 0) continue;
 			
-			int ss0 = math0.compare(start0, start0a);
-			int ee0 = math0.compare(end0, end0a);
-			int ss1 = math1.compare(start1, start1a);
-			int ee1 = math1.compare(end1, end1a);
+			int ss0 = math0.compare(start0a, start0b);
+			int ee0 = math0.compare(end0a, end0b);
+			int ss1 = math1.compare(start1a, start1b);
+			int ee1 = math1.compare(end1a, end1b);
 			
 			// Overlap
 			if (ss0 <= 0 && ee0 >= 0 && ss1 <= 0 && ee1 >= 0) {
@@ -163,25 +166,25 @@ class CellSet {
 
 			if (ss0 > 0) {
 				// Add lines before the removal start
-				insert(start0a, math0.decrement(start0), start1a, end1a);
-				start0a = start0;
+				insert(start0b, math0.decrement(start0a), start1b, end1b);
+				start0b = start0a;
 				remove = true;
 			}
 			if (ee0 < 0) {
 				// Add lines after the removal start
-				insert(math0.increment(end0), end0a, start1a, end1a);
-				end0a = end0;
+				insert(math0.increment(end0a), end0b, start1b, end1b);
+				end0b = end0a;
 				remove = true;
 			}
 			
 			if (ss1 > 0) {
 				// Add lines before the removal start
-				insert(start0a, end0a, start1a, math1.decrement(start1));
+				insert(start0b, end0b, start1b, math1.decrement(start1a));
 				remove = true;
 			}
 			if (ee1 < 0) {
 				// Add lines after the removal start
-				insert(start0a, end0a, math1.increment(end1), end1a);
+				insert(start0b, end0b, math1.increment(end1a), end1b);
 				remove = true;
 			}
 			if (remove) toRemove.add(i);

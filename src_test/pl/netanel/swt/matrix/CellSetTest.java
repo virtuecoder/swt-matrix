@@ -617,9 +617,9 @@ public class CellSetTest {
 	private void doOperation(boolean insert, int start0, int end0, int start1,
 			int end1) {
 		if (insert)
-			set.add(number(start0), number(end0), number(start1), number(end1));
+			set.add(start0, end0, start1, end1);
 		else 
-			set.remove(number(start0), number(end0), number(start1), number(end1));
+			set.remove(start0, end0, start1, end1);
 	}
 	
 	private void result(String ...expected) {

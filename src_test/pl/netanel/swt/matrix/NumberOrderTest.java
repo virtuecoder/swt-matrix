@@ -1,7 +1,6 @@
 package pl.netanel.swt.matrix;
 
 import static org.junit.Assert.*;
-import static pl.netanel.swt.matrix.TestUtil.*;
 
 import org.junit.Test;
 
@@ -165,19 +164,19 @@ public class NumberOrderTest  {
 		NumberOrder model = numberOrder(5);
 		assertEquals("0-4", model.toString());
 		
-		model.setCount(number(12));
+		model.setCount(12);
 		assertEquals("0-11", model.toString());
 		
-		model.setCount(number(10));
+		model.setCount(10);
 		assertEquals("0-9", model.toString());
 		
 		// move and set total
 		assertEquals("0-1, 7-9, 2-6", move(model, 7, 9, 2));
-		model.setCount(number(12));
+		model.setCount(12);
 		assertEquals("0-1, 7-9, 2-6, 10-11", model.toString());
-		model.setCount(number(10));
+		model.setCount(10);
 		assertEquals("0-1, 7-9, 2-6", model.toString());
-		model.setCount(number(8));
+		model.setCount(8);
 		assertEquals("0-1, 7, 2-6", model.toString());
 	}
 
@@ -203,12 +202,12 @@ public class NumberOrderTest  {
 	
 	private static NumberOrder numberOrder(int n) {
 		NumberOrder order = new NumberOrder(IntMath.getInstance());
-		order.setCount(number(n));
+		order.setCount(n);
 		return order;
 	}
 
 	private static String move(NumberOrder order, int start, int end, int target) {
-		order.move(number(start), number(end), number(target));
+		order.move(start, end, target);
 		return order.toString();
 	}
 
@@ -217,6 +216,6 @@ public class NumberOrderTest  {
 	}
 	
 	private void assertIndexOf(NumberOrder order, int x, int y) {
-		assertEquals(y, order.indexOf(number(x)).intValue());
+		assertEquals(y, order.indexOf(x).intValue());
 	}
 }

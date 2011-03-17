@@ -14,9 +14,9 @@ public class SnippetA {
 		
 		Matrix matrix = new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL); 
 				//, new MatrixModel(new AxisModel(BigInteger.class), new AxisModel(BigInteger.class)));
-		matrix.getAxis1().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
-		matrix.getAxis0().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
-		matrix.getAxis1().getBody().setDefaultCellWidth(100);
+		matrix.getModel1().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
+		matrix.getModel0().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
+		matrix.getModel1().getBody().setDefaultCellWidth(100);
 		matrix.getAxis0().setHeaderVisible(true);
 		matrix.getAxis1().setHeaderVisible(true);
 		

@@ -48,17 +48,13 @@ public class Axis {
 		}
 	}
 	
-	public Section getBody() {
-		return model.getBody();
-	}
-
 	public void setHeaderVisible(boolean visible) {
 //		AxisModel opposite = axisIndex == 1 ? matrix.getModel0() : matrix.getModel1();
 		Section header = model.getHeader();
 		if (header == null) return;
 		header.setVisible(visible);
 		if (visible) {
-			if (header.isEmpty()) header.setCount(1);	
+			if (header.isEmpty()) header.setCount(model.math.create(1).getValue());	
 		}
 	}
 	
@@ -70,11 +66,6 @@ public class Axis {
 		scrollBar.setSelection(layout.getScrollPosition());
 		scrollBar.setThumb(layout.getScrollThumb());
 	}
-
-	public AxisItem getCurrentItem() {
-		return layout.current;
-	}
-	
 
 	/**
 	 * Update the scroll bar visibility.

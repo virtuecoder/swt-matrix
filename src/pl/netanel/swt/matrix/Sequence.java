@@ -1,4 +1,4 @@
-package pl.netanel.util;
+package pl.netanel.swt.matrix;
 
 import java.util.Iterator;
 
@@ -25,7 +25,7 @@ import java.util.Iterator;
  * @author jacek.p.kolodziejczyk@gmail.com
  * @created 03-08-2010
  */
-public interface Sequence {
+interface Sequence {
 	/**
 	 * Initiates the iteration. Can be used to restart the iteration 
 	 * and thus to reuse the instance of Sequence without creating a new one.

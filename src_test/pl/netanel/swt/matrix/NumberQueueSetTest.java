@@ -22,27 +22,27 @@ public class NumberQueueSetTest {
 	
 	@Test
 	public void addSingleTheSame() throws Exception {
-		list.add(number(1));
-		assertEquals(false, list.add(number(1)));
+		list.add(1);
+		assertEquals(false, list.add(1));
 	}
 	
 	@Test
 	public void addSingleTheSameNotLast() throws Exception {
-		list.add(number(1));
-		list.add(number(3));
-		assertEquals(true, list.add(number(1)));
+		list.add(1);
+		list.add(3);
+		assertEquals(true, list.add(1));
 		
 		assertEquals("3, 1", list.toString());
 	}
 	
 	@Test
 	public void addSingle() throws Exception {
-		list.add(number(1));
-		list.add(number(5));
-		list.add(number(4));
-		assertTrue(list.contains(number(1)));
-		assertTrue(list.contains(number(4)));
-		assertTrue(list.contains(number(5)));
+		list.add(1);
+		list.add(5);
+		list.add(4);
+		assertTrue(list.contains(1));
+		assertTrue(list.contains(4));
+		assertTrue(list.contains(5));
 		
 		assertEquals("1, 5, 4", list.toString());
 	}
@@ -51,8 +51,8 @@ public class NumberQueueSetTest {
 	public void addTheSame() throws Exception {
 		list.add(extent(1, 2));
 		assertFalse(list.add(extent(1, 2)));
-		assertTrue(list.contains(number(1)));
-		assertTrue(list.contains(number(2)));
+		assertTrue(list.contains(1));
+		assertTrue(list.contains(2));
 		assertTrue(list.contains(extent(1, 2)));
 		
 		assertEquals("1-2", list.toString());
@@ -62,10 +62,10 @@ public class NumberQueueSetTest {
 	public void addApart() throws Exception {
 		list.add(extent(1, 2));
 		list.add(extent(5, 6));
-		assertTrue(list.contains(number(1)));
-		assertTrue(list.contains(number(2)));
-		assertTrue(list.contains(number(5)));
-		assertTrue(list.contains(number(6)));
+		assertTrue(list.contains(1));
+		assertTrue(list.contains(2));
+		assertTrue(list.contains(5));
+		assertTrue(list.contains(6));
 		assertTrue(list.contains(extent(1, 2)));
 		assertTrue(list.contains(extent(5, 6)));
 		
@@ -166,15 +166,15 @@ public class NumberQueueSetTest {
 
 	@Test
 	public void removeNotExisting() throws Exception {
-		list.remove(number(1));
+		list.remove(1);
 		assertTrue(list.isEmpty());
 		
-		list.add(number(2));
-		list.remove(number(1));
-		list.remove(number(3));
-		assertTrue(list.contains(number(2)));
-		assertFalse(list.contains(number(1)));
-		assertFalse(list.contains(number(3)));
+		list.add(2);
+		list.remove(1);
+		list.remove(3);
+		assertTrue(list.contains(2));
+		assertFalse(list.contains(1));
+		assertFalse(list.contains(3));
 	}
 	
 	@Test
@@ -184,11 +184,11 @@ public class NumberQueueSetTest {
 		assertTrue(list.isEmpty());
 		assertFalse(list.contains(extent(1, 2)));
 		
-		list.add(number(0));
-		list.add(number(3));
-		list.remove(number(0));
-		assertFalse(list.contains(number(0)));
-		assertTrue(list.contains(number(3)));
+		list.add(0);
+		list.add(3);
+		list.remove(0);
+		assertFalse(list.contains(0));
+		assertTrue(list.contains(3));
 	}
 	
 	
@@ -256,7 +256,7 @@ public class NumberQueueSetTest {
 		assertEquals(0, list.getCount().intValue());
 		list.add(extent(1, 2));
 		assertEquals(2, list.getCount().intValue());
-		list.add(number(5));
+		list.add(5);
 		assertEquals(3, list.getCount().intValue());
 	}
 }

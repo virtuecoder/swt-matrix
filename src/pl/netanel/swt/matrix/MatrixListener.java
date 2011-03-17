@@ -484,7 +484,7 @@ class MatrixListener implements Listener {
 	
 	protected void bindCommands() {
 		// Key navigation
-		bindKey(M.CUURENT_UP, SWT.ARROW_UP);
+		bindKey(M.CURRENT_UP, SWT.ARROW_UP);
 		bindKey(M.CURRENT_DOWN, SWT.ARROW_DOWN);
 		bindKey(M.CURRENT_LEFT, SWT.ARROW_LEFT);
 		bindKey(M.CURRENT_RIGHT, SWT.ARROW_RIGHT);
@@ -599,7 +599,7 @@ class MatrixListener implements Listener {
 		switch (commandId) {
 		
 		case CURRENT_DOWN: 		case SELECT_DOWN: 		m0 = Move.NEXT; break;
-		case CUURENT_UP:   		case SELECT_UP:			m0 = Move.PREVIOUS; break;
+		case CURRENT_UP:   		case SELECT_UP:			m0 = Move.PREVIOUS; break;
 		case CURRENT_RIGHT: 	case SELECT_RIGHT:		m1 = Move.NEXT; break;
 		case CURRENT_LEFT: 		case SELECT_LEFT:		m1 = Move.PREVIOUS; break;
 		

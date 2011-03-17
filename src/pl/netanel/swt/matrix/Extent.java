@@ -15,6 +15,14 @@ class Extent {
 		return start.toString() + "-" + end.toString();
 	}
 	
+	public Number start() {
+		return start.getValue();
+	}
+	
+	public Number end() {
+		return end.getValue();
+	}
+	
 //	public Extent copy() {
 //		return new Extent(start.copy(), end.copy());
 //	}

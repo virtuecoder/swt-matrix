@@ -4,7 +4,7 @@ import java.math.BigInteger;
 
 
 
-class MutableInt extends MutableNumber<MutableInt> {
+class MutableInt extends MutableNumber<MutableInt, Integer> {
 	private static final long serialVersionUID = 1L;
 	
 	int value;

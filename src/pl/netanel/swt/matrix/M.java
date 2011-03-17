@@ -8,21 +8,21 @@ package pl.netanel.swt.matrix;
  * @created 16-11-2010
  */
 public class M {
-	public static final int FORWARD = 1; 				
-	public static final int BACKWARD = -1;
-	
-	public static final int RESIZE_OFFSET_X = 3;
-	public static final int RESIZE_OFFSET_y = 2;
-	public static final int AUTOSCROLL_OFFSET_X = 8;
-	public static final int AUTOSCROLL_OFFSET_y = 6;
-	public static final int AUTOSCROLL_RATE = 50;
+
+	static final int CELL_WIDTH = 16;			
+	static final int LINE_WIDTH = 1;
+	static final int RESIZE_OFFSET_X = 3;
+	static final int RESIZE_OFFSET_y = 2;
+	static final int AUTOSCROLL_OFFSET_X = 8;
+	static final int AUTOSCROLL_OFFSET_y = 6;
+	static final int AUTOSCROLL_RATE = 50;
 
 	
 	/*
 	 *  Navigation Key Actions. Key bindings for the actions are set
 	 *  by the StyledText widget.
 	 */	
-	public static final int CUURENT_UP = 1; 					// binding = SWT.ARROW_UP
+	public static final int CURRENT_UP = 1; 					// binding = SWT.ARROW_UP
 	public static final int CURRENT_DOWN = 2; 				// binding = SWT.ARROW_DOWN
 	public static final int CURRENT_LEFT = 3; 				// binding = SWT.ARROW_LEFT
 	public static final int CURRENT_RIGHT = 4; 				// binding = SWT.ARROW_RIGHT
@@ -42,7 +42,7 @@ public class M {
 //	public static final int WORD_NEXT = 17039364; 			// binding = SWT.MOD1 + SWT.ARROW_RIGHT
 	
 	public static boolean isCursorMove(int id) {
-		return CUURENT_UP <= id && id <= CURRENT_LOCATION2;
+		return CURRENT_UP <= id && id <= CURRENT_LOCATION2;
 	}
 	
 
@@ -76,7 +76,7 @@ public class M {
 	public static final int SELECT_TO_COLUMN2 = 127;		// binding = SWT.MOD1 + SWT.MouseDown + Zone.COLUMN_HEADER
 	
 	public static boolean isBodySelect(int id) {
-		return CUURENT_UP <= id && id <= SELECT_TO_LOCATION2;
+		return CURRENT_UP <= id && id <= SELECT_TO_LOCATION2;
 	}
 	
 	public static boolean isHeaderSelect(int id) {
@@ -98,17 +98,16 @@ public class M {
 	public static final int HIDE = 210;						// binding = SWT.MOD3 + SWT.DEL;
 	public static final int UNHIDE = 211;					// binding = SWT.MOD3 + SWT.INSERT;
 	
-	public static final int RESIZE_START = 220;					    
-	public static final int RESIZE_STOP = 221;					    
-	public static final int RESIZE_PACK = 222;					    
+	static final int RESIZE_START = 220;					    
+	static final int RESIZE_STOP = 221;					    
+	static final int RESIZE_PACK = 222;					    
 	
 
 	/*------------------------------------------------------------------------
 	 * Mouse event modifiers, cannot collide with SWT state masks or mouse button numbers
 	 */
 
-	public static final int RESIZE_AREA = 1 << 26;
-	public static final int DEFAULT_CELL_WIDTH = 16;			
-	public static final int DEFAULT_LINE_WIDTH = 1;
+//	static final int RESIZE_AREA = 1 << 26;
+	
 
 }

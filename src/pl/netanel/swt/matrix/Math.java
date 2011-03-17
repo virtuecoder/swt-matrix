@@ -9,7 +9,7 @@ import java.math.BigInteger;
  * 
  * @author Jacek Kolodziejczyk created 01-03-2011
  */
-abstract class Math<N extends MutableNumber> {
+abstract class Math<MN extends MutableNumber<MN, N>, N extends Number> {
 
 	public static final int BEFORE = 1;
 	public static final int ADJACENT_BEFORE = 2;
@@ -36,34 +36,34 @@ abstract class Math<N extends MutableNumber> {
 		return create(n);
 	}
 
-	public abstract N create(int value);
-	public abstract N create(Number n);
+	public abstract MN create(int value);
+	public abstract MN create(Number n);
 
-	public abstract N decrement(N n);
-	public abstract N increment(N n);
-	public abstract N add(N x, N y);
-	public abstract N subtract(N x, N y);
-	public abstract N multiply(N x, N y);
-	public abstract N divide(N x, N y);
+	public abstract MN decrement(MN n);
+	public abstract MN increment(MN n);
+	public abstract MN add(MN x, MN y);
+	public abstract MN subtract(MN x, MN y);
+	public abstract MN multiply(MN x, MN y);
+	public abstract MN divide(MN x, MN y);
 	
-	public abstract N ZERO();
-	public abstract N ONE();
+	public abstract MN ZERO();
+	public abstract MN ONE();
 
-	public abstract Number decrement(Number n);
-	public abstract Number increment(Number n);
-	public abstract Number subtract(Number x, Number y);
+	public abstract N decrement(Number n);
+	public abstract N increment(Number n);
+	public abstract N subtract(Number x, Number y);
 	
 	/*------------------------------------------------------------------------
 	 * Comparison 
 	 */
 	
-	public abstract int compare(Number x, Number y);
+	public abstract int compare(N x, N y);
 	
-	public int compare(N x, N y) {
+	public int compare(MN x, MN y) {
 		return compare(x.getValue(), y.getValue());
 	}
 	
-	public int compare(Number start1, Number end1, Number start2, Number end2) {
+	public int compare(N start1, N end1, N start2, N end2) {
 		if (compare(end1, start2) < 0) {
 			if (compare(increment(end1), start2) == 0)	return ADJACENT_BEFORE;
 			else 										return BEFORE;
@@ -85,25 +85,29 @@ abstract class Math<N extends MutableNumber> {
 	}
 	
 	
-	public boolean contains(Number start, Number end, Number n) {
+	public boolean contains(N start, N end, N n) {
 		return compare(start, n) <= 0 && compare(n, end) <= 0;
 	}
 	
-	public boolean contains(N start, N end, Number n) {
+	public boolean contains(Extent e, MutableNumber mn) {
+		return contains((N) e.start(), (N) e.end(), (N) mn.getValue());
+	}
+	
+	public boolean contains(MN start, MN end, N n) {
 		return compare(start.getValue(), getValue(n)) <= 0 && 
 			   compare(getValue(n), end.getValue()) <= 0;
 	}
 
-	public Number max(Number x, Number y) {
+	public Number max(N x, N y) {
 		return compare(x, y) < 0 ? y : x;
 	}
 	
-	public Number min(Number x, Number y) {
+	public Number min(N x, N y) {
 		return compare(x, y) > 0 ? y : x;
 	}
 	
-	public Number max(Number ...n) {
-		Number max = n[0];
+	public Number max(N ...n) {
+		N max = n[0];
 		for (int i = 1; i < n.length; i++) {
 			if (compare(n[i], max) > 0) {
 				max = n[i];
@@ -112,8 +116,8 @@ abstract class Math<N extends MutableNumber> {
 		return max;
 	}
 	
-	public Number min(Number ...n) {
-		Number min = n[0];
+	public Number min(N ...n) {
+		N min = n[0];
 		for (int i = 1; i < n.length; i++) {
 			if (compare(n[i], min) < 0) {
 				min = n[i];
@@ -122,5 +126,5 @@ abstract class Math<N extends MutableNumber> {
 		return min;
 	}
 
-	abstract public Number getValue(Number n);
+	abstract public N getValue(Number n);
 }

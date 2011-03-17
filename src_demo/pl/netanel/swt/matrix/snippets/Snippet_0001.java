@@ -18,8 +18,8 @@ public class Snippet_0001 {
 		shell.setLayout(new FillLayout());
 		
 		Matrix matrix = new Matrix(shell, SWT.NONE);
-		matrix.getAxis1().getBody().setCount(4);
-		matrix.getAxis0().getBody().setCount(10);
+		matrix.getModel1().getBody().setCount(4);
+		matrix.getModel0().getBody().setCount(10);
 		
 		shell.setBounds(400, 200, 400, 300);
 		shell.open();

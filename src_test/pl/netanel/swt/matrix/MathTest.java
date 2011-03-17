@@ -32,8 +32,7 @@ public class MathTest {
 	
 	
 	public int compare(Math math, Number start1, Number end1, Number start2, Number end2) {
-		return math.compare(math.getMutable(start1), math.getMutable(end1), 
-				math.getMutable(start2), math.getMutable(end2));
+		return math.compare(start1, end1, start2, end2);
 	}
 
 }

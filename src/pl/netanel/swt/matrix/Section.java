@@ -1,9 +1,17 @@
 package pl.netanel.swt.matrix;
 
-import java.util.List;
+import java.util.Iterator;
+
+import pl.netanel.util.ImmutableIterator;
+
 
 /**
- * Uses plain Number parameters which are validated in preconditions.
+ * Section represents a continues segment of an {@link Axis}, like header, body, footer.<br> 
+ * It contains a number of items.
+ * <p> 
+ * <p>
+ * Item attributes (cell width, line width, moveable, resizable, hideable, hidden, selected 
+ * Items can be selected, moved, hidden, resized. 
  * 
  * @author Jacek Kolodziejczyk created 02-03-2011
  */
@@ -15,7 +23,7 @@ public class Section {
 	final Math math;
 	private final MutableNumber count;
 	final NumberOrder order;
-	private final NumberSet hidden;
+	final NumberSet hidden;
 	private final NumberSet resizable;
 	private final NumberSet moveable;
 	private final NumberSet hideable;
@@ -35,6 +43,7 @@ public class Section {
 	public Section(Class<? extends Number> numberClass) {
 		this(Math.getInstance(numberClass));
 	}
+	
 	Section(Math math) {
 		super();
 		this.math = math;
@@ -189,6 +198,10 @@ public class Section {
 		return selection.contains(index);
 	}
 	
+	public Iterator<Number> getSelection() {
+		return new SelectionIterator(new IndexSequence(selection));
+	}
+	
 	
 	
 	public void setCellWidth(Number start, Number end, int width) {
@@ -224,11 +237,11 @@ public class Section {
 	}
 	
 	
-	public void setCellSpan(Number index, Number value) {
+	void setCellSpan(Number index, Number value) {
 		cellSpan.setValue(index, value);
 	}
 	
-	public Number getCellSpan(Number index) {
+	Number getCellSpan(Number index) {
 		return cellSpan.getValue(index);
 	}
 
@@ -241,8 +254,8 @@ public class Section {
 		
 		for (int i = 0, size = order.items.size(); i < size; i++) {
 			Extent e = order.items.get(i);
-			boolean contains = math.contains(e.start, e.end, index);
-			hiddenCount.add(hidden.getCount(e.start, contains ? index : e.end));
+			boolean contains = math.contains(e.start(), e.end(), index);
+			hiddenCount.add(hidden.getCount(e.start(), contains ? index : e.end()));
 			if (contains) {
 				return pos2.add(math.getValue(index)).subtract(e.start).subtract(hiddenCount);
 			}
@@ -253,40 +266,23 @@ public class Section {
 	}
 
 	
-	MutableNumber getByPosition(Number position) {
-		if (math.compare(position, getVisibleCount()) >= 0) return null;
+	public MutableNumber getByPosition(Number position) {
+		if (math.compare(position, getVisibleCount().getValue()) >= 0) return null;
 		
 		MutableNumber pos1 = math.create(0);
 		MutableNumber pos2 = math.create(0);
 		
 		for (int i = 0, size = order.items.size(); i < size; i++) {
 			Extent e = order.items.get(i);
-			pos2.add(e.end).subtract(e.start).subtract(hidden.getCount(e.start, e.end));
-			if (math.compare(pos2, position) >= 0) {
-				Number count = hidden.getCount(e.start, pos1);
+			pos2.add(e.end).subtract(e.start).subtract(hidden.getCount(e.start(), e.end()));
+			if (math.compare(pos2.getValue(), position) >= 0) {
+				Number count = hidden.getCount(e.start(), pos1.getValue());
 				return pos1.subtract(position).negate().add(e.start).add(count);
 			}
 			pos2.increment();
 			pos1.set(pos2); 
 		}
 		return null;
-		
-//		ForwardOrderIterator it = order.new ForwardOrderIterator();
-//		Number hiddenCount = factory.zero();
-//		Number pos1 = factory.zero();
-//		Number pos2 = factory.zero();
-//		while (it.hasNext()) {
-//			Extent extent = it.next();
-//			pos1.set(it.pos1).subtract(hiddenCount);
-//			hiddenCount.add(hidden.getCount(extent.getStart(), extent.getEnd()));
-//			pos2.set(it.pos2).subtract(hiddenCount);
-//			if (pos2.compareTo(position) >= 0) {
-//				Number count = hidden.getCount(extent.getStart(), pos1);
-//				return pos1.subtract(position).negate().add(extent.getStart()).add(count);
-//			}
-//		}		
-//		return null;
-
 	}
 
 	public int comparePosition(Number n1, Number n2) {
@@ -294,255 +290,6 @@ public class Section {
 	}
 	
 	
-	
-	public IndexSequence getSequence(int sign) {
-		return sign > 0 ? new Forward() : new Backward();
-	}
-
-	
-	/**
-	 * Iterates over section items in their order and skipping the hidden ones.
-	 * Iteration yields nothing if the section is not visible. 
-	 */
-	abstract class IndexSequence {
-		public MutableNumber number, number2, lastInExtent, last, d;
-		protected int i, h;
-		public int level;
-		protected int sign;
-		protected Extent extent, he;
-		public boolean moved;
-		
-		
-		public IndexSequence() {
-			super();
-			number = math.create(0);
-			number2 = math.create(0);
-			lastInExtent = math.create(0);
-			last = math.create(-1);
-			d = math.create(0);
-		}
-
-		public void init() {
-			i = firstIndex(order.items);
-		}
-		
-		public boolean next(MutableNumber index) {
-			moved = false;
-			while (true) {
-				switch(level) {
-				case 0: // extents
-					if (hasNextExtent()) {
-						i += sign;
-						extent = order.items.get(i);
-						number.set(start(extent)).add(-sign);
-						lastInExtent.set(end(extent));
-						h = firstIndex(hidden.items);
-						he = null;
-						level++;
-					} else {
-						return false;
-					}
-					break;
-					
-				case 1: // numbers
-					if (hasNextNumber()) {
-						if (nextNumber(index)) return true;
-					}
-					level--;
-					break;
-				}
-			}
-		}
-		
-	
-		private boolean nextNumber(MutableNumber count) {
-			MutableNumber limit = null;
-
-			number2.set(number).add(sign);
-			count.decrement();
-			while (compare(number, lastInExtent) < 0) {
-				nextHidden(lastInExtent);
-
-				// If inside of hidden move beyond
-				if (he != null && math.contains(he.start, he.end, number2)) {
-					if (!skipHidden(count, lastInExtent)) return false;
-				} 
-				else {
-					limit = he == null || math.contains(he.start, he.end, number2) ? 
-							lastInExtent : start(he);
-					d.set(math.min(subtract(limit, number2).getValue(), count.getValue()));
-					add(number2, d.getValue());
-					count.subtract(d);
-				}
-				if (he != null && math.contains(he.start, he.end, number2)) {
-					if (!skipHidden(count, lastInExtent)) return false;
-				}			
-				moved = math.compare(number2, last) != 0;
-				number.set(number2);
-				last.set(number);
-				
-				if (math.compare(count, math.ZERO()) <= 0) return true; 
-			}
-			return false; 
-		}
-		
-
-		private void nextHidden(MutableNumber lastIndex) {
-			while (true) {
-				if (he != null) {
-					MutableNumber start = start(he), end = end(he);
-					if (compare(start, number2) <= 0 && compare(number2, end) <= 0 || 
-						compare(start, number2) > 0 && compare(start, lastIndex) <= 0) break;
-				}
-				if (hasNextHidden()) {
-					he = hidden.items.get(h += sign);
-				} else {
-					he = null;
-					break;
-				}
-			}
-		}
-		
-		private boolean skipHidden(MutableNumber count, MutableNumber lastIndex) {
-			number2.set(end(he)).add(sign);
-			if (compare(number2, lastIndex) > 0) {
-				moved = false;
-				count.increment();
-				return false;
-			}
-			return true;
-		}
-		
-
-		protected boolean hasNextNumber() {
-			return extent != null && compare(number, lastInExtent) < 0;// && compare(index, nullIndex) != 0; 
-		}
-
-		protected abstract int compare(MutableNumber x, MutableNumber y);
-		protected abstract void add(MutableNumber x, Number y);
-		protected abstract MutableNumber subtract(MutableNumber x, MutableNumber y);
-		protected abstract boolean hasNextExtent();
-		protected abstract boolean hasNextHidden();
-		protected abstract int firstIndex(List<Extent> items);
-		protected abstract MutableNumber start(Extent e);
-		protected abstract MutableNumber end(Extent e);
-
-
-		public Number index() {
-			return number;
-		}
-
-
-		public boolean next() {
-			return next(math.create(1));
-		}
-
-		public void set(Number index) {
-			i = order.getExtentIndex(index);
-			if (i == -1) return;
-			extent = order.items.get(i);
-			number.set(index).add(-sign);
-			lastInExtent.set(end(extent));
-			h = firstIndex(hidden.items);
-			he = null;
-		}
-	}
-	
-	class Forward extends IndexSequence {
-		
-		public Forward() {
-			sign = 1;
-		}
-
-		@Override
-		protected int compare(MutableNumber x, MutableNumber y) {
-			return math.compare(math.getValue(x), math.getValue(y));
-		}
-		
-		@Override
-		protected void add(MutableNumber x, Number y) {
-			x.add(y);
-		}
-		
-		@Override
-		protected MutableNumber subtract(MutableNumber x, MutableNumber y) {
-			return math.subtract(x, y);
-		}
-		
-		@Override
-		protected boolean hasNextExtent() {
-			return i < order.items.size() - 1;
-		}
-
-		@Override
-		protected boolean hasNextHidden() {
-			return h < hidden.items.size() - 1;
-		}
-		
-		@Override
-		protected int firstIndex(List<Extent> items) {
-			return -1;
-		}
-		
-		@Override
-		protected MutableNumber start(Extent e) {
-			return e.start;
-		}
-
-		@Override
-		protected MutableNumber end(Extent e) {
-			return e.end;
-		}
-	}
-	class Backward extends IndexSequence {
-		
-		public Backward() {
-			sign = -1;
-		}
-		
-		@Override
-		protected int compare(MutableNumber x, MutableNumber y) {
-			return math.compare(math.getValue(y), math.getValue(x));
-		}
-		
-		@Override
-		protected void add(MutableNumber x, Number y) {
-			x.subtract(y);
-		}
-		
-
-		@Override
-		protected MutableNumber subtract(MutableNumber x, MutableNumber y) {
-			return math.subtract(y, x);
-		}
-		
-		
-		@Override
-		protected boolean hasNextExtent() {
-			return i > 0;
-		}
-		
-		@Override
-		protected boolean hasNextHidden() {
-			return h > 0;
-		}
-		
-		@Override
-		protected int firstIndex(List<Extent> items) {
-			return items.size();
-		}
-		
-		@Override
-		protected MutableNumber start(Extent e) {
-			return e.end;
-		}
-		
-		@Override
-		protected MutableNumber end(Extent e) {
-			return e.start;
-		}
-	}
-
 	public void setHidden(Number index, boolean flag) {
 		setHidden(index, index, flag);
 	}
@@ -555,6 +302,31 @@ public class Section {
 	}
 	public Number getLastIndex() {
 		return math.decrement(count);
+	}
+
+	
+	
+	class SelectionIterator extends ImmutableIterator<Number> {
+		
+		private IndexSequence seq;
+
+		SelectionIterator(IndexSequence seq) {
+			super();
+			this.seq = seq;
+			seq.init();
+		}
+
+		@Override
+		public boolean hasNext() {
+			return seq.hasNext();
+		}
+
+		@Override
+		public Number next() {
+			seq.next();
+			return seq.index();
+		}
+
 	}
 
 }

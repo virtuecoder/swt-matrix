@@ -2,7 +2,7 @@ package pl.netanel.swt.matrix;
 
 import java.math.BigInteger;
 
-class BigIntegerMath extends Math<MutableBigInteger> {
+class BigIntegerMath extends Math<MutableBigInteger, BigInteger> {
 
 	private static final MutableBigInteger ZERO = new MutableBigInteger(BigInteger.ZERO);
 	private static final MutableBigInteger ONE = new MutableBigInteger(BigInteger.ONE);
@@ -63,30 +63,35 @@ class BigIntegerMath extends Math<MutableBigInteger> {
 		return ONE;
 	}
 	
-	@Override
-	public int compare(Number x, Number y) {
-		return ((BigInteger) getValue(x)).compareTo(((BigInteger) getValue(y)));
+	public int compare(BigInteger x, BigInteger y) {
+		return x.compareTo(y);
 //		return ((BigInteger) x).compareTo((BigInteger) y);
 	}
+	
+//	@Override
+//	public int compare(BigIntger x, Number y) {
+//		return ((BigInteger) getValue(x)).compareTo(((BigInteger) getValue(y)));
+////		return ((BigInteger) x).compareTo((BigInteger) y);
+//	}
 
 	@Override
-	public Number decrement(Number n) {
+	public BigInteger decrement(Number n) {
 		return ((BigInteger) n).subtract(BigInteger.ONE);
 	}
 
 	@Override
-	public Number increment(Number n) {
+	public BigInteger increment(Number n) {
 		return ((BigInteger) n).add(BigInteger.ONE);
 	}
 
 	@Override
-	public Number subtract(Number x, Number y) {
+	public BigInteger subtract(Number x, Number y) {
 		return ((BigInteger) x).subtract((BigInteger) y);
 	}
 
 	@Override
-	public Number getValue(Number n) {
-		if (n instanceof BigInteger) return n;
+	public BigInteger getValue(Number n) {
+		if (n instanceof BigInteger) return (BigInteger) n;
 		if (n instanceof MutableBigInteger) return ((MutableBigInteger) n).value;
 		return new BigInteger(n.toString());
 	}
