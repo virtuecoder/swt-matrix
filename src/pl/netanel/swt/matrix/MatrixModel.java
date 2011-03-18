@@ -18,15 +18,19 @@ public class MatrixModel implements Iterable<Zone> {
 	private final AxisModel model1;
 	private final AxisModel model0;
 	private final ArrayList<Zone> zones;
-	private Zone body; //, columnHeader, rowHeader;
 	private int[] zOrder;
 	private ExtentPairSequence seq;
 
 	public MatrixModel() {
 		this(new AxisModel(), new AxisModel());
+		model0.getHeader().setVisible(false);
+		model0.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_Y);
+		
 		model1.getHeader().setDefaultCellWidth(40);
+		model1.getHeader().setVisible(false);
 		model1.getBody().setDefaultCellWidth(50);
-		model0.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_X);
+		model1.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_X);
+		
 	}
 
 	public MatrixModel(AxisModel model0, AxisModel model1, Zone ...zones) {
@@ -49,7 +53,6 @@ public class MatrixModel implements Iterable<Zone> {
 					this.zones.add(zone);
 				}
 				if (section0.equals(body0) && section1.equals(body1)) {
-					body = zone;
 					zone.cellPainters.add(new ModelPainter(zone));
 				}
 				else if (section0.equals(header0) || section1.equals(header1)) {
@@ -110,7 +113,6 @@ public class MatrixModel implements Iterable<Zone> {
 		}
 		return zone;
 	}
-
 	
 	
 	private Zone setHeaderStyle(Zone zone) {
@@ -126,8 +128,18 @@ public class MatrixModel implements Iterable<Zone> {
 	
 	
 	public Zone getBody() {
-		return body;
+		return getZone(model0.getBody(), model1.getBody());
 	}
+	public Zone getColumneHeader() {
+		return getZone(model0.getHeader(), model1.getBody());
+	}
+	public Zone getRowHeader() {
+		return getZone(model0.getBody(), model1.getHeader());
+	}
+	public Zone getTopLeft() {
+		return getZone(model0.getHeader(), model1.getHeader());
+	}
+	
 	/**
 	 * Returns a zone by an identifier defined in {@link Zone}.  
 	 * The parameter can have four possible values: <ul>

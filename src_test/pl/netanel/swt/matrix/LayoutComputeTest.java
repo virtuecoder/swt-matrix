@@ -84,6 +84,8 @@ public class LayoutComputeTest {
 		layout.freezeTail(1);
 		layout.compute();
 		
+//		showMatrix(layout);
+		
 		assertEquals("0", indexes(layout.cellSequence(Dock.HEAD, body)));
 		assertEquals("1, 2", indexes(layout.cellSequence(Dock.MAIN, body)));
 		assertEquals("4", indexes(layout.cellSequence(Dock.TAIL, body)));

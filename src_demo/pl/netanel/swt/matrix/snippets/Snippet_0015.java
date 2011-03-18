@@ -56,6 +56,11 @@ public class Snippet_0015 {
 				if (gc.getAdvanced()) gc.setAlpha(127);
 			}
 			@Override
+			public void clean() {
+				super.clean();
+				gc.setAlpha(255);
+			}
+			@Override
 			public void beforePaint(Number index0, Number index1) {
 				skip = index1.intValue() > 0 || 
 					index0.intValue() != matrix.getAxis0().getNavigationIndex().intValue();

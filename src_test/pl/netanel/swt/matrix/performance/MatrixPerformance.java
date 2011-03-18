@@ -39,7 +39,7 @@ public class MatrixPerformance {
 		shell.setBounds(display.getBounds());
 		shell.open();
 		
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 10; i++) {
 			press(SWT.ARROW_DOWN);
 		}
 		
@@ -48,7 +48,8 @@ public class MatrixPerformance {
 			sum += time.get(i);
 		}
 		long avg = sum / (time.size() - 1);
-		assertTrue("" + avg + " expected to be <50", avg < 50);
+		System.out.println(avg);
+		assertTrue("" + avg + " expected to be <60", avg < 60);
 	
 //		while (!shell.isDisposed()) {
 //			if (!display.readAndDispatch()) {

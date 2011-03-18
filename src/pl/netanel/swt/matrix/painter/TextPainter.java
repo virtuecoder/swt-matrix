@@ -3,7 +3,6 @@ package pl.netanel.swt.matrix.painter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 
 import pl.netanel.swt.Resources;
 import pl.netanel.swt.FontWidthCache;
@@ -27,7 +26,7 @@ public class TextPainter extends Painter {
 	private Font lastFont;
 	private int[] extentCache;
 	private Point extent;
-	private boolean isClipped;
+//	private boolean isClipped;
 	
 	public TextPainter() {
 		super();
@@ -47,12 +46,12 @@ public class TextPainter extends Painter {
 		extent = new Point(-1, gc.stringExtent("ty").y);
 	}
 	
-	@Override
-	public void clean() {
-		if (isClipped) {
-			gc.setClipping((Rectangle) null);
-		}
-	}
+//	@Override
+//	public void clean() {
+//		if (isClipped) {
+//			gc.setClipping((Rectangle) null);
+//		}
+//	}
 
 	/**
 	 * For performance reasons it is assumed that the vertical string extent 
@@ -77,14 +76,14 @@ public class TextPainter extends Painter {
 		}
 		
 		// Clipping
-		if (textClipMethod == TextClipMethod.CUT || extent.x > width || extent.y > height) {
-			gc.setClipping(x, y, width, height);
-			isClipped = true;
-		} else if (isClipped) {
-			gc.setClipping((Rectangle) null);
-			isClipped = false;
-		}
-		
+//		if (textClipMethod == TextClipMethod.CUT || extent.x > width || extent.y > height) {
+//			gc.setClipping(x, y, width, height);
+//			isClipped = true;
+//		} else if (isClipped) {
+//			gc.setClipping((Rectangle) null);
+//			isClipped = false;
+//		}
+
 		switch (alignX) {
 		case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP: 
 			x += marginX; break;

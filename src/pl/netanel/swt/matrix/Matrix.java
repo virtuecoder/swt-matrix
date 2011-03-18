@@ -148,17 +148,17 @@ public class Matrix extends Canvas {
 				!layout1.contains(dock1, zone.section1) ) continue;
 			
 //			if (zone == null || !zone.isVisible()) continue;
-
-			Bound b0 = layout0.getBound(dock0, zone.section0);
-			Bound b1 = layout1.getBound(dock1, zone.section1);
 			
 			Bound bb0 = layout0.getBound(dock0);
 			Bound bb1 = layout1.getBound(dock1);
 //			if (dock0 == Dock.MAIN && dock1 == Dock.MAIN) {
-//			gc.setBackground(Resources.getColor(SWT.COLOR_BLUE));
-//			gc.fillRectangle(b1.distance, b0.distance, b1.width, b0.width);
+//				gc.setForeground(Resources.getColor(SWT.COLOR_BLUE));
+//				gc.drawRectangle(bb1.distance, bb0.distance, bb1.width, bb0.width);;
 //			}
+			gc.setClipping(bb1.distance, bb0.distance, bb1.width, bb0.width);
 			
+			Bound b0 = layout0.getBound(dock0, zone.section0);
+			Bound b1 = layout1.getBound(dock1, zone.section1);
 			zone.setBounds(b1.distance, b0.distance, b1.width, b0.width);
 			
 			// Paint cells
@@ -166,7 +166,6 @@ public class Matrix extends Canvas {
 					layout0.cellSequence(dock0, zone.section0),
 					layout1.cellSequence(dock1, zone.section1) );
 			
-			gc.setClipping(bb1.distance, bb0.distance, bb1.width, bb0.width);
 			// Paint row lines
 			LayoutSequence seq;
 			seq = layout0.lineSequence(dock0, zone.section0);
@@ -199,12 +198,11 @@ public class Matrix extends Canvas {
 			if (!isEnabled()) return;
 			painter.init(gc);
 			for (seq0.init(); seq0.next();) {
+				Bound b0 = seq0.bound;
 				for (seq1.init(); seq1.next();) {
 					painter.beforePaint(seq0.item.index, seq1.item.index);
-					Bound b0 = seq0.bound;
 					Bound b1 = seq1.bound;
 					painter.paint(b1.distance, b0.distance, b1.width, b0.width);
-					painter.afterPaint(seq0.item.index, seq1.item.index);
 				}
 			}
 			painter.clean();
