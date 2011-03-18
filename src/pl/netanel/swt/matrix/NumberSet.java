@@ -12,31 +12,31 @@ import java.util.ArrayList;
  * @author Jacek
  * @created 09-11-2010
  */
-class NumberSet {
-	protected Math math;
+class NumberSet<N extends Number> {
+	protected Math<N> math;
 	protected boolean sorted;
-	ArrayList<Extent> items;
+	ArrayList<Extent<N>> items;
 	protected ArrayList<Extent> toRemove;
 	
-	protected Extent modified;
+	protected Extent<N> modified;
 	protected transient int modCount;
 
 	
-	public NumberSet(Math math) {
+	public NumberSet(Math<N> math) {
 		this(math, false);
 	}
 	
 	public NumberSet(Math math, boolean sorted) {
 		this.sorted = sorted;
 		this.math = math;
-		items = new ArrayList<Extent>();
+		items = new ArrayList<Extent<N>>();
 		toRemove = new ArrayList<Extent>();
 	};
 	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for (Extent e: items) {
+		for (Extent<N> e: items) {
 			if (sb.length() > 0) sb.append(", ");
 			if (math.compare(e.start(), e.end()) == 0) {
 				sb.append(e.start);
@@ -48,17 +48,17 @@ class NumberSet {
 	}
 	
 	
-	public boolean contains(Number n) {
-		for (Extent e: items) {
-			if (math.contains(e.start(), e.end(), n)) {
+	public boolean contains(N n) {
+		for (Extent<N> e: items) {
+			if (math.contains(e, n)) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public boolean contains(Extent o) {
-		for (Extent e: items) {
+	public boolean contains(Extent<N> o) {
+		for (Extent<N> e: items) {
 			if (math.contains(e.start(), e.end(), o.start()) && math.contains(e.start(), e.end(), o.end())) {
 				return true;
 			}
@@ -76,15 +76,15 @@ class NumberSet {
 	 * @return true if the receiver has been modified by this operation, or false otherwise
 	 * @see #add(MutableNumber, MutableNumber)
 	 */
-	public boolean add(Number n) {
+	public boolean add(N n) {
 		return add(n, n);
 	}
 	
-	public boolean add(Extent e) {
+	public boolean add(Extent<N> e) {
 		return add(e.start(), e.end());
 	}
 	
-	public boolean add(Number start, Number end) {
+	public boolean add(N start, N end) {
 
 /*
  * Cases
@@ -103,7 +103,7 @@ class NumberSet {
 		int i = 0;
 		
 		for (;i < items.size(); i++) {
-			Extent item = items.get(i);
+			Extent<N> item = items.get(i);
 			int compare = math.compare(item.start(), item.end(), start, end);
 			
 			switch (compare) {
@@ -125,7 +125,7 @@ class NumberSet {
 		if (modified == null) {
 			items.add(i, new Extent(math.create(start), math.create(end)));
 		}
-		for (Extent e: toRemove) {
+		for (Extent<N> e: toRemove) {
 			items.remove(e); 
 		}
 		toRemove.clear();
@@ -133,14 +133,14 @@ class NumberSet {
 		return true;
 	}
 	
-	public void addAll(NumberSet set) {
-		for (Extent e: set.items) {
+	public void addAll(NumberSet<N> set) {
+		for (Extent<N> e: set.items) {
 			add(e);
 		}
 	}
 
 
-	protected void extendItem(Extent existing, Number start, Number end) {
+	protected void extendItem(Extent<N> existing, N start, N end) {
 		if (modified == null) modified = existing;
 		else toRemove.add(0, existing);
 		modified.start.set(math.min(start, modified.start(), existing.start()));
@@ -158,20 +158,20 @@ class NumberSet {
 	 * or false otherwise
 	 * @see #remove(MutableNumber, MutableNumber)
 	 */
-	public boolean remove(Number n) {
+	public boolean remove(N n) {
 		return remove(n, n);
 	}
 	
-	public boolean remove(Extent e) {
+	public boolean remove(Extent<N> e) {
 		return remove(e.start(), e.end());
 	}
 	
-	public boolean remove(Number start, Number end) {
+	public boolean remove(N start, N end) {
 		boolean modified = false;
 		int i = 0;
 		
 		for (;i < items.size(); i++) {
-			Extent item = items.get(i);
+			Extent<N> item = items.get(i);
 			
 			int location = math.compare(start, end, item.start(), item.end());
 			switch (location) {
@@ -200,7 +200,7 @@ class NumberSet {
 			}
 			modified = modified || location >= OVERLAP; 
 		}
-		for (Extent e: toRemove) {
+		for (Extent<N> e: toRemove) {
 			items.remove(e); 
 		}
 		toRemove.clear();
@@ -208,14 +208,14 @@ class NumberSet {
 		return modified;
 	}
 	
-	public boolean removeAll(NumberSet set) {
+	public boolean removeAll(NumberSet<N> set) {
 		boolean removed = false;
 		if (set == this) {
 			removed = !items.isEmpty();
 			items.clear();
 			return removed;
 		}
-		for (Extent e: set.items) {
+		for (Extent<N> e: set.items) {
 			removed = removed || remove(e);
 		}
 		if (removed) modCount++;
@@ -227,9 +227,9 @@ class NumberSet {
 	 * Return total number of numbers in this set.
 	 * @return
 	 */
-	public MutableNumber getCount() {
+	public MutableNumber<N> getCount() {
 		MutableNumber sum = math.create(0);
-		for (Extent e: items) {
+		for (Extent<N> e: items) {
 			sum.add(e.end).subtract(e.start).increment();
 		}
 		return sum;
@@ -241,9 +241,9 @@ class NumberSet {
 	 * @param end
 	 * @return
 	 */
-	public MutableNumber getCount(Number start, Number end) {
+	public MutableNumber<N> getCount(N start, N end) {
 		MutableNumber sum = math.create(0);
-		for (Extent e: items) {
+		for (Extent<N> e: items) {
 			switch (math.compare(e.start(), e.end(), start, end)) {
 			case BEFORE:				
 			case ADJACENT_BEFORE:	continue;
@@ -271,7 +271,7 @@ class NumberSet {
 	
 	public void replace(NumberSet set) {
 		items.clear();
-		for (Extent e: items) {
+		for (Extent<N> e: items) {
 			items.add(new Extent(math.create(e.start()), math.create(e.end())));
 		}
 	}
@@ -283,13 +283,13 @@ class NumberSet {
 
 	public NumberSet copy() {
 		NumberSet copy = new NumberSet(math);
-		for (Extent e: items) {
+		for (Extent<N> e: items) {
 			copy.items.add(new Extent(math.create(e.start()), math.create(e.end())));
 		}
 		return copy;
 	}
 
-	public void change(Number start, Number end, boolean add) {
+	public void change(N start, N end, boolean add) {
 		if (add) {
 			add(start, end);
 		} else {
@@ -297,9 +297,9 @@ class NumberSet {
 		}
 	}
 
-	public int getExtentIndex(Number n) {
+	public int getExtentIndex(N n) {
 		for (int i = 0, size = items.size(); i < size; i++) {
-			Extent e = items.get(i);
+			Extent<N> e = items.get(i);
 			if (math.contains(e, n)) {
 				return i;
 			}

@@ -99,7 +99,7 @@ class Layout {
 		this.start = start;
 		
 		// Compute total and check if body exists
-		total.set(0); 
+		total.set(math.ZERO_VALUE()); 
 		for (Section section: sections) {
 			total.add(section.getVisibleCount());
 		}

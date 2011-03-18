@@ -8,7 +8,7 @@ import pl.netanel.util.ImmutableIterator;
 /**
  * Section represents a continuous segment of an {@link Axis}, for example a header, body, footer.<br>
  * It contains a number of items.<br>
- * <img src="../../../../images/Section.png"/>
+ * <img src="../../../../../javadoc/images/Section.png"/>
  *
  * <p> 
  * Section has boolean flags for visibility and navigation enablement. 
@@ -28,18 +28,19 @@ public class Section<N extends Number> {
 	static final int DEFAULT_CELL_WIDTH = 16;
 	static final int DEFAULT_LINE_WIDTH = 1;
 	
-	final Math math;
-	private final MutableNumber count;
-	final NumberOrder order;
-	final NumberSet hidden;
+	final Math<N> math;
+	private N count;
+	
+	final NumberOrder<N> order;
+	final NumberSet<N> hidden;
 	private final NumberSet resizable;
 	private final NumberSet moveable;
 	private final NumberSet hideable;
 	private final IntAxisState cellWidth;
 	private final IntAxisState lineWidth;
-	private final ObjectAxisState<Number> cellSpan;
+	private final ObjectAxisState<N> cellSpan;
 	
-	private final NumberQueueSet selection;
+	private final NumberQueueSet<N> selection;
 	private final NumberQueueSet lastSelection;
 
 	
@@ -49,22 +50,27 @@ public class Section<N extends Number> {
 	int index; 
 	
 	/**
-	 * The default constructor utilizing BigInteger indexing.
+	 * Constructs a section indexed by int.class.
 	 */
-	Section() {
+	public Section() {
 		this(Math.getInstance(int.class));
 	}
-	
+
+	/**
+	 * Constructs a section indexed by the given class of numbers.
+	 * 
+	 * @param numberClass defines the class used for indexing
+	 */
 	public Section(Class<N> numberClass) {
 		this(Math.getInstance(numberClass));
 	}
 	
-	Section(Math math) {
+	Section(Math<N> math) {
 		super();
 		this.math = math;
-		count = math.create(0);
+		count = math.ZERO_VALUE();
 		
-		order = new NumberOrder(math);
+		order = new NumberOrder<N>(math);
 		hidden = new NumberSet(math, true);
 		resizable = new NumberSet(math);
 		moveable = new NumberSet(math);
@@ -91,16 +97,16 @@ public class Section<N extends Number> {
 	 */
 
 
-	public Number getCount() {
-		return count.getValue();
+	public N getCount() {
+		return count;
 	}
 
-	public void setCount(Number count) {
-		this.count.set(count);
+	public void setCount(N count) {
+		this.count = count;
 		order.setCount(count);
 	}
 
-	Number getVisibleCount() {
+	N getVisibleCount() {
 		return math.create(count).subtract(hidden.getCount()).getValue();
 	}
 
@@ -148,54 +154,51 @@ public class Section<N extends Number> {
 		this.isNavigationEnabled = isCurrentMarkerEnabled;
 	}
 
-	public void move(Number start, Number end, Number target) {
-		order.move(start, end, target);
-	}
 	
-	public void setHidden(Number start, Number end, boolean flag) {
+	public void setHidden(N start, N end, boolean flag) {
 		hidden.change(start, end, flag);
 	}
 	
-	public boolean isHidden(Number index) {
+	public boolean isHidden(N index) {
 		return hidden.contains(index);
 	}
 	
-	public Number getHiddenCount(Number start, Number end) {
+	public N getHiddenCount(N start, N end) {
 		return hidden.getCount(start, end).getValue();
 	}
 	
-	public void setMoveable(Number start, Number end, boolean flag) {
+	public void setMoveable(N start, N end, boolean flag) {
 		moveable.change(start, end, flag != defaultMoveable);
 	}
 	
-	public boolean isMoveable(Number index) {
+	public boolean isMoveable(N index) {
 		return moveable.contains(index) != defaultMoveable;
 	}
 	
-	public void setResizable(Number start, Number end, boolean flag) {
+	public void setResizable(N start, N end, boolean flag) {
 		resizable.change(start, end, flag != defaultResizable);
 	}
 	
-	public boolean isResizable(Number index) {
+	public boolean isResizable(N index) {
 		return resizable.contains(index) != defaultResizable;
 	}
 	
-	public void setHideable(Number start, Number end, boolean flag) {
+	public void setHideable(N start, N end, boolean flag) {
 		hideable.change(start, end, flag != defaultHideable);
 	}
 	
-	public boolean isHideable(Number index) {
+	public boolean isHideable(N index) {
 		return hideable.contains(index) != defaultHideable;
 	}
 	
 	
-	public void setSelected(Number start, Number end, boolean selected) {
+	public void setSelected(N start, N end, boolean selected) {
 		selection.change(start, end, selected);
 	}
 	
 	public void setSelected(boolean selected) {
 		if (selected) {
-			selection.add(math.ZERO_VALUE(), math.decrement(count.getValue()));
+			selection.add(math.ZERO_VALUE(), math.decrement(count));
 		} else {
 			selection.clear();
 		}
@@ -209,33 +212,33 @@ public class Section<N extends Number> {
 		selection.replace(lastSelection);
 	}
 	
-	public boolean isSelected(Number index) {
+	public boolean isSelected(N index) {
 		return selection.contains(index);
 	}
 	
-	public Number getSelectionCount() {
+	public N getSelectionCount() {
 		return selection.getCount().getValue();
 	}
 	
-	public Iterator<Number> getSelection() {
+	public Iterator<N> getSelection() {
 		return new SelectionIterator(new IndexSequence(selection));
 	}
 	
 	
 	
-	public void setCellWidth(Number start, Number end, int width) {
+	public void setCellWidth(N start, N end, int width) {
 		cellWidth.setValue(start, end, width);
 	}
 	
-	public int getCellWidth(Number index) {
+	public int getCellWidth(N index) {
 		return cellWidth.getValue(index);
 	}
 	
-	public void setLineWidth(Number start, Number end, int width) {
+	public void setLineWidth(N start, N end, int width) {
 		lineWidth.setValue(start, end, width);
 	}
 	
-	public int getLineWidth(Number index) {
+	public int getLineWidth(N index) {
 		return lineWidth.getValue(index);
 	}
 	
@@ -256,24 +259,40 @@ public class Section<N extends Number> {
 	}
 	
 	
-	void setCellSpan(Number index, Number value) {
+	void setCellSpan(N index, N value) {
 		cellSpan.setValue(index, value);
 	}
 	
-	Number getCellSpan(Number index) {
+	N getCellSpan(N index) {
 		return cellSpan.getValue(index);
 	}
 
+	
+	
+	/*------------------------------------------------------------------------
+	 * Order 
+	 */
 
-	public Number getPosition(Number index) {
+	/**
+	 * Returns the visual position of the given index according to the current order of items 
+	 * and skipping the hidden ones. 
+	 *  
+	 * @param index of the item to get the position for
+	 * @return visual position of the item at the given index
+	 * 
+	 * @see #move(Number, Number, Number)
+	 * @see #getByPosition(Number)
+	 * @see #comparePosition(Number, Number) 
+	 */
+	public N getPosition(N index) {
 		if (hidden.contains(index)) return null;
-		MutableNumber hiddenCount = math.create(0);
-		MutableNumber pos1 = math.create(0);
-		MutableNumber pos2 = math.create(0);
+		MutableNumber<N> hiddenCount = math.create(0);
+		MutableNumber<N> pos1 = math.create(0);
+		MutableNumber<N> pos2 = math.create(0);
 		
 		for (int i = 0, size = order.items.size(); i < size; i++) {
-			Extent e = order.items.get(i);
-			boolean contains = math.contains(e.start(), e.end(), index);
+			Extent<N> e = order.items.get(i);
+			boolean contains = math.contains(e, index);
 			hiddenCount.add(hidden.getCount(e.start(), contains ? index : e.end()));
 			if (contains) {
 				return pos2.add(index).subtract(e.start).subtract(hiddenCount).getValue();
@@ -284,17 +303,27 @@ public class Section<N extends Number> {
 		return null;
 	}
 
-	
-	public Number getByPosition(Number position) {
+	/**
+	 * Returns the index of the item at given visual position according 
+	 * to the current order of items and skipping the hidden ones.
+	 * 
+	 * @param position visual index of given item
+	 * @return index of the item at the given position
+	 * 
+	 * @see #move(Number, Number, Number)
+	 * @see #getPosition(Number)
+	 * @see #comparePosition(Number, Number) 
+	 */
+	public N getByPosition(N position) {
 		if (math.compare(position, getVisibleCount()) >= 0) return null;
 		
-		MutableNumber pos1 = math.create(0);
-		MutableNumber pos2 = math.create(0);
+		MutableNumber<N> pos1 = math.create(0);
+		MutableNumber<N> pos2 = math.create(0);
 		
 		for (int i = 0, size = order.items.size(); i < size; i++) {
-			Extent e = order.items.get(i);
+			Extent<N> e = order.items.get(i);
 			pos2.add(e.end).subtract(e.start).subtract(hidden.getCount(e.start(), e.end()));
-			if (math.compare(pos2.getValue(), position) >= 0) {
+			if (math.compare(pos2, position) >= 0) {
 				MutableNumber count = hidden.getCount(e.start(), pos1.getValue());
 				return pos1.subtract(position).negate().add(e.start).add(count).getValue();
 			}
@@ -304,30 +333,47 @@ public class Section<N extends Number> {
 		return null;
 	}
 
-	public int comparePosition(Number n1, Number n2) {
-		return math.compare(order.indexOf(n1), order.indexOf(n2));
+	/**
+	 * Returns the comparison result of visual positions of given items.
+	 *   
+	 * @param index1 index one of the items
+	 * @param index2 index of the second item
+	 * @return the comparison result of visual positions of given items
+	 * 
+	 * @see #getPosition(Number)
+	 * @see #getByPosition(Number)
+	 * @see #move(Number, Number, Number)
+	 */
+	public int comparePosition(N index1, N index2) {
+		return math.compare(order.indexOf(index1), order.indexOf(index2));
+	}
+	
+
+	public void move(N start, N end, N target) {
+		order.move(start, end, target);
 	}
 	
 	
-	public void setHidden(Number index, boolean flag) {
+	
+	/*------------------------------------------------------------------------
+	 * Hiding 
+	 */
+	
+	public void setHidden(N index, boolean flag) {
 		setHidden(index, index, flag);
 	}
 	
 	public void setHidden(boolean flag) {
 		for (int i = 0, imax = selection.items.size(); i < imax; i++) {
-			Extent e = selection.items.get(i);
+			Extent<N> e = selection.items.get(i);
 			setHidden(e.start(), e.end(), flag);
 		}
 	}
-	public Number getLastIndex() {
-		return math.decrement(count.getValue());
-	}
-
 	
 	
-	class SelectionIterator extends ImmutableIterator<Number> {
+	class SelectionIterator extends ImmutableIterator<N> {
 		
-		private IndexSequence seq;
+		private IndexSequence<N> seq;
 
 		SelectionIterator(IndexSequence seq) {
 			super();
@@ -341,7 +387,7 @@ public class Section<N extends Number> {
 		}
 
 		@Override
-		public Number next() {
+		public N next() {
 			seq.next();
 			return seq.index();
 		}

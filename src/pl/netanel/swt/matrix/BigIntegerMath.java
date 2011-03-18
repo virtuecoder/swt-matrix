@@ -2,7 +2,7 @@ package pl.netanel.swt.matrix;
 
 import java.math.BigInteger;
 
-class BigIntegerMath extends Math<MutableBigInteger, BigInteger> {
+class BigIntegerMath extends Math<BigInteger> {
 
 	private static final MutableBigInteger ZERO = new MutableBigInteger(BigInteger.ZERO);
 	private static final MutableBigInteger ONE = new MutableBigInteger(BigInteger.ONE);
@@ -18,7 +18,7 @@ class BigIntegerMath extends Math<MutableBigInteger, BigInteger> {
 	}
 
 	@Override
-	public MutableBigInteger create(Number n) {
+	public MutableBigInteger create(BigInteger n) {
 		return new MutableBigInteger(getValue(n));
 	}
 	
@@ -75,7 +75,7 @@ class BigIntegerMath extends Math<MutableBigInteger, BigInteger> {
 	}
 
 	@Override
-	public BigInteger getValue(Number n) {
+	public BigInteger getValue(BigInteger n) {
 		if (n instanceof BigInteger) return (BigInteger) n;
 //		if (n instanceof MutableBigInteger) return ((MutableBigInteger) n).value;
 		return new BigInteger(n.toString());

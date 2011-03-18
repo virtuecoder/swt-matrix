@@ -6,14 +6,14 @@ import java.util.List;
  * Iterates over section items in their order and skipping the hidden ones.
  * Iteration yields nothing if the section is not visible. 
  */
-abstract class DirectionIndexSequence implements Sequence {
-	protected final Section section;
+abstract class DirectionIndexSequence<N extends Number> implements Sequence {
+	protected final Section<N> section;
 	protected Math math;
 	public MutableNumber number, number2, lastInExtent, last, d;
 	protected int i, h;
 	public int level;
 	protected int sign;
-	protected Extent extent, he;
+	protected Extent<N> extent, he;
 	public boolean moved;
 	
 	
@@ -133,9 +133,9 @@ abstract class DirectionIndexSequence implements Sequence {
 	protected abstract MutableNumber subtract(MutableNumber x, MutableNumber y);
 	protected abstract boolean hasNextExtent();
 	protected abstract boolean hasNextHidden();
-	protected abstract int firstIndex(List<Extent> items);
-	protected abstract MutableNumber start(Extent e);
-	protected abstract MutableNumber end(Extent e);
+	protected abstract int firstIndex(List<Extent<N>> items);
+	protected abstract MutableNumber start(Extent<N> e);
+	protected abstract MutableNumber end(Extent<N> e);
 
 
 	public MutableNumber index() {
@@ -148,7 +148,7 @@ abstract class DirectionIndexSequence implements Sequence {
 		return next(this.section.math.create(1));
 	}
 
-	void set(Number index) {
+	void set(N index) {
 		i = this.section.order.getExtentIndex(index);
 		if (i == -1) return;
 		extent = this.section.order.items.get(i);
@@ -158,7 +158,7 @@ abstract class DirectionIndexSequence implements Sequence {
 		he = null;
 	}
 	
-	static class Forward extends DirectionIndexSequence {
+	static class Forward<N extends Number> extends DirectionIndexSequence<N> {
 		
 		public Forward(Section section) {
 			super(section);
@@ -191,22 +191,22 @@ abstract class DirectionIndexSequence implements Sequence {
 		}
 		
 		@Override
-		protected int firstIndex(List<Extent> items) {
+		protected int firstIndex(List<Extent<N>> items) {
 			return -1;
 		}
 		
 		@Override
-		protected MutableNumber start(Extent e) {
+		protected MutableNumber start(Extent<N> e) {
 			return e.start;
 		}
 
 		@Override
-		protected MutableNumber end(Extent e) {
+		protected MutableNumber end(Extent<N> e) {
 			return e.end;
 		}
 	}
 	
-	static class Backward extends DirectionIndexSequence {
+	static class Backward<N extends Number> extends DirectionIndexSequence<N> {
 		
 		public Backward(Section section) {
 			super(section);
@@ -241,17 +241,17 @@ abstract class DirectionIndexSequence implements Sequence {
 		}
 		
 		@Override
-		protected int firstIndex(List<Extent> items) {
+		protected int firstIndex(List<Extent<N>> items) {
 			return items.size();
 		}
 		
 		@Override
-		protected MutableNumber start(Extent e) {
+		protected MutableNumber start(Extent<N> e) {
 			return e.end;
 		}
 		
 		@Override
-		protected MutableNumber end(Extent e) {
+		protected MutableNumber end(Extent<N> e) {
 			return e.start;
 		}
 	}

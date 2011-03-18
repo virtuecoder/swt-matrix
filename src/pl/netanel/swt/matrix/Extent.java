@@ -1,10 +1,10 @@
 package pl.netanel.swt.matrix;
 
 
-class Extent {
-	MutableNumber start, end;
+class Extent<N extends Number> {
+	MutableNumber<N> start, end;
 
-	public Extent(MutableNumber start, MutableNumber end) {
+	public Extent(MutableNumber<N> start, MutableNumber<N> end) {
 		super();
 		this.start = start;
 		this.end = end;
@@ -15,11 +15,11 @@ class Extent {
 		return start.toString() + "-" + end.toString();
 	}
 	
-	public Number start() {
+	public N start() {
 		return start.getValue();
 	}
 	
-	public Number end() {
+	public N end() {
 		return end.getValue();
 	}
 	

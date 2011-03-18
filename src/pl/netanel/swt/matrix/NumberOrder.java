@@ -1,42 +1,42 @@
 package pl.netanel.swt.matrix;
 
 
-class NumberOrder extends NumberSet {
+class NumberOrder<N extends Number> extends NumberSet<N> {
 
-	private final MutableNumber count; 
-	private Number last;
+	private N count; 
+	private N last;
 
-	public NumberOrder(Math math) {
+	public NumberOrder(Math<N> math) {
 		super(math);
-		count = math.create(0);
+		count = math.ZERO_VALUE();
 	}
 
-	public void setCount(Number newCount) {
-		int compare = math.compare(newCount, count.getValue());
+	public void setCount(N newCount) {
+		int compare = math.compare(newCount, count);
 		if (compare < 0) {
 			remove(newCount, last);
 			last = math.decrement(newCount);
 		} 
 		else if (compare > 0) {
-			MutableNumber newLast = math.create(newCount).decrement();
+			MutableNumber<N> newLast = math.create(newCount).decrement();
 			if (items.isEmpty()) {
-				items.add(new Extent(count.copy(), newLast));
+				items.add(new Extent(math.create(count), newLast));
 			} else {
-				Extent e = items.get(items.size() - 1);
+				Extent<N> e = items.get(items.size() - 1);
 				if (math.compare(e.end(), last) == 0) {
 					e.end.set(newLast);
 				} else {
-					items.add(new Extent(count.copy(), newLast));
+					items.add(new Extent(math.create(count), newLast));
 				}
 			}
 			last = newLast.getValue();
 		} else {
 			return;
 		}
-		count.set(newCount);
+		count = newCount;
 	}
 
-	public void move(Number start, Number end, Number target) {
+	public void move(N start, N end, N target) {
 		// Adjust the target if subject contains it
 		if (math.compare(start, target) <= 0 && math.compare(target, end) <= 0) {
 //			target = math.increment(end);
@@ -51,7 +51,7 @@ class NumberOrder extends NumberSet {
 		// Find the position i to insert
 		int i = 0;
 		for (; i < items.size(); i++) {
-			Extent e = items.get(i);
+			Extent<N> e = items.get(i);
 			if (math.contains(e.start(), e.end(), target)) {
 				if (math.compare(target, e.start()) == 0) {
 					break;
@@ -71,8 +71,8 @@ class NumberOrder extends NumberSet {
 
 	private void mergeAdjacentExtents() {
 		for (int i = items.size(); i-- > 1;) {
-			Extent e1 = items.get(i-1);
-			Extent e2 = items.get(i);
+			Extent<N> e1 = items.get(i-1);
+			Extent<N> e2 = items.get(i);
 			if (math.compare(math.increment(e1.end()), e2.start()) == 0) {
 				e1.end.set(e2.end);
 				items.remove(i);
@@ -80,15 +80,15 @@ class NumberOrder extends NumberSet {
 		}
 	}
 
-	public Number indexOf(Number modelIndex) {
+	public N indexOf(N modelIndex) {
 //		System.out.println(modelIndex.getClass());
-		if (math.compare(modelIndex, count.getValue()) >= 0 || 
+		if (math.compare(modelIndex, count) >= 0 || 
 			math.compare(modelIndex, math.ZERO_VALUE()) < 0) return modelIndex;
 			
-		MutableNumber sum = math.create(0);	
-		for (Extent e: items) {
+		MutableNumber<N> sum = math.create(0);	
+		for (Extent<N> e: items) {
 			if (math.contains(e.start(), e.end(), modelIndex)) {
-				return sum.add(math.getValue(modelIndex)).subtract(e.start).getValue();
+				return sum.add(modelIndex).subtract(e.start).getValue();
 			}
 			sum.add(e.end).subtract(e.start).increment();
 		}

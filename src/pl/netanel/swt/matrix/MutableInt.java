@@ -2,9 +2,7 @@ package pl.netanel.swt.matrix;
 
 import java.math.BigInteger;
 
-
-
-class MutableInt extends MutableNumber<MutableInt, Integer> {
+class MutableInt extends MutableNumber<Integer> {
 	private static final long serialVersionUID = 1L;
 	
 	int value;
@@ -35,23 +33,24 @@ class MutableInt extends MutableNumber<MutableInt, Integer> {
 	}
 	
 	@Override
-	public MutableInt set(Number value) {
-		this.value = value.intValue();
-		return this;
-	}
-	
-	@Override
 	public Integer getValue() {
 		return value;
 	}
 
-	public MutableInt set(int value) {
-		this.value = value;
+	@Override
+	public MutableInt set(Integer n) {
+		value = n.intValue();
 		return this;
 	}
 	
-	public MutableInt set(MutableNumber n) {
-		this.value = n.getValue().intValue();
+	public MutableInt set(int n) {
+		value = n;
+		return this;
+	}
+	
+	@Override
+	MutableNumber<Integer> set(MutableNumber<Integer> n) {
+		value = n.intValue();
 		return this;
 	}
 
@@ -74,26 +73,26 @@ class MutableInt extends MutableNumber<MutableInt, Integer> {
 	}
 
 	@Override
-	public MutableInt add(MutableInt n) {
-		value += n.value;
+	public MutableInt add(MutableNumber n) {
+		value += n.intValue();
 		return this;
 	}
 
 	@Override
-	public MutableInt subtract(MutableInt n) {
-		value -= n.value;
+	public MutableInt subtract(MutableNumber n) {
+		value -= n.intValue();
 		return this;
 	}
 
 	@Override
-	public MutableInt multiply(MutableInt n) {
-		value *= n.value;
+	public MutableInt multiply(MutableNumber n) {
+		value *= n.intValue();
 		return this;
 	}
 
 	@Override
-	public MutableInt divide(MutableInt n) {
-		value /= n.value;
+	public MutableInt divide(MutableNumber n) {
+		value /= n.intValue();
 		return this;
 	}
 
@@ -110,13 +109,13 @@ class MutableInt extends MutableNumber<MutableInt, Integer> {
 	}
 
 	@Override
-	MutableInt add(Number n) {
+	MutableInt add(Integer n) {
 		value += n.intValue();
 		return this;
 	}
 
 	@Override
-	MutableInt subtract(Number n) {
+	MutableInt subtract(Integer n) {
 		value -= n.intValue();
 		return this;
 	}
@@ -127,8 +126,15 @@ class MutableInt extends MutableNumber<MutableInt, Integer> {
 	}
 
 	@Override
-	MutableInt min(MutableInt n) {
-		return value <= n.value ? this : n; 
+	MutableNumber<Integer> min(MutableNumber<Integer> n) {
+		return value <= n.intValue() ? this : n; 
+	}
+
+
+	@Override
+	int compareTo(Integer n) {
+		int x = n.intValue();
+		return value == x ? 0 : value > x ? 1 : -1;
 	}
 
 }

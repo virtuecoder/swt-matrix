@@ -9,7 +9,7 @@ import java.math.BigInteger;
  * 
  * @author Jacek Kolodziejczyk created 01-03-2011
  */
-abstract class Math<MN extends MutableNumber<MN, N>, N extends Number> {
+abstract class Math<N extends Number> {
 
 	public static final int BEFORE = 1;
 	public static final int ADJACENT_BEFORE = 2;
@@ -26,17 +26,18 @@ abstract class Math<MN extends MutableNumber<MN, N>, N extends Number> {
 
 	public static Math getInstance(Class numberClass) {
 		if (numberClass == int.class) 				return IntMath.getInstance(); 
+		if (numberClass == Integer.class) 			return IntMath.getInstance(); 
 //		else if (numberClass == long.class) 		return LongMath.getInstance(); 
 		else if	(numberClass == BigInteger.class) 	return BigIntegerMath.getInstance();
 		else throw new IllegalArgumentException("Cannot do arithmetics on " + numberClass);
 	}
 
-	public abstract MN create(int value);
-	public abstract MN create(Number n);
-	public abstract MN create(MutableNumber n);
+	public abstract MutableNumber<N> create(int value);
+	public abstract MutableNumber<N> create(N n);
+	public abstract MutableNumber<N> create(MutableNumber<N> n);
 
-	public abstract MN ZERO();
-	public abstract MN ONE();
+	public abstract MutableNumber<N> ZERO();
+	public abstract MutableNumber<N> ONE();
 	
 	public abstract N ZERO_VALUE();
 	public abstract N ONE_VALUE();
@@ -51,8 +52,12 @@ abstract class Math<MN extends MutableNumber<MN, N>, N extends Number> {
 	
 	public abstract int compare(N x, N y);
 	
-	public int compare(MN x, MN y) {
+	public int compare(MutableNumber<N> x, MutableNumber<N> y) {
 		return compare(x.getValue(), y.getValue());
+	}
+	
+	public int compare(MutableNumber<N> x, N y) {
+		return x.compareTo(y);
 	}
 	
 	public int compare(N start1, N end1, N start2, N end2) {
@@ -81,28 +86,28 @@ abstract class Math<MN extends MutableNumber<MN, N>, N extends Number> {
 		return compare(start, n) <= 0 && compare(n, end) <= 0;
 	}
 	
-	public boolean contains(Extent e, MutableNumber mn) {
+	public boolean contains(Extent e, MutableNumber<N> mn) {
 		return contains((N) e.start(), (N) e.end(), (N) mn.getValue());
 	}
 	
-	public boolean contains(Extent e, Number n) {
+	public boolean contains(Extent e, N n) {
 		return contains((N) e.start(), (N) e.end(), (N) n);
 	}
 	
-	public boolean contains(MN start, MN end, N n) {
-		return compare(start.getValue(), getValue(n)) <= 0 && 
-			   compare(getValue(n), end.getValue()) <= 0;
+	public boolean contains(MutableNumber<N> start, MutableNumber<N> end, N n) {
+		return compare((N) start.getValue(), getValue(n)) <= 0 && 
+			   compare(getValue(n), (N) end.getValue()) <= 0;
 	}
 
-	public Number max(N x, N y) {
+	public N max(N x, N y) {
 		return compare(x, y) < 0 ? y : x;
 	}
 	
-	public Number min(N x, N y) {
+	public N min(N x, N y) {
 		return compare(x, y) > 0 ? y : x;
 	}
 	
-	public Number max(N ...n) {
+	public N max(N ...n) {
 		N max = n[0];
 		for (int i = 1; i < n.length; i++) {
 			if (compare(n[i], max) > 0) {
@@ -112,7 +117,7 @@ abstract class Math<MN extends MutableNumber<MN, N>, N extends Number> {
 		return max;
 	}
 	
-	public Number min(N ...n) {
+	public N min(N ...n) {
 		N min = n[0];
 		for (int i = 1; i < n.length; i++) {
 			if (compare(n[i], min) < 0) {
@@ -122,9 +127,9 @@ abstract class Math<MN extends MutableNumber<MN, N>, N extends Number> {
 		return min;
 	}
 
-	abstract public N getValue(Number n);
+	abstract public N getValue(N n);
 
-	public MN min(MN x, MN y) {
+	public MutableNumber min(MutableNumber x, MutableNumber y) {
 		return x.min(y);
 	}
 }

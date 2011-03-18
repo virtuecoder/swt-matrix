@@ -16,11 +16,11 @@ package pl.netanel.swt.matrix;
  * @see Sequence
  * @author Jacek created 21-02-2011
  */
-public class IndexSequence implements Sequence {
-	NumberSet set;
+public class IndexSequence<N extends Number> implements Sequence {
+	NumberSet<N> set;
 	int i, size;
 	Extent e;
-	MutableNumber index;
+	MutableNumber<N> index;
 	
 	
 	public IndexSequence(NumberSet set) {
@@ -56,7 +56,7 @@ public class IndexSequence implements Sequence {
 	 * 
 	 * @return row axis index
 	 */
-	public Number index() {
+	public N index() {
 		return index.getValue();
 	}
 

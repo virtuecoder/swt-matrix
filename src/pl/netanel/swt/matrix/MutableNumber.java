@@ -2,30 +2,31 @@ package pl.netanel.swt.matrix;
 
 import java.math.BigInteger;
 
-abstract class MutableNumber<MN extends MutableNumber, N extends Number> {
+abstract class MutableNumber<N extends Number> {
 	private static final long serialVersionUID = 1L;
 	
 	abstract public BigInteger toBigInteger();
 	abstract N getValue();
 	
-	public abstract MN copy();
+	public abstract MutableNumber<N> copy();
 
-	abstract MN set(Number n);
-	abstract MN set(MutableNumber n);
+	abstract MutableNumber<N> set(N n);
+	abstract MutableNumber<N> set(MutableNumber<N> n);
 	
-	abstract MN increment();
-	abstract MN decrement();
-	abstract MN negate();
-	abstract MN add(MN n);
-	abstract MN subtract(MN n);
-	abstract MN multiply(MN n);
-	abstract MN divide(MN n);
+	abstract MutableNumber<N> increment();
+	abstract MutableNumber<N> decrement();
+	abstract MutableNumber<N> negate();
+	abstract MutableNumber<N> add(MutableNumber n);
+	abstract MutableNumber<N> subtract(MutableNumber n);
+	abstract MutableNumber<N> multiply(MutableNumber n);
+	abstract MutableNumber<N> divide(MutableNumber n);
 
-	abstract MN add(int n);
-	abstract MN add(Number n);
-	abstract MN subtract(Number n);
+	abstract MutableNumber<N> add(int n);
+	abstract MutableNumber<N> add(N n);
+	abstract MutableNumber<N> subtract(N n);
 	
-	abstract MN min(MN n);
+	abstract int compareTo(N n);
+	abstract MutableNumber<N> min(MutableNumber<N> n);
 
 	abstract int intValue();
 }

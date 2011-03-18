@@ -1,7 +1,7 @@
 package pl.netanel.swt.matrix;
 
 
-class IntMath extends Math<MutableInt, Integer> {
+class IntMath extends Math<Integer> {
 
 	private static final MutableInt ZERO = new MutableInt(0);
 	private static final MutableInt ONE = new MutableInt(1);
@@ -20,7 +20,7 @@ class IntMath extends Math<MutableInt, Integer> {
 	}
 
 	@Override
-	public MutableInt create(Number value) {
+	public MutableInt create(Integer value) {
 		return new MutableInt(value.intValue());
 	}
 	
@@ -78,7 +78,7 @@ class IntMath extends Math<MutableInt, Integer> {
 	}
 
 	@Override
-	public Integer getValue(Number n) {
+	public Integer getValue(Integer n) {
 		return n.intValue();
 	}
 

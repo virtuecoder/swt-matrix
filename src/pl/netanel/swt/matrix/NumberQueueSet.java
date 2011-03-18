@@ -29,7 +29,7 @@ import pl.netanel.util.Preconditions;
  * @author Jacek created 23-02-2011
  */
 //TODO Complete with other collection methods like addAll, etc.
-class NumberQueueSet extends NumberSet {
+class NumberQueueSet<N extends Number> extends NumberSet<N> {
 	
 	public NumberQueueSet(Math math) {
 		super(math);
@@ -47,7 +47,7 @@ class NumberQueueSet extends NumberSet {
 	 * @return @return true if the receiever has been modified by this operation, 
 	 * or false otherwise
 	 */
-	public boolean add(Number start, Number end) {
+	public boolean add(N start, N end) {
 		Preconditions.checkNotNullWithName(start, "Start index");
 		Preconditions.checkNotNullWithName(end, "End index");
 		
@@ -55,7 +55,7 @@ class NumberQueueSet extends NumberSet {
 		int i = 0;
 		
 		for (;i <= last; i++) {
-			Extent item = items.get(i);
+			Extent<N> item = items.get(i);
 			int location = math.compare(start, end, item.start(), item.end());
 			
 			switch (location) {
@@ -87,7 +87,7 @@ class NumberQueueSet extends NumberSet {
 	 * or false otherwise
 	 */
 	// TODO Optimize: merge if adjacent after remove
-	public boolean remove(Number start, Number end) {
+	public boolean remove(N start, N end) {
 		Preconditions.checkNotNullWithName(start, "Start index");
 		Preconditions.checkNotNullWithName(end, "End index");
 		
@@ -95,7 +95,7 @@ class NumberQueueSet extends NumberSet {
 		int i = 0;
 		
 		for (;i <= last; i++) {
-			Extent item = items.get(i);
+			Extent<N> item = items.get(i);
 			int location = math.compare(start, end, item.start(), item.end());
 			
 			switch (location) {
@@ -130,8 +130,8 @@ class NumberQueueSet extends NumberSet {
 	 * @param index element whose presence in this set is to be tested
 	 * @return true if this list contains the specified element
 	 */
-	public boolean contains(Number index) {
-		for (Extent e: items) {
+	public boolean contains(N index) {
+		for (Extent<N> e: items) {
 			if (math.contains(e.start(), e.end(), index)) {
 				return true;
 			}
@@ -155,7 +155,7 @@ class NumberQueueSet extends NumberSet {
 	 */
 	public NumberQueueSet copy() {
 		NumberQueueSet copy = new NumberQueueSet(math);
-		for (Extent e: items) {
+		for (Extent<N> e: items) {
 			copy.items.add(new Extent(math.create(e.start), math.create(e.end)));
 		}
 		return copy;

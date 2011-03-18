@@ -24,6 +24,7 @@ import pl.netanel.swt.matrix.painter.Painters;
  * It can also have dedicated event handlers to implement special behavior 
  * for different parts of the matrix.  
  * </p>
+ * @see Section
  * 
  * @author Jacek
  * @created 13-10-2010
@@ -232,8 +233,8 @@ public class Zone {
 	public void setSelected(boolean selected) {
 		if (selected) {
 			cellSelection.add(
-					section0.math.ZERO_VALUE(), section0.getLastIndex(), 
-					section1.math.ZERO_VALUE(), section1.getLastIndex());
+					section0.math.ZERO_VALUE(), section0.math.decrement(section0.getCount()), 
+					section1.math.ZERO_VALUE(), section1.math.decrement(section1.getCount()));
 		} else {
 			cellSelection.clear();
 			lastSelection.clear();

@@ -2,7 +2,7 @@ package pl.netanel.swt.matrix;
 
 import java.math.BigInteger;
 
-class MutableBigInteger extends MutableNumber<MutableBigInteger, BigInteger> {
+class MutableBigInteger extends MutableNumber<BigInteger> {
 	private static final long serialVersionUID = 1L;
 	
 	BigInteger value;
@@ -39,16 +39,17 @@ class MutableBigInteger extends MutableNumber<MutableBigInteger, BigInteger> {
 	}
 
 	@Override
-	MutableBigInteger set(Number n) {
-		value = n instanceof BigInteger ? (BigInteger) n : new BigInteger(n.toString());
+	MutableBigInteger set(BigInteger n) {
+		value = n;
 		return this;
 	}
 	
 	@Override
-	MutableBigInteger set(MutableNumber n) {
-		value = n instanceof MutableBigInteger ? n.toBigInteger() : new BigInteger(n.toString());
+	MutableNumber<BigInteger> set(MutableNumber<BigInteger> n) {
+		value = n.toBigInteger();
 		return this;
 	}
+
 
 	@Override
 	MutableBigInteger increment() {
@@ -69,28 +70,11 @@ class MutableBigInteger extends MutableNumber<MutableBigInteger, BigInteger> {
 	}
 
 	@Override
-	MutableBigInteger add(MutableBigInteger n) {
-		value = value.add(n.value);
+	MutableBigInteger add(MutableNumber n) {
+		value = value.add(n.toBigInteger());
 		return this;
 	}
 
-	@Override
-	MutableBigInteger subtract(MutableBigInteger n) {
-		value = value.subtract(n.value);
-		return this;
-	}
-
-	@Override
-	MutableBigInteger multiply(MutableBigInteger n) {
-		value = value.multiply(n.value);
-		return this;
-	}
-
-	@Override
-	MutableBigInteger divide(MutableBigInteger n) {
-		value = value.divide(n.value);
-		return this;
-	}
 
 	@Override
 	MutableBigInteger add(int n) {
@@ -104,18 +88,14 @@ class MutableBigInteger extends MutableNumber<MutableBigInteger, BigInteger> {
 	}
 
 	
-	public void add(BigInteger n) {
-		value = value.add(n);
-	}
-
 	@Override
-	MutableBigInteger add(Number n) {
+	MutableBigInteger add(BigInteger n) {
 		value = value.add((BigInteger) n);
 		return this;
 	}
 
 	@Override
-	MutableBigInteger subtract(Number n) {
+	MutableBigInteger subtract(BigInteger n) {
 		value = value.subtract((BigInteger) n);
 		return this;
 	}
@@ -126,8 +106,31 @@ class MutableBigInteger extends MutableNumber<MutableBigInteger, BigInteger> {
 	}
 
 	@Override
-	MutableBigInteger min(MutableBigInteger n) {
-		return value.compareTo(n.value) <= 0 ? this : n; 
+	MutableNumber<BigInteger> subtract(MutableNumber n) {
+		value = value.subtract(n.toBigInteger());
+		return this;
+	}
+
+	@Override
+	MutableNumber<BigInteger> multiply(MutableNumber n) {
+		value = value.multiply(n.toBigInteger());
+		return this;
+	}
+
+	@Override
+	MutableNumber<BigInteger> divide(MutableNumber n) {
+		value = value.divide(n.toBigInteger());
+		return this;
+	}
+
+	@Override
+	MutableNumber<BigInteger> min(MutableNumber<BigInteger> n) {
+		return value.compareTo(n.toBigInteger()) <= 0 ? this : n; 
+	}
+
+	@Override
+	int compareTo(BigInteger n) {
+		return value.compareTo(n);
 	}
 
 }
