@@ -17,8 +17,8 @@ public class SnippetA {
 		matrix.getModel1().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
 		matrix.getModel0().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
 //		matrix.getModel1().getBody().setDefaultCellWidth(100);
-		matrix.getAxis0().setHeaderVisible(true);
-		matrix.getAxis1().setHeaderVisible(true);
+//		matrix.getAxis0().setHeaderVisible(true);
+//		matrix.getAxis1().setHeaderVisible(true);
 		
 		
 		shell.setBounds(200, 20, 1024, 568);

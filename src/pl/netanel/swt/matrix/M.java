@@ -14,7 +14,7 @@ public class M {
 	static final int RESIZE_OFFSET_X = 3;
 	static final int RESIZE_OFFSET_y = 2;
 	static final int AUTOSCROLL_OFFSET_X = 8;
-	static final int AUTOSCROLL_OFFSET_y = 6;
+	static final int AUTOSCROLL_OFFSET_Y = 6;
 	static final int AUTOSCROLL_RATE = 50;
 
 	

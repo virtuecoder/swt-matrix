@@ -11,6 +11,8 @@ import pl.netanel.util.Util;
 
 
 class Layout {
+	private static final String FREEZE_ITEM_COUNT_ERROR = "Freeze item count must greater then 0";
+	
 	Math math;
 	final ArrayList<Section> sections;
 
@@ -655,7 +657,7 @@ class Layout {
 		for (int i = 0, size = sections.size(); i < size; i++) {
 			Section section = sections.get(i);
 			if (item.section.equals(section)) {
-				return position.add(math.getValue(section.getPosition(item.index)));
+				return position.add(math.getValue(section.indexOfNotHidden(item.index)));
 			}
 			position.add(section.getVisibleCount());
 		}
@@ -671,7 +673,7 @@ class Layout {
 			pos1.set(pos2);
 			pos2.add(section.getVisibleCount());
 			if (math.compare(pos2, position) > 0) {
-				return new AxisItem(section, section.getByPosition(pos1.subtract(position).negate().getValue()));
+				return new AxisItem(section, section.get(pos1.subtract(position).negate().getValue()));
 			}
 		}
 		return null;
@@ -773,6 +775,13 @@ class Layout {
 		return false;
 	}
 
+	public Bound getBound(Dock dock) {
+		Cache cache = getCache(dock);
+		return new Bound(cache.distance, cache == main 
+				? viewportSize - head.innerWidth - tail.innerWidth
+				: cache.outerWidth);
+	}
+	
 	// TODO cache the section bonds in a dock 
 	public Bound getBound(Dock dock, Section section) {
 		Cache cache = getCache(dock);
@@ -813,6 +822,18 @@ class Layout {
 		return head.isEmpty() && main.isEmpty() && tail.isEmpty();
 	}
 
+	
+	public void freezeHead(int freezeItemCount) {
+		Preconditions.checkArgument(freezeItemCount >= 0, FREEZE_ITEM_COUNT_ERROR);
+		isComputingRequired = head.count != freezeItemCount;
+		head.count = freezeItemCount;
+	}
+
+	public void freezeTail(int freezeItemCount) {
+		Preconditions.checkArgument(freezeItemCount >= 0, FREEZE_ITEM_COUNT_ERROR);
+		isComputingRequired = tail.count != freezeItemCount;
+		tail.count = freezeItemCount;
+	}
 		
 
 }

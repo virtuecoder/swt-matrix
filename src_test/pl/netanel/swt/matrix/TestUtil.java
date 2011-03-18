@@ -1,13 +1,10 @@
 package pl.netanel.swt.matrix;
 
-import pl.netanel.swt.matrix.AxisItem;
-import pl.netanel.swt.matrix.Extent;
-import pl.netanel.swt.matrix.IntMath;
-import pl.netanel.swt.matrix.Layout;
-import pl.netanel.swt.matrix.MutableInt;
-import pl.netanel.swt.matrix.MutableNumber;
-import pl.netanel.swt.matrix.NumberSet;
-import pl.netanel.swt.matrix.Section;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+
 import pl.netanel.swt.matrix.Layout.LayoutSequence;
 
 public class TestUtil {
@@ -50,6 +47,24 @@ public class TestUtil {
 		return sb.toString();
 	}
 	
+	public static String distances(LayoutSequence seq) {
+		StringBuilder sb = new StringBuilder();
+		for (seq.init(); seq.next();) {
+			if (sb.length() > 0) sb.append(", ");
+			sb.append(seq.getDistance());
+		}
+		return sb.toString();
+	}
+	
+	public static String widths(LayoutSequence seq) {
+		StringBuilder sb = new StringBuilder();
+		for (seq.init(); seq.next();) {
+			if (sb.length() > 0) sb.append(", ");
+			sb.append(seq.getWidth());
+		}
+		return sb.toString();
+	}
+	
 	public static Layout layout(int ...count) {
 		Section[] sections = new Section[count.length];
 		for (int i = 0; i < count.length; i++) {
@@ -62,5 +77,30 @@ public class TestUtil {
 		return layout;
 	}
 
-	
+	public static void showMatrix(Layout layout) {
+		AxisModel rowModel = new AxisModel(); rowModel.getBody().setCount(1);
+		
+		// Make the columns variable width
+//		Matrix matrix = new Matrix(shell, SWT.NONE);
+		Shell shell = new Shell();
+		MatrixModel model = new MatrixModel(rowModel, layout.model);
+		Matrix matrix = new Matrix(shell, SWT.V_SCROLL | SWT.H_SCROLL, model);
+		matrix.layout1 = layout;
+//		matrix.rows.setHeaderVisible(true);
+		
+		//matrix.getZone(Zone.BODY).cellPainters.add(new DefaultBodyTextPainter());
+		
+		matrix.setBounds(0, 0, layout.getViewportSize() + matrix.getVerticalBar().getSize().x + 1, 400);
+//		shell.pack();
+		shell.setLayout(new FillLayout());
+		shell.setBounds(400, 300, 600, 400);
+		shell.open();
+		Display display = shell.getDisplay();
+		
+        while (!shell.isDisposed()) {
+    		if (!display.readAndDispatch()) {
+    			display.sleep();
+    		}
+        }
+	}
 }

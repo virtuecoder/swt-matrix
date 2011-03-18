@@ -20,6 +20,8 @@ public class Snippet {
 				, new MatrixModel(new AxisModel(BigInteger.class), new AxisModel(BigInteger.class)));
 		matrix.getModel1().getBody().setCount(new BigInteger("1000000000000000"));
 		matrix.getModel0().getBody().setCount(new BigInteger("1000000000000000"));
+		matrix.getModel1().getHeader().setDefaultCellWidth(40);
+		matrix.getModel1().getBody().setDefaultCellWidth(50);
 		matrix.getAxis0().setHeaderVisible(true);
 		matrix.getAxis1().setHeaderVisible(true);
 		

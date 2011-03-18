@@ -1,6 +1,5 @@
 package pl.netanel.swt.matrix;
 
-import java.math.BigDecimal;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -27,10 +26,12 @@ public class Matrix extends Canvas {
 
 	MatrixModel model;
 	Axis axis0, axis1;
-	private Layout layout0, layout1;
-	private Rectangle area; 
-	private Painter backgroundPainter, navigationPainter;
+	Layout layout0, layout1;
 	MatrixListener listener;
+	Listener listener2;
+	
+	Rectangle area; 
+	private Painter backgroundPainter, navigationPainter;
 	private ScheduledExecutorService executor;
 	
 	public Matrix(Composite parent, int style) {
@@ -46,8 +47,7 @@ public class Matrix extends Canvas {
 		
 		setModel(model);
 		
-		// Initialize event handling
-		Listener listener = new Listener() {
+		listener2 = new Listener() {
 			@Override
 			public void handleEvent(Event event) {
 				try {
@@ -61,8 +61,8 @@ public class Matrix extends Canvas {
 			}
 		};
 		
-		addListener(SWT.Paint, listener);
-		addListener(SWT.Resize,	listener);
+		addListener(SWT.Paint, listener2);
+		addListener(SWT.Resize,	listener2);
 		
 		addDisposeListener(new DisposeListener() {
 			@Override
@@ -107,7 +107,7 @@ public class Matrix extends Canvas {
 
 	
 	protected void onPaint(Event event) {
-		long t = System.nanoTime();
+//		long t = System.nanoTime();
 		final GC gc = event.gc;
 		layout0.computeIfRequired();
 		layout1.computeIfRequired();
@@ -115,6 +115,14 @@ public class Matrix extends Canvas {
 		paint(gc, backgroundPainter, area.x, area.y, area.width, area.height);
 
 		paintDock(gc, Dock.MAIN, Dock.MAIN);
+		paintDock(gc, Dock.TAIL, Dock.HEAD);
+		paintDock(gc, Dock.HEAD, Dock.TAIL);
+		paintDock(gc, Dock.TAIL, Dock.MAIN);
+		paintDock(gc, Dock.MAIN, Dock.TAIL);
+		paintDock(gc, Dock.TAIL, Dock.TAIL);
+		paintDock(gc, Dock.HEAD, Dock.MAIN);
+		paintDock(gc, Dock.MAIN, Dock.HEAD);
+		paintDock(gc, Dock.HEAD, Dock.HEAD);
 		
 		if (layout0.current != null && layout1.current != null) {
 			Bound b0 = layout0.getBound(layout0.current);
@@ -124,7 +132,7 @@ public class Matrix extends Canvas {
 			}
 		}
 		
-		System.out.println(BigDecimal.valueOf(System.nanoTime() - t, 6).toString());
+//		System.out.println(BigDecimal.valueOf(System.nanoTime() - t, 6).toString());
 	}
 
 	private void paint(GC gc, Painter painter, int x, int y, int width, int height) {
@@ -139,19 +147,26 @@ public class Matrix extends Canvas {
 			if (!layout0.contains(dock0, zone.section0) ||
 				!layout1.contains(dock1, zone.section1) ) continue;
 			
-//				if (zone == null || !zone.isVisible()) continue;
+//			if (zone == null || !zone.isVisible()) continue;
 
 			Bound b0 = layout0.getBound(dock0, zone.section0);
 			Bound b1 = layout1.getBound(dock1, zone.section1);
 			
+			Bound bb0 = layout0.getBound(dock0);
+			Bound bb1 = layout1.getBound(dock1);
+//			if (dock0 == Dock.MAIN && dock1 == Dock.MAIN) {
+//			gc.setBackground(Resources.getColor(SWT.COLOR_BLUE));
+//			gc.fillRectangle(b1.distance, b0.distance, b1.width, b0.width);
+//			}
+			
 			zone.setBounds(b1.distance, b0.distance, b1.width, b0.width);
-//			gc.setClipping(b1.distance, b0.distance, b1.width, b0.width);
 			
 			// Paint cells
 			paintCells(gc, zone.cellPainters, 
 					layout0.cellSequence(dock0, zone.section0),
 					layout1.cellSequence(dock1, zone.section1) );
 			
+			gc.setClipping(bb1.distance, bb0.distance, bb1.width, bb0.width);
 			// Paint row lines
 			LayoutSequence seq;
 			seq = layout0.lineSequence(dock0, zone.section0);

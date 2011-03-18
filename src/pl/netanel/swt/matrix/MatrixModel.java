@@ -22,6 +22,13 @@ public class MatrixModel implements Iterable<Zone> {
 	private int[] zOrder;
 	private ExtentPairSequence seq;
 
+	public MatrixModel() {
+		this(new AxisModel(), new AxisModel());
+		model1.getHeader().setDefaultCellWidth(40);
+		model1.getBody().setDefaultCellWidth(50);
+		model0.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_X);
+	}
+
 	public MatrixModel(AxisModel model0, AxisModel model1, Zone ...zones) {
 		this.model0 = model0;
 		this.model1 = model1;
@@ -40,8 +47,6 @@ public class MatrixModel implements Iterable<Zone> {
 				if (zone == null) {
 					zone = createZone(section0, section1);
 					this.zones.add(zone);
-
-					section1.setDefaultCellWidth(50);
 				}
 				if (section0.equals(body0) && section1.equals(body1)) {
 					body = zone;
@@ -106,10 +111,6 @@ public class MatrixModel implements Iterable<Zone> {
 		return zone;
 	}
 
-	public MatrixModel() {
-		this(new AxisModel(), new AxisModel());
-		model0.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_X);
-	}
 	
 	
 	private Zone setHeaderStyle(Zone zone) {

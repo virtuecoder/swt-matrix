@@ -162,7 +162,7 @@ class MatrixListener implements Listener {
 					? autoScroll.item  
 					: layout.getItemByDistance(distance);
 				
-				if (item2 != null) {
+				if (item2 != null && item != null) {
 					itemModified = layout.compare(item, item2) != 0;
 					item = item2;
 				}

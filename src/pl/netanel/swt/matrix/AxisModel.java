@@ -18,6 +18,7 @@ public class AxisModel implements Iterable<Section> {
 	
 	public AxisModel() {
 		this(new Section(), new Section());
+		sections.get(0).setCount(math.ONE_VALUE());
 	}
 	
 	public AxisModel(Class<? extends Number> numberClass) {
@@ -54,7 +55,7 @@ public class AxisModel implements Iterable<Section> {
 			zOrder[j++] = this.sections.get(i);
 		}
 		
-		autoScrollOffset = M.AUTOSCROLL_OFFSET_y;
+		autoScrollOffset = M.AUTOSCROLL_OFFSET_Y;
 	}
 
 	public Section getBody() {
@@ -114,14 +115,14 @@ public class AxisModel implements Iterable<Section> {
 			Number startIndex = i == start.section.index ? start.index : math.ZERO_VALUE();
 			Number endIndex = i == end.section.index ? end.index : 
 				math.increment(section.getCount());
-			section.setSelected(startIndex, endIndex, select);
+			section.select(startIndex, endIndex, select);
 		}
 	}
 
 	public void setSelected(boolean selected) {
 		for (int i = 0, imax = sections.size(); i < imax; i++) {
 			Section section = sections.get(i);
-			section.setSelected(selected);
+			section.selectAll(selected);
 		}
 	}
 
@@ -142,7 +143,9 @@ public class AxisModel implements Iterable<Section> {
 	int comparePosition(AxisItem item1, AxisItem item2) {
 		int diff = item1.section.index - item2.section.index;
 		if (diff != 0) return diff; 
-		return item1.section.comparePosition(item1.index, item2.index);
+		return math.compare(
+				item1.section.indexOf(item1.index), 
+				item2.section.indexOf(item2.index));
 	}
 	
 	
@@ -212,7 +215,7 @@ public class AxisModel implements Iterable<Section> {
 	public void setHidden(boolean hidden) {
 		for (int i = 0, imax = sections.size(); i < imax; i++) {
 			Section section = sections.get(i);
-			section.setHidden(hidden);
+			section.hideSelected(hidden);
 		}
 	}
 	
