@@ -16,14 +16,17 @@ public class Snippet {
 		Shell shell = new Shell();
 		shell.setLayout(new FillLayout());
 		
-		Matrix matrix = new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL 
-				, new MatrixModel(new AxisModel(BigInteger.class), new AxisModel(BigInteger.class)));
-		matrix.getModel1().getBody().setCount(new BigInteger("1000000000000000"));
-		matrix.getModel0().getBody().setCount(new BigInteger("1000000000000000"));
-		matrix.getModel1().getHeader().setDefaultCellWidth(40);
-		matrix.getModel1().getBody().setDefaultCellWidth(50);
-		matrix.getAxis0().setHeaderVisible(true);
-		matrix.getAxis1().setHeaderVisible(true);
+		AxisModel model0 = new AxisModel(BigInteger.class);
+		AxisModel model1 = new AxisModel(BigInteger.class);
+		
+		new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL , new MatrixModel(model0, model1));
+
+		model1.getBody().setCount(new BigInteger("1000000000000000"));
+		model0.getBody().setCount(new BigInteger("1000000000000000"));
+		model1.getHeader().setDefaultCellWidth(40);
+		model1.getBody().setDefaultCellWidth(50);
+		model1.getHeader().setVisible(true);
+		model0.getHeader().setVisible(true);
 		
 		
 		shell.setBounds(200, 20, 1024, 568);

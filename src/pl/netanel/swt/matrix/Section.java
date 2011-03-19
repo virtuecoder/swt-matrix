@@ -9,6 +9,7 @@ import pl.netanel.util.ImmutableIterator;
  * header, body, footer.<br>
  * It contains a number of items indexed by the
  * <code>&lt;N extends {@link Number}&gt;</code> type parameter.<br>
+ * <p>
  * <img src="../../../../../javadoc/images/Section.png"/>
  * 
  * <p>

@@ -10,15 +10,15 @@ import pl.netanel.util.Preconditions;
 import pl.netanel.util.Util;
 
 
-class Layout {
+class Layout<N extends Number> {
 	private static final String FREEZE_ITEM_COUNT_ERROR = "Freeze item count must greater then 0";
 	
 	Math math;
-	final ArrayList<Section> sections;
 
 	private int viewportSize;
 	final CountCache head, tail;
 	final DistanceCache main;
+	final ArrayList<Cache> caches;
 	
 	final MutableNumber total, maxInteger, maxScroll, scrollTotal;
 	final MutableNumber scrollPosition; // for head and tail it stores min and max scroll position
@@ -31,33 +31,34 @@ class Layout {
 	public Direction forward, backward, forwardNavigator, backwardNavigator;
 	final AxisModel model;
 
+	private ArrayList<Section<N>> sections;
+
 
 	
-	public Layout(AxisModel model) {
+	public Layout(AxisModel<N> model) {
 		Preconditions.checkArgument(model.getSections().length > 0, "Layout must have at least one section");
 		this.model = model;
 		math = model.math;
-		Section[] sections2 = model.getSections();
-		sections = new ArrayList<Section>(sections2.length);
-		for (int i = 0; i < sections2.length; i++) {
-			Section section = sections2[i];
-			section.index = i;
-			sections.add(section);
+		sections = model.sections;
+		for (int i = 0, imax = model.sections.size(); i < imax; i++) {
+			model.sections.get(i).index = i;
 		}
 //		if (sections.length == 0) {
 //		sections.add(new Section(numberClass)); // header
 //		sections.add(new Section(numberClass)); // body
 		
-		forward = new Direction.Forward(math, this.sections, false);
-		backward = new Direction.Backward(math, this.sections, false);
-		forwardNavigator = new Direction.Forward(math, this.sections, true);
-		backwardNavigator = new Direction.Backward(math, this.sections, true);
+		forward = new Direction.Forward(math, sections, false);
+		backward = new Direction.Backward(math, sections, false);
+		forwardNavigator = new Direction.Forward(math, sections, true);
+		backwardNavigator = new Direction.Backward(math, sections, true);
 		
 		head = new CountCache(forward);
 		main = new DistanceCache();
 		tail = new CountCache(backward);
+		caches = new ArrayList<Cache>();
+		caches.add(head); caches.add(main); caches.add(tail);
 		
-		Section section = sections2[0];
+		Section section = model.sections.get(0);
 		start = new AxisItem(section, math.ZERO_VALUE());
 		zeroItem = new AxisItem(section, math.ZERO_VALUE());
 		forwardNavigator.init();
@@ -171,23 +172,23 @@ class Layout {
 	}
 	
 	public void adjustHiddenHiddenItem() {
-//		if (current == null) return;
-//		for (int section = 0; section < model.getSectionCount(); section++) {
-//			for (Extent extent: sections[section].hidden) {
-//				if (extent.contains(current.index)) {
-//					current.index = extent.getLimit();
-//					break;
-//				}
-//			}
-//			if math.compare((current.index, model.getItemCount(section)) < 0) return;
-//		}
+		if (current == null) return;
+		for (int section = current.section.index; section < model.getSectionCount(); section++) {
+			for (Extent e: sections.get(section).hidden.items) {
+				if (math.contains(e, current.index)) {
+					current.index = math.increment(e.end());
+					break;
+				}
+			}
+			if (math.compare(current.index, current.section.getCount()) < 0) return;
+		}
 	}
 	
 	private Direction opposite(Direction direction) {
 		return direction instanceof Forward ? backward : forward;
 	}
 	
-	int compare(AxisItem item1, AxisItem item2) {
+	int compare(AxisItem<N> item1, AxisItem<N> item2) {
 		int diff = item1.section.index - item2.section.index;
 		if (diff != 0) return diff;
 		return math.compare(item1.index, item2.index);
@@ -397,7 +398,7 @@ class Layout {
 	 * Override this method to throw IndexOutOfBoundsException 
 	 * in case index is not lower then the section count.  
 	 */
-	protected boolean isOutOfBounds(AxisItem item) {
+	protected boolean isOutOfBounds(AxisItem<N> item) {
 		return math.compare(item.index, item.section.getCount()) >= 0;
 	}
 
@@ -621,10 +622,10 @@ class Layout {
 	}
 	
 	private Cache getCache(Section section, Number index) {
-		for (Cache cache: new Cache[] {head, main, tail}) {
+		for (Cache cache: caches) {
 			int len = cache.cells.size();
 			for (int i = 0; i < len; i++) {
-				AxisItem item = cache.items.get(i);
+				AxisItem<N> item = cache.items.get(i);
 				if (item.section.equals(section) && math.compare(item.index, index) == 0) {
 					return cache;
 				}

@@ -41,16 +41,11 @@ public class Snippet_0002 {
 		colModel.getBody().setDefaultCellWidth(50);
 		
 		Zone body = new Zone(rowModel.getBody(), colModel.getBody(), Zone.BODY) {
-			/*
-			 * Cache the list value the iteration guarantees to go by all columns 
-			 * before going to the next row.
-			 */
-			String value;
-			
 			@Override
 			public String getText(Number index0, Number index1) {
+				String value = list.get(index0.intValue());
 				return index1.intValue() == 0 
-					? value = list.get(index0.intValue())
+					? value
 					: Integer.toString(value.length());
 			}
 		};
@@ -65,8 +60,6 @@ public class Snippet_0002 {
 
 		final Matrix matrix = new Matrix(shell, SWT.V_SCROLL, model);
 		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		matrix.getAxis0().setHeaderVisible(true);
-		
 		
 		Button add = new Button(shell, SWT.PUSH);
 		add.setText("Add");
@@ -84,8 +77,8 @@ public class Snippet_0002 {
 		remove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				list.remove(matrix.getAxis0().getNavigationIndex().intValue());
-				matrix.getAxis0().getNavigationSection().setCount(list.size());
+				list.remove(rowModel.getNavigationIndex().intValue());
+				rowModel.getNavigationSection().setCount(list.size());
 				matrix.refresh();
 			}
 		});

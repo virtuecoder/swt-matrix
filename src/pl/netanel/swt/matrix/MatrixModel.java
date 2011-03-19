@@ -67,8 +67,8 @@ public class MatrixModel implements Iterable<Zone> {
 	
 	private void calculateZOrder() {
 		zOrder = new int[zones.size()];
-		Section[] sections0 = model0.getSectionLayerOrder();
-		Section[] sections1 = model1.getSectionLayerOrder();
+		Section[] sections0 = model0.getZOrder();
+		Section[] sections1 = model1.getZOrder();
 		int k = 0;
 		for (int i = 0, imax = sections0.length; i < imax; i++) {
 			for (int j = 0, jmax = sections1.length; j < jmax; j++) {

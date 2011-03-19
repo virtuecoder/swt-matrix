@@ -297,15 +297,15 @@ class MatrixListener implements Listener {
 				commandId == SELECT_ROW || commandId == SELECT_ROW2) {
 				
 				// Backup all sections cell selection
-				for (int i = 0, imax = layout.sections.size(); i < imax; i++) {
-					layout.sections.get(i).backupSelection();
+				for (int i = 0, imax = model.getSectionCount(); i < imax; i++) {
+					model.getSection(i).backupSelection();
 				}
 				
 			} 
 			else if (commandId == SELECT_TO_COLUMN2 || commandId == SELECT_TO_ROW2) {
 				// Restore previous selection from the backup
-				for (int i = 0, imax = layout.sections.size(); i < imax; i++) {
-					layout.sections.get(i).restoreSelection();
+				for (int i = 0, imax = model.getSectionCount(); i < imax; i++) {
+					model.getSection(i).restoreSelection();
 				}
 			}
 			

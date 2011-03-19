@@ -29,7 +29,7 @@ public class LayoutComputeTest {
 		Layout layout = new Layout(new AxisModel());
 		layout.setViewportSize(350);
 
-		Section body = layout.getSection(0);
+		Section body = layout.model.getBody();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		

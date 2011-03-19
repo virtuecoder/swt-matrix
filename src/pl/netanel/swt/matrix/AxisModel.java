@@ -6,14 +6,17 @@ import java.util.Iterator;
 import pl.netanel.util.Arrays;
 import pl.netanel.util.Preconditions;
 
-public class AxisModel implements Iterable<Section> {
+public class AxisModel<N extends Number> implements Iterable<Section<N>> {
 	private static final Section[] EMPTY = new Section[] {};
 	
-	final Math math;
-	private final ArrayList<Section> sections;
-	private Section[] zOrder;
-	private Section body, header;
+	final Math<N> math;
+	final ArrayList<Section<N>> sections;
+	private Section<N>[] zOrder;
+	private Section<N> body, header;
 	private int autoScrollOffset;
+	Layout layout;
+//	Section<N> currentSection;
+//	N currentIndex;
 
 	
 	public AxisModel() {
@@ -21,7 +24,7 @@ public class AxisModel implements Iterable<Section> {
 		sections.get(0).setCount(math.ONE_VALUE());
 	}
 	
-	public AxisModel(Class<? extends Number> numberClass) {
+	public AxisModel(Class<N> numberClass) {
 		this(new Section(numberClass), new Section(numberClass));
 	}
 
@@ -56,8 +59,10 @@ public class AxisModel implements Iterable<Section> {
 		}
 		
 		autoScrollOffset = M.AUTOSCROLL_OFFSET_Y;
+		layout = new Layout(this);
 	}
 
+	
 	public Section getBody() {
 		return body;
 	}
@@ -73,6 +78,7 @@ public class AxisModel implements Iterable<Section> {
 		this.header = section;
 	}
 	
+	
 	public int getSectionCount() {
 		return sections.size();
 	}
@@ -82,10 +88,10 @@ public class AxisModel implements Iterable<Section> {
 	}
 	
 	public Section[] getSections() {
-		return toArray();
+		return sections.toArray(EMPTY);
 	}
 
-	public Section[] getSectionLayerOrder() {
+	public Section[] getZOrder() {
 		return zOrder;
 	}
 	
@@ -93,17 +99,61 @@ public class AxisModel implements Iterable<Section> {
 		return Arrays.indexOf(zOrder, section);
 	}
 
-	
-	private Section[] toArray() {
-		return sections.toArray(EMPTY);
-	}
-
 	@Override
-	public Iterator<Section> iterator() {
+	public Iterator<Section<N>> iterator() {
 		return sections.iterator();
 	}
 
 	
+	/*------------------------------------------------------------------------
+	 * Navigation 
+	 */
+	
+	public Section getNavigationSection() {
+		layout.computeIfRequired();
+		return layout.current == null ? null : layout.current.section;
+	}
+	
+	public Number getNavigationIndex() {
+		layout.computeIfRequired();
+		return layout.current == null ? null : layout.current.index;
+	}
+
+	public void navigate(Section<N> section, N index) {
+		layout.setCurrentItem(new AxisItem(section, index));
+	}
+
+	
+	/*------------------------------------------------------------------------
+	 * Freeze
+	 */
+
+	public void freezeHead(int freezeItemCount) {
+		layout.freezeHead(freezeItemCount);
+	}
+
+	public void freezeTail(int freezeItemCount) {
+		layout.freezeTail(freezeItemCount);
+	}
+	
+	
+	/*------------------------------------------------------------------------
+	 *
+	 */
+	
+	public int getAutoScrollOffset() {
+		return autoScrollOffset;
+	}
+
+	public void setAutoScrollOffset(int autoScrollOffset) {
+		this.autoScrollOffset = autoScrollOffset;
+	}
+
+	
+	/*------------------------------------------------------------------------
+	 * Non public 
+	 */
+
 	void setSelected(AxisItem start, AxisItem end, boolean select) {
 		// Make sure start < end 
 		if (comparePosition(start, end) > 0) {
@@ -119,7 +169,7 @@ public class AxisModel implements Iterable<Section> {
 		}
 	}
 
-	public void setSelected(boolean selected) {
+	void setSelected(boolean selected) {
 		for (int i = 0, imax = sections.size(); i < imax; i++) {
 			Section section = sections.get(i);
 			section.selectAll(selected);
@@ -137,10 +187,10 @@ public class AxisModel implements Iterable<Section> {
 	}
 
 	AxisItem getFirstItem() {
-		return new AxisItem(sections.get(0), math.create(0).getValue());
+		return new AxisItem(sections.get(0), math.ZERO_VALUE());
 	}
 
-	int comparePosition(AxisItem item1, AxisItem item2) {
+	int comparePosition(AxisItem<N> item1, AxisItem<N> item2) {
 		int diff = item1.section.index - item2.section.index;
 		if (diff != 0) return diff; 
 		return math.compare(
@@ -155,13 +205,13 @@ public class AxisModel implements Iterable<Section> {
 	 * @author Jacek Kolodziejczyk created 11-03-2011
 	 */
 	class ExtentSequence {
-		Section section;
-		MutableNumber start, end, startItemIndex, endItemIndex;
+		Section<N> section;
+		MutableNumber<N> start, end, startItemIndex, endItemIndex;
 		private int i, istart, iend, sectionIndex, lastSectionIndex;
-		private ArrayList<Extent> items;
+		private ArrayList<Extent<N>> items;
 		private AxisItem startItem, endItem;
 	
-		void init(AxisItem startItem, AxisItem endItem) {
+		void init(AxisItem<N> startItem, AxisItem<N> endItem) {
 			this.startItem = startItem;
 			this.endItem = endItem;
 			istart = startItem.section.order.items.isEmpty() ? 0 : 
@@ -200,19 +250,12 @@ public class AxisModel implements Iterable<Section> {
 	}
 
 
-	public int getAutoScrollOffset() {
-		return autoScrollOffset;
-	}
-
-	public void setAutoScrollOffset(int autoScrollOffset) {
-		this.autoScrollOffset = autoScrollOffset;
-	}
-
+	
 	/**
 	 * Sets the hidden state of selected indexes in each section.
 	 * @param hidden new hiding state
 	 */
-	public void setHidden(boolean hidden) {
+	void setHidden(boolean hidden) {
 		for (int i = 0, imax = sections.size(); i < imax; i++) {
 			Section section = sections.get(i);
 			section.hideSelected(hidden);

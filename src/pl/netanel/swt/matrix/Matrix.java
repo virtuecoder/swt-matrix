@@ -78,8 +78,8 @@ public class Matrix extends Canvas {
 		
 		axis0 = new Axis(this, 0);
 		axis1 = new Axis(this, 1);
-		layout0 = axis0.layout;
-		layout1 = axis1.layout;
+		layout0 = model.getModel0().layout;
+		layout1 = model.getModel1().layout;
 		
 		Zone body = model.getBody();
 //		if (body.getDefaultBackground() == null) {

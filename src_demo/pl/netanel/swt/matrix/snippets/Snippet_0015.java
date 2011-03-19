@@ -28,7 +28,7 @@ public class Snippet_0015 {
 		
 		final Matrix matrix = new Matrix(shell, SWT.NONE);
 		
-		MatrixModel model = matrix.getModel();
+		final MatrixModel model = matrix.getModel();
 		
 		Section colBody = model.getModel1().getBody();
 		colBody.setCount(4);
@@ -63,7 +63,7 @@ public class Snippet_0015 {
 			@Override
 			public void beforePaint(Number index0, Number index1) {
 				skip = index1.intValue() > 0 || 
-					index0.intValue() != matrix.getAxis0().getNavigationIndex().intValue();
+					index0.intValue() != model.getModel0().getNavigationIndex().intValue();
 			}
 			@Override
 			public void paint(int x, int y, int width, int height) {

@@ -1,10 +1,11 @@
 package pl.netanel.swt.matrix;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 
-abstract class Direction {
+abstract class Direction<N extends Number> {
 	protected final List<Section> sections;
 	protected final Math math;
 	Section section;
@@ -117,9 +118,9 @@ abstract class Direction {
 
 	
 
-	static class Forward extends Direction {
+	static class Forward<N extends Number> extends Direction {
 
-		public Forward(Math math, List<Section> sections, boolean skipWithoutCurrent) {
+		public Forward(Math<N> math, ArrayList<Section<N>> sections, boolean skipWithoutCurrent) {
 			super(math, sections, skipWithoutCurrent);
 			sign = 1;
 		}
@@ -135,9 +136,9 @@ abstract class Direction {
 		}
 		
 	}
-	static class Backward extends Direction {
+	static class Backward<N extends Number> extends Direction {
 
-		public Backward(Math math, List<Section> sections, boolean skipWithoutCurrent) {
+		public Backward(Math<N> math, ArrayList<Section<N>> sections, boolean skipWithoutCurrent) {
 			super(math, sections, skipWithoutCurrent);
 			sign = -1;
 		}

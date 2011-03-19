@@ -2,7 +2,7 @@ package pl.netanel.swt.matrix;
 
 import pl.netanel.util.IntArray;
 
-public class IntAxisState extends AxisState {
+class IntAxisState extends AxisState {
 	private final IntArray values;
 	private int defaultValue, value;
 	

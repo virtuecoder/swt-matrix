@@ -7,20 +7,20 @@ import org.eclipse.swt.widgets.ScrollBar;
 
 import pl.netanel.swt.Listeners;
 
-public class Axis {
+class Axis {
 
 	final Matrix matrix;
 	final int axisIndex;
 	final AxisModel model;
-	final Layout layout;
 	final Listeners listeners;
 	private ScrollBar scrollBar;
+	private final Layout layout;
 	
 	public Axis(final Matrix matrix, int axisIndex) {
 		this.matrix = matrix;
 		this.axisIndex = axisIndex;
 		model = axisIndex == 0 ? matrix.getModel().getModel0() : matrix.getModel().getModel1();
-		layout = new Layout(model);
+		layout = model.layout;
 		listeners = new Listeners();
 		
 		scrollBar = axisIndex == 0 ? matrix.getVerticalBar() : matrix.getHorizontalBar();
@@ -45,16 +45,6 @@ public class Axis {
 					matrix.redraw();
 				}
 			});
-		}
-	}
-	
-	public void setHeaderVisible(boolean visible) {
-//		AxisModel opposite = axisIndex == 1 ? matrix.getModel0() : matrix.getModel1();
-		Section header = model.getHeader();
-		if (header == null) return;
-		header.setVisible(visible);
-		if (visible) {
-			if (header.isEmpty()) header.setCount(model.math.create(1).getValue());	
 		}
 	}
 	
