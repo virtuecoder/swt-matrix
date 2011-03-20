@@ -22,8 +22,8 @@ public class Snippet_0011 {
 		Display display = shell.getDisplay();
 		
 		Matrix matrix = new Matrix(shell, SWT.NONE);
-		matrix.getModel1().getBody().setCount(40);
-		matrix.getModel0().getBody().setCount(1000);
+		matrix.getAxis1().getBody().setCount(40);
+		matrix.getAxis0().getBody().setCount(1000);
 		
 		
 		matrix.setNavigationPainter(new BorderPainter().radius(5)

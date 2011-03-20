@@ -8,7 +8,6 @@ import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.Resources;
 import pl.netanel.swt.matrix.Matrix;
-import pl.netanel.swt.matrix.MatrixModel;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.painter.BackgroundPainter;
@@ -28,19 +27,18 @@ public class Snippet_0014 {
 		
 		Matrix matrix = new Matrix(shell, SWT.NONE);
 		
-		MatrixModel model = matrix.getModel();
 		
-		Section colBody = model.getModel1().getBody();
+		Section colBody = matrix.getAxis1().getBody();
 		colBody.setDefaultLineWidth(0);
 		colBody.setCount(4);
 		colBody.setDefaultCellWidth(50);
 		
-		Section rowBody = model.getModel0().getBody();
+		Section rowBody = matrix.getAxis0().getBody();
 		rowBody.setDefaultLineWidth(0);
 		rowBody.setCount(10);
 		
 
-		final Zone body = model.getBody();
+		final Zone body = matrix.getBody();
 		// To additionally hide the lines
 		body.linePainters0.get(LinePainter.class).setEnabled(false);
 		body.linePainters1.get(LinePainter.class).setEnabled(false);

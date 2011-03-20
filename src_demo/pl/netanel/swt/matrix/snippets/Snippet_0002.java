@@ -11,13 +11,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.AxisModel;
+import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.Matrix;
-import pl.netanel.swt.matrix.MatrixModel;
 import pl.netanel.swt.matrix.Zone;
 
 /**
- * Creates matrix with a custom model.
+ * Creates matrix with a custom model with add / remove model items.
  * 
  * @author Jacek Kolodziejczyk created 03-03-2011
  */
@@ -33,10 +32,10 @@ public class Snippet_0002 {
 		list.add(Integer.toString(3));
 		list.add(Integer.toString(4));
 		
-		final AxisModel rowModel = new AxisModel();
+		final Axis rowModel = new Axis();
 		rowModel.getBody().setCount(4);
 		
-		AxisModel colModel = new AxisModel();
+		Axis colModel = new Axis();
 		colModel.getBody().setCount(2);
 		colModel.getBody().setDefaultCellWidth(50);
 		
@@ -56,10 +55,11 @@ public class Snippet_0002 {
 			}
 		};
 		
-		MatrixModel model = new MatrixModel(rowModel, colModel, body, columnHeader);
-
-		final Matrix matrix = new Matrix(shell, SWT.V_SCROLL, model);
+		final Matrix matrix = new Matrix(shell, SWT.V_SCROLL, 
+				rowModel, colModel, body, columnHeader);
 		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		
+		
 		
 		Button add = new Button(shell, SWT.PUSH);
 		add.setText("Add");

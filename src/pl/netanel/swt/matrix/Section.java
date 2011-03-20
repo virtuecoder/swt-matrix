@@ -5,13 +5,11 @@ import java.util.Iterator;
 import pl.netanel.util.ImmutableIterator;
 
 /**
- * Section represents a continuous segment of an {@link Axis}, for example a
- * header, body, footer.<br>
- * It contains a number of items indexed by the
+ * Section represents a continuous segment of a matrix axis, for example a
+ * header, body, footer. It contains a number of items indexed by the 
  * <code>&lt;N extends {@link Number}&gt;</code> type parameter.<br>
  * <p>
  * <img src="../../../../../javadoc/images/Section.png"/>
- * 
  * <p>
  * Section has boolean flags for visibility and navigation enablement. On the
  * diagram above the current item is 0 in body section of column axis and 2 in
@@ -21,9 +19,10 @@ import pl.netanel.util.ImmutableIterator;
  * Item attributes include cell width, line width, moveable, resizable,
  * hideable, hidden, selected. To optimize data storage of those attributes one
  * value can be set for a range of items enclosed between the start and end
- * items. Also default values can be defined to save memory. If 1000000 items
+ * items, for example setCellWidth(start, end, width).
+ * Also default values can be defined to save memory. If 1000000 items
  * have the same width, then its a waste to store 1000000 ints with the same
- * values.
+ * values. An example of such function: setDefaultCellWidth(width).
  * 
  * 
  * @author Jacek Kolodziejczyk created 02-03-2011

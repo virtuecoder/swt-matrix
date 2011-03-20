@@ -25,25 +25,25 @@ public class Snippet_0013 {
 		Display display = shell.getDisplay();
 		
 		Matrix matrix = new Matrix(shell, SWT.NONE);
-		matrix.getModel0().getHeader().setVisible(true);
+		matrix.getAxis0().getHeader().setVisible(true);
 		
-		Section rowBody = matrix.getModel().getModel0().getBody();
+		Section rowBody = matrix.getAxis0().getBody();
 		rowBody.setDefaultLineWidth(3);
 		rowBody.setCount(10);
 		
-		Section colBody = matrix.getModel().getModel1().getBody();
+		Section colBody = matrix.getAxis1().getBody();
 		colBody.setDefaultLineWidth(3);
 		colBody.setCount(4);
 		
 		// Column header painting
-		Zone columnHeader = matrix.getModel().getColumneHeader();
+		Zone columnHeader = matrix.getColumneHeader();
 		columnHeader.linePainters0.get(LinePainter.class).setEnabled(false);
 		columnHeader.linePainters1.get(LinePainter.class).setEnabled(false);
 		columnHeader.cellPainters.add(new BorderPainter().color(Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW)));
 		columnHeader.setDefaultBackground(matrix.getBackground());
 		
 		// Body painting
-		Zone body = matrix.getModel().getBody();
+		Zone body = matrix.getBody();
 		body.linePainters0.get(LinePainter.class).setEnabled(false);
 		body.linePainters1.get(LinePainter.class).setEnabled(false);
 		body.cellPainters.add(new BorderPainter().color(Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW)));

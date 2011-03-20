@@ -29,13 +29,13 @@ class Layout<N extends Number> {
 	boolean isComputingRequired;
 
 	public Direction forward, backward, forwardNavigator, backwardNavigator;
-	final AxisModel model;
+	final Axis model;
 
 	private ArrayList<Section<N>> sections;
 
 
 	
-	public Layout(AxisModel<N> model) {
+	public Layout(Axis<N> model) {
 		Preconditions.checkArgument(model.getSections().length > 0, "Layout must have at least one section");
 		this.model = model;
 		math = model.math;

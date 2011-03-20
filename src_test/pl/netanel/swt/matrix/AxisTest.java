@@ -5,16 +5,16 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class AxisModelTest {
+public class AxisTest {
 	@Ignore
 	@Test(expected = IllegalArgumentException.class)
 	public void zeroSections() throws Exception {
-		new AxisModel(int.class);
+		new Axis(int.class);
 	}
 	
 	@Test
 	public void hideCurrent() throws Exception {
-		AxisModel model = new AxisModel();
+		Axis model = new Axis();
 		Layout layout = model.layout;
 		layout.setViewportSize(350);
 

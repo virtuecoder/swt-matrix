@@ -35,16 +35,28 @@ public class Matrix extends Canvas {
 	private ScheduledExecutorService executor;
 	
 	public Matrix(Composite parent, int style) {
-		this(parent, style, new MatrixModel());
+		this(parent, style, null, null);
 	}
 	
-	public Matrix(Composite parent, int style, MatrixModel model) {
+	public Matrix(Composite parent, int style, Axis axis0, Axis axis1, Zone ...zones) {
 		super(parent, style | SWT.DOUBLE_BUFFERED);
 		setBackground(Resources.getColor(SWT.COLOR_LIST_BACKGROUND));
 		setForeground(Resources.getColor(SWT.COLOR_LIST_FOREGROUND));
 		navigationPainter = new BorderPainter(2);
 		
-		
+		if (axis0 == null) {
+			axis0 = new Axis();
+			axis0.getHeader().setVisible(false);
+			axis0.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_Y);
+		}
+		if (axis1 == null) {
+			axis1 = new Axis();
+			axis1.getHeader().setDefaultCellWidth(40);
+			axis1.getHeader().setVisible(false);
+			axis1.getBody().setDefaultCellWidth(50);
+			axis1.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_X);
+		}
+		model = new MatrixModel(axis0, axis1, zones);
 		setModel(model);
 		
 		listener2 = new Listener() {
@@ -76,10 +88,10 @@ public class Matrix extends Canvas {
 	private void setModel(MatrixModel model) {
 		this.model = model;
 		
-		axis0 = new Axis(this, 0);
-		axis1 = new Axis(this, 1);
-		layout0 = model.getModel0().layout;
-		layout1 = model.getModel1().layout;
+		axis0 = model.axis0;
+		axis1 = model.axis1;
+		layout0 = model.axis0.layout;
+		layout1 = model.axis1.layout;
 		
 		Zone body = model.getBody();
 //		if (body.getDefaultBackground() == null) {
@@ -259,19 +271,19 @@ public class Matrix extends Canvas {
 		// If at one of the scroll bar visibility has changed then update the other one also
 		if (axis1.updateScrollBarVisibility(area.width)) {
 			area = getClientArea();
-			axis0.updateScrollBarVisibility(area.height);
-			axis1.updateScrollBarVisibility(area.width);
+			model.axis0.updateScrollBarVisibility(area.height);
+			model.axis1.updateScrollBarVisibility(area.width);
 			area = getClientArea();
 		}
-		else if (axis0.updateScrollBarVisibility(area.height)) {
+		else if (model.axis0.updateScrollBarVisibility(area.height)) {
 			area = getClientArea();			 
-			axis1.updateScrollBarVisibility(area.width);
-			axis0.updateScrollBarVisibility(area.height);
+			model.axis1.updateScrollBarVisibility(area.width);
+			model.axis0.updateScrollBarVisibility(area.height);
 			area = getClientArea();
 		}
 		
-		axis1.updateScrollBarValues(area.width);
-		axis0.updateScrollBarValues(area.height);
+		model.axis1.updateScrollBarValues(area.width);
+		model.axis0.updateScrollBarValues(area.height);
 		
 		area = getClientArea();
 	}
@@ -280,13 +292,6 @@ public class Matrix extends Canvas {
 		return model;
 	}
 	
-	public AxisModel getModel0() {
-		return model.getModel0();
-	}
-	
-	public AxisModel getModel1() {
-		return model.getModel1();
-	}
 	
 	public Axis getAxis0() {
 		return axis0;
@@ -296,6 +301,48 @@ public class Matrix extends Canvas {
 		return axis1;
 	}
 	
+	public Zone getBody() {
+		return getZone(axis0.getBody(), axis1.getBody());
+	}
+	public Zone getColumneHeader() {
+		return getZone(axis0.getHeader(), axis1.getBody());
+	}
+	public Zone getRowHeader() {
+		return getZone(axis0.getBody(), axis1.getHeader());
+	}
+	public Zone getTopLeft() {
+		return getZone(axis0.getHeader(), axis1.getHeader());
+	}
+	
+	/**
+	 * Returns a zone by an identifier defined in {@link Zone}.  
+	 * The parameter can have four possible values: <ul>
+	 * <li>BODY</li>
+	 * <li>ROW_HEADER</li>
+	 * <li>COLUMN_HEADER</li>
+	 * <li>TOP_LEFT</li>
+	 * </ul>
+	 * Otherwise the function returns null.
+	 * <p>
+	 * @param id 
+	 * @return
+	 */
+	public Zone getZone(int id) {
+		return model.getZone(id);
+	}
+	
+	/**
+	 * Returns a zone located at the intersection of the given axis sections.
+	 * 
+	 * @param section0 section of the row axis
+	 * @param section1 section of the column axis
+	 * @return
+	 * @exception IllegalArgumentException 
+	 * 	 	if the any of the section parameters is out of scope.
+	 */
+	public Zone getZone(Section section0, Section section1) {
+		return model.getZone(section0, section1);
+	}
 	
 	
 	/*------------------------------------------------------------------------

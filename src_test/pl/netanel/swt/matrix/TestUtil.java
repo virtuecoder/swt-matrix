@@ -24,7 +24,7 @@ public class TestUtil {
 		return new AxisItem(section, index);
 	}
 	
-	public static AxisItem item(AxisModel model, int section, int index) {
+	public static AxisItem item(Axis model, int section, int index) {
 		return new AxisItem(model.getSection(section), index);
 	}
 	
@@ -73,18 +73,17 @@ public class TestUtil {
 			if (i != 1) section.setNavigationEnabled(false);
 			section.setCount(count[i]);
 		}
-		Layout layout = new Layout(new AxisModel(sections));
+		Layout layout = new Layout(new Axis(sections));
 		return layout;
 	}
 
 	public static void showMatrix(Layout layout) {
-		AxisModel rowModel = new AxisModel(); rowModel.getBody().setCount(1);
+		Axis rowModel = new Axis(); rowModel.getBody().setCount(1);
 		
 		// Make the columns variable width
 //		Matrix matrix = new Matrix(shell, SWT.NONE);
 		Shell shell = new Shell();
-		MatrixModel model = new MatrixModel(rowModel, layout.model);
-		Matrix matrix = new Matrix(shell, SWT.V_SCROLL | SWT.H_SCROLL, model);
+		Matrix matrix = new Matrix(shell, SWT.V_SCROLL | SWT.H_SCROLL, rowModel, layout.model);
 		matrix.layout1 = layout;
 //		matrix.rows.setHeaderVisible(true);
 		

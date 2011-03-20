@@ -7,7 +7,6 @@ import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.Resources;
 import pl.netanel.swt.matrix.Matrix;
-import pl.netanel.swt.matrix.MatrixModel;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 
@@ -24,16 +23,14 @@ public class Snippet_0016 {
 		
 		final Matrix matrix = new Matrix(shell, SWT.NONE);
 		
-		MatrixModel model = matrix.getModel();
-		
-		Section colBody = model.getModel1().getBody();
+		Section colBody = matrix.getAxis1().getBody();
 		colBody.setCount(4);
 		colBody.setDefaultCellWidth(50);
 		
-		Section rowBody = model.getModel0().getBody();
+		Section rowBody = matrix.getAxis0().getBody();
 		rowBody.setCount(10);
 
-		final Zone body = model.getBody();
+		final Zone body = matrix.getBody();
 		body.setSelectionBackground(Resources.getColor(SWT.COLOR_LIST_SELECTION));
 		body.setSelectionForeground(Resources.getColor(SWT.COLOR_LIST_SELECTION_TEXT));
 		

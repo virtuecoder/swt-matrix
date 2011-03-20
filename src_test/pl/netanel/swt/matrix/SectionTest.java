@@ -7,10 +7,10 @@ import org.junit.Test;
 public class SectionTest {
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void create() throws Exception {
+	public void createIllegalNumber() throws Exception {
 		new Section(float.class);
 	}
-	
+
 	
 	@Test
 	public void itemCount() throws Exception {

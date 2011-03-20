@@ -33,8 +33,8 @@ public class MatrixPerformance {
 			}
 		}; 
 				//, new MatrixModel(new AxisModel(BigInteger.class), new AxisModel(BigInteger.class)));
-		matrix.getModel0().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
-		matrix.getModel1().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
+		matrix.getAxis0().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
+		matrix.getAxis1().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
 		
 		shell.setBounds(display.getBounds());
 		shell.open();

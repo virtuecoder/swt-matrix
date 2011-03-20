@@ -23,9 +23,9 @@ public class Snippet_0012 {
 		Display display = shell.getDisplay();
 		
 		Matrix matrix = new Matrix(shell, SWT.NONE);
-		matrix.getModel1().getBody().setCount(4);
-		matrix.getModel0().getBody().setCount(10);
-		Zone body = matrix.getModel().getBody();
+		matrix.getAxis1().getBody().setCount(4);
+		matrix.getAxis0().getBody().setCount(10);
+		Zone body = matrix.getBody();
 		body.linePainters1.get(LinePainter.class).color(Resources.getColor(SWT.COLOR_BLUE));
 		
 		shell.open();

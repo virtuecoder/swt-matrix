@@ -7,46 +7,46 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
 import pl.netanel.swt.Resources;
-import pl.netanel.swt.matrix.AxisModel.ExtentSequence;
+import pl.netanel.swt.matrix.Axis.ExtentSequence;
 import pl.netanel.swt.matrix.painter.LinePainter;
 import pl.netanel.swt.matrix.painter.ModelPainter;
 import pl.netanel.swt.matrix.painter.Painter;
 import pl.netanel.util.ImmutableIterator;
 
-public class MatrixModel implements Iterable<Zone> {
+class MatrixModel implements Iterable<Zone> {
 
-	private final AxisModel model1;
-	private final AxisModel model0;
+	final Axis axis0;
+	final Axis axis1;
 	private final ArrayList<Zone> zones;
 	private int[] zOrder;
 	private ExtentPairSequence seq;
 
 	public MatrixModel() {
-		this(new AxisModel(), new AxisModel());
-		model0.getHeader().setVisible(false);
-		model0.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_Y);
+		this(new Axis(), new Axis());
+		axis0.getHeader().setVisible(false);
+		axis0.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_Y);
 		
-		model1.getHeader().setDefaultCellWidth(40);
-		model1.getHeader().setVisible(false);
-		model1.getBody().setDefaultCellWidth(50);
-		model1.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_X);
+		axis1.getHeader().setDefaultCellWidth(40);
+		axis1.getHeader().setVisible(false);
+		axis1.getBody().setDefaultCellWidth(50);
+		axis1.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_X);
 		
 	}
 
-	public MatrixModel(AxisModel model0, AxisModel model1, Zone ...zones) {
-		this.model0 = model0;
-		this.model1 = model1;
+	public MatrixModel(Axis model0, Axis axis0, Zone ...zones) {
+		this.axis0 = model0;
+		this.axis1 = axis0;
 		
 		this.zones = new ArrayList<Zone>(zones.length);
 		for (int i = 0; i < zones.length; i++) {
 			this.zones.add(zones[i]);
 		}
 		
-		Section body0  = model0.getBody(), body1 = model1.getBody();
-		Section header0 = model0.getHeader(), header1 = model1.getHeader();
+		Section body0  = model0.getBody(), body1 = axis0.getBody();
+		Section header0 = model0.getHeader(), header1 = axis0.getHeader();
 		
 		for (Section section0: model0.getSections()) {
-			for (Section section1: model1.getSections()) {
+			for (Section section1: axis0.getSections()) {
 				Zone zone = getZone(section0, section1);
 				if (zone == null) {
 					zone = createZone(section0, section1);
@@ -67,8 +67,8 @@ public class MatrixModel implements Iterable<Zone> {
 	
 	private void calculateZOrder() {
 		zOrder = new int[zones.size()];
-		Section[] sections0 = model0.getZOrder();
-		Section[] sections1 = model1.getZOrder();
+		Section[] sections0 = axis0.getZOrder();
+		Section[] sections1 = axis1.getZOrder();
 		int k = 0;
 		for (int i = 0, imax = sections0.length; i < imax; i++) {
 			for (int j = 0, jmax = sections1.length; j < jmax; j++) {
@@ -79,10 +79,10 @@ public class MatrixModel implements Iterable<Zone> {
 
 	private Zone createZone(Section section0, Section section1) {
 		Zone zone = null;
-		Section header0 = model0.getHeader();
-		Section header1 = model1.getHeader();
-		Section body0 = model0.getBody();
-		Section body1 = model1.getBody();
+		Section header0 = axis0.getHeader();
+		Section header1 = axis1.getHeader();
+		Section body0 = axis0.getBody();
+		Section body1 = axis1.getBody();
 		if (section0.equals(header0) && section1.equals(header1)) {
 			zone = new Zone(section0, section1, Zone.TOP_LEFT) {
 				public String getText(Number index0, Number index1) {
@@ -128,16 +128,16 @@ public class MatrixModel implements Iterable<Zone> {
 	
 	
 	public Zone getBody() {
-		return getZone(model0.getBody(), model1.getBody());
+		return getZone(axis0.getBody(), axis1.getBody());
 	}
 	public Zone getColumneHeader() {
-		return getZone(model0.getHeader(), model1.getBody());
+		return getZone(axis0.getHeader(), axis1.getBody());
 	}
 	public Zone getRowHeader() {
-		return getZone(model0.getBody(), model1.getHeader());
+		return getZone(axis0.getBody(), axis1.getHeader());
 	}
 	public Zone getTopLeft() {
-		return getZone(model0.getHeader(), model1.getHeader());
+		return getZone(axis0.getHeader(), axis1.getHeader());
 	}
 	
 	/**
@@ -180,15 +180,6 @@ public class MatrixModel implements Iterable<Zone> {
 		return null;
 	}
 
-
-	public AxisModel getModel0() {
-		return model0;
-	}
-	
-	public AxisModel getModel1() {
-		return model1;
-	}
-
 	/**
 	 * Zone iterator
 	 */
@@ -222,10 +213,10 @@ public class MatrixModel implements Iterable<Zone> {
 		
 		// Make sure start < end 
 		AxisItem tmp;
-		if (model0.comparePosition(start0, end0) > 0) {
+		if (axis0.comparePosition(start0, end0) > 0) {
 			tmp = start0; start0 = end0; end0 = tmp;
 		}
-		if (model1.comparePosition(start1, end1) > 0) {
+		if (axis1.comparePosition(start1, end1) > 0) {
 			tmp = start1; start1 = end1; end1 = tmp;
 		}
 	
@@ -253,8 +244,8 @@ public class MatrixModel implements Iterable<Zone> {
 		private AxisItem endItem1;
 		
 		public ExtentPairSequence() {
-			seq0 = model0.new ExtentSequence();
-			seq1 = model1.new ExtentSequence();
+			seq0 = axis0.new ExtentSequence();
+			seq1 = axis1.new ExtentSequence();
 		}
 
 		public void init(AxisItem start0, AxisItem end0, AxisItem start1, AxisItem end1) {

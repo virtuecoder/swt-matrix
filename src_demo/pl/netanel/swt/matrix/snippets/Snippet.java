@@ -7,19 +7,18 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.AxisModel;
+import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.Matrix;
-import pl.netanel.swt.matrix.MatrixModel;
 
 public class Snippet {
 	public static void main(String[] args) {
 		Shell shell = new Shell();
 		shell.setLayout(new FillLayout());
 		
-		AxisModel model0 = new AxisModel(BigInteger.class);
-		AxisModel model1 = new AxisModel(BigInteger.class);
+		Axis model0 = new Axis(BigInteger.class);
+		Axis model1 = new Axis(BigInteger.class);
 		
-		new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL , new MatrixModel(model0, model1));
+		new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL , model0, model1);
 
 		model1.getBody().setCount(new BigInteger("1000000000000000"));
 		model0.getBody().setCount(new BigInteger("1000000000000000"));

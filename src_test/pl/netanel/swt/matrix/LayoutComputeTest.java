@@ -19,14 +19,14 @@ public class LayoutComputeTest {
 	
 	@Test
 	public void empty() throws Exception {
-		Layout layout = new Layout(new AxisModel());
+		Layout layout = new Layout(new Axis());
 		layout.setViewportSize(1000);
 		layout.compute();
 	}
 	
 	@Test
 	public void cellSequenceIndexSimple() throws Exception {
-		Layout layout = new Layout(new AxisModel());
+		Layout layout = new Layout(new Axis());
 		layout.setViewportSize(350);
 
 		Section body = layout.model.getBody();
@@ -45,7 +45,7 @@ public class LayoutComputeTest {
 		assertEquals("", indexes(layout.cellSequence(Dock.TAIL, body)));
 
 		// Empty
-		layout = new Layout(new AxisModel());
+		layout = new Layout(new Axis());
 		layout.setViewportSize(350);
 		layout.compute();
 		assertEquals("", indexes(layout.cellSequence(Dock.MAIN, body)));
@@ -56,7 +56,7 @@ public class LayoutComputeTest {
 		Section section0 = new Section(int.class);
 		Section section1 = new Section(int.class);
 		Section section2 = new Section(int.class);
-		AxisModel model = new AxisModel(section0, section1, section2);
+		Axis model = new Axis(section0, section1, section2);
 		section0.setCount(1); // header
 		section1.setCount(5); // body
 		section2.setCount(1); // footer
@@ -74,7 +74,7 @@ public class LayoutComputeTest {
 	
 	@Test
 	public void freezeIndexes() throws Exception {
-		Layout layout = new Layout(new AxisModel(new Section(int.class)));
+		Layout layout = new Layout(new Axis(new Section(int.class)));
 		Section body = layout.model.getBody();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
@@ -132,7 +132,7 @@ public class LayoutComputeTest {
 	
 	@Test
 	public void freezeDistances() throws Exception {
-		Layout layout = new Layout(new AxisModel(new Section(int.class)));
+		Layout layout = new Layout(new Axis(new Section(int.class)));
 		Section body = layout.model.getBody();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
@@ -169,7 +169,7 @@ public class LayoutComputeTest {
 	
 	@Test
 	public void freezeLineWidth() throws Exception {
-		Layout layout = new Layout(new AxisModel(new Section(int.class)));
+		Layout layout = new Layout(new Axis(new Section(int.class)));
 		Section body = layout.model.getBody();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
@@ -195,7 +195,7 @@ public class LayoutComputeTest {
 	
 	@Test
 	public void getItemByDistance() throws Exception {
-		Layout layout = new Layout(new AxisModel());
+		Layout layout = new Layout(new Axis());
 		layout.setViewportSize(450);
 		
 		Section body = layout.model.getBody();

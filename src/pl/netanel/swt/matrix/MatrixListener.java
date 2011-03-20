@@ -134,7 +134,7 @@ class MatrixListener implements Listener {
 		private final int axisIndex;
 		final Axis axis;
 		Layout layout;
-		AxisModel model;
+		Axis model;
 		AxisItem last, item, resizeItem;
 		boolean moving, resizing, itemModified = true, mouseDown;
 		Event mouseMoveEvent;
@@ -325,10 +325,10 @@ class MatrixListener implements Listener {
 			
 			model.setSelected(last, item, !(ctrlSelection && isSelected(last)));
 			if (axisIndex == 0) {
-				AxisModel model1 = matrix.model.getModel1();
+				Axis model1 = matrix.model.axis1;
 				matrix.model.setSelected(last, item, model1.getFirstItem(), model1.getLastItem(), true);
 			} else {
-				AxisModel model0 = matrix.model.getModel0();
+				Axis model0 = matrix.model.axis0;
 				matrix.model.setSelected(model0.getFirstItem(), model0.getLastItem(), last, item, true);
 			}
 			addEvent(SWT.Selection);
