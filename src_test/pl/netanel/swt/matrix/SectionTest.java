@@ -8,13 +8,13 @@ public class SectionTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void createIllegalNumber() throws Exception {
-		new Section(float.class);
+		new SectionUnchecked(float.class);
 	}
 
 	
 	@Test
 	public void itemCount() throws Exception {
-		Section section = new Section(int.class);
+		SectionUnchecked section = new SectionUnchecked(int.class);
 		section.setCount(2);
 		assertEquals(2, section.getCount().intValue());
 		

@@ -34,21 +34,21 @@ public class LayoutComputeTest {
 		body.setDefaultCellWidth(100);
 		
 		layout.compute();
-		assertEquals("", indexes(layout.cellSequence(Dock.HEAD, body)));
-		assertEquals("0, 1, 2, 3", indexes(layout.cellSequence(Dock.MAIN, body)));
-		assertEquals("", indexes(layout.cellSequence(Dock.TAIL, body)));
+		assertEquals("", indexes(layout.cellSequence(Dock.HEAD, body.core)));
+		assertEquals("0, 1, 2, 3", indexes(layout.cellSequence(Dock.MAIN, body.core)));
+		assertEquals("", indexes(layout.cellSequence(Dock.TAIL, body.core)));
 		
 		layout.setViewportSize(1000);
 		layout.compute();
-		assertEquals("", indexes(layout.cellSequence(Dock.HEAD, body)));
-		assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Dock.MAIN, body)));
-		assertEquals("", indexes(layout.cellSequence(Dock.TAIL, body)));
+		assertEquals("", indexes(layout.cellSequence(Dock.HEAD, body.core)));
+		assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Dock.MAIN, body.core)));
+		assertEquals("", indexes(layout.cellSequence(Dock.TAIL, body.core)));
 
 		// Empty
 		layout = new Layout(new Axis());
 		layout.setViewportSize(350);
 		layout.compute();
-		assertEquals("", indexes(layout.cellSequence(Dock.MAIN, body)));
+		assertEquals("", indexes(layout.cellSequence(Dock.MAIN, body.core)));
 	}
 	
 	@Test
@@ -67,9 +67,9 @@ public class LayoutComputeTest {
 		layout.setViewportSize(1000);
 		
 		layout.compute();
-		assertEquals("", indexes(layout.cellSequence(Dock.HEAD, section1)));
-		assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Dock.MAIN, section1)));
-		assertEquals("0", indexes(layout.cellSequence(Dock.MAIN, section2)));
+		assertEquals("", indexes(layout.cellSequence(Dock.HEAD, section1.core)));
+		assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Dock.MAIN, section1.core)));
+		assertEquals("0", indexes(layout.cellSequence(Dock.MAIN, section2.core)));
 	}
 	
 	@Test
@@ -86,48 +86,48 @@ public class LayoutComputeTest {
 		
 //		showMatrix(layout);
 		
-		assertEquals("0", indexes(layout.cellSequence(Dock.HEAD, body)));
-		assertEquals("1, 2", indexes(layout.cellSequence(Dock.MAIN, body)));
-		assertEquals("4", indexes(layout.cellSequence(Dock.TAIL, body)));
-		assertEquals("0, 1", indexes(layout.lineSequence(Dock.HEAD, body)));
-		assertEquals("1, 2, 3", indexes(layout.lineSequence(Dock.MAIN, body)));
-		assertEquals("4, 5", indexes(layout.lineSequence(Dock.TAIL, body)));
-		assertEquals("100", widths(layout.cellSequence(Dock.TAIL, body)));
+		assertEquals("0", indexes(layout.cellSequence(Dock.HEAD, body.core)));
+		assertEquals("1, 2", indexes(layout.cellSequence(Dock.MAIN, body.core)));
+		assertEquals("4", indexes(layout.cellSequence(Dock.TAIL, body.core)));
+		assertEquals("0, 1", indexes(layout.lineSequence(Dock.HEAD, body.core)));
+		assertEquals("1, 2, 3", indexes(layout.lineSequence(Dock.MAIN, body.core)));
+		assertEquals("4, 5", indexes(layout.lineSequence(Dock.TAIL, body.core)));
+		assertEquals("100", widths(layout.cellSequence(Dock.TAIL, body.core)));
 		
 		layout.freezeTail(2);
 		layout.compute();
 		
-		assertEquals("0", indexes(layout.cellSequence(Dock.HEAD, body)));
-		assertEquals("1", indexes(layout.cellSequence(Dock.MAIN, body)));
-		assertEquals("3, 4", indexes(layout.cellSequence(Dock.TAIL, body)));
+		assertEquals("0", indexes(layout.cellSequence(Dock.HEAD, body.core)));
+		assertEquals("1", indexes(layout.cellSequence(Dock.MAIN, body.core)));
+		assertEquals("3, 4", indexes(layout.cellSequence(Dock.TAIL, body.core)));
 		
 		layout.freezeTail(3);
 		layout.compute();
-		assertEquals("0", indexes(layout.cellSequence(Dock.HEAD, body)));
-		assertEquals("1", indexes(layout.cellSequence(Dock.MAIN, body)));
-		assertEquals("3, 4", indexes(layout.cellSequence(Dock.TAIL, body)));
+		assertEquals("0", indexes(layout.cellSequence(Dock.HEAD, body.core)));
+		assertEquals("1", indexes(layout.cellSequence(Dock.MAIN, body.core)));
+		assertEquals("3, 4", indexes(layout.cellSequence(Dock.TAIL, body.core)));
 		
 		// Freeze head takes precedence over freeze tail
 		layout.freezeTail(4);
 		layout.compute();
-		assertEquals("0", indexes(layout.cellSequence(Dock.HEAD, body)));
-		assertEquals("1", indexes(layout.cellSequence(Dock.MAIN, body)));
-		assertEquals("3, 4", indexes(layout.cellSequence(Dock.TAIL, body)));
+		assertEquals("0", indexes(layout.cellSequence(Dock.HEAD, body.core)));
+		assertEquals("1", indexes(layout.cellSequence(Dock.MAIN, body.core)));
+		assertEquals("3, 4", indexes(layout.cellSequence(Dock.TAIL, body.core)));
 		
 		layout.freezeHead(10);
 		layout.freezeTail(10);
 		layout.compute();
-		assertEquals("0, 1, 2", indexes(layout.cellSequence(Dock.HEAD, body)));
-		assertEquals("3", indexes(layout.cellSequence(Dock.MAIN, body)));
-		assertEquals("", indexes(layout.cellSequence(Dock.TAIL, body)));
+		assertEquals("0, 1, 2", indexes(layout.cellSequence(Dock.HEAD, body.core)));
+		assertEquals("3", indexes(layout.cellSequence(Dock.MAIN, body.core)));
+		assertEquals("", indexes(layout.cellSequence(Dock.TAIL, body.core)));
 		
 		layout.setViewportSize(1000);
 		layout.freezeHead(1);
 		layout.freezeTail(1);
 		layout.compute();
-		assertEquals("0", indexes(layout.cellSequence(Dock.HEAD, body)));
-		assertEquals("1, 2, 3", indexes(layout.cellSequence(Dock.MAIN, body)));
-		assertEquals("4", indexes(layout.cellSequence(Dock.TAIL, body)));
+		assertEquals("0", indexes(layout.cellSequence(Dock.HEAD, body.core)));
+		assertEquals("1, 2, 3", indexes(layout.cellSequence(Dock.MAIN, body.core)));
+		assertEquals("4", indexes(layout.cellSequence(Dock.TAIL, body.core)));
 	}
 	
 	@Test
@@ -141,28 +141,28 @@ public class LayoutComputeTest {
 		layout.freezeHead(1);
 		layout.freezeTail(1);
 		layout.compute();
-		assertEquals("1", distances(layout.cellSequence(Dock.HEAD, body)));
-		assertEquals("102, 203", distances(layout.cellSequence(Dock.MAIN, body)));
-		assertEquals("100, 100", widths(layout.cellSequence(Dock.MAIN, body)));
-		assertEquals("249", distances(layout.cellSequence(Dock.TAIL, body)));
+		assertEquals("1", distances(layout.cellSequence(Dock.HEAD, body.core)));
+		assertEquals("102, 203", distances(layout.cellSequence(Dock.MAIN, body.core)));
+		assertEquals("100, 100", widths(layout.cellSequence(Dock.MAIN, body.core)));
+		assertEquals("249", distances(layout.cellSequence(Dock.TAIL, body.core)));
 		
-		assertEquals("0, 101", distances(layout.lineSequence(Dock.HEAD, body)));
-		assertEquals("101, 202, 303", distances(layout.lineSequence(Dock.MAIN, body)));
-		assertEquals("1, 1, 1", widths(layout.lineSequence(Dock.MAIN, body)));
-		assertEquals("248, 349", distances(layout.lineSequence(Dock.TAIL, body)));
+		assertEquals("0, 101", distances(layout.lineSequence(Dock.HEAD, body.core)));
+		assertEquals("101, 202, 303", distances(layout.lineSequence(Dock.MAIN, body.core)));
+		assertEquals("1, 1, 1", widths(layout.lineSequence(Dock.MAIN, body.core)));
+		assertEquals("248, 349", distances(layout.lineSequence(Dock.TAIL, body.core)));
 		
 		// Tail should follow main
 		layout.setViewportSize(1000);
 		layout.compute();
-		assertEquals("1", distances(layout.cellSequence(Dock.HEAD, body)));
-		assertEquals("102, 203, 304", distances(layout.cellSequence(Dock.MAIN, body)));
-		assertEquals("405", distances(layout.cellSequence(Dock.TAIL, body)));
-		assertEquals("404, 505", distances(layout.lineSequence(Dock.TAIL, body)));
+		assertEquals("1", distances(layout.cellSequence(Dock.HEAD, body.core)));
+		assertEquals("102, 203, 304", distances(layout.cellSequence(Dock.MAIN, body.core)));
+		assertEquals("405", distances(layout.cellSequence(Dock.TAIL, body.core)));
+		assertEquals("404, 505", distances(layout.lineSequence(Dock.TAIL, body.core)));
 		
 		
 		layout.freezeHead(0);
 		layout.compute();
-		assertEquals("", distances(layout.cellSequence(Dock.HEAD, body)));
+		assertEquals("", distances(layout.cellSequence(Dock.HEAD, body.core)));
 		
 		// TODO alternate cell and line widths
    	}
@@ -180,16 +180,16 @@ public class LayoutComputeTest {
 		layout.setViewportSize(1000);
 		layout.compute();
 		
-		assertEquals("1, 10", widths(layout.lineSequence(Dock.HEAD, body)));		
-		assertEquals("0, 101", distances(layout.lineSequence(Dock.HEAD, body)));		
-		assertEquals("111, 212, 313", distances(layout.cellSequence(Dock.MAIN, body)));		
-		assertEquals("10, 1", widths(layout.lineSequence(Dock.TAIL, body)));		
-		assertEquals("413, 523", distances(layout.lineSequence(Dock.TAIL, body)));
+		assertEquals("1, 10", widths(layout.lineSequence(Dock.HEAD, body.core)));		
+		assertEquals("0, 101", distances(layout.lineSequence(Dock.HEAD, body.core)));		
+		assertEquals("111, 212, 313", distances(layout.cellSequence(Dock.MAIN, body.core)));		
+		assertEquals("10, 1", widths(layout.lineSequence(Dock.TAIL, body.core)));		
+		assertEquals("413, 523", distances(layout.lineSequence(Dock.TAIL, body.core)));
 		
 		layout.setViewportSize(450);
 		layout.compute();
 		
-		assertEquals("339, 449", distances(layout.lineSequence(Dock.TAIL, body)));
+		assertEquals("339, 449", distances(layout.lineSequence(Dock.TAIL, body.core)));
 
 	}
 	
@@ -210,7 +210,7 @@ public class LayoutComputeTest {
 		layout.freezeHead(1);
 		layout.freezeTail(1);
 		layout.compute();
-//		assertEquals("1, 6, 7", indexes(layout.cellSequence(Dock.MAIN, body)));
+//		assertEquals("1, 6, 7", indexes(layout.cellSequence(Dock.MAIN, body.core)));
 //		showMatrix(layout);
 		
 		assertEquals("0", layout.getItemByDistance(50).index.toString());

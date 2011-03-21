@@ -10,10 +10,10 @@ import pl.netanel.util.Preconditions;
  * when the axis layout is computed.
  */
 class AxisItem<N extends Number> {
-	public Section<N> section;
+	public SectionUnchecked<N> section;
 	public N index;
 	
-	public AxisItem(Section<N> section, N index) {
+	public AxisItem(SectionUnchecked<N> section, N index) {
 		Preconditions.checkNotNullWithName(index, "index");
 		this.section = section;
 		this.index = index;

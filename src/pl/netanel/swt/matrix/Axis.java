@@ -1,6 +1,7 @@
 package pl.netanel.swt.matrix;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
@@ -9,16 +10,15 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 
 import pl.netanel.swt.Listeners;
-import pl.netanel.util.Arrays;
 import pl.netanel.util.Preconditions;
 
 public class Axis<N extends Number> implements Iterable<Section<N>> {
-	private static final Section[] EMPTY = new Section[] {};
 	
 	final Math<N> math;
 	final ArrayList<Section<N>> sections;
-	private Section<N>[] zOrder;
-	private Section<N> body, header;
+	final HashMap<SectionUnchecked<N>, Section<N>> sectionMap;
+	private Section[] zOrder;
+	Section<N> body, header;
 	private int autoScrollOffset;
 	Layout layout;
 	final Listeners listeners;
@@ -42,19 +42,24 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 
 	public Axis(Section<N> ...sections) {
 		Preconditions.checkArgument(sections.length > 0, "Model must have at least one section");
-		math = sections[0].math;
+		math = sections[0].core.math;
 		this.sections = new ArrayList(sections.length);
+		this.sectionMap = new HashMap(sections.length);
 		for (int i = 0; i < sections.length; i++) {
 			Section section = sections[i];
-			section.index = i;
+			section.core.index = i;
 			this.sections.add(section);
+			this.sectionMap.put(section.core, section);
 		}
 		if (sections.length == 0) {
-			this.sections.add(body = new Section(math));
+			this.sections.add(new Section(math));
+			setBody(0);
 		} else {
-			body = sections.length > 1 ? sections[1] : sections.length == 1 ? sections[0] : null;
-			header = sections.length > 1 ? sections[0] : null;
-			if (header != null) {
+			if (sections.length == 1) {
+				setBody(0);
+			} else {
+				setHeader(0);
+				setBody(1);
 				header.setNavigationEnabled(false);
 			}
 		}
@@ -90,7 +95,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	
 	public void setHeader(int sectionIndex) {
 		Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
-		this.header = sections.get(sectionIndex);;
+		this.header = sections.get(sectionIndex);
 	}
 	
 	
@@ -102,16 +107,18 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		return sections.get(i);
 	}
 	
-	public Section[] getSections() {
-		return sections.toArray(EMPTY);
-	}
-
-	public Section[] getZOrder() {
+	Section[] getZOrder() {
 		return zOrder;
 	}
 	
-	public int getZIndex(Section section) {
-		return Arrays.indexOf(zOrder, section);
+	int getZIndex(SectionUnchecked section) {
+		for (int i = 0, imax = zOrder.length; i < imax; i++) {
+			Section section2 = zOrder[i];
+			if (section2.core.equals(section)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	@Override
@@ -126,7 +133,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	
 	public Section getNavigationSection() {
 		layout.computeIfRequired();
-		return layout.current == null ? null : layout.current.section;
+		return layout.current == null ? null : sectionMap.get(layout.current.section);
 	}
 	
 	public Number getNavigationIndex() {
@@ -134,7 +141,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		return layout.current == null ? null : layout.current.index;
 	}
 
-	public void navigate(Section<N> section, N index) {
+	public void navigate(SectionUnchecked<N> section, N index) {
 		layout.setCurrentItem(new AxisItem(section, index));
 	}
 
@@ -272,13 +279,13 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		for (int i = sections.size(); i-- > 0;) {
 			Section section = sections.get(i);
 			if (section.isEmpty()) continue;
-			return new AxisItem(section, math.decrement(section.getCount()));
+			return new AxisItem(section.core, math.decrement(section.getCount()));
 		}
 		return getFirstItem();
 	}
 
 	AxisItem getFirstItem() {
-		return new AxisItem(sections.get(0), math.ZERO_VALUE());
+		return new AxisItem(sections.get(0).core, math.ZERO_VALUE());
 	}
 
 	int comparePosition(AxisItem<N> item1, AxisItem<N> item2) {
@@ -296,7 +303,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	void setHidden(boolean hidden) {
 		for (int i = 0, imax = sections.size(); i < imax; i++) {
 			Section section = sections.get(i);
-			section.hideSelected(hidden);
+			section.core.hideSelected(hidden);
 		}
 	}
 	
@@ -308,7 +315,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 * @author Jacek Kolodziejczyk created 11-03-2011
 	 */
 	class ExtentSequence {
-		Section<N> section;
+		SectionUnchecked<N> section;
 		MutableNumber<N> start, end, startItemIndex, endItemIndex;
 		private int i, istart, iend, sectionIndex, lastSectionIndex;
 		private ArrayList<Extent<N>> items;
@@ -325,9 +332,9 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 			endItemIndex = math.create(endItem.index);
 			
 			section = startItem.section;
-			sectionIndex = sections.indexOf(section); 
+			sectionIndex = section.index; 
 			lastSectionIndex = sections.indexOf(endItem.section); 
-			items = sections.get(sectionIndex).order.items;
+			items = sections.get(sectionIndex).core.order.items;
 			i = istart;
 		}
 		
@@ -335,7 +342,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 			if (i >= items.size()) {
 				sectionIndex++;
 				if (sectionIndex > lastSectionIndex) return false;
-				section = sections.get(sectionIndex);
+				section = sections.get(sectionIndex).core;
 				items = section.order.items;
 				i = 0;
 			}

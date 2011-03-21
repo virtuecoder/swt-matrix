@@ -176,6 +176,15 @@ class MatrixModel implements Iterable<Zone> {
 	 */
 	public Zone getZone(Section section0, Section section1) {
 		for (Zone zone: zones) {
+			if (zone.section0.equals(section0.core) && zone.section1.equals(section1.core)) {
+				return zone;
+			}
+		}
+		return null;
+	}
+	
+	public Zone getZone(SectionUnchecked section0, SectionUnchecked section1) {
+		for (Zone zone: zones) {
 			if (zone.section0.equals(section0) && zone.section1.equals(section1)) {
 				return zone;
 			}
@@ -239,7 +248,7 @@ class MatrixModel implements Iterable<Zone> {
 	 * @author Jacek created 21-02-2011
 	 */
 	class ExtentPairSequence {
-		Section section0, section1;
+		SectionUnchecked section0, section1;
 		MutableNumber start0, end0, start1, end1;
 		ExtentSequence seq0, seq1;
 		boolean empty;

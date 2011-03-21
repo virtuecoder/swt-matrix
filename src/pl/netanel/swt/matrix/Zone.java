@@ -24,7 +24,7 @@ import pl.netanel.swt.matrix.painter.Painters;
  * It can also have dedicated event handlers to implement special behavior 
  * for different parts of the matrix.  
  * </p>
- * @see Section
+ * @see SectionUnchecked
  * 
  * @author Jacek
  * @created 13-10-2010
@@ -53,7 +53,7 @@ public class Zone {
 	 */
 	public Painters linePainters1;
 	
-	Section section0, section1;
+	SectionUnchecked section0, section1;
 	CellSet cellSelection;
 	CellSet lastSelection; // For adding selection
 	
@@ -78,10 +78,10 @@ public class Zone {
 
 	public Zone(Section section0, Section section1, int type) {
 		this(type);
-		this.section0 = section0;
-		this.section1 = section1;
-		cellSelection = new CellSet(section0.math, section1.math);
-		lastSelection = new CellSet(section0.math, section1.math);
+		this.section0 = section0.core;
+		this.section1 = section1.core;
+		cellSelection = new CellSet(section0.core.math, section1.core.math);
+		lastSelection = new CellSet(section0.core.math, section1.core.math);
 		
 		RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
 		RGB whiteColor = Resources.getColor(SWT.COLOR_LIST_BACKGROUND).getRGB();

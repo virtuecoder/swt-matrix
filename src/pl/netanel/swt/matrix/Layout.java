@@ -31,7 +31,7 @@ class Layout<N extends Number> {
 	public Direction forward, backward, forwardNavigator, backwardNavigator;
 	final Axis<N> model;
 
-	private ArrayList<Section<N>> sections;
+	private ArrayList<SectionUnchecked<N>> sections;
 
 
 	
@@ -39,9 +39,11 @@ class Layout<N extends Number> {
 		Preconditions.checkArgument(model.getSectionCount() > 0, "Layout must have at least one section");
 		this.model = model;
 		math = model.math;
-		sections = model.sections;
+		sections = new ArrayList();
 		for (int i = 0, imax = model.sections.size(); i < imax; i++) {
-			model.sections.get(i).index = i;
+			SectionUnchecked<N> section2 = model.sections.get(i).core;
+			section2.index = i;
+			sections.add(section2);
 		}
 //		if (sections.length == 0) {
 //		sections.add(new Section(numberClass)); // header
@@ -59,8 +61,8 @@ class Layout<N extends Number> {
 		caches.add(head); caches.add(main); caches.add(tail);
 		
 		Section section = model.sections.get(0);
-		start = new AxisItem(section, math.ZERO_VALUE());
-		zeroItem = new AxisItem(section, math.ZERO_VALUE());
+		start = new AxisItem(section.core, math.ZERO_VALUE());
+		zeroItem = new AxisItem(section.core, math.ZERO_VALUE());
 		forwardNavigator.init();
 		current = forwardNavigator.getItem();
 		total = math.create(0);
@@ -82,7 +84,7 @@ class Layout<N extends Number> {
 	}
 
 	public Section getSection(int i) {
-		return sections.get(i);
+		return model.sectionMap.get(sections.get(i));
 	}
 
 	/**
@@ -103,7 +105,7 @@ class Layout<N extends Number> {
 		
 		// Compute total and check if body exists
 		total.set(math.ZERO_VALUE()); 
-		for (Section section: sections) {
+		for (SectionUnchecked section: sections) {
 			total.add(section.getVisibleCount());
 		}
 		
@@ -413,7 +415,7 @@ class Layout<N extends Number> {
 	abstract class Cache {
 		ArrayList<AxisItem> items;
 		ArrayList<Bound> cells, lines;
-		ArrayList<Section> sections;
+		ArrayList<SectionUnchecked> sections;
 		int distance, innerWidth, outerWidth, freezeLineWidth, lastLineWidth;
 		Direction direction;
 
@@ -421,7 +423,7 @@ class Layout<N extends Number> {
 
 
 		public Cache() {
-			sections = new ArrayList<Section>();
+			sections = new ArrayList<SectionUnchecked>();
 			items = new ArrayList<AxisItem>();
 			cells = new ArrayList<Bound>();
 			lines = new ArrayList<Bound>();
@@ -448,8 +450,8 @@ class Layout<N extends Number> {
 				lastLine(dir.section, dir.seq.index().getValue());
 			}
 			for (int i = 0; condition() && item != null; i++) {
-				bound1 = new Bound(0, dir.section.getLineWidthUnchecked(dir.seq.index().getValue()));
-				bound2 = new Bound(0, dir.section.getCellWidthUnchecked(dir.seq.index().getValue()));
+				bound1 = new Bound(0, dir.section.getLineWidth(dir.seq.index().getValue()));
+				bound2 = new Bound(0, dir.section.getCellWidth(dir.seq.index().getValue()));
 				int width = bound1.width + bound2.width;
 
 				if (!canTrim && innerWidth + width > maxWidth) break;
@@ -504,7 +506,7 @@ class Layout<N extends Number> {
 			} 
 		}
 
-		Bound lastLine(Section section, Number index) {
+		Bound lastLine(SectionUnchecked section, Number index) {
 			Number index2 = section.math.increment(index);
 			Bound bound = new Bound(0, section.getLineWidth(index2));
 			lines.add(bound);
@@ -619,7 +621,7 @@ class Layout<N extends Number> {
 			   distance > tail.distance && !tail.isEmpty() ? tail : main;
 	}
 	
-	private Cache getCache(Section section, Number index) {
+	private Cache getCache(SectionUnchecked section, Number index) {
 		for (Cache cache: caches) {
 			int len = cache.cells.size();
 			for (int i = 0; i < len; i++) {
@@ -651,10 +653,10 @@ class Layout<N extends Number> {
 //		return null;
 //	}
 	
-	MutableNumber getItemPosition(AxisItem item) {
+	MutableNumber getItemPosition(AxisItem<N> item) {
 		MutableNumber position = math.create(0);
 		for (int i = 0, size = sections.size(); i < size; i++) {
-			Section section = sections.get(i);
+			SectionUnchecked<N> section = sections.get(i);
 			if (item.section.equals(section)) {
 				return position.add(math.getValue(section.indexOfNotHidden(item.index)));
 			}
@@ -663,12 +665,12 @@ class Layout<N extends Number> {
 		return null;
 	}
 	
-	AxisItem getItemByPosition(MutableNumber position) {
-		MutableNumber pos1 = math.create(0);
-		MutableNumber pos2 = math.create(0);
+	AxisItem getItemByPosition(MutableNumber<N> position) {
+		MutableNumber<N> pos1 = math.create(0);
+		MutableNumber<N> pos2 = math.create(0);
 		
 		for (int i = 0, size = sections.size(); i < size; i++) {
-			Section section = sections.get(i);
+			SectionUnchecked<N> section = sections.get(i);
 			pos1.set(pos2);
 			pos2.add(section.getVisibleCount());
 			if (math.compare(pos2, position) > 0) {
@@ -699,13 +701,13 @@ class Layout<N extends Number> {
 	}
 
 	
-	public LayoutSequence cellSequence(Dock dock, Section section) {
+	public LayoutSequence cellSequence(Dock dock, SectionUnchecked section) {
 		if (isComputingRequired) compute();
 		Cache cache = getCache(dock);
 		return new LayoutSequence(cache.items, cache.cells, section);
 	}
 	
-	public LayoutSequence lineSequence(Dock dock, Section section) {
+	public LayoutSequence lineSequence(Dock dock, SectionUnchecked section) {
 		if (isComputingRequired) compute();
 		Cache cache = getCache(dock);
 		return new LayoutSequence(cache.items, cache.lines, section);
@@ -716,12 +718,12 @@ class Layout<N extends Number> {
 
 		private final List<AxisItem> items;
 		private final List<Bound> bounds;
-		private final Section section;
+		private final SectionUnchecked section;
 		private int i;
 		Bound bound;
 		AxisItem item;
 
-		public LayoutSequence(List<AxisItem> items, List<Bound> bounds, Section section) { 
+		public LayoutSequence(List<AxisItem> items, List<Bound> bounds, SectionUnchecked section) { 
 			this.items = items;
 			this.bounds = bounds;
 			this.section = section;
@@ -735,7 +737,7 @@ class Layout<N extends Number> {
 		
 		public boolean next() {
 			if (i >= bounds.size()) return false;
-			Section section2 = items.get(i).section;
+			SectionUnchecked section2 = items.get(i).section;
 			if (!section2.equals(section)) {
 				// Make sure last line is included between sections  
 				if (items.size() == bounds.size() && 
@@ -766,8 +768,8 @@ class Layout<N extends Number> {
 		}
 	}
 
-	public boolean contains(Dock dock, Section section) {
-		List<Section> sections = getCache(dock).sections;
+	public boolean contains(Dock dock, SectionUnchecked section) {
+		List<SectionUnchecked> sections = getCache(dock).sections;
 		if (sections.contains(section)) {
 			return true;
 		}
@@ -782,7 +784,7 @@ class Layout<N extends Number> {
 	}
 	
 	// TODO cache the section bonds in a dock 
-	public Bound getBound(Dock dock, Section section) {
+	public Bound getBound(Dock dock, SectionUnchecked section) {
 		Cache cache = getCache(dock);
 		int first = -1, last = -1;
 		for (int i = 0, size = cache.items.size(); i < size; i++) {

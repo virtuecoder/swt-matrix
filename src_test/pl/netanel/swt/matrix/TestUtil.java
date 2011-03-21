@@ -21,11 +21,11 @@ public class TestUtil {
 	}
 	
 	public static AxisItem item(Section section, int index) {
-		return new AxisItem(section, index);
+		return new AxisItem(section.core, index);
 	}
 	
 	public static AxisItem item(Axis model, int section, int index) {
-		return new AxisItem(model.getSection(section), index);
+		return new AxisItem(model.getSection(section).core, index);
 	}
 	
 	static NumberSet indexSet() {
@@ -37,6 +37,7 @@ public class TestUtil {
 		set.add(start, end);
 		return set;
 	}
+	
 	
 	public static String indexes(LayoutSequence seq) {
 		StringBuilder sb = new StringBuilder();
@@ -102,4 +103,7 @@ public class TestUtil {
     		}
         }
 	}
+
+
+
 }

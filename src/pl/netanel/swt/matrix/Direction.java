@@ -6,15 +6,15 @@ import java.util.List;
 
 
 abstract class Direction<N extends Number> {
-	protected final List<Section> sections;
+	protected final List<SectionUnchecked> sections;
 	protected final Math math;
-	Section section;
+	SectionUnchecked section;
 	DirectionIndexSequence seq;
 	int i, level, sign;
 	AxisItem freeze, min, start;
 	boolean pending, moved, hasMore, skipWithoutCurrent;
 	
-	public Direction(Math math, List<Section> sections, boolean skipWithoutCurrent2) {
+	public Direction(Math math, List<SectionUnchecked> sections, boolean skipWithoutCurrent2) {
 		this.math = math;
 		this.sections = sections;
 		skipWithoutCurrent = skipWithoutCurrent2;
@@ -110,7 +110,7 @@ abstract class Direction<N extends Number> {
 	
 
 	
-	public DirectionIndexSequence getSequence(Section section2, int sign) {
+	public DirectionIndexSequence getSequence(SectionUnchecked section2, int sign) {
 		return sign > 0 
 			? new DirectionIndexSequence.Forward(section) 
 			: new DirectionIndexSequence.Backward(section);
@@ -120,7 +120,7 @@ abstract class Direction<N extends Number> {
 
 	static class Forward<N extends Number> extends Direction {
 
-		public Forward(Math<N> math, ArrayList<Section<N>> sections, boolean skipWithoutCurrent) {
+		public Forward(Math<N> math, ArrayList<SectionUnchecked<N>> sections, boolean skipWithoutCurrent) {
 			super(math, sections, skipWithoutCurrent);
 			sign = 1;
 		}
@@ -138,7 +138,7 @@ abstract class Direction<N extends Number> {
 	}
 	static class Backward<N extends Number> extends Direction {
 
-		public Backward(Math<N> math, ArrayList<Section<N>> sections, boolean skipWithoutCurrent) {
+		public Backward(Math<N> math, ArrayList<SectionUnchecked<N>> sections, boolean skipWithoutCurrent) {
 			super(math, sections, skipWithoutCurrent);
 			sign = -1;
 		}

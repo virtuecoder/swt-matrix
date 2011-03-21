@@ -9,6 +9,9 @@ Main concepts
 - Painters
 
 
+	 * Section does not have add/remove methods for items, since item does not have a notion of content.
+	 * It is only a reference to the data element. Whenever the data model adds / remove elements then 
+	 * the section should adjusts its item core.count to match the current size the data model.
 
 Performance
 - Loop inversion: loop painters -> loop cells -> paint
