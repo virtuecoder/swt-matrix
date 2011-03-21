@@ -32,7 +32,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 
 	
 	public Axis() {
-		this(new Section(), new Section());
+		this(new Section<N>(), new Section<N>());
 		sections.get(0).setCount(math.ONE_VALUE());
 	}
 	
@@ -40,7 +40,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		this(new Section(numberClass), new Section(numberClass));
 	}
 
-	public Axis(Section ...sections) {
+	public Axis(Section<N> ...sections) {
 		Preconditions.checkArgument(sections.length > 0, "Model must have at least one section");
 		math = sections[0].math;
 		this.sections = new ArrayList(sections.length);
@@ -76,10 +76,10 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	}
 
 	
-	public Section getBody() {
+	public Section<N> getBody() {
 		return body;
 	}
-	public Section getHeader() {
+	public Section<N> getHeader() {
 		return header;
 	}
 
@@ -98,7 +98,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		return sections.size();
 	}
 	
-	public Section getSection(int i) {
+	public Section<N> getSection(int i) {
 		return sections.get(i);
 	}
 	

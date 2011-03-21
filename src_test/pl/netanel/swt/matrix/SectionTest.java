@@ -21,20 +21,6 @@ public class SectionTest {
 		section.setCount(3);
 		assertEquals(3, section.getCount().intValue());
 		
-//		section.setCount(4L);
-//		assertEquals(4, section.getCount().intValue());
-//		
-//		section.setCount(5.2f);
-//		assertEquals(5, section.getCount().intValue());
-//		
-//		section.setCount(new BigInteger("6"));
-//		assertEquals(6, section.getCount().intValue());
-//		
-//		section.setCount(new BigDecimal("7.3"));
-//		assertEquals(7, section.getCount().intValue());
-//		
-//		section.setCount(new MutableInt(8));
-//		assertEquals(8, section.getCount().intValue());
 	}
 	
 	

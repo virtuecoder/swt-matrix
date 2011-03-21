@@ -45,12 +45,12 @@ public class Matrix extends Canvas {
 		navigationPainter = new BorderPainter(2);
 		
 		if (axis0 == null) {
-			axis0 = new Axis();
+			axis0 = new Axis<Integer>();
 			axis0.getHeader().setVisible(false);
 			axis0.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_Y);
 		}
 		if (axis1 == null) {
-			axis1 = new Axis();
+			axis1 = new Axis<Integer>();
 			axis1.getHeader().setDefaultCellWidth(40);
 			axis1.getHeader().setVisible(false);
 			axis1.getBody().setDefaultCellWidth(50);

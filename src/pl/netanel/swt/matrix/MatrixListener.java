@@ -200,7 +200,7 @@ class MatrixListener implements Listener {
 						resizeStartDistance = distance;
 						resizeCellWidth = resizeItem.section.getCellWidth(resizeItem.index);
 					}
-					else if (item.section.isSelected(item.index) && item.section.isMoveable(item.index)) {
+					else if (item.section.isSelectedUnchecked(item.index) && item.section.isMoveableUnchecked(item.index)) {
 						// Start moving
 						moving = true;
 						matrix.setCursor(cursor = Resources.getCursor(SWT.CURSOR_HAND));
@@ -286,7 +286,7 @@ class MatrixListener implements Listener {
 		}
 		
 		private boolean isSelected(AxisItem item) {
-			return item.section.isSelected(item.index);
+			return item.section.isSelectedUnchecked(item.index);
 		}
 		
 		public void setSelected(int commandId) {

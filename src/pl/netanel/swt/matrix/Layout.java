@@ -22,21 +22,21 @@ class Layout<N extends Number> {
 	
 	final MutableNumber total, maxInteger, maxScroll, scrollTotal;
 	final MutableNumber scrollPosition; // for head and tail it stores min and max scroll position
-	AxisItem start, end, endNoTrim, current, zeroItem;
+	AxisItem<N> start, end, endNoTrim, current, zeroItem;
 
 	ArrayList<Runnable> callbacks;
 
 	boolean isComputingRequired;
 
 	public Direction forward, backward, forwardNavigator, backwardNavigator;
-	final Axis model;
+	final Axis<N> model;
 
 	private ArrayList<Section<N>> sections;
 
 
 	
 	public Layout(Axis<N> model) {
-		Preconditions.checkArgument(model.getSections().length > 0, "Layout must have at least one section");
+		Preconditions.checkArgument(model.getSectionCount() > 0, "Layout must have at least one section");
 		this.model = model;
 		math = model.math;
 		sections = model.sections;
@@ -174,11 +174,9 @@ class Layout<N extends Number> {
 	public void adjustHiddenHiddenItem() {
 		if (current == null) return;
 		for (int section = current.section.index; section < model.getSectionCount(); section++) {
-			for (Extent e: sections.get(section).hidden.items) {
-				if (math.contains(e, current.index)) {
-					current.index = math.increment(e.end());
-					break;
-				}
+			N index2 = current.section.nextNotHiddenIndex(current.index, 1);
+			if (index2 != null) {
+				current.index = index2;
 			}
 			if (math.compare(current.index, current.section.getCount()) < 0) return;
 		}
@@ -450,8 +448,8 @@ class Layout<N extends Number> {
 				lastLine(dir.section, dir.seq.index().getValue());
 			}
 			for (int i = 0; condition() && item != null; i++) {
-				bound1 = new Bound(0, dir.section.getLineWidth(dir.seq.index().getValue()));
-				bound2 = new Bound(0, dir.section.getCellWidth(dir.seq.index().getValue()));
+				bound1 = new Bound(0, dir.section.getLineWidthUnchecked(dir.seq.index().getValue()));
+				bound2 = new Bound(0, dir.section.getCellWidthUnchecked(dir.seq.index().getValue()));
 				int width = bound1.width + bound2.width;
 
 				if (!canTrim && innerWidth + width > maxWidth) break;

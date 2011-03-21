@@ -21,32 +21,35 @@ class MatrixModel implements Iterable<Zone> {
 	private int[] zOrder;
 	private ExtentPairSequence seq;
 
-	public MatrixModel() {
-		this(new Axis(), new Axis());
-		axis0.getHeader().setVisible(false);
-		axis0.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_Y);
-		
-		axis1.getHeader().setDefaultCellWidth(40);
-		axis1.getHeader().setVisible(false);
-		axis1.getBody().setDefaultCellWidth(50);
-		axis1.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_X);
-		
-	}
+//	public MatrixModel() {
+//		this(new Axis<Integer>(), new Axis());
+//		axis0.getHeader().setVisible(false);
+//		axis0.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_Y);
+//		
+//		axis1.getHeader().setDefaultCellWidth(40);
+//		axis1.getHeader().setVisible(false);
+//		axis1.getBody().setDefaultCellWidth(50);
+//		axis1.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_X);
+//		
+//	}
 
-	public MatrixModel(Axis model0, Axis axis0, Zone ...zones) {
-		this.axis0 = model0;
-		this.axis1 = axis0;
+	public MatrixModel(
+			Axis<? extends Number> axis0, 
+			Axis<? extends Number> axis1, Zone ...zones) 
+	{
+		this.axis0 = axis0;
+		this.axis1 = axis1;
 		
 		this.zones = new ArrayList<Zone>(zones.length);
 		for (int i = 0; i < zones.length; i++) {
 			this.zones.add(zones[i]);
 		}
 		
-		Section body0  = model0.getBody(), body1 = axis0.getBody();
-		Section header0 = model0.getHeader(), header1 = axis0.getHeader();
+		Section body0  = axis0.getBody(), body1 = axis1.getBody();
+		Section header0 = axis0.getHeader(), header1 = axis1.getHeader();
 		
-		for (Section section0: model0.getSections()) {
-			for (Section section1: axis0.getSections()) {
+		for (Section section0: axis0) {
+			for (Section section1: axis1) {
 				Zone zone = getZone(section0, section1);
 				if (zone == null) {
 					zone = createZone(section0, section1);
