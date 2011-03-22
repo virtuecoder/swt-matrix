@@ -84,7 +84,7 @@ public class TestUtil {
 		// Make the columns variable width
 //		Matrix matrix = new Matrix(shell, SWT.NONE);
 		Shell shell = new Shell();
-		Matrix matrix = new Matrix(shell, SWT.V_SCROLL | SWT.H_SCROLL, rowModel, layout.model);
+		Matrix matrix = new Matrix(shell, SWT.V_SCROLL | SWT.H_SCROLL, rowModel, layout.axis);
 		matrix.layout1 = layout;
 //		matrix.rows.setHeaderVisible(true);
 		

@@ -2,6 +2,7 @@ package pl.netanel.swt.matrix;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class SectionTest {
@@ -23,5 +24,18 @@ public class SectionTest {
 		
 	}
 	
-	
+	@Ignore
+	@Test
+	public void getSelectedExtentResizableSequence() throws Exception {
+		SectionUnchecked section = new SectionUnchecked(int.class);
+		section.setCount(3);
+		section.setSelected(0, 2, true);
+		section.setDefaultResizable(true);
+		section.setResizable(1, 1, false);
+		ExtentSequence seq = section.getSelectedExtentResizableSequence();
+		seq.init(); seq.next();
+		assertEquals("0 0", "" + seq.start + " " + seq.end);
+		seq.next();
+		assertEquals("2 2", "" + seq.start + " " + seq.end);
+	}
 }

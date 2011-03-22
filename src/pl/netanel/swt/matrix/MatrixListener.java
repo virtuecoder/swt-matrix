@@ -1,7 +1,53 @@
 package pl.netanel.swt.matrix;
 
-import static java.lang.Math.*;
-import static pl.netanel.swt.matrix.M.*;
+import static java.lang.Math.abs;
+import static java.lang.Math.max;
+import static pl.netanel.swt.matrix.M.CURRENT_DOWN;
+import static pl.netanel.swt.matrix.M.CURRENT_END;
+import static pl.netanel.swt.matrix.M.CURRENT_LEFT;
+import static pl.netanel.swt.matrix.M.CURRENT_LOCATION;
+import static pl.netanel.swt.matrix.M.CURRENT_LOCATION2;
+import static pl.netanel.swt.matrix.M.CURRENT_MOST_DOWN;
+import static pl.netanel.swt.matrix.M.CURRENT_MOST_LEFT;
+import static pl.netanel.swt.matrix.M.CURRENT_MOST_RIGHT;
+import static pl.netanel.swt.matrix.M.CURRENT_MOST_UP;
+import static pl.netanel.swt.matrix.M.CURRENT_PAGE_DOWN;
+import static pl.netanel.swt.matrix.M.CURRENT_PAGE_LEFT;
+import static pl.netanel.swt.matrix.M.CURRENT_PAGE_RIGHT;
+import static pl.netanel.swt.matrix.M.CURRENT_PAGE_UP;
+import static pl.netanel.swt.matrix.M.CURRENT_RIGHT;
+import static pl.netanel.swt.matrix.M.CURRENT_START;
+import static pl.netanel.swt.matrix.M.CURRENT_UP;
+import static pl.netanel.swt.matrix.M.HIDE;
+import static pl.netanel.swt.matrix.M.RESIZE_PACK;
+import static pl.netanel.swt.matrix.M.SELECT_ALL;
+import static pl.netanel.swt.matrix.M.SELECT_COLUMN;
+import static pl.netanel.swt.matrix.M.SELECT_COLUMN2;
+import static pl.netanel.swt.matrix.M.SELECT_DOWN;
+import static pl.netanel.swt.matrix.M.SELECT_END;
+import static pl.netanel.swt.matrix.M.SELECT_FULL_DOWN;
+import static pl.netanel.swt.matrix.M.SELECT_FULL_LEFT;
+import static pl.netanel.swt.matrix.M.SELECT_FULL_RIGHT;
+import static pl.netanel.swt.matrix.M.SELECT_FULL_UP;
+import static pl.netanel.swt.matrix.M.SELECT_LEFT;
+import static pl.netanel.swt.matrix.M.SELECT_PAGE_DOWN;
+import static pl.netanel.swt.matrix.M.SELECT_PAGE_LEFT;
+import static pl.netanel.swt.matrix.M.SELECT_PAGE_RIGHT;
+import static pl.netanel.swt.matrix.M.SELECT_PAGE_UP;
+import static pl.netanel.swt.matrix.M.SELECT_RIGHT;
+import static pl.netanel.swt.matrix.M.SELECT_ROW;
+import static pl.netanel.swt.matrix.M.SELECT_ROW2;
+import static pl.netanel.swt.matrix.M.SELECT_START;
+import static pl.netanel.swt.matrix.M.SELECT_TO_COLUMN;
+import static pl.netanel.swt.matrix.M.SELECT_TO_COLUMN2;
+import static pl.netanel.swt.matrix.M.SELECT_TO_LOCATION;
+import static pl.netanel.swt.matrix.M.SELECT_TO_LOCATION2;
+import static pl.netanel.swt.matrix.M.SELECT_TO_ROW;
+import static pl.netanel.swt.matrix.M.SELECT_TO_ROW2;
+import static pl.netanel.swt.matrix.M.SELECT_UP;
+import static pl.netanel.swt.matrix.M.UNHIDE;
+import static pl.netanel.swt.matrix.M.isBodySelect;
+import static pl.netanel.swt.matrix.M.isExtendingSelect;
 
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
@@ -130,11 +176,10 @@ class MatrixListener implements Listener {
 		} 
 	}
 	
-	class AxisListener {
+	class AxisListener<N extends Number> {
 		private final int axisIndex;
-		final Axis axis;
+		Axis<N> axis;
 		Layout layout;
-		Axis model;
 		AxisItem last, item, resizeItem;
 		boolean moving, resizing, itemModified = true, mouseDown;
 		Event mouseMoveEvent;
@@ -181,13 +226,13 @@ class MatrixListener implements Listener {
 					handleDrag(e);
 				} 
 				else {
-//					if (isInHeader() && (resizeItem = layout.getResizeItem(distance)) != null) {
-//						if (cursor != resizeCursor) {
-//							matrix.setCursor(cursor = resizeCursor);
-//						}
-//					} else if (cursor == resizeCursor) {
-//						matrix.setCursor(cursor = null);
-//					}
+					if (isInHeader() && (resizeItem = layout.getResizeItem(distance)) != null) {
+						if (cursor != resizeCursor) {
+							matrix.setCursor(cursor = resizeCursor);
+						}
+					} else if (cursor == resizeCursor) {
+						matrix.setCursor(cursor = null);
+					}
 				}
 				break;
 				
@@ -210,23 +255,25 @@ class MatrixListener implements Listener {
 				
 			case SWT.MouseUp:
 				// Resize all selected except the current one
-//				if (resizing && isSelected(resizeItem)) {
-//					int len = layout.sections.size();
-//					for (int i = 0; i < len; i++) {
-//						Section section = layout.sections.get(i);
-//						for (Extent extent: section.selection.items) {
-//							if (item.section.equals(section) && 
-//									layout.math.compare(extent.start, item.index) == 0 &&
-//									layout.math.compare(extent.end, item.index) == 0) {
-//								continue;
-//							}
-//							section.setCellWidth(extent.start, extent.end, newCellWidth);
-//							layout.compute();
-//							matrix.redraw();
-//						}
-//					}
-//					addEvent(SWT.Resize);
-//				}
+				if (resizing) {
+					int len = axis.sections.size();
+					for (int i = 0; i < len; i++) {
+						Section<N> section = axis.sections.get(i);
+						ExtentSequence<N> seq = section.core.getSelectedExtentResizableSequence();
+						for (seq.init(); seq.next();) {
+							
+							if (item.section.equals(section) && 
+									layout.math.compare(seq.start, item.index) == 0 &&
+									layout.math.compare(seq.end, item.index) == 0) {
+								continue;
+							}
+							section.setCellWidth(seq.start, seq.end, newCellWidth);
+							layout.compute();
+							matrix.redraw();
+						}
+					}
+					addEvent(SWT.Resize);
+				}
 //				else if (moving && !instantMoving) {
 //					reorder();
 //				}
@@ -297,39 +344,39 @@ class MatrixListener implements Listener {
 				commandId == SELECT_ROW || commandId == SELECT_ROW2) {
 				
 				// Backup all sections cell selection
-				for (int i = 0, imax = model.getSectionCount(); i < imax; i++) {
-					model.getSection(i).core.backupSelection();
+				for (int i = 0, imax = axis.getSectionCount(); i < imax; i++) {
+					axis.getSection(i).core.backupSelection();
 				}
 				
 			} 
 			else if (commandId == SELECT_TO_COLUMN2 || commandId == SELECT_TO_ROW2) {
 				// Restore previous selection from the backup
-				for (int i = 0, imax = model.getSectionCount(); i < imax; i++) {
-					model.getSection(i).core.restoreSelection();
+				for (int i = 0, imax = axis.getSectionCount(); i < imax; i++) {
+					axis.getSection(i).core.restoreSelection();
 				}
 			}
 			
-			// Make sure start < end 
-			if (model.comparePosition(last, item) > 0) {
-				AxisItem tmp = last; last = item; item = tmp;
-			}
+			// Make sure start < end
+			boolean forward = axis.comparePosition(last, item) <= 0;
+			AxisItem start = forward ? last : item; 
+			AxisItem end = forward ? item : last; 
 
 			boolean ctrlSelection = 
 				commandId == SELECT_COLUMN2 || commandId == SELECT_TO_COLUMN2 ||
 				commandId == SELECT_ROW2 || commandId == SELECT_TO_ROW2;
 			
 			if (!ctrlSelection) {
-				model.setSelected(false);
+				axis.setSelected(false);
 				matrix.model.setSelected(false);
 			}
 			
-			model.setSelected(last, item, !(ctrlSelection && isSelected(last)));
+			axis.setSelected(start, end, !(ctrlSelection && isSelected(start)));
 			if (axisIndex == 0) {
 				Axis model1 = matrix.model.axis1;
-				matrix.model.setSelected(last, item, model1.getFirstItem(), model1.getLastItem(), true);
+				matrix.model.setSelected(start, end, model1.getFirstItem(), model1.getLastItem(), true);
 			} else {
 				Axis model0 = matrix.model.axis0;
-				matrix.model.setSelected(model0.getFirstItem(), model0.getLastItem(), last, item, true);
+				matrix.model.setSelected(model0.getFirstItem(), model0.getLastItem(), start, end, true);
 			}
 			addEvent(SWT.Selection);
 		}
@@ -346,7 +393,7 @@ class MatrixListener implements Listener {
 //			AxisItem item2 = layout.reorder(item);
 //			if (item2 != null) {
 //				// Move the cursor if outside of the moved column
-//				int direction = model.comparePosition(item2, item);
+//				int direction = axis.comparePosition(item2, item);
 //				int cellDistance = layout.getCellDistance(item2);
 //				Point p = null;
 //				if (direction > 0 && distance < cellDistance) {
@@ -355,7 +402,7 @@ class MatrixListener implements Listener {
 //					p.y = axisIndex == 0 ? cellDistance : mouseMoveEvent.y;
 //				} 
 //				else if (direction < 0) {
-//					int lineDistance = cellDistance + model.getCellWidth(item2);
+//					int lineDistance = cellDistance + axis.getCellWidth(item2);
 //					if (distance > lineDistance) {
 //						p = matrix.getLocation();
 //						p.x = axisIndex == 0 ? mouseMoveEvent.x : lineDistance;
@@ -384,7 +431,7 @@ class MatrixListener implements Listener {
 		}
 
 		public void hide(boolean b) {
-			model.setHidden(b);
+			axis.setHidden(b);
 			layout.isComputingRequired = true;
 		}
 		
@@ -406,7 +453,7 @@ class MatrixListener implements Listener {
 			public void handle() {
 				offset = layout.getAutoScrollOffset(lastDistance, distance);
 				if (offset != 0 ) { 
-					int m = model.getAutoScrollOffset();
+					int m = axis.getAutoScrollOffset();
 					
 					// TODO Improve the auto scroll formula to get slower close the edge, exponential 
 					itemCount = (int) (abs(offset) - m * 1.25 + 1);
@@ -716,9 +763,9 @@ class MatrixListener implements Listener {
 	
 	void setLayout(Layout layout0, Layout layout1) {
 		state0.layout = layout0;
-		state0.model = layout0.model;
+		state0.axis = layout0.axis;
 		state1.layout = layout1;
-		state1.model = layout1.model;
+		state1.axis = layout1.axis;
 		state0.autoScroll = state0.new AutoScroll();
 		state1.autoScroll = state1.new AutoScroll();
 	}

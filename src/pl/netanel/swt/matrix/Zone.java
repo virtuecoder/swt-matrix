@@ -210,6 +210,10 @@ public class Zone {
 	}
 
 	
+	/*------------------------------------------------------------------------
+	 * Selection
+	 */
+	
 	public boolean isSelected(Number index0, Number index1) {
 		return cellSelection.contains(index0, index1);
 	}
@@ -241,14 +245,18 @@ public class Zone {
 		}
 	}
 	
-	public void backupSelection() {
+	public BigInteger getSelectedCount() {
+		return cellSelection.getCount().getValue();
+	}
+
+	
+	
+	void backupSelection() {
 		lastSelection = cellSelection.copy();
 	}
 	
-	public void restoreSelection() {
+	void restoreSelection() {
 		cellSelection = lastSelection.copy();
 	}
-	
-
 	
 }

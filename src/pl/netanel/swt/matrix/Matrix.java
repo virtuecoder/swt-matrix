@@ -48,6 +48,7 @@ public class Matrix extends Canvas {
 			axis0 = new Axis<Integer>();
 			axis0.getHeader().setVisible(false);
 			axis0.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_Y);
+			axis0.setResizeOffset(M.RESIZE_OFFSET_Y);
 		}
 		if (axis1 == null) {
 			axis1 = new Axis<Integer>();
@@ -55,7 +56,10 @@ public class Matrix extends Canvas {
 			axis1.getHeader().setVisible(false);
 			axis1.getBody().setDefaultCellWidth(50);
 			axis1.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_X);
+			axis1.setResizeOffset(M.RESIZE_OFFSET_X);
 		}
+		axis0.matrix = this; axis0.index = 0;
+		axis1.matrix = this; axis1.index = 1;
 		model = new MatrixModel(axis0, axis1, zones);
 		setModel(model);
 		

@@ -29,19 +29,19 @@ class Layout<N extends Number> {
 	boolean isComputingRequired;
 
 	public Direction forward, backward, forwardNavigator, backwardNavigator;
-	final Axis<N> model;
+	final Axis<N> axis;
 
 	private ArrayList<SectionUnchecked<N>> sections;
 
 
 	
-	public Layout(Axis<N> model) {
-		Preconditions.checkArgument(model.getSectionCount() > 0, "Layout must have at least one section");
-		this.model = model;
-		math = model.math;
+	public Layout(Axis<N> axis) {
+		Preconditions.checkArgument(axis.getSectionCount() > 0, "Layout must have at least one section");
+		this.axis = axis;
+		math = axis.math;
 		sections = new ArrayList();
-		for (int i = 0, imax = model.sections.size(); i < imax; i++) {
-			SectionUnchecked<N> section2 = model.sections.get(i).core;
+		for (int i = 0, imax = axis.sections.size(); i < imax; i++) {
+			SectionUnchecked<N> section2 = axis.sections.get(i).core;
 			section2.index = i;
 			sections.add(section2);
 		}
@@ -60,7 +60,7 @@ class Layout<N extends Number> {
 		caches = new ArrayList<Cache>();
 		caches.add(head); caches.add(main); caches.add(tail);
 		
-		Section section = model.sections.get(0);
+		Section section = axis.sections.get(0);
 		start = new AxisItem(section.core, math.ZERO_VALUE());
 		zeroItem = new AxisItem(section.core, math.ZERO_VALUE());
 		forwardNavigator.init();
@@ -84,7 +84,7 @@ class Layout<N extends Number> {
 	}
 
 	public Section getSection(int i) {
-		return model.sectionMap.get(sections.get(i));
+		return axis.sectionMap.get(sections.get(i));
 	}
 
 	/**
@@ -129,9 +129,9 @@ class Layout<N extends Number> {
 		head.compute(viewportSize);
 		tail.compute(viewportSize - head.innerWidth);
 		
-		if (!head.isEmpty() && model.comparePosition(origin, forward.min) < 0) {
+		if (!head.isEmpty() && axis.comparePosition(origin, forward.min) < 0) {
 			origin = forward.getItem();
-		} else if (!tail.isEmpty() && model.comparePosition(origin, backward.min) > 0) {
+		} else if (!tail.isEmpty() && axis.comparePosition(origin, backward.min) > 0) {
 			origin = backward.getItem();
 		}
 		dir.set(origin);
@@ -175,7 +175,7 @@ class Layout<N extends Number> {
 	
 	public void adjustHiddenHiddenItem() {
 		if (current == null) return;
-		for (int section = current.section.index; section < model.getSectionCount(); section++) {
+		for (int section = current.section.index; section < axis.getSectionCount(); section++) {
 			N index2 = current.section.nextNotHiddenIndex(current.index, 1);
 			if (index2 != null) {
 				current.index = index2;
@@ -239,10 +239,10 @@ class Layout<N extends Number> {
 		if (item == null) return;
 		if (isComputingRequired) compute();
 		
-		if (model.comparePosition(item, endNoTrim) > 0) {
+		if (axis.comparePosition(item, endNoTrim) > 0) {
 			compute(item, backward);
 		} 
-		else if (model.comparePosition(item, start) < 0) {
+		else if (axis.comparePosition(item, start) < 0) {
 			compute(item, forward);
 		} 
 		// else it is visible already
@@ -352,7 +352,7 @@ class Layout<N extends Number> {
 	public int getAutoScrollOffset(int lastDistance, int distance) {
 		if (lastDistance < main.distance || lastDistance > main.distance + main.outerWidth) return 0;
 		
-		int margin = model.getAutoScrollOffset();
+		int margin = axis.getAutoScrollOffset();
 		int offset = distance - (tail.distance - margin);
 		if (offset > 0 && lastDistance < distance && compare(endNoTrim, backward.min) < 0) {
 			return offset;
@@ -393,7 +393,28 @@ class Layout<N extends Number> {
 		return opposite.start;
 	}
 	
-	
+	/**
+	 * Returns item that can be resized due to the distance in the viewport 
+	 * or null if distance does not imply resizing or the item is not resizable.
+	 * 
+	 * @param distance
+	 * @return
+	 */
+	public AxisItem getResizeItem(int distance) {
+		Cache cache = getCache(distance);
+		int resizeMargin = axis.getResizeOffset();
+			
+		for (int i = 1; i < cache.lines.size(); i++) {
+			Bound bound = cache.lines.get(i);
+			int left = bound.distance - resizeMargin;
+			int right = bound.distance + bound.width + resizeMargin;
+			if (left <= distance && distance <= right) {
+				AxisItem item = cache.items.get(i - 1);
+				return item.section.isResizable(item.index) ? item : null;		
+			}
+		}
+		return null; 
+	}
 	/**
 	 * Override this method to throw IndexOutOfBoundsException 
 	 * in case index is not lower then the section count.  
@@ -402,6 +423,7 @@ class Layout<N extends Number> {
 		return math.compare(item.index, item.section.getCount()) >= 0;
 	}
 
+	
 	
 	/*------------------------------------------------------------------------
 	 * Cache 
@@ -741,7 +763,7 @@ class Layout<N extends Number> {
 			if (!section2.equals(section)) {
 				// Make sure last line is included between sections  
 				if (items.size() == bounds.size() && 
-					model.getZIndex(section2) < model.getZIndex(item.section)) 
+					axis.getZIndex(section2) < axis.getZIndex(item.section)) 
 				{
 					item = new AxisItem(item.section, math.increment(item.index));
 					bound = bounds.get(i);

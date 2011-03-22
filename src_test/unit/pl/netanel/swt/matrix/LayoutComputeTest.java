@@ -29,7 +29,7 @@ public class LayoutComputeTest {
 		Layout layout = new Layout(new Axis());
 		layout.setViewportSize(350);
 
-		Section body = layout.model.getBody();
+		Section body = layout.axis.getBody();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		
@@ -75,7 +75,7 @@ public class LayoutComputeTest {
 	@Test
 	public void freezeIndexes() throws Exception {
 		Layout layout = new Layout(new Axis(new Section(int.class)));
-		Section body = layout.model.getBody();
+		Section body = layout.axis.getBody();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		
@@ -133,7 +133,7 @@ public class LayoutComputeTest {
 	@Test
 	public void freezeDistances() throws Exception {
 		Layout layout = new Layout(new Axis(new Section(int.class)));
-		Section body = layout.model.getBody();
+		Section body = layout.axis.getBody();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		
@@ -170,7 +170,7 @@ public class LayoutComputeTest {
 	@Test
 	public void freezeLineWidth() throws Exception {
 		Layout layout = new Layout(new Axis(new Section(int.class)));
-		Section body = layout.model.getBody();
+		Section body = layout.axis.getBody();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		layout.head.freezeLineWidth = 10;
@@ -198,13 +198,13 @@ public class LayoutComputeTest {
 		Layout layout = new Layout(new Axis());
 		layout.setViewportSize(450);
 		
-		Section body = layout.model.getBody();
+		Section body = layout.axis.getBody();
 		body.setCount(10);
 		body.setCellWidth(0, 0, 50);
 		body.setDefaultCellWidth(100);
 		
 		body.move(6, 9, 3);
-		body.hide(2, 4, true);
+		body.setHidden(2, 4, true);
 		// 0, 1, 6, 7, 8, 9, 5
 		
 		layout.freezeHead(1);

@@ -24,7 +24,7 @@ public class AxisTest {
 		
 		assertEquals(0, model.getNavigationIndex());
 		
-		model.getBody().hide(0, 0, true);
+		model.getBody().setHidden(0, 0, true);
 		layout.compute();
 		
 		assertEquals(1, model.getNavigationIndex());

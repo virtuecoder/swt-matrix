@@ -474,9 +474,9 @@ public class Section<N extends Number> {
 	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
 	 * @throws IllegalArgumentException if start is greater then end
 	 */ 
-	public void hide(N start, N end, boolean state) {
+	public void setHidden(N start, N end, boolean state) {
 		checkRange(start, end, core.count);
-		core.hide(start, end, state);
+		core.setHidden(start, end, state);
 	}
 
 	/**
@@ -533,9 +533,9 @@ public class Section<N extends Number> {
 	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
 	 * @throws IllegalArgumentException if start is greater then end
 	 */ 
-	public void select(N start, N end, boolean state) {
+	public void setSelected(N start, N end, boolean state) {
 		checkRange(start, end, core.count);
-		core.select(start, end, state);
+		core.setSelected(start, end, state);
 	}
 
 	/**
@@ -543,8 +543,8 @@ public class Section<N extends Number> {
 	 * 
 	 * @param state the new selection state
 	 */ 
-	public void selectAll(boolean selected) {
-		core.selectAll(selected);
+	public void setSelectedAll(boolean selected) {
+		core.setSelectedAll(selected);
 	}
 	
 	/**
@@ -604,7 +604,7 @@ public class Section<N extends Number> {
 	 */
 	public void move(N start, N end, N target) {
 		checkRange(start, end, core.count);
-		checkIndex(target, core.count, "target");
+		checkIndex(target, core.math.increment(core.count), "target");
 		core.move(start, end, target);
 	}
 	

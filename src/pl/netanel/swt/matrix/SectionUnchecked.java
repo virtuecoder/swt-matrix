@@ -41,20 +41,21 @@ class SectionUnchecked<N extends Number> {
 	
 	final NumberOrder<N> order;
 	final NumberSet<N> hidden;
-	private final NumberSet resizable;
-	private final NumberSet moveable;
-	private final NumberSet hideable;
+	private final NumberSet<N> resizable;
+	private final NumberSet<N> moveable;
+	private final NumberSet<N> hideable;
 	private final IntAxisState cellWidth;
 	private final IntAxisState lineWidth;
 	private final ObjectAxisState<N> cellSpan;
 	
 	private final NumberQueueSet<N> selection;
-	private final NumberQueueSet lastSelection;
+	private final NumberQueueSet<N> lastSelection;
 
 	
 	private boolean defaultResizable, defaultMoveable, defaultHideable; 
 	private boolean isNavigationEnabled, isVisible;
 	
+	Axis axis;
 	int index; 
 	
 	/**
@@ -80,9 +81,9 @@ class SectionUnchecked<N extends Number> {
 		
 		order = new NumberOrder<N>(math);
 		hidden = new NumberSet(math, true);
-		resizable = new NumberSet(math);
-		moveable = new NumberSet(math);
-		hideable = new NumberSet(math);
+		resizable = new NumberSet(math, true);
+		moveable = new NumberSet(math, true);
+		hideable = new NumberSet(math, true);
 		
 		cellWidth = new IntAxisState(math, DEFAULT_CELL_WIDTH);
 		lineWidth = new IntAxisState(math, DEFAULT_LINE_WIDTH);
@@ -597,7 +598,7 @@ class SectionUnchecked<N extends Number> {
 	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
 	 * @throws IllegalArgumentException if start is greater then end
 	 */ 
-	public void hide(N start, N end, boolean state) {
+	public void setHidden(N start, N end, boolean state) {
 		hidden.change(start, end, state);
 	}
 
@@ -613,12 +614,12 @@ class SectionUnchecked<N extends Number> {
 	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
 	 * @throws IllegalArgumentException if start is greater then end
 	 * <p>
-	 * @see #select(Number, Number, boolean)
+	 * @see #setSelected(Number, Number, boolean)
 	 */ 
-	public void hideSelected(boolean state) {
+	public void setHiddenSelected(boolean state) {
 		for (int i = 0, imax = selection.items.size(); i < imax; i++) {
 			Extent<N> e = selection.items.get(i);
-			hide(e.start(), e.end(), state);
+			setHidden(e.start(), e.end(), state);
 		}
 	}
 	
@@ -692,8 +693,31 @@ class SectionUnchecked<N extends Number> {
 	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
 	 * @throws IllegalArgumentException if start is greater then end
 	 */ 
-	public void select(N start, N end, boolean state) {
+	public void setSelected(N start, N end, boolean state) {
 		selection.change(start, end, state);
+		if (axis != null) {
+			if (axis.index == 0) {
+				for (Zone zone: axis.matrix.model) {
+					if (zone.section0.equals(this)) {
+						Math math1 = zone.section1.math;
+						zone.setSelected(start, end, 
+								math1.ZERO_VALUE(), math1.decrement(zone.section1.getCount()), 
+								true);
+					}
+				}
+			}
+			else { // assert axis.index == 1
+				for (Zone zone: axis.matrix.model) {
+					if (zone.section1.equals(this)) {
+						Math math0 = zone.section0.math;
+						zone.setSelected( 
+								math0.ZERO_VALUE(), math0.decrement(zone.section0.getCount()),
+								start, end,
+								true);
+					}
+				}
+			}
+		}
 	}
 	
 	/**
@@ -701,7 +725,7 @@ class SectionUnchecked<N extends Number> {
 	 * 
 	 * @param state the new selection state
 	 */ 
-	public void selectAll(boolean selected) {
+	public void setSelectedAll(boolean selected) {
 		if (selected) {
 			selection.add(math.ZERO_VALUE(), math.decrement(count));
 		} else {
@@ -799,6 +823,80 @@ class SectionUnchecked<N extends Number> {
 		return item;
 	}
 
+	ExtentSequence<N> getSelectedExtentSequence() {
+		return new ExtentSequence(selection.items);
+	}
+	
+	ExtentSequence<N> getSelectedExtentResizableSequence() {
+		return new ExtentSequence<N>(selection.items) {
+//			private int j;
+//			@Override
+//			public void init() {
+//				super.init();
+//				j = -1;
+//			}
+			@Override
+			public boolean next() {
+				return super.next();
+//				if (++i >= items.size() ) return false;
+//				Extent<N> e = items.get(i);
+//				start = e.start();
+//				end = e.end();
+//				
+//				boolean quit = false;
+//				while (++j < resizable.items.size()) {
+//					Extent<N> e2 = resizable.items.get(j);
+//					int location = math.compare(e.start(), e.end(), e2.start(), e2.end());
+//					switch (location) {
+//					case AFTER: 			continue;
+//					case BEFORE: 		
+//						j = resizable.items.size(); // Quit the loop
+//						break;
+//					
+//					case CROSS_BEFORE:	
+//						start = math.increment(end);
+//						break;
+//						
+//					case CROSS_AFTER:	
+//						item.end.set(math.max(math.decrement(start), item.start()));
+//						break;
+//						
+//					case EQUAL:	
+//					case OVERLAP:	
+//						toRemove.add(0, item);
+//						break;
+//						
+//					case INSIDE:
+//						MutableNumber newEnd = item.end.copy();
+//						item.end.set(math.max(math.decrement(start), item.start()));
+//						items.add(i+1, new Extent(math.create(end).increment(), newEnd));
+//					}
+//					
+//					
+//					int compare = math.compare(e.start(), e.end(), e2.start(), e2.end());
+//					switch (compare) {
+//					case AFTER: 		quit = true; break; 
+//					case EQUAL:
+//					case INSIDE:		return false;
+//					
+//					case CROSS_BEFORE: 			
+//					case CROSS_AFTER:		
+//					case OVERLAP:		
+//						if (math.contains(e, e2.start()) || math.contains(e, e2.end())) {
+//							if (defaultResizable == true) {
+//								start = math.min(e.start(), e2.start());
+//								end = math.min(e.start(), e2.start());
+//							}
+//						} 
+//						break; 
+//					}
+//					
+//					if (quit) break;
+//				}
+//				return true;
+			}
+		};
+	}
 	
 	class IndexIterator extends ImmutableIterator<N> {
 		
@@ -822,5 +920,8 @@ class SectionUnchecked<N extends Number> {
 		}
 
 	}
+
+
+	
 
 }

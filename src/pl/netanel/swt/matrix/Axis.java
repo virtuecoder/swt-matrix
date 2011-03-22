@@ -19,16 +19,17 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	final HashMap<SectionUnchecked<N>, Section<N>> sectionMap;
 	private Section[] zOrder;
 	Section<N> body, header;
-	private int autoScrollOffset;
+	private int autoScrollOffset, resizeOffset;
 	Layout layout;
 	final Listeners listeners;
+	Matrix matrix;
 	
 //	Section<N> currentSection;
 //	N currentIndex;
 
 	private ScrollBar scrollBar;
 
-//	int axisIndex;
+	int index;
 
 	
 	public Axis() {
@@ -48,6 +49,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		for (int i = 0; i < sections.length; i++) {
 			Section section = sections[i];
 			section.core.index = i;
+			section.core.axis = this;
 			this.sections.add(section);
 			this.sectionMap.put(section.core, section);
 		}
@@ -76,6 +78,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		}
 		
 		autoScrollOffset = M.AUTOSCROLL_OFFSET_Y;
+		resizeOffset = M.RESIZE_OFFSET_Y;
 		layout = new Layout(this);
 		listeners = new Listeners();
 	}
@@ -171,6 +174,13 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		this.autoScrollOffset = autoScrollOffset;
 	}
 
+	public int getResizeOffset() {
+		return resizeOffset;
+	}
+
+	public void setResizeOffset(int autoScrollOffset) {
+		this.resizeOffset = autoScrollOffset;
+	}
 	
 	/*------------------------------------------------------------------------
 	 * Non public 
@@ -263,14 +273,14 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 			Number startIndex = i == start.section.index ? start.index : math.ZERO_VALUE();
 			Number endIndex = i == end.section.index ? end.index : 
 				math.increment(section.getCount());
-			section.select(startIndex, endIndex, select);
+			section.setSelected(startIndex, endIndex, select);
 		}
 	}
 
 	void setSelected(boolean selected) {
 		for (int i = 0, imax = sections.size(); i < imax; i++) {
 			Section section = sections.get(i);
-			section.selectAll(selected);
+			section.setSelectedAll(selected);
 		}
 	}
 
@@ -278,7 +288,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	AxisItem getLastItem() {
 		for (int i = sections.size(); i-- > 0;) {
 			Section section = sections.get(i);
-			if (section.isEmpty()) continue;
+			if (section.core.isEmpty()) continue;
 			return new AxisItem(section.core, math.decrement(section.getCount()));
 		}
 		return getFirstItem();
@@ -303,7 +313,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	void setHidden(boolean hidden) {
 		for (int i = 0, imax = sections.size(); i < imax; i++) {
 			Section section = sections.get(i);
-			section.core.hideSelected(hidden);
+			section.core.setHiddenSelected(hidden);
 		}
 	}
 	

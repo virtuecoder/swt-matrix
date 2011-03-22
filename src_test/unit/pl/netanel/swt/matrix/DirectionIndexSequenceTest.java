@@ -31,15 +31,15 @@ public class DirectionIndexSequenceTest {
 		section.move(1, 2, 4);
 		DirectionIndexSequence seq = new Forward(section);
 		assertSequence("0, 3, 1, 2, 4", seq);
-		section.hide(2, 2, true);
+		section.setHidden(2, 2, true);
 		assertSequence("0, 3, 1, 4", seq);
-		section.hide(1, 1, true);
+		section.setHidden(1, 1, true);
 		assertSequence("0, 3, 4", seq);
-		section.hide(4, 4, true);
+		section.setHidden(4, 4, true);
 		assertSequence("0, 3", seq);
-		section.hide(0, 0, true);
+		section.setHidden(0, 0, true);
 		assertSequence("3", seq);
-		section.hide(3, 3, true);
+		section.setHidden(3, 3, true);
 		assertSequence("", seq);
 	}
 	
@@ -50,15 +50,15 @@ public class DirectionIndexSequenceTest {
 		section.move(1, 2, 4);
 		DirectionIndexSequence seq = new Backward(section);
 		assertSequence("4, 2, 1, 3, 0", seq);
-		section.hide(2, 2, true);
+		section.setHidden(2, 2, true);
 		assertSequence("4, 1, 3, 0", seq);
-		section.hide(1, 1, true);
+		section.setHidden(1, 1, true);
 		assertSequence("4, 3, 0", seq);
-		section.hide(4, 4, true);
+		section.setHidden(4, 4, true);
 		assertSequence("3, 0", seq);
-		section.hide(0, 0, true);
+		section.setHidden(0, 0, true);
 		assertSequence("3", seq);
-		section.hide(3, 3, true);
+		section.setHidden(3, 3, true);
 		assertSequence("", seq);
 	}
 	
@@ -70,7 +70,7 @@ public class DirectionIndexSequenceTest {
 		Forward seq = new Forward(section);
 		assertSequence("0, 3, 1, 2, 4", seq);
 
-		section.hide(2, 2, true);
+		section.setHidden(2, 2, true);
 		
 		seq.init();
 		assertTrue(seq.next(number(4)));
@@ -89,7 +89,7 @@ public class DirectionIndexSequenceTest {
 		DirectionIndexSequence seq = new Backward(section);
 		assertSequence("4, 2, 1, 3, 0", seq);
 
-		section.hide(2, 2, true);
+		section.setHidden(2, 2, true);
 		
 		seq.init();
 		assertTrue(seq.next(number(4)));
@@ -105,7 +105,7 @@ public class DirectionIndexSequenceTest {
 	public void getPosition() throws Exception {
 		SectionUnchecked section = new SectionUnchecked(int.class);
 		section.setCount(10);
-		section.hide(2, 4, true);
+		section.setHidden(2, 4, true);
 		section.move(6, 9, 3);
 		assertSequence("0, 1, 6, 7, 8, 9, 5", new Forward(section));
 		
@@ -122,12 +122,12 @@ public class DirectionIndexSequenceTest {
 		assertEquals(null, section.indexOfNotHidden(20));
 		
 		// Hide first
-		section.hide(0, 0, true);
+		section.setHidden(0, 0, true);
 		assertEquals(null, section.indexOfNotHidden(0));
 		assertEquals("0", section.indexOfNotHidden(1).toString());
 		
 		// Hide last
-		section.hide(5, 5, true);
+		section.setHidden(5, 5, true);
 		assertEquals(null, section.indexOfNotHidden(5));
 		assertEquals("4", section.indexOfNotHidden(9).toString());
 		
@@ -137,7 +137,7 @@ public class DirectionIndexSequenceTest {
 	public void getByPosition() throws Exception {
 		SectionUnchecked section = new SectionUnchecked(int.class);
 		section.setCount(10);
-		section.hide(2, 4, true);
+		section.setHidden(2, 4, true);
 		section.move(6, 9, 3);
 		assertSequence("0, 1, 6, 7, 8, 9, 5", new Forward(section));
 		
@@ -151,11 +151,11 @@ public class DirectionIndexSequenceTest {
 		assertEquals(null, section.get(20));
 		
 		// Hide first
-		section.hide(0, 0, true);
+		section.setHidden(0, 0, true);
 		assertEquals("1", section.get(0).toString());
 		
 		// Hide last
-		section.hide(5, 5, true);
+		section.setHidden(5, 5, true);
 		assertEquals("9", section.get(4).toString());
 		
 	}
@@ -163,14 +163,14 @@ public class DirectionIndexSequenceTest {
 	@Test
 	public void hide() throws Exception {
 		SectionUnchecked section = new SectionUnchecked(int.class);
-		section.hide(1, 2, true);
+		section.setHidden(1, 2, true);
 		
 		assertFalse(section.isHidden(0));
 		assertTrue(section.isHidden(1));
 		assertTrue(section.isHidden(2));
 		assertFalse(section.isHidden(3));
 		
-		section.hide(1, 1, false);
+		section.setHidden(1, 1, false);
 		assertFalse(section.isHidden(1));
 		assertTrue(section.isHidden(2));
 	}

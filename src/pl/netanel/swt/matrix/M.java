@@ -12,7 +12,7 @@ public class M {
 	static final int CELL_WIDTH = 16;			
 	static final int LINE_WIDTH = 1;
 	static final int RESIZE_OFFSET_X = 3;
-	static final int RESIZE_OFFSET_y = 2;
+	static final int RESIZE_OFFSET_Y = 2;
 	static final int AUTOSCROLL_OFFSET_X = 8;
 	static final int AUTOSCROLL_OFFSET_Y = 6;
 	static final int AUTOSCROLL_RATE = 50;
