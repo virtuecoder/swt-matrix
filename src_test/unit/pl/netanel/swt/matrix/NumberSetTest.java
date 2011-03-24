@@ -13,7 +13,7 @@ public class NumberSetTest {
 	
 	@Test
 	public void getCount() throws Exception {
-		NumberSet list = indexSet(4, 8);
+		NumberSet list = numberSet(4, 8);
 		assertEquals(5, count(list));
 		assertEquals(0, count(list, 0, 1));
 		assertEquals(0, count(list, 0, 3));
@@ -26,7 +26,7 @@ public class NumberSetTest {
 		assertEquals(5, count(list, 0, 9));
 		assertEquals(0, count(list, 9, 12));
 		
-		list = indexSet();
+		list = numberSet();
 		list.add(extent(7, 8));
 		list.add(extent(3, 4));
 		assertEquals("7-8, 3-4", list.toString());
@@ -37,17 +37,17 @@ public class NumberSetTest {
 	
 	@Test
 	public void addNotOverlap() throws Exception {
-		NumberSet set = indexSet();
+		NumberSet set = numberSet();
 		assertEquals("", set.toString());
 		
 		assertTrue(add(set, 0));
 		assertEquals("0", set.toString());
 		
-		set = indexSet();
+		set = numberSet();
 		assertTrue(add(set, 0, 2));
 		assertEquals("0-2", set.toString());
 		
-		set = indexSet();
+		set = numberSet();
 		assertTrue(add(set, 4));
 		assertEquals("4", set.toString());
 		
@@ -82,22 +82,22 @@ public class NumberSetTest {
 	
 	@Test
 	public void addSingleOverlap() throws Exception {
-		NumberSet set = indexSet(); add(set, 5, 10);
+		NumberSet set = numberSet(); add(set, 5, 10);
 		assertTrue(add(set, 4, 5));
 		assertEquals("4-10", set.toString());
 		
 		// Overlap on the left
-		set = indexSet(); add(set, 5, 10);
+		set = numberSet(); add(set, 5, 10);
 		assertTrue(add(set, 3, 7));
 		assertEquals("3-10", set.toString());
 
 		// Overlap on the right
-		set = indexSet(); add(set, 5, 10);
+		set = numberSet(); add(set, 5, 10);
 		assertTrue(add(set, 10, 12));
 		assertEquals("5-12", set.toString());
 		
 		// Overlap left and right
-		set = indexSet(); add(set, 5, 10);
+		set = numberSet(); add(set, 5, 10);
 		assertTrue(add(set, 3, 12));
 		assertEquals("3-12", set.toString());
 	}
@@ -105,36 +105,36 @@ public class NumberSetTest {
 	
 	@Test public void addMultipleOverlap() throws Exception {
 		// Overlaps two, each end in the middle
-		NumberSet set = indexSet(); add(set, 0, 4); add(set, 8, 12);
+		NumberSet set = numberSet(); add(set, 0, 4); add(set, 8, 12);
 		
 		assertTrue(add(set, 2, 10));
 		assertEquals("0-12", set.toString());
 		
 		// Overlaps two completely
-		set = indexSet(); add(set, 2, 3); add(set, 5, 6);
+		set = numberSet(); add(set, 2, 3); add(set, 5, 6);
 		
 		assertTrue(add(set, 1, 7));
 		assertEquals("1-7", set.toString());
 		
 		// Overlaps three, each in the middle
-		set = indexSet(); add(set, 0, 2); add(set, 4, 6); add(set, 8, 10); 
+		set = numberSet(); add(set, 0, 2); add(set, 4, 6); add(set, 8, 10); 
 		assertTrue(add(set, 1, 9));
 		assertEquals("0-10", set.toString());
 		
 		// Overlaps when one is adjacent 
-		set = indexSet(); add(set, 2, 4); add(set, 6, 8);  
+		set = numberSet(); add(set, 2, 4); add(set, 6, 8);  
 		assertTrue(add(set, 5, 7));
 		assertEquals("2-8", set.toString());
 
 		// Overlaps when one is adjacent 
-		set = indexSet(); add(set, 2, 4); add(set, 6, 8);  
+		set = numberSet(); add(set, 2, 4); add(set, 6, 8);  
 		assertTrue(add(set, 3, 5));
 		assertEquals("2-8", set.toString());
 	}
 
 	@Test public void removeIndex() throws Exception {
 		
-		NumberSet set = indexSet();
+		NumberSet set = numberSet();
 		
 		// Remove not existent
 		assertFalse(remove(set, 3));
@@ -164,7 +164,7 @@ public class NumberSetTest {
 	}
 	
 	@Test public void removeSingleOverlap() throws Exception {
-		NumberSet set = indexSet();
+		NumberSet set = numberSet();
 		
 		// Remove not existent
 		assertFalse(remove(set, 3, 3));
@@ -208,7 +208,7 @@ public class NumberSetTest {
 	}
 
 	@Test public void removeMultipleOverlap() throws Exception {
-		NumberSet set = indexSet(); add(set, 2, 4); add(set, 6, 8);
+		NumberSet set = numberSet(); add(set, 2, 4); add(set, 6, 8);
 		
 		// Not existent
 		assertFalse(remove(set, 5, 5));
@@ -229,17 +229,17 @@ public class NumberSetTest {
 		assertEquals("2, 8", set.toString());
 		
 		// Overlaps two completely
-		set = indexSet(); add(set, 2, 4); add(set, 6, 8);
+		set = numberSet(); add(set, 2, 4); add(set, 6, 8);
 		assertTrue(remove(set, 1, 9));
 		assertEquals("", set.toString());
 		
 		// Overlaps first in the middle  
-		set = indexSet(); add(set, 2, 4); add(set, 6, 8);  
+		set = numberSet(); add(set, 2, 4); add(set, 6, 8);  
 		assertTrue(remove(set, 3, 5));
 		assertEquals("2, 6-8", set.toString());
 
 		// Overlaps when one is adjacent 
-		set = indexSet(); add(set, 6, 8); add(set, 2, 4);   
+		set = numberSet(); add(set, 6, 8); add(set, 2, 4);   
 		assertTrue(remove(set, 5, 7));
 		assertEquals("8, 2-4", set.toString());
 		assertTrue(remove(set, 4));
@@ -247,7 +247,7 @@ public class NumberSetTest {
 	}
 	
 	@Test public void contains() throws Exception {
-		NumberSet set = indexSet(); 
+		NumberSet set = numberSet(); 
 
 		assertEquals(false, constains(set, 2));
 		assertEquals(false, constains(set, 2, 4));

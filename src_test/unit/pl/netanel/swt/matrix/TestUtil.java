@@ -28,11 +28,17 @@ public class TestUtil {
 		return new AxisItem(model.getSection(section).core, index);
 	}
 	
-	static NumberSet indexSet() {
+	static NumberSet numberSet() {
 		return new NumberSet(IntMath.getInstance());
 	}
 	
-	static NumberSet indexSet(int start, int end) {
+	static NumberSet numberSet(int n) {
+		NumberSet set = new NumberSet(IntMath.getInstance());
+		set.add(n);
+		return set;
+	}
+	
+	static NumberSet numberSet(int start, int end) {
 		NumberSet set = new NumberSet(IntMath.getInstance());
 		set.add(start, end);
 		return set;

@@ -209,6 +209,7 @@ class MatrixListener implements Listener {
 				
 				if (item2 != null && item != null) {
 					itemModified = layout.compare(item, item2) != 0;
+					last = item;
 					item = item2;
 				}
 				mouseMoveEvent = e;
@@ -274,9 +275,9 @@ class MatrixListener implements Listener {
 					}
 					addEvent(SWT.Resize);
 				}
-//				else if (moving && !instantMoving) {
-//					reorder();
-//				}
+				else if (moving && !instantMoving) {
+					reorder();
+				}
 				moving = resizing = mouseDown = false;
 				lastRange = null;
 				if (cursor == Resources.getCursor(SWT.CURSOR_HAND)) {
@@ -306,7 +307,7 @@ class MatrixListener implements Listener {
 
 				// Move item
 				if (moving && instantMoving && itemModified) {
-//					reorder();
+					reorder();
 				} 
 			}
 		}
@@ -389,10 +390,12 @@ class MatrixListener implements Listener {
 			axis.listeners.add(event);
 		}
 
-//		boolean reorder() {
+		void reorder() {
+			if (layout.reorder(last, item)) {
 //			AxisItem item2 = layout.reorder(item);
 //			if (item2 != null) {
-//				// Move the cursor if outside of the moved column
+//				/* Move the cursor if it is outside of the moved column 
+//				 (happens when items have different widths) */
 //				int direction = axis.comparePosition(item2, item);
 //				int cellDistance = layout.getCellDistance(item2);
 //				Point p = null;
@@ -416,11 +419,10 @@ class MatrixListener implements Listener {
 //				}
 //				addEvent(SWT.Move);
 //				axis.scroll();
-//				matrix.redraw();
+				matrix.redraw();
 //				return true;
-//			}
-//			return false;
-//		}
+			}
+		}
 		
 		public void pack() {
 //			if (resizeItem == null) return;

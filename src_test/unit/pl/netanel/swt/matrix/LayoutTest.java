@@ -10,7 +10,7 @@ import pl.netanel.swt.matrix.Layout;
 import pl.netanel.swt.matrix.Section;
 
 
-public class LayoutComputeTest {
+public class LayoutTest {
 	
 	@Test(expected = NullPointerException.class)
 	public void constructorNull() throws Exception {
@@ -222,6 +222,58 @@ public class LayoutComputeTest {
 		assertEquals("5", layout.getItemByDistance(449).index.toString());
 		
 	}
+
+//	@Test
+//	public void navigationDisabled() throws Exception {
+//		Layout layout = new Layout(new Axis());
+//		layout.setViewportSize(1000);
+//		
+//		layout.axis.getHeader().setNavigationEnabled(false);
+//		layout.compute();
+//		assertEquals(layout.axis.getBody(), layout.current.section);
+//	}
+	
+	@Test
+	public void reorderBeforeStart() throws Exception {
+		Layout layout = new Layout(new Axis(new Section(int.class)));
+		layout.setViewportSize(1000);
+		
+		Section body = layout.axis.getBody();
+		body.setCount(10);
+		body.setDefaultCellWidth(100);
+		body.setSelected(1, 1, true);
+		
+		layout.compute();
+		
+		assertEquals(0, layout.start.index);
+
+		layout.reorder(item(body, 1), item(body, 0));
+		assertEquals(1, layout.start.index);
+		
+		layout.reorder(item(body, 1), item(body, 0));
+		assertEquals(0, layout.start.index);
+		
+		layout.reorder(item(body, 1), item(body, 9));
+		assertEquals(0, layout.start.index);
+	}
+	
+	@Test
+	public void reorderScattered() throws Exception {
+		Layout layout = new Layout(new Axis(new Section(int.class)));
+		layout.setViewportSize(1000);
+		
+		Section body = layout.axis.getBody();
+		body.setCount(5);
+		body.setDefaultCellWidth(100);
+		body.setSelected(1, 1, true);
+		body.setSelected(3, 3, true);
+		
+		layout.compute();
+		
+		layout.reorder(item(body, 1), item(body, 2));
+		assertEquals("0, 2, 1, 3, 4", indexes(layout.cellSequence(Dock.MAIN, body.core)));
+	}
+	
 	
 	
 }

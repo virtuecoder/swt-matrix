@@ -191,7 +191,9 @@ class Layout<N extends Number> {
 	int compare(AxisItem<N> item1, AxisItem<N> item2) {
 		int diff = item1.section.index - item2.section.index;
 		if (diff != 0) return diff;
-		return math.compare(item1.index, item2.index);
+		return math.compare(
+				item1.section.indexOf(item1.index), 
+				item2.section.indexOf(item2.index));
 	}
 	
 	
@@ -857,6 +859,26 @@ class Layout<N extends Number> {
 		isComputingRequired = tail.count != freezeItemCount;
 		tail.count = freezeItemCount;
 	}
-		
 
+	public boolean reorder(AxisItem<N> source, AxisItem<N> target) {
+		SectionUnchecked<N> section = source.section;
+		if (!section.equals(target.section)) return false;
+		
+		int position = compare(target, start);
+		
+		if (!section.moveSelected(source.index, target.index)) return false;
+		
+		// Adjust the scroll position if moving before the start
+		if (position <= 0) {
+			start = new AxisItem(section, section.getSelected().next());
+		} 
+		// Adjust the scroll position if moving the start
+		else if (section.isSelected(start.index)) {
+			start = new AxisItem(section, target.index);
+		}
+		
+		compute();
+		return true;
+	}
+		
 }

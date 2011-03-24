@@ -12,7 +12,7 @@ import pl.netanel.util.ImmutableIterator;
  * <img src="../../../../../javadoc/images/Section.png"/>
  * <p>
  * Index item width consists of the line width and the cell width - 
- * the line precedes the cell. The last line index equals to section.getCount().
+ * the line precedes the cell. The last line index equals to getCount().
  * If the item is moved then both the cell and the preceding line are moved.  
  * <p>
  * Item attributes include cell width, line width, moveable, resizable,
@@ -270,8 +270,8 @@ class SectionUnchecked<N extends Number> {
 	}
 	
 	/**
-	 * Returns the default width of cells in this section.
-	 * @return default width of cells in this section.
+	 * Returns the default width of cells in this 
+	 * @return default width of cells in this 
 	 */
 	public int getDefaultCellWidth() {
 		return cellWidth.getDefault();
@@ -288,8 +288,8 @@ class SectionUnchecked<N extends Number> {
 	}
 	
 	/**
-	 * Returns the default width of lines in this section.
-	 * @return default width of lines in this section.
+	 * Returns the default width of lines in this 
+	 * @return default width of lines in this 
 	 */
 	public int getDefaultLineWidth() {
 		return lineWidth.getDefault();
@@ -695,7 +695,7 @@ class SectionUnchecked<N extends Number> {
 	 */ 
 	public void setSelected(N start, N end, boolean state) {
 		selection.change(start, end, state);
-		if (axis != null) {
+		if (axis != null && axis.matrix != null) {
 			if (axis.index == 0) {
 				for (Zone zone: axis.matrix.model) {
 					if (zone.section0.equals(this)) {
@@ -919,6 +919,24 @@ class SectionUnchecked<N extends Number> {
 			return seq.index();
 		}
 
+	}
+
+	/**
+	 * Assumption: 
+	 * @param source
+	 * @param target
+	 * @return 
+	 */
+	boolean moveSelected(N source, N target) {
+		assert selection.contains(source);
+		if (selection.isEmpty() || selection.contains(target)) return false;
+			
+		int position = math.compare(indexOf(target), indexOf(source));
+		if (position == 0) return false;
+		N index = position < 0 ? target : math.increment(target);
+
+		order.move(selection, index);
+		return true;
 	}
 
 

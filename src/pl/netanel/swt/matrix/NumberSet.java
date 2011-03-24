@@ -198,7 +198,7 @@ class NumberSet<N extends Number> {
 				item.end.set(math.max(math.decrement(start), item.start()));
 				items.add(i+1, new Extent(math.create(end).increment(), newEnd));
 			}
-			modified = modified || location >= OVERLAP; 
+			modified = location >= OVERLAP || modified; 
 		}
 		for (Extent<N> e: toRemove) {
 			items.remove(e); 
@@ -216,7 +216,7 @@ class NumberSet<N extends Number> {
 			return removed;
 		}
 		for (Extent<N> e: set.items) {
-			removed = removed || remove(e);
+			removed = remove(e) || removed;
 		}
 		if (removed) modCount++;
 		return removed;
@@ -306,5 +306,16 @@ class NumberSet<N extends Number> {
 		}
 		return -1;
 	}
-	
+
+	N firstExcluded(N n) {
+		N n2 = n;
+		again: {
+		for (Extent<N> e: items) {
+			if (math.contains(e, n2)) {
+				n2 = math.increment(e.end());
+				if (sorted) break; else break again;
+			}
+		}}
+		return n2;
+	}
 }

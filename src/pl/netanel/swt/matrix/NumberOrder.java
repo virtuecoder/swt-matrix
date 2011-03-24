@@ -68,6 +68,41 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 		items.add(i, new Extent(math.create(start), math.create(end)));
 		mergeAdjacentExtents();
 	}
+	
+	/**
+	 * Moves the given set of numbers before the given index
+	 * order: 0 1 2 3 4, move(set(1 3), 1) -> 0 1 3 2 4
+	 * @param set
+	 * @param target
+	 */
+	public void move(NumberSet<N>set, N target) {
+		N target2 = set.firstExcluded(target);
+		assert !set.contains(target2); 
+		
+		removeAll(set);
+		
+		// Find the position i to insert
+		int i = 0;
+		for (; i < items.size(); i++) {
+			Extent<N> e = items.get(i);
+			if (math.contains(e.start(), e.end(), target2)) {
+				if (math.compare(target2, e.start()) == 0) {
+					break;
+				} 
+				else {
+					MutableNumber end2 = math.create(e.end);
+					e.end.set(target2).decrement();
+					items.add(++i, new Extent(math.create(target2), end2));
+					break;
+				}
+			}
+		}
+
+		for (Extent<N> e: set.items) {
+			items.add(i++, new Extent(math.create(e.start), math.create(e.end)));
+		}
+		mergeAdjacentExtents();
+	}
 
 	private void mergeAdjacentExtents() {
 		for (int i = items.size(); i-- > 1;) {

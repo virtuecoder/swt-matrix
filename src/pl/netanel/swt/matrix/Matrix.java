@@ -96,6 +96,8 @@ public class Matrix extends Canvas {
 		axis1 = model.axis1;
 		layout0 = model.axis0.layout;
 		layout1 = model.axis1.layout;
+		axis0.setMatrix(this, 0);
+		axis1.setMatrix(this, 1);
 		
 		Zone body = model.getBody();
 //		if (body.getDefaultBackground() == null) {
@@ -140,6 +142,7 @@ public class Matrix extends Canvas {
 		paintDock(gc, Dock.MAIN, Dock.HEAD);
 		paintDock(gc, Dock.HEAD, Dock.HEAD);
 		
+		gc.setClipping((Rectangle) null);
 		if (layout0.current != null && layout1.current != null) {
 			Bound b0 = layout0.getBound(layout0.current);
 			Bound b1 = layout1.getBound(layout1.current);

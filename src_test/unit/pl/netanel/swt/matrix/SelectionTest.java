@@ -41,5 +41,4 @@ public class SelectionTest {
 		body.setSelected(0, 0, true);
 		assertEquals(10, matrix.getZone(Zone.BODY).getSelectedCount().intValue());
 	}
-	
 }
