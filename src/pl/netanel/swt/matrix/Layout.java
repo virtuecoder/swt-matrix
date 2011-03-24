@@ -403,8 +403,8 @@ class Layout<N extends Number> {
 	 * @return
 	 */
 	public AxisItem getResizeItem(int distance) {
-		Cache cache = getCache(distance);
 		int resizeMargin = axis.getResizeOffset();
+		Cache cache = getCache(distance - resizeMargin);
 			
 		for (int i = 1; i < cache.lines.size(); i++) {
 			Bound bound = cache.lines.get(i);

@@ -317,7 +317,10 @@ class MatrixListener implements Listener {
 		}
 		
 		private boolean isInHeader() {
-			return zone != null && zone.is(headerId);
+			if (zone == null) return false;
+			Axis axis2 = axis.index == 0 ? matrix.axis1 : matrix.axis0;
+			return axis2.getHeader().core.equals(
+					axis.index == 1 ? zone.section0 : zone.section1);
 		}
 
 		public void setCurrentItem() {
@@ -339,7 +342,7 @@ class MatrixListener implements Listener {
 		
 		public void setSelected(int commandId) {
 			if (last == null || item == null) return;
-//			if (last.section != item.section) return;
+			if (last.section != item.section) return;
 			
 			if (commandId == SELECT_COLUMN || commandId == SELECT_COLUMN2 ||
 				commandId == SELECT_ROW || commandId == SELECT_ROW2) {
@@ -610,7 +613,6 @@ class MatrixListener implements Listener {
 //		System.out.println("execute " + commandId);
 		switch (commandId) {
 		case RESIZE_PACK:		state0.pack(); state1.pack(); break;
-		case SELECT_ALL:		matrix.model.setSelected(true); matrix.redraw(); return;
 		}
 		
 		if (!isSelectable()) return;
@@ -624,6 +626,7 @@ class MatrixListener implements Listener {
 		backupRestoreSelection(commandId);
 		
 		switch (commandId) {
+		case SELECT_ALL:		matrix.model.setSelected(true); matrix.redraw(); return;
 		// Header Selection
 		case SELECT_ROW:		case SELECT_ROW2:		state0.setSelected(commandId); break;	
 		case SELECT_COLUMN: 	case SELECT_COLUMN2: 	state1.setSelected(commandId); break;

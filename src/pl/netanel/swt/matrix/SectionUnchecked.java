@@ -921,12 +921,6 @@ class SectionUnchecked<N extends Number> {
 
 	}
 
-	/**
-	 * Assumption: 
-	 * @param source
-	 * @param target
-	 * @return 
-	 */
 	boolean moveSelected(N source, N target) {
 		assert selection.contains(source);
 		if (selection.isEmpty() || selection.contains(target)) return false;

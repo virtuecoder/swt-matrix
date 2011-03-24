@@ -43,6 +43,12 @@ public class Section<N extends Number> {
 		this.core = new SectionUnchecked(Math.getInstance(int.class));
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Section)) return false;
+		return core.equals(((Section) obj).core);
+	}
+	
 	/**
 	 * Constructs a section indexed by the given sub-class of {@link Number}.
 	 * 
