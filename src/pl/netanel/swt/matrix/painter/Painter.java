@@ -10,10 +10,21 @@ import pl.netanel.swt.Resources;
 
 
 /**
- * Base class for painting something within the given boundaries to the <code>paint()</code> method.
+ * Painter performs drawing operations on the given GC instance.
+ * They are used for the whole matrix background painting as well as for the individual cells and lines. 
  * <p> 
- * It's used for both lines and cells.
- *  
+ * The {@link #paint(int, int, int, int)} method is called in the loop to paint cells and lines.
+ * So it is recommended to take as many operations out of it as possible in order to optimize 
+ * the graphics performance. All the repetitive operations that are common to all elements, 
+ * like setting a font or a background color can be done in the {@link #init()} method, which is called only once.
+ * <p>
+ * It's also a good practice to bring any of the GC attributes modified in {@link #init()} 
+ * back to the default value to provide a clean start for a next painter. It can be odne in the {@link #clean()} method.  
+ * <p>
+ * This optimization is possible due to the fact that the {@link #paint(int, int, int, int)} method is called 
+ * for all the cell or lines before the next painter is executed instead of executing all painters 
+ * for a given cell before going to the next cell.   
+ * 
  * @author jacek.p.kolodziejczyk@gmail.com
  * @created 2010-06-13
  */
@@ -24,9 +35,8 @@ public abstract class Painter {
 //	protected SizeMeter meter;
 
 	/**
-	 * To be called before any painting started.
 	 * Initializes the GC property of the receiver to be used by its other methods.
-	 * To change the painter initialization behavior override the protected <code>init()</code> method. 
+	 * To change the painter initialization behavior override its protected {@link #init()} method. 
 	 * @param gc
 	 */
 	public final void init(GC gc) {

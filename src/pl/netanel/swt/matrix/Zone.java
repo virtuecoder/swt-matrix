@@ -59,7 +59,7 @@ public class Zone {
 	
 	private final int type;
 	final Listeners listeners;
-	private boolean isSelectionEnabled;
+	boolean selectionEnabled;
 	
 	private Color defaultBackground, defaultForeground, selectionBackground, selectionForeground;
 	private final Rectangle bounds;
@@ -72,7 +72,7 @@ public class Zone {
 		linePainters0.add(new LinePainter());
 		linePainters1.add(new LinePainter());
 		listeners = new Listeners();
-		isSelectionEnabled = true;
+		selectionEnabled = true;
 		bounds = new Rectangle(0, 0, 0, 0);
 	}
 
@@ -122,13 +122,25 @@ public class Zone {
 		listeners.remove(type, listener);
 	}
 
+	/**
+     * Returns <code>true</code> if selection is enabled, false otherwise.
+     * @return the selection enabled state
+	 */
 	public boolean isSelectionEnabled() {
-		return isSelectionEnabled;
+		return selectionEnabled;
 	}
 
+	/**
+     * Enables cell selection if the argument is <code>true</code>, 
+     * or disables it otherwise.
+     *
+	 * @param selectionEnabled the new selection ability state.
+	 */
 	public void setSelectionEnabled(boolean isSelectionEnabled) {
-		this.isSelectionEnabled = isSelectionEnabled;
-		cellSelection.clear();
+		if (isSelectionEnabled == false) {
+			cellSelection.clear();
+		}
+		this.selectionEnabled = isSelectionEnabled;
 	}
 
 	
@@ -142,14 +154,14 @@ public class Zone {
 	 * @return {@link BigIntegerNumber} with the count of selected cells
 	 */
 	public BigInteger getSelectionCount() {
-		if (!isSelectionEnabled()) {
+		if (!selectionEnabled) {
 			return BigInteger.ZERO;
 		}
 		return cellSelection.getCount().value;
 	}
 	
-	public CellSequence getSelection() {
-		return new CellSequence(cellSelection.copy());
+	public IndexPairSequence getSelection() {
+		return new IndexPairSequence(cellSelection.copy());
 	}
 
 	public String getText(Number index0, Number index1) {
@@ -227,6 +239,7 @@ public class Zone {
 			Number start0, Number end0,
 			Number start1, Number end1, boolean selected) {
 		
+		if (!selectionEnabled) return;
 		if (selected) {
 			cellSelection.add(start0, end0, start1, end1);
 		} else {
@@ -235,6 +248,7 @@ public class Zone {
 	}
 
 	public void setSelected(boolean selected) {
+		if (!selectionEnabled) return;
 		if (selected) {
 			cellSelection.add(
 					section0.math.ZERO_VALUE(), section0.math.decrement(section0.getCount()), 

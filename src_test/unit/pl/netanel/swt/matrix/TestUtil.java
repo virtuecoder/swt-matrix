@@ -109,6 +109,20 @@ public class TestUtil {
     		}
         }
 	}
+	
+	public static void showMatrix(Matrix matrix) {
+		Shell shell = matrix.getShell();
+		shell.setLayout(new FillLayout());
+		shell.setBounds(400, 300, 600, 400);
+		shell.open();
+		Display display = shell.getDisplay();
+		
+		while (!shell.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+	}
 
 
 

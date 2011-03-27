@@ -31,7 +31,8 @@ import pl.netanel.util.Preconditions;
  * current one, as opposed to each section having its own current item.
  * 
  * 
- * @author Jacek Kolodziejczyk created 02-03-2011
+ * @author Jacek Kolodziejczyk 
+ * @created 02-03-2011
  */
 public class Section<N extends Number> {
 	SectionUnchecked<N> core;

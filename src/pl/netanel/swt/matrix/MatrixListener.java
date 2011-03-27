@@ -85,7 +85,7 @@ class MatrixListener implements Listener {
 	};
 
 	Matrix matrix;
-	ArrayList<Binding> bindings;
+	ArrayList<GestureBinding> bindings;
 	AxisListener state0, state1;
 	boolean instantMoving, ctrlSelectionMoving;
 	Zone zone;
@@ -104,7 +104,7 @@ class MatrixListener implements Listener {
 		state0 = new AxisListener(0);
 		state1 = new AxisListener(1);
 		
-		bindings = new ArrayList<Binding>();
+		bindings = new ArrayList<GestureBinding>();
     	bindCommands();
 
 		// Remove previous listener 
@@ -160,7 +160,7 @@ class MatrixListener implements Listener {
 //				matrix.t = System.nanoTime();
 
 				// Find a command for the current zone or otherwise a command for any zone
-				for (Binding b: bindings) {
+				for (GestureBinding b: bindings) {
 					if (b.isMatching(e, zone)) {
 						executeCommand(b.commandId);
 						/* does not quit loop because can execute 
@@ -569,32 +569,32 @@ class MatrixListener implements Listener {
 		bindKey(M.SELECT_END, SWT.MOD1 | SWT.MOD2 | SWT.END);
 		
 		// Mouse current item 
-		bindings.add(new Binding(M.CURRENT_LOCATION, SWT.MouseDown, 1, Zone.BODY));
-		bindings.add(new Binding(M.CURRENT_LOCATION2, SWT.MouseDown, SWT.MOD1 | 1, Zone.BODY));
+		bindings.add(new GestureBinding(M.CURRENT_LOCATION, SWT.MouseDown, 1, Zone.BODY));
+		bindings.add(new GestureBinding(M.CURRENT_LOCATION2, SWT.MouseDown, SWT.MOD1 | 1, Zone.BODY));
 		
 		// Mouse selection
 		/* 1 is for e.button == 1 */
-		bindings.add(new Binding(M.SELECT_TO_LOCATION, SWT.MouseDown, SWT.MOD2 | 1, Zone.BODY));
-		bindings.add(new Binding(M.SELECT_TO_LOCATION2, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1, Zone.BODY));
-		bindings.add(new Binding(M.SELECT_TO_LOCATION, SWT.MouseMove, SWT.BUTTON1, Zone.BODY));
-		bindings.add(new Binding(M.SELECT_TO_LOCATION2, SWT.MouseMove, SWT.MOD1 + SWT.BUTTON1, Zone.BODY));
-		bindings.add(new Binding(M.SELECT_ROW, SWT.MouseDown, 1, Zone.ROW_HEADER));
-		bindings.add(new Binding(M.SELECT_ROW2, SWT.MouseDown, SWT.MOD1 | 1, Zone.ROW_HEADER));
-		bindings.add(new Binding(M.SELECT_COLUMN, SWT.MouseDown, 1, Zone.COLUMN_HEADER));
-		bindings.add(new Binding(M.SELECT_COLUMN2, SWT.MouseDown, SWT.MOD1 | 1, Zone.COLUMN_HEADER));
-		bindings.add(new Binding(M.SELECT_TO_ROW, SWT.MouseDown, SWT.MOD2 | 1, Zone.ROW_HEADER));
-		bindings.add(new Binding(M.SELECT_TO_ROW2, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1, Zone.ROW_HEADER));
-		bindings.add(new Binding(M.SELECT_TO_ROW, SWT.MouseMove, SWT.BUTTON1, Zone.ROW_HEADER));
-		bindings.add(new Binding(M.SELECT_TO_ROW2, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1, Zone.ROW_HEADER));
-		bindings.add(new Binding(M.SELECT_TO_COLUMN, SWT.MouseDown, SWT.MOD2 | 1, Zone.COLUMN_HEADER));
-		bindings.add(new Binding(M.SELECT_TO_COLUMN2, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1, Zone.COLUMN_HEADER));
-		bindings.add(new Binding(M.SELECT_TO_COLUMN, SWT.MouseMove, SWT.BUTTON1, Zone.COLUMN_HEADER));
-		bindings.add(new Binding(M.SELECT_TO_COLUMN2, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1, Zone.COLUMN_HEADER));
+		bindings.add(new GestureBinding(M.SELECT_TO_LOCATION, SWT.MouseDown, SWT.MOD2 | 1, Zone.BODY));
+		bindings.add(new GestureBinding(M.SELECT_TO_LOCATION2, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1, Zone.BODY));
+		bindings.add(new GestureBinding(M.SELECT_TO_LOCATION, SWT.MouseMove, SWT.BUTTON1, Zone.BODY));
+		bindings.add(new GestureBinding(M.SELECT_TO_LOCATION2, SWT.MouseMove, SWT.MOD1 + SWT.BUTTON1, Zone.BODY));
+		bindings.add(new GestureBinding(M.SELECT_ROW, SWT.MouseDown, 1, Zone.ROW_HEADER));
+		bindings.add(new GestureBinding(M.SELECT_ROW2, SWT.MouseDown, SWT.MOD1 | 1, Zone.ROW_HEADER));
+		bindings.add(new GestureBinding(M.SELECT_COLUMN, SWT.MouseDown, 1, Zone.COLUMN_HEADER));
+		bindings.add(new GestureBinding(M.SELECT_COLUMN2, SWT.MouseDown, SWT.MOD1 | 1, Zone.COLUMN_HEADER));
+		bindings.add(new GestureBinding(M.SELECT_TO_ROW, SWT.MouseDown, SWT.MOD2 | 1, Zone.ROW_HEADER));
+		bindings.add(new GestureBinding(M.SELECT_TO_ROW2, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1, Zone.ROW_HEADER));
+		bindings.add(new GestureBinding(M.SELECT_TO_ROW, SWT.MouseMove, SWT.BUTTON1, Zone.ROW_HEADER));
+		bindings.add(new GestureBinding(M.SELECT_TO_ROW2, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1, Zone.ROW_HEADER));
+		bindings.add(new GestureBinding(M.SELECT_TO_COLUMN, SWT.MouseDown, SWT.MOD2 | 1, Zone.COLUMN_HEADER));
+		bindings.add(new GestureBinding(M.SELECT_TO_COLUMN2, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1, Zone.COLUMN_HEADER));
+		bindings.add(new GestureBinding(M.SELECT_TO_COLUMN, SWT.MouseMove, SWT.BUTTON1, Zone.COLUMN_HEADER));
+		bindings.add(new GestureBinding(M.SELECT_TO_COLUMN2, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1, Zone.COLUMN_HEADER));
 		// Select all on top left click
-		bindings.add(new Binding(M.SELECT_ALL, SWT.MouseDown, 1, Zone.TOP_LEFT));
+		bindings.add(new GestureBinding(M.SELECT_ALL, SWT.MouseDown, 1, Zone.TOP_LEFT));
 		
-		bindings.add(new Binding(M.RESIZE_PACK, SWT.MouseDoubleClick, 1, Zone.ROW_HEADER));
-		bindings.add(new Binding(M.RESIZE_PACK, SWT.MouseDoubleClick, 1, Zone.COLUMN_HEADER));
+		bindings.add(new GestureBinding(M.RESIZE_PACK, SWT.MouseDoubleClick, 1, Zone.ROW_HEADER));
+		bindings.add(new GestureBinding(M.RESIZE_PACK, SWT.MouseDoubleClick, 1, Zone.COLUMN_HEADER));
 		
 		// Modification
 		bindKey(M.HIDE, SWT.MOD3 | SWT.DEL);
@@ -602,7 +602,7 @@ class MatrixListener implements Listener {
 	}
 
 	protected void bindKey(int commandId, int condition) {
-		bindings.add(new Binding(commandId, SWT.KeyDown, condition));
+		bindings.add(new GestureBinding(commandId, SWT.KeyDown, condition));
 	}
 	
 	private boolean isSelectable() {
@@ -697,7 +697,7 @@ class MatrixListener implements Listener {
 		{
 			// Backup the zones cell selection
 			for (Zone zone: matrix.model) {
-				if (zone.isSelectionEnabled()) {
+				if (zone.selectionEnabled) {
 					zone.backupSelection();
 				}
 			}
@@ -757,8 +757,8 @@ class MatrixListener implements Listener {
 	 * @param eventType SWT event type
 	 * @return
 	 */
-	public Binding getBinding(int commandId, int eventType) {
-		for (Binding b: bindings) {
+	public GestureBinding getBinding(int commandId, int eventType) {
+		for (GestureBinding b: bindings) {
 			if (b.commandId == commandId && b.eventType == eventType) {
 				return b;
 			}

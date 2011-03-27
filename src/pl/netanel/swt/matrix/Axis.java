@@ -12,6 +12,15 @@ import org.eclipse.swt.widgets.ScrollBar;
 import pl.netanel.swt.Listeners;
 import pl.netanel.util.Preconditions;
 
+/**
+ * <dl>
+ * <dt><b>Events:</b></dt>
+ * <dd>Selection, DefaultSelection</dd>
+ * </dl>
+ *
+ * @author Jacek
+ * @created 27-03-2011
+ */
 public class Axis<N extends Number> implements Iterable<Section<N>> {
 	
 	final Math<N> math;
@@ -367,5 +376,9 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 			i++;
 			return true;
 		}
+	}
+
+	public Bound getCellBound(Section<N> section, N index) {
+		return layout.getBound(new AxisItem<N>(section.core, index)).copy();
 	}
 }

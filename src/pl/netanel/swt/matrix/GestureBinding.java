@@ -5,18 +5,18 @@ import org.eclipse.swt.widgets.Event;
 import pl.netanel.util.Preconditions;
 
 
-public class Binding {
+public class GestureBinding {
 	int commandId;
 	int eventType;
 	int key;
 	int zoneId;
 	boolean enabled;
 
-	public Binding(int commandId, int eventType, int eventCode) {
+	public GestureBinding(int commandId, int eventType, int eventCode) {
 		this(commandId, eventType, eventCode, Zone.ANY);
 	}
 	
-	public Binding(int commandId, int eventType, int code, int zoneId) {
+	public GestureBinding(int commandId, int eventType, int code, int zoneId) {
 		Preconditions.checkArgument(commandId != 0, "CommandId cannot equal to zero");
 		this.commandId = commandId;
 		this.eventType = eventType;

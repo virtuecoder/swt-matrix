@@ -1,6 +1,12 @@
 package pl.netanel.swt.matrix;
 
-class Bound {
+/**
+ * Contains an axis item's width and a calculated distance 
+ * from the beginning of the viewport.
+ * 
+ * @author Jacek Kolodziejczyk created 25-03-2011
+ */
+public class Bound {
 	public int distance, width;
 
 	public Bound() {}
@@ -11,6 +17,10 @@ class Bound {
 	
 	@Override
 	public String toString() {
-		return "Bound [distance=" + distance + ", width=" + width + "]";
+		return "[" + distance + ", " + width + "]";
+	}
+	
+	public Bound copy() {
+		return new Bound(distance, width);
 	}
 }

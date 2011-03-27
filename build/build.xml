@@ -1,5 +1,46 @@
 <project name="Matrix" default="ftp" basedir=".">
-
+	<property name="version" value="0.01" />
+	<property name="local_website" value="c:\dev\wamp\www\netanel15\swt-matrix" />
+	
+  <!--target name="mysql" description="update joomla backend">
+  	<loadfile srcfile="${src.file}" property="${src.file.contents}">
+  	  <filterchain>
+  	    <filterreader classname="org.apache.tools.ant.filters.StripLineBreaks"/>
+  	  </filterchain>
+  	</loadfile>
+  	
+  	<echo file="snippets.sql">
+  		update jos_content set introtext = "fasfas" where id = 11; 
+      commit;
+		</echo>
+  	<sql 
+  		  driver="com.mysql.jdbc.Driver"
+  	    url="jdbc:mysql://localhost:3306/netanel15"
+  	    userid="root"
+  	    password=""
+        classpath="C:\Dev\Java\java_lib\mysql-connector-java-5.1.8\mysql-connector-java-5.1.8-bin.jar"
+  		  print="true"
+  		  src="snippets.sql"
+  		>
+  	</sql>
+  	
+	</target-->
+	<target name="local website">
+		<delete includeEmptyDirs="true">
+		  <fileset dir="${local_website}\snippets" includes="*/**"/>
+    </delete>
+		<copy todir="${local_website}\snippets">
+      <fileset dir="../src_demo/pl/netanel/swt/matrix/snippets" includes="*"/>
+    </copy>
+		
+		<delete includeEmptyDirs="true">
+      <fileset dir="${local_website}\JAVADOC" includes="*/**"/>
+    </delete>
+		<copy todir="${local_website}\javadoc">
+      <fileset dir="../javadoc" includes="*"/>
+    </copy>
+	</target>
+	
 	<target name="ftp" description="copy all project files to ftp site">
 		<zip destfile="matrix.zip"
 		  basedir=".."

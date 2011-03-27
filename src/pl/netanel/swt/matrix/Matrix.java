@@ -1,5 +1,6 @@
 package pl.netanel.swt.matrix;
 
+import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -21,8 +22,22 @@ import pl.netanel.swt.matrix.painter.BorderPainter;
 import pl.netanel.swt.matrix.painter.Painter;
 import pl.netanel.swt.matrix.painter.Painters;
 
-
-public class Matrix extends Canvas {
+/**
+ * The main responsibility of this class is to draw a two dimensional 
+ * grid of cells and respond to  the user generated events. 
+ * This is the main class in the package.
+ *
+ * <dl>
+ * <dt><b>Styles:</b></dt>
+ * <dd>SWT.SINGLE, SWT.MULTI, SWT.NO_FOCUS, SWT.CHECK, SWT.VIRTUAL</dd>
+ * <dt><b>Events:</b></dt>
+ * <dd>Selection, DefaultSelection</dd>
+ * </dl>
+ * 
+ * @author Jacek
+ * @created 27-03-2011
+ */
+public class Matrix extends Canvas implements Iterable<Zone>{
 
 	MatrixModel model;
 	Axis axis0, axis1;
@@ -115,7 +130,7 @@ public class Matrix extends Canvas {
 	private void selectCurrent() {
 		layout0.compute();
 		layout1.compute();
-		if (model.getBody().isSelectionEnabled() && layout0.current != null && layout1.current != null) {
+		if (layout0.current != null && layout1.current != null) {
 			Zone zone = model.getZone(layout0.current.section, layout1.current.section);
 			Number index0 = layout0.current.index;
 			Number index1 = layout1.current.index;
@@ -295,11 +310,6 @@ public class Matrix extends Canvas {
 		area = getClientArea();
 	}
 
-	public MatrixModel getModel() {
-		return model;
-	}
-	
-	
 	public Axis getAxis0() {
 		return axis0;
 	}
@@ -394,9 +404,9 @@ public class Matrix extends Canvas {
 		redraw();
 	}
 
-	
-	
-
-	
+	@Override
+	public Iterator<Zone> iterator() {
+		return model.iterator();
+	}
 	
 }

@@ -526,7 +526,7 @@ public class CellSetTest {
 	private void assertInSequence(String expected) {
 		String[] cells = expected.split(", "); if (cells[0].equals("")) cells = new String[0];
 		
-		CellSequence seq = new CellSequence(set);
+		IndexPairSequence seq = new IndexPairSequence(set);
 		int count = 0;
 		for (seq.init(); seq.next(); count++) {
 			String cell = seq.index0.toString() + ":" + seq.index1.toString();

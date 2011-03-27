@@ -1,4 +1,4 @@
-package pl.netanel.swt.matrix.snippets;
+package usecase;
 
 import java.math.BigInteger;
 

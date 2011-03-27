@@ -16,7 +16,7 @@ package pl.netanel.swt.matrix;
  * @see Sequence
  * @author Jacek created 21-02-2011
  */
-public class CellSequence implements Sequence {
+public class IndexPairSequence implements Sequence {
 	CellSet set;
 	int i, size;
 	Extent e0;
@@ -24,7 +24,7 @@ public class CellSequence implements Sequence {
 	MutableNumber index0, index1;
 	
 	
-	public CellSequence(CellSet set) {
+	public IndexPairSequence(CellSet set) {
 		this.set = set;
 	}
 	

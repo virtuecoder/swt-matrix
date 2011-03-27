@@ -88,6 +88,7 @@ class MatrixModel implements Iterable<Zone> {
 		Section body1 = axis1.getBody();
 		if (section0.equals(header0) && section1.equals(header1)) {
 			zone = new Zone(section0, section1, Zone.TOP_LEFT) {
+				@Override
 				public String getText(Number index0, Number index1) {
 					return null;
 				};
@@ -95,6 +96,7 @@ class MatrixModel implements Iterable<Zone> {
 		} else {
 			if (section0.equals(body0) && section1.equals(header1)) {
 				zone = new Zone(section0, section1, Zone.ROW_HEADER) {
+					@Override
 					public String getText(Number index0, Number index1) {
 						return index0.toString();
 					};
@@ -102,6 +104,7 @@ class MatrixModel implements Iterable<Zone> {
 			}
 			else if (section0.equals(header0) && section1.equals(body1)) {
 				zone = new Zone(section0, section1, Zone.COLUMN_HEADER) {
+					@Override
 					public String getText(Number index0, Number index1) {
 						return index1.toString();
 					};
@@ -235,7 +238,7 @@ class MatrixModel implements Iterable<Zone> {
 		seq.init(start0, end0, start1, end1);
 		while (seq.next()) {
 			Zone zone = getZone(seq.section0, seq.section1);
-			if (zone.isSelectionEnabled()) {
+			if (zone.selectionEnabled) {
 				zone.setSelected(seq.start0.getValue(), seq.end0.getValue(), seq.start1.getValue(), seq.end1.getValue(), selected);
 			}	
 		}

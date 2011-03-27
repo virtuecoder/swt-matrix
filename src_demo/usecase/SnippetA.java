@@ -1,4 +1,4 @@
-package pl.netanel.swt.matrix.snippets;
+package usecase;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
