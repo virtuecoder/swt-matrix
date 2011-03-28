@@ -60,7 +60,7 @@ class TextPainter extends Painter {
 	 * is constant for a given font.
 	 */
 	@Override
-	public void paint(int x, int y, int width, int height) {
+	public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 		// It is impossible to print anything when cell is to small 
 		if (width < 4 || height < 4) return;
 		

@@ -22,7 +22,7 @@ class BackgroundPainter extends Painter {
 	}
 
 	@Override
-	public void paint(int x, int y, int width, int height) {
+	public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 		gc.fillRectangle(x, y, width, height);
 	}
 	

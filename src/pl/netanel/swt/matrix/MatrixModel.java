@@ -42,8 +42,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 					if (zone.painter.children.isEmpty()) {
 						zone.painter.add(new ModelPainter(zone));
 						Color color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
-						zone.painter.add(new LinePainter("row lines", Painter.SCOPE_ROW_LINES, color ));
-						zone.painter.add(new LinePainter("column lines", Painter.SCOPE_COLUMN_LINES, color));
+						zone.painter.add(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color ));
+						zone.painter.add(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
 					}
 				}
 				else if (section0.equals(header0) || section1.equals(header1)) {
@@ -121,8 +121,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		if (zone.painter.children.isEmpty()) {
 			zone.painter.add(new ModelPainter(zone));
 			final Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
-			zone.painter.add(new LinePainter("row lines", Painter.SCOPE_ROW_LINES, color));
-			zone.painter.add(new LinePainter("column lines", Painter.SCOPE_COLUMN_LINES, color));
+			zone.painter.add(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color));
+			zone.painter.add(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
 		}
 		return zone;
 	}
@@ -136,7 +136,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		}
 		
 		@Override
-		public void paint(int x, int y, int width, int height) {
+		public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 			gc.setBackground(color);
 			gc.fillRectangle(x, y, width, height);
 		}

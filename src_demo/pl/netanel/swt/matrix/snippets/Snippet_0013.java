@@ -39,7 +39,7 @@ public class Snippet_0013 {
 		columnHeader.painter.get("column lines").setEnabled(false);
 		columnHeader.painter.add(new Painter("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(int x, int y, int width, int height) {
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
 				gc.drawRectangle(x - 1, y - 1, width + 1, height + 1);
 			}
@@ -52,7 +52,7 @@ public class Snippet_0013 {
 		body.painter.get("column lines").setEnabled(false);
 		body.painter.add(new Painter("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(int x, int y, int width, int height) {
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
 				gc.drawRectangle(x - 1, y - 1, width + 1, height + 1);
 			}

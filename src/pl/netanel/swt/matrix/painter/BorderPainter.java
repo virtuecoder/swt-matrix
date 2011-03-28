@@ -28,7 +28,7 @@ class BorderPainter extends Painter {
 	}
 	
 	@Override
-	public void paint(int x2, int y2, int width, int height) {
+	public void paint(Number index0, Number index1, int x2, int y2, int width, int height) {
 		if (width <= 0) return;
 		
 		int x = x2 + outerOffset + lineWidth / 2;

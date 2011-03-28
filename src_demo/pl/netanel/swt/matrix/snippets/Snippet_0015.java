@@ -26,11 +26,14 @@ public class Snippet_0015 {
 		
 		final Matrix matrix = new Matrix(shell, SWT.NONE);
 		
-		Section colBody = matrix.getAxis1().getBody();
+		Axis axis0 = matrix.getAxis0();
+		Axis axis1 = matrix.getAxis1();
+		
+		Section colBody = axis1.getBody();
 		colBody.setCount(4);
 		colBody.setDefaultCellWidth(50);
 		
-		Section rowBody = matrix.getAxis0().getBody();
+		Section rowBody = axis0.getBody();
 		rowBody.setCount(10);
 		
 		matrix.painter.get("focus cell").setEnabled(false);
@@ -40,29 +43,29 @@ public class Snippet_0015 {
 		body.painter.get("column lines").setEnabled(false);
 		
 		body.painter.add(0, new Painter("alter row background", Painter.SCOPE_ROW_CELLS) {
+			int matrixWidth;
 			@Override
 			protected boolean init() {
 				gc.setForeground(Resources.getColor(SWT.COLOR_RED));
 				gc.setBackground(Resources.getColor(SWT.COLOR_LIST_BACKGROUND));
 				gc.setAdvanced(true);
 				if (gc.getAdvanced()) gc.setAlpha(127);
+				matrixWidth = matrix.getClientArea().width;
 				return true;
 			}
 			@Override
 			public void clean() {
 				gc.setAlpha(255);
 			}
-
-			@Override
-			public boolean beforePaint(Number index0, Number index1) {
-				Axis axis0 = matrix.getAxis0();
-				return body.getSection0().equals(axis0.getFocusSection()) &&
-					index0.equals(axis0.getFocusIndex());
-			}
 			
 			@Override
-			public void paint(int x, int y, int width, int height) {
-				gc.fillGradientRectangle(x, y, width, height, false);
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+				Axis axis0 = matrix.getAxis0();
+				if (body.getSection0().equals(axis0.getFocusSection()) &&
+					index0.equals(axis0.getFocusIndex())) 
+				{
+					gc.fillGradientRectangle(0, y - 1, matrixWidth, height + 2, false);
+				}
 			}
 		});
 		

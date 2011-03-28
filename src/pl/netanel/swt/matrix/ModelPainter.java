@@ -54,8 +54,7 @@ class ModelPainter extends TextPainter {
 	}
 
 	@Override
-	public boolean beforePaint(Number index0, Number index1) {
-		
+	public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 		boolean isSelected = shouldHighlight && zone.isSelected(index0, index1);
 		Color foreground = isSelected 
 				? selectionForeground
@@ -83,11 +82,7 @@ class ModelPainter extends TextPainter {
 //		lineWidth0 = zone.section0.getLineWidth(index0);
 //		lineWidth1 = zone.section1.getLineWidth(index1);
 //		lineColor = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
-		return true;
-	}
-	
-	@Override
-	public void paint(int x, int y, int width, int height) {
+		
 		if (background != null) {
 //			if (!background.equals(lastBackground)) {
 				gc.setBackground(lastBackground = background);
@@ -96,7 +91,7 @@ class ModelPainter extends TextPainter {
 				gc.fillRectangle(x, y, width, height);
 			}
 		}
-		super.paint(x, y, width, height);
+		super.paint(index0, index1, x, y, width, height);
 		
 //		// Paint lines
 //		gc.setBackground(lastBackground = lineColor);

@@ -26,9 +26,9 @@ public class Snippet_0012 {
 		matrix.getAxis0().getBody().setCount(10);
 		Zone body = matrix.getBody();
 		
-		body.painter.replace(new Painter("column lines", Painter.SCOPE_COLUMN_LINES) {
+		body.painter.replace(new Painter("column lines", Painter.SCOPE_VERTICAL_LINES) {
 			@Override
-			public void paint(int x, int y, int width, int height) {
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				gc.setBackground(display.getSystemColor(SWT.COLOR_BLUE));
 				gc.fillRectangle(x, y, width, height);
 			}

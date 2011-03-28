@@ -74,7 +74,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 		model = new MatrixModel(axis0, axis1, zones);
 		setModel(model);
 		
-		painter = new Painter("root", Painter.SCOPE_FULL);
+		painter = new Painter("root", Painter.SCOPE_SINGLE);
 		setDefaultPainters();
 		
 		listener2 = new Listener() {
@@ -130,7 +130,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 	private void setDefaultPainters() {
 		painter.add(new Painter("zones") {
 			@Override
-			public void paint(int x, int y, int width, int height) {
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				paintDock(gc, Dock.MAIN, Dock.MAIN);
 				paintDock(gc, Dock.TAIL, Dock.HEAD);
 				paintDock(gc, Dock.HEAD, Dock.TAIL);
@@ -146,7 +146,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 		
 		painter.add(new Painter("focus cell") {
 			@Override
-			public void paint(int x, int y, int width, int height) {
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				Rectangle r = getCellBounds(
 						axis0.getFocusSection(), axis0.getFocusIndex(), 
 						axis1.getFocusSection(), axis1.getFocusIndex() );
@@ -168,7 +168,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 		
 		for (Painter<N0, N1> p: painter.children) {
 			if (!p.isEnabled() || !p.init(gc)) continue;
-			p.paint(area.x, area.y, area.width, area.y);
+			p.paint(null, null, area.x, area.y, area.width, area.height);
 		}
 		
 		System.out.println(BigDecimal.valueOf(System.nanoTime() - t, 6).toString());

@@ -29,7 +29,7 @@ public class Snippet_0011 {
 		int index = matrix.painter.indexOf("focus cell");
 		matrix.painter.set(index, new Painter("focus cell") {
 			@Override
-			public void paint(int x, int y, int width, int height) {
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				// Get bounds of the focus cell 
 				Axis axis0 = matrix.getAxis0();
 				Axis axis1 = matrix.getAxis1();

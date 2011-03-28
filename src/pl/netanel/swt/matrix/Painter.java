@@ -31,23 +31,45 @@ import pl.netanel.util.Preconditions;
  */
 // TODO add the paint(AxisLayoutIterator) here?
 public class Painter<N0 extends Number, N1 extends Number> {
-	public static final int SCOPE_FULL = 0;
-	public static final int SCOPE_ROW_LINES = 1;
-	public static final int SCOPE_COLUMN_LINES = 2;
+	/** 
+	 * Single bounds for the whole component
+	 */
+	public static final int SCOPE_SINGLE = 0;
+	/**
+	 * Bounds for horizontal lines stretching from the left to the right edge of the component
+	 */
+	public static final int SCOPE_HORIZONTAL_LINES = 1;
+	/**
+	 * Bounds for vertical lines stretching from the top to the bottom edge of the component
+	 */
+	public static final int SCOPE_VERTICAL_LINES = 2;
+	/**
+	 * Bounds for compound cells each including all cells from one row 
+	 */
 	public static final int SCOPE_ROW_CELLS = 3;
+	/**
+	 * Bounds for compound cells each including all cells from one column 
+	 */
 	public static final int SCOPE_COLUMN_CELLS = 4;
+	/**
+	 * Bounds for individual cells inputed in the horizontal order
+	 */
 	public static final int SCOPE_CELLS_HORIZONTALLY = 5;
+	/**
+	 * Bounds for individual cells inputed in the vertical order
+	 */
 	public static final int SCOPE_CELLS_VERTICALLY = 6;
 	
 	protected GC gc;
-	protected boolean enabled = true;
-	public ArrayList<Painter<N0, N1>> children = new ArrayList<Painter<N0, N1>>();
-	private final String name;
-//	protected SizeMeter meter;
+	
+	final ArrayList<Painter<N0, N1>> children = new ArrayList<Painter<N0, N1>>();
 	final int scope;
 	
+	private final String name;
+	private boolean enabled = true;
+	
 	public Painter(String name) {
-		this(name, SCOPE_FULL);
+		this(name, SCOPE_SINGLE);
 	}
 
 	public Painter(String name, int scope) {
@@ -89,15 +111,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 */
 	public void clean() {}
 
-	/**
-	 * To called before the <code>paint()</code> method.
-	 * @param index0
-	 * @param index1
-	 */
-	public boolean beforePaint(N0 index0, N1 index1) { return true; }
-	
-	
-	public void paint(int x, int y, int width, int height) {}
+	public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {}
 
 	
 	
@@ -123,15 +137,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		return enabled;
 	}
 
-
 	
-//	public SizeMeter getSizeMeter() {
-//		return meter;
-//	}
-//
-//	public void setMeter(SizeMeter meter) {
-//		this.meter = meter;
-//	}
 	
 	protected int align(int align, int margin, int distance, int width, int bound) {
 		switch (align) {
@@ -146,7 +152,59 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		return distance + margin;
 	}
 	
+	
+	
+	/*------------------------------------------------------------------------
+	 * List methods 
+	 */
 
+	public void add(Painter painter) {
+		add(children.size(), painter);
+	}
+
+	public void add(int index, Painter painter) {
+		// Check uniqueness of children names
+		for (int i = 0, imax = children.size(); i < imax; i++) {
+			Painter painter2 = children.get(i);
+			Preconditions.checkArgument(!painter2.name.equals(painter.name), 
+				"A painter with '{0}' name already exist in this collection", painter.name);
+		}
+		children.add(index, painter);
+	}
+	
+	public void set(int index, Painter painter) {
+		// Check uniqueness of children names
+		for (int i = 0, imax = children.size(); i < imax; i++) {
+			if (i == index) continue;
+			Painter painter2 = children.get(i);
+			Preconditions.checkArgument(!painter2.name.equals(painter.name), 
+					"A painter with '{0}' name already exist in this collection", painter.name);
+		}
+		children.set(index, painter);
+	}
+	
+	public void replace(Painter painter) {
+		set(indexOf(painter.name), painter);
+	}
+	
+	public void remove(int index) {
+		children.remove(index);
+	}
+	
+	public int indexOf(String name) {
+		for (int i = 0, imax = children.size(); i < imax; i++) {
+			if (children.get(i).name.equals(name)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	public Painter get(String name) {
+		return children.get(indexOf(name));
+	}
+
+	
 	
 	
 	/*------------------------------------------------------------------------
@@ -166,52 +224,4 @@ public class Painter<N0 extends Number, N1 extends Number> {
 
 	
 	
-	
-	
-	/*------------------------------------------------------------------------
-	 * List methods 
-	 */
-
-	public void add(Painter painter) {
-		add(children.size(), painter);
-	}
-
-	public int indexOf(String name) {
-		for (int i = 0, imax = children.size(); i < imax; i++) {
-			if (children.get(i).name.equals(name)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	public void set(int index, Painter painter) {
-		// Check uniqueness of children names
-		for (int i = 0, imax = children.size(); i < imax; i++) {
-			if (i == index) continue;
-			Painter painter2 = children.get(i);
-			Preconditions.checkArgument(!painter2.name.equals(painter.name), 
-				"A painter with '{0}' name already exist in this collection", painter.name);
-		}
-		children.set(index, painter);
-	}
-
-	public void add(int index, Painter painter) {
-		// Check uniqueness of children names
-		for (int i = 0, imax = children.size(); i < imax; i++) {
-			Painter painter2 = children.get(i);
-			Preconditions.checkArgument(!painter2.name.equals(painter.name), 
-				"A painter with '{0}' name already exist in this collection", painter.name);
-		}
-		children.add(index, painter);
-	}
-
-	public void replace(Painter painter) {
-		set(indexOf(painter.name), painter);
-	}
-
-	public Painter get(String name) {
-		return children.get(indexOf(name));
-	}
-
 }

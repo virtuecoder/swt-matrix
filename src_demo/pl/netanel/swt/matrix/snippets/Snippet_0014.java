@@ -48,12 +48,10 @@ public class Snippet_0014 {
 				return true;
 			}
 			@Override
-			public boolean beforePaint(Number index0, Number index1) {
-				return index0.intValue() % 2 == 1;
-			}
-			@Override
-			public void paint(int x, int y, int width, int height) {
-				gc.fillRectangle(x, y, width, height);
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+				if (index0.intValue() % 2 == 1) {
+					gc.fillRectangle(x, y, width, height);
+				}
 			}
 			
 			@Override

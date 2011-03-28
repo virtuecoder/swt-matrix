@@ -58,12 +58,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	private Zone(int id) {
 		this.type = id;
 		painter = new Painter("zone");
-//
-//		cellPainters = new Painters();
-//		linePainters0 = new Painters();
-//		linePainters1 = new Painters();
-//		linePainters0.add(new LinePainter());
-//		linePainters1.add(new LinePainter());
+
 		listeners = new Listeners();
 		selectionEnabled = true;
 		bounds = new Rectangle(0, 0, 0, 0);
@@ -287,15 +282,20 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		for (Painter p: painter.children) {
 			if (!p.isEnabled() || !p.init(gc)) continue;
 			
+			int distance = 0, width = 0;
+			Number index;
 			switch (p.scope) {
 			
 			case Painter.SCOPE_CELLS_HORIZONTALLY:
 				LayoutSequence seq0 = layout0.cellSequence(dock0, section0.core);
 				LayoutSequence seq1 = layout1.cellSequence(dock1, section1.core);
 				for (seq0.init(); seq0.next();) {
+					distance = seq0.getDistance();
+					width = seq0.getWidth();
+					index = seq0.item.index;
 					for (seq1.init(); seq1.next();) {
-						p.beforePaint(seq0.item.index, seq1.item.index);
-						p.paint(seq1.getDistance(), seq0.getDistance(), seq1.getWidth(), seq0.getWidth());
+						p.paint(index, seq1.item.index, 
+							seq1.getDistance(), distance, seq1.getWidth(), width);
 					}
 				}
 				break;
@@ -304,47 +304,56 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				seq0 = layout0.cellSequence(dock0, section0.core);
 				seq1 = layout1.cellSequence(dock1, section1.core);
 				for (seq1.init(); seq1.next();) {
+					distance = seq1.getDistance();
+					width = seq1.getWidth();
+					index = seq1.item.index;
 					for (seq0.init(); seq0.next();) {
-						p.beforePaint(seq0.item.index, seq1.item.index);
-						p.paint(seq1.getDistance(), seq0.getDistance(), seq1.getWidth(), seq0.getWidth());
+						p.paint(seq0.item.index, seq1.item.index,
+							distance, seq0.getDistance(), width, seq0.getWidth());
 					}
 				}
 				break;
 			
 			case Painter.SCOPE_ROW_CELLS:
 				seq0 = layout0.cellSequence(dock0, section0.core);
+				distance = bounds.x;
+				width = bounds.width;
 				for (seq0.init(); seq0.next();) {
-					p.beforePaint(seq0.item.index, null);
-					p.paint(bounds.x, seq0.getDistance(), bounds.width, seq0.getWidth());
+					p.paint(seq0.item.index, null, distance, seq0.getDistance(), width, seq0.getWidth());
 				}
 				break;
 				
 			case Painter.SCOPE_COLUMN_CELLS:
 				seq1 = layout1.cellSequence(dock1, section1.core);
+				distance = bounds.y;
+				width = bounds.height;
 				for (seq1.init(); seq1.next();) {
-					p.beforePaint(null, seq1.item.index);
-					p.paint(seq1.getDistance(), bounds.y, seq1.getWidth(), bounds.height);
+					p.paint(null, seq1.item.index, seq1.getDistance(), distance, seq1.getWidth(), width);
 				}
 				break;
 				
-			case Painter.SCOPE_ROW_LINES:
+			case Painter.SCOPE_HORIZONTAL_LINES:
 				seq0 = layout0.lineSequence(dock0, section0.core);
+				distance = bounds.x;
+				width = bounds.width;
 				for (seq0.init(); seq0.next();) {
-					p.beforePaint(seq0.item.index, null);
-					p.paint(bounds.x, seq0.getDistance(), bounds.width, seq0.getWidth());
+					p.paint(seq0.item.index, null, distance, seq0.getDistance(), width, seq0.getWidth());
 				}
 				break;
 			
-			case Painter.SCOPE_COLUMN_LINES:
+			case Painter.SCOPE_VERTICAL_LINES:
 				seq1 = layout1.lineSequence(dock1, section1.core);
+				distance = bounds.y;
+				width = bounds.height;
 				for (seq1.init(); seq1.next();) {
-					p.beforePaint(null, seq1.item.index);
-					p.paint(seq1.getDistance(), bounds.y, seq1.getWidth(), bounds.height);
+					p.paint(null, seq1.item.index, seq1.getDistance(), distance, seq1.getWidth(), width);
 				}
 				break;
 				
 			}
 			p.clean();
+			
+			for (Painter p2: p)
 		}
 	}
 
