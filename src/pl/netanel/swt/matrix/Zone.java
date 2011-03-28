@@ -282,36 +282,35 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		cellSelection = lastSelection.copy();
 	}
 
-	void paint(GC gc, final Layout layout0, final Layout layout1, final Dock dock1, final Dock dock0) {
+	void paint(GC gc, final Layout layout0, final Layout layout1, final Dock dock0, final Dock dock1) {
 		painter.paint(gc, new BoundsProvider() {
 			@Override
 			BoundsSequence getSequence(int scope) {
-				Rectangle zoneBounds = getBounds();
 				switch (scope) {
-				case Painter.CELL: 
+				case Painter.SCOPE_CELLS_HORIZONTALLY: 
 					return new BoundsSequence(
 						layout0.cellSequence(dock0, section0.core),
 						layout1.cellSequence(dock1, section1.core) );
 					
-				case Painter.ROW_CELL:
+				case Painter.SCOPE_ROW_CELLS:
 					return new BoundsSequence(
-							layout0.cellSequence(dock0, section0.core),
-							layout1.singleSequence(zoneBounds.x, zoneBounds.width) );
+						layout0.cellSequence(dock0, section0.core),
+						layout1.singleSequence(bounds.x, bounds.width) );
 					
-				case Painter.COLUMN_CELL:
+				case Painter.SCOPE_COLUMN_CELLS:
 					return new BoundsSequence(
-							layout0.singleSequence(zoneBounds.y, zoneBounds.height),
-							layout1.cellSequence(dock1, section1.core) );
+						layout0.singleSequence(bounds.y, bounds.height),
+						layout1.cellSequence(dock1, section1.core) );
 					
-				case Painter.ROW_LINE:
+				case Painter.SCOPE_ROW_LINES:
 					return new BoundsSequence(
-							layout0.lineSequence(dock0, section0.core),
-							layout1.singleSequence(zoneBounds.x, zoneBounds.width) );
+						layout0.lineSequence(dock0, section0.core),
+						layout1.singleSequence(bounds.x, bounds.width) );
 					
-				case Painter.COLUMN_LINE:
+				case Painter.SCOPE_COLUMN_LINES:
 					return new BoundsSequence(
-							layout0.singleSequence(zoneBounds.y, zoneBounds.height),
-							layout1.lineSequence(dock1, section1.core) );
+						layout0.singleSequence(bounds.y, bounds.height),
+						layout1.lineSequence(dock1, section1.core) );
 
 				default: return new BoundsSequence(
 						layout0.singleSequence(bounds.y, bounds.height), 

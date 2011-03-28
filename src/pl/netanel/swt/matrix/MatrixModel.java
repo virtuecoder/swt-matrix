@@ -19,19 +19,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	private int[] zOrder;
 	private ExtentPairSequence seq;
 
-//	public MatrixModel() {
-//		this(new Axis<Integer>(), new Axis());
-//		axis0.getHeader().setVisible(false);
-//		axis0.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_Y);
-//		
-//		axis1.getHeader().setDefaultCellWidth(40);
-//		axis1.getHeader().setVisible(false);
-//		axis1.getBody().setDefaultCellWidth(50);
-//		axis1.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_X);
-//		
-//	}
-
-	public MatrixModel( Axis<N0> axis0, Axis<N1> axis1, Zone ...zones) {
+	public MatrixModel(Axis<N0> axis0, Axis<N1> axis1, Zone<N0, N1> ...zones) {
 		this.axis0 = axis0;
 		this.axis1 = axis1;
 		
@@ -54,8 +42,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 					if (zone.painter.children.isEmpty()) {
 						zone.painter.add(new ModelPainter(zone));
 						Color color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
-						zone.painter.add(new LinePainter("row lines", Painter.ROW_LINE, color ));
-						zone.painter.add(new LinePainter("column lines", Painter.COLUMN_LINE, color));
+						zone.painter.add(new LinePainter("row lines", Painter.SCOPE_ROW_LINES, color ));
+						zone.painter.add(new LinePainter("column lines", Painter.SCOPE_COLUMN_LINES, color));
 					}
 				}
 				else if (section0.equals(header0) || section1.equals(header1)) {
@@ -133,8 +121,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		if (zone.painter.children.isEmpty()) {
 			zone.painter.add(new ModelPainter(zone));
 			final Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
-			zone.painter.add(new LinePainter("row lines", Painter.ROW_LINE, color));
-			zone.painter.add(new LinePainter("column lines", Painter.COLUMN_LINE, color));
+			zone.painter.add(new LinePainter("row lines", Painter.SCOPE_ROW_LINES, color));
+			zone.painter.add(new LinePainter("column lines", Painter.SCOPE_COLUMN_LINES, color));
 		}
 		return zone;
 	}

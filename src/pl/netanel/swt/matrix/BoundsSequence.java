@@ -4,8 +4,9 @@ import org.eclipse.swt.graphics.Rectangle;
 
 import pl.netanel.swt.matrix.Layout.LayoutSequence;
 
-class BoundsSequence implements Sequence {
-	LayoutSequence seq0, seq1;
+class BoundsSequence<N0 extends Number, N1 extends Number> implements Sequence {
+	LayoutSequence seq0; 
+	LayoutSequence seq1;
 	private boolean empty;
 
 	public BoundsSequence(LayoutSequence seq0, LayoutSequence seq1) {
@@ -38,12 +39,12 @@ class BoundsSequence implements Sequence {
 				seq1.getWidth(), seq0.getWidth());
 	}
 
-	public Number getIndex0() {
-		return seq0.getIndex();
+	public N0 getIndex0() {
+		return (N0) seq0.getIndex();
 	}
 
-	public Number getIndex1() {
-		return seq1.getIndex();
+	public N1 getIndex1() {
+		return (N1) seq1.getIndex();
 	}
 
 }

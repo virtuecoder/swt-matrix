@@ -29,7 +29,7 @@ class TextPainter extends Painter {
 //	private boolean isClipped;
 	
 	public TextPainter() {
-		super("text", Painter.CELL);
+		super("text", Painter.SCOPE_CELLS_HORIZONTALLY);
 		marginY = 1; marginX = 4;
 		alignY = SWT.BEGINNING; alignX = SWT.BEGINNING;
 		textClipMethod = TextClipMethod.DOTS_IN_THE_MIDDLE;

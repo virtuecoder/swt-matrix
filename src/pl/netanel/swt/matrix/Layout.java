@@ -763,7 +763,7 @@ class Layout<N extends Number> {
 		private final SectionUnchecked section;
 		private int i;
 		Bound bound;
-		AxisItem item;
+		AxisItem<N> item;
 
 		public LayoutSequence(List<AxisItem> items, List<Bound> bounds, SectionUnchecked section) { 
 			this.items = items;
@@ -809,7 +809,7 @@ class Layout<N extends Number> {
 			return bound.width;
 		}
 
-		public Number getIndex() {
+		public N getIndex() {
 			return item == null ? null : item.index;
 		}
 	}

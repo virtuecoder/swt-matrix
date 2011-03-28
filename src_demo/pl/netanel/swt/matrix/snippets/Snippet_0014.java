@@ -40,7 +40,7 @@ public class Snippet_0014 {
 		body.painter.get("row lines").setEnabled(false);
 		body.painter.get("column lines").setEnabled(false);
 		
-		body.painter.add(0, new Painter("alter row background", Painter.ROW_CELL) {
+		body.painter.add(0, new Painter("alter row background", Painter.SCOPE_ROW_CELLS) {
 			@Override
 			protected boolean init() {
 				super.init();

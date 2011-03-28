@@ -42,10 +42,10 @@ class ModelPainter extends TextPainter {
 		selectionBackground = zone.getSelectionBackground();
 		selectionForeground = zone.getSelectionForeground();
 		gc.setForeground(lastForeground);
-//		if (lastBackground != null) {
-//			gc.setBackground(lastBackground);
-//			gc.fillRectangle(zone.getBounds());
-//		}
+		if (lastBackground != null) {
+			gc.setBackground(lastBackground);
+			gc.fillRectangle(zone.getBounds());
+		}
 		
 		shouldHighlight = !zone.is(Zone.BODY) || 
 			zone.getSelectionCount().compareTo(BigInteger.ONE) != 0;
@@ -55,7 +55,6 @@ class ModelPainter extends TextPainter {
 
 	@Override
 	public boolean beforePaint(Number index0, Number index1) {
-		super.beforePaint(index0, index1);
 		
 		boolean isSelected = shouldHighlight && zone.isSelected(index0, index1);
 		Color foreground = isSelected 
@@ -63,7 +62,7 @@ class ModelPainter extends TextPainter {
 				: zone.getForeground(index0, index1);
 		
 		// Only set color if there is a change
-		if (foreground != null && !foreground.equals(lastForeground)) {
+		if (foreground != null) { // && !foreground.equals(lastForeground)) {
 			gc.setForeground(lastForeground = foreground);
 		}
 		
@@ -90,9 +89,9 @@ class ModelPainter extends TextPainter {
 	@Override
 	public void paint(int x, int y, int width, int height) {
 		if (background != null) {
-			if (!background.equals(lastBackground)) {
+//			if (!background.equals(lastBackground)) {
 				gc.setBackground(lastBackground = background);
-			}
+//			}
 			if (!background.equals(defaultBackground)) {
 				gc.fillRectangle(x, y, width, height);
 			}

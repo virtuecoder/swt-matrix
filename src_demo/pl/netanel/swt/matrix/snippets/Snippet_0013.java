@@ -37,20 +37,20 @@ public class Snippet_0013 {
 		Zone columnHeader = matrix.getColumneHeader();
 		columnHeader.painter.get("row lines").setEnabled(false);
 		columnHeader.painter.get("column lines").setEnabled(false);
-		columnHeader.painter.add(new Painter("cell border", Painter.CELL) {
+		columnHeader.painter.add(new Painter("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
 			public void paint(int x, int y, int width, int height) {
 				gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
 				gc.drawRectangle(x - 1, y - 1, width + 1, height + 1);
 			}
 		});
-		columnHeader.setDefaultBackground(matrix.getBackground());
+		columnHeader.setDefaultBackground(null);
 		
 		// Body painting
 		Zone body = matrix.getBody();
 		body.painter.get("row lines").setEnabled(false);
 		body.painter.get("column lines").setEnabled(false);
-		body.painter.add(new Painter("cell border", Painter.CELL) {
+		body.painter.add(new Painter("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
 			public void paint(int x, int y, int width, int height) {
 				gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));

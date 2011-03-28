@@ -30,13 +30,14 @@ import pl.netanel.util.Preconditions;
  * @created 2010-06-13
  */
 // TODO add the paint(AxisLayoutIterator) here?
-public class Painter {
-	public static final int FULL = 0;
-	public static final int ROW_LINE = 1;
-	public static final int COLUMN_LINE = 2;
-	public static final int ROW_CELL = 3;
-	public static final int COLUMN_CELL = 4;
-	public static final int CELL = 5;
+public class Painter<N0 extends Number, N1 extends Number> {
+	public static final int SCOPE_FULL = 0;
+	public static final int SCOPE_ROW_LINES = 1;
+	public static final int SCOPE_COLUMN_LINES = 2;
+	public static final int SCOPE_ROW_CELLS = 3;
+	public static final int SCOPE_COLUMN_CELLS = 4;
+	public static final int SCOPE_CELLS_HORIZONTALLY = 5;
+	public static final int SCOPE_CELLS_VERTICALLY = 6;
 	
 	protected GC gc;
 	protected boolean enabled = true;
@@ -46,7 +47,7 @@ public class Painter {
 	private final int scope;
 	
 	public Painter(String name) {
-		this(name, FULL);
+		this(name, SCOPE_FULL);
 	}
 
 	public Painter(String name, int scope) {
@@ -63,8 +64,6 @@ public class Painter {
 	public String getName() {
 		return name;
 	}
-
-
 
 	/**
 	 * Initializes the GC property of the receiver to be used by its other methods.
@@ -95,25 +94,20 @@ public class Painter {
 	 * @param index0
 	 * @param index1
 	 */
-	public boolean beforePaint(Number index0, Number index1) { return true; }
+	public boolean beforePaint(N0 index0, N1 index1) { return true; }
+	
 	
 	public void paint(int x, int y, int width, int height) {
 	}
 
-	public void run() {
-//		init();
-//		paint(x, y, width, height);
-//		clean();
-		
-		for (Painter painter: children) {
-			painter.run();
-		}
-	}
+	
 	
 	/**
 	 * Sets the enabled state of the receiver.
 	 * <p>
-	 * Allows to communicate to the client to skip this painter in the painting sequence.
+	 * Allows to communicate to the client to skip this painter in the painting sequence. 
+	 * It can be used to hide lines for example.
+	 * 
 	 * @param enabled the new enabled state
 	 */
 	public void setEnabled(boolean enabled) {
@@ -176,7 +170,10 @@ public class Painter {
 	void paint(GC gc, BoundsProvider provider) {
 		if (!enabled) return;
 		if (init(gc)) {
-			BoundsSequence seq = provider.getSequence(scope);
+			switch (scope) {
+			
+			}
+			BoundsSequence<N0, N1> seq = provider.getSequence(scope);
 			for (seq.init(); seq.next();) {
 				if (beforePaint(seq.getIndex0(), seq.getIndex1())) {
 					paint(seq.seq1.getDistance(), seq.seq0.getDistance(), seq.seq1.getWidth(), seq.seq0.getWidth());
