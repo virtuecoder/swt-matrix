@@ -141,12 +141,12 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 * Navigation 
 	 */
 	
-	public Section<N> getCurrentSection() {
+	public Section<N> getFocusSection() {
 		layout.computeIfRequired();
 		return layout.current == null ? null : sectionMap.get(layout.current.section);
 	}
 	
-	public N getCurrentIndex() {
+	public N getFocusIndex() {
 		layout.computeIfRequired();
 		return layout.current == null ? null : layout.current.index;
 	}

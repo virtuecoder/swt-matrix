@@ -45,7 +45,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 	Listener listener2;
 	
 	Rectangle area; 
-	public Painter painter;
+	public final Painter<N0, N1> painter;
 	private ScheduledExecutorService executor;
 	
 	public Matrix(Composite parent, int style) {
@@ -73,6 +73,8 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 		}
 		model = new MatrixModel(axis0, axis1, zones);
 		setModel(model);
+		
+		painter = new Painter("root", Painter.SCOPE_FULL);
 		setDefaultPainters();
 		
 		listener2 = new Listener() {
@@ -126,8 +128,6 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 	}
 	
 	private void setDefaultPainters() {
-		painter = new Painter("root");
-		
 		painter.add(new Painter("zones") {
 			@Override
 			public void paint(int x, int y, int width, int height) {
@@ -148,8 +148,8 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 			@Override
 			public void paint(int x, int y, int width, int height) {
 				Rectangle r = getCellBounds(
-						axis0.getCurrentSection(), axis0.getCurrentIndex(), 
-						axis1.getCurrentSection(), axis1.getCurrentIndex() );
+						axis0.getFocusSection(), axis0.getFocusIndex(), 
+						axis1.getFocusSection(), axis1.getFocusIndex() );
 				if (r == null) return;
 				gc.setClipping((Rectangle) null);
 				gc.setLineWidth(2);
@@ -166,17 +166,10 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 		layout0.computeIfRequired();
 		layout1.computeIfRequired();
 		
-		painter.paint(gc, new BoundsProvider() {
-			@Override
-			BoundsSequence getSequence(int scope) {
-				switch (scope) {
-					default: 
-						return new BoundsSequence(
-							layout0.singleSequence(area.y, area.height),
-							layout1.singleSequence(area.x, area.width));
-				}
-			}
-		});
+		for (Painter<N0, N1> p: painter.children) {
+			if (!p.isEnabled() || !p.init(gc)) continue;
+			p.paint(area.x, area.y, area.width, area.y);
+		}
 		
 		System.out.println(BigDecimal.valueOf(System.nanoTime() - t, 6).toString());
 	}
@@ -202,39 +195,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 		}
 	}
 
-//	private void paintCells(GC gc, Painters painters, LayoutSequence seq0, LayoutSequence seq1) {
-//		for (Painter painter: painters) {
-//			if (!isEnabled()) return;
-//			painter.init(gc);
-//			for (seq0.init(); seq0.next();) {
-//				Bound b0 = seq0.bound;
-//				for (seq1.init(); seq1.next();) {
-//					painter.beforePaint(seq0.item.index, seq1.item.index);
-//					Bound b1 = seq1.bound;
-//					painter.paint(b1.distance, b0.distance, b1.width, b0.width);
-//				}
-//			}
-//			painter.clean();
-//		}
-//	}
 	
-
-//	public Painter getBackgroundPainter() {
-//		return backgroundPainter;
-//	}
-//
-//	public void setBackgroundPainter(Painter backgroundPainter) {
-//		this.backgroundPainter = backgroundPainter;
-//	}
-//
-//	public Painter getNavigationPainter() {
-//		return navigationPainter;
-//	}
-//
-//	public void setNavigationPainter(Painter navigationPainter) {
-//		this.navigationPainter = navigationPainter;
-//	}
-
 	/**
 	 * Resize event handler.
 	 * @param event

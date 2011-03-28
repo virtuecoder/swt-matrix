@@ -56,8 +56,8 @@ public class Snippet_0015 {
 			@Override
 			public boolean beforePaint(Number index0, Number index1) {
 				Axis axis0 = matrix.getAxis0();
-				return body.getSection0().equals(axis0.getCurrentSection()) &&
-					index0.equals(axis0.getCurrentIndex());
+				return body.getSection0().equals(axis0.getFocusSection()) &&
+					index0.equals(axis0.getFocusIndex());
 			}
 			
 			@Override

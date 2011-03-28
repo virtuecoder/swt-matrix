@@ -41,10 +41,10 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	
 	protected GC gc;
 	protected boolean enabled = true;
-	public ArrayList<Painter> children = new ArrayList<Painter>();
+	public ArrayList<Painter<N0, N1>> children = new ArrayList<Painter<N0, N1>>();
 	private final String name;
 //	protected SizeMeter meter;
-	private final int scope;
+	final int scope;
 	
 	public Painter(String name) {
 		this(name, SCOPE_FULL);
@@ -97,8 +97,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	public boolean beforePaint(N0 index0, N1 index1) { return true; }
 	
 	
-	public void paint(int x, int y, int width, int height) {
-	}
+	public void paint(int x, int y, int width, int height) {}
 
 	
 	
@@ -167,33 +166,14 @@ public class Painter<N0 extends Number, N1 extends Number> {
 
 	
 	
-	void paint(GC gc, BoundsProvider provider) {
-		if (!enabled) return;
-		if (init(gc)) {
-			switch (scope) {
-			
-			}
-			BoundsSequence<N0, N1> seq = provider.getSequence(scope);
-			for (seq.init(); seq.next();) {
-				if (beforePaint(seq.getIndex0(), seq.getIndex1())) {
-					paint(seq.seq1.getDistance(), seq.seq0.getDistance(), seq.seq1.getWidth(), seq.seq0.getWidth());
-				}
-			}
-			clean();
-		}
-		
-		// Paint children
-		for (Painter painter: children) {
-			painter.paint(gc, provider);
-		}
-	}
-
-//	public void paint(Rectangle bounds) {
-//		paint(bounds.x, bounds.y, bounds.width, bounds.height);
-//	}
+	
+	
+	/*------------------------------------------------------------------------
+	 * List methods 
+	 */
 
 	public void add(Painter painter) {
-		children.add(painter);
+		add(children.size(), painter);
 	}
 
 	public int indexOf(String name) {
@@ -206,11 +186,24 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	}
 
 	public void set(int index, Painter painter) {
+		// Check uniqueness of children names
+		for (int i = 0, imax = children.size(); i < imax; i++) {
+			if (i == index) continue;
+			Painter painter2 = children.get(i);
+			Preconditions.checkArgument(!painter2.name.equals(painter.name), 
+				"A painter with '{0}' name already exist in this collection", painter.name);
+		}
 		children.set(index, painter);
 	}
 
-	public void add(int i, Painter painter) {
-		children.add(i, painter);
+	public void add(int index, Painter painter) {
+		// Check uniqueness of children names
+		for (int i = 0, imax = children.size(); i < imax; i++) {
+			Painter painter2 = children.get(i);
+			Preconditions.checkArgument(!painter2.name.equals(painter.name), 
+				"A painter with '{0}' name already exist in this collection", painter.name);
+		}
+		children.add(index, painter);
 	}
 
 	public void replace(Painter painter) {

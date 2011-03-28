@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Listener;
 
 import pl.netanel.swt.Listeners;
 import pl.netanel.swt.Resources;
+import pl.netanel.swt.matrix.Layout.LayoutSequence;
 import pl.netanel.util.ImmutableIterator;
 
 
@@ -40,7 +41,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 //	public static final int COLUMN_FOOTER = 6;
 //	public static final int BOTTOM_RIGHT = 7;
 	
-	public Painter painter;
+	public final Painter<N0, N1> painter;
 	
 	Section<N0> section0;
 	Section<N1> section1;
@@ -283,41 +284,68 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	}
 
 	void paint(GC gc, final Layout layout0, final Layout layout1, final Dock dock0, final Dock dock1) {
-		painter.paint(gc, new BoundsProvider() {
-			@Override
-			BoundsSequence getSequence(int scope) {
-				switch (scope) {
-				case Painter.SCOPE_CELLS_HORIZONTALLY: 
-					return new BoundsSequence(
-						layout0.cellSequence(dock0, section0.core),
-						layout1.cellSequence(dock1, section1.core) );
-					
-				case Painter.SCOPE_ROW_CELLS:
-					return new BoundsSequence(
-						layout0.cellSequence(dock0, section0.core),
-						layout1.singleSequence(bounds.x, bounds.width) );
-					
-				case Painter.SCOPE_COLUMN_CELLS:
-					return new BoundsSequence(
-						layout0.singleSequence(bounds.y, bounds.height),
-						layout1.cellSequence(dock1, section1.core) );
-					
-				case Painter.SCOPE_ROW_LINES:
-					return new BoundsSequence(
-						layout0.lineSequence(dock0, section0.core),
-						layout1.singleSequence(bounds.x, bounds.width) );
-					
-				case Painter.SCOPE_COLUMN_LINES:
-					return new BoundsSequence(
-						layout0.singleSequence(bounds.y, bounds.height),
-						layout1.lineSequence(dock1, section1.core) );
-
-				default: return new BoundsSequence(
-						layout0.singleSequence(bounds.y, bounds.height), 
-						layout1.singleSequence(bounds.x, bounds.width) );
+		for (Painter p: painter.children) {
+			if (!p.isEnabled() || !p.init(gc)) continue;
+			
+			switch (p.scope) {
+			
+			case Painter.SCOPE_CELLS_HORIZONTALLY:
+				LayoutSequence seq0 = layout0.cellSequence(dock0, section0.core);
+				LayoutSequence seq1 = layout1.cellSequence(dock1, section1.core);
+				for (seq0.init(); seq0.next();) {
+					for (seq1.init(); seq1.next();) {
+						p.beforePaint(seq0.item.index, seq1.item.index);
+						p.paint(seq1.getDistance(), seq0.getDistance(), seq1.getWidth(), seq0.getWidth());
+					}
 				}
+				break;
+				
+			case Painter.SCOPE_CELLS_VERTICALLY:
+				seq0 = layout0.cellSequence(dock0, section0.core);
+				seq1 = layout1.cellSequence(dock1, section1.core);
+				for (seq1.init(); seq1.next();) {
+					for (seq0.init(); seq0.next();) {
+						p.beforePaint(seq0.item.index, seq1.item.index);
+						p.paint(seq1.getDistance(), seq0.getDistance(), seq1.getWidth(), seq0.getWidth());
+					}
+				}
+				break;
+			
+			case Painter.SCOPE_ROW_CELLS:
+				seq0 = layout0.cellSequence(dock0, section0.core);
+				for (seq0.init(); seq0.next();) {
+					p.beforePaint(seq0.item.index, null);
+					p.paint(bounds.x, seq0.getDistance(), bounds.width, seq0.getWidth());
+				}
+				break;
+				
+			case Painter.SCOPE_COLUMN_CELLS:
+				seq1 = layout1.cellSequence(dock1, section1.core);
+				for (seq1.init(); seq1.next();) {
+					p.beforePaint(null, seq1.item.index);
+					p.paint(seq1.getDistance(), bounds.y, seq1.getWidth(), bounds.height);
+				}
+				break;
+				
+			case Painter.SCOPE_ROW_LINES:
+				seq0 = layout0.lineSequence(dock0, section0.core);
+				for (seq0.init(); seq0.next();) {
+					p.beforePaint(seq0.item.index, null);
+					p.paint(bounds.x, seq0.getDistance(), bounds.width, seq0.getWidth());
+				}
+				break;
+			
+			case Painter.SCOPE_COLUMN_LINES:
+				seq1 = layout1.lineSequence(dock1, section1.core);
+				for (seq1.init(); seq1.next();) {
+					p.beforePaint(null, seq1.item.index);
+					p.paint(seq1.getDistance(), bounds.y, seq1.getWidth(), bounds.height);
+				}
+				break;
+				
 			}
-		});
+			p.clean();
+		}
 	}
 
 	public Section getSection0() {

@@ -34,8 +34,8 @@ public class Snippet_0011 {
 				Axis axis0 = matrix.getAxis0();
 				Axis axis1 = matrix.getAxis1();
 				Rectangle r = matrix.getCellBounds(
-						axis0.getCurrentSection(), axis0.getCurrentIndex(), 
-						axis1.getCurrentSection(), axis1.getCurrentIndex() );
+						axis0.getFocusSection(), axis0.getFocusIndex(), 
+						axis1.getFocusSection(), axis1.getFocusIndex() );
 				
 				// Draw rounded rectangle with a changed color
 				gc.setForeground(display.getSystemColor(SWT.COLOR_LIST_SELECTION));
