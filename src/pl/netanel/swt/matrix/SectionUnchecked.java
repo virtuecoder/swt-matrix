@@ -55,7 +55,7 @@ class SectionUnchecked<N extends Number> {
 	private boolean defaultResizable, defaultMoveable, defaultHideable; 
 	private boolean isNavigationEnabled, isVisible;
 	
-	Axis axis;
+	Axis<N> axis;
 	int index; 
 	
 	/**
@@ -695,28 +695,9 @@ class SectionUnchecked<N extends Number> {
 	 */ 
 	public void setSelected(N start, N end, boolean state) {
 		selection.change(start, end, state);
-		if (axis != null && axis.matrix != null) {
-			if (axis.index == 0) {
-				for (Zone zone: axis.matrix.model) {
-					if (zone.section0.core.equals(this)) {
-						Math math1 = zone.section1.core.math;
-						zone.setSelected(start, end, 
-								math1.ZERO_VALUE(), math1.decrement(zone.section1.getCount()), 
-								true);
-					}
-				}
-			}
-			else { // assert axis.index == 1
-				for (Zone zone: axis.matrix.model) {
-					if (zone.section1.core.equals(this)) {
-						Math math0 = zone.section0.core.math;
-						zone.setSelected( 
-								math0.ZERO_VALUE(), math0.decrement(zone.section0.getCount()),
-								start, end,
-								true);
-					}
-				}
-			}
+		
+		if (axis != null) {
+			axis.selectInZones(this, start, end);
 		}
 	}
 	

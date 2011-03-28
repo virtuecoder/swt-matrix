@@ -29,17 +29,15 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	private Section[] zOrder;
 	Section<N> body, header;
 	private int autoScrollOffset, resizeOffset;
-	Layout layout;
+	Layout<N> layout;
 	final Listeners listeners;
-	Matrix matrix;
 	
 //	Section<N> currentSection;
 //	N currentIndex;
 
 	private ScrollBar scrollBar;
-
 	int index;
-
+	Matrix matrix;
 	
 	public Axis() {
 		this(new Section<N>(), new Section<N>());
@@ -143,12 +141,12 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 * Navigation 
 	 */
 	
-	public Section getCurrentSection() {
+	public Section<N> getCurrentSection() {
 		layout.computeIfRequired();
 		return layout.current == null ? null : sectionMap.get(layout.current.section);
 	}
 	
-	public Number getCurrentIndex() {
+	public N getCurrentIndex() {
 		layout.computeIfRequired();
 		return layout.current == null ? null : layout.current.index;
 	}
@@ -196,7 +194,8 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 */
 
 	void setMatrix(final Matrix matrix, int axisIndex) {
-//		this.axisIndex = axisIndex;
+		this.index = axisIndex;
+		this.matrix = matrix;
 		
 		scrollBar = axisIndex == 0 ? matrix.getVerticalBar() : matrix.getHorizontalBar();
 		if (scrollBar != null) {
@@ -293,6 +292,11 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		}
 	}
 
+	void selectInZones(SectionUnchecked<N> section, N start, N end) {
+		if (matrix != null) {
+			matrix.selectInZones(index, section, start, end);
+		}
+	}
 	
 	AxisItem getLastItem() {
 		for (int i = sections.size(); i-- > 0;) {
@@ -378,7 +382,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		}
 	}
 
-	public Bound getCellBound(Section<N> section, N index) {
+	Bound getCellBound(Section<N> section, N index) {
 		if (section == null || index == null) return null;
 		Bound bound = layout.getBound(new AxisItem<N>(section.core, index));
 		return bound == null ? null : bound.copy();

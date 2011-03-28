@@ -5,7 +5,7 @@ import org.eclipse.swt.widgets.Event;
 import pl.netanel.util.Preconditions;
 
 
-public class GestureBinding {
+class GestureBinding {
 	int commandId;
 	int eventType;
 	int key;

@@ -1,6 +1,7 @@
 package pl.netanel.swt.matrix;
 
 import java.math.BigInteger;
+import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -11,6 +12,7 @@ import org.eclipse.swt.widgets.Listener;
 
 import pl.netanel.swt.Listeners;
 import pl.netanel.swt.Resources;
+import pl.netanel.util.ImmutableIterator;
 
 
 /**
@@ -27,7 +29,7 @@ import pl.netanel.swt.Resources;
  * @author Jacek
  * @created 13-10-2010
  */
-public class Zone {
+public class Zone<N0 extends Number, N1 extends Number> {
 	public static final int NONE = -1;
 	public static final int ANY = 0;
 	public static final int BODY = 1;
@@ -40,7 +42,8 @@ public class Zone {
 	
 	public Painter painter;
 	
-	Section section0, section1;
+	Section<N0> section0;
+	Section<N1> section1;
 	CellSet cellSelection;
 	CellSet lastSelection; // For adding selection
 	
@@ -65,7 +68,7 @@ public class Zone {
 		bounds = new Rectangle(0, 0, 0, 0);
 	}
 
-	public Zone(Section section0, Section section1, int type) {
+	public Zone(Section<N0> section0, Section<N1> section1, int type) {
 		this(type);
 		this.section0 = section0;
 		this.section1 = section1;
@@ -149,18 +152,35 @@ public class Zone {
 		return cellSelection.getCount().value;
 	}
 	
-	public IndexPairSequence getSelection() {
-		return new IndexPairSequence(cellSelection.copy());
+//	public IndexPairSequence getSelection() {
+//		return new IndexPairSequence(cellSelection.copy());
+//	}
+	
+	public Iterator<Cell<N0, N1>> getSelection() {
+		return new ImmutableIterator<Cell<N0, N1>>() {
+			IndexPairSequence seq = new IndexPairSequence(cellSelection.copy());
+			private boolean next;
+			@Override
+			public boolean hasNext() {
+				next = seq.next();
+				return next;
+			}
+
+			@Override
+			public Cell<N0, N1> next() {
+				return next ? new Cell (seq.index0(), seq.index1()) : null;
+			}
+		};
 	}
 
-	public String getText(Number index0, Number index1) {
+	public String getText(N0 index0, N1 index1) {
 		return index0.toString() + ", " + index1.toString();
 	}
 	
 	
-	public void setBackground(Number index0, Number index1, Color color) {
+	public void setBackground(N0 index0, N1 index1, Color color) {
 	}
-	public Color getBackground(Number index0, Number index1) {
+	public Color getBackground(N0 index0, N1 index1) {
 		return defaultBackground;
 	}
 	public void setDefaultBackground(Color color) {
@@ -177,9 +197,9 @@ public class Zone {
 	}
 	
 	
-	public void setForeground(Number index0, Number index1, Color color) {
+	public void setForeground(N0 index0, N1 index1, Color color) {
 	}
-	public Color getForeground(Number index0, Number index1) {
+	public Color getForeground(N0 index0, N1 index1) {
 		return defaultForeground;
 	}
 	public void setDefaultForeground(Color color) {
@@ -215,7 +235,7 @@ public class Zone {
 	 * Selection
 	 */
 	
-	public boolean isSelected(Number index0, Number index1) {
+	public boolean isSelected(N0 index0, N1 index1) {
 		return cellSelection.contains(index0, index1);
 	}
 	
@@ -225,8 +245,8 @@ public class Zone {
 	}
 	
 	public void setSelected(
-			Number start0, Number end0,
-			Number start1, Number end1, boolean selected) {
+			N0 start0, N0 end0,
+			N1 start1, N1 end1, boolean selected) {
 		
 		if (!selectionEnabled) return;
 		if (selected) {
@@ -307,5 +327,13 @@ public class Zone {
 	public Section getSection1() {
 		return section1;
 	}
-	
+
+	public static class Cell<N0, N1> {
+		N0 index0;
+		N1 index1;
+		public Cell(N0 index0, N1 index1) {
+			this.index0 = index0;
+			this.index1 = index1;
+		}
+	}
 }

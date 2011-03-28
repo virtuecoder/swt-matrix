@@ -33,11 +33,13 @@ import pl.netanel.swt.Resources;
  * @author Jacek
  * @created 27-03-2011
  */
-public class Matrix extends Canvas implements Iterable<Zone>{
+public class Matrix<N0 extends Number, N1 extends Number> extends Canvas implements Iterable<Zone<N0, N1>>{
 
-	MatrixModel model;
-	Axis axis0, axis1;
-	Layout layout0, layout1;
+	MatrixModel<N0, N1> model;
+	Axis<N0> axis0;
+	Axis<N1> axis1;
+	Layout<N0> layout0;
+	Layout<N1> layout1;
 	MatrixListener listener;
 	Listener listener2;
 	
@@ -49,27 +51,25 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 		this(parent, style, null, null);
 	}
 	
-	public Matrix(Composite parent, int style, Axis axis0, Axis axis1, Zone ...zones) {
+	public Matrix(Composite parent, int style, Axis<N0> axis0, Axis<N1> axis1, Zone<N0, N1> ...zones) {
 		super(parent, style | SWT.DOUBLE_BUFFERED);
 		setBackground(Resources.getColor(SWT.COLOR_LIST_BACKGROUND));
 		setForeground(Resources.getColor(SWT.COLOR_LIST_FOREGROUND));
 		
 		if (axis0 == null) {
-			axis0 = new Axis<Integer>();
+			axis0 = new Axis();
 			axis0.getHeader().setVisible(false);
 			axis0.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_Y);
 			axis0.setResizeOffset(M.RESIZE_OFFSET_Y);
 		}
 		if (axis1 == null) {
-			axis1 = new Axis<Integer>();
+			axis1 = new Axis();
 			axis1.getHeader().setDefaultCellWidth(40);
 			axis1.getHeader().setVisible(false);
 			axis1.getBody().setDefaultCellWidth(50);
 			axis1.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_X);
 			axis1.setResizeOffset(M.RESIZE_OFFSET_X);
 		}
-		axis0.matrix = this; axis0.index = 0;
-		axis1.matrix = this; axis1.index = 1;
 		model = new MatrixModel(axis0, axis1, zones);
 		setModel(model);
 		setDefaultPainters();
@@ -111,7 +111,7 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 		axis0.setMatrix(this, 0);
 		axis1.setMatrix(this, 1);
 		
-		Zone body = model.getBody();
+		Zone<N0, N1> body = model.getBody();
 //		if (body.getDefaultBackground() == null) {
 //			body.setDefaultBackground(getBackground());
 //		}
@@ -182,7 +182,7 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 
 
 	private void paintDock(GC gc, Dock dock0, Dock dock1) {
-		for (Zone zone: model) {
+		for (Zone<N0, N1> zone: model) {
 			if (!layout0.contains(dock0, zone.section0.core) ||
 				!layout1.contains(dock1, zone.section1.core) ) continue;
 			
@@ -316,24 +316,24 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 		area = getClientArea();
 	}
 
-	public Axis getAxis0() {
+	public Axis<N0> getAxis0() {
 		return axis0;
 	}
 	
-	public Axis getAxis1() {
+	public Axis<N1> getAxis1() {
 		return axis1;
 	}
 	
-	public Zone getBody() {
+	public Zone<N0, N1> getBody() {
 		return getZone(axis0.getBody(), axis1.getBody());
 	}
-	public Zone getColumneHeader() {
+	public Zone<N0, N1> getColumneHeader() {
 		return getZone(axis0.getHeader(), axis1.getBody());
 	}
-	public Zone getRowHeader() {
+	public Zone<N0, N1> getRowHeader() {
 		return getZone(axis0.getBody(), axis1.getHeader());
 	}
-	public Zone getTopLeft() {
+	public Zone<N0, N1> getTopLeft() {
 		return getZone(axis0.getHeader(), axis1.getHeader());
 	}
 	
@@ -350,7 +350,7 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 	 * @param id 
 	 * @return
 	 */
-	public Zone getZone(int id) {
+	public Zone<N0, N1> getZone(int id) {
 		return model.getZone(id);
 	}
 	
@@ -363,12 +363,12 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 	 * @exception IllegalArgumentException 
 	 * 	 	if the any of the section parameters is out of scope.
 	 */
-	public Zone getZone(Section section0, Section section1) {
+	public Zone<N0, N1> getZone(Section section0, Section section1) {
 		return model.getZone(section0, section1);
 	}
 	
 	
-	public Rectangle getCellBounds(Section section0, Number index0, Section section1, Number index1) {
+	public Rectangle getCellBounds(Section<N0> section0, N0 index0, Section<N1> section1, N1 index1) {
 		if (layout0.current != null && layout1.current != null) {
 			Bound b0 = axis0.getCellBound(section0, index0);
 			Bound b1 = axis1.getCellBound(section1, index1);
@@ -383,9 +383,9 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 		layout0.compute();
 		layout1.compute();
 		if (layout0.current != null && layout1.current != null) {
-			Zone zone = model.getZone(layout0.current.section, layout1.current.section);
-			Number index0 = layout0.current.index;
-			Number index1 = layout1.current.index;
+			Zone<N0, N1> zone = model.getZone(layout0.current.section, layout1.current.section);
+			N0 index0 = layout0.current.index;
+			N1 index1 = layout1.current.index;
 			zone.setSelected(index0, index0, index1, index1, true);
 		}
 	}
@@ -424,6 +424,31 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 		
 		throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e); 
 	}
+	
+	void selectInZones(int axisIndex, SectionUnchecked section, Number start, Number end) {
+		if (axisIndex == 0) {
+			for (Zone zone: model) {
+				if (zone.section0.core.equals(section)) {
+					Math math1 = zone.section1.core.math;
+					zone.setSelected(
+							(N0) start, (N0) end, 
+							math1.ZERO_VALUE(), math1.decrement(zone.section1.getCount()), 
+							true);
+				}
+			}
+		}
+		else { // assert index == 1
+			for (Zone zone: model) {
+				if (zone.section1.core.equals(section)) {
+					Math math0 = zone.section0.core.math;
+					zone.setSelected( 
+							math0.ZERO_VALUE(), math0.decrement(zone.section0.getCount()),
+							start, end,
+							true);
+				}
+			}
+		}
+	}
 
 	public void refresh() {
 		layout0.compute();
@@ -433,7 +458,7 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 	}
 
 	@Override
-	public Iterator<Zone> iterator() {
+	public Iterator<Zone<N0, N1>> iterator() {
 		return model.iterator();
 	}
 	

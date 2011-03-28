@@ -6,7 +6,7 @@ package pl.netanel.swt.matrix;
  * 
  * @author Jacek Kolodziejczyk created 25-03-2011
  */
-public class Bound {
+class Bound {
 	public int distance, width;
 
 	public Bound() {}

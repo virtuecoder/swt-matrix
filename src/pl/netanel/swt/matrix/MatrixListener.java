@@ -84,7 +84,7 @@ class MatrixListener implements Listener {
 		SWT.PaintItem, SWT.ImeComposition */
 	};
 
-	Matrix matrix;
+	Matrix<? extends Number, ? extends Number> matrix;
 	ArrayList<GestureBinding> bindings;
 	AxisListener state0, state1;
 	boolean instantMoving, ctrlSelectionMoving;
@@ -101,8 +101,8 @@ class MatrixListener implements Listener {
 		listeners = new Listeners();
 		
 		// Initialize fields
-		state0 = new AxisListener(0);
-		state1 = new AxisListener(1);
+		state0 = new AxisListener(matrix.axis0);
+		state1 = new AxisListener(matrix.axis1);
 		
 		bindings = new ArrayList<GestureBinding>();
     	bindCommands();
@@ -187,14 +187,13 @@ class MatrixListener implements Listener {
 		int headerId, resizeStartDistance, resizeCellWidth, newCellWidth, distance, lastDistance;
 		AutoScroll autoScroll;
 
-		public AxisListener(int axisIndex) {
-			this.axisIndex = axisIndex;
+		public AxisListener(Axis<N> axis) {
+			this.axis = axis; 
+			this.axisIndex = axis.index;
 			if (axisIndex == 0) {
-				axis = matrix.axis0; 
 				resizeCursor = Resources.getCursor(SWT.CURSOR_SIZENS);
 				headerId = Zone.ROW_HEADER;
 			} else {
-				axis = matrix.axis1; 
 				resizeCursor = Resources.getCursor(SWT.CURSOR_SIZEWE);
 				headerId = Zone.COLUMN_HEADER;
 			}
@@ -209,7 +208,7 @@ class MatrixListener implements Listener {
 				
 				if (item2 != null && item != null) {
 					itemModified = layout.compare(item, item2) != 0;
-					last = item;
+//					last = item;
 					item = item2;
 				}
 				mouseMoveEvent = e;
@@ -696,7 +695,7 @@ class MatrixListener implements Listener {
 			commandId == SELECT_COLUMN2 || commandId == SELECT_ROW2) 
 		{
 			// Backup the zones cell selection
-			for (Zone zone: matrix.model) {
+			for (Zone<? extends Number, ? extends Number> zone: matrix.model) {
 				if (zone.selectionEnabled) {
 					zone.backupSelection();
 				}

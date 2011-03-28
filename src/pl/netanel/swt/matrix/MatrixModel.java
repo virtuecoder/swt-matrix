@@ -11,11 +11,11 @@ import pl.netanel.swt.Resources;
 import pl.netanel.swt.matrix.Axis.ExtentSequence;
 import pl.netanel.util.ImmutableIterator;
 
-class MatrixModel implements Iterable<Zone> {
+class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone<N0, N1>> {
 
-	final Axis axis0;
-	final Axis axis1;
-	private final ArrayList<Zone> zones;
+	final Axis<N0> axis0;
+	final Axis<N1> axis1;
+	private final ArrayList<Zone<N0, N1>> zones;
 	private int[] zOrder;
 	private ExtentPairSequence seq;
 
@@ -31,14 +31,11 @@ class MatrixModel implements Iterable<Zone> {
 //		
 //	}
 
-	public MatrixModel(
-			Axis<? extends Number> axis0, 
-			Axis<? extends Number> axis1, Zone ...zones) 
-	{
+	public MatrixModel( Axis<N0> axis0, Axis<N1> axis1, Zone ...zones) {
 		this.axis0 = axis0;
 		this.axis1 = axis1;
 		
-		this.zones = new ArrayList<Zone>(zones.length);
+		this.zones = new ArrayList<Zone<N0, N1>>(zones.length);
 		for (int i = 0; i < zones.length; i++) {
 			this.zones.add(zones[i]);
 		}
@@ -223,8 +220,8 @@ class MatrixModel implements Iterable<Zone> {
 	 * Zone iterator
 	 */
 	@Override
-	public Iterator<Zone> iterator() {
-		return new ImmutableIterator<Zone>() {
+	public Iterator<Zone<N0, N1>> iterator() {
+		return new ImmutableIterator<Zone<N0, N1>>() {
 			int i;
 			
 			@Override

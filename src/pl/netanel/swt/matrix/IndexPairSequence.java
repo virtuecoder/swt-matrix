@@ -16,7 +16,7 @@ package pl.netanel.swt.matrix;
  * @see Sequence
  * @author Jacek created 21-02-2011
  */
-public class IndexPairSequence implements Sequence {
+class IndexPairSequence implements Sequence {
 	CellSet set;
 	int i, size;
 	Extent e0;

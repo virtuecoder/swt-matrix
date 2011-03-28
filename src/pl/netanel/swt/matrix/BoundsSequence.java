@@ -4,7 +4,7 @@ import org.eclipse.swt.graphics.Rectangle;
 
 import pl.netanel.swt.matrix.Layout.LayoutSequence;
 
-public class BoundsSequence implements Sequence {
+class BoundsSequence implements Sequence {
 	LayoutSequence seq0, seq1;
 	private boolean empty;
 
