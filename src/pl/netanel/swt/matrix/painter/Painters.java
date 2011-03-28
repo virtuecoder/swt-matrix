@@ -5,19 +5,21 @@ import java.util.Iterator;
 
 import org.eclipse.swt.graphics.Rectangle;
 
+import pl.netanel.swt.matrix.Painter;
 import pl.netanel.util.DelegatingList;
 
 
 /**
- * List of painters called in order to render a given rectangle portion of matrix (cell or line).
- * Default list of painters can be customized by adding, removing, replacing and reordering 
- * of the individual painters. 
+ * Maintains a list of painters defining the order they paint.
+ * <p>
+ * The list can be customized by adding, removing, replacing and reordering 
+ * individual painters. 
  *
  * @author Jacek
  * @created 15-10-2010
  */
 
-public class Painters extends DelegatingList<Painter> {
+class Painters extends DelegatingList<Painter> {
 	protected Rectangle bounds;
 
 	public Painters() {

@@ -3,8 +3,10 @@ package pl.netanel.swt.matrix.painter;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 
+import pl.netanel.swt.matrix.Painter;
 
-public class ImagePainter extends Painter {
+
+class ImagePainter extends Painter {
 	public Image image;
 	public boolean repeatX, repeatY, fit;
 	public int alignX;
@@ -13,7 +15,7 @@ public class ImagePainter extends Painter {
 	public int marginY;
 	
 	public ImagePainter(Image image) {
-		super();
+		super("image");
 		this.image = image;
 	}
 
@@ -21,8 +23,8 @@ public class ImagePainter extends Painter {
 	@Override
 	public void paint(int x, int y, int width, int height) {
 		Rectangle r = image.getBounds();
-		x += alignDelta(alignX, width, r.width, marginX);
-		y += alignDelta(alignY, height, r.height, marginY);
+		x = align(alignX, marginX, x, r.width, width);
+		y = align(alignY, marginY, y, r.height, height);
 		
 		gc.drawImage(image, x, y);
 	}

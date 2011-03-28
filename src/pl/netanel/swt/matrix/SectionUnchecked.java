@@ -698,8 +698,8 @@ class SectionUnchecked<N extends Number> {
 		if (axis != null && axis.matrix != null) {
 			if (axis.index == 0) {
 				for (Zone zone: axis.matrix.model) {
-					if (zone.section0.equals(this)) {
-						Math math1 = zone.section1.math;
+					if (zone.section0.core.equals(this)) {
+						Math math1 = zone.section1.core.math;
 						zone.setSelected(start, end, 
 								math1.ZERO_VALUE(), math1.decrement(zone.section1.getCount()), 
 								true);
@@ -708,8 +708,8 @@ class SectionUnchecked<N extends Number> {
 			}
 			else { // assert axis.index == 1
 				for (Zone zone: axis.matrix.model) {
-					if (zone.section1.equals(this)) {
-						Math math0 = zone.section0.math;
+					if (zone.section1.core.equals(this)) {
+						Math math0 = zone.section0.core.math;
 						zone.setSelected( 
 								math0.ZERO_VALUE(), math0.decrement(zone.section0.getCount()),
 								start, end,

@@ -143,12 +143,12 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 * Navigation 
 	 */
 	
-	public Section getNavigationSection() {
+	public Section getCurrentSection() {
 		layout.computeIfRequired();
 		return layout.current == null ? null : sectionMap.get(layout.current.section);
 	}
 	
-	public Number getNavigationIndex() {
+	public Number getCurrentIndex() {
 		layout.computeIfRequired();
 		return layout.current == null ? null : layout.current.index;
 	}
@@ -379,6 +379,8 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	}
 
 	public Bound getCellBound(Section<N> section, N index) {
-		return layout.getBound(new AxisItem<N>(section.core, index)).copy();
+		if (section == null || index == null) return null;
+		Bound bound = layout.getBound(new AxisItem<N>(section.core, index));
+		return bound == null ? null : bound.copy();
 	}
 }

@@ -5,15 +5,13 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.Resources;
 import pl.netanel.swt.matrix.Matrix;
+import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
-import pl.netanel.swt.matrix.painter.BorderPainter;
-import pl.netanel.swt.matrix.painter.LinePainter;
 
 /**
- * Gap between cells.
+ * Gap between cells like HTML table cellspacing attribute. Hide lines.
  * 
  * @author Jacek Kolodziejczyk created 04-03-2011
  */
@@ -22,7 +20,7 @@ public class Snippet_0013 {
 		Shell shell = new Shell();
 		shell.setBounds(400, 200, 400, 300);
 		shell.setLayout(new FillLayout());
-		Display display = shell.getDisplay();
+		final Display display = shell.getDisplay();
 		
 		Matrix matrix = new Matrix(shell, SWT.NONE);
 		matrix.getAxis0().getHeader().setVisible(true);
@@ -37,19 +35,28 @@ public class Snippet_0013 {
 		
 		// Column header painting
 		Zone columnHeader = matrix.getColumneHeader();
-		columnHeader.linePainters0.get(LinePainter.class).setEnabled(false);
-		columnHeader.linePainters1.get(LinePainter.class).setEnabled(false);
-		columnHeader.cellPainters.add(new BorderPainter().color(Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW)));
+		columnHeader.painter.get("row lines").setEnabled(false);
+		columnHeader.painter.get("column lines").setEnabled(false);
+		columnHeader.painter.add(new Painter("cell border", Painter.CELL) {
+			@Override
+			public void paint(int x, int y, int width, int height) {
+				gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
+				gc.drawRectangle(x - 1, y - 1, width + 1, height + 1);
+			}
+		});
 		columnHeader.setDefaultBackground(matrix.getBackground());
 		
 		// Body painting
 		Zone body = matrix.getBody();
-		body.linePainters0.get(LinePainter.class).setEnabled(false);
-		body.linePainters1.get(LinePainter.class).setEnabled(false);
-		body.cellPainters.add(new BorderPainter().color(Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW)));
-		
-		// Uncomment the next line to change the current cell marker to extend outside
-		// matrix.setNavigationPainter(new BorderPainter(2).offset(-2));
+		body.painter.get("row lines").setEnabled(false);
+		body.painter.get("column lines").setEnabled(false);
+		body.painter.add(new Painter("cell border", Painter.CELL) {
+			@Override
+			public void paint(int x, int y, int width, int height) {
+				gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+				gc.drawRectangle(x - 1, y - 1, width + 1, height + 1);
+			}
+		});
 		
 		shell.open();
 		while (!shell.isDisposed()) {

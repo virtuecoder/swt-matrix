@@ -77,8 +77,8 @@ public class Snippet_0002 {
 		remove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				list.remove(rowModel.getNavigationIndex().intValue());
-				rowModel.getNavigationSection().setCount(list.size());
+				list.remove(rowModel.getCurrentIndex().intValue());
+				rowModel.getCurrentSection().setCount(list.size());
 				matrix.refresh();
 			}
 		});

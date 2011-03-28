@@ -3,12 +3,13 @@ package pl.netanel.swt.matrix.snippets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Matrix;
-import pl.netanel.swt.matrix.painter.ImagePainter;
+import pl.netanel.swt.matrix.Painter;
 
 /**
  * Draw custom background for the whole matrix.
@@ -30,14 +31,21 @@ public class Snippet_0010 {
 		matrix.getBody().setDefaultForeground(matrix.getBackground());
 		
 		// Create an image
-		Image image = new Image(display, 100, 100);
+		final Image image = new Image(display, 100, 100);
 		GC gc = new GC(image);
 		gc.setBackground(display.getSystemColor(SWT.COLOR_BLUE));
 		gc.fillOval(0, 0, 100, 100);
 		gc.dispose();
 		
-		matrix.setBackgroundPainter(new ImagePainter(image)
-			.align(SWT.RIGHT, SWT.CENTER).margin(50, 0));
+		matrix.painter.add(0, new Painter("background") {
+			public void paint(int x, int y, int width, int height) {
+				Rectangle r = image.getBounds();
+				x = align(SWT.RIGHT, 50, x, r.width, width);
+				y = align(SWT.CENTER, 0, y, r.height, height);
+				
+				gc.drawImage(image, x, y);
+			};
+		});
 		
 		shell.open();
 		while (!shell.isDisposed()) {
@@ -47,4 +55,5 @@ public class Snippet_0010 {
 		}
 		image.dispose();
 	}
+
 }

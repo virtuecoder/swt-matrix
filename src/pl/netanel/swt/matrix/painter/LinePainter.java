@@ -4,12 +4,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
 import pl.netanel.swt.Resources;
+import pl.netanel.swt.matrix.Painter;
 
 
-public class LinePainter extends Painter {
+class LinePainter extends Painter {
 	public Color color;
 	
 	public LinePainter() {
+		super("line");
 		color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 	}
 
@@ -18,8 +20,9 @@ public class LinePainter extends Painter {
 	 * Background color is to paint lines because the GC.fillRectangle method 
 	 * is used due to possibility of line having width greater then 1.
 	 */
-	protected void init() {
+	protected boolean init() {
 		gc.setBackground(color);
+		return true;
 	}
 	
 	@Override

@@ -737,6 +737,24 @@ class Layout<N extends Number> {
 		return new LayoutSequence(cache.items, cache.lines, section);
 	}
 	
+	public LayoutSequence singleSequence(int distance, int width) {
+		LayoutSequence seq = new LayoutSequence(null, null, null) {
+			private boolean started;
+
+			public void init() {
+				started = false;
+			}
+			@Override
+			public boolean next() {
+				if (started) return false;
+				return started = true;
+			}
+		};
+		seq.bound = new Bound(distance, width);
+		return seq;
+	}
+
+	
 	
 	public class LayoutSequence {
 
@@ -789,6 +807,10 @@ class Layout<N extends Number> {
 		
 		public int getWidth() {
 			return bound.width;
+		}
+
+		public Number getIndex() {
+			return item == null ? null : item.index;
 		}
 	}
 
@@ -880,5 +902,6 @@ class Layout<N extends Number> {
 		compute();
 		return true;
 	}
+
 		
 }

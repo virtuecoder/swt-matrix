@@ -17,10 +17,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import pl.netanel.swt.Resources;
-import pl.netanel.swt.matrix.Layout.LayoutSequence;
-import pl.netanel.swt.matrix.painter.BorderPainter;
-import pl.netanel.swt.matrix.painter.Painter;
-import pl.netanel.swt.matrix.painter.Painters;
 
 /**
  * The main responsibility of this class is to draw a two dimensional 
@@ -46,7 +42,7 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 	Listener listener2;
 	
 	Rectangle area; 
-	private Painter backgroundPainter, navigationPainter;
+	public Painter painter;
 	private ScheduledExecutorService executor;
 	
 	public Matrix(Composite parent, int style) {
@@ -57,7 +53,6 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 		super(parent, style | SWT.DOUBLE_BUFFERED);
 		setBackground(Resources.getColor(SWT.COLOR_LIST_BACKGROUND));
 		setForeground(Resources.getColor(SWT.COLOR_LIST_FOREGROUND));
-		navigationPainter = new BorderPainter(2);
 		
 		if (axis0 == null) {
 			axis0 = new Axis<Integer>();
@@ -77,6 +72,7 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 		axis1.matrix = this; axis1.index = 1;
 		model = new MatrixModel(axis0, axis1, zones);
 		setModel(model);
+		setDefaultPainters();
 		
 		listener2 = new Listener() {
 			@Override
@@ -104,6 +100,7 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 		
 	}
 
+
 	private void setModel(MatrixModel model) {
 		this.model = model;
 		
@@ -127,17 +124,40 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 		selectCurrent();
 	}
 	
-	private void selectCurrent() {
-		layout0.compute();
-		layout1.compute();
-		if (layout0.current != null && layout1.current != null) {
-			Zone zone = model.getZone(layout0.current.section, layout1.current.section);
-			Number index0 = layout0.current.index;
-			Number index1 = layout1.current.index;
-			zone.setSelected(index0, index0, index1, index1, true);
-		}
+	private void setDefaultPainters() {
+		painter = new Painter("root");
+		
+		painter.add(new Painter("zones") {
+			@Override
+			public void paint(int x, int y, int width, int height) {
+				paintDock(gc, Dock.MAIN, Dock.MAIN);
+				paintDock(gc, Dock.TAIL, Dock.HEAD);
+				paintDock(gc, Dock.HEAD, Dock.TAIL);
+				paintDock(gc, Dock.TAIL, Dock.MAIN);
+				paintDock(gc, Dock.MAIN, Dock.TAIL);
+				paintDock(gc, Dock.TAIL, Dock.TAIL);
+				paintDock(gc, Dock.HEAD, Dock.MAIN);
+				paintDock(gc, Dock.MAIN, Dock.HEAD);
+				paintDock(gc, Dock.HEAD, Dock.HEAD);
+				gc.setClipping((Rectangle) null);
+			}
+		});
+		
+		painter.add(new Painter("focus cell") {
+			@Override
+			public void paint(int x, int y, int width, int height) {
+				Rectangle r = getCellBounds(
+						axis0.getCurrentSection(), axis0.getCurrentIndex(), 
+						axis1.getCurrentSection(), axis1.getCurrentIndex() );
+				if (r == null) return;
+				gc.setClipping((Rectangle) null);
+				gc.setLineWidth(2);
+				gc.setForeground(Resources.getColor(SWT.COLOR_BLACK));
+				gc.drawRectangle(r);
+			}
+		});
 	}
-
+	
 	
 	protected void onPaint(Event event) {
 //		long t = System.nanoTime();
@@ -145,41 +165,26 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 		layout0.computeIfRequired();
 		layout1.computeIfRequired();
 		
-		paint(gc, backgroundPainter, area.x, area.y, area.width, area.height);
-
-		paintDock(gc, Dock.MAIN, Dock.MAIN);
-		paintDock(gc, Dock.TAIL, Dock.HEAD);
-		paintDock(gc, Dock.HEAD, Dock.TAIL);
-		paintDock(gc, Dock.TAIL, Dock.MAIN);
-		paintDock(gc, Dock.MAIN, Dock.TAIL);
-		paintDock(gc, Dock.TAIL, Dock.TAIL);
-		paintDock(gc, Dock.HEAD, Dock.MAIN);
-		paintDock(gc, Dock.MAIN, Dock.HEAD);
-		paintDock(gc, Dock.HEAD, Dock.HEAD);
-		
-		gc.setClipping((Rectangle) null);
-		if (layout0.current != null && layout1.current != null) {
-			Bound b0 = layout0.getBound(layout0.current);
-			Bound b1 = layout1.getBound(layout1.current);
-			if (b0 != null && b1 != null) {
-				paint(gc, navigationPainter, b1.distance, b0.distance, b1.width, b0.width);
+		painter.paint(gc, new BoundsProvider() {
+			@Override
+			BoundsSequence getSequence(int scope) {
+				switch (scope) {
+					default: 
+						return new BoundsSequence(
+							layout0.singleSequence(area.y, area.height),
+							layout1.singleSequence(area.x, area.width));
+				}
 			}
-		}
+		});
 		
 //		System.out.println(BigDecimal.valueOf(System.nanoTime() - t, 6).toString());
 	}
 
-	private void paint(GC gc, Painter painter, int x, int y, int width, int height) {
-		if (painter == null || !painter.isEnabled()) return;
-		painter.init(gc);
-		painter.paint(x, y, width, height);
-		painter.clean();
-	}
 
 	private void paintDock(GC gc, Dock dock0, Dock dock1) {
 		for (Zone zone: model) {
-			if (!layout0.contains(dock0, zone.section0) ||
-				!layout1.contains(dock1, zone.section1) ) continue;
+			if (!layout0.contains(dock0, zone.section0.core) ||
+				!layout1.contains(dock1, zone.section1.core) ) continue;
 			
 //			if (zone == null || !zone.isVisible()) continue;
 			
@@ -191,74 +196,75 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 //			}
 			gc.setClipping(bb1.distance, bb0.distance, bb1.width, bb0.width);
 			
-			Bound b0 = layout0.getBound(dock0, zone.section0);
-			Bound b1 = layout1.getBound(dock1, zone.section1);
+			Bound b0 = layout0.getBound(dock0, zone.section0.core);
+			Bound b1 = layout1.getBound(dock1, zone.section1.core);
 			zone.setBounds(b1.distance, b0.distance, b1.width, b0.width);
 			
 			// Paint cells
-			paintCells(gc, zone.cellPainters, 
-					layout0.cellSequence(dock0, zone.section0),
-					layout1.cellSequence(dock1, zone.section1) );
+			zone.paint(gc, layout0, layout1, dock0, dock1);
+//			paintCells(gc, zone.cellPainters, 
+//					layout0.cellSequence(dock0, zone.section0),
+//					layout1.cellSequence(dock1, zone.section1) );
 			
-			// Paint row lines
-			LayoutSequence seq;
-			seq = layout0.lineSequence(dock0, zone.section0);
-			for (Painter painter: zone.linePainters0) {
-				if (!painter.isEnabled()) continue;
-				painter.init(gc);
-				for (seq.init(); seq.next();) {
-					painter.paint(b1.distance, seq.getDistance(), b1.width, seq.getWidth());
-				}
-				painter.clean();
-			}
-			
-			
-			// Paint column lines
-			seq = layout1.lineSequence(dock1, zone.section1);
-			for (Painter painter: zone.linePainters1) {
-				if (!painter.isEnabled()) continue;
-				painter.init(gc);
-				for (seq.init(); seq.next();) {
-					painter.paint(seq.getDistance(), b0.distance, seq.getWidth(), b0.width);
-				}
-				painter.clean();
-			}
+//			// Paint row lines
+//			LayoutSequence seq;
+//			seq = layout0.lineSequence(dock0, zone.section0);
+//			for (Painter painter: zone.linePainters0) {
+//				if (!painter.isEnabled()) continue;
+//				painter.init(gc);
+//				for (seq.init(); seq.next();) {
+//					painter.paint(b1.distance, seq.getDistance(), b1.width, seq.getWidth());
+//				}
+//				painter.clean();
+//			}
+//			
+//			
+//			// Paint column lines
+//			seq = layout1.lineSequence(dock1, zone.section1);
+//			for (Painter painter: zone.linePainters1) {
+//				if (!painter.isEnabled()) continue;
+//				painter.init(gc);
+//				for (seq.init(); seq.next();) {
+//					painter.paint(seq.getDistance(), b0.distance, seq.getWidth(), b0.width);
+//				}
+//				painter.clean();
+//			}
 			
 		}
 	}
 
-	private void paintCells(GC gc, Painters painters, LayoutSequence seq0, LayoutSequence seq1) {
-		for (Painter painter: painters) {
-			if (!isEnabled()) return;
-			painter.init(gc);
-			for (seq0.init(); seq0.next();) {
-				Bound b0 = seq0.bound;
-				for (seq1.init(); seq1.next();) {
-					painter.beforePaint(seq0.item.index, seq1.item.index);
-					Bound b1 = seq1.bound;
-					painter.paint(b1.distance, b0.distance, b1.width, b0.width);
-				}
-			}
-			painter.clean();
-		}
-	}
+//	private void paintCells(GC gc, Painters painters, LayoutSequence seq0, LayoutSequence seq1) {
+//		for (Painter painter: painters) {
+//			if (!isEnabled()) return;
+//			painter.init(gc);
+//			for (seq0.init(); seq0.next();) {
+//				Bound b0 = seq0.bound;
+//				for (seq1.init(); seq1.next();) {
+//					painter.beforePaint(seq0.item.index, seq1.item.index);
+//					Bound b1 = seq1.bound;
+//					painter.paint(b1.distance, b0.distance, b1.width, b0.width);
+//				}
+//			}
+//			painter.clean();
+//		}
+//	}
 	
 
-	public Painter getBackgroundPainter() {
-		return backgroundPainter;
-	}
-
-	public void setBackgroundPainter(Painter backgroundPainter) {
-		this.backgroundPainter = backgroundPainter;
-	}
-
-	public Painter getNavigationPainter() {
-		return navigationPainter;
-	}
-
-	public void setNavigationPainter(Painter navigationPainter) {
-		this.navigationPainter = navigationPainter;
-	}
+//	public Painter getBackgroundPainter() {
+//		return backgroundPainter;
+//	}
+//
+//	public void setBackgroundPainter(Painter backgroundPainter) {
+//		this.backgroundPainter = backgroundPainter;
+//	}
+//
+//	public Painter getNavigationPainter() {
+//		return navigationPainter;
+//	}
+//
+//	public void setNavigationPainter(Painter navigationPainter) {
+//		this.navigationPainter = navigationPainter;
+//	}
 
 	/**
 	 * Resize event handler.
@@ -361,6 +367,28 @@ public class Matrix extends Canvas implements Iterable<Zone>{
 		return model.getZone(section0, section1);
 	}
 	
+	
+	public Rectangle getCellBounds(Section section0, Number index0, Section section1, Number index1) {
+		if (layout0.current != null && layout1.current != null) {
+			Bound b0 = axis0.getCellBound(section0, index0);
+			Bound b1 = axis1.getCellBound(section1, index1);
+			if (b0 != null && b1 != null) {
+				return new Rectangle(b1.distance, b0.distance, b1.width, b0.width);
+			}
+		}
+		return null; 
+	}
+	
+	private void selectCurrent() {
+		layout0.compute();
+		layout1.compute();
+		if (layout0.current != null && layout1.current != null) {
+			Zone zone = model.getZone(layout0.current.section, layout1.current.section);
+			Number index0 = layout0.current.index;
+			Number index1 = layout1.current.index;
+			zone.setSelected(index0, index0, index1, index1, true);
+		}
+	}
 	
 	/*------------------------------------------------------------------------
 	 * Helper 

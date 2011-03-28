@@ -4,15 +4,13 @@ import java.math.BigInteger;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
 
 import pl.netanel.swt.Listeners;
 import pl.netanel.swt.Resources;
-import pl.netanel.swt.matrix.painter.LinePainter;
-import pl.netanel.swt.matrix.painter.Painter;
-import pl.netanel.swt.matrix.painter.Painters;
 
 
 /**
@@ -40,20 +38,9 @@ public class Zone {
 //	public static final int COLUMN_FOOTER = 6;
 //	public static final int BOTTOM_RIGHT = 7;
 	
-	/**
-	 * Painters for the cells of this zone.
-	 */
-	public Painters cellPainters;
-	/**
-	 * Painters for the horizontal lines inside of this zone.
-	 */
-	public Painters linePainters0; 
-	/**
-	 * Painters for the vertical lines inside of this zone.
-	 */
-	public Painters linePainters1;
+	public Painter painter;
 	
-	SectionUnchecked section0, section1;
+	Section section0, section1;
 	CellSet cellSelection;
 	CellSet lastSelection; // For adding selection
 	
@@ -66,11 +53,13 @@ public class Zone {
 
 	private Zone(int id) {
 		this.type = id;
-		cellPainters = new Painters();
-		linePainters0 = new Painters();
-		linePainters1 = new Painters();
-		linePainters0.add(new LinePainter());
-		linePainters1.add(new LinePainter());
+		painter = new Painter("zone");
+//
+//		cellPainters = new Painters();
+//		linePainters0 = new Painters();
+//		linePainters1 = new Painters();
+//		linePainters0.add(new LinePainter());
+//		linePainters1.add(new LinePainter());
 		listeners = new Listeners();
 		selectionEnabled = true;
 		bounds = new Rectangle(0, 0, 0, 0);
@@ -78,8 +67,8 @@ public class Zone {
 
 	public Zone(Section section0, Section section1, int type) {
 		this(type);
-		this.section0 = section0.core;
-		this.section1 = section1.core;
+		this.section0 = section0;
+		this.section1 = section1;
 		cellSelection = new CellSet(section0.core.math, section1.core.math);
 		lastSelection = new CellSet(section0.core.math, section1.core.math);
 		
@@ -210,7 +199,7 @@ public class Zone {
 		return bounds;
 	}
 
-	public void setBounds(int x, int y, int width, int height) {
+	void setBounds(int x, int y, int width, int height) {
 		bounds.x = x;
 		bounds.y = y;
 		bounds.width = width;
@@ -251,8 +240,8 @@ public class Zone {
 		if (!selectionEnabled) return;
 		if (selected) {
 			cellSelection.add(
-					section0.math.ZERO_VALUE(), section0.math.decrement(section0.getCount()), 
-					section1.math.ZERO_VALUE(), section1.math.decrement(section1.getCount()));
+					section0.core.math.ZERO_VALUE(), section0.core.math.decrement(section0.core.getCount()), 
+					section1.core.math.ZERO_VALUE(), section1.core.math.decrement(section1.core.getCount()));
 		} else {
 			cellSelection.clear();
 			lastSelection.clear();
@@ -271,6 +260,52 @@ public class Zone {
 	
 	void restoreSelection() {
 		cellSelection = lastSelection.copy();
+	}
+
+	void paint(GC gc, final Layout layout0, final Layout layout1, final Dock dock1, final Dock dock0) {
+		painter.paint(gc, new BoundsProvider() {
+			@Override
+			BoundsSequence getSequence(int scope) {
+				Rectangle zoneBounds = getBounds();
+				switch (scope) {
+				case Painter.CELL: 
+					return new BoundsSequence(
+						layout0.cellSequence(dock0, section0.core),
+						layout1.cellSequence(dock1, section1.core) );
+					
+				case Painter.ROW_CELL:
+					return new BoundsSequence(
+							layout0.cellSequence(dock0, section0.core),
+							layout1.singleSequence(zoneBounds.x, zoneBounds.width) );
+					
+				case Painter.COLUMN_CELL:
+					return new BoundsSequence(
+							layout0.singleSequence(zoneBounds.y, zoneBounds.height),
+							layout1.cellSequence(dock1, section1.core) );
+					
+				case Painter.ROW_LINE:
+					return new BoundsSequence(
+							layout0.lineSequence(dock0, section0.core),
+							layout1.singleSequence(zoneBounds.x, zoneBounds.width) );
+					
+				case Painter.COLUMN_LINE:
+					return new BoundsSequence(
+							layout0.singleSequence(zoneBounds.y, zoneBounds.height),
+							layout1.lineSequence(dock1, section1.core) );
+
+				default: return new BoundsSequence(
+						layout0.singleSequence(bounds.y, bounds.height), 
+						layout1.singleSequence(bounds.x, bounds.width) );
+				}
+			}
+		});
+	}
+
+	public Section getSection0() {
+		return section0;
+	}
+	public Section getSection1() {
+		return section1;
 	}
 	
 }

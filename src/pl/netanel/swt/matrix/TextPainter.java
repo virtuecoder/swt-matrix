@@ -1,4 +1,4 @@
-package pl.netanel.swt.matrix.painter;
+package pl.netanel.swt.matrix;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -14,7 +14,7 @@ import pl.netanel.util.Arrays;
  * @author jacek.p.kolodziejczyk@gmail.com
  * @created 2010-06-13
  */
-public class TextPainter extends Painter {
+class TextPainter extends Painter {
 	private static int[] EXTENT_ALIGN = {SWT.RIGHT, SWT.END, SWT.BOTTOM, SWT.CENTER};
 	static enum TextClipMethod {DOTS_IN_THE_MIDDLE, DOTS_AT_THE_END, CUT, NONE};
 	
@@ -29,7 +29,7 @@ public class TextPainter extends Painter {
 //	private boolean isClipped;
 	
 	public TextPainter() {
-		super();
+		super("text", Painter.CELL);
 		marginY = 1; marginX = 4;
 		alignY = SWT.BEGINNING; alignX = SWT.BEGINNING;
 		textClipMethod = TextClipMethod.DOTS_IN_THE_MIDDLE;
@@ -37,13 +37,15 @@ public class TextPainter extends Painter {
 
 	/**
 	 * Sets the the default foreground color and vertical string extent.
+	 * @return 
 	 */
 	@Override
-	public void init() {
+	public boolean init() {
 		gc.setBackground(Resources.getColor(SWT.COLOR_LIST_BACKGROUND));
 		gc.setForeground(Resources.getColor(SWT.COLOR_LIST_FOREGROUND));
 		extentCache = FontWidthCache.get(gc, gc.getFont());
 		extent = new Point(-1, gc.stringExtent("ty").y);
+		return true;
 	}
 	
 //	@Override

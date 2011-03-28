@@ -11,7 +11,7 @@
 			access="protected" 
 			author="false" 
 			sourcepath="..\src"
-			excludepackagenames="pl.netanel.swt, pl.netanel.util"
+			excludepackagenames="pl.netanel.swt, pl.netanel.util, pl.netanel.matrix.painter"
 			destdir="${dest}"
 			splitindex="true" 
 			use="true" 

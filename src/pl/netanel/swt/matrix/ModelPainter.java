@@ -1,9 +1,8 @@
-package pl.netanel.swt.matrix.painter;
+package pl.netanel.swt.matrix;
 
 import java.math.BigInteger;
 
 import org.eclipse.swt.graphics.Color;
-import pl.netanel.swt.matrix.Zone;
 
 
 /**
@@ -21,7 +20,7 @@ import pl.netanel.swt.matrix.Zone;
  * 
  * @author Jacek created 07-02-2011
  */
-public class ModelPainter extends TextPainter {
+class ModelPainter extends TextPainter {
 	
 	private Color lastForeground, lastBackground, defaultBackground, background,  
 		selectionBackground, selectionForeground;
@@ -36,25 +35,26 @@ public class ModelPainter extends TextPainter {
 	}
 	
 	@Override
-	public void init() {
+	public boolean init() {
 		super.init();
 		lastBackground = defaultBackground = zone.getDefaultBackground();
 		lastForeground = zone.getDefaultForeground();
 		selectionBackground = zone.getSelectionBackground();
 		selectionForeground = zone.getSelectionForeground();
 		gc.setForeground(lastForeground);
-		if (lastBackground != null) {
-			gc.setBackground(lastBackground);
-			gc.fillRectangle(zone.getBounds());
-		}
+//		if (lastBackground != null) {
+//			gc.setBackground(lastBackground);
+//			gc.fillRectangle(zone.getBounds());
+//		}
 		
 		shouldHighlight = !zone.is(Zone.BODY) || 
 			zone.getSelectionCount().compareTo(BigInteger.ONE) != 0;
 		//gc.setAdvanced(false);
+		return true;
 	}
 
 	@Override
-	public void beforePaint(Number index0, Number index1) {
+	public boolean beforePaint(Number index0, Number index1) {
 		super.beforePaint(index0, index1);
 		
 		boolean isSelected = shouldHighlight && zone.isSelected(index0, index1);
@@ -84,6 +84,7 @@ public class ModelPainter extends TextPainter {
 //		lineWidth0 = zone.section0.getLineWidth(index0);
 //		lineWidth1 = zone.section1.getLineWidth(index1);
 //		lineColor = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
+		return true;
 	}
 	
 	@Override

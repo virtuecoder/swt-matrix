@@ -22,11 +22,11 @@ public class AxisTest {
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		
-		assertEquals(0, model.getNavigationIndex());
+		assertEquals(0, model.getCurrentIndex());
 		
 		model.getBody().setHidden(0, 0, true);
 		layout.compute();
 		
-		assertEquals(1, model.getNavigationIndex());
+		assertEquals(1, model.getCurrentIndex());
 	}
 }

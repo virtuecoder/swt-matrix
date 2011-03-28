@@ -1,17 +1,14 @@
 package pl.netanel.swt.matrix.snippets;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.Resources;
 import pl.netanel.swt.matrix.Matrix;
+import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
-import pl.netanel.swt.matrix.painter.BackgroundPainter;
-import pl.netanel.swt.matrix.painter.LinePainter;
 
 /**
  * Altering line background.
@@ -23,9 +20,9 @@ public class Snippet_0014 {
 		Shell shell = new Shell();
 		shell.setBounds(400, 200, 400, 300);
 		shell.setLayout(new FillLayout());
-		Display display = shell.getDisplay();
+		final Display display = shell.getDisplay();
 		
-		Matrix matrix = new Matrix(shell, SWT.NONE);
+		final Matrix matrix = new Matrix(shell, SWT.NONE);
 		
 		
 		Section colBody = matrix.getAxis1().getBody();
@@ -40,28 +37,28 @@ public class Snippet_0014 {
 
 		final Zone body = matrix.getBody();
 		// To additionally hide the lines
-		body.linePainters0.get(LinePainter.class).setEnabled(false);
-		body.linePainters1.get(LinePainter.class).setEnabled(false);
+		body.painter.get("row lines").setEnabled(false);
+		body.painter.get("column lines").setEnabled(false);
 		
-		body.cellPainters.add(0, new BackgroundPainter(Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW)) {
-			boolean skip, alter;
-			Rectangle bounds;
+		body.painter.add(0, new Painter("alter row background", Painter.ROW_CELL) {
 			@Override
-			protected void init() {
+			protected boolean init() {
 				super.init();
-				bounds = body.getBounds();
+				gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+				return true;
 			}
 			@Override
-			public void beforePaint(Number index0, Number index1) {
-				skip = index1.intValue() > 0;
-				alter = index0.intValue() % 2 == 1;
+			public boolean beforePaint(Number index0, Number index1) {
+				return index0.intValue() % 2 == 1;
 			}
 			@Override
 			public void paint(int x, int y, int width, int height) {
-				if (skip) return;
-				if (alter) {
-					gc.fillRectangle(x, y, bounds.width, height);
-				}
+				gc.fillRectangle(x, y, width, height);
+			}
+			
+			@Override
+			public void clean() {
+				gc.setBackground(matrix.getBackground());
 			}
 		});
 		

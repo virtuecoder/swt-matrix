@@ -4,25 +4,27 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
+import pl.netanel.swt.matrix.Painter;
 
-public class BorderPainter extends Painter {
+
+class BorderPainter extends Painter {
 	public int radius;
 	public int outerOffset = -1;
 	public int lineWidth = 1;
 	public Color color;
 
-	public BorderPainter() {}
-
 	public BorderPainter(int lineWidth) {
+		super("border");
 		this.lineWidth = lineWidth;
 	}
 
 	@Override
-	public void init() {
+	public boolean init() {
 		if (color == null) {
 			color = Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BORDER); 
 		}
 		gc.setForeground(color);
+		return true;
 	}
 	
 	@Override

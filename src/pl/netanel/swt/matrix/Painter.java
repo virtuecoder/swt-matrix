@@ -1,11 +1,12 @@
-package pl.netanel.swt.matrix.painter;
+package pl.netanel.swt.matrix;
+
+import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 
-import pl.netanel.swt.Resources;
+import pl.netanel.util.Preconditions;
 
 
 
@@ -29,26 +30,59 @@ import pl.netanel.swt.Resources;
  * @created 2010-06-13
  */
 // TODO add the paint(AxisLayoutIterator) here?
-public abstract class Painter {
+public class Painter {
+	public static final int FULL = 0;
+	public static final int ROW_LINE = 1;
+	public static final int COLUMN_LINE = 2;
+	public static final int ROW_CELL = 3;
+	public static final int COLUMN_CELL = 4;
+	public static final int CELL = 5;
+	
 	protected GC gc;
 	protected boolean enabled = true;
+	public ArrayList<Painter> children = new ArrayList<Painter>();
+	private final String name;
 //	protected SizeMeter meter;
+	private final int scope;
+	
+	public Painter(String name) {
+		this(name, FULL);
+	}
+
+	public Painter(String name, int scope) {
+		Preconditions.checkNotNullWithName(name, "name");
+		this.name = name;
+		this.scope = scope;
+	}
+
+	/**
+	 * Returns the painter name;
+	 * 
+	 * @return the painter name
+	 */
+	public String getName() {
+		return name;
+	}
+
+
 
 	/**
 	 * Initializes the GC property of the receiver to be used by its other methods.
 	 * To change the painter initialization behavior override its protected {@link #init()} method. 
 	 * @param gc
+	 * @return 
 	 */
-	public final void init(GC gc) {
+	final boolean init(GC gc) {
 		this.gc = gc;
-		init();
+		return init();
 	};
 
 	/** 
 	 * To be called before any painting started.
+	 * @return 
 	 * @see <code>clean()</code>
 	 */
-	protected void init() {}
+	protected boolean init() { return children.isEmpty(); }
 
 	/**
 	 * To be called when the receiver has completed painting of all items.
@@ -58,20 +92,23 @@ public abstract class Painter {
 
 	/**
 	 * To called before the <code>paint()</code> method.
-	 * @param n0
-	 * @param n2
+	 * @param index0
+	 * @param index1
 	 */
-	public void beforePaint(Number index0, Number index1) { }
+	public boolean beforePaint(Number index0, Number index1) { return true; }
 	
-	public abstract void paint(int x, int y, int width, int height);
-	
-	/**
-	 * To called after the <code>paint()</code> method.
-	 * @param item0
-	 * @param item1
-	 */
-	public void afterPaint(Number index0, Number index1) { }
-	
+	public void paint(int x, int y, int width, int height) {
+	}
+
+	public void run() {
+//		init();
+//		paint(x, y, width, height);
+//		clean();
+		
+		for (Painter painter: children) {
+			painter.run();
+		}
+	}
 	
 	/**
 	 * Sets the enabled state of the receiver.
@@ -103,22 +140,27 @@ public abstract class Painter {
 //		this.meter = meter;
 //	}
 	
-	protected int alignDelta(int align, int bound, int width, int margin) {
+	protected int align(int align, int margin, int distance, int width, int bound) {
 		switch (align) {
+		// Fast return
+		case SWT.LEFT: case SWT.TOP: case SWT.BEGINNING:
+			return distance + margin;
 		case SWT.CENTER:
-			return (bound - width) / 2; 
+			return distance + (bound - width) / 2; 
 		case SWT.RIGHT: case SWT.BOTTOM: case SWT.END:
-			return bound - width - margin; 
+			return distance + bound - width - margin; 
 		}
-		return margin;
+		return distance + margin;
 	}
+	
+
 	
 	
 	/*------------------------------------------------------------------------
 	 * Static members 
 	 */
 	
-	public static RGB blend(RGB c1, RGB c2, int ratio) {
+	static RGB blend(RGB c1, RGB c2, int ratio) {
 		int r = blend(c1.red, c2.red, ratio);
 		int g = blend(c1.green, c2.green, ratio);
 		int b = blend(c1.blue, c2.blue, ratio);
@@ -129,27 +171,57 @@ public abstract class Painter {
 		return (ratio*v1 + (100-ratio)*v2)/100;
 	}
 
-	/**
-	 * Creates a default selection color for body cells by blending 40& between 
-	 * the <code>SWT.COLOR_LIST_SELECTION</code> and <code>COLOR_LIST_BACKGROUND</code>.
-	 * @return
-	 */
-	public static Color getDefaultBodySelectionColor() {
-		RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
-		RGB whiteColor = Resources.getColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
-		RGB color = blend(selectionColor, whiteColor, 40);
-		return Resources.getColor(color);
-	}
 	
-	/**
-	 * Creates a default selection color for header cells by blending 40& between 
-	 * the <code>SWT.COLOR_LIST_SELECTION</code> and <code>SWT.COLOR_WIDGET_BACKGROUND</code>.
-	 * @return
-	 */
-	public static Color getDefaultHeaderSelectionColor() {
-		RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
-		RGB whiteColor = Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND).getRGB();
-		RGB color = blend(selectionColor, whiteColor, 90);
-		return Resources.getColor(color);
+	
+	void paint(GC gc, BoundsProvider provider) {
+		if (!enabled) return;
+		if (init(gc)) {
+			BoundsSequence seq = provider.getSequence(scope);
+			for (seq.init(); seq.next();) {
+				if (beforePaint(seq.getIndex0(), seq.getIndex1())) {
+					paint(seq.seq1.getDistance(), seq.seq0.getDistance(), seq.seq1.getWidth(), seq.seq0.getWidth());
+				}
+			}
+			clean();
+		}
+		
+		// Paint children
+		for (Painter painter: children) {
+			painter.paint(gc, provider);
+		}
 	}
+
+//	public void paint(Rectangle bounds) {
+//		paint(bounds.x, bounds.y, bounds.width, bounds.height);
+//	}
+
+	public void add(Painter painter) {
+		children.add(painter);
+	}
+
+	public int indexOf(String name) {
+		for (int i = 0, imax = children.size(); i < imax; i++) {
+			if (children.get(i).name.equals(name)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	public void set(int index, Painter painter) {
+		children.set(index, painter);
+	}
+
+	public void add(int i, Painter painter) {
+		children.add(i, painter);
+	}
+
+	public void replace(Painter painter) {
+		set(indexOf(painter.name), painter);
+	}
+
+	public Painter get(String name) {
+		return children.get(indexOf(name));
+	}
+
 }
