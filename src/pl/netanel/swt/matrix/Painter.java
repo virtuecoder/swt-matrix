@@ -1,7 +1,5 @@
 package pl.netanel.swt.matrix;
 
-import java.util.ArrayList;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
@@ -9,69 +7,84 @@ import org.eclipse.swt.graphics.RGB;
 import pl.netanel.util.Preconditions;
 
 
-
 /**
- * Painter performs drawing operations on the given GC instance.
- * They are used for the whole matrix background painting as well as for the individual cells and lines. 
- * <p> 
- * The {@link #paint(int, int, int, int)} method is called in the loop to paint cells and lines.
- * So it is recommended to take as many operations out of it as possible in order to optimize 
+ * This class draws everything that appears on the matrix canvas: background, images, text, lines.
+ * 
+ * <h3>Optimization</h3>
+ * Because the {@link #paint(Number, Number, int, int, int, int)} method is called in the loop to paint cells and lines 
+ * then it is recommended to take as many operations out of it as possible in order to improve the
  * the graphics performance. All the repetitive operations that are common to all elements, 
  * like setting a font or a background color can be done in the {@link #init()} method, which is called only once.
  * <p>
- * It's also a good practice to bring any of the GC attributes modified in {@link #init()} 
- * back to the default value to provide a clean start for a next painter. It can be odne in the {@link #clean()} method.  
+ * It's also a good practice to restore any of the GC attributes modified by in {@link #init()} or {@link #paint(Number, Number, int, int, int, int)} 
+ * back to the default value to provide a clean start for a next painter. 
+ * It can be done in the {@link #clean()} method.  
  * <p>
- * This optimization is possible due to the fact that the {@link #paint(int, int, int, int)} method is called 
- * for all the cell or lines before the next painter is executed instead of executing all painters 
- * for a given cell before going to the next cell.   
+ * This optimization is possible due to replacing of painting operations loop with the cell iteration loop.
+ * In Matrix cell iteration happens inside of the painters iteration and it can still fold to a single
+ * cell iteration if all the drawing is done by a single painter.
  * 
+ * 	
  * @author jacek.p.kolodziejczyk@gmail.com
  * @created 2010-06-13
  */
 // TODO add the paint(AxisLayoutIterator) here?
 public class Painter<N0 extends Number, N1 extends Number> {
 	/** 
-	 * Single bounds for the whole component
+	 * Single scope of the whole container
 	 */
 	public static final int SCOPE_SINGLE = 0;
 	/**
-	 * Bounds for horizontal lines stretching from the left to the right edge of the component
+	 * Horizontal lines stretching from the left to the right edge of the container
 	 */
 	public static final int SCOPE_HORIZONTAL_LINES = 1;
 	/**
-	 * Bounds for vertical lines stretching from the top to the bottom edge of the component
+	 * Vertical lines stretching from the top to the bottom edge of the container
 	 */
 	public static final int SCOPE_VERTICAL_LINES = 2;
 	/**
-	 * Bounds for compound cells each including all cells from one row 
+	 * Compound cells each including all cells of a single row 
 	 */
 	public static final int SCOPE_ROW_CELLS = 3;
 	/**
-	 * Bounds for compound cells each including all cells from one column 
+	 * Compound cells each including all cells of a single column 
 	 */
 	public static final int SCOPE_COLUMN_CELLS = 4;
 	/**
-	 * Bounds for individual cells inputed in the horizontal order
+	 * Individual cells in horizontal order. Aids graphics performance in case of drawing homogenic rows.
 	 */
 	public static final int SCOPE_CELLS_HORIZONTALLY = 5;
 	/**
-	 * Bounds for individual cells inputed in the vertical order
+	 * Individual cells in vertical order. Aids graphics performance in case of drawing homogenic columns. 
 	 */
 	public static final int SCOPE_CELLS_VERTICALLY = 6;
-	
+
+	/**
+	 * Provides graphic to the {@link #init()}, {@link #clean()}, {@link #paint(Number, Number, int, int, int, int)} methods. 
+	 * It is not safe to use it inside of other methods.
+	 */
 	protected GC gc;
-	
-	final ArrayList<Painter<N0, N1>> children = new ArrayList<Painter<N0, N1>>();
+
 	final int scope;
-	
-	private final String name;
+	final String name;
 	private boolean enabled = true;
 	
+	/**
+	 * Constructor with the scope defaulted to {@link #SCOPE_SINGLE}. 
+	 * @param name the name of the painter, must be unique in the collection to which it is added
+	 */
 	public Painter(String name) {
 		this(name, SCOPE_SINGLE);
 	}
 
+	/**
+	 * The main constructor.
+	 * 
+	 * @param name the name of the painter, must be unique in the collection to which it is added
+	 * @param scope the scope of the painter deciding on the order and size of the boundaries 
+	 * the {@link #paint(Number, Number, int, int, int, int)} method receives. 
+	 * The value must be one of the Painter constants prefixed with <code>SCOPE_</code>.
+	 */
 	public Painter(String name, int scope) {
 		Preconditions.checkNotNullWithName(name, "name");
 		this.name = name;
@@ -79,7 +92,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	}
 
 	/**
-	 * Returns the painter name;
+	 * Returns the painter name.
 	 * 
 	 * @return the painter name
 	 */
@@ -91,7 +104,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 * Initializes the GC property of the receiver to be used by its other methods.
 	 * To change the painter initialization behavior override its protected {@link #init()} method. 
 	 * @param gc
-	 * @return 
+	 * @return true if the initialization succeeded or false otherwise.
 	 */
 	final boolean init(GC gc) {
 		this.gc = gc;
@@ -99,18 +112,41 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	};
 
 	/** 
-	 * To be called before any painting started.
-	 * @return 
+	 * Allows graphic optimization by performing operation that can be taken out of the cell painting loop.
+	 * <p>
+	 * If this method returns false the {@link #paint(Number, Number, int, int, int, int)} 
+	 * and {@link #clean()} methods will not be executed.
+	 * 
+	 * @return true if the initialization succeeded or false otherwise.
 	 * @see <code>clean()</code>
 	 */
-	protected boolean init() { return children.isEmpty(); }
+	protected boolean init() { return true; }
 
 	/**
-	 * To be called when the receiver has completed painting of all items.
+	 * Restores the default {@link GC} settings modified by modified by in {@link #init()} 
+	 * or {@link #paint(Number, Number, int, int, int, int)}.
 	 * @see <code>init()</code>
 	 */
 	public void clean() {}
 
+	/**
+	 * Draws on the canvas within the given boundaries according to the given indexes. 
+	 * <p>
+	 * The types of the <code>index0</code>, <code>index1</code> arguments are not checked 
+	 * in the runtime for performance reasons. Thus the use of generics is recommended to
+	 * check against wrong type in compile time; 
+	 * <p>
+	 * <code>index0</code> is always null when the receiver's scope is one of the following:<ul>
+	 *        <li>{@link #SCOPE_COLUMN_CELLS}, <li>{@link #SCOPE_VERTICAL_LINES}, <li>{@link #SCOPE_SINGLE}</ul>
+	 * <code>index1</code> is always null when the receiver's scope is one of the following:<ul>
+	 *        <li>{@link #SCOPE_ROW_CELLS}, <li>{@link #SCOPE_HORIZONTAL_LINES}, <li>{@link #SCOPE_SINGLE}</ul>
+	 * @param index0 index of a section item in the row axis. 
+	 * @param index1 index of a section item in the column axis 
+	 * @param x the x coordinate of the boundaries
+	 * @param y the y coordinate of the boundaries
+	 * @param width the width of the boundaries
+	 * @param height the height of the boundaries
+	 */
 	public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {}
 
 	
@@ -118,8 +154,8 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	/**
 	 * Sets the enabled state of the receiver.
 	 * <p>
-	 * Allows to communicate to the client to skip this painter in the painting sequence. 
-	 * It can be used to hide lines for example.
+	 * Allows to skip the receiver in the painting sequence. 
+	 * It can be used to hide/show the lines for example.
 	 * 
 	 * @param enabled the new enabled state
 	 */
@@ -128,9 +164,11 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	}
 	
 	/**
-	 * Returns true if the painter is enabled.
+	 * Returns true if the painter is enabled, or false otherwise.
 	 * <p>
-	 * Communicates to the client to skip this painter in the painting sequence.
+	 * Communicates to the client to skip this painter in the painting sequence. 
+	 * It can be used to hide/show the lines for example.
+	 * 
 	 * @return the enabled state
 	 */
 	public boolean isEnabled() {
@@ -138,7 +176,17 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	}
 
 	
-	
+	/**
+	 * Returns the distance of a graphical element based on the align mode and the padding margin.
+	 *  
+	 * @param align the alignment mode, one of: {@link SWT#LEFT}, {@link SWT#RIGHT}, {@link SWT#CENTER}, 
+	 * 		{@link SWT#TOP}, {@link SWT#BOTTOM}, {@link SWT#BEGINNING}, {@link SWT#END}
+	 * @param margin the number of pixels from the edge to which to align, does not matter with {@link SWT#CENTER}
+	 * @param distance the distance of the cell 
+	 * @param width the width of the element
+	 * @param bound the width of the cell
+	 * @return
+	 */
 	protected int align(int align, int margin, int distance, int width, int bound) {
 		switch (align) {
 		// Fast return
@@ -151,59 +199,6 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		}
 		return distance + margin;
 	}
-	
-	
-	
-	/*------------------------------------------------------------------------
-	 * List methods 
-	 */
-
-	public void add(Painter painter) {
-		add(children.size(), painter);
-	}
-
-	public void add(int index, Painter painter) {
-		// Check uniqueness of children names
-		for (int i = 0, imax = children.size(); i < imax; i++) {
-			Painter painter2 = children.get(i);
-			Preconditions.checkArgument(!painter2.name.equals(painter.name), 
-				"A painter with '{0}' name already exist in this collection", painter.name);
-		}
-		children.add(index, painter);
-	}
-	
-	public void set(int index, Painter painter) {
-		// Check uniqueness of children names
-		for (int i = 0, imax = children.size(); i < imax; i++) {
-			if (i == index) continue;
-			Painter painter2 = children.get(i);
-			Preconditions.checkArgument(!painter2.name.equals(painter.name), 
-					"A painter with '{0}' name already exist in this collection", painter.name);
-		}
-		children.set(index, painter);
-	}
-	
-	public void replace(Painter painter) {
-		set(indexOf(painter.name), painter);
-	}
-	
-	public void remove(int index) {
-		children.remove(index);
-	}
-	
-	public int indexOf(String name) {
-		for (int i = 0, imax = children.size(); i < imax; i++) {
-			if (children.get(i).name.equals(name)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	public Painter get(String name) {
-		return children.get(indexOf(name));
-	}
-
 	
 	
 	

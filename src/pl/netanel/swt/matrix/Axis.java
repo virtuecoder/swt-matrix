@@ -26,7 +26,6 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	final Math<N> math;
 	final ArrayList<Section<N>> sections;
 	final HashMap<SectionUnchecked<N>, Section<N>> sectionMap;
-	private Section[] zOrder;
 	Section<N> body, header;
 	private int autoScrollOffset, resizeOffset;
 	Layout<N> layout;
@@ -73,17 +72,6 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 			}
 		}
 		
-		// Calculate z-order
-		zOrder = new Section[this.sections.size()];
-		int j = 0;
-		int bodyIndex = this.sections.indexOf(body);
-		for (int i = bodyIndex, imax = this.sections.size(); i < imax; i++) {
-			zOrder[j++] = this.sections.get(i);
-		}
-		for (int i = bodyIndex; i-- > 0;) {
-			zOrder[j++] = this.sections.get(i);
-		}
-		
 		autoScrollOffset = M.AUTOSCROLL_OFFSET_Y;
 		resizeOffset = M.RESIZE_OFFSET_Y;
 		layout = new Layout(this);
@@ -117,19 +105,6 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		return sections.get(i);
 	}
 	
-	Section[] getZOrder() {
-		return zOrder;
-	}
-	
-	int getZIndex(SectionUnchecked section) {
-		for (int i = 0, imax = zOrder.length; i < imax; i++) {
-			Section section2 = zOrder[i];
-			if (section2.core.equals(section)) {
-				return i;
-			}
-		}
-		return -1;
-	}
 
 	@Override
 	public Iterator<Section<N>> iterator() {
@@ -151,6 +126,16 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		return layout.current == null ? null : layout.current.index;
 	}
 
+	public Section<N> getTopSection() {
+		layout.computeIfRequired();
+		return layout.start == null ? null : sectionMap.get(layout.start.section);
+	}
+	
+	public N getTopIndex() {
+		layout.computeIfRequired();
+		return layout.start == null ? null : layout.start.index;
+	}
+	
 	public void navigate(SectionUnchecked<N> section, N index) {
 		layout.setCurrentItem(new AxisItem(section, index));
 	}
@@ -387,4 +372,26 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		Bound bound = layout.getBound(new AxisItem<N>(section.core, index));
 		return bound == null ? null : bound.copy();
 	}
+
+	
+	
+	/*------------------------------------------------------------------------
+	 * Non public 
+	 */
+
+	int[] getZOrder() {
+		// Calculate z-order
+		int[] order = new int[sections.size()];
+		int j = 0;
+		int bodyIndex = sections.indexOf(body);
+		for (int i = bodyIndex, imax = this.sections.size(); i < imax; i++) {
+			order[j++] = i;
+		}
+		for (int i = bodyIndex; i-- > 0;) {
+			order[j++] = i;
+		}
+		return order;
+	}
+	
+
 }

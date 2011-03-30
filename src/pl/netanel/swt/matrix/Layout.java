@@ -432,7 +432,7 @@ class Layout<N extends Number> {
 	 */
 
 	/**
-	 * Stores index data for a dock area of an <code>AxisLayout</code>.
+	 * Stores index data for a frozen area of an <code>AxisLayout</code>.
 	 * 
 	 * @author Jacek created 08-12-2010
 	 */
@@ -635,9 +635,9 @@ class Layout<N extends Number> {
 		}
 	}
 
-	private Cache getCache(Dock dock) {
-		return 	dock == Dock.MAIN ? main : 
-				dock == Dock.HEAD ? head : tail;
+	private Cache getCache(Frozen frozen) {
+		return 	frozen == Frozen.NONE ? main : 
+				frozen == Frozen.HEAD ? head : tail;
 	}
 	
 	private Cache getCache(int distance) {
@@ -658,25 +658,6 @@ class Layout<N extends Number> {
 		return null;
 	}
 
-	
-//	private Cache getCache(int distance) {
-//		return distance < main.distance && !head.isEmpty() ? head :
-//			   distance > tail.distance && !tail.isEmpty() ? tail : main;
-//	}
-//	
-//	private Cache getCache(int section, MutableNumber index) {
-//		for (Cache cache: new Cache[] {head, main, tail}) {
-//			int len = cache.cells.size();
-//			for (int i = 0; i < len; i++) {
-//				AxisItem item = cache.items.get(i);
-//				if (item.section.equals(section) && math.compare(item.index, index) == 0) {
-//					return cache;
-//				}
-//			}
-//		}
-//		return null;
-//	}
-	
 	MutableNumber getItemPosition(AxisItem<N> item) {
 		MutableNumber position = math.create(0);
 		for (int i = 0, size = sections.size(); i < size; i++) {
@@ -725,15 +706,15 @@ class Layout<N extends Number> {
 	}
 
 	
-	public LayoutSequence cellSequence(Dock dock, SectionUnchecked section) {
+	public LayoutSequence cellSequence(Frozen frozen, SectionUnchecked section) {
 		if (isComputingRequired) compute();
-		Cache cache = getCache(dock);
+		Cache cache = getCache(frozen);
 		return new LayoutSequence(cache.items, cache.cells, section);
 	}
 	
-	public LayoutSequence lineSequence(Dock dock, SectionUnchecked section) {
+	public LayoutSequence lineSequence(Frozen frozen, SectionUnchecked section) {
 		if (isComputingRequired) compute();
-		Cache cache = getCache(dock);
+		Cache cache = getCache(frozen);
 		return new LayoutSequence(cache.items, cache.lines, section);
 	}
 	
@@ -782,8 +763,8 @@ class Layout<N extends Number> {
 			SectionUnchecked section2 = items.get(i).section;
 			if (!section2.equals(section)) {
 				// Make sure last line is included between sections  
-				if (items.size() == bounds.size() && 
-					axis.getZIndex(section2) < axis.getZIndex(item.section)) 
+				if (items.size() == bounds.size() /*&& 
+					axis.getZIndex(section2) < axis.getZIndex(item.section)*/) 
 				{
 					item = new AxisItem(item.section, math.increment(item.index));
 					bound = bounds.get(i);
@@ -814,24 +795,24 @@ class Layout<N extends Number> {
 		}
 	}
 
-	public boolean contains(Dock dock, SectionUnchecked section) {
-		List<SectionUnchecked> sections = getCache(dock).sections;
+	public boolean contains(Frozen frozen, SectionUnchecked section) {
+		List<SectionUnchecked> sections = getCache(frozen).sections;
 		if (sections.contains(section)) {
 			return true;
 		}
 		return false;
 	}
 
-	public Bound getBound(Dock dock) {
-		Cache cache = getCache(dock);
+	public Bound getBound(Frozen frozen) {
+		Cache cache = getCache(frozen);
 		return new Bound(cache.distance, cache == main 
 				? viewportSize - head.innerWidth - tail.innerWidth
 				: cache.outerWidth);
 	}
 	
-	// TODO cache the section bonds in a dock 
-	public Bound getBound(Dock dock, SectionUnchecked section) {
-		Cache cache = getCache(dock);
+	// TODO cache the section bonds in a frozen 
+	public Bound getBound(Frozen frozen, SectionUnchecked section) {
+		Cache cache = getCache(frozen);
 		int first = -1, last = -1;
 		for (int i = 0, size = cache.items.size(); i < size; i++) {
 			if (cache.items.get(i).section.equals(section)) {

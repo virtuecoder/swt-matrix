@@ -24,7 +24,7 @@ public class SnippetA {
 		axis0.getHeader().setVisible(true);
 		axis1.getHeader().setVisible(true);
 		axis0.freezeHead(1);
-		axis1.freezeHead(1);
+		axis1.freezeHead(2);
 		axis1.getHeader().setDefaultResizable(true);
 		axis1.getBody().setDefaultResizable(true);
 		axis1.getBody().setResizable(4, 4, false);

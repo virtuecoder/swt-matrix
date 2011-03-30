@@ -20,12 +20,12 @@ import pl.netanel.util.ImmutableIterator;
  * Constitutes a region of a matrix where a section from the row axis 
  * and a section from the column axis cross with each other.  
  * <p>
- * Region have cell painters and line painters to paint itself on the screen.
+ * Zone has painters to paint itself on the screen.
  * </p><p>
  * It can also have dedicated event handlers to implement special behavior 
  * for different parts of the matrix.  
  * </p>
- * @see SectionUnchecked
+ * @see Section
  * 
  * @author Jacek
  * @created 13-10-2010
@@ -41,7 +41,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 //	public static final int COLUMN_FOOTER = 6;
 //	public static final int BOTTOM_RIGHT = 7;
 	
-	public final Painter<N0, N1> painter;
+	final Painters<N0, N1> painters;
 	
 	Section<N0> section0;
 	Section<N1> section1;
@@ -57,7 +57,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 
 	private Zone(int id) {
 		this.type = id;
-		painter = new Painter("zone");
+		painters = new Painters();
 
 		listeners = new Listeners();
 		selectionEnabled = true;
@@ -92,12 +92,36 @@ public class Zone<N0 extends Number, N1 extends Number> {
 //		);
 	}
 	
+	public void setDefaultBodyStyle() {
+		addPainter(new ModelPainter(this));
+		Color color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
+		addPainter(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color ));
+		addPainter(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
+	}
+	
+	public void setDefaultHeaderStyle() {
+		setDefaultForeground(Resources.getColor(SWT.COLOR_WIDGET_FOREGROUND));
+		setDefaultBackground(Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND));
+		
+		RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
+		RGB whiteColor = Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND).getRGB();
+		RGB rgb = Painter.blend(selectionColor, whiteColor, 90);
+		setSelectionBackground(Resources.getColor(rgb));
+		
+		if (getPainterCount() == 0) {
+			addPainter(new ModelPainter(this));
+			final Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
+			addPainter(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color));
+			addPainter(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
+		}
+	}
+	
 	/**
 	 * Returns true if the given id matches the zone id, or false otherwise.
 	 * @param id to compare with
 	 * @return id equality
 	 */
-	public boolean is(int id) {
+	boolean is(int id) {
 		return this.type == id;
 	}
 	
@@ -278,8 +302,8 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		cellSelection = lastSelection.copy();
 	}
 
-	void paint(GC gc, final Layout layout0, final Layout layout1, final Dock dock0, final Dock dock1) {
-		for (Painter p: painter.children) {
+	void paint(GC gc, final Layout layout0, final Layout layout1, final Frozen dock0, final Frozen dock1) {
+		for (Painter p: painters) {
 			if (!p.isEnabled() || !p.init(gc)) continue;
 			
 			int distance = 0, width = 0;
@@ -352,8 +376,6 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				
 			}
 			p.clean();
-			
-			for (Painter p2: p)
 		}
 	}
 
@@ -370,6 +392,63 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		public Cell(N0 index0, N1 index1) {
 			this.index0 = index0;
 			this.index1 = index1;
+		}
+	}
+	
+	
+	/*------------------------------------------------------------------------
+	 * Painters 
+	 */
+
+	public void addPainter(Painter<N0, N1> painter) {
+		painters.add(painter);
+	}
+
+	public void addPainter(int index, Painter<N0, N1> painter) {
+		// Check uniqueness of painters names
+		painters.add(index, painter);
+	}
+	
+	public void setPainter(int index, Painter<N0, N1> painter) {
+		painters.set(index, painter);
+	}
+	
+	public void replacePainter(Painter<N0, N1> painter) {
+		painters.replacePainter(painter);
+	}
+	
+	public void removePainter(int index) {
+		painters.remove(index);
+	}
+	
+	public int indexOfPainter(String name) {
+		return painters.indexOfPainter(name);
+	}
+	
+	public Painter<N0, N1> getPainter(String name) {
+		return painters.get(indexOfPainter(name));
+	}
+	
+	int getPainterCount() {
+		return painters.size();
+	}
+	
+	public Painter<N0, N1> get(int index) {
+		return painters.get(index);
+	}
+	
+	private static class LinePainter extends Painter {
+		private final Color color;
+
+		public LinePainter(String name, int scope, Color color) {
+			super(name, scope);
+			this.color = color;
+		}
+		
+		@Override
+		public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+			gc.setBackground(color);
+			gc.fillRectangle(x, y, width, height);
 		}
 	}
 }

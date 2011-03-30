@@ -39,6 +39,6 @@ public class SelectionTest {
 		Section body = matrix.getAxis1().getBody();
 		body.setCount(4);
 		body.setSelected(0, 0, true);
-		assertEquals(10, matrix.getZone(Zone.BODY).getSelectedCount().intValue());
+		assertEquals(10, matrix.getBody().getSelectedCount().intValue());
 	}
 }

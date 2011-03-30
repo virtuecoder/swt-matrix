@@ -6,6 +6,6 @@ package pl.netanel.swt.matrix;
  * @author Jacek
  * @created 20-10-2010
  */
-enum Dock {
-	MAIN, TAIL, HEAD 
+enum Frozen {
+	NONE, TAIL, HEAD 
 }

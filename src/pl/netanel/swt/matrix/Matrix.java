@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import pl.netanel.swt.Resources;
+import pl.netanel.util.Preconditions;
 
 /**
  * The main responsibility of this class is to draw a two dimensional 
@@ -45,7 +46,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 	Listener listener2;
 	
 	Rectangle area; 
-	public final Painter<N0, N1> painter;
+	final Painters<N0, N1> painters;
 	private ScheduledExecutorService executor;
 	
 	public Matrix(Composite parent, int style) {
@@ -74,7 +75,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 		model = new MatrixModel(axis0, axis1, zones);
 		setModel(model);
 		
-		painter = new Painter("root", Painter.SCOPE_SINGLE);
+		painters = new Painters();
 		setDefaultPainters();
 		
 		listener2 = new Listener() {
@@ -127,24 +128,25 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 		selectCurrent();
 	}
 	
+	
+	
+	/*------------------------------------------------------------------------
+	 * Painting 
+	 */
+	
 	private void setDefaultPainters() {
-		painter.add(new Painter("zones") {
-			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				paintDock(gc, Dock.MAIN, Dock.MAIN);
-				paintDock(gc, Dock.TAIL, Dock.HEAD);
-				paintDock(gc, Dock.HEAD, Dock.TAIL);
-				paintDock(gc, Dock.MAIN, Dock.TAIL);
-				paintDock(gc, Dock.TAIL, Dock.MAIN);
-				paintDock(gc, Dock.TAIL, Dock.TAIL);
-				paintDock(gc, Dock.MAIN, Dock.HEAD);
-				paintDock(gc, Dock.HEAD, Dock.MAIN);
-				paintDock(gc, Dock.HEAD, Dock.HEAD);
-				gc.setClipping((Rectangle) null);
-			}
-		});
 		
-		painter.add(new Painter("focus cell") {
+		painters.add(new DockPainter(Frozen.NONE, Frozen.NONE));
+		painters.add(new DockPainter(Frozen.TAIL, Frozen.HEAD));
+		painters.add(new DockPainter(Frozen.HEAD, Frozen.TAIL));
+		painters.add(new DockPainter(Frozen.NONE, Frozen.TAIL));
+		painters.add(new DockPainter(Frozen.TAIL, Frozen.NONE));
+		painters.add(new DockPainter(Frozen.TAIL, Frozen.TAIL));
+		painters.add(new DockPainter(Frozen.NONE, Frozen.HEAD));
+		painters.add(new DockPainter(Frozen.HEAD, Frozen.NONE));
+		painters.add(new DockPainter(Frozen.HEAD, Frozen.HEAD));
+		
+		painters.add(new Painter("focus cell") {
 			@Override
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				Rectangle r = getCellBounds(
@@ -159,6 +161,38 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 		});
 	}
 	
+	class DockPainter extends Painter {
+		private final Frozen dock0;
+		private final Frozen dock1;
+
+		public DockPainter(Frozen dock0, Frozen dock1) {
+			super("frozen " + dock0.name().toLowerCase() + " " + dock1.name().toLowerCase());
+			this.dock0 = dock0;
+			this.dock1 = dock1;
+		}
+		
+		@Override
+		public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+			Bound bb0 = layout0.getBound(dock0);
+			Bound bb1 = layout1.getBound(dock1);
+			
+			for (Zone<N0, N1> zone: model) {
+				if (!layout0.contains(dock0, zone.section0.core) ||
+					!layout1.contains(dock1, zone.section1.core) ) continue;
+				
+//				if (zone == null || !zone.isVisible()) continue;
+				gc.setClipping(bb1.distance, bb0.distance, bb1.width, bb0.width);
+				
+				Bound b0 = layout0.getBound(dock0, zone.section0.core);
+				Bound b1 = layout1.getBound(dock1, zone.section1.core);
+				zone.setBounds(b1.distance, b0.distance, b1.width, b0.width);
+				
+				// Paint cells
+				zone.paint(gc, layout0, layout1, dock0, dock1);
+			}
+		}
+	}
+	
 	
 	protected void onPaint(Event event) {
 		long t = System.nanoTime();
@@ -166,7 +200,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 		layout0.computeIfRequired();
 		layout1.computeIfRequired();
 		
-		for (Painter<N0, N1> p: painter.children) {
+		for (Painter<N0, N1> p: painters) {
 			if (!p.isEnabled() || !p.init(gc)) continue;
 			p.paint(null, null, area.x, area.y, area.width, area.height);
 		}
@@ -175,27 +209,12 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 	}
 
 
-	private void paintDock(GC gc, Dock dock0, Dock dock1) {
-		Bound bb0 = layout0.getBound(dock0);
-		Bound bb1 = layout1.getBound(dock1);
-		
-		for (Zone<N0, N1> zone: model) {
-			if (!layout0.contains(dock0, zone.section0.core) ||
-				!layout1.contains(dock1, zone.section1.core) ) continue;
-			
-//			if (zone == null || !zone.isVisible()) continue;
-			gc.setClipping(bb1.distance, bb0.distance, bb1.width, bb0.width);
-			
-			Bound b0 = layout0.getBound(dock0, zone.section0.core);
-			Bound b1 = layout1.getBound(dock1, zone.section1.core);
-			zone.setBounds(b1.distance, b0.distance, b1.width, b0.width);
-			
-			// Paint cells
-			zone.paint(gc, layout0, layout1, dock0, dock1);
-		}
-	}
-
 	
+	
+	/*------------------------------------------------------------------------
+	 * Resize and scrolling
+	 */
+
 	/**
 	 * Resize event handler.
 	 * @param event
@@ -267,22 +286,20 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 		return getZone(axis0.getHeader(), axis1.getHeader());
 	}
 	
-	/**
-	 * Returns a zone by an identifier defined in {@link Zone}.  
-	 * The parameter can have four possible values: <ul>
-	 * <li>BODY</li>
-	 * <li>ROW_HEADER</li>
-	 * <li>COLUMN_HEADER</li>
-	 * <li>TOP_LEFT</li>
-	 * </ul>
-	 * Otherwise the function returns null.
-	 * <p>
-	 * @param id 
-	 * @return
-	 */
-	public Zone<N0, N1> getZone(int id) {
-		return model.getZone(id);
+	public int getZoneCount() {
+		return model.zones.size();
 	}
+	
+	/**
+	 * Returns a zone by its creation index.  
+	 * <p>
+	 * @param index
+	 * @return zone with the given creation index
+	 */
+	public Zone<N0, N1> getZone(int index) {
+		return model.zones.get(index);
+	}
+	
 	
 	/**
 	 * Returns a zone located at the intersection of the given axis sections.
@@ -296,6 +313,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 	public Zone<N0, N1> getZone(Section section0, Section section1) {
 		return model.getZone(section0, section1);
 	}
+	
 	
 	
 	public Rectangle getCellBounds(Section<N0> section0, N0 index0, Section<N1> section1, N1 index1) {
@@ -391,5 +409,59 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 	public Iterator<Zone<N0, N1>> iterator() {
 		return model.iterator();
 	}
+
 	
+	
+	/*------------------------------------------------------------------------
+	 * Painters 
+	 */
+
+	public int[] getZonePaintOrder() {
+		return model.paintOrder;
+	}
+	
+	public void setZonePaintOrder(int[] order) {
+		Preconditions.checkArgument(order.length == model.paintOrder.length, 
+				"The length of the order array ({0}) must be equal to the number of of zones: ({1})", 
+				order.length, model.paintOrder.length);
+		model.paintOrder = order;
+	}
+
+	public void addPainter(Painter<N0, N1> painter) {
+		painters.add(painter);
+	}
+
+	public void addPainter(int index, Painter<N0, N1> painter) {
+		// Check uniqueness of painters names
+		painters.add(index, painter);
+	}
+	
+	public void setPainter(int index, Painter<N0, N1> painter) {
+		painters.set(index, painter);
+	}
+	
+	public void replacePainter(Painter<N0, N1> painter) {
+		painters.replacePainter(painter);
+	}
+	
+	public void removePainter(int index) {
+		painters.remove(index);
+	}
+	
+	public int indexOfPainter(String name) {
+		return painters.indexOfPainter(name);
+	}
+	
+	public Painter<N0, N1> getPainter(String name) {
+		return painters.get(indexOfPainter(name));
+	}
+	
+	int getPainterCount() {
+		return painters.size();
+	}
+	
+	public Painter<N0, N1> get(int index) {
+		return painters.get(index);
+	}
+
 }

@@ -171,6 +171,7 @@ public class Section<N extends Number> {
 	 * Negative argument values are ignored.
 	 * <p>
 	 * Recommended to set a value of majority of the receiver's items to save on memory storage.
+	 * Also any additional 
 	 * @param width new value for default width.
 	 */
 	public void setDefaultLineWidth(int width) {

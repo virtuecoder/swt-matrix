@@ -37,7 +37,7 @@ public class Snippet_0010 {
 		gc.fillOval(0, 0, 100, 100);
 		gc.dispose();
 		
-		matrix.painter.add(0, new Painter("background") {
+		matrix.addPainter(0, new Painter("background") {
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				Rectangle r = image.getBounds();
 				x = align(SWT.RIGHT, 50, x, r.width, width);

@@ -1,3 +1,4 @@
+- wrong initial scroll position
 - snippet to swap axises
 - snippet for selection event
 
@@ -47,13 +48,13 @@ Less priority
 - Text shortening by dots at the end 
 - Nebula Grid API proxy
 - Performance: All painters use global method to set foreground/background which is only run if the latest color is defferent then the current one.
-? Fast cursor paint on matrix.redraw(x,y,w,h,);
+? Fast cursor paint on matrix.redraw(x,y,w,h,
 ? Sequence, IntSequence(from, to), collection sequence, descending, remove, insert before, insert after.
 
 
 //		Preconditions.checkState(total.compareTo(factory.create(head.count + tail.count)) >= 0,
-//				MessageFormat.format("Sum of freeze item count for head: {0} and tail: {1} must be lower or equal to total item count: {2} ", 
-//						head.count, tail.count, total));
+//MessageFormat.format("Sum of freeze item count for head: {0} and tail: {1} must be lower or equal to total item count: {2} ", 
+//		head.count, tail.count, total)
 
 
 ===============================================================================

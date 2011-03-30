@@ -35,9 +35,9 @@ public class Snippet_0013 {
 		
 		// Column header painting
 		Zone columnHeader = matrix.getColumneHeader();
-		columnHeader.painter.get("row lines").setEnabled(false);
-		columnHeader.painter.get("column lines").setEnabled(false);
-		columnHeader.painter.add(new Painter("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		columnHeader.getPainter("row lines").setEnabled(false);
+		columnHeader.getPainter("column lines").setEnabled(false);
+		columnHeader.addPainter(new Painter("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
@@ -48,9 +48,9 @@ public class Snippet_0013 {
 		
 		// Body painting
 		Zone body = matrix.getBody();
-		body.painter.get("row lines").setEnabled(false);
-		body.painter.get("column lines").setEnabled(false);
-		body.painter.add(new Painter("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		body.getPainter("row lines").setEnabled(false);
+		body.getPainter("column lines").setEnabled(false);
+		body.addPainter(new Painter("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));

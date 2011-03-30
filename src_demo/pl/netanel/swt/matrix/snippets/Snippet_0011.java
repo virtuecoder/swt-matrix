@@ -26,8 +26,8 @@ public class Snippet_0011 {
 		matrix.getAxis1().getBody().setCount(40);
 		matrix.getAxis0().getBody().setCount(1000);
 		
-		int index = matrix.painter.indexOf("focus cell");
-		matrix.painter.set(index, new Painter("focus cell") {
+		int index = matrix.indexOfPainter("focus cell");
+		matrix.setPainter(index, new Painter("focus cell") {
 			@Override
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				// Get bounds of the focus cell 

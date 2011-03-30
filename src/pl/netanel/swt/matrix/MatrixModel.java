@@ -3,11 +3,6 @@ package pl.netanel.swt.matrix;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
-
-import pl.netanel.swt.Resources;
 import pl.netanel.swt.matrix.Axis.ExtentSequence;
 import pl.netanel.util.ImmutableIterator;
 
@@ -15,8 +10,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 
 	final Axis<N0> axis0;
 	final Axis<N1> axis1;
-	private final ArrayList<Zone<N0, N1>> zones;
-	private int[] zOrder;
+	final ArrayList<Zone<N0, N1>> zones;
+	int[] paintOrder;
 	private ExtentPairSequence seq;
 
 	public MatrixModel(Axis<N0> axis0, Axis<N1> axis1, Zone<N0, N1> ...zones) {
@@ -38,36 +33,21 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 					zone = createZone(section0, section1);
 					this.zones.add(zone);
 				}
-				if (section0.equals(body0) && section1.equals(body1)) {
-					if (zone.painter.children.isEmpty()) {
-						zone.painter.add(new ModelPainter(zone));
-						Color color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
-						zone.painter.add(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color ));
-						zone.painter.add(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
+				if (zone.getPainterCount() == 0) {
+					if (section0.equals(body0) && section1.equals(body1)) {
+						zone.setDefaultBodyStyle();
 					}
-				}
-				else if (section0.equals(header0) || section1.equals(header1)) {
-					setHeaderStyle(zone);
+					else if (section0.equals(header0) || section1.equals(header1)) {
+						zone.setDefaultHeaderStyle();
+					}
 				}
 			}
 		}
-		calculateZOrder();
+		calculatePaintOrder();
 		
 		seq = new ExtentPairSequence();
 	}
 	
-	private void calculateZOrder() {
-		zOrder = new int[zones.size()];
-		Section[] sections0 = axis0.getZOrder();
-		Section[] sections1 = axis1.getZOrder();
-		int k = 0;
-		for (int i = 0, imax = sections0.length; i < imax; i++) {
-			for (int j = 0, jmax = sections1.length; j < jmax; j++) {
-				zOrder[k++] = zones.indexOf(getZone(sections0[i], sections1[j]));
-			}			
-		}
-	}
-
 	private Zone createZone(Section section0, Section section1) {
 		Zone zone = null;
 		Section header0 = axis0.getHeader();
@@ -108,39 +88,18 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		return zone;
 	}
 	
-	
-	private Zone setHeaderStyle(Zone zone) {
-		zone.setDefaultForeground(Resources.getColor(SWT.COLOR_WIDGET_FOREGROUND));
-		zone.setDefaultBackground(Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND));
-		
-		RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
-		RGB whiteColor = Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND).getRGB();
-		RGB rgb = Painter.blend(selectionColor, whiteColor, 90);
-		zone.setSelectionBackground(Resources.getColor(rgb));
-		
-		if (zone.painter.children.isEmpty()) {
-			zone.painter.add(new ModelPainter(zone));
-			final Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
-			zone.painter.add(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color));
-			zone.painter.add(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
-		}
-		return zone;
-	}
-	
-	private static class LinePainter extends Painter {
-		private final Color color;
-
-		public LinePainter(String name, int scope, Color color) {
-			super(name, scope);
-			this.color = color;
-		}
-		
-		@Override
-		public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-			gc.setBackground(color);
-			gc.fillRectangle(x, y, width, height);
+	private void calculatePaintOrder() {
+		paintOrder = new int[zones.size()];
+		int[] order0 = axis0.getZOrder();
+		int[] order1 = axis1.getZOrder();
+		int k = 0;
+		for (int i = 0, imax = order0.length; i < imax; i++) {
+			for (int j = 0, jmax = order1.length; j < jmax; j++) {
+				paintOrder[k++] = zones.indexOf(getZone(axis0.getSection(order0[i]), axis1.getSection(order1[j])));
+			}			
 		}
 	}
+	
 	
 	public Zone getBody() {
 		return getZone(axis0.getBody(), axis1.getBody());
@@ -219,7 +178,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 
 			@Override
 			public Zone next() {
-				return zones.get(zOrder[i++]);
+				return zones.get(paintOrder[i++]);
 			}
 			
 		};

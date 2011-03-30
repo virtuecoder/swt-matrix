@@ -1,10 +1,29 @@
 
+Basic Terms
+
+Freeze - head and tail freezing split the matrix client area into 
+
 
 Painting
+Anything that apears on the matrix canvas is drawn by the paint method of the Painter class.
+
+A painter can be identified by a name and is characterized by its scope. Matrix painters disregard the scope and are alwyas called once with the full matrix boundaries. A zone painter can be called many times with various boundaries depending on its scope. Scopes are expressed by the constants defined in Painter class and prefixed with SCOPE_.
+
+Both Matrix and Zones have lists of painters which define the drawing order of the content elements such as background, images, text, lines. The number and order of painters is fully configarable. Matrix comes with the following painters in the following order by default:
+dock main main
+dock tail head
+dock head tail
+dock main tail
+dock tail main
+dock tail tail
+dock main head
+dock head main
+dock head head
+focus cell
+
+A dock painter paints all the zones that it contains. The zone painting order can be set by {@link Matrix#setZonePaintOrder(int[])} and it is used by all dock painters. The default zone painting order is a cartesian product of default section painting orders of row axis and column axis, where body is the first, then the sections following body in ascending order and then the sections proceeding body in descending order. 
 
 
-
-Size Meter
 
 
 
