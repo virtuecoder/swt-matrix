@@ -13,6 +13,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.Matrix;
+import pl.netanel.swt.matrix.NumberSequence;
+import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 
 /**
@@ -21,6 +23,7 @@ import pl.netanel.swt.matrix.Zone;
  * @author Jacek Kolodziejczyk created 03-03-2011
  */
 public class Snippet_0002 {
+	static int counter;
 	
 	public static void main(String[] args) {
 		Shell shell = new Shell();
@@ -31,9 +34,14 @@ public class Snippet_0002 {
 		list.add(Integer.toString(2));
 		list.add(Integer.toString(3));
 		list.add(Integer.toString(4));
+		list.add(Integer.toString(5));
+		list.add(Integer.toString(6));
+		counter = 6;
 		
 		final Axis rowModel = new Axis();
-		rowModel.getBody().setCount(4);
+		final Section rowBody = rowModel.getBody();
+		rowBody.setCount(list.size());
+		rowModel.getBody().setDefaultResizable(true);
 		
 		Axis colModel = new Axis();
 		colModel.getBody().setCount(2);
@@ -59,15 +67,17 @@ public class Snippet_0002 {
 				rowModel, colModel, body, columnHeader);
 		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
-		matrix.getAxis0().getBody().setCellWidth(2, 2, 20);
+		rowBody.setCellWidth(2, 4, 25);
+		rowBody.setResizable(2, 4, false);
 		
 		Button add = new Button(shell, SWT.PUSH);
 		add.setText("Add");
 		add.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				list.add(Integer.toString(Integer.parseInt(list.get(list.size() - 1)) + 1));
-				rowModel.getBody().setCount(list.size());
+				Number focusIndex = matrix.getAxis0().getFocusIndex();
+				list.add(focusIndex.intValue(), Integer.toString(++counter));
+				rowBody.add(focusIndex, 1);
 				matrix.refresh();
 			}
 		});
@@ -77,8 +87,15 @@ public class Snippet_0002 {
 		remove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				list.remove(rowModel.getFocusIndex().intValue());
-				rowModel.getFocusSection().setCount(list.size());
+				
+				//rowModel.getFocusSection().setCount(list.size());
+				NumberSequence seq = rowBody.getSelected();
+				for (seq.init(); seq.nextExtent();) {
+					rowBody.remove(seq.start(), seq.end());
+					for (int i = seq.start().intValue(); i <= seq.end().intValue(); i++) {
+						list.remove(i);
+					}
+				}
 				matrix.refresh();
 			}
 		});

@@ -318,4 +318,12 @@ class NumberSet<N extends Number> {
 		}}
 		return n2;
 	}
+	
+	public void delete(N start, N end) {
+		Extent.delete(math, items, start, end);
+	}
+	
+	public void insert(N target, N count) {
+		Extent.insert(math, items, target, count);
+	}
 }

@@ -2,7 +2,7 @@ package pl.netanel.swt.matrix;
 
 import pl.netanel.util.IntArray;
 
-class IntAxisState extends AxisState {
+class IntAxisState<N extends Number> extends AxisState {
 	private final IntArray values;
 	private int defaultValue, value;
 	
@@ -43,16 +43,16 @@ class IntAxisState extends AxisState {
 	}
 
 	
-	public int getValue(Number index) {
+	public int getValue(N index) {
 		int i = indexOf(index);
 		return i == -1 ? defaultValue : values.get(i);
 	}
 	
-	public void setValue(Extent extent, int value) {
+	public void setValue(Extent<N> extent, int value) {
 		setValue(extent.start(), extent.end(), value);
 	}
 	
-	public void setValue(Number from, Number to, int value) {
+	public void setValue(N from, N to, int value) {
 		if (value == defaultValue) {
 			// TODO remove value if it is default
 		}
@@ -79,5 +79,15 @@ class IntAxisState extends AxisState {
 	public void setDefault(int value) {
 		defaultValue = value;
 	}
-
+	
+	
+	@Override
+	public IntArray delete(Number start, Number end) {
+		IntArray a = super.delete(start, end);
+		for (int i = 0, imax = a.size(); i < imax; i++) {
+			int index = a.get(i);
+			values.remove(index);
+		}
+		return a;
+	}
 }

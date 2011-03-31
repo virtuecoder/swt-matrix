@@ -318,7 +318,7 @@ class MatrixListener implements Listener {
 		private boolean isInHeader() {
 			if (zone == null) return false;
 			Axis axis2 = axis.index == 0 ? matrix.axis1 : matrix.axis0;
-			return axis2.getHeader().core.equals(
+			return axis2.getHeader().equals(
 					axis.index == 1 ? zone.section0 : zone.section1);
 		}
 

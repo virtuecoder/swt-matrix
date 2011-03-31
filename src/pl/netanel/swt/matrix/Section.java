@@ -585,7 +585,7 @@ public class Section<N extends Number> {
 	 * Returns an iterator for the indexes of selected items.
 	 * @return an iterator for the indexes of selected items
 	 */
-	public Iterator getSelected() {
+	public NumberSequence getSelected() {
 		return core.getSelected();
 	}
 
@@ -616,7 +616,39 @@ public class Section<N extends Number> {
 		core.move(start, end, target);
 	}
 	
+	/**
+	 * Removes a range of items decreasing the section item count. 
+	 * 
+	 * @param start first index of the range of items  
+	 * @param end last index of the range of items
+	 *   
+	 * @throws NullPointerException if start or end is null
+	 * @throws IndexOutOfBoundsException if start or end are 
+	 * 		   out of 0 ... {@link #getCount()}-1 bounds
+	 * @throws IllegalArgumentException if start is greater then end  
+	 */
+	public void remove(N start, N end) {
+		checkRange(start, end, core.count);
+		core.delete(start, end);
+	}
 
+	/**
+	 * Adds a range of items increasing the section item count. 
+	 * <p>
+	 * Items are inserted before the given target index or at the end if the target equals section.getCount(). 
+	 * 
+	 * @param start first index of the range of items  
+	 * @param end last index of the range of items
+	 *   
+	 * @throws NullPointerException if target or count is null
+	 * @throws IndexOutOfBoundsException if target is 
+	 * 		   out of 0 ... {@link #getCount()}-1 bounds
+	 */
+	public void add(N target, N count) {
+		Preconditions.checkNotNullWithName(count, "count");
+		checkIndex(target, core.math.increment(core.count), "target");
+		core.insert(target, count);
+	}
 	
 	/*------------------------------------------------------------------------
 	 * Non public methods 
@@ -658,4 +690,5 @@ public class Section<N extends Number> {
 					"index ({0}) must be lower then limit {1}", index, limit)) ;
 		}
 	}
+
 }

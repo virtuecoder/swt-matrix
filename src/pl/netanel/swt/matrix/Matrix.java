@@ -1,6 +1,5 @@
 package pl.netanel.swt.matrix;
 
-import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -195,7 +194,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 	
 	
 	protected void onPaint(Event event) {
-		long t = System.nanoTime();
+//		long t = System.nanoTime();
 		final GC gc = event.gc;
 		layout0.computeIfRequired();
 		layout1.computeIfRequired();
@@ -205,7 +204,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 			p.paint(null, null, area.x, area.y, area.width, area.height);
 		}
 		
-		System.out.println(BigDecimal.valueOf(System.nanoTime() - t, 6).toString());
+//		System.out.println(BigDecimal.valueOf(System.nanoTime() - t, 6).toString());
 	}
 
 

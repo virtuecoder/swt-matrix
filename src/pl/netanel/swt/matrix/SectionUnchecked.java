@@ -51,8 +51,7 @@ class SectionUnchecked<N extends Number> {
 	private final NumberQueueSet<N> selection;
 	private final NumberQueueSet<N> lastSelection;
 
-	
-	private boolean defaultResizable, defaultMoveable, defaultHideable; 
+private boolean defaultResizable, defaultMoveable, defaultHideable; 
 	private boolean isNavigationEnabled, isVisible;
 	
 	Axis<N> axis;
@@ -671,7 +670,7 @@ class SectionUnchecked<N extends Number> {
 	 * @return the hidden items iterator
 	 */
 	public Iterator<N> getHidden() {
-		return new IndexIterator(new IndexSequence(hidden));
+		return new IndexIterator(new NumberSequence(hidden));
 	}
 	
 	
@@ -748,8 +747,8 @@ class SectionUnchecked<N extends Number> {
 		return selection.getCount().getValue();
 	}
 	
-	public Iterator<N> getSelected() {
-		return new IndexIterator(new IndexSequence(selection));
+	public NumberSequence<N> getSelected() {
+		return new NumberSequence(selection);
 	}
 	
 	public void backupSelection() {
@@ -881,9 +880,9 @@ class SectionUnchecked<N extends Number> {
 	
 	class IndexIterator extends ImmutableIterator<N> {
 		
-		private IndexSequence<N> seq;
+		private NumberSequence<N> seq;
 
-		IndexIterator(IndexSequence seq) {
+		IndexIterator(NumberSequence seq) {
 			super();
 			this.seq = seq;
 			seq.init();
@@ -914,7 +913,28 @@ class SectionUnchecked<N extends Number> {
 		return true;
 	}
 
-
+	public void delete(N start, N end) {
+		cellWidth.delete(start, end);
+		lineWidth.delete(start, end);
+		cellSpan.delete(start, end);
+		resizable.delete(start, end);
+		moveable.delete(start, end);
+		hideable.delete(start, end);
+		hidden.delete(start, end);
+		order.delete(start, end);
+		setCount(math.create(count).subtract(end).add(start).decrement().getValue());
+	}
 	
+	public void insert(N target, N count) {
+		cellWidth.insert(target, count);
+		lineWidth.insert(target, count);
+		cellSpan.insert(target, count);
+		resizable.insert(target, count);
+		moveable.insert(target, count);
+		hideable.insert(target, count);
+		hidden.insert(target, count);
+		order.insert(target, count);
+		this.count = math.create(this.count).add(count).getValue();
+	}
 
 }

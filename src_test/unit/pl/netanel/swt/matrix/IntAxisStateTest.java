@@ -10,56 +10,56 @@ public class IntAxisStateTest {
 
 	@Test
 	public void name() throws Exception {
-//		IntAxisState state = new IntAxisState(IntMath.getInstance(), 100);
-//		assertEquals(100, state.getValue(5));
-//		
-//		// Set value in an empty collection
-//		state.setValue(5, 40);
-//		assertEquals(40, state.getValue(5));
-//		assertEquals(1, state.getCount());
-//		
-//		// Change the one existing value
-//		state.setValue(5, 50);
-//		assertEquals(50, state.getValue(5));
-//		assertEquals(1, state.getCount());
-//		
-//		// Setting the same value again should not change the number of values stored
-//		state.setValue(5, 50);
-//		assertEquals(50, state.getValue(5));
-//		assertEquals(1, state.getCount());
-//		
-//		// Adding adjacent index with the same value should enlardge extent 
-//		state.setValue(6, 50);
-//		assertEquals(50, state.getValue(6));
-//		assertEquals(1, state.getCount());
-//		state.setValue(4, 50);
-//		assertEquals(50, state.getValue(4));
-//		assertEquals(1, state.getCount());
-//		
-//		// Adding adjacent index with different value should create new extent
-//		state.setValue(7, 80);
-//		assertEquals(80, state.getValue(7));
-//		assertEquals(2, state.getCount());
-//		
-//		// Set the same value inside of existing extent
-//		state.setValue(5, 50);
-//		assertEquals(50, state.getValue(5));
-//		assertEquals(2, state.getCount());
-//		
-//		// Set different value inside of existing extent
-//		state.setValue(5, 70);
-//		assertEquals(70, state.getValue(5));
-//		assertEquals(4, state.getCount());
-//		
-//		// Set the same value as the extent on the left, should merge
-//		state.setValue(6, 70);
-//		assertEquals(70, state.getValue(6));
-//		assertEquals(3, state.getCount());
-//
-//		// Set the same value as the extent on the right, should merge
-//		state.setValue(4, 70);
-//		assertEquals(70, state.getValue(4));
-//		assertEquals(2, state.getCount());
+		IntAxisState state = new IntAxisState(IntMath.getInstance(), 100);
+		assertEquals(100, state.getValue(5));
+		
+		// Set value in an empty collection
+		state.setValue(5, 5, 40);
+		assertEquals(40, state.getValue(5));
+		assertEquals(1, state.getCount());
+		
+		// Change the one existing value
+		state.setValue(5, 5,  50);
+		assertEquals(50, state.getValue(5));
+		assertEquals(1, state.getCount());
+		
+		// Setting the same value again should not change the number of values stored
+		state.setValue(5, 5,  50);
+		assertEquals(50, state.getValue(5));
+		assertEquals(1, state.getCount());
+		
+		// Adding adjacent index with the same value should enlardge extent 
+		state.setValue(6, 6, 50);
+		assertEquals(50, state.getValue(6));
+		assertEquals(1, state.getCount());
+		state.setValue(4, 4, 50);
+		assertEquals(50, state.getValue(4));
+		assertEquals(1, state.getCount());
+		
+		// Adding adjacent index with different value should create new extent
+		state.setValue(7, 7, 80);
+		assertEquals(80, state.getValue(7));
+		assertEquals(2, state.getCount());
+		
+		// Set the same value inside of existing extent
+		state.setValue(5, 5,  50);
+		assertEquals(50, state.getValue(5));
+		assertEquals(2, state.getCount());
+		
+		// Set different value inside of existing extent
+		state.setValue(5, 5,  70);
+		assertEquals(70, state.getValue(5));
+		assertEquals(4, state.getCount());
+		
+		// Set the same value as the extent on the left, should merge
+		state.setValue(6, 6, 70);
+		assertEquals(70, state.getValue(6));
+		assertEquals(3, state.getCount());
+
+		// Set the same value as the extent on the right, should merge
+		state.setValue(4, 4, 70);
+		assertEquals(70, state.getValue(4));
+		assertEquals(2, state.getCount());
 		
 	}
 	
@@ -285,7 +285,5 @@ public class IntAxisStateTest {
 		
 		state.setValue(extent(6,6), 60);
 		assertEquals(2, state.getCount());
-		
-		
 	}
 }

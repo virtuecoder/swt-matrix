@@ -2,28 +2,32 @@ package pl.netanel.swt.matrix;
 
 
 /**
- * Allows iteration over a set of cells.
- * The order of cells is unspecified. 
+ * The purpose of this class is to iterate over a set of numbers.
  * <p>
- * Usage: <pre>
- * CellSequence seq = &ltget instance of the sequence&gt;
+ * Two modes of iteration are possible by single numbers and by extents of numbers.
+ * <p>
+ * Example usage: <pre>
+ * NumberSequence seq = section.getSelected();
+ * // single number iteration
  * for (seq.init(); seq.next();) {
- *     System.out.println(
- *         seq.index0() + " : " + seq.index1());
+ *     System.out.println(seq.index0());
+ * }
+ * // number extents iteration
+ * for (seq.init(); seq.nextExtent();) {
+ *     System.out.println(seq.start() + " : " + seq.end());
  * }
  * </pre>
  * 
- * @see Sequence
  * @author Jacek created 21-02-2011
  */
-class IndexSequence<N extends Number> implements Sequence {
+public class NumberSequence<N extends Number> implements Sequence {
 	NumberSet<N> set;
 	int i, size;
 	Extent e;
 	MutableNumber<N> index;
 	
 	
-	public IndexSequence(NumberSet set) {
+	NumberSequence(NumberSet set) {
 		this.set = set;
 	}
 	
@@ -62,5 +66,21 @@ class IndexSequence<N extends Number> implements Sequence {
 
 	boolean hasNext() {
 		return i < size - 1 || set.math.compare(index.increment(), e.end) < 0;
+	}
+	
+	
+	public boolean nextExtent() {
+		if (i++ >= size) return false;
+		e = set.items.get(i-1);
+		index.set(e.start);
+		return true;
+	}
+	
+	public N start() {
+		return index.getValue();
+	}
+	
+	public N end() {
+		return index.getValue();
 	}
 }

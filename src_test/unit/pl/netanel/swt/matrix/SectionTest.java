@@ -181,6 +181,15 @@ public class SectionTest {
 		assertEquals("0, 1, 2, 3, 4", toString(section));
 	}
 
+	@Test
+	public void removeItems() throws Exception {
+		SectionUnchecked section = new SectionUnchecked(int.class);
+		section.setCount(5);
+		section.setCellWidth(4, 4, 33);
+		assertEquals(33, section.getCellWidth(4));
+		section.delete(2, 2);
+		assertEquals(33, section.getCellWidth(3));
+	}
 	
 //	private static String moveSelected(SectionUnchecked section, int source, int target) {
 //		section.moveSelected(source, target);

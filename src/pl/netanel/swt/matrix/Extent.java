@@ -1,5 +1,11 @@
 package pl.netanel.swt.matrix;
 
+import static pl.netanel.swt.matrix.Math.*;
+
+import java.util.ArrayList;
+
+import pl.netanel.util.IntArray;
+
 
 class Extent<N extends Number> {
 	MutableNumber<N> start, end;
@@ -22,17 +28,67 @@ class Extent<N extends Number> {
 	public N end() {
 		return end.getValue();
 	}
-	
-//	public Extent copy() {
-//		return new Extent(start.copy(), end.copy());
-//	}
-//
-//	public static boolean contains(Math math, Extent e, MutableNumber n) {
-//		return math.contains(e.start, e.end, n);
-//	}
-//
-//	public static MutableNumber count(Math math, Extent e) {
-//		return math.create(e.end).subtract(e.start).increment();
-//	}
+
+	/**
+	 * arguments: 0 2
+	 * extent:        4 6 -> e.start -= p.count; e.end -= p.count  
+	 * arguments: 0 2
+	 * extent:      2 4   -> e.start = end + 1;   
+	 * arguments: 0 2
+	 * extent:      2 4   -> e.start = end + 1;   
+	 * arguments:  12
+	 * extent:    0  3    -> add(end+1, e.end); e.end = end + 1;    
+	 * arguments:  1 3
+	 * extent:    0 2     -> e.end = start - 1;  
+	 * @return 
+	 * */
+	public static <N extends Number> IntArray delete(Math<N> math, ArrayList<Extent<N>> list, N start, N end) {
+		IntArray toRemove = new IntArray();
+		for (int i = 0, imax = list.size(); i < imax; i++) {
+			Extent<N> e = list.get(i);
+			int compare = math.compare(e.start(), e.end(), start, end);
+			switch (compare) {
+			case AFTER:		
+			case ADJACENT_AFTER:		
+				MutableNumber count = math.create(end).subtract(start).increment();
+				e.start.subtract(count);
+				e.end.subtract(count);
+				break;
+				
+			case CROSS_AFTER:
+				e.start.subtract(math.create(e.start).subtract(start));
+				e.end.set(end).subtract(e.start).add(start).decrement();
+				break;
+				
+			case CROSS_BEFORE:
+			case OVERLAP:
+				e.end.subtract(math.min(end, e.end())).add(start).decrement();
+				break;
+				
+			case INSIDE:
+			case EQUAL:
+				toRemove.add(i); break;
+			}
+		}
+		toRemove.sortDescending();
+		for (int i = 0, imax = toRemove.size(); i < imax; i++) {
+			list.remove(toRemove.get(i));
+		}
+		return toRemove;
+	}
+
+	public static <N extends Number> void insert(Math<N> math, ArrayList<Extent<N>> list, N target, N count) {
+		for (int i = 0, imax = list.size(); i < imax; i++) {
+			Extent<N> e = list.get(i);
+
+			if (math.compare(target, e.start()) <= 0) {
+				e.start.add(count);
+				e.end.add(count);
+			}
+			else if (math.compare(target, e.end()) <= 0) {
+				e.end.add(count);
+			}
+		}
+	}
 	
 }

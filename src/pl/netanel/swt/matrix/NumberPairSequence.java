@@ -2,29 +2,37 @@ package pl.netanel.swt.matrix;
 
 
 /**
- * Allows iteration over a set of cells.
- * The order of cells is unspecified. 
+ * The purpose of this class is to iterate over a set of numbers.
  * <p>
- * Usage: <pre>
- * CellSequence seq = &ltget instance of the sequence&gt;
+ * Two modes of iteration are possible by single numbers and by extents of numbers.
+ * <p>
+ * Example usage: <pre>
+ * NumberPairSequence seq = zone.getSelected();
+ * // single pair iteration
  * for (seq.init(); seq.next();) {
  *     System.out.println(
  *         seq.index0() + " : " + seq.index1());
  * }
+ * // pair extents iteration
+ * for (seq.init(); seq.nextExtent();) {
+ *     System.out.println(
+ *         seq.start0() + "-" + seq.end0() + " : " +
+ *         seq.start1() + "-" + seq.end1());
+ * }
  * </pre>
  * 
- * @see Sequence
  * @author Jacek created 21-02-2011
  */
-class IndexPairSequence implements Sequence {
+public class NumberPairSequence<N0 extends Number, N1 extends Number> implements Sequence {
 	CellSet set;
 	int i, size;
-	Extent e0;
-	Extent e1;
-	MutableNumber index0, index1;
+	Extent<N0> e0;
+	Extent<N1> e1;
+	MutableNumber<N0> index0;
+	MutableNumber<N1> index1;
 	
 	
-	public IndexPairSequence(CellSet set) {
+	NumberPairSequence(CellSet set) {
 		this.set = set;
 	}
 	
@@ -63,7 +71,7 @@ class IndexPairSequence implements Sequence {
 	 * 
 	 * @return row axis index
 	 */
-	public Number index0() {
+	public N0 index0() {
 		return index0.getValue();
 	}
 
@@ -72,7 +80,31 @@ class IndexPairSequence implements Sequence {
 	 * 
 	 * @return column axis index 
 	 */
-	public Number index1() {
+	public N1 index1() {
 		return index1.getValue();
+	}
+	
+	
+	public boolean nextExtent() {
+		if (i++ >= size) return false;
+		e0 = set.items0.get(i-1);
+		e1 = set.items1.get(i-1);
+		index0 = set.math0.create(e0.start);
+		index1 = set.math1.create(e1.start);
+		index1.decrement();
+		return true;
+	}
+	
+	public N0 start0() {
+		return e0.start();
+	}
+	public N0 end0() {
+		return e0.end();
+	}
+	public N1 start1() {
+		return e1.start();
+	}
+	public N1 end1() {
+		return e1.end();
 	}
 }

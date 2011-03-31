@@ -292,8 +292,41 @@ public class NumberSetTest {
 		add(set, 4);
 		assertEquals("3-5", set.toString());
 	}
-	
 
+	@Test
+	public void subtract() throws Exception {
+		// arguments: 0 2
+		// extent:        4 6   
+		assertEquals("1-3", subtract(4, 6, 0, 2));
+		
+		// extent:      2 4      
+		// arguments: 0 2
+		assertEquals("0-1", subtract(2, 4, 0, 2));
+		
+		// extent:    0  3      
+		// arguments:  12
+		assertEquals("0-1", subtract(0, 3, 1, 2));
+		
+		// extent:    0 2   
+		// arguments:  1 3
+		assertEquals("0", subtract(0, 2, 1, 3));
+		
+		// extent:    0 2    
+		// arguments: 0 2
+		assertEquals("", subtract(0, 2, 0, 2));
+		
+		// extent:    0 2     
+		// arguments:  1
+		assertEquals("0-1", subtract(0, 2, 1, 1));
+	}
+
+	static private String subtract(int estart, int eend, int astart, int aend) {
+		NumberSet set = new NumberSet(IntMath.getInstance(), false);
+		set.add(estart, eend);
+		set.delete(astart, aend);
+		return set.toString();
+	}
+	
 	static private boolean constains(NumberSet set, int n) {
 		return set.contains(n);
 	}
@@ -326,5 +359,6 @@ public class NumberSetTest {
 		return set.remove(start, end);
 	}
 
-
+	
+	
 }

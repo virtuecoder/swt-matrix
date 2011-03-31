@@ -6,21 +6,21 @@ import java.util.ArrayList;
 
 import pl.netanel.util.IntArray;
 
-abstract class AxisState {
-	private final Math math;
-	private final ArrayList<Extent>extents;
+abstract class AxisState<N extends Number> {
+	private final Math<N> math;
+	private final ArrayList<Extent<N>>extents;
 	private final IntArray toRemove;
 
 	
 	public AxisState(Math math) {
 		this.math = math;
-		extents = new ArrayList<Extent>();
+		extents = new ArrayList<Extent<N>>();
 		toRemove = new IntArray();
 	}
 
-	protected int indexOf(Number index) {
+	protected int indexOf(N index) {
 		for (int i = 0; i < extents.size(); i++) {
-			Extent e = extents.get(i);
+			Extent<N> e = extents.get(i);
 			if (math.contains(e.start(), e.end(), index)) {
 				return i;
 			}
@@ -28,8 +28,8 @@ abstract class AxisState {
 		return -1;
 	}
 
-	protected void doSetValue(Number start, Number end) {
-		Extent e, modified = null;
+	protected void doSetValue(N start, N end) {
+		Extent<N> e, modified = null;
 		toRemove.clear();
 		boolean quit = false;
 		int i = 0; 
@@ -102,6 +102,30 @@ abstract class AxisState {
 			extents.remove(k); 
 			removeValue(k); 
 		}
+	}
+
+	/**
+	 * arguments: 0 2
+	 * extent:        4 6 -> e.start -= p.count; e.end -= p.count  
+	 * arguments: 0 2
+	 * extent:      2 4   -> e.start = end + 1;   
+	 * arguments: 0 2
+	 * extent:      2 4   -> e.start = end + 1;   
+	 * arguments:  12
+	 * extent:    0  3    -> add(end+1, e.end); e.end = end + 1;    
+	 * arguments:  1 3
+	 * extent:    0 2     -> e.end = start - 1;    
+	 * 
+	 * @param start
+	 * @param end
+	 * @return 
+	 */
+	public IntArray delete(N start, N end) {
+		return Extent.delete(math, extents, start, end);
+	}
+	
+	public void insert(N target, N count) {
+		Extent.insert(math, extents, target, count);
 	}
 	
 	

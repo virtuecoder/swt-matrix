@@ -172,13 +172,9 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		return cellSelection.getCount().value;
 	}
 	
-//	public IndexPairSequence getSelection() {
-//		return new IndexPairSequence(cellSelection.copy());
-//	}
-	
-	public Iterator<Cell<N0, N1>> getSelection() {
+	Iterator<Cell<N0, N1>> getSelectedIterator() {
 		return new ImmutableIterator<Cell<N0, N1>>() {
-			IndexPairSequence seq = new IndexPairSequence(cellSelection.copy());
+			NumberPairSequence seq = new NumberPairSequence(cellSelection.copy());
 			private boolean next;
 			@Override
 			public boolean hasNext() {
@@ -191,6 +187,10 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				return next ? new Cell (seq.index0(), seq.index1()) : null;
 			}
 		};
+	}
+	
+	public NumberPairSequence<N0, N1> getSelected() {
+		return new NumberPairSequence(cellSelection.copy());
 	}
 
 	public String getText(N0 index0, N1 index1) {
@@ -387,8 +387,8 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	}
 
 	public static class Cell<N0, N1> {
-		N0 index0;
-		N1 index1;
+		public N0 index0;
+		public N1 index1;
 		public Cell(N0 index0, N1 index1) {
 			this.index0 = index0;
 			this.index1 = index1;

@@ -1,6 +1,5 @@
 package pl.netanel.util;
 
-import pl.netanel.util.Preconditions;
 
 
 /**
@@ -168,5 +167,17 @@ public class IntArray {
 		IntArray copy = new IntArray(a2);
 		copy.size = size;
 		return copy;
+	}
+
+	public void sortDescending() {
+		java.util.Arrays.sort(a);
+		
+		// reverse the array 
+		for( int i = 0; i < a.length/2; ++i ) { 
+			int j = a.length - i - 1;
+			int tmp = a[i]; 
+			a[i] = a[j]; 
+			a[j] = tmp; 
+		} 
 	}
 }

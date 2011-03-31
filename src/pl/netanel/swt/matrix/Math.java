@@ -132,4 +132,14 @@ abstract class Math<N extends Number> {
 	public MutableNumber min(MutableNumber x, MutableNumber y) {
 		return x.min(y);
 	}
+
+//	/**
+//	 * 
+//	 * @param e
+//	 * @param start
+//	 * @param end
+//	 */
+//	public void remove(Extent<N> e, N start, N end) {
+//		if (compare(e.start, ))
+//	}
 }
