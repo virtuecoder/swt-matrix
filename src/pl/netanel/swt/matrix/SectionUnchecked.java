@@ -800,7 +800,7 @@ private boolean defaultResizable, defaultMoveable, defaultHideable;
 				break;
 			}
 		}
-		return item;
+		return math.compare(item, count) < 0 ? item : null;
 	}
 
 	ExtentSequence<N> getSelectedExtentSequence() {
@@ -922,7 +922,13 @@ private boolean defaultResizable, defaultMoveable, defaultHideable;
 		hideable.delete(start, end);
 		hidden.delete(start, end);
 		order.delete(start, end);
+		selection.delete(start, end);
+		lastSelection.delete(start, end);
 		setCount(math.create(count).subtract(end).add(start).decrement().getValue());
+		
+		if (axis != null) {
+			axis.deleteInZones(this, start, end);
+		}
 	}
 	
 	public void insert(N target, N count) {
@@ -934,7 +940,13 @@ private boolean defaultResizable, defaultMoveable, defaultHideable;
 		hideable.insert(target, count);
 		hidden.insert(target, count);
 		order.insert(target, count);
+		selection.insert(target, count);
+		lastSelection.insert(target, count);
 		this.count = math.create(this.count).add(count).getValue();
+		
+		if (axis != null) {
+			axis.insertInZones(this, target, count);
+		}
 	}
 
 }

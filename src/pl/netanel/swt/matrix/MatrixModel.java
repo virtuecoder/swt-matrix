@@ -114,27 +114,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		return getZone(axis0.getHeader(), axis1.getHeader());
 	}
 	
-	/**
-	 * Returns a zone by an identifier defined in {@link Zone}.  
-	 * The parameter can have four possible values: <ul>
-	 * <li>BODY</li>
-	 * <li>ROW_HEADER</li>
-	 * <li>COLUMN_HEADER</li>
-	 * <li>TOP_LEFT</li>
-	 * </ul>
-	 * Otherwise the function returns null.
-	 * <p>
-	 * @param id 
-	 * @return
-	 */
-	public Zone getZone(int id) {
-		for (Zone zone: zones) {
-			if (zone.is(id)) {
-				return zone;
-			}
-		}
-		return null;
-	}
+	
 	
 	/**
 	 * Returns a zone located at the intersection of the given axis sections.
@@ -262,5 +242,17 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		}
 	}
 
+	void deleteInZones(int axisIndex, SectionUnchecked section, Number start, Number end) {
+		for (Zone zone: zones) {
+			zone.delete(axisIndex, section, start, end);
+		}
+		
+	}
 	
+	void insertInZones(int axisIndex, SectionUnchecked section, Number target, Number count) {
+		for (Zone zone: zones) {
+			zone.insert(axisIndex, section, target, count);
+		}
+	}
+
 }

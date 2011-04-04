@@ -71,7 +71,7 @@ public class Snippet_0002 {
 		rowBody.setResizable(2, 4, false);
 		
 		Button add = new Button(shell, SWT.PUSH);
-		add.setText("Add");
+		add.setText("Insert");
 		add.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -83,7 +83,7 @@ public class Snippet_0002 {
 		});
 		
 		Button remove = new Button(shell, SWT.PUSH);
-		remove.setText("Remove");
+		remove.setText("Delete");
 		remove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -92,7 +92,7 @@ public class Snippet_0002 {
 				NumberSequence seq = rowBody.getSelected();
 				for (seq.init(); seq.nextExtent();) {
 					rowBody.remove(seq.start(), seq.end());
-					for (int i = seq.start().intValue(); i <= seq.end().intValue(); i++) {
+					for (int i = seq.end().intValue(); i >= seq.start().intValue(); i--) {
 						list.remove(i);
 					}
 				}

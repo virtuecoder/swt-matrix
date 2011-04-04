@@ -76,6 +76,11 @@ class IntMath extends Math<Integer> {
 	public Integer subtract(Number x, Number y) {
 		return x.intValue() - y.intValue();
 	}
+	
+	@Override
+	public Integer add(Number x, Number y) {
+		return x.intValue() + y.intValue();
+	}
 
 	@Override
 	public Integer getValue(Integer n) {

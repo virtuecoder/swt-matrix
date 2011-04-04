@@ -630,8 +630,8 @@ public class CellSetTest {
 		int max = 0;
 		
 		for (int i = 0; i < size; i++) {
-			Extent item0 = set.items0.get(i);
-			Extent item1 = set.items1.get(i);
+			Extent item0 = (Extent) set.items0.get(i);
+			Extent item1 = (Extent) set.items1.get(i);
 			for (int j = 0; j <= item0.end.intValue(); j++) {
 				ArrayList<Boolean> line;
 				if (j >= data.size()) {

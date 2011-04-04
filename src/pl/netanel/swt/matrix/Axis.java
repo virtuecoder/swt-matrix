@@ -392,6 +392,16 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		}
 		return order;
 	}
-	
 
+	void deleteInZones(SectionUnchecked section, N start, N end) {
+		matrix.model.deleteInZones(index, section, start, end);
+		if (layout.current.section.equals(section) && layout.math.contains(start, end, layout.current.index)) {
+			layout.ensureCurrentIsValid();
+		}
+	}
+	
+	void insertInZones(SectionUnchecked section, N target, N count) {
+		matrix.model.deleteInZones(index, section, target, count);
+		layout.show(new AxisItem(section, target));
+	}
 }

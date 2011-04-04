@@ -73,6 +73,11 @@ class BigIntegerMath extends Math<BigInteger> {
 	public BigInteger subtract(Number x, Number y) {
 		return ((BigInteger) x).subtract((BigInteger) y);
 	}
+	
+	@Override
+	public BigInteger add(Number x, Number y) {
+		return ((BigInteger) x).add((BigInteger) y);
+	}
 
 	@Override
 	public BigInteger getValue(BigInteger n) {

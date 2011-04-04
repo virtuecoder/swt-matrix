@@ -114,7 +114,7 @@ class Layout<N extends Number> {
 		if (current == null) {
 			current = forwardNavigator.first();
 		}
-		adjustHiddenHiddenItem();
+		ensureCurrentIsValid();
 		
 //		// Run callbacks
 //		for (Runnable runnable: callbacks) {
@@ -173,14 +173,20 @@ class Layout<N extends Number> {
 		return newSize;
 	}
 	
-	public void adjustHiddenHiddenItem() {
+	/**
+	 * Avoid current to be hidden or out of scope.
+	 * 
+	 */
+	public void ensureCurrentIsValid() {
 		if (current == null) return;
 		for (int section = current.section.index; section < axis.getSectionCount(); section++) {
 			N index2 = current.section.nextNotHiddenIndex(current.index, 1);
 			if (index2 != null) {
 				current.index = index2;
 			}
-			if (math.compare(current.index, current.section.getCount()) < 0) return;
+			if (math.compare(current.index, current.section.getCount()) >= 0) {
+				current = null;
+			}
 		}
 	}
 	

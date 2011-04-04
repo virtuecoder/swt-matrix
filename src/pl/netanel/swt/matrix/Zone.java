@@ -92,6 +92,14 @@ public class Zone<N0 extends Number, N1 extends Number> {
 //		);
 	}
 	
+	public Section getSection0() {
+		return section0;
+	}
+	public Section getSection1() {
+		return section1;
+	}
+	
+	
 	public void setDefaultBodyStyle() {
 		addPainter(new ModelPainter(this));
 		Color color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
@@ -134,6 +142,74 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		listeners.remove(type, listener);
 	}
 
+	
+	public String getText(N0 index0, N1 index1) {
+		return index0.toString() + ", " + index1.toString();
+	}
+	
+	
+	public void setBackground(N0 index0, N1 index1, Color color) {
+	}
+	public Color getBackground(N0 index0, N1 index1) {
+		return defaultBackground;
+	}
+	public void setDefaultBackground(Color color) {
+		defaultBackground = color;
+	}
+	public Color getDefaultBackground() {
+		return defaultBackground;
+	}	
+	
+	public void setForeground(N0 index0, N1 index1, Color color) {
+	}
+	public Color getForeground(N0 index0, N1 index1) {
+		return defaultForeground;
+	}
+	public void setDefaultForeground(Color color) {
+		defaultForeground = color;
+	}
+	public Color getDefaultForeground() {
+		return defaultForeground;
+	}
+	
+
+	public Rectangle getBounds() {
+		return bounds;
+	}
+
+	void setBounds(int x, int y, int width, int height) {
+		bounds.x = x;
+		bounds.y = y;
+		bounds.width = width;
+		bounds.height = height;
+	}
+
+	public boolean isVisible() {
+		return section0.isVisible() && section1.isVisible();
+	}
+
+	
+	
+	
+	/*------------------------------------------------------------------------
+	 * Selection
+	 */
+
+	public void setSelectionForeground(Color color) {
+		selectionForeground = color;
+	}
+	public Color getSelectionForeground() {
+		return selectionForeground;
+	}
+	
+	public void setSelectionBackground(Color color) {
+		selectionBackground = color;
+	}
+	public Color getSelectionBackground() {
+		return selectionBackground;
+	}
+	
+
 	/**
      * Returns <code>true</code> if selection is enabled, false otherwise.
      * @return the selection enabled state
@@ -156,104 +232,6 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	}
 
 	
-		
-	/**
-	 * Returns the number of selected cells in this zone.
-	 * <p>
-	 * If the cell selection is disabled the it always returns a 
-	 * {@link BigIntegerNumber} with zero value.
-	 * 
-	 * @return {@link BigIntegerNumber} with the count of selected cells
-	 */
-	public BigInteger getSelectionCount() {
-		if (!selectionEnabled) {
-			return BigInteger.ZERO;
-		}
-		return cellSelection.getCount().value;
-	}
-	
-	Iterator<Cell<N0, N1>> getSelectedIterator() {
-		return new ImmutableIterator<Cell<N0, N1>>() {
-			NumberPairSequence seq = new NumberPairSequence(cellSelection.copy());
-			private boolean next;
-			@Override
-			public boolean hasNext() {
-				next = seq.next();
-				return next;
-			}
-
-			@Override
-			public Cell<N0, N1> next() {
-				return next ? new Cell (seq.index0(), seq.index1()) : null;
-			}
-		};
-	}
-	
-	public NumberPairSequence<N0, N1> getSelected() {
-		return new NumberPairSequence(cellSelection.copy());
-	}
-
-	public String getText(N0 index0, N1 index1) {
-		return index0.toString() + ", " + index1.toString();
-	}
-	
-	
-	public void setBackground(N0 index0, N1 index1, Color color) {
-	}
-	public Color getBackground(N0 index0, N1 index1) {
-		return defaultBackground;
-	}
-	public void setDefaultBackground(Color color) {
-		defaultBackground = color;
-	}
-	public Color getDefaultBackground() {
-		return defaultBackground;
-	}	
-	public void setSelectionBackground(Color color) {
-		selectionBackground = color;
-	}
-	public Color getSelectionBackground() {
-		return selectionBackground;
-	}
-	
-	
-	public void setForeground(N0 index0, N1 index1, Color color) {
-	}
-	public Color getForeground(N0 index0, N1 index1) {
-		return defaultForeground;
-	}
-	public void setDefaultForeground(Color color) {
-		defaultForeground = color;
-	}
-	public Color getDefaultForeground() {
-		return defaultForeground;
-	}
-	public void setSelectionForeground(Color color) {
-		selectionForeground = color;
-	}
-	public Color getSelectionForeground() {
-		return selectionForeground;
-	}
-
-	public Rectangle getBounds() {
-		return bounds;
-	}
-
-	void setBounds(int x, int y, int width, int height) {
-		bounds.x = x;
-		bounds.y = y;
-		bounds.width = width;
-		bounds.height = height;
-	}
-
-	public boolean isVisible() {
-		return section0.isVisible() && section1.isVisible();
-	}
-
-	
-	/*------------------------------------------------------------------------
-	 * Selection
-	 */
 	
 	public boolean isSelected(N0 index0, N1 index1) {
 		return cellSelection.contains(index0, index1);
@@ -292,6 +270,52 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		return cellSelection.getCount().getValue();
 	}
 
+	public NumberPairSequence<N0, N1> getSelected() {
+		return new NumberPairSequence(cellSelection.copy());
+	}
+
+	
+	/**
+	 * Returns the number of selected cells in this zone.
+	 * <p>
+	 * If the cell selection is disabled the it always returns a 
+	 * {@link BigIntegerNumber} with zero value.
+	 * 
+	 * @return {@link BigIntegerNumber} with the count of selected cells
+	 */
+	public BigInteger getSelectionCount() {
+		if (!selectionEnabled) {
+			return BigInteger.ZERO;
+		}
+		return cellSelection.getCount().value;
+	}
+	
+	Iterator<Cell<N0, N1>> getSelectedIterator() {
+		return new ImmutableIterator<Cell<N0, N1>>() {
+			NumberPairSequence seq = new NumberPairSequence(cellSelection.copy());
+			private boolean next;
+			@Override
+			public boolean hasNext() {
+				next = seq.next();
+				return next;
+			}
+
+			@Override
+			public Cell<N0, N1> next() {
+				return next ? new Cell (seq.index0(), seq.index1()) : null;
+			}
+		};
+	}
+	
+	static class Cell<N0, N1> {
+		public N0 index0;
+		public N1 index1;
+		public Cell(N0 index0, N1 index1) {
+			this.index0 = index0;
+			this.index1 = index1;
+		}
+	}
+	
 	
 	
 	void backupSelection() {
@@ -301,6 +325,12 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	void restoreSelection() {
 		cellSelection = lastSelection.copy();
 	}
+
+
+	
+	/*------------------------------------------------------------------------
+	 * Painting 
+	 */
 
 	void paint(GC gc, final Layout layout0, final Layout layout1, final Frozen dock0, final Frozen dock1) {
 		for (Painter p: painters) {
@@ -378,28 +408,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			p.clean();
 		}
 	}
-
-	public Section getSection0() {
-		return section0;
-	}
-	public Section getSection1() {
-		return section1;
-	}
-
-	public static class Cell<N0, N1> {
-		public N0 index0;
-		public N1 index1;
-		public Cell(N0 index0, N1 index1) {
-			this.index0 = index0;
-			this.index1 = index1;
-		}
-	}
 	
-	
-	/*------------------------------------------------------------------------
-	 * Painters 
-	 */
-
 	public void addPainter(Painter<N0, N1> painter) {
 		painters.add(painter);
 	}
@@ -451,4 +460,43 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			gc.fillRectangle(x, y, width, height);
 		}
 	}
+
+
+	public void insert(int axisIndex, SectionUnchecked section, Number target, Number count) {
+		if (axisIndex == 0) {
+			if (section0.equals(section)) {
+				cellSelection.insert0(target, count);
+				lastSelection.insert0(target, count);
+			}
+		}
+		else {
+			if (section1.equals(section1)) {
+				cellSelection.insert1(target, count);
+				lastSelection.insert1(target, count);
+			}
+		}
+	}
+
+	public void delete(int axisIndex, SectionUnchecked section, Number start, Number end) {
+		if (axisIndex == 0) {
+			if (section0.equals(section)) {
+				cellSelection.delete0(start, end);
+				lastSelection.delete0(start, end);
+			}
+		}
+		else {
+			if (section1.equals(section1)) {
+				cellSelection.delete1(start, end);
+				lastSelection.delete1(start, end);
+			}
+		}
+	}
+	
+	
+	/*------------------------------------------------------------------------
+	 * Non-public 
+	 */
+	
+	
+
 }

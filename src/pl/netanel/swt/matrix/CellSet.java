@@ -13,18 +13,18 @@ import pl.netanel.util.IntArray;
  * @author Jacek
  * @created 15-11-2010
  */
-class CellSet {
-	final ArrayList<Extent> items0;
-	final ArrayList<Extent> items1;
-	final Math math0;
-	final Math math1;
+class CellSet<N0 extends Number, N1 extends Number> {
+	final ArrayList<Extent<N0>> items0;
+	final ArrayList<Extent<N1>> items1;
+	final Math<N0> math0;
+	final Math<N1> math1;
 	private boolean insertNew;
 	
 	public CellSet(Math math0, Math math1) {
 		this.math0 = math0;
 		this.math1 = math1;
-		items0 = new ArrayList<Extent>();
-		items1 = new ArrayList<Extent>();
+		items0 = new ArrayList<Extent<N0>>();
+		items1 = new ArrayList<Extent<N1>>();
 	}
 
 	@Override
@@ -42,11 +42,11 @@ class CellSet {
 		return sb.toString();
 	}
 
-	public boolean contains(Number index0, Number index1) {
+	public boolean contains(N0 index0, N1 index1) {
 		int size = items0.size();
 		for (int i = 0; i < size; i++) {
-			Extent e1 = items0.get(i);
-			Extent e2 = items1.get(i);
+			Extent<N0> e1 = items0.get(i);
+			Extent<N1> e2 = items1.get(i);
 			if (math0.contains(e1.start(), e1.end(), index0) &&
 				math1.contains(e2.start(), e2.end(), index1)) 
 			{
@@ -57,17 +57,17 @@ class CellSet {
 	}
 	
 
-	public void add(Number start0, Number end0, Number start1, Number end1) {
+	public void add(N0 start0, N0 end0, N1 start1, N1 end1) {
 		insertNew = true;
 		int i = 0;
 		
 		int size = items0.size();
 		for (;i < size; i++) {
-			Extent item0 = items0.get(i);
-			Extent item1 = items1.get(i);
+			Extent<N0> item0 = items0.get(i);
+			Extent<N1> item1 = items1.get(i);
 			
-			Number start0b = item0.start.getValue(), 	end0b = item0.end.getValue(), 
-	 			   start1b = item1.start.getValue(), 	end1b = item1.end.getValue();
+			N0 start0b = item0.start.getValue(), 	end0b = item0.end.getValue(); 
+			N1 start1b = item1.start.getValue(), 	end1b = item1.end.getValue();
 			
 			int es0 = math0.compare(end0, start0b);
 			int se0 = math0.compare(start0, end0b);
@@ -115,22 +115,22 @@ class CellSet {
 			} 
 		}
 		if (insertNew) {
-			items0.add(new Extent(math0.create(start0), math1.create(end0)));
-			items1.add(new Extent(math0.create(start1), math1.create(end1)));
+			items0.add(new Extent(math0.create(start0), math0.create(end0)));
+			items1.add(new Extent(math1.create(start1), math1.create(end1)));
 		}
 	}
 	
-	public void remove(Number start0, Number end0, Number start1, Number end1) {
+	public void remove(N0 start0, N0 end0, N1 start1, N1 end1) {
 		IntArray toRemove = new IntArray();
 		int i = 0;
 
 		int size = items0.size();
 		for (;i < size; i++) {
-			Extent item0 = items0.get(i);
-			Extent item1 = items1.get(i);
+			Extent<N0> item0 = items0.get(i);
+			Extent<N1> item1 = items1.get(i);
 			
-			Number start0b = item0.start.getValue(), end0b = item0.end.getValue(), 
-				   start1b = item1.start.getValue(), end1b = item1.end.getValue();
+			N0 start0b = item0.start.getValue(), end0b = item0.end.getValue(); 
+			N1 start1b = item1.start.getValue(), end1b = item1.end.getValue();
 			
 			
 			int es0 = math0.compare(end0, start0b);
@@ -185,9 +185,9 @@ class CellSet {
 		}
 	}
 	
-	private void insert(Number start0, Number end0, Number start1, Number end1) {
-		items0.add(new Extent(math0.create(start0), math1.create(end0)));
-		items1.add(new Extent(math0.create(start1), math1.create(end1)));
+	private void insert(N0 start0, N0 end0, N1 start1, N1 end1) {
+		items0.add(new Extent(math0.create(start0), math0.create(end0)));
+		items1.add(new Extent(math1.create(start1), math1.create(end1)));
 	}
 	
 //	public void change(MutableNumber start0, MutableNumber end0, 
@@ -240,6 +240,34 @@ class CellSet {
 		}
 		return copy;
 	}
+
+
+	public void delete0(N0 start, N0 end) {
+		for (int i = 0, imax = items0.size(); i < imax; i++) {
+			Extent.delete(math0, items0, start, end);
+		}
+	}
+	
+	public void delete1(N1 start, N1 end) {
+		for (int i = 0, imax = items0.size(); i < imax; i++) {
+			Extent.delete(math1, items1, start, end);
+		}
+	}
+	
+	public void insert0(N0 target, N0 count) {
+		for (int i = 0, imax = items0.size(); i < imax; i++) {
+			Extent.insert(math0, items0, target, count);
+		}
+	}
+	
+	public void insert1(N1 target, N1 count) {
+		for (int i = 0, imax = items0.size(); i < imax; i++) {
+			Extent.insert(math1, items1, target, count);
+		}
+	}
+	
+	
+	
 	
 //	int intersect(MutableNumber start0, MutableNumber end0, MutableNumber start1, MutableNumber end1, 
 //			MutableNumber start0b, MutableNumber end0b, MutableNumber start1b, MutableNumber end1b) 

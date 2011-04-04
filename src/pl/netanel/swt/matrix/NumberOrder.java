@@ -130,4 +130,65 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 		throw new RuntimeException("Cannot find index of " + modelIndex);
 	}
 
+	
+	public void insert(N target, N count) {
+		int imax = items.size(), position = 0;
+		for (int i = 0; i < imax; i++) {
+			Extent<N> e = items.get(i);
+			int compare = math.compare(target, e.start());
+			if (compare <= 0) {
+				e.start.add(count);
+				e.end.add(count);
+				if (compare == 0) position = i;
+			}
+			else if (math.compare(target, e.end()) <= 0) {
+				items.add(++i, new Extent(math.create(target).add(count), e.end.copy().add(count)));
+				e.end.set(target).decrement();
+				position = i;
+			}
+		}
+		items.add(position, new Extent(math.create(target), math.create(target).add(count).decrement()));
+	};
+	
+//	public void insert(N target, N count) {
+//	MutableNumber<N> mutableEnd = math.create(target).add(count).decrement();
+//	N tstart = target;
+//	N tend = mutableEnd.getValue();
+//	int i = 0, imax = items.size();
+//	for (; i < imax; i++) {
+//		Extent<N> e = items.get(i);
+//		
+//		N start = e.start(), end = e.end();
+//		int compare = math.compare(tstart, tend, start, end);
+//		switch (compare) {
+//		case BEFORE: case ADJACENT_BEFORE:
+//			e.start.add(count);
+//			e.end.add(count);
+//			break;
+//			
+//		case CROSS_AFTER:
+//			MutableNumber<N> delta = math.create(tend).subtract(start).increment();
+//			e.start.add(delta);
+//			e.end.add(delta);
+//			break;
+//			
+//		case CROSS_BEFORE:
+//			delta = math.create(tend).subtract(start).increment();
+//			e.start.add(delta);
+//			e.end.add(delta);
+//			break;
+//		}
+//		if (math.compare(target, start) <= 0) {
+//		}
+//		else if (math.compare(target, e.end()) <= 0) {
+//			if (math.compare(target, start) == 0) {
+//				
+//				e.start.set(math.increment(target));
+//			}
+//			e.end.add(count);
+//		}
+//		items.add(i, new Extent(math.create(target), mutableEnd));
+//	}
+//};
+
 }

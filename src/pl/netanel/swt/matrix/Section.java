@@ -44,6 +44,9 @@ public class Section<N extends Number> {
 		this.core = new SectionUnchecked(Math.getInstance(int.class));
 	}
 	
+	/**
+	 * Indicates whether some other object is "equal to" this one. 
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Section)) return false;
@@ -63,6 +66,9 @@ public class Section<N extends Number> {
 		this.core = new SectionUnchecked(math);
 	}
 
+	/**
+	 * Returns the section position on the axis.
+	 */
 	@Override
 	public String toString() {
 		return core.toString();
@@ -633,12 +639,12 @@ public class Section<N extends Number> {
 	}
 
 	/**
-	 * Adds a range of items increasing the section item count. 
+	 * Inserts a number of items at the given position increasing the section item count. 
 	 * <p>
 	 * Items are inserted before the given target index or at the end if the target equals section.getCount(). 
 	 * 
-	 * @param start first index of the range of items  
-	 * @param end last index of the range of items
+	 * @param target the index before which items are inserted  
+	 * @param count the number of items to insert
 	 *   
 	 * @throws NullPointerException if target or count is null
 	 * @throws IndexOutOfBoundsException if target is 

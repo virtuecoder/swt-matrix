@@ -23,7 +23,7 @@ package pl.netanel.swt.matrix;
 public class NumberSequence<N extends Number> implements Sequence {
 	NumberSet<N> set;
 	int i, size;
-	Extent e;
+	Extent<N> e;
 	MutableNumber<N> index;
 	
 	
@@ -77,10 +77,10 @@ public class NumberSequence<N extends Number> implements Sequence {
 	}
 	
 	public N start() {
-		return index.getValue();
+		return e.start();
 	}
 	
 	public N end() {
-		return index.getValue();
+		return e.end();
 	}
 }
