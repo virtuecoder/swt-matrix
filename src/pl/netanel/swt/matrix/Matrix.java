@@ -106,6 +106,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 
 	private void setModel(MatrixModel model) {
 		this.model = model;
+		model.setMatrix(this);
 		
 		axis0 = model.axis0;
 		axis1 = model.axis1;
@@ -176,14 +177,14 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 			Bound bb1 = layout1.getBound(dock1);
 			
 			for (Zone<N0, N1> zone: model) {
-				if (!layout0.contains(dock0, zone.section0.core) ||
-					!layout1.contains(dock1, zone.section1.core) ) continue;
+				if (!layout0.contains(dock0, zone.section0) ||
+					!layout1.contains(dock1, zone.section1) ) continue;
 				
 //				if (zone == null || !zone.isVisible()) continue;
 				gc.setClipping(bb1.distance, bb0.distance, bb1.width, bb0.width);
 				
-				Bound b0 = layout0.getBound(dock0, zone.section0.core);
-				Bound b1 = layout1.getBound(dock1, zone.section1.core);
+				Bound b0 = layout0.getBound(dock0, zone.section0);
+				Bound b1 = layout1.getBound(dock1, zone.section1);
 				zone.setBounds(b1.distance, b0.distance, b1.width, b0.width);
 				
 				// Paint cells
@@ -372,11 +373,11 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 		throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e); 
 	}
 	
-	void selectInZones(int axisIndex, SectionUnchecked section, Number start, Number end) {
+	void selectInZones(int axisIndex, Section section, Number start, Number end) {
 		if (axisIndex == 0) {
 			for (Zone zone: model) {
-				if (zone.section0.core.equals(section)) {
-					Math math1 = zone.section1.core.math;
+				if (zone.section0.equals(section)) {
+					Math math1 = zone.section1.math;
 					zone.setSelected(
 							(N0) start, (N0) end, 
 							math1.ZERO_VALUE(), math1.decrement(zone.section1.getCount()), 
@@ -386,8 +387,8 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 		}
 		else { // assert index == 1
 			for (Zone zone: model) {
-				if (zone.section1.core.equals(section)) {
-					Math math0 = zone.section0.core.math;
+				if (zone.section1.equals(section)) {
+					Math math0 = zone.section0.math;
 					zone.setSelected( 
 							math0.ZERO_VALUE(), math0.decrement(zone.section0.getCount()),
 							start, end,

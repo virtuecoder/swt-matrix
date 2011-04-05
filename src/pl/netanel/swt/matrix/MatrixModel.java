@@ -26,11 +26,11 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		Section body0  = axis0.getBody(), body1 = axis1.getBody();
 		Section header0 = axis0.getHeader(), header1 = axis1.getHeader();
 		
-		for (Section section0: axis0) {
-			for (Section section1: axis1) {
+		for (SectionClient section0: axis0) {
+			for (SectionClient section1: axis1) {
 				Zone zone = getZone(section0, section1);
 				if (zone == null) {
-					zone = createZone(section0, section1);
+					zone = createZone(section0.core, section1.core);
 					this.zones.add(zone);
 				}
 				if (zone.getPainterCount() == 0) {
@@ -62,7 +62,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 				};
 			};
 		} else {
-			if (section0.equals(body0) && section1.equals(header1)) {
+			if (body0.equals(section0) && header1.equals(section1)) {
 				zone = new Zone(section0, section1, Zone.ROW_HEADER) {
 					@Override
 					public String getText(Number index0, Number index1) {
@@ -70,7 +70,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 					};
 				};
 			}
-			else if (section0.equals(header0) && section1.equals(body1)) {
+			else if (header0.equals(section0) && body1.equals(section1)) {
 				zone = new Zone(section0, section1, Zone.COLUMN_HEADER) {
 					@Override
 					public String getText(Number index0, Number index1) {
@@ -78,7 +78,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 					};
 				};
 			} 
-			else if (section0.equals(body0) && section1.equals(body1)) {
+			else if (body0.equals(section0) && body1.equals(section1)) {
 				zone = new Zone(section0, section1, Zone.BODY);
 			}
 			else {
@@ -95,11 +95,16 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		int k = 0;
 		for (int i = 0, imax = order0.length; i < imax; i++) {
 			for (int j = 0, jmax = order1.length; j < jmax; j++) {
-				paintOrder[k++] = zones.indexOf(getZone(axis0.getSection(order0[i]), axis1.getSection(order1[j])));
+				paintOrder[k++] = zones.indexOf(getZone(axis0.sections.get(order0[i]), axis1.sections.get(order1[j])));
 			}			
 		}
 	}
 	
+	void setMatrix(Matrix matrix) {
+		for (Zone zone: zones) {
+			zone.matrix = matrix;
+		}
+	}
 	
 	public Zone getBody() {
 		return getZone(axis0.getBody(), axis1.getBody());
@@ -125,18 +130,18 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	 * @exception IllegalArgumentException 
 	 * 	 	if the any of the section parameters is out of scope.
 	 */
-	public Zone getZone(Section section0, Section section1) {
+	public Zone getZone(SectionClient section0, SectionClient section1) {
 		for (Zone zone: zones) {
-			if (zone.section0.equals(section0) && zone.section1.equals(section1)) {
+			if (zone.section0.equals(section0.core) && zone.section1.equals(section1.core)) {
 				return zone;
 			}
 		}
 		return null;
 	}
 	
-	public Zone getZone(SectionUnchecked section0, SectionUnchecked section1) {
+	public Zone getZone(Section section0, Section section1) {
 		for (Zone zone: zones) {
-			if (zone.section0.core.equals(section0) && zone.section1.core.equals(section1)) {
+			if (section0.equals(zone.section0) && section1.equals(zone.section1)) {
 				return zone;
 			}
 		}
@@ -199,7 +204,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	 * @author Jacek created 21-02-2011
 	 */
 	class ExtentPairSequence {
-		SectionUnchecked section0, section1;
+		Section section0, section1;
 		MutableNumber start0, end0, start1, end1;
 		ExtentSequence seq0, seq1;
 		boolean empty;
@@ -242,14 +247,14 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		}
 	}
 
-	void deleteInZones(int axisIndex, SectionUnchecked section, Number start, Number end) {
+	void deleteInZones(int axisIndex, Section section, Number start, Number end) {
 		for (Zone zone: zones) {
 			zone.delete(axisIndex, section, start, end);
 		}
 		
 	}
 	
-	void insertInZones(int axisIndex, SectionUnchecked section, Number target, Number count) {
+	void insertInZones(int axisIndex, Section section, Number target, Number count) {
 		for (Zone zone: zones) {
 			zone.insert(axisIndex, section, target, count);
 		}

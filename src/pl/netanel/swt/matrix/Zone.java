@@ -25,7 +25,7 @@ import pl.netanel.util.ImmutableIterator;
  * It can also have dedicated event handlers to implement special behavior 
  * for different parts of the matrix.  
  * </p>
- * @see Section
+ * @see SectionClient
  * 
  * @author Jacek
  * @created 13-10-2010
@@ -43,8 +43,11 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	
 	final Painters<N0, N1> painters;
 	
+	Matrix<N0, N1> matrix;
 	Section<N0> section0;
 	Section<N1> section1;
+	SectionClient<N0> sectionClient0;
+	SectionClient<N1> sectionClient1;
 	CellSet cellSelection;
 	CellSet lastSelection; // For adding selection
 	
@@ -66,10 +69,10 @@ public class Zone<N0 extends Number, N1 extends Number> {
 
 	public Zone(Section<N0> section0, Section<N1> section1, int type) {
 		this(type);
-		this.section0 = section0;
-		this.section1 = section1;
-		cellSelection = new CellSet(section0.core.math, section1.core.math);
-		lastSelection = new CellSet(section0.core.math, section1.core.math);
+		this.section0 = section0 instanceof SectionClient ? ((SectionClient) section0).core : section0;
+		this.section1 = section1 instanceof SectionClient ? ((SectionClient) section1).core : section1;
+		cellSelection = new CellSet(section0.math, section1.math);
+		lastSelection = new CellSet(section0.math, section1.math);
 		
 		RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
 		RGB whiteColor = Resources.getColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
@@ -92,13 +95,20 @@ public class Zone<N0 extends Number, N1 extends Number> {
 //		);
 	}
 	
-	public Section getSection0() {
+	public Section getSectionUnchecked0() {
 		return section0;
 	}
-	public Section getSection1() {
+	public Section getSectionUncheked1() {
 		return section1;
 	}
-	
+
+	public Section getSection0() {
+		return matrix.axis0.sections.get(section0.index);
+	}
+	public Section getSection1() {
+		return matrix.axis1.sections.get(section1.index);
+	}
+
 	
 	public void setDefaultBodyStyle() {
 		addPainter(new ModelPainter(this));
@@ -258,8 +268,8 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		if (!selectionEnabled) return;
 		if (selected) {
 			cellSelection.add(
-					section0.core.math.ZERO_VALUE(), section0.core.math.decrement(section0.core.getCount()), 
-					section1.core.math.ZERO_VALUE(), section1.core.math.decrement(section1.core.getCount()));
+					section0.math.ZERO_VALUE(), section0.math.decrement(section0.getCount()), 
+					section1.math.ZERO_VALUE(), section1.math.decrement(section1.getCount()));
 		} else {
 			cellSelection.clear();
 			lastSelection.clear();
@@ -341,8 +351,8 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			switch (p.scope) {
 			
 			case Painter.SCOPE_CELLS_HORIZONTALLY:
-				LayoutSequence seq0 = layout0.cellSequence(dock0, section0.core);
-				LayoutSequence seq1 = layout1.cellSequence(dock1, section1.core);
+				LayoutSequence seq0 = layout0.cellSequence(dock0, section0);
+				LayoutSequence seq1 = layout1.cellSequence(dock1, section1);
 				for (seq0.init(); seq0.next();) {
 					distance = seq0.getDistance();
 					width = seq0.getWidth();
@@ -355,8 +365,8 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				break;
 				
 			case Painter.SCOPE_CELLS_VERTICALLY:
-				seq0 = layout0.cellSequence(dock0, section0.core);
-				seq1 = layout1.cellSequence(dock1, section1.core);
+				seq0 = layout0.cellSequence(dock0, section0);
+				seq1 = layout1.cellSequence(dock1, section1);
 				for (seq1.init(); seq1.next();) {
 					distance = seq1.getDistance();
 					width = seq1.getWidth();
@@ -369,7 +379,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				break;
 			
 			case Painter.SCOPE_ROW_CELLS:
-				seq0 = layout0.cellSequence(dock0, section0.core);
+				seq0 = layout0.cellSequence(dock0, section0);
 				distance = bounds.x;
 				width = bounds.width;
 				for (seq0.init(); seq0.next();) {
@@ -378,7 +388,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				break;
 				
 			case Painter.SCOPE_COLUMN_CELLS:
-				seq1 = layout1.cellSequence(dock1, section1.core);
+				seq1 = layout1.cellSequence(dock1, section1);
 				distance = bounds.y;
 				width = bounds.height;
 				for (seq1.init(); seq1.next();) {
@@ -387,7 +397,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				break;
 				
 			case Painter.SCOPE_HORIZONTAL_LINES:
-				seq0 = layout0.lineSequence(dock0, section0.core);
+				seq0 = layout0.lineSequence(dock0, section0);
 				distance = bounds.x;
 				width = bounds.width;
 				for (seq0.init(); seq0.next();) {
@@ -396,7 +406,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				break;
 			
 			case Painter.SCOPE_VERTICAL_LINES:
-				seq1 = layout1.lineSequence(dock1, section1.core);
+				seq1 = layout1.lineSequence(dock1, section1);
 				distance = bounds.y;
 				width = bounds.height;
 				for (seq1.init(); seq1.next();) {
@@ -462,7 +472,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	}
 
 
-	public void insert(int axisIndex, SectionUnchecked section, Number target, Number count) {
+	public void insert(int axisIndex, Section section, Number target, Number count) {
 		if (axisIndex == 0) {
 			if (section0.equals(section)) {
 				cellSelection.insert0(target, count);
@@ -477,7 +487,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		}
 	}
 
-	public void delete(int axisIndex, SectionUnchecked section, Number start, Number end) {
+	public void delete(int axisIndex, Section section, Number start, Number end) {
 		if (axisIndex == 0) {
 			if (section0.equals(section)) {
 				cellSelection.delete0(start, end);

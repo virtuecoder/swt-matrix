@@ -245,7 +245,7 @@ class MatrixListener implements Listener {
 						resizeStartDistance = distance;
 						resizeCellWidth = resizeItem.section.getCellWidth(resizeItem.index);
 					}
-					else if (item.section.isSelected(item.index) && item.section.isMoveableUnchecked(item.index)) {
+					else if (item.section.isSelected(item.index) && item.section.isMoveable(item.index)) {
 						// Start moving
 						moving = true;
 						matrix.setCursor(cursor = Resources.getCursor(SWT.CURSOR_HAND));
@@ -259,7 +259,7 @@ class MatrixListener implements Listener {
 					int len = axis.sections.size();
 					for (int i = 0; i < len; i++) {
 						Section<N> section = axis.sections.get(i);
-						ExtentSequence<N> seq = section.core.getSelectedExtentResizableSequence();
+						ExtentSequence<N> seq = section.getSelectedExtentResizableSequence();
 						for (seq.init(); seq.next();) {
 							
 							if (item.section.equals(section) && 
@@ -348,14 +348,14 @@ class MatrixListener implements Listener {
 				
 				// Backup all sections cell selection
 				for (int i = 0, imax = axis.getSectionCount(); i < imax; i++) {
-					axis.getSection(i).core.backupSelection();
+					axis.sections.get(i).backupSelection();
 				}
 				
 			} 
 			else if (commandId == SELECT_TO_COLUMN2 || commandId == SELECT_TO_ROW2) {
 				// Restore previous selection from the backup
 				for (int i = 0, imax = axis.getSectionCount(); i < imax; i++) {
-					axis.getSection(i).core.restoreSelection();
+					axis.sections.get(i).restoreSelection();
 				}
 			}
 			

@@ -11,8 +11,6 @@ import pl.netanel.util.Util;
 
 
 class Layout<N extends Number> {
-	private static final String FREEZE_ITEM_COUNT_ERROR = "Freeze item count must greater then 0";
-	
 	Math math;
 
 	private int viewportSize;
@@ -31,7 +29,7 @@ class Layout<N extends Number> {
 	public Direction forward, backward, forwardNavigator, backwardNavigator;
 	final Axis<N> axis;
 
-	private ArrayList<SectionUnchecked<N>> sections;
+	private ArrayList<Section<N>> sections;
 
 
 	
@@ -41,7 +39,7 @@ class Layout<N extends Number> {
 		math = axis.math;
 		sections = new ArrayList();
 		for (int i = 0, imax = axis.sections.size(); i < imax; i++) {
-			SectionUnchecked<N> section2 = axis.sections.get(i).core;
+			Section<N> section2 = axis.sections.get(i);
 			section2.index = i;
 			sections.add(section2);
 		}
@@ -61,8 +59,8 @@ class Layout<N extends Number> {
 		caches.add(head); caches.add(main); caches.add(tail);
 		
 		Section section = axis.sections.get(0);
-		start = new AxisItem(section.core, math.ZERO_VALUE());
-		zeroItem = new AxisItem(section.core, math.ZERO_VALUE());
+		start = new AxisItem(section, math.ZERO_VALUE());
+		zeroItem = new AxisItem(section, math.ZERO_VALUE());
 		forwardNavigator.init();
 		current = forwardNavigator.getItem();
 		total = math.create(0);
@@ -84,7 +82,7 @@ class Layout<N extends Number> {
 	}
 
 	public Section getSection(int i) {
-		return axis.sectionMap.get(sections.get(i));
+		return axis.sections.get(i);
 	}
 
 	/**
@@ -105,7 +103,7 @@ class Layout<N extends Number> {
 		
 		// Compute total and check if body exists
 		total.set(math.ZERO_VALUE()); 
-		for (SectionUnchecked section: sections) {
+		for (Section section: sections) {
 			total.add(section.getVisibleCount());
 		}
 		
@@ -445,7 +443,7 @@ class Layout<N extends Number> {
 	abstract class Cache {
 		ArrayList<AxisItem> items;
 		ArrayList<Bound> cells, lines;
-		ArrayList<SectionUnchecked> sections;
+		ArrayList<Section> sections;
 		int distance, innerWidth, outerWidth, freezeLineWidth, lastLineWidth;
 		Direction direction;
 
@@ -453,7 +451,7 @@ class Layout<N extends Number> {
 
 
 		public Cache() {
-			sections = new ArrayList<SectionUnchecked>();
+			sections = new ArrayList<Section>();
 			items = new ArrayList<AxisItem>();
 			cells = new ArrayList<Bound>();
 			lines = new ArrayList<Bound>();
@@ -536,7 +534,7 @@ class Layout<N extends Number> {
 			} 
 		}
 
-		Bound lastLine(SectionUnchecked section, Number index) {
+		Bound lastLine(Section section, Number index) {
 			Number index2 = section.math.increment(index);
 			Bound bound = new Bound(0, section.getLineWidth(index2));
 			lines.add(bound);
@@ -651,7 +649,7 @@ class Layout<N extends Number> {
 			   distance > tail.distance && !tail.isEmpty() ? tail : main;
 	}
 	
-	private Cache getCache(SectionUnchecked section, Number index) {
+	private Cache getCache(Section section, Number index) {
 		for (Cache cache: caches) {
 			int len = cache.cells.size();
 			for (int i = 0; i < len; i++) {
@@ -667,7 +665,7 @@ class Layout<N extends Number> {
 	MutableNumber getItemPosition(AxisItem<N> item) {
 		MutableNumber position = math.create(0);
 		for (int i = 0, size = sections.size(); i < size; i++) {
-			SectionUnchecked<N> section = sections.get(i);
+			Section<N> section = sections.get(i);
 			if (item.section.equals(section)) {
 				return position.add(math.getValue(section.indexOfNotHidden(item.index)));
 			}
@@ -681,7 +679,7 @@ class Layout<N extends Number> {
 		MutableNumber<N> pos2 = math.create(0);
 		
 		for (int i = 0, size = sections.size(); i < size; i++) {
-			SectionUnchecked<N> section = sections.get(i);
+			Section<N> section = sections.get(i);
 			pos1.set(pos2);
 			pos2.add(section.getVisibleCount());
 			if (math.compare(pos2, position) > 0) {
@@ -712,13 +710,13 @@ class Layout<N extends Number> {
 	}
 
 	
-	public LayoutSequence cellSequence(Frozen frozen, SectionUnchecked section) {
+	public LayoutSequence cellSequence(Frozen frozen, Section section) {
 		if (isComputingRequired) compute();
 		Cache cache = getCache(frozen);
 		return new LayoutSequence(cache.items, cache.cells, section);
 	}
 	
-	public LayoutSequence lineSequence(Frozen frozen, SectionUnchecked section) {
+	public LayoutSequence lineSequence(Frozen frozen, Section section) {
 		if (isComputingRequired) compute();
 		Cache cache = getCache(frozen);
 		return new LayoutSequence(cache.items, cache.lines, section);
@@ -747,12 +745,12 @@ class Layout<N extends Number> {
 
 		private final List<AxisItem> items;
 		private final List<Bound> bounds;
-		private final SectionUnchecked section;
+		private final Section section;
 		private int i;
 		Bound bound;
 		AxisItem<N> item;
 
-		public LayoutSequence(List<AxisItem> items, List<Bound> bounds, SectionUnchecked section) { 
+		public LayoutSequence(List<AxisItem> items, List<Bound> bounds, Section section) { 
 			this.items = items;
 			this.bounds = bounds;
 			this.section = section;
@@ -766,7 +764,7 @@ class Layout<N extends Number> {
 		
 		public boolean next() {
 			if (i >= bounds.size()) return false;
-			SectionUnchecked section2 = items.get(i).section;
+			Section section2 = items.get(i).section;
 			if (!section2.equals(section)) {
 				// Make sure last line is included between sections  
 				if (items.size() == bounds.size() /*&& 
@@ -801,8 +799,8 @@ class Layout<N extends Number> {
 		}
 	}
 
-	public boolean contains(Frozen frozen, SectionUnchecked section) {
-		List<SectionUnchecked> sections = getCache(frozen).sections;
+	public boolean contains(Frozen frozen, Section section) {
+		List<Section> sections = getCache(frozen).sections;
 		if (sections.contains(section)) {
 			return true;
 		}
@@ -817,7 +815,7 @@ class Layout<N extends Number> {
 	}
 	
 	// TODO cache the section bonds in a frozen 
-	public Bound getBound(Frozen frozen, SectionUnchecked section) {
+	public Bound getBound(Frozen frozen, Section section) {
 		Cache cache = getCache(frozen);
 		int first = -1, last = -1;
 		for (int i = 0, size = cache.items.size(); i < size; i++) {
@@ -858,19 +856,17 @@ class Layout<N extends Number> {
 
 	
 	public void freezeHead(int freezeItemCount) {
-		Preconditions.checkArgument(freezeItemCount >= 0, FREEZE_ITEM_COUNT_ERROR);
 		isComputingRequired = head.count != freezeItemCount;
 		head.count = freezeItemCount;
 	}
 
 	public void freezeTail(int freezeItemCount) {
-		Preconditions.checkArgument(freezeItemCount >= 0, FREEZE_ITEM_COUNT_ERROR);
 		isComputingRequired = tail.count != freezeItemCount;
 		tail.count = freezeItemCount;
 	}
 
 	public boolean reorder(AxisItem<N> source, AxisItem<N> target) {
-		SectionUnchecked<N> section = source.section;
+		Section<N> section = source.section;
 		if (!section.equals(target.section)) return false;
 		
 		int position = compare(target, start);

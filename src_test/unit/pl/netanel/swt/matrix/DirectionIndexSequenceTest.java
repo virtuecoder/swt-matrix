@@ -13,7 +13,7 @@ import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 public class DirectionIndexSequenceTest {
 	@Test
 	public void sequence() throws Exception {
-		SectionUnchecked section = new SectionUnchecked(int.class);
+		Section section = new Section(int.class);
 		Forward seq = new Forward(section);
 		assertSequence("", seq);
 		
@@ -26,7 +26,7 @@ public class DirectionIndexSequenceTest {
 	
 	@Test
 	public void sequenceHiddenMoved() throws Exception {
-		SectionUnchecked section = new SectionUnchecked(int.class);
+		Section section = new Section(int.class);
 		section.setCount(5);
 		section.move(1, 2, 4);
 		DirectionIndexSequence seq = new Forward(section);
@@ -45,7 +45,7 @@ public class DirectionIndexSequenceTest {
 	
 	@Test
 	public void sequenceHiddenMovedBackward() throws Exception {
-		SectionUnchecked section = new SectionUnchecked(int.class);
+		Section section = new Section(int.class);
 		section.setCount(5);
 		section.move(1, 2, 4);
 		DirectionIndexSequence seq = new Backward(section);
@@ -64,7 +64,7 @@ public class DirectionIndexSequenceTest {
 	
 	@Test
 	public void sequenceNextCount() throws Exception {
-		SectionUnchecked section = new SectionUnchecked(int.class);
+		Section section = new Section(int.class);
 		section.setCount(5);
 		section.move(1, 2, 4);
 		Forward seq = new Forward(section);
@@ -83,7 +83,7 @@ public class DirectionIndexSequenceTest {
 	
 	@Test
 	public void sequenceNextCountBackward() throws Exception {
-		SectionUnchecked section = new SectionUnchecked(int.class);
+		Section section = new Section(int.class);
 		section.setCount(5);
 		section.move(1, 2, 4);
 		DirectionIndexSequence seq = new Backward(section);
@@ -103,7 +103,7 @@ public class DirectionIndexSequenceTest {
 	
 	@Test
 	public void getPosition() throws Exception {
-		SectionUnchecked section = new SectionUnchecked(int.class);
+		Section section = new Section(int.class);
 		section.setCount(10);
 		section.setHidden(2, 4, true);
 		section.move(6, 9, 3);
@@ -135,7 +135,7 @@ public class DirectionIndexSequenceTest {
 	
 	@Test
 	public void getByPosition() throws Exception {
-		SectionUnchecked section = new SectionUnchecked(int.class);
+		Section section = new Section(int.class);
 		section.setCount(10);
 		section.setHidden(2, 4, true);
 		section.move(6, 9, 3);
@@ -162,7 +162,7 @@ public class DirectionIndexSequenceTest {
 	
 	@Test
 	public void hide() throws Exception {
-		SectionUnchecked section = new SectionUnchecked(int.class);
+		Section section = new Section(int.class);
 		section.setHidden(1, 2, true);
 		
 		assertFalse(section.isHidden(0));

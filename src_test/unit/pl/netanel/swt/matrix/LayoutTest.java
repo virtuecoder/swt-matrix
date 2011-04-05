@@ -29,7 +29,7 @@ public class LayoutTest {
 		Layout layout = new Layout(new Axis());
 		layout.setViewportSize(350);
 
-		Section body = layout.axis.getBody();
+		SectionClient body = (SectionClient) layout.axis.getBody();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		
@@ -67,15 +67,15 @@ public class LayoutTest {
 		layout.setViewportSize(1000);
 		
 		layout.compute();
-		assertEquals("", indexes(layout.cellSequence(Frozen.HEAD, section1.core)));
-		assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Frozen.NONE, section1.core)));
-		assertEquals("0", indexes(layout.cellSequence(Frozen.NONE, section2.core)));
+		assertEquals("", indexes(layout.cellSequence(Frozen.HEAD, section1)));
+		assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Frozen.NONE, section1)));
+		assertEquals("0", indexes(layout.cellSequence(Frozen.NONE, section2)));
 	}
 	
 	@Test
 	public void freezeIndexes() throws Exception {
 		Layout layout = new Layout(new Axis(new Section(int.class)));
-		Section body = layout.axis.getBody();
+		SectionClient body = (SectionClient) layout.axis.getBody();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		
@@ -133,7 +133,7 @@ public class LayoutTest {
 	@Test
 	public void freezeDistances() throws Exception {
 		Layout layout = new Layout(new Axis(new Section(int.class)));
-		Section body = layout.axis.getBody();
+		SectionClient body = (SectionClient) layout.axis.getBody();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		
@@ -170,7 +170,7 @@ public class LayoutTest {
 	@Test
 	public void freezeLineWidth() throws Exception {
 		Layout layout = new Layout(new Axis(new Section(int.class)));
-		Section body = layout.axis.getBody();
+		SectionClient body = (SectionClient) layout.axis.getBody();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		layout.head.freezeLineWidth = 10;
@@ -198,7 +198,7 @@ public class LayoutTest {
 		Layout layout = new Layout(new Axis());
 		layout.setViewportSize(450);
 		
-		Section body = layout.axis.getBody();
+		SectionClient body = (SectionClient) layout.axis.getBody();
 		body.setCount(10);
 		body.setCellWidth(0, 0, 50);
 		body.setDefaultCellWidth(100);
@@ -238,7 +238,7 @@ public class LayoutTest {
 		Layout layout = new Layout(new Axis(new Section(int.class)));
 		layout.setViewportSize(1000);
 		
-		Section body = layout.axis.getBody();
+		SectionClient body = (SectionClient) layout.axis.getBody();
 		body.setCount(10);
 		body.setDefaultCellWidth(100);
 		body.setSelected(1, 1, true);
@@ -262,7 +262,7 @@ public class LayoutTest {
 		Layout layout = new Layout(new Axis(new Section(int.class)));
 		layout.setViewportSize(1000);
 		
-		Section body = layout.axis.getBody();
+		SectionClient body = (SectionClient) layout.axis.getBody();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		body.setSelected(1, 1, true);

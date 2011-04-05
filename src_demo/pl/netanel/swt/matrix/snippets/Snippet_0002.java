@@ -77,7 +77,7 @@ public class Snippet_0002 {
 			public void widgetSelected(SelectionEvent e) {
 				Number focusIndex = matrix.getAxis0().getFocusIndex();
 				list.add(focusIndex.intValue(), Integer.toString(++counter));
-				rowBody.add(focusIndex, 1);
+				rowBody.insert(focusIndex, 1);
 				matrix.refresh();
 			}
 		});
@@ -91,7 +91,7 @@ public class Snippet_0002 {
 				//rowModel.getFocusSection().setCount(list.size());
 				NumberSequence seq = rowBody.getSelected();
 				for (seq.init(); seq.nextExtent();) {
-					rowBody.remove(seq.start(), seq.end());
+					rowBody.delete(seq.start(), seq.end());
 					for (int i = seq.end().intValue(); i >= seq.start().intValue(); i--) {
 						list.remove(i);
 					}

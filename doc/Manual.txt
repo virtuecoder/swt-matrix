@@ -1,6 +1,13 @@
 
 Basic Terms
 
+Section
+	 * Section does not have add/remove methods for items. Due to separation of view and model 
+	 * it outside of its responsibility scope. It has only references.
+	 * It is only a reference to the data element. Whenever the data model adds / remove elements then 
+	 * the section should adjusts its item count to match the current size the data model.
+
+
 Freeze - head and tail freezing split the matrix client area into 
 
 

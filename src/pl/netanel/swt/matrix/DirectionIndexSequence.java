@@ -7,7 +7,7 @@ import java.util.List;
  * Iteration yields nothing if the section is not visible. 
  */
 abstract class DirectionIndexSequence<N extends Number> implements Sequence {
-	protected final SectionUnchecked<N> section;
+	protected final Section<N> section;
 	protected Math math;
 	public MutableNumber number, number2, lastInExtent, last, d;
 	protected int i, h;
@@ -17,7 +17,7 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 	public boolean moved;
 	
 	
-	public DirectionIndexSequence(SectionUnchecked section) {
+	public DirectionIndexSequence(Section section) {
 		super();
 		this.section = section;
 		this.math = section.math;
@@ -160,7 +160,7 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 	
 	static class Forward<N extends Number> extends DirectionIndexSequence<N> {
 		
-		public Forward(SectionUnchecked section) {
+		public Forward(Section section) {
 			super(section);
 			sign = 1;
 		}
@@ -208,7 +208,7 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 	
 	static class Backward<N extends Number> extends DirectionIndexSequence<N> {
 		
-		public Backward(SectionUnchecked section) {
+		public Backward(Section section) {
 			super(section);
 			sign = -1;
 		}

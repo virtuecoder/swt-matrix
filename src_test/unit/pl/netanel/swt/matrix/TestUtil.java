@@ -21,11 +21,15 @@ public class TestUtil {
 	}
 	
 	public static AxisItem item(Section section, int index) {
+		return new AxisItem(section, index);
+	}
+	
+	public static AxisItem item(SectionClient section, int index) {
 		return new AxisItem(section.core, index);
 	}
 	
-	public static AxisItem item(Axis model, int section, int index) {
-		return new AxisItem(model.getSection(section).core, index);
+	public static AxisItem item(Axis axis, int section, int index) {
+		return new AxisItem((Section) axis.sections.get(section), index);
 	}
 	
 	static NumberSet numberSet() {

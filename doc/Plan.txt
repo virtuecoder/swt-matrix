@@ -44,7 +44,9 @@ Features
 Example sites:
 - http://www.phpedit.com/en/download/versions/phpedit-4.x/phpedit-4.0.1
 - http://www.devexpress.com/Products/NET/Controls/WinForms/Grid/
+- http://h2database.com
 - http://eclipse.pfgrid.com/Index_Eclipse.aspx
 - http://ydl.net/eclipse_cuda_plugin/userdoc.shtml
 - http://www.excelsior-usa.com/
 - http://www.myeclipseide.com/
+- http://37signals.com/

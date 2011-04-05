@@ -1,8 +1,10 @@
 package pl.netanel.swt.matrix;
 
+import java.text.MessageFormat;
 import java.util.Iterator;
 
-import pl.netanel.util.ImmutableIterator;
+import pl.netanel.util.Preconditions;
+
 
 /**
  * Section represents a continuous segment of a matrix axis, for example a
@@ -12,7 +14,7 @@ import pl.netanel.util.ImmutableIterator;
  * <img src="../../../../../javadoc/images/Section.png"/>
  * <p>
  * Index item width consists of the line width and the cell width - 
- * the line precedes the cell. The last line index equals to getCount().
+ * the line precedes the cell. The last line index equals to section.core.count.
  * If the item is moved then both the cell and the preceding line are moved.  
  * <p>
  * Item attributes include cell width, line width, moveable, resizable,
@@ -29,188 +31,63 @@ import pl.netanel.util.ImmutableIterator;
  * current one, as opposed to each section having its own current item.
  * 
  * 
- * @author Jacek Kolodziejczyk created 02-03-2011
+ * @author Jacek Kolodziejczyk 
+ * @created 02-03-2011
  */
-public class Section<N extends Number> {
+class SectionClient<N extends Number> extends Section<N> {
+	Section<N> core;
 
-	static final int DEFAULT_CELL_WIDTH = 16;
-	static final int DEFAULT_LINE_WIDTH = 1;
-	
-	final Math<N> math;
-	N count;
-	
-	final NumberOrder<N> order;
-	final NumberSet<N> hidden;
-	private final NumberSet<N> resizable;
-	private final NumberSet<N> moveable;
-	private final NumberSet<N> hideable;
-	private final IntAxisState cellWidth;
-	private final IntAxisState lineWidth;
-	private final ObjectAxisState<N> cellSpan;
-	
-	private final NumberQueueSet<N> selection;
-	private final NumberQueueSet<N> lastSelection;
-
-	private boolean defaultResizable, defaultMoveable, defaultHideable; 
-	private boolean isNavigationEnabled, isVisible;
-	
-	Axis<N> axis;
-	int index; 
+	public SectionClient(Section<N> section) {
+		core = section;
+	}
 	
 	/**
-	 * Constructs a section indexed by int.class, which is equivalent to Integer.class.
+	 * Indicates whether some other object is "equal to" this one. 
 	 */
-	public Section() {
-		this(Math.getInstance(int.class));
-	}
-
-	/**
-	 * Constructs a section indexed by the given sub-class of {@link Number}.
-	 * 
-	 * @param numberClass defines the class used for indexing
-	 */
-	public Section(Class<N> numberClass) {
-		this(Math.getInstance(numberClass));
-	}
-	
-	Section(Math<N> math) {
-		super();
-		this.math = math;
-		count = math.ZERO_VALUE();
-		
-		order = new NumberOrder<N>(math);
-		hidden = new NumberSet(math, true);
-		resizable = new NumberSet(math, true);
-		moveable = new NumberSet(math, true);
-		hideable = new NumberSet(math, true);
-		
-		cellWidth = new IntAxisState(math, DEFAULT_CELL_WIDTH);
-		lineWidth = new IntAxisState(math, DEFAULT_LINE_WIDTH);
-		cellSpan = new ObjectAxisState(math, 1);
-		
-		selection = new NumberQueueSet(math);
-		lastSelection = new NumberQueueSet(math);
-		
-		isNavigationEnabled = isVisible = true;
-	}
-	
-
-	@Override
-	public String toString() {
-		return Integer.toString(index);
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
+		if (!(obj instanceof Section)) return false;
 		if (obj instanceof SectionClient) obj = ((SectionClient) obj).core;
-		return super.equals(obj);
+		return core.equals(obj);
 	}
 
-	/*------------------------------------------------------------------------
-	 * Collection like  
+	/**
+	 * Returns the section position on the axis.
 	 */
-
+	@Override
+	public String toString() {
+		return core.toString();
+	}
+	
 	/**
 	 * Specifies the number of section items.
 	 * @param count the new count of the receiver's items
+	 * <p>
 	 * @see #getCount()
 	 */
 	public void setCount(N count) {
-		this.count = count;
-		order.setCount(count);
+		core.setCount(count);
 	}
-	
+
 	/**
 	 * Returns the number of sections items. 
 	 * @return the number of sections items.
 	 * @see #setCount(Number)
 	 */
 	public N getCount() {
-		return count;
+		return core.count;
 	}
 
 	/**
-     * Returns <tt>true</tt> if this contains contains no items.
+     * Returns <code>true</code> if the receiver contains contains no items. 
      * Otherwise <code>false</code> is returned.
-     * @return <tt>true</tt> if this contains contains no items
+     * @return <code>true</code> if the receiver contains contains no items
      */
 	public boolean isEmpty() {
-		return order.items.isEmpty();
+		return core.isEmpty();
 	}
 
-	/**
-	 * Returns the item at given visual position according 
-	 * to the current order of items and skipping the hidden ones.
-	 * 
-	 * @param position visual index of given item
-	 * @return item at the given position
-	 * 
-	 * @see #indexOf(Number)
-	 */
-	public N get(N position) {
-		if (math.compare(position, getVisibleCount()) >= 0) return null;
-		
-		MutableNumber<N> pos1 = math.create(0);
-		MutableNumber<N> pos2 = math.create(0);
-		
-		for (int i = 0, size = order.items.size(); i < size; i++) {
-			Extent<N> e = order.items.get(i);
-			pos2.add(e.end).subtract(e.start).subtract(hidden.getCount(e.start(), e.end()));
-			if (math.compare(pos2, position) >= 0) {
-				MutableNumber count = hidden.getCount(e.start(), pos1.getValue());
-				return pos1.subtract(position).negate().add(e.start).add(count).getValue();
-			}
-			pos2.increment();
-			pos1.set(pos2); 
-		}
-		return null;
-	}
 	
-	/**
-	 * Returns the visual position of the given item according to the current order of items.
-	 * Hidden items are included. 
-	 * If the item is null or out of scope then the method returns null.
-	 *  
-	 * @param item to get the position for
-	 * @return visual position of the item at the given index
-	 * 
-	 * @see #indexOfNotHidden(Number)
-	 */
-	public N indexOf(N item) {
-		return item == null ? null : order.indexOf(item);
-	}
-	
-	
-	/**
-	 * Returns the visual position of an item according to the current order of items 
-	 * and skipping the hidden ones. 
-	 * If the item is null, out of scope or is hidden then the method returns null.
-	 *  
-	 * @param index to get the position for
-	 * @return visual position of the item at the given index
-	 * 
-	 * @see #indexOf(Number)
-	 */
-	public N indexOfNotHidden(N index) {
-		if (index == null || hidden.contains(index)) return null;
-		MutableNumber<N> hiddenCount = math.create(0);
-		MutableNumber<N> pos1 = math.create(0);
-		MutableNumber<N> pos2 = math.create(0);
-		
-		for (int i = 0, size = order.items.size(); i < size; i++) {
-			Extent<N> e = order.items.get(i);
-			boolean contains = math.contains(e, index);
-			hiddenCount.add(hidden.getCount(e.start(), contains ? index : e.end()));
-			if (contains) {
-				return pos2.add(index).subtract(e.start).subtract(hiddenCount).getValue();
-			}
-			pos1.set(pos2);
-			pos2.add(e.end).subtract(e.start).increment(); //.subtract(hiddenCount);
-		}
-		return null;
-	}
-
-
 	/*------------------------------------------------------------------------
 	 * Section properties
 	 */
@@ -221,10 +98,10 @@ public class Section<N extends Number> {
 	 *
 	 * @param visible the new visibility state
 	 */
- 	public void setVisible(boolean visible) {
-		this.isVisible = visible;
+	public void setVisible(boolean visible) {
+		core.setVisible(visible);
 	}
-	
+
 	/**
 	 * Returns <code>true</code> if the receiver is visible. 
 	 * Otherwise, <code>false</code> is returned.
@@ -232,7 +109,7 @@ public class Section<N extends Number> {
 	 * @return the receiver's visibility state
 	 */
 	public boolean isVisible() {
-		return isVisible;
+		return core.isVisible();
 	}
 
 	/**
@@ -242,7 +119,7 @@ public class Section<N extends Number> {
 	 * @param enabled the new visibility state
 	 */
 	public void setNavigationEnabled(boolean enabled) {
-		this.isNavigationEnabled = enabled;
+		core.setNavigationEnabled(enabled);
 	}
 	
 	/**
@@ -252,10 +129,9 @@ public class Section<N extends Number> {
 	 * @return the receiver's visibility state
 	 */
 	public boolean isNavigationEnabled() {
-		return isNavigationEnabled;
+		return core.isNavigationEnabled();
 	}
 
-	
 	
 	/*------------------------------------------------------------------------
 	 * Default values 
@@ -263,75 +139,70 @@ public class Section<N extends Number> {
 	
 	/**
 	 * Sets the default width of cells in this section to the given value. 
-	 * Cell width excludes the width of lines.
-	 * Negative argument values are ignored.
+	 * Negative argument values are ignored.  
 	 * <p>
-	 * This allows to save storage memory of the width attribute if many cells share the same value 
-	 * and the newly created items to have the default value automatically.  
+	 * Recommended to set a value of majority of the receiver's items to save on memory storage. 
 	 * @param width new value for default width.
 	 */
 	public void setDefaultCellWidth(int width) {
 		if (width < 0) return;
-		cellWidth.setDefault(width);
-	}
-	
-	/**
-	 * Returns the default cell width of the receiver's items. 
-	 * Cell with excludes the width of lines.
-	 * @return default width of cells in this 
-	 */
-	public int getDefaultCellWidth() {
-		return cellWidth.getDefault();
-	}
-	
-	/**
-	 * Sets default width of lines in this section to the given value.  
-	 * Negative argument values are ignored.
-	 * <p>
-	 * This allows to save storage memory of the width attribute if many lines share the same value
-	 * and the newly created items to have the default value automatically. 
-	 * @param width new value for default width.
-	 */
-	public void setDefaultLineWidth(int width) {
-		if (width < 0) return;
-		lineWidth.setDefault(width);
-	}
-	
-	/**
-	 * Returns the default line width of the receiver's items. 
-	 * @return default width of lines in this 
-	 */
-	public int getDefaultLineWidth() {
-		return lineWidth.getDefault();
-	}
-	
-	
-	/**
-	 * Returns <code>true</code> if the section items can be resized by default. 
-	 * Otherwise, <code>false</code> is returned.
-	 *
-	 * @return the default resizable ability state of the section items
-	 */
-	public boolean isDefaultResizable() {
-		return defaultResizable;
+		core.setDefaultCellWidth(width);
 	}
 
 	/**
-	 * Sets the default resize ability of the receiver's items to the given argument.
+	 * Returns the default cell width of the receiver's items.
+	 * @return default width of cells in this section.
+	 */
+	public int getDefaultCellWidth() {
+		return core.getDefaultCellWidth();
+	}
+
+	/**
+	 * Sets default width of lines in this section to the given value. 
+	 * Negative argument values are ignored.
 	 * <p>
-	 * This allows to save storage memory of the "resizable" attribute if many items share the same value
-	 * and the newly created items to have this default value automatically. 
+	 * Recommended to set a value of majority of the receiver's items to save on memory storage.
+	 * Also any additional 
+	 * @param width new value for default width.
+	 */
+	public void setDefaultLineWidth(int width) {
+		if (width < 0) return; 
+		core.setDefaultLineWidth(width);
+	}
+
+	
+	/**
+	 * Returns the default line width of the receiver's items.
+	 * @return default width of lines in this section.
+	 */
+	public int getDefaultLineWidth() {
+		return core.getDefaultLineWidth();
+	}
+
+	/**
+	 * Returns <code>true</code> if the section items can be resized by default. 
+	 * Otherwise, <code>false</code> is returned.
+	 * @return the default resizable ability state of the section items
+	 */
+	public boolean isDefaultResizable() {
+		return core.isDefaultResizable();
+	}
+
+	/**
+	 * Sets the default resize ability of the receiver's items to the given argument. 
+	 * <p>
+	 * Recommended to set a value of majority of the receiver's items to save on memory storage.
 	 * <p>
 	 * The value of the <code>resizable</code> argument is returned by 
 	 * {@link #isResizable(Number)} method if a different value for the particular index 
 	 * has not been set by {@link #setResizable(Number, Number, boolean)}.
-	 *
+	 * 
 	 * @param resizable the new resize ability state
 	 */
 	public void setDefaultResizable(boolean resizable) {
-		this.defaultResizable = resizable;
+		core.setDefaultResizable(resizable);
 	}
-	
+
 	/**
 	 * Returns <code>true</code> if the section items can be moved by default. 
 	 * Otherwise, <code>false</code> is returned.
@@ -339,24 +210,22 @@ public class Section<N extends Number> {
 	 * @return the default move ability state of the section items
 	 */
 	public boolean isDefaultMoveable() {
-		return defaultMoveable;
+		return core.isDefaultMoveable();
 	}
 
 	/**
 	 * Sets the default move ability of the receiver's items to the given argument. 
 	 * <p>
-	 * This allows to save storage memory of the "moveable" attribute if many items share the same value
-	 * and the newly created items to have this default value automatically. 
+	 * Recommended to set a value of majority of the receiver's items to save on memory storage.
 	 * <p>
 	 * The value of the <code>movable</code> argument is returned by 
 	 * {@link #isMoveable(Number)} method if a different value for the particular index 
 	 * has not been set by {@link #setMoveable(Number, Number, boolean)}.
 	 * 
 	 * @param moveable the new move ability state
-
 	 */
 	public void setDefaultMoveable(boolean moveable) {
-		this.defaultMoveable = moveable;
+		core.setDefaultMoveable(moveable);
 	}
 
 	/**
@@ -366,14 +235,13 @@ public class Section<N extends Number> {
 	 * @return the default hide ability state of the section items
 	 */
 	public boolean isDefaultHideable() {
-		return defaultHideable;
+		return core.isDefaultHideable();
 	}
 
 	/**
 	 * Sets the default hide ability of the receiver's items to the given argument. 
 	 * <p>
-	 * This allows to save storage memory of the "hideable" attribute if many items share the same value
-	 * and the newly created items to have this default value automatically. 
+	 * Recommended to set a value of majority of the receiver's items to save on memory storage.
 	 * <p>
 	 * The value of the <code>hideable</code> argument is returned by 
 	 * {@link #isHideable(Number)} method if a different value for the particular index 
@@ -382,9 +250,8 @@ public class Section<N extends Number> {
 	 * @param hideable the new hide ability state
 	 */
 	public void setDefaultHideable(boolean hideable) {
-		this.defaultHideable = hideable;
+		core.setDefaultHideable(hideable);
 	}
-	
 	
 	
 	/*------------------------------------------------------------------------
@@ -401,28 +268,31 @@ public class Section<N extends Number> {
 	 * @param start first index of the range of items  
 	 * @param end last index of the range of items  
 	 * @param width the new line width
+	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()} bounds
+	 * @throws IllegalArgumentException if start is greater then end
 	 */ 
 	public void setLineWidth(N start, N end, int width) {
-		lineWidth.setValue(start, end, width);
+		if (width < 0) return;
+		checkRange(start, end, core.math.increment(core.count));
+		core.setLineWidth(start, end, width);
 	}
 	
 	/**
-	 * Returns the line width at the given index in the receiver.  
-	 * If the width has not been set at this index by {@link #setLineWidth(Number)} 
-	 * method then the default line width is returned.
-	 * <p>
-	 * Line at index i is on the left side of the cell at index i.
-     * Last line to the right is at index equal to section item count.
+	 * Returns the stored line width at the given index. Or the default line width 
+	 * if the width has not been set at this index.
+	 * <p> 
 	 * <code>index</code> refers to the model, not the visual position
 	 * which can be altered by move and hide operations.
 	 * 
 	 * @param index the item index 
 	 * @return the line width at the given item index in the receiver
+	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	public int getLineWidth(N index) {
-		return lineWidth.getValue(index);
+		checkIndex(index, core.math.increment(core.count), "index");
+		return core.getLineWidth(index);
 	}
-	
+
 	/**
 	 * Sets the line width for the range of items.
 	 * <p>
@@ -433,27 +303,30 @@ public class Section<N extends Number> {
 	 * @param start first index of the range of items  
 	 * @param end last index of the range of items  
 	 * @param width the new cell width
+	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
+	 * @throws IllegalArgumentException if start is greater then end
 	 */ 
 	public void setCellWidth(N start, N end, int width) {
-		cellWidth.setValue(start, end, width);
+		if (width < 0) return;
+		checkRange(start, end, core.count);
+		core.setCellWidth(start, end, width);
 	}
 	
 	/**
-	 * Returns the cell width at the given index in the receiver.  
-	 * If the width has not been set at this index by {@link #setCellWidth(Number)} 
-	 * method then the default cell width is returned.
+	 * Returns the stored cell width at the given index in the receiver. 
+	 * Or the default cell width if the width has not been set at this index.
 	 * <p>
-	 * <code>index</code> refers to the model, not the visual position
-	 * which can be altered by move and hide operations.
+	 * <code>index</code> refers to the model, not the visual position 
+	 * which can be altered by move and hide operations. 
 	 * 
 	 * @param index the item index 
 	 * @return the cell width at the given item index in the receiver
+	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	public int getCellWidth(N index) {
-		return cellWidth.getValue(index);
+		checkIndex(index, core.count, "index");
+		return core.getCellWidth(index);
 	}
-
-	
 	
 	/**
 	 * Sets the move ability for the range of items. 
@@ -461,45 +334,49 @@ public class Section<N extends Number> {
 	 * An item that is not moveable cannot be dragged by the user but may be reordered by the programmer.
 	 * <p>
 	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position
-	 * which can be altered by move and hide operations. 
+	 * which can be altered by move and hide operations.  
 	 *
 	 * @param start first index of the range of items  
 	 * @param end last index of the range of items  
 	 * @param enabled the new move ability state
+	 * @throws NullPointerException if the start or end is null
+	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
+	 * @throws IllegalArgumentException if start is greater then end
 	 */ 
 	public void setMoveable(N start, N end, boolean enabled) {
-		moveable.change(start, end, enabled != defaultMoveable);
+		checkRange(start, end, core.count);
+		core.setMoveable(start, end, enabled);
 	}
-	
+
 	/**
 	 * Returns <code>true</code> if the item at given index can be moved by end user.
 	 * Otherwise, <code>false</code> is returned. 
 	 * An item that is moveable can be reordered by the user by dragging the header. 
 	 * An item that is not moveable cannot be dragged by the user but may be reordered by the programmer.
 	 * <p>
-	 * If the move abiity has not been set at this index by {@link #setMoveable(Number)} 
-	 * method then the default cell width is returned.
-
+	 * Returns the stored item move ability at given index  
+	 * or the default item move ability if it has not been set at this index. 
 	 * <p>
 	 * <code>index</code> refers to the model, not the visual position
 	 * which can be altered by move and hide operations. 
 	 * 
 	 * @param index the item index 
 	 * @return the move ability state at the given index
+	 * @throws NullPointerException if the index is null
+	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	public boolean isMoveable(N index) {
-		return moveable.contains(index) != defaultMoveable;
+		checkIndex(index, core.count, "index");
+		return core.isMoveable(index);
 	}
-	
-	
-	
+
 	/**
 	 * Sets the resize ability for the range of items.
 	 * An item that is resizable can be resized by the user dragging the edge of the header. 
 	 * An item that is not resizable cannot be dragged by the user but may be resized by the programmer.
 	 * <p>
 	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position
-	 * which can be altered by move and hide operations. Width that is lower then zero is ignored. 
+	 * which can be altered by move and hide operations.  
 	 *
 	 * @param start first index of the range of items  
 	 * @param end last index of the range of items  
@@ -508,7 +385,8 @@ public class Section<N extends Number> {
 	 * @throws IllegalArgumentException if start is greater then end
 	 */ 
 	public void setResizable(N start, N end, boolean enabled) {
-		resizable.change(start, end, enabled != defaultResizable);
+		checkRange(start, end, core.count);
+		core.setResizable(start, end, enabled);
 	}
 	
 	/**
@@ -525,9 +403,12 @@ public class Section<N extends Number> {
 	 * 
 	 * @param index the item index 
 	 * @return the move ability state at the given index
+	 * @throws NullPointerException if the index is null
+	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	public boolean isResizable(N index) {
-		return resizable.contains(index) != defaultResizable;
+		checkIndex(index, core.count, "index");
+		return core.isResizable(index);
 	}
 	
 	/**
@@ -536,7 +417,7 @@ public class Section<N extends Number> {
 	 * An item that is not hideable cannot be hidden by the user but may be hidden by the programmer.
 	 * <p>
 	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position
-	 * which can be altered by move and hide operations.
+	 * which can be altered by move and hide operations.  
 	 *
 	 * @param start first index of the range of items  
 	 * @param end last index of the range of items  
@@ -546,7 +427,8 @@ public class Section<N extends Number> {
 	 * @throws IllegalArgumentException if start is greater then end
 	 */ 
 	public void setHideable(N start, N end, boolean enabled) {
-		hideable.change(start, end, enabled != defaultHideable);
+		checkRange(start, end, core.count);
+		core.setHideable(start, end, enabled);
 	}
 	
 	/**
@@ -561,13 +443,18 @@ public class Section<N extends Number> {
 	 * <code>index</code> refers to the model, not the visual position
 	 * which can be altered by move and hide operations. 
 	 * 
+	 * @param index the item index 
 	 * @return the hide ability state at the given index
+	 * @throws NullPointerException if the index is null
+	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getCount()}-1 bounds
+	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	public boolean isHideable(N index) {
-		return hideable.contains(index) != defaultHideable;
+		checkIndex(index, core.count, "index");
+		return core.isHideable(index);
 	}
 
-	
+
 	/*------------------------------------------------------------------------
 	 * Hiding 
 	 */
@@ -587,30 +474,10 @@ public class Section<N extends Number> {
 	 * @throws IllegalArgumentException if start is greater then end
 	 */ 
 	public void setHidden(N start, N end, boolean state) {
-		hidden.change(start, end, state);
+		checkRange(start, end, core.count);
+		core.setHidden(start, end, state);
 	}
 
-	/**
-	 * Sets the hiding state for the items that are selected.
-	 * <p>
-	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position
-	 * which can be altered by move and hide operations. Width that is lower then zero is ignored. 
-	 *
-	 * @param state the new hiding state
-	 * 
-	 * @throws NullPointerException if start or end is null
-	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
-	 * @throws IllegalArgumentException if start is greater then end
-	 * <p>
-	 * @see #setSelected(Number, Number, boolean)
-	 */ 
-	public void setHiddenSelected(boolean state) {
-		for (int i = 0, imax = selection.items.size(); i < imax; i++) {
-			Extent<N> e = selection.items.get(i);
-			setHidden(e.start(), e.end(), state);
-		}
-	}
-	
 	/**
 	 * Returns <code>true</code> if the item at given index is hidden.
 	 * Otherwise, <code>false</code> is returned.
@@ -620,51 +487,37 @@ public class Section<N extends Number> {
 	 * 
 	 * @param index the item index 
 	 * @return the hiding state at the given index
+	 * 
+	 * @throws NullPointerException if the index is null
+	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	public boolean isHidden(N index) {
-		return hidden.contains(index);
+		checkIndex(index, core.count, "index");
+		return core.isHidden(index);
 	}
-	
-	/**
-	 * Returns the number of hidden items in given range of items.
-	 * 
-	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position
-	 * which can be altered by move and hide operations. Width that is lower then zero is ignored. 
-	 *
-	 * @param start first index of the range of items  
-	 * @param end last index of the range of items  
 
-	 * @throws NullPointerException if start or end is null
-	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
-	 * @throws IllegalArgumentException if start is greater then end
-	 * @return the number of hidden items 
-	 */
-	public N getHiddenCount(N start, N end) {
-		return hidden.getCount(start, end).getValue();
-	}
-	
 	/**
 	 * Returns the number of hidden items.
 	 * @return the number of hidden items 
 	 */
 	public N getHiddenCount() {
-		return hidden.getCount().getValue();
+		return core.getHiddenCount();
 	}
-	
+
 	/**
-	 * Returns iterator for indexes of the hidden items.
-	 * 
+	 * Returns an iterator for the indexes of the hidden items.
 	 * @return the hidden items iterator
 	 */
-	public Iterator<N> getHidden() {
-		return new IndexIterator(new NumberSequence(hidden));
+	public Iterator getHidden() {
+		return core.getHidden();
 	}
-	
+
 	
 	
 	/*------------------------------------------------------------------------
 	 * Selection 
 	 */
+	
 	/**
 	 * Sets the selection state for the range of items.
 	 * <p>
@@ -680,24 +533,17 @@ public class Section<N extends Number> {
 	 * @throws IllegalArgumentException if start is greater then end
 	 */ 
 	public void setSelected(N start, N end, boolean state) {
-		selection.change(start, end, state);
-		
-		if (axis != null) {
-			axis.selectInZones(this, start, end);
-		}
+		checkRange(start, end, core.count);
+		core.setSelected(start, end, state);
 	}
-	
+
 	/**
 	 * Sets the selection state for all the items.
 	 * 
 	 * @param state the new selection state
 	 */ 
 	public void setSelectedAll(boolean selected) {
-		if (selected) {
-			selection.add(math.ZERO_VALUE(), math.decrement(count));
-		} else {
-			selection.clear();
-		}
+		core.setSelectedAll(selected);
 	}
 	
 	/**
@@ -709,45 +555,35 @@ public class Section<N extends Number> {
 	 * 
 	 * @param index the item index 
 	 * @return the selection state at the given index
+	 * 
+	 * @throws NullPointerException if the index is null
+	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	public boolean isSelected(N index) {
-		return selection.contains(index);
+		checkIndex(index, core.count, "index");
+		return core.isSelected(index);
 	}
 	
 	/**
-	 * Returns the number of selected items in given range of items.
-	 * 
-	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position
-	 * which can be altered by move and hide operations. Width that is lower then zero is ignored. 
-	 *
-	 * @param start first index of the range of items  
-	 * @param end last index of the range of items  
-
-	 * @throws NullPointerException if start or end is null
-	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
-	 * @throws IllegalArgumentException if start is greater then end
+	 * Returns the number of selected items.
 	 * @return the number of hidden items 
 	 */
 	public N getSelectedCount() {
-		return selection.getCount().getValue();
+		return core.getSelectedCount();
 	}
-	
-	public NumberSequence<N> getSelected() {
-		return new NumberSequence(selection);
+
+	/** 
+	 * Returns an iterator for the indexes of selected items.
+	 * @return an iterator for the indexes of selected items
+	 */
+	public NumberSequence getSelected() {
+		return core.getSelected();
 	}
-	
-	public void backupSelection() {
-		lastSelection.replace(selection);
-	}
-	
-	public void restoreSelection() {
-		selection.replace(lastSelection);
-	}
-	
+
 	
 	
 	/*------------------------------------------------------------------------
-	 * Moving
+	 * Moving 
 	 */
 	
 	/**
@@ -766,154 +602,12 @@ public class Section<N extends Number> {
 	 * @throws IllegalArgumentException if start is greater then end  
 	 */
 	public void move(N start, N end, N target) {
-		order.move(start, end, target);
+		checkRange(start, end, core.count);
+		checkIndex(target, core.math.increment(core.count), "target");
+		core.move(start, end, target);
 	}
 	
-	
-	
-	/*------------------------------------------------------------------------
-	 * Non public 
-	 */
-	
-	N getVisibleCount() {
-		return math.create(count).subtract(hidden.getCount()).getValue();
-	}
-	
-	N getCellSpan(N index) {
-		return cellSpan.getValue(index);
-	}
-
-	N nextNotHiddenIndex(N item, int direction) {
-		for (Extent e: hidden.items) {
-			if (math.contains(e, item)) {
-				if (direction > 0) {
-					item = math.increment(e.end());
-					if (math.compare(item, count) >= 0) {
-						item = null;
-					}
-				} else {
-					item = math.decrement(e.start());
-					if (math.compare(item, math.ZERO_VALUE()) < 0) {
-						item = null;
-					}
-				}
-				break;
-			}
-		}
-		return math.compare(item, count) < 0 ? item : null;
-	}
-
-	ExtentSequence<N> getSelectedExtentSequence() {
-		return new ExtentSequence(selection.items);
-	}
-	
-	ExtentSequence<N> getSelectedExtentResizableSequence() {
-		return new ExtentSequence<N>(selection.items) {
-//			private int j;
-//			@Override
-//			public void init() {
-//				super.init();
-//				j = -1;
-//			}
-			@Override
-			public boolean next() {
-				return super.next();
-//				if (++i >= items.size() ) return false;
-//				Extent<N> e = items.get(i);
-//				start = e.start();
-//				end = e.end();
-//				
-//				boolean quit = false;
-//				while (++j < resizable.items.size()) {
-//					Extent<N> e2 = resizable.items.get(j);
-//					int location = math.compare(e.start(), e.end(), e2.start(), e2.end());
-//					switch (location) {
-//					case AFTER: 			continue;
-//					case BEFORE: 		
-//						j = resizable.items.size(); // Quit the loop
-//						break;
-//					
-//					case CROSS_BEFORE:	
-//						start = math.increment(end);
-//						break;
-//						
-//					case CROSS_AFTER:	
-//						item.end.set(math.max(math.decrement(start), item.start()));
-//						break;
-//						
-//					case EQUAL:	
-//					case OVERLAP:	
-//						toRemove.add(0, item);
-//						break;
-//						
-//					case INSIDE:
-//						MutableNumber newEnd = item.end.copy();
-//						item.end.set(math.max(math.decrement(start), item.start()));
-//						items.add(i+1, new Extent(math.create(end).increment(), newEnd));
-//					}
-//					
-//					
-//					int compare = math.compare(e.start(), e.end(), e2.start(), e2.end());
-//					switch (compare) {
-//					case AFTER: 		quit = true; break; 
-//					case EQUAL:
-//					case INSIDE:		return false;
-//					
-//					case CROSS_BEFORE: 			
-//					case CROSS_AFTER:		
-//					case OVERLAP:		
-//						if (math.contains(e, e2.start()) || math.contains(e, e2.end())) {
-//							if (defaultResizable == true) {
-//								start = math.min(e.start(), e2.start());
-//								end = math.min(e.start(), e2.start());
-//							}
-//						} 
-//						break; 
-//					}
-//					
-//					if (quit) break;
-//				}
-//				return true;
-			}
-		};
-	}
-	
-	class IndexIterator extends ImmutableIterator<N> {
-		
-		private NumberSequence<N> seq;
-
-		IndexIterator(NumberSequence seq) {
-			super();
-			this.seq = seq;
-			seq.init();
-		}
-
-		@Override
-		public boolean hasNext() {
-			return seq.hasNext();
-		}
-
-		@Override
-		public N next() {
-			seq.next();
-			return seq.index();
-		}
-
-	}
-
-	boolean moveSelected(N source, N target) {
-		assert selection.contains(source);
-		if (selection.isEmpty() || selection.contains(target)) return false;
-			
-		int position = math.compare(indexOf(target), indexOf(source));
-		if (position == 0) return false;
-		N index = position < 0 ? target : math.increment(target);
-
-		order.move(selection, index);
-		return true;
-	}
-
-    /**
+	/**
 	 * Removes a range of items decreasing the section item count. 
 	 * 
 	 * @param start first index of the range of items  
@@ -925,21 +619,8 @@ public class Section<N extends Number> {
 	 * @throws IllegalArgumentException if start is greater then end  
 	 */
 	public void delete(N start, N end) {
-		cellWidth.delete(start, end);
-		lineWidth.delete(start, end);
-		cellSpan.delete(start, end);
-		resizable.delete(start, end);
-		moveable.delete(start, end);
-		hideable.delete(start, end);
-		hidden.delete(start, end);
-		order.delete(start, end);
-		selection.delete(start, end);
-		lastSelection.delete(start, end);
-		setCount(math.create(count).subtract(end).add(start).decrement().getValue());
-		
-		if (axis != null) {
-			axis.deleteInZones(this, start, end);
-		}
+		checkRange(start, end, core.count);
+		core.delete(start, end);
 	}
 
 	/**
@@ -955,20 +636,49 @@ public class Section<N extends Number> {
 	 * 		   out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	public void insert(N target, N count) {
-		cellWidth.insert(target, count);
-		lineWidth.insert(target, count);
-		cellSpan.insert(target, count);
-		resizable.insert(target, count);
-		moveable.insert(target, count);
-		hideable.insert(target, count);
-		hidden.insert(target, count);
-		order.insert(target, count);
-		selection.insert(target, count);
-		lastSelection.insert(target, count);
-		this.count = math.create(this.count).add(count).getValue();
-		
-		if (axis != null) {
-			axis.insertInZones(this, target, count);
+		Preconditions.checkNotNullWithName(count, "count");
+		checkIndex(target, core.math.increment(core.count), "target");
+		core.insert(target, count);
+	}
+	
+	/*------------------------------------------------------------------------
+	 * Non public methods 
+	 */
+
+	private void checkRange(N start, N end, N limit) {
+		Preconditions.checkNotNull(start, "start");
+		Preconditions.checkNotNull(end, "end");
+		if (core.math.compare(start, core.math.ZERO_VALUE()) < 0) {
+			throw new IndexOutOfBoundsException(MessageFormat.format(
+				"start ({0}) cannot be negative", start)) ;
+		}
+		if (core.math.compare(end, core.math.ZERO_VALUE()) < 0) {
+			throw new IndexOutOfBoundsException(MessageFormat.format(
+				"end ({0}) cannot be negative", end)) ;
+		}
+		if (core.math.compare(start, limit) >= 0) {
+			throw new IndexOutOfBoundsException(MessageFormat.format(
+				"start ({0}) must be lower then limit {1}", start, limit)) ;
+		}
+		if (core.math.compare(end, limit) >= 0) {
+			throw new IndexOutOfBoundsException(MessageFormat.format(
+				"end ({0}) must be lower then limit {1}", end, limit)) ;
+		}
+		if (core.math.compare(start, end) > 0) {
+			throw new IllegalArgumentException(MessageFormat.format(
+				"start ({0}) cannot be greater then end {1}", start, end)) ;
+		}
+	}
+	
+	private void checkIndex(N index, N limit, String name) {
+		Preconditions.checkNotNull(index, "index");
+		if (core.math.compare(index, core.math.ZERO_VALUE()) < 0) {
+			throw new IndexOutOfBoundsException(MessageFormat.format(
+					"index ({0}) cannot be negative", index)) ;
+		}
+		if (core.math.compare(index, limit) >= 0) {
+			throw new IndexOutOfBoundsException(MessageFormat.format(
+					"index ({0}) must be lower then limit {1}", index, limit)) ;
 		}
 	}
 

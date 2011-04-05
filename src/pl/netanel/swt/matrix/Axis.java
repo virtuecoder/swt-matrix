@@ -21,12 +21,14 @@ import pl.netanel.util.Preconditions;
  * @author Jacek
  * @created 27-03-2011
  */
-public class Axis<N extends Number> implements Iterable<Section<N>> {
+public class Axis<N extends Number> implements Iterable<SectionClient<N>> {
+	private static final String FREEZE_ITEM_COUNT_ERROR = "Freeze item count must greater then 0";
 	
 	final Math<N> math;
 	final ArrayList<Section<N>> sections;
-	final HashMap<SectionUnchecked<N>, Section<N>> sectionMap;
-	Section<N> body, header;
+	final ArrayList<SectionClient<N>> clientSections;
+	final HashMap<Section<N>, SectionClient<N>> sectionMap;
+	SectionClient<N> body, header;
 	private int autoScrollOffset, resizeOffset;
 	Layout<N> layout;
 	final Listeners listeners;
@@ -49,18 +51,20 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 
 	public Axis(Section<N> ...sections) {
 		Preconditions.checkArgument(sections.length > 0, "Model must have at least one section");
-		math = sections[0].core.math;
+		math = sections[0].math;
 		this.sections = new ArrayList(sections.length);
+		this.clientSections = new ArrayList(sections.length);
 		this.sectionMap = new HashMap(sections.length);
 		for (int i = 0; i < sections.length; i++) {
-			Section section = sections[i];
+			SectionClient section = new SectionClient(sections[i]);
 			section.core.index = i;
 			section.core.axis = this;
-			this.sections.add(section);
+			this.sections.add(section.core);
+			this.clientSections.add(section);
 			this.sectionMap.put(section.core, section);
 		}
 		if (sections.length == 0) {
-			this.sections.add(new Section(math));
+			this.sections.add(new SectionClient(new Section(math)));
 			setBody(0);
 		} else {
 			if (sections.length == 1) {
@@ -88,12 +92,12 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 
 	public void setBody(int sectionIndex) {
 		Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
-		this.body = sections.get(sectionIndex);
+		this.body = sectionMap.get(sections.get(sectionIndex));
 	}
 	
 	public void setHeader(int sectionIndex) {
 		Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
-		this.header = sections.get(sectionIndex);
+		this.header = sectionMap.get(sections.get(sectionIndex));
 	}
 	
 	
@@ -102,13 +106,21 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	}
 	
 	public Section<N> getSection(int i) {
+		return clientSections.get(i);
+	}
+	
+	public Section<N> getSectionUnchecked(int i) {
+		return sections.get(i);
+	}
+	
+	public Section<N> getUncheckedSection(int i) {
 		return sections.get(i);
 	}
 	
 
 	@Override
-	public Iterator<Section<N>> iterator() {
-		return sections.iterator();
+	public Iterator<SectionClient<N>> iterator() {
+		return clientSections.iterator();
 	}
 
 	
@@ -116,7 +128,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 * Navigation 
 	 */
 	
-	public Section<N> getFocusSection() {
+	public SectionClient<N> getFocusSection() {
 		layout.computeIfRequired();
 		return layout.current == null ? null : sectionMap.get(layout.current.section);
 	}
@@ -126,7 +138,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		return layout.current == null ? null : layout.current.index;
 	}
 
-	public Section<N> getTopSection() {
+	public SectionClient<N> getTopSection() {
 		layout.computeIfRequired();
 		return layout.start == null ? null : sectionMap.get(layout.start.section);
 	}
@@ -136,7 +148,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		return layout.start == null ? null : layout.start.index;
 	}
 	
-	public void navigate(SectionUnchecked<N> section, N index) {
+	public void navigate(Section<N> section, N index) {
 		layout.setCurrentItem(new AxisItem(section, index));
 	}
 
@@ -146,10 +158,12 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 */
 
 	public void freezeHead(int freezeItemCount) {
+		Preconditions.checkArgument(freezeItemCount >= 0, FREEZE_ITEM_COUNT_ERROR);
 		layout.freezeHead(freezeItemCount);
 	}
 
 	public void freezeTail(int freezeItemCount) {
+		Preconditions.checkArgument(freezeItemCount >= 0, FREEZE_ITEM_COUNT_ERROR);
 		layout.freezeTail(freezeItemCount);
 	}
 	
@@ -277,7 +291,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		}
 	}
 
-	void selectInZones(SectionUnchecked<N> section, N start, N end) {
+	void selectInZones(Section<N> section, N start, N end) {
 		if (matrix != null) {
 			matrix.selectInZones(index, section, start, end);
 		}
@@ -286,14 +300,14 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	AxisItem getLastItem() {
 		for (int i = sections.size(); i-- > 0;) {
 			Section section = sections.get(i);
-			if (section.core.isEmpty()) continue;
-			return new AxisItem(section.core, math.decrement(section.getCount()));
+			if (section.isEmpty()) continue;
+			return new AxisItem(section, math.decrement(section.getCount()));
 		}
 		return getFirstItem();
 	}
 
 	AxisItem getFirstItem() {
-		return new AxisItem(sections.get(0).core, math.ZERO_VALUE());
+		return new AxisItem(sections.get(0), math.ZERO_VALUE());
 	}
 
 	int comparePosition(AxisItem<N> item1, AxisItem<N> item2) {
@@ -311,7 +325,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	void setHidden(boolean hidden) {
 		for (int i = 0, imax = sections.size(); i < imax; i++) {
 			Section section = sections.get(i);
-			section.core.setHiddenSelected(hidden);
+			section.setHiddenSelected(hidden);
 		}
 	}
 	
@@ -323,7 +337,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 * @author Jacek Kolodziejczyk created 11-03-2011
 	 */
 	class ExtentSequence {
-		SectionUnchecked<N> section;
+		Section<N> section;
 		MutableNumber<N> start, end, startItemIndex, endItemIndex;
 		private int i, istart, iend, sectionIndex, lastSectionIndex;
 		private ArrayList<Extent<N>> items;
@@ -342,7 +356,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 			section = startItem.section;
 			sectionIndex = section.index; 
 			lastSectionIndex = sections.indexOf(endItem.section); 
-			items = sections.get(sectionIndex).core.order.items;
+			items = sections.get(sectionIndex).order.items;
 			i = istart;
 		}
 		
@@ -350,7 +364,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 			if (i >= items.size()) {
 				sectionIndex++;
 				if (sectionIndex > lastSectionIndex) return false;
-				section = sections.get(sectionIndex).core;
+				section = sections.get(sectionIndex);
 				items = section.order.items;
 				i = 0;
 			}
@@ -369,7 +383,8 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 
 	Bound getCellBound(Section<N> section, N index) {
 		if (section == null || index == null) return null;
-		Bound bound = layout.getBound(new AxisItem<N>(section.core, index));
+		if (section instanceof SectionClient) section = ((SectionClient) section).core;
+		Bound bound = layout.getBound(new AxisItem<N>(section, index));
 		return bound == null ? null : bound.copy();
 	}
 
@@ -383,7 +398,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		// Calculate z-order
 		int[] order = new int[sections.size()];
 		int j = 0;
-		int bodyIndex = sections.indexOf(body);
+		int bodyIndex = sections.indexOf(body.core);
 		for (int i = bodyIndex, imax = this.sections.size(); i < imax; i++) {
 			order[j++] = i;
 		}
@@ -393,14 +408,14 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		return order;
 	}
 
-	void deleteInZones(SectionUnchecked section, N start, N end) {
+	void deleteInZones(Section section, N start, N end) {
 		matrix.model.deleteInZones(index, section, start, end);
 		if (layout.current.section.equals(section) && layout.math.contains(start, end, layout.current.index)) {
 			layout.ensureCurrentIsValid();
 		}
 	}
 	
-	void insertInZones(SectionUnchecked section, N target, N count) {
+	void insertInZones(Section section, N target, N count) {
 		matrix.model.deleteInZones(index, section, target, count);
 		layout.show(new AxisItem(section, target));
 	}
