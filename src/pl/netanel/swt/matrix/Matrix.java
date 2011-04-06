@@ -175,7 +175,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 			Bound bb0 = layout0.getBound(dock0);
 			Bound bb1 = layout1.getBound(dock1);
 			
-			for (Zone<N0, N1> zone: model.zones) {
+			for (Zone<N0, N1> zone: model) {
 				if (!layout0.contains(dock0, zone.section0) ||
 					!layout1.contains(dock1, zone.section1) ) continue;
 				

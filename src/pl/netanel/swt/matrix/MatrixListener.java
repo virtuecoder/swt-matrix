@@ -636,6 +636,14 @@ class MatrixListener implements Listener {
 			state0.last = state0.item;
 			state1.last = state1.item;
 		}
+		if (commandId == SELECT_TO_LOCATION || commandId == SELECT_TO_LOCATION2) {
+			if (state0.last.section.equals(state0.axis.getHeader())) {
+				commandId = commandId == SELECT_TO_LOCATION ? SELECT_TO_COLUMN : SELECT_TO_COLUMN2;
+			}
+			else if (state1.last.section.equals(state1.axis.getHeader())) {
+				commandId = commandId == SELECT_TO_LOCATION ? SELECT_TO_ROW : SELECT_TO_ROW2;
+			}
+		}
 		
 		backupRestoreSelection(commandId);
 		
