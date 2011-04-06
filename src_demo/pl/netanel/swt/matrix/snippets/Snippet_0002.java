@@ -47,7 +47,7 @@ public class Snippet_0002 {
 		colModel.getBody().setCount(2);
 		colModel.getBody().setDefaultCellWidth(50);
 		
-		Zone body = new Zone(rowModel.getBody(), colModel.getBody(), Zone.BODY) {
+		Zone body = new Zone(rowModel.getBody(), colModel.getBody()) {
 			@Override
 			public String getText(Number index0, Number index1) {
 				String value = list.get(index0.intValue());
@@ -56,7 +56,7 @@ public class Snippet_0002 {
 					: Integer.toString(value.length());
 			}
 		};
-		Zone columnHeader = new Zone(rowModel.getHeader(), colModel.getBody(), Zone.COLUMN_HEADER) {
+		Zone columnHeader = new Zone(rowModel.getHeader(), colModel.getBody()) {
 			@Override
 			public String getText(Number index0, Number index1) {
 				return index1.intValue() == 0 ? "Value" : "Length";
@@ -87,8 +87,6 @@ public class Snippet_0002 {
 		remove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				
-				//rowModel.getFocusSection().setCount(list.size());
 				NumberSequence seq = rowBody.getSelected();
 				for (seq.init(); seq.nextExtent();) {
 					rowBody.delete(seq.start(), seq.end());

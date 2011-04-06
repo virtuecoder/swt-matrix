@@ -26,11 +26,13 @@ class ModelPainter extends TextPainter {
 		selectionBackground, selectionForeground;
 	private final Zone zone;
 	private boolean shouldHighlight;
+	private final Matrix matrix;
 
 //	private int lineWidth0, lineWidth1;
 //	private Color lineColor;
 	
-	public ModelPainter(Zone zone) {
+	public ModelPainter(Matrix matrix, Zone zone) {
+		this.matrix = matrix;
 		this.zone = zone;
 	}
 	
@@ -47,7 +49,7 @@ class ModelPainter extends TextPainter {
 			gc.fillRectangle(zone.getBounds());
 		}
 		
-		shouldHighlight = !zone.is(ZoneClient.BODY) || 
+		shouldHighlight = !zone.equals(matrix.getBody()) || 
 			zone.getSelectionCount().compareTo(BigInteger.ONE) != 0;
 		//gc.setAdvanced(false);
 		return true;
@@ -55,26 +57,28 @@ class ModelPainter extends TextPainter {
 
 	@Override
 	public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+		Color foreground;
 		boolean isSelected = shouldHighlight && zone.isSelected(index0, index1);
-		Color foreground = isSelected 
-				? selectionForeground
-				: zone.getForeground(index0, index1);
+		if (isSelected) {
+			foreground = selectionForeground;  
+			background = selectionBackground;
+		} else {
+			foreground = zone.getForeground(index0, index1);
+			background = zone.getBackground(index0, index1);
+		}
 		
 		// Only set color if there is a change
 		if (foreground != null) { // && !foreground.equals(lastForeground)) {
 			gc.setForeground(lastForeground = foreground);
 		}
-		
-		background = isSelected 
-				? selectionBackground
-				: zone.getBackground(index0, index1);
-		
-		// Only set color if there is a change
-//		if (background != null && !background.equals(lastBackground)) {
-//			gc.setBackground(lastBackground = background);
-//		}
-		
-		text = zone.getText(index0, index1);
+		if (background != null) {
+			if (!background.equals(lastBackground)) {
+				gc.setBackground(lastBackground = background);
+			}
+			if (!background.equals(defaultBackground)) {
+				gc.fillRectangle(x, y, width, height);
+			}
+		}
 		
 //		align0 = model.getVerticalAlignment(item0, item1);
 //		align1 = model.getHorizontalAlignment(item0, item1);
@@ -83,14 +87,7 @@ class ModelPainter extends TextPainter {
 //		lineWidth1 = zone.section1.getLineWidth(index1);
 //		lineColor = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 		
-		if (background != null) {
-//			if (!background.equals(lastBackground)) {
-				gc.setBackground(lastBackground = background);
-//			}
-			if (!background.equals(defaultBackground)) {
-				gc.fillRectangle(x, y, width, height);
-			}
-		}
+		text = zone.getText(index0, index1);
 		super.paint(index0, index1, x, y, width, height);
 		
 //		// Paint lines

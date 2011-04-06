@@ -9,19 +9,13 @@ class GestureBinding {
 	int commandId;
 	int eventType;
 	int key;
-	int zoneId;
 	boolean enabled;
 
-	public GestureBinding(int commandId, int eventType, int eventCode) {
-		this(commandId, eventType, eventCode, ZoneClient.ANY);
-	}
-	
-	public GestureBinding(int commandId, int eventType, int code, int zoneId) {
+	public GestureBinding(int commandId, int eventType, int code) {
 		Preconditions.checkArgument(commandId != 0, "CommandId cannot equal to zero");
 		this.commandId = commandId;
 		this.eventType = eventType;
 		this.key = code;
-		this.zoneId = zoneId;
 		this.enabled = true;
 	}
 	
@@ -29,10 +23,9 @@ class GestureBinding {
 		this.key = code;
 	}
 
-	public boolean isMatching(Event e, Zone zone) {
+	public boolean isMatching(Event e) {
 		return enabled && 
 			eventType == e.type &&
-			key == (e.stateMask | e.keyCode | e.button) && 
-			(zoneId == ZoneClient.ANY || zone == null || zone.is(zoneId));
+			key == (e.stateMask | e.keyCode | e.button); 
 	}
 }

@@ -105,6 +105,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 
 	private void setModel(MatrixModel model) {
 		this.model = model;
+		model.setMatrix(this);
 		
 		axis0 = model.axis0;
 		axis1 = model.axis1;
@@ -113,7 +114,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		axis0.setMatrix(this, 0);
 		axis1.setMatrix(this, 1);
 		
-		ZoneClient<N0, N1> body = model.getBody();
+		Zone<N0, N1> body = model.getBody();
 //		if (body.getDefaultBackground() == null) {
 //			body.setDefaultBackground(getBackground());
 //		}
@@ -329,7 +330,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		layout0.compute();
 		layout1.compute();
 		if (layout0.current != null && layout1.current != null) {
-			ZoneClient<N0, N1> zone = model.getZone(layout0.current.section, layout1.current.section);
+			Zone<N0, N1> zone = model.getZone(layout0.current.section, layout1.current.section);
 			N0 index0 = layout0.current.index;
 			N1 index1 = layout1.current.index;
 			zone.setSelected(index0, index0, index1, index1, true);

@@ -1,6 +1,7 @@
 package pl.netanel.swt.matrix;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
@@ -31,15 +32,6 @@ import pl.netanel.util.ImmutableIterator;
  * @created 13-10-2010
  */
 public class Zone<N0 extends Number, N1 extends Number> {
-	public static final int NONE = -1;
-	public static final int ANY = 0;
-	public static final int BODY = 1;
-	public static final int TOP_LEFT= 2;
-	public static final int ROW_HEADER = 3;
-	public static final int COLUMN_HEADER = 4;
-//	public static final int ROW_FOOTER = 5;
-//	public static final int COLUMN_FOOTER = 6;
-//	public static final int BOTTOM_RIGHT = 7;
 	
 	Painters<N0, N1> painters;
 	
@@ -51,20 +43,15 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	CellSet cellSelection;
 	CellSet lastSelection; // For adding selection
 	
-	private int type;
 	final Listeners listeners;
+	final ArrayList<GestureBinding> bindings;
 	boolean selectionEnabled;
 	
 	private Color defaultBackground, defaultForeground, selectionBackground, selectionForeground;
 	private final Rectangle bounds;
 
-	private Zone(int id) {
+	public Zone(Section<N0> section0, Section<N1> section1) {
 		this();
-		this.type = id;
-	}
-
-	public Zone(Section<N0> section0, Section<N1> section1, int type) {
-		this(type);
 		this.section0 = section0 instanceof SectionClient ? ((SectionClient) section0).core : section0;
 		this.section1 = section1 instanceof SectionClient ? ((SectionClient) section1).core : section1;
 		cellSelection = new CellSet(section0.math, section1.math);
@@ -79,8 +66,15 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	Zone() {
 		painters = new Painters();
 		listeners = new Listeners();
+		bindings = new ArrayList();
 		bounds = new Rectangle(0, 0, 0, 0);
 		selectionEnabled = true;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof ZoneClient) obj = ((ZoneClient) obj).core;
+		return super.equals(obj);
 	}
 	
 	@Override
@@ -113,14 +107,14 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	}
 
 	
-	public void setDefaultBodyStyle() {
-		addPainter(new ModelPainter(this));
+	void setDefaultBodyStyle() {
+		addPainter(new ModelPainter(matrix, this));
 		Color color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 		addPainter(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color ));
 		addPainter(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
 	}
 	
-	public void setDefaultHeaderStyle() {
+	void setDefaultHeaderStyle() {
 		setDefaultForeground(Resources.getColor(SWT.COLOR_WIDGET_FOREGROUND));
 		setDefaultBackground(Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND));
 		
@@ -130,23 +124,13 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		setSelectionBackground(Resources.getColor(rgb));
 		
 		if (getPainterCount() == 0) {
-			addPainter(new ModelPainter(this));
+			addPainter(new ModelPainter(matrix, this));
 			final Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
 			addPainter(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color));
 			addPainter(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
 		}
 	}
 	
-	/**
-	 * Returns true if the given id matches the zone id, or false otherwise.
-	 * @param id to compare with
-	 * @return id equality
-	 */
-	boolean is(int id) {
-		return this.type == id;
-	}
-	
-
 	public void addListener(int type, Listener listener) {
 		listeners.add(type, listener);
 	}

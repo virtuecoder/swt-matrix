@@ -25,16 +25,33 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 	public ZoneClient(Zone<N0, N1> zone) {
 		core = zone;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return core.equals(obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return core.hashCode();
+	}
+	
+	@Override
+	public String toString() {
+		return core.toString();
+	}
 
+	@Override
 	public Section getSection0() {
 		return core.section0;
 	}
+
+	@Override
 	public Section getSection1() {
 		return core.section1;
 	}
 	
-	
-	public void setDefaultBodyStyle() {
+	void setDefaultBodyStyle() {
 		core.setDefaultBodyStyle();
 	}
 

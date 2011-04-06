@@ -88,10 +88,11 @@ class MatrixListener implements Listener {
 	ArrayList<GestureBinding> bindings;
 	AxisListener state0, state1;
 	boolean instantMoving, ctrlSelectionMoving;
-	Zone zone;
+	Zone<? extends Number, ? extends Number> zone;
 	Cursor cursor;
 	Listeners listeners;
 	AxisItem[] lastRange;
+	Zone body, columnHeader, rowHeader, topLeft;
 
 	private Move m0, m1;
 	
@@ -99,6 +100,10 @@ class MatrixListener implements Listener {
 		this.matrix = matrix;
 		lastRange = new AxisItem[4]; 
 		listeners = new Listeners();
+		body = ((ZoneClient) matrix.getBody()).core;
+		columnHeader = ((ZoneClient) matrix.getColumneHeader()).core;
+		rowHeader = ((ZoneClient) matrix.getRowHeader()).core;
+		topLeft = ((ZoneClient) matrix.getTopLeft()).core;
 		
 		// Initialize fields
 		state0 = new AxisListener(matrix.axis0);
@@ -134,7 +139,7 @@ class MatrixListener implements Listener {
 				zone = (Zone) e.data;
 			}
 			else if (state0.item != null && state1.item != null) {
-				zone = matrix.model.getZone(state0.item.section, state1.item.section).core;
+				zone = matrix.model.getZoneUnchecked(state0.item.section, state1.item.section);
 			}
 
 			state0.update(e, e.y);
@@ -161,10 +166,19 @@ class MatrixListener implements Listener {
 
 				// Find a command for the current zone or otherwise a command for any zone
 				for (GestureBinding b: bindings) {
-					if (b.isMatching(e, zone)) {
+					if (b.isMatching(e)) {
 						executeCommand(b.commandId);
 						/* does not quit loop because can execute 
 					   	   many both any zone and a specific zone bindings */
+					}
+				}
+				if (zone != null) {
+					for (GestureBinding b: zone.bindings) {
+						if (b.isMatching(e)) {
+							executeCommand(b.commandId);
+							/* does not quit loop because can execute 
+					   	   many both any zone and a specific zone bindings */
+						}
 					}
 				}
 			}
@@ -568,32 +582,33 @@ class MatrixListener implements Listener {
 		bindKey(M.SELECT_END, SWT.MOD1 | SWT.MOD2 | SWT.END);
 		
 		// Mouse current item 
-		bindings.add(new GestureBinding(M.CURRENT_LOCATION, SWT.MouseDown, 1, ZoneClient.BODY));
-		bindings.add(new GestureBinding(M.CURRENT_LOCATION2, SWT.MouseDown, SWT.MOD1 | 1, ZoneClient.BODY));
+		body.bindings.add(new GestureBinding(M.CURRENT_LOCATION, SWT.MouseDown, 1));
+		body.bindings.add(new GestureBinding(M.CURRENT_LOCATION2, SWT.MouseDown, SWT.MOD1 | 1));
 		
 		// Mouse selection
 		/* 1 is for e.button == 1 */
-		bindings.add(new GestureBinding(M.SELECT_TO_LOCATION, SWT.MouseDown, SWT.MOD2 | 1, ZoneClient.BODY));
-		bindings.add(new GestureBinding(M.SELECT_TO_LOCATION2, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1, ZoneClient.BODY));
-		bindings.add(new GestureBinding(M.SELECT_TO_LOCATION, SWT.MouseMove, SWT.BUTTON1, ZoneClient.BODY));
-		bindings.add(new GestureBinding(M.SELECT_TO_LOCATION2, SWT.MouseMove, SWT.MOD1 + SWT.BUTTON1, ZoneClient.BODY));
-		bindings.add(new GestureBinding(M.SELECT_ROW, SWT.MouseDown, 1, ZoneClient.ROW_HEADER));
-		bindings.add(new GestureBinding(M.SELECT_ROW2, SWT.MouseDown, SWT.MOD1 | 1, ZoneClient.ROW_HEADER));
-		bindings.add(new GestureBinding(M.SELECT_COLUMN, SWT.MouseDown, 1, ZoneClient.COLUMN_HEADER));
-		bindings.add(new GestureBinding(M.SELECT_COLUMN2, SWT.MouseDown, SWT.MOD1 | 1, ZoneClient.COLUMN_HEADER));
-		bindings.add(new GestureBinding(M.SELECT_TO_ROW, SWT.MouseDown, SWT.MOD2 | 1, ZoneClient.ROW_HEADER));
-		bindings.add(new GestureBinding(M.SELECT_TO_ROW2, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1, ZoneClient.ROW_HEADER));
-		bindings.add(new GestureBinding(M.SELECT_TO_ROW, SWT.MouseMove, SWT.BUTTON1, ZoneClient.ROW_HEADER));
-		bindings.add(new GestureBinding(M.SELECT_TO_ROW2, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1, ZoneClient.ROW_HEADER));
-		bindings.add(new GestureBinding(M.SELECT_TO_COLUMN, SWT.MouseDown, SWT.MOD2 | 1, ZoneClient.COLUMN_HEADER));
-		bindings.add(new GestureBinding(M.SELECT_TO_COLUMN2, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1, ZoneClient.COLUMN_HEADER));
-		bindings.add(new GestureBinding(M.SELECT_TO_COLUMN, SWT.MouseMove, SWT.BUTTON1, ZoneClient.COLUMN_HEADER));
-		bindings.add(new GestureBinding(M.SELECT_TO_COLUMN2, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1, ZoneClient.COLUMN_HEADER));
+		body.bindings.add(new GestureBinding(M.SELECT_TO_LOCATION, SWT.MouseDown, SWT.MOD2 | 1));
+		body.bindings.add(new GestureBinding(M.SELECT_TO_LOCATION2, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
+		body.bindings.add(new GestureBinding(M.SELECT_TO_LOCATION, SWT.MouseMove, SWT.BUTTON1));
+		body.bindings.add(new GestureBinding(M.SELECT_TO_LOCATION2, SWT.MouseMove, SWT.MOD1 + SWT.BUTTON1));
+		rowHeader.bindings.add(new GestureBinding(M.SELECT_ROW, SWT.MouseDown, 1));
+		rowHeader.bindings.add(new GestureBinding(M.SELECT_ROW2, SWT.MouseDown, SWT.MOD1 | 1));
+		rowHeader.bindings.add(new GestureBinding(M.SELECT_TO_ROW, SWT.MouseDown, SWT.MOD2 | 1));
+		rowHeader.bindings.add(new GestureBinding(M.SELECT_TO_ROW2, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
+		rowHeader.bindings.add(new GestureBinding(M.SELECT_TO_ROW, SWT.MouseMove, SWT.BUTTON1));
+		rowHeader.bindings.add(new GestureBinding(M.SELECT_TO_ROW2, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
+		columnHeader.bindings.add(new GestureBinding(M.SELECT_COLUMN, SWT.MouseDown, 1));
+		columnHeader.bindings.add(new GestureBinding(M.SELECT_COLUMN2, SWT.MouseDown, SWT.MOD1 | 1));
+		columnHeader.bindings.add(new GestureBinding(M.SELECT_TO_COLUMN, SWT.MouseDown, SWT.MOD2 | 1));
+		columnHeader.bindings.add(new GestureBinding(M.SELECT_TO_COLUMN2, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
+		columnHeader.bindings.add(new GestureBinding(M.SELECT_TO_COLUMN, SWT.MouseMove, SWT.BUTTON1));
+		columnHeader.bindings.add(new GestureBinding(M.SELECT_TO_COLUMN2, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
 		// Select all on top left click
-		bindings.add(new GestureBinding(M.SELECT_ALL, SWT.MouseDown, 1, ZoneClient.TOP_LEFT));
+		topLeft.bindings.add(new GestureBinding(M.SELECT_ALL, SWT.MouseDown, 1));
 		
-		bindings.add(new GestureBinding(M.RESIZE_PACK, SWT.MouseDoubleClick, 1, ZoneClient.ROW_HEADER));
-		bindings.add(new GestureBinding(M.RESIZE_PACK, SWT.MouseDoubleClick, 1, ZoneClient.COLUMN_HEADER));
+		// Resize
+		rowHeader.bindings.add(new GestureBinding(M.RESIZE_PACK, SWT.MouseDoubleClick, 1));
+		columnHeader.bindings.add(new GestureBinding(M.RESIZE_PACK, SWT.MouseDoubleClick, 1));
 		
 		// Modification
 		bindKey(M.HIDE, SWT.MOD3 | SWT.DEL);
@@ -732,7 +747,7 @@ class MatrixListener implements Listener {
 	}
 	
 	private boolean isSelected(AxisItem last0, AxisItem last1) {
-		return matrix.model.getZone(last0.section, last1.section).core.
+		return matrix.model.getZoneUnchecked(last0.section, last1.section).
 			isSelected(last0.index, last1.index);
 	}
 

@@ -25,7 +25,9 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 			this.zones.add(zones[i]);
 			this.zoneClients.add(new ZoneClient(zones[i]));
 		}
-		
+	}
+
+	void setMatrix(Matrix matrix) {
 		Section body0  = axis0.getBody(), body1 = axis1.getBody();
 		Section header0 = axis0.getHeader(), header1 = axis1.getHeader();
 		
@@ -37,6 +39,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 					this.zones.add(zone);
 					this.zoneClients.add(new ZoneClient(zone));
 				}
+				zone.matrix = matrix;
 				if (zone.getPainterCount() == 0) {
 					if (section0.equals(body0) && section1.equals(body1)) {
 						zone.setDefaultBodyStyle();
@@ -51,7 +54,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		
 		seq = new ExtentPairSequence();
 	}
-	
+
 	private Zone createZone(Section section0, Section section1) {
 		Zone zone = null;
 		Section header0 = axis0.getHeader();
@@ -59,7 +62,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		Section body0 = axis0.getBody();
 		Section body1 = axis1.getBody();
 		if (section0.equals(header0) && section1.equals(header1)) {
-			zone = new Zone(section0, section1, ZoneClient.TOP_LEFT) {
+			// top left
+			zone = new Zone(section0, section1) {
 				@Override
 				public String getText(Number index0, Number index1) {
 					return null;
@@ -67,7 +71,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 			};
 		} else {
 			if (body0.equals(section0) && header1.equals(section1)) {
-				zone = new Zone(section0, section1, ZoneClient.ROW_HEADER) {
+				// row header
+				zone = new Zone(section0, section1) {
 					@Override
 					public String getText(Number index0, Number index1) {
 						return index0.toString();
@@ -75,18 +80,17 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 				};
 			}
 			else if (header0.equals(section0) && body1.equals(section1)) {
-				zone = new Zone(section0, section1, ZoneClient.COLUMN_HEADER) {
+				// column header
+				zone = new Zone(section0, section1) {
 					@Override
 					public String getText(Number index0, Number index1) {
 						return index1.toString();
 					};
 				};
 			} 
-			else if (body0.equals(section0) && body1.equals(section1)) {
-				zone = new Zone(section0, section1, ZoneClient.BODY);
-			}
 			else {
-				zone = new Zone(section0, section1, ZoneClient.NONE);
+				// body
+				zone = new Zone(section0, section1);
 			}
 		}
 		return zone;
@@ -104,22 +108,16 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		}
 	}
 	
-	void setMatrix(Matrix matrix) {
-		for (Zone zone: zones) {
-			zone.matrix = matrix;
-		}
-	}
-	
-	public ZoneClient getBody() {
+	public Zone getBody() {
 		return getZone(axis0.getBody(), axis1.getBody());
 	}
-	public ZoneClient getColumneHeader() {
+	public Zone getColumneHeader() {
 		return getZone(axis0.getHeader(), axis1.getBody());
 	}
-	public ZoneClient getRowHeader() {
+	public Zone getRowHeader() {
 		return getZone(axis0.getBody(), axis1.getHeader());
 	}
-	public ZoneClient getTopLeft() {
+	public Zone getTopLeft() {
 		return getZone(axis0.getHeader(), axis1.getHeader());
 	}
 	
@@ -134,9 +132,18 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	 * @exception IllegalArgumentException 
 	 * 	 	if the any of the section parameters is out of scope.
 	 */
-	public ZoneClient getZone(Section section0, Section section1) {
+	public Zone getZone(Section section0, Section section1) {
 		for (ZoneClient zone: zoneClients) {
 			if (section0.equals(zone.core.section0) && section1.equals(zone.core.section1)) {
+				return zone;
+			}
+		}
+		return null;
+	}
+	
+	Zone getZoneUnchecked(Section section0, Section section1) {
+		for (Zone zone: zones) {
+			if (section0.equals(zone.section0) && section1.equals(zone.section1)) {
 				return zone;
 			}
 		}
@@ -185,7 +192,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	
 		seq.init(start0, end0, start1, end1);
 		while (seq.next()) {
-			ZoneClient zone = getZone(seq.section0, seq.section1);
+			Zone zone = getZoneUnchecked(seq.section0, seq.section1);
 			if (zone.selectionEnabled) {
 				zone.setSelected(seq.start0.getValue(), seq.end0.getValue(), seq.start1.getValue(), seq.end1.getValue(), selected);
 			}	
