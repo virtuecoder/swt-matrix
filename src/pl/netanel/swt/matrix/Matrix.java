@@ -1,6 +1,5 @@
 package pl.netanel.swt.matrix;
 
-import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -34,7 +33,7 @@ import pl.netanel.util.Preconditions;
  * @author Jacek
  * @created 27-03-2011
  */
-public class Matrix<N0 extends Number, N1 extends Number> extends Canvas implements Iterable<Zone<N0, N1>>{
+public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 
 	MatrixModel<N0, N1> model;
 	Axis<N0> axis0;
@@ -106,7 +105,6 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 
 	private void setModel(MatrixModel model) {
 		this.model = model;
-		model.setMatrix(this);
 		
 		axis0 = model.axis0;
 		axis1 = model.axis1;
@@ -115,7 +113,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 		axis0.setMatrix(this, 0);
 		axis1.setMatrix(this, 1);
 		
-		Zone<N0, N1> body = model.getBody();
+		ZoneClient<N0, N1> body = model.getBody();
 //		if (body.getDefaultBackground() == null) {
 //			body.setDefaultBackground(getBackground());
 //		}
@@ -176,7 +174,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 			Bound bb0 = layout0.getBound(dock0);
 			Bound bb1 = layout1.getBound(dock1);
 			
-			for (Zone<N0, N1> zone: model) {
+			for (Zone<N0, N1> zone: model.zones) {
 				if (!layout0.contains(dock0, zone.section0) ||
 					!layout1.contains(dock1, zone.section1) ) continue;
 				
@@ -297,7 +295,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 	 * @return zone with the given creation index
 	 */
 	public Zone<N0, N1> getZone(int index) {
-		return model.zones.get(index);
+		return model.zoneClients.get(index);
 	}
 	
 	
@@ -331,7 +329,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 		layout0.compute();
 		layout1.compute();
 		if (layout0.current != null && layout1.current != null) {
-			Zone<N0, N1> zone = model.getZone(layout0.current.section, layout1.current.section);
+			ZoneClient<N0, N1> zone = model.getZone(layout0.current.section, layout1.current.section);
 			N0 index0 = layout0.current.index;
 			N1 index1 = layout1.current.index;
 			zone.setSelected(index0, index0, index1, index1, true);
@@ -375,7 +373,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 	
 	void selectInZones(int axisIndex, Section section, Number start, Number end) {
 		if (axisIndex == 0) {
-			for (Zone zone: model) {
+			for (Zone zone: model.zones) {
 				if (zone.section0.equals(section)) {
 					Math math1 = zone.section1.math;
 					zone.setSelected(
@@ -386,7 +384,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 			}
 		}
 		else { // assert index == 1
-			for (Zone zone: model) {
+			for (Zone zone: model.zones) {
 				if (zone.section1.equals(section)) {
 					Math math0 = zone.section0.math;
 					zone.setSelected( 
@@ -405,10 +403,10 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas impleme
 		redraw();
 	}
 
-	@Override
-	public Iterator<Zone<N0, N1>> iterator() {
-		return model.iterator();
-	}
+//	@Override
+//	public Iterator<Zone<N0, N1>> iterator() {
+//		return model.zoneClients.iterator();
+//	}
 
 	
 	

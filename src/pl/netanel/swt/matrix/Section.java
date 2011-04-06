@@ -1,8 +1,10 @@
 package pl.netanel.swt.matrix;
 
+import java.text.MessageFormat;
 import java.util.Iterator;
 
 import pl.netanel.util.ImmutableIterator;
+import pl.netanel.util.Preconditions;
 
 /**
  * Section represents a continuous segment of a matrix axis, for example a
@@ -104,6 +106,12 @@ public class Section<N extends Number> {
 	public boolean equals(Object obj) {
 		if (obj instanceof SectionClient) obj = ((SectionClient) obj).core;
 		return super.equals(obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		if (this instanceof SectionClient) return ((SectionClient) this).hashCode();
+		return super.hashCode();
 	}
 
 	/*------------------------------------------------------------------------
@@ -477,9 +485,8 @@ public class Section<N extends Number> {
 	 * An item that is moveable can be reordered by the user by dragging the header. 
 	 * An item that is not moveable cannot be dragged by the user but may be reordered by the programmer.
 	 * <p>
-	 * If the move abiity has not been set at this index by {@link #setMoveable(Number)} 
+	 * If the move ability has not been set at this index by {@link #setMoveable(Number)} 
 	 * method then the default cell width is returned.
-
 	 * <p>
 	 * <code>index</code> refers to the model, not the visual position
 	 * which can be altered by move and hide operations. 
@@ -504,8 +511,6 @@ public class Section<N extends Number> {
 	 * @param start first index of the range of items  
 	 * @param end last index of the range of items  
 	 * @param enabled the new resize ability state
-	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
-	 * @throws IllegalArgumentException if start is greater then end
 	 */ 
 	public void setResizable(N start, N end, boolean enabled) {
 		resizable.change(start, end, enabled != defaultResizable);
@@ -541,9 +546,6 @@ public class Section<N extends Number> {
 	 * @param start first index of the range of items  
 	 * @param end last index of the range of items  
 	 * @param enabled the new hide ability state
-	 * @throws NullPointerException if the start or end is null
-	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
-	 * @throws IllegalArgumentException if start is greater then end
 	 */ 
 	public void setHideable(N start, N end, boolean enabled) {
 		hideable.change(start, end, enabled != defaultHideable);
@@ -581,10 +583,6 @@ public class Section<N extends Number> {
 	 * @param start first index of the range of items  
 	 * @param end last index of the range of items  
 	 * @param state the new hiding state
-
-	 * @throws NullPointerException if start or end is null
-	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
-	 * @throws IllegalArgumentException if start is greater then end
 	 */ 
 	public void setHidden(N start, N end, boolean state) {
 		hidden.change(start, end, state);
@@ -597,10 +595,6 @@ public class Section<N extends Number> {
 	 * which can be altered by move and hide operations. Width that is lower then zero is ignored. 
 	 *
 	 * @param state the new hiding state
-	 * 
-	 * @throws NullPointerException if start or end is null
-	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
-	 * @throws IllegalArgumentException if start is greater then end
 	 * <p>
 	 * @see #setSelected(Number, Number, boolean)
 	 */ 
@@ -626,17 +620,13 @@ public class Section<N extends Number> {
 	}
 	
 	/**
-	 * Returns the number of hidden items in given range of items.
+	 * Returns the number of hidden items in the given range of items.
 	 * 
 	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position
 	 * which can be altered by move and hide operations. Width that is lower then zero is ignored. 
 	 *
 	 * @param start first index of the range of items  
 	 * @param end last index of the range of items  
-
-	 * @throws NullPointerException if start or end is null
-	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
-	 * @throws IllegalArgumentException if start is greater then end
 	 * @return the number of hidden items 
 	 */
 	public N getHiddenCount(N start, N end) {
@@ -674,10 +664,6 @@ public class Section<N extends Number> {
 	 * @param start first index of the range of items  
 	 * @param end last index of the range of items  
 	 * @param state the new selection state
-
-	 * @throws NullPointerException if start or end is null
-	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
-	 * @throws IllegalArgumentException if start is greater then end
 	 */ 
 	public void setSelected(N start, N end, boolean state) {
 		selection.change(start, end, state);
@@ -715,32 +701,33 @@ public class Section<N extends Number> {
 	}
 	
 	/**
-	 * Returns the number of selected items in given range of items.
+	 * Returns the number of selected items in the given range of items.
 	 * 
 	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position
 	 * which can be altered by move and hide operations. Width that is lower then zero is ignored. 
 	 *
 	 * @param start first index of the range of items  
 	 * @param end last index of the range of items  
-
-	 * @throws NullPointerException if start or end is null
-	 * @throws IndexOutOfBoundsException if start or end are out of 0 ... {@link #getCount()}-1 bounds
-	 * @throws IllegalArgumentException if start is greater then end
 	 * @return the number of hidden items 
 	 */
 	public N getSelectedCount() {
 		return selection.getCount().getValue();
 	}
 	
+	/**
+	 * Returns a sequence of selected items indexes. 
+	 * @return a sequences of selected items indexes
+	 */
 	public NumberSequence<N> getSelected() {
 		return new NumberSequence(selection);
 	}
 	
-	public void backupSelection() {
+	
+	void backupSelection() {
 		lastSelection.replace(selection);
 	}
 	
-	public void restoreSelection() {
+	void restoreSelection() {
 		selection.replace(lastSelection);
 	}
 	
@@ -751,7 +738,7 @@ public class Section<N extends Number> {
 	 */
 	
 	/**
-	 * Moves a range of items before the target index changing this way their visible order.
+	 * Moves a range of items before the target index thus changing their visible order.
 	 * <p>
 	 * <code>start</code>, <code>end</code> and <code>target</code>indexes refer to the model, 
 	 * not the visual position which can be altered by move and hide operations. 
@@ -759,17 +746,62 @@ public class Section<N extends Number> {
 	 * @param start first index of the range of items  
 	 * @param end last index of the range of items  
 	 * @param target the index of the target item
-
-	 * @throws NullPointerException if start or end or target is null
-	 * @throws IndexOutOfBoundsException if start or end or target are 
-	 * 		   out of 0 ... {@link #getCount()}-1 bounds
-	 * @throws IllegalArgumentException if start is greater then end  
 	 */
 	public void move(N start, N end, N target) {
 		order.move(start, end, target);
 	}
 	
-	
+	 /**
+	 * Removes a range of items decreasing the following indexes by the number of removed items. 
+	 * 
+	 * @param start first index of the range of items  
+	 * @param end last index of the range of items
+	 */
+	public void delete(N start, N end) {
+		cellWidth.delete(start, end);
+		lineWidth.delete(start, end);
+		cellSpan.delete(start, end);
+		resizable.delete(start, end);
+		moveable.delete(start, end);
+		hideable.delete(start, end);
+		hidden.delete(start, end);
+		order.delete(start, end);
+		selection.delete(start, end);
+		lastSelection.delete(start, end);
+		count = math.create(count).subtract(end).add(start).decrement().getValue();
+		
+		if (axis != null) {
+			axis.deleteInZones(this, start, end);
+		}
+	}
+
+	/**
+	 * Inserts items before the given target item increasing the following indexes by the number of inserted items. 
+	 * <p>
+	 * Items are inserted before the given target index or at the end if the target equals
+	 * to the receiver item count. 
+	 * 
+	 * @param target the index before which items are inserted  
+	 * @param count the number of items to insert
+	 */
+	public void insert(N target, N count) {
+		cellWidth.insert(target, count);
+		lineWidth.insert(target, count);
+		cellSpan.insert(target, count);
+		resizable.insert(target, count);
+		moveable.insert(target, count);
+		hideable.insert(target, count);
+		hidden.insert(target, count);
+		order.insert(target, count);
+		selection.insert(target, count);
+		lastSelection.insert(target, count);
+		this.count = math.create(this.count).add(count).getValue();
+		
+		if (axis != null) {
+			axis.insertInZones(this, target, count);
+		}
+	}
+
 	
 	/*------------------------------------------------------------------------
 	 * Non public 
@@ -912,64 +944,41 @@ public class Section<N extends Number> {
 		order.move(selection, index);
 		return true;
 	}
-
-    /**
-	 * Removes a range of items decreasing the section item count. 
-	 * 
-	 * @param start first index of the range of items  
-	 * @param end last index of the range of items
-	 *   
-	 * @throws NullPointerException if start or end is null
-	 * @throws IndexOutOfBoundsException if start or end are 
-	 * 		   out of 0 ... {@link #getCount()}-1 bounds
-	 * @throws IllegalArgumentException if start is greater then end  
-	 */
-	public void delete(N start, N end) {
-		cellWidth.delete(start, end);
-		lineWidth.delete(start, end);
-		cellSpan.delete(start, end);
-		resizable.delete(start, end);
-		moveable.delete(start, end);
-		hideable.delete(start, end);
-		hidden.delete(start, end);
-		order.delete(start, end);
-		selection.delete(start, end);
-		lastSelection.delete(start, end);
-		setCount(math.create(count).subtract(end).add(start).decrement().getValue());
-		
-		if (axis != null) {
-			axis.deleteInZones(this, start, end);
+	
+	protected void checkRange(N start, N end, N limit) {
+		Preconditions.checkNotNull(start, "start");
+		Preconditions.checkNotNull(end, "end");
+		if (math.compare(start, math.ZERO_VALUE()) < 0) {
+			throw new IndexOutOfBoundsException(MessageFormat.format(
+				"start ({0}) cannot be negative", start)) ;
+		}
+		if (math.compare(end, math.ZERO_VALUE()) < 0) {
+			throw new IndexOutOfBoundsException(MessageFormat.format(
+				"end ({0}) cannot be negative", end)) ;
+		}
+		if (math.compare(start, limit) >= 0) {
+			throw new IndexOutOfBoundsException(MessageFormat.format(
+				"start ({0}) must be lower then limit {1}", start, limit)) ;
+		}
+		if (math.compare(end, limit) >= 0) {
+			throw new IndexOutOfBoundsException(MessageFormat.format(
+				"end ({0}) must be lower then limit {1}", end, limit)) ;
+		}
+		if (math.compare(start, end) > 0) {
+			throw new IllegalArgumentException(MessageFormat.format(
+				"start ({0}) cannot be greater then end {1}", start, end)) ;
 		}
 	}
-
-	/**
-	 * Inserts a number of items at the given position increasing the section item count. 
-	 * <p>
-	 * Items are inserted before the given target index or at the end if the target equals section.getCount(). 
-	 * 
-	 * @param target the index before which items are inserted  
-	 * @param count the number of items to insert
-	 *   
-	 * @throws NullPointerException if target or count is null
-	 * @throws IndexOutOfBoundsException if target is 
-	 * 		   out of 0 ... {@link #getCount()}-1 bounds
-	 */
-	public void insert(N target, N count) {
-		cellWidth.insert(target, count);
-		lineWidth.insert(target, count);
-		cellSpan.insert(target, count);
-		resizable.insert(target, count);
-		moveable.insert(target, count);
-		hideable.insert(target, count);
-		hidden.insert(target, count);
-		order.insert(target, count);
-		selection.insert(target, count);
-		lastSelection.insert(target, count);
-		this.count = math.create(this.count).add(count).getValue();
-		
-		if (axis != null) {
-			axis.insertInZones(this, target, count);
+	
+	protected void checkIndex(N index, N limit, String name) {
+		Preconditions.checkNotNull(index, "index");
+		if (math.compare(index, math.ZERO_VALUE()) < 0) {
+			throw new IndexOutOfBoundsException(MessageFormat.format(
+					"index ({0}) cannot be negative", index)) ;
+		}
+		if (math.compare(index, limit) >= 0) {
+			throw new IndexOutOfBoundsException(MessageFormat.format(
+					"index ({0}) must be lower then limit {1}", index, limit)) ;
 		}
 	}
-
 }

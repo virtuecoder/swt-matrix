@@ -1,6 +1,5 @@
 package pl.netanel.swt.matrix;
 
-import java.text.MessageFormat;
 import java.util.Iterator;
 
 import pl.netanel.util.Preconditions;
@@ -645,41 +644,6 @@ class SectionClient<N extends Number> extends Section<N> {
 	 * Non public methods 
 	 */
 
-	private void checkRange(N start, N end, N limit) {
-		Preconditions.checkNotNull(start, "start");
-		Preconditions.checkNotNull(end, "end");
-		if (core.math.compare(start, core.math.ZERO_VALUE()) < 0) {
-			throw new IndexOutOfBoundsException(MessageFormat.format(
-				"start ({0}) cannot be negative", start)) ;
-		}
-		if (core.math.compare(end, core.math.ZERO_VALUE()) < 0) {
-			throw new IndexOutOfBoundsException(MessageFormat.format(
-				"end ({0}) cannot be negative", end)) ;
-		}
-		if (core.math.compare(start, limit) >= 0) {
-			throw new IndexOutOfBoundsException(MessageFormat.format(
-				"start ({0}) must be lower then limit {1}", start, limit)) ;
-		}
-		if (core.math.compare(end, limit) >= 0) {
-			throw new IndexOutOfBoundsException(MessageFormat.format(
-				"end ({0}) must be lower then limit {1}", end, limit)) ;
-		}
-		if (core.math.compare(start, end) > 0) {
-			throw new IllegalArgumentException(MessageFormat.format(
-				"start ({0}) cannot be greater then end {1}", start, end)) ;
-		}
-	}
 	
-	private void checkIndex(N index, N limit, String name) {
-		Preconditions.checkNotNull(index, "index");
-		if (core.math.compare(index, core.math.ZERO_VALUE()) < 0) {
-			throw new IndexOutOfBoundsException(MessageFormat.format(
-					"index ({0}) cannot be negative", index)) ;
-		}
-		if (core.math.compare(index, limit) >= 0) {
-			throw new IndexOutOfBoundsException(MessageFormat.format(
-					"index ({0}) must be lower then limit {1}", index, limit)) ;
-		}
-	}
 
 }

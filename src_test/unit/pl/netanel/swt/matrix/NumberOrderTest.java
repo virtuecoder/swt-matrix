@@ -198,6 +198,47 @@ public class NumberOrderTest  {
 		assertIndexOf(order, 9, 9);
 	}
 	
+	@Test
+	public void insertBefore() throws Exception {
+		NumberOrder order = numberOrder(5);
+		order.insert(0, 2);
+		assertEquals("0-6", order.toString());
+	}
+	@Test
+	public void insertAfter() throws Exception {
+		NumberOrder order = numberOrder(5);
+		order.insert(5, 2);
+		assertEquals("0-6", order.toString());
+	}
+	@Test
+	public void insertInside() throws Exception {
+		NumberOrder order = numberOrder(5);
+		order.insert(3, 2);
+		assertEquals("0-6", order.toString());
+	}
+	@Test
+	public void insertAfterMoved() throws Exception {
+		NumberOrder order = numberOrder(5);
+		order.move(1, 2, 5);
+		order.insert(5, 2);
+		assertEquals("0, 3-6, 1-2", order.toString());
+	}
+	@Test
+	public void insertBeforeMoved() throws Exception {
+		NumberOrder order = numberOrder(5);
+		order.move(1, 2, 0);
+		order.insert(0, 2);
+		assertEquals("3-4, 0-2, 5-6", order.toString());
+	}
+	@Test
+	public void insertInsideMoved() throws Exception {
+		NumberOrder order = numberOrder(5);
+		order.move(3, 3, 0);
+		assertEquals("3, 0-2, 4", order.toString());
+		order.insert(1, 2);
+		assertEquals("5, 0-4, 6", order.toString());
+	}
+	
 	// Helper test methods
 	
 	private static NumberOrder numberOrder(int n) {

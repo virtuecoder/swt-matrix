@@ -416,7 +416,7 @@ public class Axis<N extends Number> implements Iterable<SectionClient<N>> {
 	}
 	
 	void insertInZones(Section section, N target, N count) {
-		matrix.model.deleteInZones(index, section, target, count);
+		matrix.model.insertInZones(index, section, target, count);
 		layout.show(new AxisItem(section, target));
 	}
 }

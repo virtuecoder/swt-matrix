@@ -11,6 +11,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	final Axis<N0> axis0;
 	final Axis<N1> axis1;
 	final ArrayList<Zone<N0, N1>> zones;
+	final ArrayList<ZoneClient<N0, N1>> zoneClients;
 	int[] paintOrder;
 	private ExtentPairSequence seq;
 
@@ -19,19 +20,22 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		this.axis1 = axis1;
 		
 		this.zones = new ArrayList<Zone<N0, N1>>(zones.length);
+		this.zoneClients = new ArrayList<ZoneClient<N0, N1>>(zones.length);
 		for (int i = 0; i < zones.length; i++) {
 			this.zones.add(zones[i]);
+			this.zoneClients.add(new ZoneClient(zones[i]));
 		}
 		
 		Section body0  = axis0.getBody(), body1 = axis1.getBody();
 		Section header0 = axis0.getHeader(), header1 = axis1.getHeader();
 		
-		for (SectionClient section0: axis0) {
-			for (SectionClient section1: axis1) {
+		for (Section<N0> section0: axis0.sections) {
+			for (Section<N1> section1: axis1.sections) {
 				Zone zone = getZone(section0, section1);
 				if (zone == null) {
-					zone = createZone(section0.core, section1.core);
+					zone = createZone(section0, section1);
 					this.zones.add(zone);
+					this.zoneClients.add(new ZoneClient(zone));
 				}
 				if (zone.getPainterCount() == 0) {
 					if (section0.equals(body0) && section1.equals(body1)) {
@@ -55,7 +59,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		Section body0 = axis0.getBody();
 		Section body1 = axis1.getBody();
 		if (section0.equals(header0) && section1.equals(header1)) {
-			zone = new Zone(section0, section1, Zone.TOP_LEFT) {
+			zone = new Zone(section0, section1, ZoneClient.TOP_LEFT) {
 				@Override
 				public String getText(Number index0, Number index1) {
 					return null;
@@ -63,7 +67,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 			};
 		} else {
 			if (body0.equals(section0) && header1.equals(section1)) {
-				zone = new Zone(section0, section1, Zone.ROW_HEADER) {
+				zone = new Zone(section0, section1, ZoneClient.ROW_HEADER) {
 					@Override
 					public String getText(Number index0, Number index1) {
 						return index0.toString();
@@ -71,7 +75,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 				};
 			}
 			else if (header0.equals(section0) && body1.equals(section1)) {
-				zone = new Zone(section0, section1, Zone.COLUMN_HEADER) {
+				zone = new Zone(section0, section1, ZoneClient.COLUMN_HEADER) {
 					@Override
 					public String getText(Number index0, Number index1) {
 						return index1.toString();
@@ -79,10 +83,10 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 				};
 			} 
 			else if (body0.equals(section0) && body1.equals(section1)) {
-				zone = new Zone(section0, section1, Zone.BODY);
+				zone = new Zone(section0, section1, ZoneClient.BODY);
 			}
 			else {
-				zone = new Zone(section0, section1, Zone.NONE);
+				zone = new Zone(section0, section1, ZoneClient.NONE);
 			}
 		}
 		return zone;
@@ -106,16 +110,16 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		}
 	}
 	
-	public Zone getBody() {
+	public ZoneClient getBody() {
 		return getZone(axis0.getBody(), axis1.getBody());
 	}
-	public Zone getColumneHeader() {
+	public ZoneClient getColumneHeader() {
 		return getZone(axis0.getHeader(), axis1.getBody());
 	}
-	public Zone getRowHeader() {
+	public ZoneClient getRowHeader() {
 		return getZone(axis0.getBody(), axis1.getHeader());
 	}
-	public Zone getTopLeft() {
+	public ZoneClient getTopLeft() {
 		return getZone(axis0.getHeader(), axis1.getHeader());
 	}
 	
@@ -130,18 +134,9 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	 * @exception IllegalArgumentException 
 	 * 	 	if the any of the section parameters is out of scope.
 	 */
-	public Zone getZone(SectionClient section0, SectionClient section1) {
-		for (Zone zone: zones) {
-			if (zone.section0.equals(section0.core) && zone.section1.equals(section1.core)) {
-				return zone;
-			}
-		}
-		return null;
-	}
-	
-	public Zone getZone(Section section0, Section section1) {
-		for (Zone zone: zones) {
-			if (section0.equals(zone.section0) && section1.equals(zone.section1)) {
+	public ZoneClient getZone(Section section0, Section section1) {
+		for (ZoneClient zone: zoneClients) {
+			if (section0.equals(zone.core.section0) && section1.equals(zone.core.section1)) {
 				return zone;
 			}
 		}
@@ -171,7 +166,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 
 	public void setSelected(boolean selected) {
 		for (Zone zone: zones) {
-			zone.setSelected(selected);
+			zone.setSelectedAll(selected);
 		}
 	}
 	
@@ -190,7 +185,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	
 		seq.init(start0, end0, start1, end1);
 		while (seq.next()) {
-			Zone zone = getZone(seq.section0, seq.section1);
+			ZoneClient zone = getZone(seq.section0, seq.section1);
 			if (zone.selectionEnabled) {
 				zone.setSelected(seq.start0.getValue(), seq.end0.getValue(), seq.start1.getValue(), seq.end1.getValue(), selected);
 			}	

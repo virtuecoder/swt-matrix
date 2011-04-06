@@ -41,7 +41,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 //	public static final int COLUMN_FOOTER = 6;
 //	public static final int BOTTOM_RIGHT = 7;
 	
-	final Painters<N0, N1> painters;
+	Painters<N0, N1> painters;
 	
 	Matrix<N0, N1> matrix;
 	Section<N0> section0;
@@ -51,7 +51,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	CellSet cellSelection;
 	CellSet lastSelection; // For adding selection
 	
-	private final int type;
+	private int type;
 	final Listeners listeners;
 	boolean selectionEnabled;
 	
@@ -59,12 +59,8 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	private final Rectangle bounds;
 
 	private Zone(int id) {
+		this();
 		this.type = id;
-		painters = new Painters();
-
-		listeners = new Listeners();
-		selectionEnabled = true;
-		bounds = new Rectangle(0, 0, 0, 0);
 	}
 
 	public Zone(Section<N0> section0, Section<N1> section1, int type) {
@@ -78,6 +74,13 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		RGB whiteColor = Resources.getColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
 		RGB color = Painter.blend(selectionColor, whiteColor, 40);
 		selectionBackground = Resources.getColor(color);
+	}
+	
+	Zone() {
+		painters = new Painters();
+		listeners = new Listeners();
+		bounds = new Rectangle(0, 0, 0, 0);
+		selectionEnabled = true;
 	}
 	
 	@Override
@@ -264,7 +267,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		}
 	}
 
-	public void setSelected(boolean selected) {
+	public void setSelectedAll(boolean selected) {
 		if (!selectionEnabled) return;
 		if (selected) {
 			cellSelection.add(
@@ -274,6 +277,8 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			cellSelection.clear();
 			lastSelection.clear();
 		}
+		section0.setSelectedAll(selected);
+		section1.setSelectedAll(selected);
 	}
 	
 	public BigInteger getSelectedCount() {

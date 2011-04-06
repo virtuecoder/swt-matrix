@@ -47,7 +47,7 @@ class ModelPainter extends TextPainter {
 			gc.fillRectangle(zone.getBounds());
 		}
 		
-		shouldHighlight = !zone.is(Zone.BODY) || 
+		shouldHighlight = !zone.is(ZoneClient.BODY) || 
 			zone.getSelectionCount().compareTo(BigInteger.ONE) != 0;
 		//gc.setAdvanced(false);
 		return true;

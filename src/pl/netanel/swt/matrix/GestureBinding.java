@@ -13,7 +13,7 @@ class GestureBinding {
 	boolean enabled;
 
 	public GestureBinding(int commandId, int eventType, int eventCode) {
-		this(commandId, eventType, eventCode, Zone.ANY);
+		this(commandId, eventType, eventCode, ZoneClient.ANY);
 	}
 	
 	public GestureBinding(int commandId, int eventType, int code, int zoneId) {
@@ -33,6 +33,6 @@ class GestureBinding {
 		return enabled && 
 			eventType == e.type &&
 			key == (e.stateMask | e.keyCode | e.button) && 
-			(zoneId == Zone.ANY || zone == null || zone.is(zoneId));
+			(zoneId == ZoneClient.ANY || zone == null || zone.is(zoneId));
 	}
 }
