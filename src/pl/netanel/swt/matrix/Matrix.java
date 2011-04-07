@@ -47,6 +47,8 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	final Painters<N0, N1> painters;
 	private ScheduledExecutorService executor;
 	
+	private boolean focusCellEnabled = true;
+	
 	public Matrix(Composite parent, int style) {
 		this(parent, style, null, null);
 	}
@@ -71,9 +73,9 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 			axis1.setResizeOffset(M.RESIZE_OFFSET_X);
 		}
 		model = new MatrixModel(axis0, axis1, zones);
-		setModel(model);
-		
 		painters = new Painters();
+
+		setModel(model);
 		setDefaultPainters();
 		
 		listener2 = new Listener() {
@@ -124,7 +126,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		
 		this.listener = new MatrixListener(this);
 		listener.setLayout(layout0, layout1);
-		selectCurrent();
+		selectFocusCell();
 	}
 	
 	
@@ -229,7 +231,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		
 		layout0.setViewportSize(area.height);
 		layout1.setViewportSize(area.width);
-		selectCurrent();
+		selectFocusCell();
 //		layout0.compute();
 //		layout1.compute();
 		
@@ -326,7 +328,8 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		return null; 
 	}
 	
-	private void selectCurrent() {
+	private void selectFocusCell() {
+		if (!focusCellEnabled) return;
 		layout0.compute();
 		layout1.compute();
 		if (layout0.current != null && layout1.current != null) {
@@ -336,6 +339,17 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 			zone.setSelected(index0, index0, index1, index1, true);
 		}
 	}
+	
+	public void setFocusCellEnabled(boolean enabled) {
+		Painter<N0, N1> painter = getPainter("focus cell");
+		if (painter != null) painter.setEnabled(enabled);
+		focusCellEnabled = enabled;
+	}
+
+	public boolean isFocusCellEnabled() {
+		return focusCellEnabled;
+	}
+	
 	
 	/*------------------------------------------------------------------------
 	 * Helper 
@@ -452,7 +466,8 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	}
 	
 	public Painter<N0, N1> getPainter(String name) {
-		return painters.get(indexOfPainter(name));
+		int index = indexOfPainter(name);
+		return index == -1 ? null : painters.get(index);
 	}
 	
 	int getPainterCount() {

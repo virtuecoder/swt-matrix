@@ -5,6 +5,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import pl.netanel.swt.Resources;
 import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.Matrix;
 
@@ -29,6 +30,11 @@ public class SnippetA {
 		axis1.getBody().setDefaultResizable(true);
 		axis1.getBody().setResizable(4, 4, false);
 		axis1.getBody().setDefaultMoveable(true);
+		
+//		matrix.getBody().setSelectionEnabled(false);
+		matrix.getBody().setBackground(1, 1, Resources.getColor(SWT.COLOR_YELLOW));
+		matrix.getBody().setBackground(3, 3, Resources.getColor(SWT.COLOR_YELLOW));
+		matrix.getBody().setBackground(1, 1, null);
 		
 		
 		shell.setBounds(200, 20, 1024, 568);

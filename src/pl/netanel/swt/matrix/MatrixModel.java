@@ -39,7 +39,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 					this.zones.add(zone);
 					this.zoneClients.add(new ZoneClient(zone));
 				}
-				zone.matrix = matrix;
+				zone.setMatrix(matrix);
 				if (zone.getPainterCount() == 0) {
 					if (section0.equals(body0) && section1.equals(body1)) {
 						zone.setDefaultBodyStyle();
@@ -133,6 +133,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	 * 	 	if the any of the section parameters is out of scope.
 	 */
 	public Zone getZone(Section section0, Section section1) {
+		if (section0 == null || section1 == null) return null;
 		for (ZoneClient zone: zoneClients) {
 			if (section0.equals(zone.core.section0) && section1.equals(zone.core.section1)) {
 				return zone;
@@ -142,6 +143,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	}
 	
 	Zone getZoneUnchecked(Section section0, Section section1) {
+		if (section0 == null || section1 == null) return null;
 		for (Zone zone: zones) {
 			if (section0.equals(zone.section0) && section1.equals(zone.section1)) {
 				return zone;

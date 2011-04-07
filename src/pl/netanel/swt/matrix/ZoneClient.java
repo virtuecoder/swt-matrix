@@ -71,10 +71,11 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 		return core.getText(index0, index1);
 	}
 
-	public void setBackground(Number index0, Number index1, Color color) {
-		core.setBackground(index0, index1, color);
+	@Override
+	public void setBackground(Number start0, Number end0, Number start1, Number end1, Color color) {
+		core.setBackground(start0, end0, start1, end1, color);
 	}
-
+	
 	public Color getBackground(Number index0, Number index1) {
 		return core.getBackground(index0, index1);
 	}
@@ -85,10 +86,6 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 
 	public Color getDefaultBackground() {
 		return core.getDefaultBackground();
-	}
-
-	public void setForeground(Number index0, Number index1, Color color) {
-		core.setForeground(index0, index1, color);
 	}
 
 	public Color getForeground(Number index0, Number index1) {
@@ -249,6 +246,9 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 		}
 	}
 
-	
+	@Override
+	void setMatrix(Matrix matrix) {
+		core.setMatrix(matrix);
+	}
 
 }

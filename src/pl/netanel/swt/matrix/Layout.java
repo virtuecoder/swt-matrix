@@ -864,6 +864,35 @@ class Layout<N extends Number> {
 		isComputingRequired = tail.count != freezeItemCount;
 		tail.count = freezeItemCount;
 	}
+	
+	public void freezeHead(Section<N> section, N index) {
+		int count = 0;
+		for (Cache cache: caches) {
+			for (int i = 0, imax = cache.cells.size(); i < imax; i++, count++) {
+				AxisItem item = cache.items.get(i);
+				if (item.section.equals(section) && math.compare(item.index, index) == 0) {
+					freezeHead(count);
+					return;
+				} 
+			}
+		}
+	}
+	
+	public void freezeTail(Section<N> section, N index) {
+		int count = 0;
+		List<Cache> list = (List<Cache>) caches.clone();
+		Collections.reverse(list);
+		for (Cache cache: list) {
+			for (int i = cache.cells.size(); i-- > 0; count++) {
+				AxisItem item = cache.items.get(i);
+				if (item.section.equals(section) && math.compare(item.index, index) == 0) {
+					freezeTail(count);
+					return;
+				} 
+			}
+		}
+	}
+
 
 	public boolean reorder(AxisItem<N> source, AxisItem<N> target) {
 		Section<N> section = source.section;

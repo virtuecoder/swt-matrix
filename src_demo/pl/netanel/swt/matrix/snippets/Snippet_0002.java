@@ -18,7 +18,7 @@ import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 
 /**
- * Creates matrix with a custom model with add / remove model items.
+ * Add / remove model items.
  * 
  * @author Jacek Kolodziejczyk created 03-03-2011
  */

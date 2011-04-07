@@ -69,6 +69,9 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	final String name;
 	private boolean enabled = true;
 	
+	public int alignY, alignX;
+	public int marginY, marginX;
+	
 	/**
 	 * Constructor with the scope defaulted to {@link #SCOPE_SINGLE}. 
 	 * @param name the name of the painter, must be unique in the collection to which it is added

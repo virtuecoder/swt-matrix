@@ -22,6 +22,7 @@ public class Snippet_0016 {
 		shell.setLayout(new FillLayout());
 		
 		final Matrix matrix = new Matrix(shell, SWT.NONE);
+		matrix.setFocusCellEnabled(false);
 		
 		Section colBody = matrix.getAxis1().getBody();
 		colBody.setCount(4);
@@ -33,6 +34,7 @@ public class Snippet_0016 {
 		final Zone body = matrix.getBody();
 		body.setSelectionBackground(Resources.getColor(SWT.COLOR_LIST_SELECTION));
 		body.setSelectionForeground(Resources.getColor(SWT.COLOR_LIST_SELECTION_TEXT));
+		body.setSelected(2, 4, 2, 4, true);
 		
 		shell.open();
 		Display display = shell.getDisplay();

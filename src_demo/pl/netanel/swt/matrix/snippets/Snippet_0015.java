@@ -36,13 +36,13 @@ public class Snippet_0015 {
 		Section rowBody = axis0.getBody();
 		rowBody.setCount(10);
 		
-		matrix.getPainter("focus cell").setEnabled(false);
+		matrix.setFocusCellEnabled(false);
 
 		final Zone body = matrix.getBody();
 		body.getPainter("row lines").setEnabled(false);
 		body.getPainter("column lines").setEnabled(false);
 		
-		body.addPainter(0, new Painter("alter row background", Painter.SCOPE_ROW_CELLS) {
+		body.addPainter(0, new Painter("gradient row background", Painter.SCOPE_ROW_CELLS) {
 			int matrixWidth;
 			@Override
 			protected boolean init() {

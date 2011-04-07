@@ -34,7 +34,6 @@ import pl.netanel.util.ImmutableIterator;
 public class Zone<N0 extends Number, N1 extends Number> {
 	
 	Painters<N0, N1> painters;
-	
 	Matrix<N0, N1> matrix;
 	Section<N0> section0;
 	Section<N1> section1;
@@ -47,9 +46,11 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	final ArrayList<GestureBinding> bindings;
 	boolean selectionEnabled;
 	
-	private Color defaultBackground, defaultForeground, selectionBackground, selectionForeground;
+	private Color selectionBackground, selectionForeground;
 	private final Rectangle bounds;
-
+	
+	private CellValues<N0, N1, Color> background, foreground;
+	
 	public Zone(Section<N0> section0, Section<N1> section1) {
 		this();
 		this.section0 = section0 instanceof SectionClient ? ((SectionClient) section0).core : section0;
@@ -61,6 +62,9 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		RGB whiteColor = Resources.getColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
 		RGB color = Painter.blend(selectionColor, whiteColor, 40);
 		selectionBackground = Resources.getColor(color);
+		
+		background = new CellValues(this.section0.math, this.section1.math);
+		foreground = new CellValues(this.section0.math, this.section1.math);
 	}
 	
 	Zone() {
@@ -95,7 +99,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	public Section getSectionUnchecked0() {
 		return section0;
 	}
-	public Section getSectionUncheked1() {
+	public Section getSectionUnchecked1() {
 		return section1;
 	}
 
@@ -145,29 +149,46 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	}
 	
 	
-	public void setBackground(N0 index0, N1 index1, Color color) {
-	}
 	public Color getBackground(N0 index0, N1 index1) {
-		return defaultBackground;
+		return background.getValue(index0, index1);
 	}
+	
+	public void setBackground(N0 index0, N1 index1, Color color) {
+		setBackground(index0, index0, index1, index1, color);
+	}
+	
+	public void setBackground(N0 start0, N0 end0, N1 start1, N1 end1, Color color) {
+		background.setValue(start0, end0, start1, end1, color);
+	}
+
 	public void setDefaultBackground(Color color) {
-		defaultBackground = color;
+		background.setDefaultValue(color);
 	}
 	public Color getDefaultBackground() {
-		return defaultBackground;
+		return background.getDefaultValue();
 	}	
 	
-	public void setForeground(N0 index0, N1 index1, Color color) {
-	}
+	
 	public Color getForeground(N0 index0, N1 index1) {
-		return defaultForeground;
+		return foreground.getValue(index0, index1);
 	}
+	
+	public void setForeground(N0 index0, N1 index1, Color color) {
+		setForeground(index0, index0, index1, index1, color);
+	}
+	
+	public void setForeground(N0 start0, N0 end0, N1 start1, N1 end1, Color color) {
+		foreground.setValue(start0, end0, start1, end1, color);
+	}
+	
 	public void setDefaultForeground(Color color) {
-		defaultForeground = color;
+		foreground.setDefaultValue(color);
 	}
 	public Color getDefaultForeground() {
-		return defaultForeground;
-	}
+		return foreground.getDefaultValue();
+	}	
+	
+	
 	
 
 	public Rectangle getBounds() {
@@ -496,6 +517,9 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 * Non-public 
 	 */
 	
+	void setMatrix(Matrix<N0, N1> matrix) {
+		this.matrix = matrix;
+	}
 	
 
 }

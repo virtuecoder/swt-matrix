@@ -138,16 +138,6 @@ public class Axis<N extends Number> implements Iterable<SectionClient<N>> {
 		return layout.current == null ? null : layout.current.index;
 	}
 
-	public SectionClient<N> getTopSection() {
-		layout.computeIfRequired();
-		return layout.start == null ? null : sectionMap.get(layout.start.section);
-	}
-	
-	public N getTopIndex() {
-		layout.computeIfRequired();
-		return layout.start == null ? null : layout.start.index;
-	}
-	
 	public void navigate(Section<N> section, N index) {
 		layout.setCurrentItem(new AxisItem(section, index));
 	}
@@ -165,6 +155,14 @@ public class Axis<N extends Number> implements Iterable<SectionClient<N>> {
 	public void freezeTail(int freezeItemCount) {
 		Preconditions.checkArgument(freezeItemCount >= 0, FREEZE_ITEM_COUNT_ERROR);
 		layout.freezeTail(freezeItemCount);
+	}
+	
+	public void freezeHead(Section<N> section, N index) {
+		layout.freezeHead(section, index);
+	}
+	
+	public void freezeTail(Section<N> section, N index) {
+		layout.freezeTail(section, index);
 	}
 	
 	

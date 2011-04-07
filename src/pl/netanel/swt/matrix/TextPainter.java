@@ -19,8 +19,6 @@ class TextPainter extends Painter {
 	static enum TextClipMethod {DOTS_IN_THE_MIDDLE, DOTS_AT_THE_END, CUT, NONE};
 	
 	public String text;
-	public int alignY, alignX;
-	public int marginY, marginX;
 	public TextClipMethod textClipMethod;
 	
 	private Font lastFont;

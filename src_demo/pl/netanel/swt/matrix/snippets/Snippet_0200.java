@@ -48,8 +48,8 @@ public class Snippet_0200 {
 		add.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				axis0.freezeHead(axis0.getFocusIndex().intValue() - axis0.getTopIndex().intValue());
-				axis1.freezeHead(axis1.getFocusIndex().intValue() - axis1.getTopIndex().intValue());
+				axis0.freezeHead(axis0.getFocusSection(), axis0.getFocusIndex());
+				axis1.freezeHead(axis1.getFocusSection(), axis1.getFocusIndex());
 				matrix.refresh();
 			}
 		});
@@ -59,8 +59,8 @@ public class Snippet_0200 {
 		remove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				axis0.freezeTail(axis0.getFocusIndex().intValue() - axis0.getTopIndex().intValue());
-				axis1.freezeTail(axis1.getFocusIndex().intValue() - axis1.getTopIndex().intValue());
+				axis0.freezeTail(axis0.getFocusSection(), axis0.getFocusIndex());
+				axis1.freezeTail(axis1.getFocusSection(), axis1.getFocusIndex());
 				matrix.refresh();
 			}
 		});
