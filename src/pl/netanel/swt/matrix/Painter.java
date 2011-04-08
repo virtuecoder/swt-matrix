@@ -1,9 +1,18 @@
 package pl.netanel.swt.matrix;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.RGB;
+import java.math.BigInteger;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
+
+import pl.netanel.swt.FontWidthCache;
+import pl.netanel.util.Arrays;
 import pl.netanel.util.Preconditions;
 
 
@@ -59,6 +68,9 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 */
 	public static final int SCOPE_CELLS_VERTICALLY = 6;
 
+	private static int[] EXTENT_ALIGN = {SWT.RIGHT, SWT.END, SWT.BOTTOM, SWT.CENTER};
+	static enum TextClipMethod {DOTS_IN_THE_MIDDLE, DOTS_AT_THE_END, CUT, NONE};
+	
 	/**
 	 * Provides graphic to the {@link #init()}, {@link #clean()}, {@link #paint(Number, Number, int, int, int, int)} methods. 
 	 * It is not safe to use it inside of other methods.
@@ -69,8 +81,25 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	final String name;
 	private boolean enabled = true;
 	
-	public int alignY, alignX;
-	public int marginY, marginX;
+	public String text;
+	public int textAlignY, textAlignX;
+	public int imageAlignY, imageAlignX;
+	public int textMarginY, textMarginX;
+	public int imageMarginY, imageMarginX;
+
+	TextClipMethod textClipMethod;
+	Zone zone;
+	Matrix matrix;
+
+	private Color lastForeground, lastBackground, defaultForeground, defaultBackground, 
+		background, selectionBackground, selectionForeground;
+	private boolean shouldHighlight;
+	private boolean backgroundEnabled, foregroundEnabled;
+
+	private Font lastFont;
+	private int[] extentCache;
+	private Point extent;
+
 	
 	/**
 	 * Constructor with the scope defaulted to {@link #SCOPE_SINGLE}. 
@@ -92,6 +121,10 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		Preconditions.checkNotNullWithName(name, "name");
 		this.name = name;
 		this.scope = scope;
+		textMarginY = 1; textMarginX = 4;
+		textAlignY = SWT.BEGINNING; textAlignX = SWT.BEGINNING;
+		textClipMethod = TextClipMethod.DOTS_IN_THE_MIDDLE;
+
 	}
 
 	/**
@@ -123,7 +156,27 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 * @return true if the initialization succeeded or false otherwise.
 	 * @see <code>clean()</code>
 	 */
-	protected boolean init() { return true; }
+	protected boolean init() {
+		if (scope < SCOPE_CELLS_HORIZONTALLY) return true;
+		lastForeground = defaultForeground = zone.getDefaultForeground();
+		lastBackground = defaultBackground = zone.getDefaultBackground();
+		selectionBackground = zone.getSelectionBackground();
+		selectionForeground = zone.getSelectionForeground();
+		gc.setForeground(lastForeground);
+		if (lastBackground != null) {
+			gc.setBackground(lastBackground);
+			gc.fillRectangle(zone.getBounds());
+		}
+		backgroundEnabled = zone.isBackgroundEnabled();
+		foregroundEnabled = zone.isForegroundEnabled();
+		
+		shouldHighlight = !zone.equals(matrix.getBody()) || 
+			zone.getSelectionCount().compareTo(BigInteger.ONE) != 0;
+		
+		extentCache = FontWidthCache.get(gc, gc.getFont());
+		extent = new Point(-1, gc.stringExtent("ty").y);
+		return true; 
+	}
 
 	/**
 	 * Restores the default {@link GC} settings modified by modified by in {@link #init()} 
@@ -150,7 +203,105 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 * @param width the width of the boundaries
 	 * @param height the height of the boundaries
 	 */
-	public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {}
+	public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
+		if (zone == null) return;
+		Color foreground = null;
+		boolean isSelected = shouldHighlight && zone.isSelected(index0, index1);
+		
+		if (isSelected) {
+			foreground = selectionForeground;  
+			background = selectionBackground;
+		} else {
+			if (foregroundEnabled) {
+				foreground = zone.getForeground(index0, index1);
+			} else {
+				foreground = defaultForeground;
+			}
+			if (backgroundEnabled) {
+				background = zone.getBackground(index0, index1);
+			} else {
+				background = defaultBackground;
+			}
+		}
+		
+		// Only set color if there is a change
+		if (foreground != null) { // && !foreground.equals(lastForeground)) {
+			gc.setForeground(lastForeground = foreground);
+		}
+		if (background != null) {
+			if (!background.equals(lastBackground)) {
+				gc.setBackground(lastBackground = background);
+			}
+			if (!background.equals(defaultBackground)) {
+				gc.fillRectangle(x, y, width, height);
+			}
+		}
+		
+//		align0 = model.getVerticalAlignment(item0, item1);
+//		align1 = model.getHorizontalAlignment(item0, item1);
+
+//		lineWidth0 = zone.section0.getLineWidth(index0);
+//		lineWidth1 = zone.section1.getLineWidth(index1);
+//		lineColor = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
+		
+		Image image = zone.getImage(index0, index1);
+		if (image != null) {
+			int x2 = x, y2 = y;
+			Rectangle bounds = image.getBounds();
+			switch (imageAlignX) {
+			case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP: 
+				x2 += imageMarginX; break;
+			case SWT.CENTER:
+				x2 += (width - bounds.width) / 2; break; 
+			case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
+				x2 += width - bounds.width - imageMarginX; break;
+			}
+			switch (imageAlignY) {
+			case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
+				y2 += imageMarginY; break;
+			case SWT.CENTER:
+				y2 += (height - bounds.height) / 2; break; 
+			case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
+				y2 += height - bounds.height - imageMarginY; break;
+			}
+			gc.drawImage(image, x2, y2);
+		}
+		
+		text = zone.getText(index0, index1);
+		if (text != null) {
+//			if (width < 4 || height < 4) return;
+			
+			if (textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
+				text = FontWidthCache.shortenTextMiddle(text, width - textMarginX * 2, extent, extentCache);			
+			} 
+			else if (textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
+				text = FontWidthCache.shortenTextEnd(text, width - textMarginX * 2, extent, extentCache);			
+			} 
+			// Compute extent only when font changes or text horizontal align is center or right  
+			else if (lastFont != null && lastFont != gc.getFont() || Arrays.contains(EXTENT_ALIGN, textAlignX)) {
+				extent = gc.stringExtent(text);
+			}
+			
+			switch (textAlignX) {
+			case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP: 
+				x += textMarginX; break;
+			case SWT.CENTER:
+				x += (width - extent.x) / 2; break; 
+			case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
+				x += width - extent.x - textMarginX; break;
+			}
+			switch (textAlignY) {
+			case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
+				y += textMarginY; break;
+			case SWT.CENTER:
+				y += (height - extent.y) / 2; break; 
+			case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
+				y += height - extent.y - textMarginY; break;
+			}
+
+			gc.drawString(text, x, y, true);
+		}
+	}
 
 	
 	

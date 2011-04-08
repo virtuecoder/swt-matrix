@@ -63,12 +63,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		Section body1 = axis1.getBody();
 		if (section0.equals(header0) && section1.equals(header1)) {
 			// top left
-			zone = new Zone(section0, section1) {
-				@Override
-				public String getText(Number index0, Number index1) {
-					return null;
-				};
-			};
+			zone = new Zone(section0, section1);
 		} else {
 			if (body0.equals(section0) && header1.equals(section1)) {
 				// row header
@@ -90,7 +85,11 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 			} 
 			else {
 				// body
-				zone = new Zone(section0, section1);
+				zone = new Zone(section0, section1) {
+					public String getText(Number index0, Number index1) {
+						return index0.toString() + ", " + index1.toString();
+					};
+				};
 			}
 		}
 		return zone;

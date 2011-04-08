@@ -3,6 +3,7 @@ package pl.netanel.swt.matrix;
 import java.math.BigInteger;
 
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 
 
 /**
@@ -20,18 +21,20 @@ import org.eclipse.swt.graphics.Color;
  * 
  * @author Jacek created 07-02-2011
  */
-class ModelPainter extends TextPainter {
+class ZonePainter extends Painter {
 	
 	private Color lastForeground, lastBackground, defaultBackground, background,  
 		selectionBackground, selectionForeground;
 	private final Zone zone;
 	private boolean shouldHighlight;
 	private final Matrix matrix;
+	private boolean backgroundEnabled, foregroundEnabled;
 
 //	private int lineWidth0, lineWidth1;
 //	private Color lineColor;
 	
-	public ModelPainter(Matrix matrix, Zone zone) {
+	public ZonePainter(Matrix matrix, Zone zone) {
+		super("cells", SCOPE_CELLS_HORIZONTALLY);
 		this.matrix = matrix;
 		this.zone = zone;
 	}
@@ -48,6 +51,8 @@ class ModelPainter extends TextPainter {
 			gc.setBackground(lastBackground);
 			gc.fillRectangle(zone.getBounds());
 		}
+		backgroundEnabled = zone.isBackgroundEnabled();
+		foregroundEnabled = zone.isForegroundEnabled();
 		
 		shouldHighlight = !zone.equals(matrix.getBody()) || 
 			zone.getSelectionCount().compareTo(BigInteger.ONE) != 0;
@@ -57,14 +62,14 @@ class ModelPainter extends TextPainter {
 
 	@Override
 	public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-		Color foreground;
+		Color foreground = null;
 		boolean isSelected = shouldHighlight && zone.isSelected(index0, index1);
 		if (isSelected) {
 			foreground = selectionForeground;  
 			background = selectionBackground;
 		} else {
-			foreground = zone.getForeground(index0, index1);
-			background = zone.getBackground(index0, index1);
+			if (foregroundEnabled) foreground = zone.getForeground(index0, index1);
+			if (backgroundEnabled) background = zone.getBackground(index0, index1);
 		}
 		
 		// Only set color if there is a change
@@ -88,6 +93,10 @@ class ModelPainter extends TextPainter {
 //		lineColor = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 		
 		text = zone.getText(index0, index1);
+		Image image = zone.getImage(index0, index1);
+		if (image != null) {
+			gc.drawImage(image, x, y);
+		}
 		super.paint(index0, index1, x, y, width, height);
 		
 //		// Paint lines

@@ -104,7 +104,9 @@ class Layout<N extends Number> {
 		// Compute total and check if body exists
 		total.set(math.ZERO_VALUE()); 
 		for (Section section: sections) {
-			total.add(section.getVisibleCount());
+			if (section.isVisible()) {
+				total.add(section.getVisibleCount());
+			}
 		}
 		
 		computeCache(start, direction);
@@ -669,7 +671,9 @@ class Layout<N extends Number> {
 			if (item.section.equals(section)) {
 				return position.add(math.getValue(section.indexOfNotHidden(item.index)));
 			}
-			position.add(section.getVisibleCount());
+			if (section.isVisible()) {
+				position.add(section.getVisibleCount());
+			}
 		}
 		return null;
 	}
@@ -680,6 +684,7 @@ class Layout<N extends Number> {
 		
 		for (int i = 0, size = sections.size(); i < size; i++) {
 			Section<N> section = sections.get(i);
+			if (!section.isVisible()) continue;
 			pos1.set(pos2);
 			pos2.add(section.getVisibleCount());
 			if (math.compare(pos2, position) > 0) {

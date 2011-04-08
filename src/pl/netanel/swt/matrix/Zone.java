@@ -7,6 +7,7 @@ import java.util.Iterator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
@@ -50,6 +51,9 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	private final Rectangle bounds;
 	
 	private CellValues<N0, N1, Color> background, foreground;
+//	private CellValues<N0, N1, String> text;
+//	private CellValues<N0, N1, Image> image;
+	private boolean backgroundEnabled, foregroundEnabled;
 	
 	public Zone(Section<N0> section0, Section<N1> section1) {
 		this();
@@ -63,8 +67,10 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		RGB color = Painter.blend(selectionColor, whiteColor, 40);
 		selectionBackground = Resources.getColor(color);
 		
-		background = new CellValues(this.section0.math, this.section1.math);
-		foreground = new CellValues(this.section0.math, this.section1.math);
+		background = new MapValueToCellSet(this.section0.math, this.section1.math);
+		foreground = new MapValueToCellSet(this.section0.math, this.section1.math);
+//		text = new MapValueToCellSet(this.section0.math, this.section1.math);
+//		image = new MapValueToCellSet(this.section0.math, this.section1.math);
 	}
 	
 	Zone() {
@@ -112,7 +118,10 @@ public class Zone<N0 extends Number, N1 extends Number> {
 
 	
 	void setDefaultBodyStyle() {
-		addPainter(new ModelPainter(matrix, this));
+		Painter painter = new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY);
+		painter.matrix = matrix;
+		painter.zone = this;
+		addPainter(painter);
 		Color color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 		addPainter(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color ));
 		addPainter(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
@@ -128,7 +137,10 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		setSelectionBackground(Resources.getColor(rgb));
 		
 		if (getPainterCount() == 0) {
-			addPainter(new ModelPainter(matrix, this));
+			Painter painter = new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY);
+			painter.matrix = matrix;
+			painter.zone = this;
+			addPainter(painter);
 			final Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
 			addPainter(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color));
 			addPainter(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
@@ -145,10 +157,47 @@ public class Zone<N0 extends Number, N1 extends Number> {
 
 	
 	public String getText(N0 index0, N1 index1) {
-		return index0.toString() + ", " + index1.toString();
+//		return text.getValue(index0, index1);
+		return null;
+	}
+	public void setText(N0 index0, N1 index1, String value) {
+		setText(index0, index0, index1, index1, value);
+	}
+	public void setText(N0 start0, N0 end0, N1 start1, N1 end1, String value) {
+//		text.setValue(start0, end0, start1, end1, value);
+		throw new UnsupportedOperationException();
+	}
+	
+	public Image getImage(N0 index0, N1 index1) {
+//		return image.getValue(index0, index1);
+		return null;
+	}
+	public void setImage(N0 index0, N1 index1, Image value) {
+		setImage(index0, index0, index1, index1, value);
+	}
+	public void setImage(N0 start0, N0 end0, N1 start1, N1 end1, Image value) {
+//		image.setValue(start0, end0, start1, end1, value);
+		throw new UnsupportedOperationException();
 	}
 	
 	
+	
+	public boolean isForegroundEnabled() {
+		return foregroundEnabled;
+	}
+
+	public void setForegroundEnabled(boolean enabled) {
+		this.foregroundEnabled = enabled;
+	}
+
+	public boolean isBackgroundEnabled() {
+		return backgroundEnabled;
+	}
+	
+	public void setBackgroundEnabled(boolean enabled) {
+		this.backgroundEnabled = enabled;
+	}
+
 	public Color getBackground(N0 index0, N1 index1) {
 		return background.getValue(index0, index1);
 	}
@@ -158,6 +207,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	}
 	
 	public void setBackground(N0 start0, N0 end0, N1 start1, N1 end1, Color color) {
+		backgroundEnabled = true;
 		background.setValue(start0, end0, start1, end1, color);
 	}
 
@@ -431,19 +481,32 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	
 	public void addPainter(Painter<N0, N1> painter) {
 		painters.add(painter);
+		setPainterMatrixAndZone(painter);
 	}
 
 	public void addPainter(int index, Painter<N0, N1> painter) {
 		// Check uniqueness of painters names
 		painters.add(index, painter);
+		setPainterMatrixAndZone(painter);
 	}
 	
 	public void setPainter(int index, Painter<N0, N1> painter) {
 		painters.set(index, painter);
+		setPainterMatrixAndZone(painter);
 	}
 	
 	public void replacePainter(Painter<N0, N1> painter) {
 		painters.replacePainter(painter);
+		setPainterMatrixAndZone(painter);
+	}
+	
+	private void setPainterMatrixAndZone(Painter painter) {
+		if (painter.scope == Painter.SCOPE_CELLS_HORIZONTALLY ||
+				painter.scope == Painter.SCOPE_CELLS_VERTICALLY) 
+		{
+			painter.zone = this;
+			painter.matrix = matrix;
+		}
 	}
 	
 	public void removePainter(int index) {
@@ -519,6 +582,14 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	
 	void setMatrix(Matrix<N0, N1> matrix) {
 		this.matrix = matrix;
+		for (Painter painter: painters) {
+			if (painter.scope == Painter.SCOPE_CELLS_HORIZONTALLY ||
+					painter.scope == Painter.SCOPE_CELLS_VERTICALLY) 
+			{
+				painter.zone = this;
+				painter.matrix = matrix;
+			}
+		}
 	}
 	
 

@@ -34,7 +34,7 @@ public class Snippet_0016 {
 		final Zone body = matrix.getBody();
 		body.setSelectionBackground(Resources.getColor(SWT.COLOR_LIST_SELECTION));
 		body.setSelectionForeground(Resources.getColor(SWT.COLOR_LIST_SELECTION_TEXT));
-		body.setSelected(2, 4, 2, 4, true);
+		body.setSelected(1, 2, 1, 2, true);
 		
 		shell.open();
 		Display display = shell.getDisplay();

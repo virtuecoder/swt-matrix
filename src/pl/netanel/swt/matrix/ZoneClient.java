@@ -24,6 +24,8 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 	
 	public ZoneClient(Zone<N0, N1> zone) {
 		core = zone;
+		section0 = new SectionClient(zone.section0);
+		section1 = new SectionClient(zone.section1);
 	}
 	
 	@Override
@@ -153,8 +155,10 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 		return core.isSelected(index0, index1);
 	}
 
-	public void setSelected(Number start0, Number end0, Number start1,
-			Number end1, boolean selected) {
+	public void setSelected(Number start0, Number end0, 
+			Number start1, Number end1, boolean selected) {
+		section0.checkRange(start0, end0, section0.getCount());
+		section1.checkRange(start1, end1, section1.getCount());
 		core.setSelected(start0, end0, start1, end1, selected);
 	}
 

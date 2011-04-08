@@ -76,7 +76,7 @@ public class M {
 	public static final int SELECT_TO_COLUMN2 = 127;		// binding = SWT.MOD1 + SWT.MouseDown + Zone.COLUMN_HEADER
 	
 	public static boolean isBodySelect(int id) {
-		return SELECT_UP <= id && id <= SELECT_TO_LOCATION2;
+		return CURRENT_LOCATION <= id && id <= SELECT_TO_LOCATION2;
 	}
 	
 	public static boolean isHeaderSelect(int id) {

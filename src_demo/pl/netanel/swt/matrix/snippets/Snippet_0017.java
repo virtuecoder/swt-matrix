@@ -26,25 +26,21 @@ public class Snippet_0017 {
 		Display display = shell.getDisplay();
 		
 		Section colBody = new Section();
-		colBody.setDefaultLineWidth(0);
 		colBody.setCount(8);
-//		colBody.setDefaultCellWidth(16);
 		
 		Section rowBody = new Section();
-		rowBody.setDefaultLineWidth(0);
 		rowBody.setCount(8);
 		
 		final Color color = display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
 		
 		Zone body = new Zone(rowBody, colBody) {
+			{
+				setBackgroundEnabled(true);
+			}
 			@Override
 			public Color getBackground(Number index0, Number index1) {
 				return index0.intValue() % 2 + index1.intValue() % 2 == 1 
 					? color : null;
-			}
-			@Override
-			public String getText(Number index0, Number index1) {
-				return null;
 			}
 		};
 		

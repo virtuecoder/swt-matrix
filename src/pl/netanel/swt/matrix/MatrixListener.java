@@ -194,7 +194,7 @@ class MatrixListener implements Listener {
 		private final int axisIndex;
 		Axis<N> axis;
 		Layout layout;
-		AxisItem last, item, resizeItem;
+		AxisItem<N> last, item, resizeItem;
 		boolean moving, resizing, itemModified = true, mouseDown;
 		Event mouseMoveEvent;
 		Cursor resizeCursor;
@@ -332,7 +332,8 @@ class MatrixListener implements Listener {
 		private boolean isInHeader() {
 			if (zone == null) return false;
 			Axis axis2 = axis.index == 0 ? matrix.axis1 : matrix.axis0;
-			return axis2.getHeader().equals(
+			Section header = axis2.getHeader();
+			return header != null && header.equals(
 					axis.index == 1 ? zone.section0 : zone.section1);
 		}
 
@@ -542,6 +543,13 @@ class MatrixListener implements Listener {
 					future = null;
 					item = null;
 				}
+			}
+		}
+
+		public void refresh() {
+			N count = item.section.getCount();
+			if (axis.math.compare(item.index, count) >= 0) {
+				item.index = axis.math.decrement(count);
 			}
 		}
 	}
@@ -801,6 +809,15 @@ class MatrixListener implements Listener {
 		state1.axis = layout1.axis;
 		state0.autoScroll = state0.new AutoScroll();
 		state1.autoScroll = state1.new AutoScroll();
+	}
+
+
+	/**
+	 * Make sure the state does not contain indexes out of scope after deleting model items.
+	 */
+	public void refresh() {
+		state0.refresh();
+		state1.refresh();
 	}
 }
 

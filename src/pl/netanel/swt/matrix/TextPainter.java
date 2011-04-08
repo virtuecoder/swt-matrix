@@ -26,10 +26,10 @@ class TextPainter extends Painter {
 	private Point extent;
 //	private boolean isClipped;
 	
-	public TextPainter() {
-		super("text", Painter.SCOPE_CELLS_HORIZONTALLY);
-		marginY = 1; marginX = 4;
-		alignY = SWT.BEGINNING; alignX = SWT.BEGINNING;
+	public TextPainter(String name) {
+		super("name", Painter.SCOPE_CELLS_HORIZONTALLY);
+		textMarginY = 1; textMarginX = 4;
+		textAlignY = SWT.BEGINNING; textAlignX = SWT.BEGINNING;
 		textClipMethod = TextClipMethod.DOTS_IN_THE_MIDDLE;
 	}
 
@@ -65,13 +65,13 @@ class TextPainter extends Painter {
 		if (text == null) return;
 		
 		if (textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
-			text = FontWidthCache.shortenTextMiddle(text, width - marginX * 2, extent, extentCache);			
+			text = FontWidthCache.shortenTextMiddle(text, width - textMarginX * 2, extent, extentCache);			
 		} 
 		else if (textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
-			text = FontWidthCache.shortenTextEnd(text, width - marginX * 2, extent, extentCache);			
+			text = FontWidthCache.shortenTextEnd(text, width - textMarginX * 2, extent, extentCache);			
 		} 
 		// Compute extent only when font changes or text horizontal align is center or right  
-		else if (lastFont != null && lastFont != gc.getFont() || Arrays.contains(EXTENT_ALIGN, alignX)) {
+		else if (lastFont != null && lastFont != gc.getFont() || Arrays.contains(EXTENT_ALIGN, textAlignX)) {
 			extent = gc.stringExtent(text);
 		}
 		
@@ -84,21 +84,21 @@ class TextPainter extends Painter {
 //			isClipped = false;
 //		}
 
-		switch (alignX) {
+		switch (textAlignX) {
 		case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP: 
-			x += marginX; break;
+			x += textMarginX; break;
 		case SWT.CENTER:
 			x += (width - extent.x) / 2; break; 
 		case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
-			x += width - extent.x - marginX; break;
+			x += width - extent.x - textMarginX; break;
 		}
-		switch (alignY) {
+		switch (textAlignY) {
 		case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
-			y += marginY; break;
+			y += textMarginY; break;
 		case SWT.CENTER:
 			y += (height - extent.y) / 2; break; 
 		case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
-			y += height - extent.y - marginY; break;
+			y += height - extent.y - textMarginY; break;
 		}
 		
 		gc.drawString(text, x, y, true);

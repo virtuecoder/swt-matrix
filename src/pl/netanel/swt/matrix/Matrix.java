@@ -301,6 +301,11 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		return model.zoneClients.get(index);
 	}
 	
+	public Zone<N0, N1> getZone(Zone<N0, N1> zone) {
+		if (zone instanceof ZoneClient) return zone;
+		return model.zoneClients.get(model.zones.indexOf(zone));
+	}
+	
 	
 	/**
 	 * Returns a zone located at the intersection of the given axis sections.
@@ -415,6 +420,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		layout0.compute();
 		layout1.compute();
 		updateScrollBars();
+		listener.refresh();
 		redraw();
 	}
 

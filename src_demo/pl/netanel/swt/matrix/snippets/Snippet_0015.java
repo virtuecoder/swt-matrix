@@ -36,8 +36,6 @@ public class Snippet_0015 {
 		Section rowBody = axis0.getBody();
 		rowBody.setCount(10);
 		
-		matrix.setFocusCellEnabled(false);
-
 		final Zone body = matrix.getBody();
 		body.getPainter("row lines").setEnabled(false);
 		body.getPainter("column lines").setEnabled(false);
