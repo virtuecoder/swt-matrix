@@ -10,7 +10,7 @@ import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Zone;
 
 /**
- * Change the vertical line color.
+ * Change the line style.
  * 
  * @author Jacek Kolodziejczyk created 04-03-2011
  */
@@ -26,11 +26,29 @@ public class Snippet_0012 {
 		matrix.getAxis0().getBody().setCount(10);
 		Zone body = matrix.getBody();
 		
-		body.replacePainter(new Painter("column lines", Painter.SCOPE_VERTICAL_LINES) {
+		body.replacePainter(new Painter("row lines", Painter.SCOPE_HORIZONTAL_LINES) {
 			@Override
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				gc.setBackground(display.getSystemColor(SWT.COLOR_BLUE));
-				gc.fillRectangle(x, y, width, height);
+				switch (index0.intValue()) {
+				case 1:
+					gc.setBackground(display.getSystemColor(SWT.COLOR_BLUE));
+					gc.fillRectangle(x, y, width, height);
+					break;
+				case 2:
+					gc.setLineDash(new int[] {4, 2});
+					gc.drawLine(x, y, x + width - 1, y + height - 1);
+					gc.setLineDash(null);
+					break;
+				case 3:
+					gc.setLineWidth(5);
+					gc.setLineCap(SWT.CAP_ROUND);
+					gc.drawLine(x, y, x + width - 1, y + height - 1);
+					gc.setLineWidth(1);
+					break;
+				default:
+					gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+					gc.fillRectangle(x, y, width, height);
+				}
 			}
 		});
 		

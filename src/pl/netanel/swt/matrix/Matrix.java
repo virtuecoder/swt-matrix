@@ -417,6 +417,8 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	}
 
 	public void refresh() {
+		layout0.start = layout0.current;
+		layout1.start = layout1.current;
 		layout0.compute();
 		layout1.compute();
 		updateScrollBars();

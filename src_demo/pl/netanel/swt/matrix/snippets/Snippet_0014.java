@@ -11,7 +11,7 @@ import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 
 /**
- * Altering line background.
+ * Altering row background.
  * 
  * @author Jacek Kolodziejczyk created 04-03-2011
  */

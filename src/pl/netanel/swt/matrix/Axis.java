@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 
 import pl.netanel.swt.Listeners;
+import pl.netanel.util.ImmutableIterator;
 import pl.netanel.util.Preconditions;
 
 /**
@@ -21,7 +22,7 @@ import pl.netanel.util.Preconditions;
  * @author Jacek
  * @created 27-03-2011
  */
-public class Axis<N extends Number> implements Iterable<SectionClient<N>> {
+public class Axis<N extends Number> implements Iterable<Section<N>> {
 	private static final String FREEZE_ITEM_COUNT_ERROR = "Freeze item count must greater then 0";
 	
 	final Math<N> math;
@@ -119,8 +120,18 @@ public class Axis<N extends Number> implements Iterable<SectionClient<N>> {
 	
 
 	@Override
-	public Iterator<SectionClient<N>> iterator() {
-		return clientSections.iterator();
+	public Iterator<Section<N>> iterator() {
+		final Iterator<SectionClient<N>> it = clientSections.iterator();
+		return new ImmutableIterator<Section<N>>() {
+			@Override
+			public boolean hasNext() {
+				return it.hasNext();
+			}
+			@Override
+			public Section<N> next() {
+				return it.next();
+			}
+		};
 	}
 
 	
@@ -128,7 +139,7 @@ public class Axis<N extends Number> implements Iterable<SectionClient<N>> {
 	 * Navigation 
 	 */
 	
-	public SectionClient<N> getFocusSection() {
+	public Section<N> getFocusSection() {
 		layout.computeIfRequired();
 		return layout.current == null ? null : sectionMap.get(layout.current.section);
 	}
