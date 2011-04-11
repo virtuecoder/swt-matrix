@@ -118,7 +118,7 @@ class SectionClient<N extends Number> extends Section<N> {
 	 * @param enabled the new visibility state
 	 */
 	public void setNavigationEnabled(boolean enabled) {
-		core.setNavigationEnabled(enabled);
+		core.setFocusItemEnabled(enabled);
 	}
 	
 	/**
@@ -127,8 +127,8 @@ class SectionClient<N extends Number> extends Section<N> {
 	 *
 	 * @return the receiver's visibility state
 	 */
-	public boolean isNavigationEnabled() {
-		return core.isNavigationEnabled();
+	public boolean isFocusItemEnabled() {
+		return core.isFocusItemEnabled();
 	}
 
 	

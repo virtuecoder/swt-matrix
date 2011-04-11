@@ -62,6 +62,7 @@ public class Snippet_0018 {
 		Image image = new Image(display, 16, 16);
 		GC gc = new GC(image);
 		gc.setBackground(display.getSystemColor(SWT.COLOR_BLUE));
+		gc.setAntialias(SWT.ON);
 		gc.fillOval(0, 0, 16, 16);
 		gc.dispose();
 		
@@ -72,7 +73,7 @@ public class Snippet_0018 {
 		new Matrix(shell, SWT.V_SCROLL, 
 				new Axis(rowBody), new Axis(colBody), body);
 		
-		body.getPainter("cells").imageAlignX = SWT.RIGHT;
+//		body.getPainter("cells").imageAlignX = SWT.RIGHT;
 		
 		shell.setBounds(400, 200, 400, 300);
 		shell.open();

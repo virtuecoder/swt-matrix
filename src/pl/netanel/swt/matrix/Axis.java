@@ -14,10 +14,14 @@ import pl.netanel.util.ImmutableIterator;
 import pl.netanel.util.Preconditions;
 
 /**
+ * Axis represents a horizontal or vertical axis of a matrix. It is divided into sections.
  * <dl>
  * <dt><b>Events:</b></dt>
  * <dd>Selection, DefaultSelection</dd>
  * </dl>
+ * 
+ * @param <N> defines the indexing class for this axis
+ * @see Section
  *
  * @author Jacek
  * @created 27-03-2011
@@ -29,27 +33,44 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	final ArrayList<Section<N>> sections;
 	final ArrayList<SectionClient<N>> clientSections;
 	final HashMap<Section<N>, SectionClient<N>> sectionMap;
-	SectionClient<N> body, header;
+	
+	private SectionClient<N> body, header;
 	private int autoScrollOffset, resizeOffset;
-	Layout<N> layout;
+	final Layout<N> layout;
 	final Listeners listeners;
 	
-//	Section<N> currentSection;
-//	N currentIndex;
-
-	private ScrollBar scrollBar;
 	int index;
 	Matrix matrix;
-	
+	private ScrollBar scrollBar;
+
+	/**
+	 * Creates axis indexed by Integer class.
+	 * @see #Axis(Class)
+	 */
 	public Axis() {
-		this(new Section<N>(), new Section<N>());
-		sections.get(0).setCount(math.ONE_VALUE());
+		this((Class<N>) Integer.class);
 	}
 	
+	/**
+	 * Creates axis with the header and body sections indexed by the specified NUmber subclass.
+	 * The header section count is set to one and its visibility to false.
+	 * @see #Axis(Section...)
+	 */
 	public Axis(Class<N> numberClass) {
 		this(new Section(numberClass), new Section(numberClass));
+		sections.get(0).setCount(math.ONE_VALUE());
 	}
 
+	/**
+	 * Creates axis with the specified sections. 
+	 * <p>
+	 * At least one section must be provided.
+	 * All the sections must be indexed by the same Number subclass.
+	 * <p>
+	 * If there is one section it becomes the body section. Otherwise the first section 
+	 * becomes the header and the second one becomes the body.
+	 * @see #Axis(Section...)
+	 */
 	public Axis(Section<N> ...sections) {
 		Preconditions.checkArgument(sections.length > 0, "Model must have at least one section");
 		math = sections[0].math;
@@ -57,6 +78,9 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		this.clientSections = new ArrayList(sections.length);
 		this.sectionMap = new HashMap(sections.length);
 		for (int i = 0; i < sections.length; i++) {
+			Preconditions.checkArgument(sections[i].math.equals(math), 
+				"Section at {0} must be indexed by the same Number subclass as the first section {1}", 
+				sections[i].math.getNumberClass(), math.getNumberClass());				
 			SectionClient section = new SectionClient(sections[i]);
 			section.core.index = i;
 			section.core.axis = this;
@@ -64,17 +88,13 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 			this.clientSections.add(section);
 			this.sectionMap.put(section.core, section);
 		}
-		if (sections.length == 0) {
-			this.sections.add(new SectionClient(new Section(math)));
+		if (sections.length == 1) {
 			setBody(0);
 		} else {
-			if (sections.length == 1) {
-				setBody(0);
-			} else {
-				setHeader(0);
-				setBody(1);
-				header.setNavigationEnabled(false);
-			}
+			setHeader(0);
+			setBody(1);
+			header.setNavigationEnabled(false);
+			header.setVisible(false);
 		}
 		
 		autoScrollOffset = M.AUTOSCROLL_OFFSET_Y;
@@ -83,14 +103,27 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		listeners = new Listeners();
 	}
 
-	
+	/**
+	 * Returns the body section wrapped in validation checker.
+	 * @return the body section wrapped in validation checker
+	 * @see #getSection(int)
+	 */
 	public Section<N> getBody() {
 		return body;
 	}
+	/**
+	 * Returns the header section wrapped in validation checker.
+	 * @return the header section wrapped in validation checker
+	 * @see #getSection(int)
+	 */
 	public Section<N> getHeader() {
 		return header;
 	}
 
+	/**
+	 * 
+	 * @param sectionIndex
+	 */
 	public void setBody(int sectionIndex) {
 		Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
 		this.body = sectionMap.get(sections.get(sectionIndex));
@@ -101,24 +134,48 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		this.header = sectionMap.get(sections.get(sectionIndex));
 	}
 	
-	
+	/**
+	 * Returns the number of sections in the receiver. 
+	 * @return the number of sections in the receiver.
+	 * @see #setCount(Number)
+	 */
 	public int getSectionCount() {
 		return sections.size();
 	}
 	
-	public Section<N> getSection(int i) {
-		return clientSections.get(i);
+	/**
+	 * Returns the checked section at the specified position in this axis.
+	 * <p>
+	 * A checked section delegates calls to an unchecked section proceeding it with an
+	 * argument validation checking.
+	 * 
+	 * @param sectionIndex index of the section to return
+	 * @return the section at the specified position in this axis
+	 * 
+	 * @see #getSectionUnchecked(int)
+	 */
+	public Section<N> getSection(int sectionIndex) {
+		return clientSections.get(sectionIndex);
 	}
 	
-	public Section<N> getSectionUnchecked(int i) {
-		return sections.get(i);
+	/**
+	 * Returns the unchecked section at the specified position in this axis.
+	 * <p>
+	 * Unchecked section skips argument validation checking in getters 
+	 * to improve performance. 
+	 * 
+	 * @param sectionIndex index of the section to return
+	 * @return the section at the specified position in this axis
+	 * 
+	 * @see #getSection(int)
+	 */
+	public Section<N> getSectionUnchecked(int sectionIndex) {
+		return sections.get(sectionIndex);
 	}
 	
-	public Section<N> getUncheckedSection(int i) {
-		return sections.get(i);
-	}
-	
-
+	/**
+	 * Returns iterator for checked sections.
+	 */
 	@Override
 	public Iterator<Section<N>> iterator() {
 		final Iterator<SectionClient<N>> it = clientSections.iterator();
@@ -144,12 +201,13 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		return layout.current == null ? null : sectionMap.get(layout.current.section);
 	}
 	
+	
 	public N getFocusIndex() {
 		layout.computeIfRequired();
 		return layout.current == null ? null : layout.current.index;
 	}
 
-	public void navigate(Section<N> section, N index) {
+	public void setFocusItem(Section<N> section, N index) {
 		layout.setCurrentItem(new AxisItem(section, index));
 	}
 
@@ -158,20 +216,42 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 * Freeze
 	 */
 
+	/**
+	 * Freezes the specified amount of first items on this axis. 
+	 * @param freezeItemCount amount of first items to freeze
+	 */
 	public void freezeHead(int freezeItemCount) {
 		Preconditions.checkArgument(freezeItemCount >= 0, FREEZE_ITEM_COUNT_ERROR);
 		layout.freezeHead(freezeItemCount);
 	}
 
+	/**
+	 * Freezes the specified amount of last items on this axis. 
+	 * @param freezeItemCount amount of last items to freeze
+	 */
 	public void freezeTail(int freezeItemCount) {
 		Preconditions.checkArgument(freezeItemCount >= 0, FREEZE_ITEM_COUNT_ERROR);
 		layout.freezeTail(freezeItemCount);
 	}
 	
+	/**
+	 * Freezes the amount of first items on this axis that is between 
+	 * the first visible item (inclusively) the specified item (exclusively).
+	 *  
+	 * @param section section of the item bounding the head frozen area
+	 * @param index section of the item bounding the head frozen area
+	 */
 	public void freezeHead(Section<N> section, N index) {
 		layout.freezeHead(section, index);
 	}
 	
+	/**
+	 * Freezes the amount of last items on this axis that is between 
+	 * the specified item (exclusively) and the last visible item (inclusively). 
+	 *  
+	 * @param section section of the item bounding the tail frozen area
+	 * @param index section of the item bounding the tail frozen area
+	 */
 	public void freezeTail(Section<N> section, N index) {
 		layout.freezeTail(section, index);
 	}
@@ -180,7 +260,10 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	/*------------------------------------------------------------------------
 	 *
 	 */
-	
+
+	/**
+	 * The default value is 8 for horizontal and 6 for vertical axis.  
+	 */
 	public int getAutoScrollOffset() {
 		return autoScrollOffset;
 	}
@@ -189,6 +272,9 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		this.autoScrollOffset = autoScrollOffset;
 	}
 
+	/**
+	 * The default value is 3 for horizontal and 2 for vertical axis.  
+	 */
 	public int getResizeOffset() {
 		return resizeOffset;
 	}
@@ -245,7 +331,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 * @param size
 	 * @return true if the visibility has changed/
 	 */
-	protected boolean updateScrollBarVisibility(int size) {
+	boolean updateScrollBarVisibility(int size) {
 		if (scrollBar == null) return false;
 		boolean b = scrollBar.getVisible();
 		scrollBar.setVisible(layout.isScrollRequired());
@@ -259,7 +345,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 * @return true if the visibility of the scroll bar has change to allow
 	 *         recalculation of the matrix visibility information.
 	 */
-	protected void updateScrollBarValues(int size) {
+	void updateScrollBarValues(int size) {
 		// Quit if there is no scroll bar or the visible area is not initialized
 		if (scrollBar == null || size == 0) return;
 	
@@ -393,10 +479,17 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	Bound getCellBound(Section<N> section, N index) {
 		if (section == null || index == null) return null;
 		if (section instanceof SectionClient) section = ((SectionClient) section).core;
-		Bound bound = layout.getBound(new AxisItem<N>(section, index));
+		Bound bound = layout.getCellBound(new AxisItem<N>(section, index));
 		return bound == null ? null : bound.copy();
 	}
 
+	Bound getLineBound(Section<N> section, N index) {
+		if (section == null || index == null) return null;
+		if (section instanceof SectionClient) section = ((SectionClient) section).core;
+		Bound bound = layout.getLineBound(new AxisItem<N>(section, index));
+		return bound == null ? null : bound.copy();
+	}
+	
 	
 	
 	/*------------------------------------------------------------------------

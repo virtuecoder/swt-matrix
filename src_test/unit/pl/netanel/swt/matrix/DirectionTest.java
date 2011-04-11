@@ -406,9 +406,9 @@ public class DirectionTest {
 		
 		Direction forward = layout.forwardNavigator;
 		assertEquals("1 0", forward.first().toString());
-		section.setNavigationEnabled(true);
+		section.setFocusItemEnabled(true);
 		assertEquals("0 0", forward.first().toString());
-		section.setNavigationEnabled(false);
+		section.setFocusItemEnabled(false);
 		forward.init();
 		assertTrue(forward.next() != null);
 		assertEquals("1 9", forward.next(number(20)).toString());
@@ -422,9 +422,9 @@ public class DirectionTest {
 		section = layout.getSection(2);
 		Direction backward = layout.backwardNavigator;
 		assertEquals("1 9", backward.first().toString());
-		section.setNavigationEnabled(true);
+		section.setFocusItemEnabled(true);
 		assertEquals("2 0", backward.first().toString());
-		section.setNavigationEnabled(false);
+		section.setFocusItemEnabled(false);
 		backward.init();
 		assertTrue(backward.next() != null);
 		assertEquals("1 0", backward.next(number(20)).toString());
@@ -438,9 +438,9 @@ public class DirectionTest {
 	@Test
 	public void sectionsWithCurrentEnableDisabledEnabled() throws Exception {
 		Layout layout = layout(2, 10, 1);
-		layout.getSection(0).setNavigationEnabled(true);
-		layout.getSection(1).setNavigationEnabled(false);
-		layout.getSection(2).setNavigationEnabled(true);
+		layout.getSection(0).setFocusItemEnabled(true);
+		layout.getSection(1).setFocusItemEnabled(false);
+		layout.getSection(2).setFocusItemEnabled(true);
 		
 		Direction forward = layout.forwardNavigator;
 		Direction backward = layout.backwardNavigator;

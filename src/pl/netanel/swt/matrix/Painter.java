@@ -72,7 +72,8 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	static enum TextClipMethod {DOTS_IN_THE_MIDDLE, DOTS_AT_THE_END, CUT, NONE};
 	
 	/**
-	 * Provides graphic to the {@link #init()}, {@link #clean()}, {@link #paint(Number, Number, int, int, int, int)} methods. 
+	 * Provides graphic to the {@link #init()}, {@link #clean()}, 
+	 * {@link #paint(Number, Number, int, int, int, int)} methods. 
 	 * It is not safe to use it inside of other methods.
 	 */
 	protected GC gc;
@@ -81,20 +82,56 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	final String name;
 	private boolean enabled = true;
 	
-	public String text;
-	public int textAlignY, textAlignX;
-	public int imageAlignY, imageAlignX;
-	public int textMarginY, textMarginX;
-	public int imageMarginY, imageMarginX;
+	String text;
+	/**
+	 * Horizontal text alignment. One of the following constants defined in class SWT: 
+	 * SWT.LEFT, SWT.RIGHT, SWT.CENTER, SWT.BEGINING, SWT.END.
+	 */
+	public int textAlignX = SWT.BEGINNING;
+	/**
+	 * Vertical text alignment. One of the following constants defined in class SWT: 
+	 * SWT.LEFT, SWT.RIGHT, SWT.CENTER, SWT.BEGINING, SWT.END.
+	 */
+	public int textAlignY = SWT.BEGINNING;
+	/**
+	 * Horizontal image alignment. One of the following constants defined in class SWT: 
+	 * SWT.LEFT, SWT.RIGHT, SWT.CENTER, SWT.BEGINING, SWT.END.
+	 */
+	public int imageAlignX = SWT.BEGINNING;
+	/**
+	 * Vertical image alignment. One of the following constants defined in class SWT: 
+	 * SWT.TOP, SWT.BOTTOM, SWT.CENTER, SWT.BEGINING, SWT.END.
+	 */
+	public int imageAlignY = SWT.BEGINNING;
+	/**
+	 * Horizontal text margin. It is measured from the cell boundaries 
+	 * (which don't include dividing lines). 
+	 */
+	public int textMarginX;
+	/**
+	 * Vertical text margin. It is measured from the cell boundaries 
+	 * (which don't include dividing lines). 
+	 */
+	public int textMarginY;
+	/**
+	 * Horizontal image margin. It is measured from the cell boundaries 
+	 * (which don't include dividing lines). 
+	 */
+	public int imageMarginX;
+	/**
+	 * Vertical image margin. It is measured from the cell boundaries 
+	 * (which don't include dividing lines). 
+	 */
+	public int imageMarginY;
 
 	TextClipMethod textClipMethod;
 	Zone zone;
 	Matrix matrix;
 
-	private Color lastForeground, lastBackground, defaultForeground, defaultBackground, 
+	private Color lastForeground, lastBackground, defaultBackground, 
 		background, selectionBackground, selectionForeground;
 	private boolean shouldHighlight;
-	private boolean backgroundEnabled, foregroundEnabled;
+//	private boolean backgroundEnabled, foregroundEnabled;
 
 	private Font lastFont;
 	private int[] extentCache;
@@ -158,7 +195,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 */
 	protected boolean init() {
 		if (scope < SCOPE_CELLS_HORIZONTALLY) return true;
-		lastForeground = defaultForeground = zone.getDefaultForeground();
+		lastForeground = zone.getDefaultForeground();
 		lastBackground = defaultBackground = zone.getDefaultBackground();
 		selectionBackground = zone.getSelectionBackground();
 		selectionForeground = zone.getSelectionForeground();
@@ -167,8 +204,8 @@ public class Painter<N0 extends Number, N1 extends Number> {
 			gc.setBackground(lastBackground);
 			gc.fillRectangle(zone.getBounds());
 		}
-		backgroundEnabled = zone.isBackgroundEnabled();
-		foregroundEnabled = zone.isForegroundEnabled();
+//		backgroundEnabled = zone.isBackgroundEnabled();
+//		foregroundEnabled = zone.isForegroundEnabled();
 		
 		shouldHighlight = !zone.equals(matrix.getBody()) || 
 			zone.getSelectionCount().compareTo(BigInteger.ONE) != 0;
@@ -212,20 +249,20 @@ public class Painter<N0 extends Number, N1 extends Number> {
 			foreground = selectionForeground;  
 			background = selectionBackground;
 		} else {
-			if (foregroundEnabled) {
+//			if (foregroundEnabled) {
 				foreground = zone.getForeground(index0, index1);
-			} else {
-				foreground = defaultForeground;
-			}
-			if (backgroundEnabled) {
+//			} else {
+//				foreground = defaultForeground;
+//			}
+//			if (backgroundEnabled) {
 				background = zone.getBackground(index0, index1);
-			} else {
-				background = defaultBackground;
-			}
+//			} else {
+//				background = defaultBackground;
+//			}
 		}
 		
 		// Only set color if there is a change
-		if (foreground != null) { // && !foreground.equals(lastForeground)) {
+		if (foreground != null && !foreground.equals(lastForeground)) {
 			gc.setForeground(lastForeground = foreground);
 		}
 		if (background != null) {
@@ -250,7 +287,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 			Rectangle bounds = image.getBounds();
 			switch (imageAlignX) {
 			case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP: 
-				x2 += imageMarginX; break;
+				x2 += imageMarginX; x += bounds.width; break;
 			case SWT.CENTER:
 				x2 += (width - bounds.width) / 2; break; 
 			case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
@@ -265,6 +302,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 				y2 += height - bounds.height - imageMarginY; break;
 			}
 			gc.drawImage(image, x2, y2);
+			width -= bounds.width;
 		}
 		
 		text = zone.getText(index0, index1);

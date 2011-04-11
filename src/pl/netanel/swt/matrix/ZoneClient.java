@@ -106,9 +106,9 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 		return core.getBounds();
 	}
 
-	public boolean isVisible() {
-		return core.isVisible();
-	}
+//	public boolean isVisible() {
+//		return core.isVisible();
+//	}
 
 	public void setSelectionForeground(Color color) {
 		core.setSelectionForeground(color);
@@ -194,8 +194,8 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 		core.replacePainter(painter);
 	}
 
-	public void removePainter(int index) {
-		core.removePainter(index);
+	public Painter removePainter(int index) {
+		return core.removePainter(index);
 	}
 
 	public int indexOfPainter(String name) {
@@ -210,8 +210,8 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 		return core.getPainterCount();
 	}
 
-	public Painter get(int index) {
-		return core.get(index);
+	public Painter getPainter(int index) {
+		return core.getPainter(index);
 	}
 
 	/**

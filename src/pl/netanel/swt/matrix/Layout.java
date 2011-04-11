@@ -770,7 +770,7 @@ class Layout<N extends Number> {
 		public boolean next() {
 			if (i >= bounds.size()) return false;
 			Section section2 = items.get(i).section;
-			if (!section2.equals(section)) {
+			if (section2 != section) {
 				// Make sure last line is included between sections  
 				if (items.size() == bounds.size() /*&& 
 					axis.getZIndex(section2) < axis.getZIndex(item.section)*/) 
@@ -843,12 +843,23 @@ class Layout<N extends Number> {
 		}
 	}
 	
-	public Bound getBound(AxisItem item) {
+	public Bound getCellBound(AxisItem item) {
 		Cache cache = getCache(item.section, item.index);
 		if (cache == null) return null;
 		for (int i = 0, size = cache.cells.size(); i < size; i++) {
 			if (cache.items.get(i).equals(item)) {
 				return cache.cells.get(i);
+			}
+		}
+		return null;
+	}
+	
+	public Bound getLineBound(AxisItem item) {
+		Cache cache = getCache(item.section, item.index);
+		if (cache == null) return null;
+		for (int i = 0, size = cache.lines.size(); i < size; i++) {
+			if (cache.items.get(i).equals(item)) {
+				return cache.lines.get(i);
 			}
 		}
 		return null;

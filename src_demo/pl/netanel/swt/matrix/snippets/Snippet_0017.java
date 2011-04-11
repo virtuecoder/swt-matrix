@@ -34,9 +34,6 @@ public class Snippet_0017 {
 		final Color color = display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
 		
 		Zone body = new Zone(rowBody, colBody) {
-			{
-				setBackgroundEnabled(true);
-			}
 			@Override
 			public Color getBackground(Number index0, Number index1) {
 				return index0.intValue() % 2 + index1.intValue() % 2 == 1 

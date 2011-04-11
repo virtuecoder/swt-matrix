@@ -2,7 +2,7 @@ package pl.netanel.swt.matrix;
 
 
 /**
- * The purpose of this class is to iterate over a set of numbers.
+ * Iterate over a set of numbers.
  * <p>
  * Two modes of iteration are possible by single numbers and by extents of numbers.
  * <p>

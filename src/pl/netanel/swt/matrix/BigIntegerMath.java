@@ -86,4 +86,9 @@ class BigIntegerMath extends Math<BigInteger> {
 		return new BigInteger(n.toString());
 	}
 
+	@Override
+	Class<BigInteger> getNumberClass() {
+		return BigInteger.class;
+	}
+
 }

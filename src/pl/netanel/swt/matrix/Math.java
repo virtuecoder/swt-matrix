@@ -128,11 +128,13 @@ abstract class Math<N extends Number> {
 		return min;
 	}
 
-	abstract public N getValue(N n);
 
 	public MutableNumber min(MutableNumber x, MutableNumber y) {
 		return x.min(y);
 	}
+
+	abstract public N getValue(N n);
+	abstract Class<N> getNumberClass();
 
 //	/**
 //	 * 

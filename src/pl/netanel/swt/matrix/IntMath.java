@@ -87,4 +87,9 @@ class IntMath extends Math<Integer> {
 		return n.intValue();
 	}
 
+	@Override
+	Class<Integer> getNumberClass() {
+		return Integer.class;
+	}
+
 }

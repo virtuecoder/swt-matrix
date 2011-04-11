@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TypedListener;
 
 import pl.netanel.util.HashMapArrayList;
+import pl.netanel.util.Preconditions;
 
 public class Listeners {
 	final private HashMapArrayList<Integer, Listener> listeners;
@@ -19,10 +20,12 @@ public class Listeners {
 	}
 
 	public void add(int type, Listener listener) {
+		Preconditions.checkNotNullWithName(listener, "listener");
 		listeners.add(type, listener);
 	}
 	
 	public void remove(int type, Object listener) {
+		Preconditions.checkNotNullWithName(listener, "listener");
 		List<Listener> list = listeners.get(type);
 		for (int i = list.size(); i-- > 0;) {
 			Listener listener2 = list.get(i); 

@@ -34,6 +34,7 @@ public class Snippet_0010 {
 		final Image image = new Image(display, 100, 100);
 		GC gc = new GC(image);
 		gc.setBackground(display.getSystemColor(SWT.COLOR_BLUE));
+		gc.setAntialias(SWT.ON);
 		gc.fillOval(0, 0, 100, 100);
 		gc.dispose();
 		

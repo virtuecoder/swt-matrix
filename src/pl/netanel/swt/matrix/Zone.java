@@ -2,7 +2,6 @@ package pl.netanel.swt.matrix;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -15,26 +14,27 @@ import org.eclipse.swt.widgets.Listener;
 import pl.netanel.swt.Listeners;
 import pl.netanel.swt.Resources;
 import pl.netanel.swt.matrix.Layout.LayoutSequence;
-import pl.netanel.util.ImmutableIterator;
 
 
 /**
  * Constitutes a region of a matrix where a section from the row axis 
- * and a section from the column axis cross with each other.  
+ * and a section from the column axis intersect with each other.  
  * <p>
  * Zone has painters to paint itself on the screen.
+ * It can also have dedicated event listeners to customize reaction to user gestures.
  * </p><p>
- * It can also have dedicated event handlers to implement special behavior 
- * for different parts of the matrix.  
  * </p>
- * @see SectionClient
+ * 
+ * @param <N0> defines indexing type for rows
+ * @param <N1> defines indexing type for columns
+ * @see Section
  * 
  * @author Jacek
  * @created 13-10-2010
  */
 public class Zone<N0 extends Number, N1 extends Number> {
 	
-	Painters<N0, N1> painters;
+	final Painters<N0, N1> painters;
 	Matrix<N0, N1> matrix;
 	Section<N0> section0;
 	Section<N1> section1;
@@ -53,8 +53,14 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	private CellValues<N0, N1, Color> background, foreground;
 //	private CellValues<N0, N1, String> text;
 //	private CellValues<N0, N1, Image> image;
-	private boolean backgroundEnabled, foregroundEnabled;
+//	private boolean backgroundEnabled, foregroundEnabled;
 	
+	/**
+	 * Constructs zone at intersection of the specified sections.
+	 * 
+	 * @param section0 section of the row axis
+	 * @param section1 section of the column axis
+	 */
 	public Zone(Section<N0> section0, Section<N1> section1) {
 		this();
 		this.section0 = section0 instanceof SectionClient ? ((SectionClient) section0).core : section0;
@@ -90,28 +96,58 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	@Override
 	public String toString() {
 		return section0.toString() + " " + section1.toString();
-//		return "zone " + (
-//			type == ANY ? "ANY" :
-//			type == BODY ? "BODY" :
-//			type == TOP_LEFT ? "TOP_LEFT" :
-//			type == ROW_HEADER ? "ROW_HEADER" :
-//			type == COLUMN_HEADER ? "COLUMN_HEADER" : "?"
-//				id == BOTTOM_RIGHT ? "BOTTOM_RIGHT" :
-//				id == ROW_FOOTER ? "ROW_FOOTER" :
-//				id == COLUMN_FOOTER ? "COLUMN_FOOTER" :
-//		);
 	}
 	
+	/**
+	 * Returns the row axis section that is unchecked.
+	 * <p>
+	 * Unchecked section skips argument validation checking in getters 
+	 * to improve performance. 
+	 * 
+	 * @return the row axis section that is unchecked
+	 * 
+	 * @see #getSection0()
+	 */
 	public Section getSectionUnchecked0() {
 		return section0;
 	}
+	/**
+	 * Returns the column axis section that is unchecked.
+	 * <p>
+	 * Unchecked section skips argument validation checking in getters 
+	 * to improve performance. 
+	 * 
+	 * @return the column axis section that is unchecked
+	 * 
+	 * @see #getSection1()
+	 */
 	public Section getSectionUnchecked1() {
 		return section1;
 	}
 
+	/**
+	 * Returns the row axis section that is checked.
+	 * <p>
+	 * A checked section delegates calls to an unchecked section proceeding it with an
+	 * argument validation checking.
+	 * 
+	 * @return the row axis section that is unchecked
+	 * 
+	 * @see #getSectionUnchecked0()
+	 */
 	public Section getSection0() {
 		return matrix.axis0.sections.get(section0.index);
 	}
+	/**
+	 * Returns the column axis section that is checked.
+	 * <p>
+	 * A checked section delegates calls to an unchecked section proceeding it with an
+	 * argument validation checking.
+	 * 
+	 * @return the column axis section that is unchecked
+	 * 
+	 * @see #getSectionUnchecked1()
+	 */
 	public Section getSection1() {
 		return matrix.axis1.sections.get(section1.index);
 	}
@@ -146,35 +182,165 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			addPainter(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
 		}
 	}
-	
+
+	/**
+	 * Adds the listener to the collection of listeners who will be notified
+	 * when an event of the given type occurs. When the event does occur in the
+	 * widget, the listener is notified by sending it the handleEvent() message.
+	 * <p>
+	 * The event type is one of the following event constants defined in class SWT:
+	 * SWT.KeyDown, SWT.KeyUp, 
+		SWT.MouseDown, SWT.MouseUp, SWT.MouseMove, SWT.MouseEnter, SWT.MouseExit, SWT.MouseDoubleClick, 
+		SWT.Selection, SWT.DefaultSelection
+	 * 
+	 * @param type
+	 * @param listener
+	 */
 	public void addListener(int type, Listener listener) {
 		listeners.add(type, listener);
 	}
 	
+	/**
+	 * Removes the listener from the collection of listeners who will
+	 * be notified when an event of the given type occurs. 
+	 * <p>
+	 * The event type is one of the following event constants defined in class <code>SWT</code>:
+	 * SWT.KeyDown, SWT.KeyUp, 
+		SWT.MouseDown, SWT.MouseUp, SWT.MouseMove, SWT.MouseEnter, SWT.MouseExit, SWT.MouseDoubleClick, 
+		SWT.Selection, SWT.DefaultSelection
+	 *
+	 * @param eventType the type of event to listen for
+	 * @param listener the listener which should no longer be notified
+	 *
+	 * @exception IllegalArgumentException <ul>
+	 *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+	 * </ul>
+	 *
+	 * @see Listener
+	 * @see SWT
+	 * @see #addListener
+	 * @see #getListeners(int)
+	 * @see #notifyListeners
+	 */
 	public void removeListener(int type, Listener listener) {
 		listeners.remove(type, listener);
 	}
 
-	
+	/**
+	 * Returns text for the cell at given indexes.
+	 * <p>
+	 * <code>index0</code> and <code>index1</code> refer to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations. 
+	 * 
+	 * @param index0 row index of the cell  
+	 * @param index1 column index of the cell 
+	 * @return text for the cell at given indexes
+	 */
 	public String getText(N0 index0, N1 index1) {
 //		return text.getValue(index0, index1);
 		return null;
 	}
+	
+	/**
+	 * Sets text for the cell at given indexes. Method throws
+	 * {@link UnsupportedOperationException} as it is unimplemented because 
+	 * the most optimal storage strategy for text is too much uncertain. 
+	 * <p>
+	 * <code>index0</code> and <code>index1</code> refer to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations. 
+	 * <p>
+	 * Text for ranges of cells should be set by 
+	 * {@link #setText(Number, Number, Number, Number, String)} 
+	 * to achieve the best efficiency.
+	 * 
+	 * @param index0 row index of the cell  
+	 * @param index1 column index of the cell 
+	 * @param value text to set
+	 * @throws UnsupportedOperationException always
+	 * @see #setText(Number, Number, Number, Number, String)
+	 */
 	public void setText(N0 index0, N1 index1, String value) {
 		setText(index0, index0, index1, index1, value);
 	}
+	
+	/**
+	 * Sets text for the specified range of cells. Method throws
+	 * {@link UnsupportedOperationException} as it is unimplemented because 
+	 * the most optimal storage strategy for text is too much uncertain.
+	 * <p>
+	 * <code>start0</code>,<code>end0</code>, <code>start1</code> and <code>end1</code> 
+	 * indexes refer to the model, not the visual position of the item on the screen
+	 * which can be altered by move and hide operations.
+	 *
+	 * @param start0 first index of the range of row items  
+	 * @param end0 last index of the range of row items  
+	 * @param start1 first index of the range of column items  
+	 * @param end1 last index of the range of column items  
+	 * @param value text to set
+	 * @throws UnsupportedOperationException always
+	 */
 	public void setText(N0 start0, N0 end0, N1 start1, N1 end1, String value) {
 //		text.setValue(start0, end0, start1, end1, value);
 		throw new UnsupportedOperationException();
 	}
 	
+	/**
+	 * Returns image for the cell at given indexes.
+	 * <p>
+	 * <code>index0</code> and <code>index1</code> refer to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations. 
+	 * 
+	 * @param index0 row index of the cell  
+	 * @param index1 column index of the cell 
+	 * @return image for the cell at given indexes
+	 */
 	public Image getImage(N0 index0, N1 index1) {
 //		return image.getValue(index0, index1);
 		return null;
 	}
+	
+	/**
+	 * Sets image for the cell at given indexes. Method throws
+	 * {@link UnsupportedOperationException} as it is unimplemented because 
+	 * the most optimal storage strategy for image is too much uncertain. 
+	 * <p>
+	 * <code>index0</code> and <code>index1</code> refer to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations. 
+	 * <p>
+	 * Image for ranges of cells should be set by 
+	 * {@link #setText(Number, Number, Number, Number, Image)} 
+	 * to achieve the best efficiency.
+	 * 
+	 * @param index0 row index of the cell  
+	 * @param index1 column index of the cell 
+	 * @param value image to set
+	 * @throws UnsupportedOperationException always
+	 * @see #setImage(Number, Number, Number, Number, Image)
+	 */
 	public void setImage(N0 index0, N1 index1, Image value) {
 		setImage(index0, index0, index1, index1, value);
 	}
+	
+	/**
+	 * Sets image for the specified range of cells. Method throws
+	 * {@link UnsupportedOperationException} as it is unimplemented because 
+	 * the most optimal storage strategy for images is too much uncertain.
+	 * <p>
+	 * <code>start0</code>,<code>end0</code>, <code>start1</code> and <code>end1</code> 
+	 * indexes refer to the model, not the visual position of the item on the screen
+	 * which can be altered by move and hide operations.
+	 *
+	 * @param start0 first index of the range of row items  
+	 * @param end0 last index of the range of row items  
+	 * @param start1 first index of the range of column items  
+	 * @param end1 last index of the range of column items  
+	 * @param value image to set
+	 * @throws UnsupportedOperationException always
+	 */
 	public void setImage(N0 start0, N0 end0, N1 start1, N1 end1, Image value) {
 //		image.setValue(start0, end0, start1, end1, value);
 		throw new UnsupportedOperationException();
@@ -182,65 +348,170 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	
 	
 	
-	public boolean isForegroundEnabled() {
-		return foregroundEnabled;
-	}
+//	public boolean isForegroundEnabled() {
+//		return foregroundEnabled;
+//	}
+//
+//	public void setForegroundEnabled(boolean enabled) {
+//		this.foregroundEnabled = enabled;
+//	}
+//
+//	public boolean isBackgroundEnabled() {
+//		return backgroundEnabled;
+//	}
+//	
+//	public void setBackgroundEnabled(boolean enabled) {
+//		this.backgroundEnabled = enabled;
+//	}
 
-	public void setForegroundEnabled(boolean enabled) {
-		this.foregroundEnabled = enabled;
-	}
-
-	public boolean isBackgroundEnabled() {
-		return backgroundEnabled;
-	}
 	
-	public void setBackgroundEnabled(boolean enabled) {
-		this.backgroundEnabled = enabled;
-	}
-
-	public Color getBackground(N0 index0, N1 index1) {
-		return background.getValue(index0, index1);
-	}
-	
-	public void setBackground(N0 index0, N1 index1, Color color) {
-		setBackground(index0, index0, index1, index1, color);
-	}
-	
-	public void setBackground(N0 start0, N0 end0, N1 start1, N1 end1, Color color) {
-		backgroundEnabled = true;
-		background.setValue(start0, end0, start1, end1, color);
-	}
-
+	/**
+	 * Sets the default background color for the receiver's cells. 
+	 * @param color color to set
+	 */
 	public void setDefaultBackground(Color color) {
 		background.setDefaultValue(color);
 	}
+	
+	/**
+	 * Returns the default background color of the receiver's cells. 
+	 * @return default width of lines in this 
+	 */
 	public Color getDefaultBackground() {
 		return background.getDefaultValue();
 	}	
 	
 	
-	public Color getForeground(N0 index0, N1 index1) {
-		return foreground.getValue(index0, index1);
-	}
-	
-	public void setForeground(N0 index0, N1 index1, Color color) {
-		setForeground(index0, index0, index1, index1, color);
-	}
-	
-	public void setForeground(N0 start0, N0 end0, N1 start1, N1 end1, Color color) {
-		foreground.setValue(start0, end0, start1, end1, color);
-	}
-	
+	/**
+	 * Sets the default foreground color for the receiver's cells. 
+	 * @param color color to set
+	 */
 	public void setDefaultForeground(Color color) {
 		foreground.setDefaultValue(color);
 	}
+
+	/**
+	 * Returns the default foreground color of the receiver's cells. 
+	 * @return default width of lines in this 
+	 */
 	public Color getDefaultForeground() {
 		return foreground.getDefaultValue();
 	}	
 	
+	/**
+	 * Returns background color for the cell at given indexes.
+	 * <p>
+	 * <code>index0</code> and <code>index1</code> refer to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations. 
+	 * 
+	 * @param index0 row index of the cell  
+	 * @param index1 column index of the cell 
+	 * @return background color for the cell at given indexes
+	 */
+	public Color getBackground(N0 index0, N1 index1) {
+		return background.getValue(index0, index1);
+	}
 	
+	/**
+	 * Sets background color for the cell at given indexes.  
+	 * <p>
+	 * <code>index0</code> and <code>index1</code> refer to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations. 
+	 * <p>
+	 * Background color for ranges of cells should be set by 
+	 * {@link #setBackground(Number, Number, Number, Number, Color)} 
+	 * to achieve the best efficiency.
+	 * 
+	 * @param index0 row index of the cell  
+	 * @param index1 column index of the cell 
+	 * @param value text to set
+	 * @see #setBackground(Number, Number, Number, Number, Color)
+	 */
+	public void setBackground(N0 index0, N1 index1, Color color) {
+		setBackground(index0, index0, index1, index1, color);
+	}
 	
+	/**
+	 * Sets background color for the specified range of cells. 
+	 * <p>
+	 * <code>start0</code>,<code>end0</code>, <code>start1</code> and <code>end1</code> 
+	 * indexes refer to the model, not the visual position of the item on the screen
+	 * which can be altered by move and hide operations.
+	 *
+	 * @param start0 first index of the range of row items  
+	 * @param end0 last index of the range of row items  
+	 * @param start1 first index of the range of column items  
+	 * @param end1 last index of the range of column items  
+	 * @param color color to set
+	 */
+	public void setBackground(N0 start0, N0 end0, N1 start1, N1 end1, Color color) {
+//		backgroundEnabled = true;
+		background.setValue(start0, end0, start1, end1, color);
+	}
 
+	
+	
+	/**
+	 * Returns foreground color for the cell at given indexes.
+	 * <p>
+	 * <code>index0</code> and <code>index1</code> refer to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations. 
+	 * 
+	 * @param index0 row index of the cell  
+	 * @param index1 column index of the cell 
+	 * @return foreground color for the cell at given indexes
+	 */
+	public Color getForeground(N0 index0, N1 index1) {
+		return foreground.getValue(index0, index1);
+	}
+	
+	/**
+	 * Sets foreground color for the cell at given indexes.  
+	 * <p>
+	 * <code>index0</code> and <code>index1</code> refer to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations. 
+	 * <p>
+	 * Foreground color for ranges of cells should be set by 
+	 * {@link #setForeground(Number, Number, Number, Number, Color)} 
+	 * to achieve the best efficiency.
+	 * 
+	 * @param index0 row index of the cell  
+	 * @param index1 column index of the cell 
+	 * @param value text to set
+	 * @see #setForeground(Number, Number, Number, Number, Color)
+	 */
+	public void setForeground(N0 index0, N1 index1, Color color) {
+		setForeground(index0, index0, index1, index1, color);
+	}
+	
+	/**
+	 * Sets foreground color for the specified range of cells. 
+	 * <p>
+	 * <code>start0</code>,<code>end0</code>, <code>start1</code> and <code>end1</code> 
+	 * indexes refer to the model, not the visual position of the item on the screen
+	 * which can be altered by move and hide operations.
+	 *
+	 * @param start0 first index of the range of row items  
+	 * @param end0 last index of the range of row items  
+	 * @param start1 first index of the range of column items  
+	 * @param end1 last index of the range of column items  
+	 * @param color color to set
+	 */
+	public void setForeground(N0 start0, N0 end0, N1 start1, N1 end1, Color color) {
+//		foregroundEnabled = true;
+		foreground.setValue(start0, end0, start1, end1, color);
+	}
+	
+	
+	
+	/**
+	 * Returns the rectangular boundaries of this zone. 
+	 * @return the rectangular boundaries of this zone
+	 */
 	public Rectangle getBounds() {
 		return bounds;
 	}
@@ -252,9 +523,10 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		bounds.height = height;
 	}
 
-	public boolean isVisible() {
-		return section0.isVisible() && section1.isVisible();
-	}
+//	
+//	public boolean isVisible() {
+//		return section0.isVisible() && section1.isVisible();
+//	}
 
 	
 	
@@ -263,16 +535,34 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 * Selection
 	 */
 
+	/**
+	 * Sets selection foreground color for the receiver. 
+	 * @param color color to set
+	 */
 	public void setSelectionForeground(Color color) {
 		selectionForeground = color;
 	}
+	
+	/**
+	 * Returns the selection foreground color for the receiver.
+	 * @return selection foreground color for the receiver
+	 */
 	public Color getSelectionForeground() {
 		return selectionForeground;
 	}
 	
+	/**
+	 * Sets selection background color for the receiver. 
+	 * @param color color to set
+	 */
 	public void setSelectionBackground(Color color) {
 		selectionBackground = color;
 	}
+	
+	/**
+	 * Returns the selection background color for the receiver.
+	 * @return selection background color for the receiver
+	 */
 	public Color getSelectionBackground() {
 		return selectionBackground;
 	}
@@ -290,41 +580,84 @@ public class Zone<N0 extends Number, N1 extends Number> {
      * Enables cell selection if the argument is <code>true</code>, 
      * or disables it otherwise.
      *
-	 * @param selectionEnabled the new selection ability state.
+	 * @param enabled the new selection ability state.
 	 */
-	public void setSelectionEnabled(boolean isSelectionEnabled) {
-		if (isSelectionEnabled == false) {
+	public void setSelectionEnabled(boolean enabled) {
+		if (enabled == false) {
 			cellSelection.clear();
 		}
-		this.selectionEnabled = isSelectionEnabled;
+		this.selectionEnabled = enabled;
 	}
 
 	
-	
+	/**
+	 * Returns <code>true</code> if the cell at given indexes is selected.
+	 * Otherwise, <code>false</code> is returned.
+	 * <p>
+	 * <code>index0</code> and <code>index1</code> refer to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations. 
+	 * 
+	 * @param index0 row index of the cell  
+	 * @param index1 column index of the cell 
+	 * @return the selection state of the specified cell
+	 */
 	public boolean isSelected(N0 index0, N1 index1) {
 		return cellSelection.contains(index0, index1);
 	}
 	
-	
-	boolean isSelected(MutableNumber index0, MutableNumber index1) {
-		return cellSelection.contains(index0.getValue(), index1.getValue());
-	}
-	
-	public void setSelected(
-			N0 start0, N0 end0,
-			N1 start1, N1 end1, boolean selected) {
+	/**
+	 * Sets the selection state for the range of cells.
+	 * <p>
+	 * <code>start0</code>,<code>end0</code>, <code>start1</code> and <code>end1</code> 
+	 * indexes refer to the model, not the visual position of the item on the screen
+	 * which can be altered by move and hide operations.
+	 *
+	 * @param start0 first index of the range of row items  
+	 * @param end0 last index of the range of row items  
+	 * @param start1 first index of the range of column items  
+	 * @param end1 last index of the range of column items  
+	 * @param state the new selection state
+	 */
+	public void setSelected( N0 start0, N0 end0, N1 start1, N1 end1, 
+			boolean state) {
 		
 		if (!selectionEnabled) return;
-		if (selected) {
+		if (state) {
 			cellSelection.add(start0, end0, start1, end1);
 		} else {
 			cellSelection.remove(start0, end0, start1, end1);			
 		}
 	}
+	
+	/**
+	 * Sets the selection state for the specified cell.
+	 * <p>
+	 * <code>index0</code> and <code>index1</code> refer to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations. 
+	 * <p>
+	 * Ranges of cells should be set selected by 
+	 * {@link #setSelected(Number, Number, Number, Number, boolean)} 
+	 * to achieve the best efficiency.
+	 * 
+	 * @param index0 row index of the cell  
+	 * @param index1 column index of the cell 
+	 * @return the selection state of the specified cell
+	 * @see #setSelected(Number, Number, boolean)
+	 */
+	public void setSelected(N0 index0, N1 index1, boolean state) {
+		setSelected(index0, index0, index1, index1, state);
+	}
 
-	public void setSelectedAll(boolean selected) {
+	/**
+	 * Sets the selection state for all the cells in this zone.
+	 * 
+	 * @param state the new selection state
+	 */ 
+	public void setSelectedAll(boolean state) {
 		if (!selectionEnabled) return;
-		if (selected) {
+		if (state) {
 			cellSelection.add(
 					section0.math.ZERO_VALUE(), section0.math.decrement(section0.getCount()), 
 					section1.math.ZERO_VALUE(), section1.math.decrement(section1.getCount()));
@@ -332,14 +665,22 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			cellSelection.clear();
 			lastSelection.clear();
 		}
-		section0.setSelectedAll(selected);
-		section1.setSelectedAll(selected);
+		section0.setSelectedAll(state);
+		section1.setSelectedAll(state);
 	}
 	
+	/**
+	 * Returns the number of selected cells in this zone.
+	 * @return the number of selected cells in this zone
+	 */
 	public BigInteger getSelectedCount() {
 		return cellSelection.getCount().getValue();
 	}
 
+	/**
+	 * Returns a sequence of index pairs for selected cells. 
+	 * @return a sequence of index pairs for selected cells
+	 */
 	public NumberPairSequence<N0, N1> getSelected() {
 		return new NumberPairSequence(cellSelection.copy());
 	}
@@ -360,6 +701,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		return cellSelection.getCount().value;
 	}
 	
+/*	
 	Iterator<Cell<N0, N1>> getSelectedIterator() {
 		return new ImmutableIterator<Cell<N0, N1>>() {
 			NumberPairSequence seq = new NumberPairSequence(cellSelection.copy());
@@ -385,7 +727,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			this.index1 = index1;
 		}
 	}
-	
+*/	
 	
 	
 	void backupSelection() {
@@ -479,27 +821,111 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		}
 	}
 	
+	/**
+	 * Adds the painter at the end of the receiver's painters list.
+	 * @param painter the painter to be added
+	 */
 	public void addPainter(Painter<N0, N1> painter) {
 		painters.add(painter);
 		setPainterMatrixAndZone(painter);
 	}
 
+	/**
+	 * Inserts the painter at the given index of the receiver's painters list.
+	 * @param index at which the specified painter is to be inserted
+	 * @param painter painter to be inserted
+	 * @throws IndexOutOfBoundsException if the index is out of range
+     *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+	 */
 	public void addPainter(int index, Painter<N0, N1> painter) {
 		// Check uniqueness of painters names
 		painters.add(index, painter);
 		setPainterMatrixAndZone(painter);
 	}
 	
+	/**
+	 * Replaces the painter at the given index of the receiver's painters list. 
+	 * @param index index of the element to replace
+	 * @param painter painter to be stored at the specified position
+	 * @throws IndexOutOfBoundsException if the index is out of range
+     *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+	 */
 	public void setPainter(int index, Painter<N0, N1> painter) {
 		painters.set(index, painter);
 		setPainterMatrixAndZone(painter);
 	}
 	
+	/**
+	 * Replaces the painter at the index of painter with the same name.
+	 * @param painter painter to replace a painter with the same name
+	 * @throws IndexOutOfBoundsException if there is no painter with the same name
+	 * @see #getPainter(String)
+	 */
 	public void replacePainter(Painter<N0, N1> painter) {
 		painters.replacePainter(painter);
 		setPainterMatrixAndZone(painter);
 	}
 	
+	/**
+     * Removes the element at the specified position in the list of painters. 
+     * Shifts any subsequent painters to the left (subtracts one
+     * from their indices). Returns the painter that was removed from the
+     * list.
+     *
+     * @param index the index of the painter to be removed
+	 * @return 
+     * @return the painter previously at the specified position
+     * @throws IndexOutOfBoundsException if the index is out of range
+     *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+     */
+	public Painter<N0, N1> removePainter(int index) {
+		return painters.remove(index);
+	}
+	
+	/**
+     * Returns the index of a painter with the specified name
+     * in the list of the receiver's painters, or -1 
+     * if this list does not contain the element.
+     *
+     * @param name painter name to search for
+     * @return the index of a painter with the specified name
+     */
+	public int indexOfPainter(String name) {
+		return painters.indexOfPainter(name);
+	}
+	
+	/**
+     * Returns a painter with the specified name, or <code>null</code>
+     * if the painters list does not contain such painter.
+     *
+     * @param name painter name to search for
+     * @return the index of a painter with the specified name
+     */
+	public Painter<N0, N1> getPainter(String name) {
+		return painters.get(indexOfPainter(name));
+	}
+	
+	/**
+     * Returns the number of the receiver's painters. 
+     *
+     * @return the number of the receiver's painters
+     */
+	public int getPainterCount() {
+		return painters.size();
+	}
+	
+	/**
+     * Returns the painter at the specified position in the receiver's list of painters.
+     *
+     * @param index index of the painter to return
+     * @return the painter at the specified position in the receiver's list of painters.
+     * @throws IndexOutOfBoundsException if the index is out of range
+     *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+     */
+	public Painter<N0, N1> getPainter(int index) {
+		return painters.get(index);
+	}
+
 	private void setPainterMatrixAndZone(Painter painter) {
 		if (painter.scope == Painter.SCOPE_CELLS_HORIZONTALLY ||
 				painter.scope == Painter.SCOPE_CELLS_VERTICALLY) 
@@ -507,26 +933,6 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			painter.zone = this;
 			painter.matrix = matrix;
 		}
-	}
-	
-	public void removePainter(int index) {
-		painters.remove(index);
-	}
-	
-	public int indexOfPainter(String name) {
-		return painters.indexOfPainter(name);
-	}
-	
-	public Painter<N0, N1> getPainter(String name) {
-		return painters.get(indexOfPainter(name));
-	}
-	
-	int getPainterCount() {
-		return painters.size();
-	}
-	
-	public Painter<N0, N1> get(int index) {
-		return painters.get(index);
 	}
 	
 	private static class LinePainter extends Painter {
@@ -544,8 +950,8 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		}
 	}
 
-
-	public void insert(int axisIndex, Section section, Number target, Number count) {
+	
+	void insert(int axisIndex, Section section, Number target, Number count) {
 		if (axisIndex == 0) {
 			if (section0.equals(section)) {
 				cellSelection.insert0(target, count);
@@ -560,7 +966,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		}
 	}
 
-	public void delete(int axisIndex, Section section, Number start, Number end) {
+	void delete(int axisIndex, Section section, Number start, Number end) {
 		if (axisIndex == 0) {
 			if (section0.equals(section)) {
 				cellSelection.delete0(start, end);

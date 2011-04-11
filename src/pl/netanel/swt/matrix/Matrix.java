@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.GC;
@@ -14,21 +15,23 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Widget;
 
 import pl.netanel.swt.Resources;
 import pl.netanel.util.Preconditions;
 
 /**
- * The main responsibility of this class is to draw a two dimensional 
- * grid of cells and respond to  the user generated events. 
- * This is the main class in the package.
- *
+ * Draws a two dimensional grid of cells and responds to the user generated
+ * events. This is the main class in the package.
+ * 
  * <dl>
  * <dt><b>Styles:</b></dt>
  * <dd>SWT.SINGLE, SWT.MULTI, SWT.NO_FOCUS, SWT.CHECK, SWT.VIRTUAL</dd>
  * <dt><b>Events:</b></dt>
  * <dd>Selection, DefaultSelection</dd>
  * </dl>
+ * @param <N0> defines indexing type for rows
+ * @param <N1> defines indexing type for columns 
  * 
  * @author Jacek
  * @created 27-03-2011
@@ -49,10 +52,48 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	
 	private boolean focusCellEnabled = true;
 	
+	/**
+	 * Calls the {@link #Matrix(Composite, int, Axis, Axis, Zone...)} constructor 
+	 * with <code>null</code> values for <code>axis0</code> and <code>axis1</code>. 
+	 * @see #Matrix(Composite, int, Axis, Axis, Zone...)
+	 */
 	public Matrix(Composite parent, int style) {
 		this(parent, style, null, null);
 	}
 	
+	/**
+	 * Constructs a new instance of this class given its parent
+	 * and a style value describing its behavior and appearance.
+	 * <p>
+	 * The style value is either one of the style constants defined in
+	 * class <code>SWT</code> which is applicable to instances of this
+	 * class, or must be built by <em>bitwise OR</em>'ing together 
+	 * (that is, using the <code>int</code> "|" operator) two or more
+	 * of those <code>SWT</code> style constants. The class description
+	 * lists the style constants that are applicable to the class.
+	 * Style bits are also inherited from superclasses.
+	 * </p><p>
+	 * It the <code>axis0</code> or <code>axis1</code> is null then 
+	 * the axis is created with the {@link Axis#Axis()} constructor.
+	 * 
+	 * </p><p>
+	 * The default colors are 
+	 *
+	 * @param parent a composite control which will be the parent of the new instance (cannot be null)
+	 * @param style the style of control to construct
+	 * @param axis0 vertical axis for the matrix
+	 * @param axis1 horizontal axis for the matrix
+	 *
+	 * @exception IllegalArgumentException <ul>
+	 *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+	 * </ul>
+	 * @exception SWTException <ul>
+	 *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+	 *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+	 * </ul>
+	 *
+	 * @see Widget#getStyle
+	 */
 	public Matrix(Composite parent, int style, Axis<N0> axis0, Axis<N1> axis1, Zone<N0, N1> ...zones) {
 		super(parent, style | SWT.DOUBLE_BUFFERED);
 		setBackground(Resources.getColor(SWT.COLOR_LIST_BACKGROUND));
@@ -60,14 +101,12 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		
 		if (axis0 == null) {
 			axis0 = new Axis();
-			axis0.getHeader().setVisible(false);
 			axis0.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_Y);
 			axis0.setResizeOffset(M.RESIZE_OFFSET_Y);
 		}
 		if (axis1 == null) {
 			axis1 = new Axis();
 			axis1.getHeader().setDefaultCellWidth(40);
-			axis1.getHeader().setVisible(false);
 			axis1.getBody().setDefaultCellWidth(50);
 			axis1.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_X);
 			axis1.setResizeOffset(M.RESIZE_OFFSET_X);
@@ -266,23 +305,59 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		area = getClientArea();
 	}
 
+	/**
+	 * Returns the row (vertical) axis.
+	 * @return the row (vertical) axis
+	 */
 	public Axis<N0> getAxis0() {
 		return axis0;
 	}
 	
+	/**
+	 * Returns the column (horizontal) axis.
+	 * @return the column (horizontal) axis
+	 */
 	public Axis<N1> getAxis1() {
 		return axis1;
 	}
 	
+	/**
+	 * Returns the checked body zone of this matrix.
+	 * <p>
+	 * A checked zone delegates calls to an unchecked zone proceeding it with 
+	 * an argument validation checking.
+	 * @return
+	 */
 	public Zone<N0, N1> getBody() {
 		return getZone(axis0.getBody(), axis1.getBody());
 	}
+	/**
+	 * Returns the checked column header zone of this matrix.
+	 * <p>
+	 * A checked zone delegates calls to an unchecked zone proceeding it with 
+	 * an argument validation checking.
+	 * @return
+	 */
 	public Zone<N0, N1> getColumneHeader() {
 		return getZone(axis0.getHeader(), axis1.getBody());
 	}
+	/**
+	 * Returns the checked row header zone of this matrix.
+	 * <p>
+	 * A checked zone delegates calls to an unchecked zone proceeding it with 
+	 * an argument validation checking.
+	 * @return
+	 */
 	public Zone<N0, N1> getRowHeader() {
 		return getZone(axis0.getBody(), axis1.getHeader());
 	}
+	/**
+	 * Returns the checked top left zone of this matrix.
+	 * <p>
+	 * A checked zone delegates calls to an unchecked zone proceeding it with 
+	 * an argument validation checking.
+	 * @return
+	 */
 	public Zone<N0, N1> getTopLeft() {
 		return getZone(axis0.getHeader(), axis1.getHeader());
 	}
@@ -292,7 +367,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	}
 	
 	/**
-	 * Returns a zone by its creation index.  
+	 * Returns a unchecked zone by its creation index.  
 	 * <p>
 	 * @param index
 	 * @return zone with the given creation index
@@ -300,7 +375,14 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	public Zone<N0, N1> getZone(int index) {
 		return model.zoneClients.get(index);
 	}
-	
+
+	/**
+	 * Returns a checked zone for the specified zone. 
+	 * If the given zone is checked then the same object is returned.  
+	 * <p>
+	 * @param index
+	 * @return zone with the given creation index
+	 */
 	public Zone<N0, N1> getZone(Zone<N0, N1> zone) {
 		if (zone instanceof ZoneClient) return zone;
 		return model.zoneClients.get(model.zones.indexOf(zone));
@@ -321,17 +403,32 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	}
 	
 	
-	
+	/**
+	 * Return the rectangular bounds of the cell with the given coordinates.
+	 * 
+	 * @param section0 section in the row (vertical) axis where the cell is located 
+	 * @param index0 index in <code>section0</code> of the cell 
+	 * @param section1 section in the column (horizontal) axis where the cell is located
+	 * @param index1 index in <code>section1</code> of the cell 
+	 * @return
+	 */
 	public Rectangle getCellBounds(Section<N0> section0, N0 index0, Section<N1> section1, N1 index1) {
-		if (layout0.current != null && layout1.current != null) {
-			Bound b0 = axis0.getCellBound(section0, index0);
-			Bound b1 = axis1.getCellBound(section1, index1);
-			if (b0 != null && b1 != null) {
-				return new Rectangle(b1.distance, b0.distance, b1.width, b0.width);
-			}
+		Bound b0 = axis0.getCellBound(section0, index0);
+		Bound b1 = axis1.getCellBound(section1, index1);
+		if (b0 != null && b1 != null) {
+			return new Rectangle(b1.distance, b0.distance, b1.width, b0.width);
 		}
 		return null; 
 	}
+	
+//	public Rectangle getLineBounds(Section<N0> section0, N0 index0, Section<N1> section1, N1 index1) {
+//		Bound b0 = index0 == null ? axis0.layout.getaxis0.getLineBound(section0, index0);
+//		Bound b1 = axis1.getCellBound(section1, index1);
+//		if (b0 != null && b1 != null) {
+//			return new Rectangle(b1.distance, b0.distance, b1.width, b0.width);
+//		}
+//		return null; 
+//	}
 	
 	private void selectFocusCell() {
 		if (!focusCellEnabled) return;
@@ -345,12 +442,27 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		}
 	}
 	
+	/**
+	 * Enables current cell navigation in the receiver if the argument is <code>true</code>,
+	 * and disables it invisible otherwise.
+	 * <p>
+	 * If the focus cell is disabled the navigation events are ignored and the 
+	 * "focus cell" painter of the matrix is disabled. 
+	 *
+	 * @param enabled the new focus cell enablement state
+	 */
 	public void setFocusCellEnabled(boolean enabled) {
 		Painter<N0, N1> painter = getPainter("focus cell");
 		if (painter != null) painter.setEnabled(enabled);
 		focusCellEnabled = enabled;
 	}
 
+	/**
+	 * Returns <code>true</code> if the focus cell navigation is enabled in the receiver. 
+	 * Otherwise, <code>false</code> is returned.
+	 *
+	 * @return the receiver's focus item enablement state
+	 */
 	public boolean isFocusCellEnabled() {
 		return focusCellEnabled;
 	}
@@ -417,6 +529,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	}
 
 	public void refresh() {
+		// After freeze head to 0 is it would scroll to previous head count.
 		layout0.start = layout0.current;
 		layout1.start = layout1.current;
 		layout0.compute();
@@ -478,11 +591,11 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		return index == -1 ? null : painters.get(index);
 	}
 	
-	int getPainterCount() {
+	public int getPainterCount() {
 		return painters.size();
 	}
 	
-	public Painter<N0, N1> get(int index) {
+	public Painter<N0, N1> getPainter(int index) {
 		return painters.get(index);
 	}
 

@@ -129,8 +129,8 @@ public class Section<N extends Number> {
 	}
 	
 	/**
-	 * Returns the number of sections items. 
-	 * @return the number of sections items.
+	 * Returns the number of items in the receiver. 
+	 * @return the number of items in the receiver
 	 * @see #setCount(Number)
 	 */
 	public N getCount() {
@@ -244,22 +244,22 @@ public class Section<N extends Number> {
 	}
 
 	/**
-	 * Enables current item navigation in the receiver if the argument is <code>true</code>,
+	 * Enables focus item navigation in the receiver if the argument is <code>true</code>,
 	 * and disables it invisible otherwise. 
 	 *
-	 * @param enabled the new visibility state
+	 * @param enabled the new focus item enablement state
 	 */
-	public void setNavigationEnabled(boolean enabled) {
+	public void setFocusItemEnabled(boolean enabled) {
 		this.isNavigationEnabled = enabled;
 	}
 	
 	/**
-	 * Returns <code>true</code> if the current item navigation is enabled in the receiver. 
+	 * Returns <code>true</code> if the focus item navigation is enabled in the receiver. 
 	 * Otherwise, <code>false</code> is returned.
 	 *
-	 * @return the receiver's visibility state
+	 * @return the receiver's focus item enablement state
 	 */
-	public boolean isNavigationEnabled() {
+	public boolean isFocusItemEnabled() {
 		return isNavigationEnabled;
 	}
 
@@ -400,9 +400,27 @@ public class Section<N extends Number> {
 	 */
 	
 	/**
+	 * Sets the line width for the item at the specified index.
+	 * <p>
+	 * <code>index</code> index refers to the model, not the visual position of the item on the screen 
+	 * which can be altered by move and hide operations. 
+	 * <code>width</code> that is lower the zero is ignored. 
+	 * <p>
+	 * Cell width for a range of items should be set by {@link #setLineWidth(Number, Number, int)} 
+	 * to achieve the best efficiency.
+	 *
+	 * @param index index of the item to set the line width for 
+	 * @param width the new line width
+	 * @see #setLineWidth(Number, Number, int)
+	 */ 
+	public void setLineWidth(N index, int width) {
+		lineWidth.setValue(index, index, width);
+	}
+	
+	/**
 	 * Sets the line width for the range of items.
 	 * <p>
-	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position 
+	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position of the item on the screen 
 	 * which can be altered by move and hide operations. 
 	 * <code>width</code> that is lower then zero is ignored. 
 	 *  
@@ -421,7 +439,7 @@ public class Section<N extends Number> {
 	 * <p>
 	 * Line at index i is on the left side of the cell at index i.
      * Last line to the right is at index equal to section item count.
-	 * <code>index</code> refers to the model, not the visual position
+	 * <code>index</code> refers to the model, not the visual position of the item on the screen
 	 * which can be altered by move and hide operations.
 	 * 
 	 * @param index the item index 
@@ -432,9 +450,26 @@ public class Section<N extends Number> {
 	}
 	
 	/**
-	 * Sets the line width for the range of items.
+	 * Sets the cell width for the item at the specified index.
 	 * <p>
-	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position 
+	 * <code>index</code> index refers to the model, not the visual position of the item on the screen 
+	 * which can be altered by move and hide operations. 
+	 * <code>width</code> that is lower the zero is ignored. 
+	 * <p>
+	 * Cell width for a range of items should be set by {@link #setCellWidth(Number, Number, int)} 
+	 * to achieve the best efficiency.
+	 *
+	 * @param index index of the item to set the cell width for 
+	 * @param width the new cell width
+	 * @see #setCellWidth(Number, Number, int)
+	 */ 
+	public void setCellWidth(N index, int width) {
+		cellWidth.setValue(index, index, width);
+	}
+	/**
+	 * Sets the cell width for the range of items.
+	 * <p>
+	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position of the item on the screen 
 	 * which can be altered by move and hide operations. 
 	 * <code>width</code> that is lower the zero is ignored. 
 	 *
@@ -451,7 +486,7 @@ public class Section<N extends Number> {
 	 * If the width has not been set at this index by {@link #setCellWidth(Number)} 
 	 * method then the default cell width is returned.
 	 * <p>
-	 * <code>index</code> refers to the model, not the visual position
+	 * <code>index</code> refers to the model, not the visual position of the item on the screen
 	 * which can be altered by move and hide operations.
 	 * 
 	 * @param index the item index 
@@ -462,13 +497,29 @@ public class Section<N extends Number> {
 	}
 
 	
+	/**
+	 * Sets the move ability for the item at the given index.
+	 * <p>
+	 * <code>index</code> refers to the model, not the visual position of the item on the screen
+	 * which can be altered by move and hide operations.
+	 * <p>
+	 * Ranges of items should be set moveable by {@link #setMoveable(Number, Number, boolean)} 
+	 * to achieve the best efficiency.
+	 *
+	 * @param index index of the item to move   
+	 * @param enabled the new move ability state
+	 * @see #setMoveable(Number, Number, boolean)
+	 */ 
+	public void setMoveable(N index, boolean enabled) {
+		moveable.change(index, index, enabled != defaultMoveable);
+	}
 	
 	/**
 	 * Sets the move ability for the range of items. 
 	 * An item that is moveable can be reordered by the user by dragging the header. 
 	 * An item that is not moveable cannot be dragged by the user but may be reordered by the programmer.
 	 * <p>
-	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position
+	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position of the item on the screen
 	 * which can be altered by move and hide operations. 
 	 *
 	 * @param start first index of the range of items  
@@ -488,7 +539,7 @@ public class Section<N extends Number> {
 	 * If the move ability has not been set at this index by {@link #setMoveable(Number)} 
 	 * method then the default cell width is returned.
 	 * <p>
-	 * <code>index</code> refers to the model, not the visual position
+	 * <code>index</code> refers to the model, not the visual position of the item on the screen
 	 * which can be altered by move and hide operations. 
 	 * 
 	 * @param index the item index 
@@ -499,13 +550,29 @@ public class Section<N extends Number> {
 	}
 	
 	
+	/**
+	 * Sets the resize ability for the item at the given index.
+	 * <p>
+	 * <code>index</code> refers to the model, not the visual position of the item on the screen
+	 * which can be altered by move and hide operations.
+	 * <p>
+	 * Ranges of items should be set resizable by {@link #setResizable(Number, Number, boolean)} 
+	 * to achieve the best efficiency.
+	 *
+	 * @param index index of the item to resize   
+	 * @param enabled the new resize ability state
+	 * @see #setResizable(Number, Number, boolean)
+	 */ 
+	public void setResizable(N index, boolean enabled) {
+		resizable.change(index, index, enabled != defaultMoveable);
+	}
 	
 	/**
 	 * Sets the resize ability for the range of items.
 	 * An item that is resizable can be resized by the user dragging the edge of the header. 
 	 * An item that is not resizable cannot be dragged by the user but may be resized by the programmer.
 	 * <p>
-	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position
+	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position of the item on the screen
 	 * which can be altered by move and hide operations. Width that is lower then zero is ignored. 
 	 *
 	 * @param start first index of the range of items  
@@ -525,7 +592,7 @@ public class Section<N extends Number> {
 	 * Returns the stored item resize ability at given index  
 	 * or the default item resize ability if it has not been set at this index. 
 	 * <p>
-	 * <code>index</code> refers to the model, not the visual position
+	 * <code>index</code> refers to the model, not the visual position of the item on the screen
 	 * which can be altered by move and hide operations. 
 	 * 
 	 * @param index the item index 
@@ -536,11 +603,28 @@ public class Section<N extends Number> {
 	}
 	
 	/**
+	 * Sets the hide ability for the item at the given index.
+	 * <p>
+	 * <code>index</code> refers to the model, not the visual position of the item on the screen
+	 * which can be altered by move and hide operations.
+	 * <p>
+	 * Ranges of items should be set hideable by {@link #setHideable(Number, Number, boolean)} 
+	 * to achieve the best efficiency.
+	 *
+	 * @param index index of the item to hide   
+	 * @param enabled the new hide ability state
+	 * @see #setHideable(Number, Number, boolean)
+	 */ 
+	public void setHideable(N index, boolean enabled) {
+		hideable.change(index, index, enabled != defaultMoveable);
+	}
+	
+	/**
 	 * Sets the hide ability for the range of items.
 	 * An item that is hideable can be hidden by the user gesture bound to the hide command. 
 	 * An item that is not hideable cannot be hidden by the user but may be hidden by the programmer.
 	 * <p>
-	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position
+	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position of the item on the screen
 	 * which can be altered by move and hide operations.
 	 *
 	 * @param start first index of the range of items  
@@ -560,7 +644,7 @@ public class Section<N extends Number> {
 	 * Returns the stored item hide ability at given index  
 	 * or the default item hide ability if it has not been set at this index. 
 	 * <p>
-	 * <code>index</code> refers to the model, not the visual position
+	 * <code>index</code> refers to the model, not the visual position of the item on the screen
 	 * which can be altered by move and hide operations. 
 	 * 
 	 * @return the hide ability state at the given index
@@ -574,10 +658,28 @@ public class Section<N extends Number> {
 	 * Hiding 
 	 */
 	
+	
+	
+	/**
+	 * Sets the hiding state for the item at the given index.
+	 * <p>
+	 * <code>index</code> refers to the model, not the visual position of the item on the screen
+	 * which can be altered by move and hide operations.
+	 * <p>
+	 * Ranges of items should be set hidden by {@link #setHidden(Number, Number, boolean)} 
+	 * to achieve the best efficiency.
+	 * 
+	 * @param index index of the item to hide   
+	 * @param state the new hiding state
+	 */ 
+	public void setHidden(N index, boolean state) {
+		hidden.change(index, index, state);
+	}
+	
 	/**
 	 * Sets the hiding state for the range of items.
 	 * <p>
-	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position
+	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position of the item on the screen
 	 * which can be altered by move and hide operations.
 	 *
 	 * @param start first index of the range of items  
@@ -591,7 +693,7 @@ public class Section<N extends Number> {
 	/**
 	 * Sets the hiding state for the items that are selected.
 	 * <p>
-	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position
+	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position of the item on the screen
 	 * which can be altered by move and hide operations. Width that is lower then zero is ignored. 
 	 *
 	 * @param state the new hiding state
@@ -609,7 +711,7 @@ public class Section<N extends Number> {
 	 * Returns <code>true</code> if the item at given index is hidden.
 	 * Otherwise, <code>false</code> is returned.
 	 * <p>
-	 * <code>index</code> refers to the model, not the visual position
+	 * <code>index</code> refers to the model, not the visual position of the item on the screen
 	 * which can be altered by move and hide operations. 
 	 * 
 	 * @param index the item index 
@@ -622,7 +724,7 @@ public class Section<N extends Number> {
 	/**
 	 * Returns the number of hidden items in the given range of items.
 	 * 
-	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position
+	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position of the item on the screen
 	 * which can be altered by move and hide operations. Width that is lower then zero is ignored. 
 	 *
 	 * @param start first index of the range of items  
@@ -655,10 +757,28 @@ public class Section<N extends Number> {
 	/*------------------------------------------------------------------------
 	 * Selection 
 	 */
+	
+	/**
+	 * Sets the hiding state for the item at the given index.
+	 * <p>
+	 * <code>index</code> refers to the model, not the visual position of the item on the screen
+	 * which can be altered by move and hide operations.
+	 * <p>
+	 * Ranges of items should be set selected by {@link #setSelected(Number, Number, boolean)} 
+	 * to achieve the best efficiency.
+	 *
+	 * @param index index of the item to hide   
+	 * @param state the new hiding state
+	 * @see #setSelected(Number, Number, boolean)
+	 */ 
+	public void setSelected(N index, boolean state) {
+		hidden.change(index, index, state);
+	}
+	
 	/**
 	 * Sets the selection state for the range of items.
 	 * <p>
-	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position
+	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position of the item on the screen
 	 * which can be altered by move and hide operations.
 	 *
 	 * @param start first index of the range of items  
@@ -678,8 +798,8 @@ public class Section<N extends Number> {
 	 * 
 	 * @param state the new selection state
 	 */ 
-	public void setSelectedAll(boolean selected) {
-		if (selected) {
+	public void setSelectedAll(boolean state) {
+		if (state) {
 			selection.add(math.ZERO_VALUE(), math.decrement(count));
 		} else {
 			selection.clear();
@@ -690,7 +810,7 @@ public class Section<N extends Number> {
 	 * Returns <code>true</code> if the item at given index is selected.
 	 * Otherwise, <code>false</code> is returned.
 	 * <p>
-	 * <code>index</code> refers to the model, not the visual position
+	 * <code>index</code> refers to the model, not the visual position of the item on the screen
 	 * which can be altered by move and hide operations. 
 	 * 
 	 * @param index the item index 
@@ -701,22 +821,16 @@ public class Section<N extends Number> {
 	}
 	
 	/**
-	 * Returns the number of selected items in the given range of items.
-	 * 
-	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position
-	 * which can be altered by move and hide operations. Width that is lower then zero is ignored. 
-	 *
-	 * @param start first index of the range of items  
-	 * @param end last index of the range of items  
-	 * @return the number of hidden items 
+	 * Returns the number of selected items in this section.
+	 * @return the number of selected items in this section
 	 */
 	public N getSelectedCount() {
 		return selection.getCount().getValue();
 	}
 	
 	/**
-	 * Returns a sequence of selected items indexes. 
-	 * @return a sequences of selected items indexes
+	 * Returns a sequence of indexes of selected items. 
+	 * @return a sequence of indexes of selected items
 	 */
 	public NumberSequence<N> getSelected() {
 		return new NumberSequence(selection);
@@ -741,7 +855,7 @@ public class Section<N extends Number> {
 	 * Moves a range of items before the target index thus changing their visible order.
 	 * <p>
 	 * <code>start</code>, <code>end</code> and <code>target</code>indexes refer to the model, 
-	 * not the visual position which can be altered by move and hide operations. 
+	 * not the visual position of the item on the screen which can be altered by move and hide operations. 
 	 *
 	 * @param start first index of the range of items  
 	 * @param end last index of the range of items  

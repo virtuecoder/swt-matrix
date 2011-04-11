@@ -180,7 +180,7 @@ public final class Preconditions {
    */
   public static <T> T checkNotNull(T reference) {
     if (reference == null) {
-      throw new NullPointerException();
+      throw new IllegalArgumentException();
     }
     return reference;
   }
@@ -197,7 +197,7 @@ public final class Preconditions {
    */
   public static <T> T checkNotNull(T reference, Object errorMessage) {
     if (reference == null) {
-      throw new NullPointerException(String.valueOf(errorMessage));
+      throw new IllegalArgumentException(String.valueOf(errorMessage));
     }
     return reference;
   }
@@ -205,7 +205,7 @@ public final class Preconditions {
   public static <T> T checkNotNullWithName(T reference, String name) {
 	  if (reference == null) {
 		  // If either of these parameters is null, the right thing happens anyway
-		  throw new NullPointerException(
+		  throw new IllegalArgumentException(
 				  format(NOT_NULL_MESSAGE, name));
 	  }
 	  return reference;
@@ -232,7 +232,7 @@ public final class Preconditions {
       Object... errorMessageArgs) {
     if (reference == null) {
       // If either of these parameters is null, the right thing happens anyway
-      throw new NullPointerException(
+      throw new IllegalArgumentException(
           format(errorMessageTemplate, errorMessageArgs));
     }
     return reference;

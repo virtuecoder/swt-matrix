@@ -81,7 +81,7 @@ public class TestUtil {
 		for (int i = 0; i < count.length; i++) {
 			Section section = new Section(int.class);
 			sections[i] = section;
-			if (i != 1) section.setNavigationEnabled(false);
+			if (i != 1) section.setFocusItemEnabled(false);
 			section.setCount(count[i]);
 		}
 		Layout layout = new Layout(new Axis(sections));

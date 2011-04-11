@@ -74,7 +74,7 @@ class MatrixListener implements Listener {
 	private static final int[] EVENTS = { SWT.KeyDown, SWT.KeyUp, 
 		SWT.MouseDown, SWT.MouseUp, SWT.MouseMove, SWT.MouseEnter, SWT.MouseExit, SWT.MouseDoubleClick, 
 		/* SWT.Paint, */
-		SWT.Move, SWT.Resize, /* SWT.Dispose, */
+		/*SWT.Move, SWT.Resize, SWT.Dispose, */
 		SWT.Selection, SWT.DefaultSelection, /* 
 		SWT.FocusIn, SWT.FocusOut, SWT.Expand, SWT.Collapse, SWT.Iconify, SWT.Deiconify, SWT.Close, 
 		SWT.Show, SWT.Hide, SWT.Modify, SWT.Verify, SWT.Activate, SWT.Deactivate, SWT.Help, */
