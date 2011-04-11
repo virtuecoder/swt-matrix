@@ -12,9 +12,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
 
 import pl.netanel.swt.matrix.Matrix;
+import pl.netanel.swt.matrix.Painter;
 
 public class MatrixPerformance {
 	ArrayList<Long> time = new ArrayList<Long>();
+	protected long t;
 	
 	@Test
 	public void cursorNavigation() throws Exception {
@@ -22,16 +24,20 @@ public class MatrixPerformance {
 		Display display = shell.getDisplay();
 		shell.setLayout(new FillLayout());
 		
-		Matrix matrix = new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL) {
+		Matrix matrix = new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		matrix.addPainter(0, new Painter("start timer") {
 			@Override
-			protected void onPaint(Event event) {
-				long t = System.currentTimeMillis();
-				super.onPaint(event);
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+				t = System.currentTimeMillis();
+			}
+		});
+		matrix.addPainter(new Painter("stop timer") {
+			@Override
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				t = System.currentTimeMillis() - t;
 				time.add(t);
-//				System.out.println(BigDecimal.valueOf(System.nanoTime() - t, 6).toString());
 			}
-		}; 
+		});
 				//, new MatrixModel(new AxisModel(BigInteger.class), new AxisModel(BigInteger.class)));
 		matrix.getAxis0().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
 		matrix.getAxis1().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));

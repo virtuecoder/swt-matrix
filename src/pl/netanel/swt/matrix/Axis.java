@@ -121,14 +121,18 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	}
 
 	/**
-	 * 
+	 * Specifies which section is the body section.
 	 * @param sectionIndex
 	 */
 	public void setBody(int sectionIndex) {
 		Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
 		this.body = sectionMap.get(sections.get(sectionIndex));
 	}
-	
+
+	/**
+	 * Specifies which section is the header section.
+	 * @param sectionIndex
+	 */
 	public void setHeader(int sectionIndex) {
 		Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
 		this.header = sectionMap.get(sections.get(sectionIndex));
@@ -195,18 +199,34 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	/*------------------------------------------------------------------------
 	 * Navigation 
 	 */
-	
+
+	/**
+	 * Returns the section of the focus item. Or <code>null</code> if no item has focus.
+	 * @return the section of the focus item
+	 */
 	public Section<N> getFocusSection() {
 		layout.computeIfRequired();
 		return layout.current == null ? null : sectionMap.get(layout.current.section);
 	}
 	
-	
+	/**
+	 * Returns the index of the focus item. Or <code>null</code> if no item has focus.
+	 * @return the index of the focus item
+	 */
 	public N getFocusIndex() {
 		layout.computeIfRequired();
 		return layout.current == null ? null : layout.current.index;
 	}
 
+	/**
+	 * Sets the focus marker to the item at given index in the given section.
+	 * <p>
+	 * If section has the focus item disabled (see {@link Section#setFocusItemEnabled(boolean)}) 
+	 * then this method does nothing.
+	 *   
+	 * @param section section in which to set the focus
+	 * @param index index in the section at which to set the focus 
+	 */
 	public void setFocusItem(Section<N> section, N index) {
 		layout.setCurrentItem(new AxisItem(section, index));
 	}
@@ -262,25 +282,36 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 */
 
 	/**
+	 * Returns the offset from the edge of scrolling area within which dragging causes 
+	 * the content to scroll automatically and extend the dragged distance. 
 	 * The default value is 8 for horizontal and 6 for vertical axis.  
 	 */
 	public int getAutoScrollOffset() {
 		return autoScrollOffset;
 	}
 
-	public void setAutoScrollOffset(int autoScrollOffset) {
-		this.autoScrollOffset = autoScrollOffset;
+	/**
+	 * Sets the offset from the edge of scrolling area within which dragging causes 
+	 * the content to scroll automatically and extend the dragged distance.
+	 */  
+	public void setAutoScrollOffset(int offset) {
+		this.autoScrollOffset = offset;
 	}
 
 	/**
+	 * Returns the offset from the dividing line within which dragging changes the axis item width. 
 	 * The default value is 3 for horizontal and 2 for vertical axis.  
 	 */
 	public int getResizeOffset() {
 		return resizeOffset;
 	}
 
-	public void setResizeOffset(int autoScrollOffset) {
-		this.resizeOffset = autoScrollOffset;
+	/**
+	 * Sets the offset from the dividing line within which dragging changes the axis item width. 
+	 * @param offset
+	 */
+	public void setResizeOffset(int offset) {
+		this.resizeOffset = offset;
 	}
 	
 	/*------------------------------------------------------------------------

@@ -233,8 +233,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		}
 	}
 	
-	
-	protected void onPaint(Event event) {
+	void onPaint(Event event) {
 //		long t = System.nanoTime();
 		final GC gc = event.gc;
 		layout0.computeIfRequired();
@@ -362,6 +361,10 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		return getZone(axis0.getHeader(), axis1.getHeader());
 	}
 	
+	/**
+	 * Returns the number of zones in this matrix.
+	 * @return the number of zones in this matrix
+	 */
 	public int getZoneCount() {
 		return model.zones.size();
 	}
@@ -528,6 +531,10 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		}
 	}
 
+	/**
+	 * Recalculates the matrix layout and repaints it. 
+	 * It can be called after changing the model for example to reflect the changes on the screen. 
+	 */
 	public void refresh() {
 		// After freeze head to 0 is it would scroll to previous head count.
 		layout0.start = layout0.current;
@@ -561,42 +568,117 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		model.paintOrder = order;
 	}
 
+
+	/**
+	 * Adds the painter at the end of the receiver's painters list.
+	 * @param painter the painter to be added
+	 */
 	public void addPainter(Painter<N0, N1> painter) {
 		painters.add(painter);
+		setPainterMatrixAndZone(painter);
 	}
 
+	/**
+	 * Inserts the painter at the given index of the receiver's painters list.
+	 * @param index at which the specified painter is to be inserted
+	 * @param painter painter to be inserted
+	 * @throws IndexOutOfBoundsException if the index is out of range
+     *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+	 */
 	public void addPainter(int index, Painter<N0, N1> painter) {
 		// Check uniqueness of painters names
 		painters.add(index, painter);
+		setPainterMatrixAndZone(painter);
 	}
 	
+	/**
+	 * Replaces the painter at the given index of the receiver's painters list. 
+	 * @param index index of the element to replace
+	 * @param painter painter to be stored at the specified position
+	 * @throws IndexOutOfBoundsException if the index is out of range
+     *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+	 */
 	public void setPainter(int index, Painter<N0, N1> painter) {
 		painters.set(index, painter);
+		setPainterMatrixAndZone(painter);
 	}
 	
+	/**
+	 * Replaces the painter at the index of painter with the same name.
+	 * @param painter painter to replace a painter with the same name
+	 * @throws IndexOutOfBoundsException if there is no painter with the same name
+	 * @see #getPainter(String)
+	 */
 	public void replacePainter(Painter<N0, N1> painter) {
 		painters.replacePainter(painter);
+		setPainterMatrixAndZone(painter);
 	}
 	
-	public void removePainter(int index) {
-		painters.remove(index);
+	/**
+     * Removes the element at the specified position in the list of painters. 
+     * Shifts any subsequent painters to the left (subtracts one
+     * from their indices). Returns the painter that was removed from the
+     * list.
+     *
+     * @param index the index of the painter to be removed
+	 * @return 
+     * @return the painter previously at the specified position
+     * @throws IndexOutOfBoundsException if the index is out of range
+     *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+     */
+	public Painter<N0, N1> removePainter(int index) {
+		return painters.remove(index);
 	}
 	
+	/**
+     * Returns the index of a painter with the specified name
+     * in the list of the receiver's painters, or -1 
+     * if this list does not contain the element.
+     *
+     * @param name painter name to search for
+     * @return the index of a painter with the specified name
+     */
 	public int indexOfPainter(String name) {
 		return painters.indexOfPainter(name);
 	}
 	
+	/**
+     * Returns a painter with the specified name, or <code>null</code>
+     * if the painters list does not contain such painter.
+     *
+     * @param name painter name to search for
+     * @return the index of a painter with the specified name
+     */
 	public Painter<N0, N1> getPainter(String name) {
-		int index = indexOfPainter(name);
-		return index == -1 ? null : painters.get(index);
+		return painters.get(indexOfPainter(name));
 	}
 	
+	/**
+     * Returns the number of the receiver's painters. 
+     *
+     * @return the number of the receiver's painters
+     */
 	public int getPainterCount() {
 		return painters.size();
 	}
 	
+	/**
+     * Returns the painter at the specified position in the receiver's list of painters.
+     *
+     * @param index index of the painter to return
+     * @return the painter at the specified position in the receiver's list of painters.
+     * @throws IndexOutOfBoundsException if the index is out of range
+     *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+     */
 	public Painter<N0, N1> getPainter(int index) {
 		return painters.get(index);
 	}
 
+	private void setPainterMatrixAndZone(Painter painter) {
+		if (painter.scope == Painter.SCOPE_CELLS_HORIZONTALLY ||
+				painter.scope == Painter.SCOPE_CELLS_VERTICALLY) 
+		{
+			painter.matrix = this;
+		}
+	}
 }

@@ -209,6 +209,7 @@ class Layout<N extends Number> {
 	 */
 
 	public void setCurrentItem(AxisItem item) {
+		if (!item.section.isFocusItemEnabled()) return;
 		if (isComputingRequired) compute();
 		
     		 if (forwardNavigator.set(item))  	current = forwardNavigator.getItem();
