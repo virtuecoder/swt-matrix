@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Shell;
 import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
+import pl.netanel.swt.matrix.Zone;
 
 /**
  * Draw custom current cell marker.
@@ -33,14 +34,13 @@ public class Snippet_0011 {
 				// Get bounds of the focus cell 
 				Axis axis0 = matrix.getAxis0();
 				Axis axis1 = matrix.getAxis1();
-				Rectangle r = matrix.getCellBounds(
-						axis0.getFocusSection(), axis0.getFocusIndex(), 
-						axis1.getFocusSection(), axis1.getFocusIndex() );
+				Zone zone = matrix.getZone(axis0.getFocusSection(), axis1.getFocusSection());
+				if (zone == null) return;
+				Rectangle r = zone.getCellBounds(axis0.getFocusIndex(), axis1.getFocusIndex());
 				
 				// Draw rounded rectangle with a changed color
 				gc.setForeground(display.getSystemColor(SWT.COLOR_LIST_SELECTION));
 				gc.drawRoundRectangle(r.x-1, r.y-1, r.width+1, r.height+1, 5, 5);
-				
 			}
 		});
 		

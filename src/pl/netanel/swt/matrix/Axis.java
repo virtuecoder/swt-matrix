@@ -9,7 +9,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 
-import pl.netanel.swt.Listeners;
 import pl.netanel.util.ImmutableIterator;
 import pl.netanel.util.Preconditions;
 
@@ -40,7 +39,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	final Listeners listeners;
 	
 	int index;
-	Matrix matrix;
+	Matrix<? extends Number, ? extends Number> matrix;
 	private ScrollBar scrollBar;
 
 	/**
@@ -97,8 +96,8 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 			header.setVisible(false);
 		}
 		
-		autoScrollOffset = M.AUTOSCROLL_OFFSET_Y;
-		resizeOffset = M.RESIZE_OFFSET_Y;
+		autoScrollOffset = Matrix.AUTOSCROLL_OFFSET_Y;
+		resizeOffset = Matrix.RESIZE_OFFSET_Y;
 		layout = new Layout(this);
 		listeners = new Listeners();
 	}
@@ -313,6 +312,38 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	public void setResizeOffset(int offset) {
 		this.resizeOffset = offset;
 	}
+	
+	
+	public void pack(Section<N> section, N index) {
+//		Cursor cursor = matrix.getCursor();
+//		GC gc = new GC(matrix.getDisplay());
+//		try {
+//			int x = 0, y = 0, w = 0;
+//			Point size = new Point(0, 0);
+//			for (Zone<? extends Number, ? extends Number> zone: matrix.model.zones) {
+//				if (this.index == 0 && zone.section0.equals(section)) {
+//					for (Painter painter: zone.painters) {
+//						painter.init();
+//						AxisItemSequence seq = new AxisItemSequence(matrix.axis1);
+//						for (seq.init(); seq.next();) {
+//							painter.computeSize1(seq.index0, seq.index1, size);
+//							x = java.lang.Math.max(x, size.x);
+//							y = java.lang.Math.max(y, size.y);
+//						}
+//						
+//					}
+//				}
+//			}
+//			
+//			if (w != 0) section.setCellWidth(index, index, w);
+//			layout.compute();
+//			matrix.redraw();
+//		} finally {
+//			matrix.setCursor(cursor);
+//			gc.dispose();
+//		}
+	}
+
 	
 	/*------------------------------------------------------------------------
 	 * Non public 
@@ -551,5 +582,17 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	void insertInZones(Section section, N target, N count) {
 		matrix.model.insertInZones(index, section, target, count);
 		layout.show(new AxisItem(section, target));
+	}
+
+	void checkSection(Section section) {
+		end: {
+			for (Section section2 : sections) {
+				if (section2.equals(section)) {
+					break end;
+				}
+			}
+			Preconditions.checkArgument(false,
+					"Section {0} does not belong to axis {1}", section, index);
+		}
 	}
 }

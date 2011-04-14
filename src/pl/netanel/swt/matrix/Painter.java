@@ -11,7 +11,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 
-import pl.netanel.swt.FontWidthCache;
 import pl.netanel.util.Arrays;
 import pl.netanel.util.Preconditions;
 
@@ -367,6 +366,36 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		return enabled;
 	}
 
+	/**
+	 * Computes the optimal size to fit the content of the cell at specified indexes.
+	 * <p>
+	 * To be called only by the framework, since the {@link GC} instance must be
+	 * injected to measure the text extent.
+	 * <p>
+	 * <code>index0</code> and <code>index1</code> refer to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations. 
+	 * 
+	 * @param index0 row index of the cell  
+	 * @param index1 column index of the cell 
+	 * @param size mutable {@link Point} instance to return the computed size
+	 */
+	public void computeSize(N0 index0, N1 index1, Point size) {
+		assert zone != null;
+		size.x = 0; size.y = 0;
+		Image image = zone.getImage(index0, index1);
+		if (image != null) {
+			Rectangle bounds = image.getBounds();
+			size.x = bounds.width + 2 * imageMarginX;
+			size.y = bounds.height + 2 * imageMarginY;
+		}
+		String s = zone.getText(index0, index1);
+		if (s != null) {
+			Point p = gc.stringExtent(s);
+			size.x += p.x + 2 * imageMarginX;
+			size.y = java.lang.Math.max(p.y, size.y + 2 * imageMarginY);
+		}
+	}
 	
 	/**
 	 * Returns the distance of a graphical element based on the align mode and the padding margin.
@@ -409,6 +438,6 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		return (ratio*v1 + (100-ratio)*v2)/100;
 	}
 
-	
+		
 	
 }

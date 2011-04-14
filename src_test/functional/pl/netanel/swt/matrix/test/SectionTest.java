@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.Matrix;
-import pl.netanel.swt.matrix.TestUtil;
 
 public class SectionTest {
 	@Test
@@ -20,6 +19,6 @@ public class SectionTest {
 		axis0.getBody().setVisible(false);
 		axis0.getHeader().setVisible(false);
 		
-		TestUtil.showMatrix(matrix);
+//		TestUtil.showMatrix(matrix);
 	}
 }

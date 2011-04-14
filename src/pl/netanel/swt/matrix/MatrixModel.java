@@ -121,30 +121,18 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	}
 	
 	
-	
-	/**
-	 * Returns a zone located at the intersection of the given axis sections.
-	 * 
-	 * @param section0 section of the row axis
-	 * @param section1 section of the column axis
-	 * @return
-	 * @exception IllegalArgumentException 
-	 * 	 	if the any of the section parameters is out of scope.
-	 */
 	public Zone getZone(Section section0, Section section1) {
-		if (section0 == null || section1 == null) return null;
 		for (ZoneClient zone: zoneClients) {
-			if (section0.equals(zone.core.section0) && section1.equals(zone.core.section1)) {
+			if (zone.core.section0.equals(section0) && zone.core.section1.equals(section1)) {
 				return zone;
 			}
 		}
 		return null;
 	}
 	
-	Zone getZoneUnchecked(Section section0, Section section1) {
-		if (section0 == null || section1 == null) return null;
+	public Zone getZoneUnchecked(Section section0, Section section1) {
 		for (Zone zone: zones) {
-			if (section0.equals(zone.section0) && section1.equals(zone.section1)) {
+			if (zone.section0.equals(section0) && zone.section1.equals(section1)) {
 				return zone;
 			}
 		}

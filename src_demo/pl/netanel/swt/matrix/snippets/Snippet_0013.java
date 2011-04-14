@@ -34,7 +34,7 @@ public class Snippet_0013 {
 		colBody.setCount(4);
 		
 		// Column header painting
-		Zone columnHeader = matrix.getColumneHeader();
+		Zone columnHeader = matrix.getColumnHeader();
 		columnHeader.getPainter("row lines").setEnabled(false);
 		columnHeader.getPainter("column lines").setEnabled(false);
 		columnHeader.addPainter(new Painter("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {

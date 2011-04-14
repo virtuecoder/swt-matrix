@@ -1,4 +1,4 @@
-package pl.netanel.swt;
+package pl.netanel.swt.matrix;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.TypedListener;
 import pl.netanel.util.HashMapArrayList;
 import pl.netanel.util.Preconditions;
 
-public class Listeners {
+class Listeners {
 	final private HashMapArrayList<Integer, Listener> listeners;
 	final private ArrayList<Event> events;
 	

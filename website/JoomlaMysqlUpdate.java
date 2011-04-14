@@ -25,7 +25,7 @@ public class JoomlaMysqlUpdate {
 		try {
 			JoomlaMysqlUpdate app = new JoomlaMysqlUpdate();
 			app.features(con);
-//			app.snippets(con);
+			app.snippets(con);
 		} 
 		finally {
 			con.close();
@@ -34,7 +34,7 @@ public class JoomlaMysqlUpdate {
 
 	void features(Connection con) throws Exception {
 		Csv csv = new Csv();
-		List<String[]> lines = csv.read(new FileReader("website/features.csv"));
+		List<String[]> lines = csv.read(new FileReader("website/Features.csv"));
 		StringBuilder sb = new StringBuilder();
 		sb.append("<table class='data' cellspacing='1'>");
 		appendRow(sb, "th", lines.get(0));
@@ -99,7 +99,7 @@ public class JoomlaMysqlUpdate {
 				if (matcher.find()) {
 					String description = matcher.group(1);
 					description = description.replace("*", "").replaceAll("\\s{2,}", "").trim();
-					sb.append("<li><a href='snippets/"+file.getName()+"'>")
+					sb.append("<li><a href='swt-matrix/snippets/"+file.getName()+"'>")
 						.append(description).append("</a></li>");
 				}
 			} else {

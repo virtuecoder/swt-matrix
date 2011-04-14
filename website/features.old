@@ -1,0 +1,25 @@
+Axis
+
+Axis contains one dimensional features corresponding to rows and columns which are called items. 
+All features work for both columns and rows axises.
+
+Separate axis sections, for example header, filter, body, footer
+Unlimited number of items in any section
+Show / hide section
+Enable / disable current item navigation in any section
+Variable width of both cells and lines
+Select items with complete key/mouse bindings
+Resize and reorder multiple items by drag
+Hide items
+Enable/disable hide, move and resize operation for individual items
+Drag auto scroll with acceleration
+Auto number of header text
+Freeze head or tail of the axis
+Matrix
+
+Matrix contains two dimensional features corresponding to cells.
+
+Cell navigation (current cell marker) with full key/mouse bindings
+Block cell selection with full key/mouse bindings and accelerating auto scroll
+Foreground/background color of individual lines and cells
+Configurable key/mouse bindings

@@ -7,8 +7,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
 
-import pl.netanel.util.ImmutableIterator;
-
 class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 	public static final int NONE = -1;
 	public static final int ANY = 0;
@@ -57,10 +55,18 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 		core.setDefaultBodyStyle();
 	}
 
-	public void setDefaultHeaderStyle() {
+	void setDefaultHeaderStyle() {
 		core.setDefaultHeaderStyle();
 	}
 
+	@Override
+	public Rectangle getCellBounds(Number index0, Number index1) {
+		if (index0 == null || index1 == null) return null;
+		section0.checkIndex(index0, section0.getCount(), "index0");
+		section1.checkIndex(index1, section1.getCount(), "index1");
+		return core.getCellBounds(index0, index1);
+	}
+	
 	public void addListener(int type, Listener listener) {
 		core.addListener(type, listener);
 	}
@@ -70,15 +76,28 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 	}
 
 	public String getText(Number index0, Number index1) {
+		section0.checkIndex(index0, section0.getCount(), "index0");
+		section1.checkIndex(index1, section1.getCount(), "index1");
 		return core.getText(index0, index1);
 	}
 
 	@Override
 	public void setBackground(Number start0, Number end0, Number start1, Number end1, Color color) {
+		section0.checkRange(start0, end0, section0.getCount());
+		section1.checkRange(start1, end1, section1.getCount());
 		core.setBackground(start0, end0, start1, end1, color);
 	}
 	
+	@Override
+	public void setForeground(Number start0, Number end0, Number start1, Number end1, Color color) {
+		section0.checkRange(start0, end0, section0.getCount());
+		section1.checkRange(start1, end1, section1.getCount());
+		core.setForeground(start0, end0, start1, end1, color);
+	}
+	
 	public Color getBackground(Number index0, Number index1) {
+		section0.checkIndex(index0, section0.getCount(), "index0");
+		section1.checkIndex(index1, section1.getCount(), "index1");
 		return core.getBackground(index0, index1);
 	}
 
@@ -91,6 +110,8 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 	}
 
 	public Color getForeground(Number index0, Number index1) {
+		section0.checkIndex(index0, section0.getCount(), "index0");
+		section1.checkIndex(index1, section1.getCount(), "index1");
 		return core.getForeground(index0, index1);
 	}
 
@@ -152,11 +173,14 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 	}
 
 	public boolean isSelected(Number index0, Number index1) {
+		section0.checkIndex(index0, section0.getCount(), "index0");
+		section1.checkIndex(index1, section1.getCount(), "index1");
 		return core.isSelected(index0, index1);
 	}
 
 	public void setSelected(Number start0, Number end0, 
-			Number start1, Number end1, boolean selected) {
+			Number start1, Number end1, boolean selected) 
+	{
 		section0.checkRange(start0, end0, section0.getCount());
 		section1.checkRange(start1, end1, section1.getCount());
 		core.setSelected(start0, end0, start1, end1, selected);
@@ -170,10 +194,26 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 		return core.getSelectedCount();
 	}
 
-	public NumberPairSequence getSelected() {
-		return core.getSelected();
+	@Override
+	public Iterator getSelectedExtentIterator() {
+		return core.getSelectedExtentIterator();
+	}
+	
+	@Override
+	public Iterator getSelectedIterator() {
+		return core.getSelectedIterator();
+	}
+	
+	@Override
+	public Section getSectionUnchecked0() {
+		return core.getSectionUnchecked0();
 	}
 
+	@Override
+	public Section getSectionUnchecked1() {
+		return core.getSectionUnchecked1();
+	}
+	
 	public BigInteger getSelectionCount() {
 		return core.getSelectionCount();
 	}
@@ -212,42 +252,6 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 
 	public Painter getPainter(int index) {
 		return core.getPainter(index);
-	}
-
-	/**
-	 * Returns the number of selected cells in this zone.
-	 * <p>
-	 * If the cell selection is disabled the it always returns a 
-	 * {@link BigIntegerNumber} with zero value.
-	 * 
-	 * @return {@link BigIntegerNumber} with the count of selected cells
-	 */
-	
-	
-	Iterator<Cell<N0, N1>> getSelectedIterator() {
-		return new ImmutableIterator<Cell<N0, N1>>() {
-			NumberPairSequence seq = new NumberPairSequence(core.cellSelection.copy());
-			private boolean next;
-			@Override
-			public boolean hasNext() {
-				next = seq.next();
-				return next;
-			}
-
-			@Override
-			public Cell<N0, N1> next() {
-				return next ? new Cell (seq.index0(), seq.index1()) : null;
-			}
-		};
-	}
-	
-	static class Cell<N0, N1> {
-		public N0 index0;
-		public N1 index1;
-		public Cell(N0 index0, N1 index1) {
-			this.index0 = index0;
-			this.index1 = index1;
-		}
 	}
 
 	@Override

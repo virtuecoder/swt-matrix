@@ -20,7 +20,7 @@ package pl.netanel.swt.matrix;
  * 
  * @author Jacek created 21-02-2011
  */
-public class NumberSequence<N extends Number> implements Sequence {
+class NumberSequence<N extends Number> implements Sequence {
 	NumberSet<N> set;
 	int i, size;
 	Extent<N> e;

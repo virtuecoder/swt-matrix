@@ -3,8 +3,8 @@ package pl.netanel.swt.matrix.painter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
-import pl.netanel.swt.Resources;
 import pl.netanel.swt.matrix.Painter;
+import pl.netanel.swt.matrix.Resources;
 
 
 class LinePainter extends Painter {

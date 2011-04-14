@@ -1,4 +1,4 @@
-package pl.netanel.swt;
+package pl.netanel.swt.matrix;
 
 
 import java.io.FileInputStream;

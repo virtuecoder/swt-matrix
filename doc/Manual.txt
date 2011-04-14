@@ -1,5 +1,14 @@
 
-Basic Terms
+
+Basics
+Naming conventions. 
+Vertical and horizontal things are appended with 0 and 1 respectively in order to make the names as short as possible, even in length and statying next to each other when sorted. For example zone.setSelected(index0, index1) seems more handy then zone.isSelected(rowIndex, columnIndex) and
+Axis axis0 = matrix.getAxis0();
+Axis axis1 = matrix.getAxis1();
+is more readable then
+Axis rowAxis = matrix.getRowAxis();
+Axis columnAxis = matrix.getColumnAxis();
+
 
 Section
 	 * Section does not have add/remove methods for items. Due to separation of view and model 

@@ -1,8 +1,59 @@
-<project name="Matrix" default="ftp" basedir=".">
+<project name="swt-matrix" default="ftp" basedir=".">
 	<property name="version" value="0.01" />
 	<property name="local_website" value="c:\dev\wamp\www\netanel15\swt-matrix" />
-	
-  <!--target name="mysql" description="update joomla backend">
+
+	<property name="build.tmp" value="../bin"/>
+
+	<property name="db.username" value="root"/>
+	<property name="db.password" value=""/>
+	<property name="db.name" value="netanel15"/>
+	<!-- The name of the database to backup. -->
+	<property name="db.export.file" value="..\website\joomla-1.5.sql"/>
+	<property name="mysqldump" value="C:\Dev\wamp\bin\mysql\mysql5.0.51a\bin\mysqldump"/>
+
+
+	<target name="clean">
+		<tstamp />
+		<delete dir="." includes="*.jar" />
+		<!--delete dir="${build.tmp}" />
+		<mkdir dir="${build.tmp}" /-->
+
+		<!--copy todir="${images}">
+	      <fileset dir="${base}/images/"/>
+	    </copy>   
+
+	    <copy todir="${lib}">
+	      <fileset dir="${base}/lib"/>
+	    </copy-->
+	</target>
+
+
+	<target name="jar" depends="clean" description="create the jar">
+
+		<!-- Put everything in ${build} into a jar file -->
+		<jar jarfile="${ant.project.name}.jar">
+			<fileset dir="${build.tmp}">
+				<include name="pl/netanel/swt/matrix/*.class" />
+				<include name="pl/netanel/util/*.class" />
+				<exclude name="**/*Test.class" />
+			</fileset>
+			<!--fileset dir="${lib}" includes="**/*" /-->
+			<manifest>
+				<!--attribute name="Main-Class" value="app.DataMate" /-->
+				<attribute name="Class-Path" value="." />
+			</manifest>
+		</jar>
+
+		<!-- obfuscate and optimize by ProGuard -->
+		<taskdef resource="proguard/ant/task.properties" 
+	      classpath="c:/dev/Java/java_lib/proguard4.3/lib/proguard.jar" />
+		<proguard configuration="proguard.cfg"/>
+
+		<!--touch file="ant-jar.timestamp"/-->
+
+	</target>
+
+	<!--target name="mysql" description="update joomla backend">
   	<loadfile srcfile="${src.file}" property="${src.file.contents}">
   	  <filterchain>
   	    <filterreader classname="org.apache.tools.ant.filters.StripLineBreaks"/>
@@ -27,34 +78,69 @@
 	</target-->
 	<target name="local website">
 		<delete includeEmptyDirs="true">
-		  <fileset dir="${local_website}\snippets" includes="*/**"/>
-    </delete>
+			<fileset dir="${local_website}\snippets" includes="*/**"/>
+		</delete>
 		<copy todir="${local_website}\snippets">
-      <fileset dir="../src_demo/pl/netanel/swt/matrix/snippets" includes="*"/>
-    </copy>
-		
+			<fileset dir="../src_demo/pl/netanel/swt/matrix/snippets" includes="*"/>
+		</copy>
+
 		<delete includeEmptyDirs="true">
-      <fileset dir="${local_website}\JAVADOC" includes="*/**"/>
-    </delete>
+			<fileset dir="${local_website}\javadoc" includes="*/**"/>
+		</delete>
 		<copy todir="${local_website}\javadoc">
-      <fileset dir="../javadoc" includes="*"/>
-    </copy>
+			<fileset dir="../javadoc" includes="*/**"/>
+		</copy>
+
+		<copy todir="${local_website}" file="swt-matrix-0.1.jar" />
+
+		<java classname="JoomlaMysqlUpdate" dir=".." fork="true">
+			<classpath>
+				<pathelement location="C:\Dev\Java\java_lib\mysql-connector-java-5.1.8\mysql-connector-java-5.1.8-bin.jar" />
+				<pathelement path="../bin" />
+			</classpath>
+		</java>
+
 	</target>
-	
+
+	<target name="backup db">
+		<!-- Command to dump the database to *.sql file.-->
+		<exec executable="${mysqldump}" output="${db.export.file}">
+			<arg value="--hex-blob"/>
+			<arg value="--extended-insert=false"/>
+			<arg value="--complete-insert=true"/>
+			<arg value="--add-drop-table"/>
+			<arg value="--user=${db.username}"/>
+			<arg value="--password=${db.password}"/>
+			<arg value="${db.name}"/>
+		</exec>
+
+		<!-- Compress the dumped file(*.sql) -->
+		<!--tar destfile="${db.export.file}.tar.gz" 
+	          compression="gzip">
+	      <tarfileset dir="${backup.dir}">
+	        <include name="${ant.project.name}_${DAY_TIME_NOW}.sql"/>
+	      </tarfileset>
+	    </tar-->
+
+		<!-- Delete the dumped file(*.sql) -->
+		<!--delete file="${db.backup.dir}/${ant.project.name}_${DAY_TIME_NOW}.sql"/-->
+	</target>
+
+
 	<target name="ftp" description="copy all project files to ftp site">
 		<zip destfile="matrix.zip"
 		  basedir=".."
 		  includes="**"
 			excludes="build\matrix.zip"
     />
-		
-	  <ftp 
+
+		<ftp 
 	  	 server="www.netanel.pl"
 	     remotedir="git"
        userid="u60772810"
-		   password="jackolo">		   
-		
-			 <fileset dir=".\" includes="matrix.zip"/>
+		   password="jackolo">
+
+			<fileset dir=".\" includes="matrix.zip"/>
 		</ftp>
 	</target>
 

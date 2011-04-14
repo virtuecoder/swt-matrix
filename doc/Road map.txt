@@ -1,11 +1,11 @@
-- wrong initial scroll position
+- copy
+-
 - snippet to swap axises
 - snippet for selection event
 
 ? constructor style options SWT.CHECK, SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT
 - remove binding
 
-- dynamic item adding/removing
 - thread safety
 - immutable indexes
 

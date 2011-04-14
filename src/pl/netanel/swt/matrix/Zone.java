@@ -2,6 +2,7 @@ package pl.netanel.swt.matrix;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -11,9 +12,9 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
 
-import pl.netanel.swt.Listeners;
-import pl.netanel.swt.Resources;
 import pl.netanel.swt.matrix.Layout.LayoutSequence;
+import pl.netanel.util.ImmutableIterator;
+import pl.netanel.util.Preconditions;
 
 
 /**
@@ -182,48 +183,23 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			addPainter(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
 		}
 	}
-
-	/**
-	 * Adds the listener to the collection of listeners who will be notified
-	 * when an event of the given type occurs. When the event does occur in the
-	 * widget, the listener is notified by sending it the handleEvent() message.
-	 * <p>
-	 * The event type is one of the following event constants defined in class SWT:
-	 * SWT.KeyDown, SWT.KeyUp, 
-		SWT.MouseDown, SWT.MouseUp, SWT.MouseMove, SWT.MouseEnter, SWT.MouseExit, SWT.MouseDoubleClick, 
-		SWT.Selection, SWT.DefaultSelection
-	 * 
-	 * @param type
-	 * @param listener
-	 */
-	public void addListener(int type, Listener listener) {
-		listeners.add(type, listener);
-	}
 	
 	/**
-	 * Removes the listener from the collection of listeners who will
-	 * be notified when an event of the given type occurs. 
-	 * <p>
-	 * The event type is one of the following event constants defined in class <code>SWT</code>:
-	 * SWT.KeyDown, SWT.KeyUp, 
-		SWT.MouseDown, SWT.MouseUp, SWT.MouseMove, SWT.MouseEnter, SWT.MouseExit, SWT.MouseDoubleClick, 
-		SWT.Selection, SWT.DefaultSelection
-	 *
-	 * @param eventType the type of event to listen for
-	 * @param listener the listener which should no longer be notified
-	 *
-	 * @exception IllegalArgumentException <ul>
-	 *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
-	 * </ul>
-	 *
-	 * @see Listener
-	 * @see SWT
-	 * @see #addListener
-	 * @see #getListeners(int)
-	 * @see #notifyListeners
+	 * Return rectangular bounds of the cell with the given coordinates.
+	 * If one of the indexes is null it return null.
+	 * 
+	 * @param index0 index in <code>section0</code> of the cell 
+	 * @param index1 index in <code>section1</code> of the cell 
+	 * @return rectangular bounds of the cell with the given coordinates.
 	 */
-	public void removeListener(int type, Listener listener) {
-		listeners.remove(type, listener);
+	public Rectangle getCellBounds(N0 index0, N1 index1) {
+		if (index0 == null || index1 == null) return null;
+		Bound b0 = section0.axis.getCellBound(section0, index0);
+		Bound b1 = section1.axis.getCellBound(section1, index1);
+		if (b0 != null && b1 != null) {
+			return new Rectangle(b1.distance, b0.distance, b1.width, b0.width);
+		}
+		return null; 
 	}
 
 	/**
@@ -681,10 +657,11 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 * Returns a sequence of index pairs for selected cells. 
 	 * @return a sequence of index pairs for selected cells
 	 */
+/*
 	public NumberPairSequence<N0, N1> getSelected() {
 		return new NumberPairSequence(cellSelection.copy());
 	}
-
+*/
 	
 	/**
 	 * Returns the number of selected cells in this zone.
@@ -701,11 +678,26 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		return cellSelection.getCount().value;
 	}
 	
-/*	
-	Iterator<Cell<N0, N1>> getSelectedIterator() {
-		return new ImmutableIterator<Cell<N0, N1>>() {
+
+	/**
+	 * Returns iterator for selected cells. First number in the array 
+	 * returned by the {@link Iterator#next()} method is a
+	 * row axis index, the second one is a column axis index.
+	 * <p>
+	 * <code>index0</code> and <code>index1</code> refer to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations.  
+	 * <p>
+	 * <strong>Warning</strong> iterating index by index over large extents 
+	 * may cause a performance problem.
+	 */
+	public Iterator<Number[]> getSelectedIterator() {
+		return new ImmutableIterator<Number[]>() {
 			NumberPairSequence seq = new NumberPairSequence(cellSelection.copy());
 			private boolean next;
+			{
+				seq.init();
+			}
 			@Override
 			public boolean hasNext() {
 				next = seq.next();
@@ -713,22 +705,49 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			}
 
 			@Override
-			public Cell<N0, N1> next() {
-				return next ? new Cell (seq.index0(), seq.index1()) : null;
+			public Number[] next() {
+				return next ? new Number[] {seq.index0(), seq.index1()} : null;
 			}
 		};
 	}
 	
-	static class Cell<N0, N1> {
+	/*static class Cell<N0, N1> {
 		public N0 index0;
 		public N1 index1;
 		public Cell(N0 index0, N1 index1) {
 			this.index0 = index0;
 			this.index1 = index1;
 		}
+	}*/
+
+	/**
+	 * Returns iterator for selected cell extents. First two numbers in the array 
+	 * returned by the {@link Iterator#next()} method define start and end of a
+	 * row axis extent, the second two the start and end of a column axis extent.
+	 * <p>
+	 * <code>index0</code> and <code>index1</code> refer to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations. 
+	 */
+	public Iterator<Number[]> getSelectedExtentIterator() {
+		return new ImmutableIterator<Number[]>() {
+			NumberPairSequence seq = new NumberPairSequence(cellSelection.copy());
+			private boolean next;
+			{
+				seq.init();
+			}
+			@Override
+			public boolean hasNext() {
+				next = seq.nextExtent();
+				return next;
+			}
+
+			@Override
+			public Number[] next() {
+				return next ? new Number[] {seq.start0(), seq.end0(), seq.start1(), seq.end1()} : null;
+			}
+		};
 	}
-*/	
-	
 	
 	void backupSelection() {
 		lastSelection = cellSelection.copy();
@@ -738,6 +757,77 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		cellSelection = lastSelection.copy();
 	}
 
+
+	/*------------------------------------------------------------------------
+	 * Gesture 
+	 */
+	
+	/**
+	 * Binds the command to the user gesture specified by the event type and code.
+	 * Code is a logical <i>OR</i> of key, state mask and mouse button codes. 
+	 */
+	public void bind(int commandId, int eventType, int code) {
+		bindings.add(new GestureBinding(commandId, eventType, code));
+	}
+	
+	/**
+	 * Removes the binding the command to the user gesture specified by the event type and code.
+	 * Code is a logical <i>OR</i> of key, state mask and mouse button codes. 
+	 */
+	public void unbind(int commandId, int eventType, int code) {
+		for (int i = bindings.size(); i-- > 0;) {
+			GestureBinding binding = bindings.get(i);
+			if (binding.commandId == commandId && binding.eventType == eventType 
+					&& binding.key == code) {
+				bindings.remove(i);
+			};
+		}
+	}
+
+	/**
+	 * Adds the listener to the collection of listeners who will be notified
+	 * when an event of the given type occurs. When the event does occur in the
+	 * widget, the listener is notified by sending it the handleEvent() message.
+	 * <p>
+	 * The event type is one of the following event constants defined in class SWT:
+	 * SWT.KeyDown, SWT.KeyUp, 
+		SWT.MouseDown, SWT.MouseUp, SWT.MouseMove, SWT.MouseEnter, SWT.MouseExit, SWT.MouseDoubleClick, 
+		SWT.Selection, SWT.DefaultSelection
+	 * 
+	 * @param type
+	 * @param listener
+	 */
+	public void addListener(int type, Listener listener) {
+		Preconditions.checkNotNullWithName(listener, "listener");
+		listeners.add(type, listener);
+	}
+	
+	/**
+	 * Removes the listener from the collection of listeners who will
+	 * be notified when an event of the given type occurs. 
+	 * <p>
+	 * The event type is one of the following event constants defined in class <code>SWT</code>:
+	 * SWT.KeyDown, SWT.KeyUp, 
+		SWT.MouseDown, SWT.MouseUp, SWT.MouseMove, SWT.MouseEnter, SWT.MouseExit, SWT.MouseDoubleClick, 
+		SWT.Selection, SWT.DefaultSelection
+	 *
+	 * @param eventType the type of event to listen for
+	 * @param listener the listener which should no longer be notified
+	 *
+	 * @exception IllegalArgumentException <ul>
+	 *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+	 * </ul>
+	 *
+	 * @see Listener
+	 * @see SWT
+	 * @see #addListener
+	 * @see #getListeners(int)
+	 * @see #notifyListeners
+	 */
+	public void removeListener(int type, Listener listener) {
+		Preconditions.checkNotNullWithName(listener, "listener");
+		listeners.remove(type, listener);
+	}
 
 	
 	/*------------------------------------------------------------------------
@@ -826,6 +916,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 * @param painter the painter to be added
 	 */
 	public void addPainter(Painter<N0, N1> painter) {
+		Preconditions.checkNotNullWithName(painter, "painter");
 		painters.add(painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -838,6 +929,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
      *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
 	 */
 	public void addPainter(int index, Painter<N0, N1> painter) {
+		Preconditions.checkNotNullWithName(painter, "painter");
 		// Check uniqueness of painters names
 		painters.add(index, painter);
 		setPainterMatrixAndZone(painter);
@@ -851,6 +943,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
      *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
 	 */
 	public void setPainter(int index, Painter<N0, N1> painter) {
+		Preconditions.checkNotNullWithName(painter, "painter");
 		painters.set(index, painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -862,6 +955,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 * @see #getPainter(String)
 	 */
 	public void replacePainter(Painter<N0, N1> painter) {
+		Preconditions.checkNotNull(painter);
 		painters.replacePainter(painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -879,6 +973,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
      *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
      */
 	public Painter<N0, N1> removePainter(int index) {
+		Preconditions.checkPositionIndex(index, painters.size());
 		return painters.remove(index);
 	}
 	
@@ -891,6 +986,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
      * @return the index of a painter with the specified name
      */
 	public int indexOfPainter(String name) {
+		Preconditions.checkNotNullWithName(name, "name");
 		return painters.indexOfPainter(name);
 	}
 	
@@ -902,6 +998,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
      * @return the index of a painter with the specified name
      */
 	public Painter<N0, N1> getPainter(String name) {
+		Preconditions.checkNotNullWithName(name, "name");
 		return painters.get(indexOfPainter(name));
 	}
 	
@@ -923,6 +1020,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
      *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
      */
 	public Painter<N0, N1> getPainter(int index) {
+		Preconditions.checkPositionIndex(index, painters.size());
 		return painters.get(index);
 	}
 

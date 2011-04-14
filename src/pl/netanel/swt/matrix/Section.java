@@ -832,10 +832,65 @@ public class Section<N extends Number> {
 	 * Returns a sequence of indexes of selected items. 
 	 * @return a sequence of indexes of selected items
 	 */
-	public NumberSequence<N> getSelected() {
+	NumberSequence<N> getSelected() {
 		return new NumberSequence(selection);
 	}
 	
+	/** 
+	 * Returns iterator for selected items. 
+	 * <p>
+	 * <code>index</code> that is returned by {@link Iterator#next()} 
+	 * method refers to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations.   
+	 */
+	public Iterator<N> getSelectedIterator() {
+		return new ImmutableIterator<N>() {
+			NumberSequence<N> seq = new NumberSequence<N>(selection.copy());
+			private boolean next;
+			{
+				seq.init();
+			}
+			@Override
+			public boolean hasNext() {
+				next = seq.next();
+				return next;
+			}
+
+			@Override
+			public N next() {
+				return next ? seq.index() : null;
+			}
+		};
+	}
+	
+	/** 
+	 * Returns iterator for selected items. 
+	 * <p>
+	 * <code>index</code> that is returned by {@link Iterator#next()} 
+	 * method refers to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations.   
+	 */
+	public Iterator<N[]> getSelectedExtentIterator() {
+		return new ImmutableIterator<N[]>() {
+			NumberSequence<N> seq = new NumberSequence<N>(selection.copy());
+			private boolean next;
+			{
+				seq.init();
+			}
+			@Override
+			public boolean hasNext() {
+				next = seq.nextExtent();
+				return next;
+			}
+			
+			@Override
+			public N[] next() {
+				return (N[]) (next ? new Number[] {seq.start(), seq.end()} : null);
+			}
+		};
+	}
 	
 	void backupSelection() {
 		lastSelection.replace(selection);

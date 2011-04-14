@@ -575,10 +575,19 @@ class SectionClient<N extends Number> extends Section<N> {
 	 * Returns an iterator for the indexes of selected items.
 	 * @return an iterator for the indexes of selected items
 	 */
-	public NumberSequence getSelected() {
-		return core.getSelected();
+//	public NumberSequence getSelected() {
+//		return core.getSelected();
+//	}
+	
+	@Override
+	public Iterator<N[]> getSelectedExtentIterator() {
+		return core.getSelectedExtentIterator();
 	}
-
+	
+	@Override
+	public Iterator<N> getSelectedIterator() {
+		return core.getSelectedIterator();
+	}
 	
 	
 	/*------------------------------------------------------------------------

@@ -23,7 +23,7 @@ package pl.netanel.swt.matrix;
  * 
  * @author Jacek created 21-02-2011
  */
-public class NumberPairSequence<N0 extends Number, N1 extends Number> implements Sequence {
+class NumberPairSequence<N0 extends Number, N1 extends Number> implements Sequence {
 	CellSet<N0, N1> set;
 	int i, size;
 	Extent<N0> e0;

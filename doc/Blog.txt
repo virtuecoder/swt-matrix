@@ -12,6 +12,7 @@ Tabular widgets are required for most of the GUI applications. Yet I was frustra
 
 
 
+
 ---
 
 4) SWT-likness. It is not a unique feature obviously as SWT Table is SWT-like :-), but it is important one for a quick transition and a short learning curve. Replace Matrix -> MatrixTable, TableColumn -> MatrixColumn, TableItem -> MatrixItem and most of the SWT snippets for Table will work.

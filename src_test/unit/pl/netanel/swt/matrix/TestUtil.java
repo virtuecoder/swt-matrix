@@ -7,7 +7,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Layout.LayoutSequence;
 
-public class TestUtil {
+class TestUtil {
 	static MutableNumber number(int n) {
 		return new MutableInt(n);
 	}

@@ -17,11 +17,11 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Widget;
 
-import pl.netanel.swt.Resources;
 import pl.netanel.util.Preconditions;
 
 /**
- * Draws a two dimensional grid of cells and responds to the user generated
+ * This class represents a two dimensional grid of cells. 
+ * Uses custom painter to paint itself on the screen and responds to the user generated
  * events. This is the main class in the package.
  * 
  * <dl>
@@ -38,6 +38,107 @@ import pl.netanel.util.Preconditions;
  */
 public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 
+	static final int CELL_WIDTH = 16;			
+	static final int LINE_WIDTH = 1;
+	static final int RESIZE_OFFSET_X = 3;
+	static final int RESIZE_OFFSET_Y = 2;
+	static final int AUTOSCROLL_OFFSET_X = 8;
+	static final int AUTOSCROLL_OFFSET_Y = 6;
+	static final int AUTOSCROLL_RATE = 50;
+
+	
+	/*
+	 *  Navigation Key Actions. Key bindings for the actions are set
+	 *  by the StyledText widget.
+	 */	
+	public static final int CMD_FOCUS_UP = 1; 					// binding = SWT.ARROW_UP
+	public static final int CMD_FOCUS_DOWN = 2; 				// binding = SWT.ARROW_DOWN
+	public static final int CMD_FOCUS_LEFT = 3; 				// binding = SWT.ARROW_LEFT
+	public static final int CMD_FOCUS_RIGHT = 4; 				// binding = SWT.ARROW_RIGHT
+	public static final int CMD_FOCUS_PAGE_UP = 5; 			// binding = SWT.PAGE_UP
+	public static final int CMD_FOCUS_PAGE_DOWN = 6; 			// binding = SWT.PAGE_DOWN
+	public static final int CMD_FOCUS_PAGE_LEFT = 7; 			// binding = SWT.MOD3 + SWT.PAGE_UP
+	public static final int CMD_FOCUS_PAGE_RIGHT = 8; 			// binding = SWT.MOD3 + SWT.PAGE_DOWN
+	public static final int CMD_FOCUS_MOST_LEFT = 9;			// binding = SWT.HOME
+	public static final int CMD_FOCUS_MOST_RIGHT = 10; 		// binding = SWT.END
+	public static final int CMD_FOCUS_MOST_UP = 11; 			// binding = SWT.MOD1 + SWT.PAGE_UP
+	public static final int CMD_FOCUS_MOST_DOWN = 12; 			// binding = SWT.MOD1 + SWT.PAGE_DOWN
+	public static final int CMD_FOCUS_START = 13; 				// binding = SWT.MOD1 + SWT.HOME
+	public static final int CMD_FOCUS_END = 14; 				// binding = SWT.MOD1 + SWT.END
+	public static final int CMD_FOCUS_LOCATION = 15; 			// binding = SWT.MouseDown
+	public static final int CMD_FOCUS_LOCATION2 = 16; 			// binding = SWT.MOD1 + SWT.MouseDown
+//	public static final int WORD_PREVIOUS = 17039363;		// binding = SWT.MOD1 + SWT.ARROW_LEFT
+//	public static final int WORD_NEXT = 17039364; 			// binding = SWT.MOD1 + SWT.ARROW_RIGHT
+	
+	static boolean isCursorMove(int id) {
+		return CMD_FOCUS_UP <= id && id <= CMD_FOCUS_LOCATION2;
+	}
+	
+
+	/* 
+	 * Selection Key Actions 
+	 */
+	public static final int CMD_SELECT_ALL = 100; 				// binding = SWT.MOD1 + 'A'
+	public static final int CMD_SELECT_UP = 101; 				// binding = SWT.MOD2 + SWT.ARROW_UP
+	public static final int CMD_SELECT_DOWN = 102; 				// binding = SWT.MOD2 + SWT.ARROW_DOWN
+	public static final int CMD_SELECT_LEFT = 103; 				// binding = SWT.MOD2 + SWT.ARROW_LEFT
+	public static final int CMD_SELECT_RIGHT = 104; 			// binding = SWT.MOD2 + SWT.ARROW_RIGHT
+	public static final int CMD_SELECT_PAGE_UP = 105; 			// binding = SWT.MOD2 + SWT.PAGE_UP
+	public static final int CMD_SELECT_PAGE_DOWN = 106; 		// binding = SWT.MOD2 + SWT.PAGE_DOWN
+	public static final int CMD_SELECT_PAGE_LEFT = 107; 		// binding = SWT.MOD2 + SWT.MOD3 + SWT.ARROW_LEFT
+	public static final int CMD_SELECT_PAGE_RIGHT = 108; 		// binding = SWT.MOD2 + SWT.MOD3 + SWT.ARROW_RIGHT
+	public static final int CMD_SELECT_FULL_UP = 109; 			// binding = SWT.MOD1 + SWT.MOD2 + SWT.ARROW_UP
+	public static final int CMD_SELECT_FULL_DOWN = 110;   		// binding = SWT.MOD1 + SWT.MOD2 + SWT.ARROW_DOWN
+	public static final int CMD_SELECT_FULL_LEFT = 111; 		// binding = SWT.MOD2 + SWT.HOME
+	public static final int CMD_SELECT_FULL_RIGHT = 112;   		// binding = SWT.MOD2 + SWT.END
+	public static final int CMD_SELECT_START = 113; 			// binding = SWT.MOD1 + SWT.MOD2 + SWT.HOME
+	public static final int CMD_SELECT_END = 114; 				// binding = SWT.MOD1 + SWT.MOD2 + SWT.END
+	public static final int CMD_SELECT_TO_LOCATION = 115; 		// binding = SWT.MOD2 + SWT.MouseDown
+	public static final int CMD_SELECT_TO_LOCATION2 = 116; 		// binding = SWT.MOD2 + SWT.MouseDown
+	public static final int CMD_SELECT_ROW = 120; 				// binding = SWT.MouseDown + Zone.ROW_HEADER
+	public static final int CMD_SELECT_ROW2 = 121; 				// binding = SWT.MOD1 + SWT.MouseDown + Zone.ROW_HEADER
+	public static final int CMD_SELECT_COLUMN = 122; 			// binding = SWT.MouseDown + Zone.COLUMN_HEADER
+	public static final int CMD_SELECT_COLUMN2 = 123; 			// binding = SWT.MOD1 + SWT.MouseDown + Zone.COLUMN_HEADER
+	public static final int CMD_SELECT_TO_ROW = 124; 			// binding = SWT.MouseDown + Zone.ROW_HEADER
+	public static final int CMD_SELECT_TO_ROW2 = 125; 			// binding = SWT.MOD1 + SWT.MouseDown + Zone.ROW_HEADER
+	public static final int CMD_SELECT_TO_COLUMN = 126;			// binding = SWT.MouseDown + Zone.COLUMN_HEADER
+	public static final int CMD_SELECT_TO_COLUMN2 = 127;		// binding = SWT.MOD1 + SWT.MouseDown + Zone.COLUMN_HEADER
+	
+	static boolean isBodySelect(int id) {
+		return CMD_FOCUS_LOCATION <= id && id <= CMD_SELECT_TO_LOCATION2;
+	}
+	
+	static boolean isHeaderSelect(int id) {
+		return CMD_SELECT_ROW <= id && id <= CMD_SELECT_TO_COLUMN2;
+	}
+	
+	static boolean isExtendingSelect(int id) {
+		return CMD_SELECT_UP <= id && id <= CMD_SELECT_TO_LOCATION2 || 
+			CMD_SELECT_TO_ROW <= id && id <= CMD_SELECT_TO_COLUMN2;
+	}
+
+	/*
+	 *  Modification Key Actions 
+	 */
+	static final int CMD_CUT = 200; 						// binding = SWT.MOD2 + SWT.DEL
+	public static final int CMD_COPY = 201; 					// binding = SWT.MOD1 + SWT.INSERT;
+	static final int CMD_PASTE = 202;					// binding = SWT.MOD2 + SWT.INSERT ;
+	
+	public static final int CMD_HIDE = 210;						// binding = SWT.MOD3 + SWT.DEL;
+	public static final int CMD_UNHIDE = 211;					// binding = SWT.MOD3 + SWT.INSERT;
+	
+	static final int RESIZE_START = 220;					    
+	static final int RESIZE_STOP = 221;					    
+	public static final int CMD_RESIZE_PACK = 222;					    
+	
+
+	/*------------------------------------------------------------------------
+	 * Mouse event modifiers, cannot collide with SWT state masks or mouse button numbers
+	 */
+
+//	static final int RESIZE_AREA = 1 << 26;
+	
+	
 	MatrixModel<N0, N1> model;
 	Axis<N0> axis0;
 	Axis<N1> axis1;
@@ -101,15 +202,15 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		
 		if (axis0 == null) {
 			axis0 = new Axis();
-			axis0.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_Y);
-			axis0.setResizeOffset(M.RESIZE_OFFSET_Y);
+			axis0.setAutoScrollOffset(Matrix.AUTOSCROLL_OFFSET_Y);
+			axis0.setResizeOffset(Matrix.RESIZE_OFFSET_Y);
 		}
 		if (axis1 == null) {
 			axis1 = new Axis();
 			axis1.getHeader().setDefaultCellWidth(40);
 			axis1.getBody().setDefaultCellWidth(50);
-			axis1.setAutoScrollOffset(M.AUTOSCROLL_OFFSET_X);
-			axis1.setResizeOffset(M.RESIZE_OFFSET_X);
+			axis1.setAutoScrollOffset(Matrix.AUTOSCROLL_OFFSET_X);
+			axis1.setResizeOffset(Matrix.RESIZE_OFFSET_X);
 		}
 		model = new MatrixModel(axis0, axis1, zones);
 		painters = new Painters();
@@ -189,9 +290,9 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		painters.add(new Painter("focus cell") {
 			@Override
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				Rectangle r = getCellBounds(
-						axis0.getFocusSection(), axis0.getFocusIndex(), 
-						axis1.getFocusSection(), axis1.getFocusIndex() );
+				Zone zone = getZoneUnchecked(axis0.getFocusSection(), axis1.getFocusSection());
+				if (zone == null) return;
+				Rectangle r = zone.getCellBounds(axis0.getFocusIndex(), axis1.getFocusIndex());
 				if (r == null) return;
 				gc.setClipping((Rectangle) null);
 				gc.setLineWidth(2);
@@ -337,7 +438,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	 * an argument validation checking.
 	 * @return
 	 */
-	public Zone<N0, N1> getColumneHeader() {
+	public Zone<N0, N1> getColumnHeader() {
 		return getZone(axis0.getHeader(), axis1.getBody());
 	}
 	/**
@@ -376,9 +477,42 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	 * @return zone with the given creation index
 	 */
 	public Zone<N0, N1> getZone(int index) {
+		Preconditions.checkPositionIndex(index, model.zones.size());
 		return model.zoneClients.get(index);
 	}
 
+	/**
+	 * Returns a checked zone located at the intersection of the given axis sections.
+	 * <p>
+	 * A checked zone delegates calls to an unchecked zone proceeding it with an
+	 * argument validation checking.
+	 * 
+	 * @param section0 section of the row axis
+	 * @param section1 section of the column axis
+	 * @return checked zone located at the intersection of the given axis sections
+	 */
+	public Zone<N0, N1> getZone(Section section0, Section section1) {
+		Preconditions.checkNotNullWithName(section0, "section0");
+		Preconditions.checkNotNullWithName(section1, "section1");
+		axis0.checkSection(section0);
+		axis1.checkSection(section1);
+		return model.getZone(section0, section1);
+	}
+	
+	/**
+	 * Returns a unchecked zone located at the intersection of the given axis sections.
+	 * <p>
+	 * Unchecked zone skips argument validation checking 
+	 * in its methods to improve performance.
+	 * 
+	 * @param section0 section of the row axis
+	 * @param section1 section of the column axis
+	 * @return unchecked zone located at the intersection of the given axis sections
+	 */
+	public Zone<N0, N1> getZoneUnchecked(Section section0, Section section1) {
+		return model.getZoneUnchecked(section0, section1);
+	}
+	
 	/**
 	 * Returns a checked zone for the specified zone. 
 	 * If the given zone is checked then the same object is returned.  
@@ -387,43 +521,31 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	 * @return zone with the given creation index
 	 */
 	public Zone<N0, N1> getZone(Zone<N0, N1> zone) {
+		Preconditions.checkNotNullWithName(zone, "zone");
 		if (zone instanceof ZoneClient) return zone;
 		return model.zoneClients.get(model.zones.indexOf(zone));
 	}
 	
 	
-	/**
-	 * Returns a zone located at the intersection of the given axis sections.
-	 * 
-	 * @param section0 section of the row axis
-	 * @param section1 section of the column axis
-	 * @return
-	 * @exception IllegalArgumentException 
-	 * 	 	if the any of the section parameters is out of scope.
-	 */
-	public Zone<N0, N1> getZone(Section section0, Section section1) {
-		return model.getZone(section0, section1);
-	}
 	
-	
-	/**
-	 * Return the rectangular bounds of the cell with the given coordinates.
-	 * 
-	 * @param section0 section in the row (vertical) axis where the cell is located 
-	 * @param index0 index in <code>section0</code> of the cell 
-	 * @param section1 section in the column (horizontal) axis where the cell is located
-	 * @param index1 index in <code>section1</code> of the cell 
-	 * @return
-	 */
-	public Rectangle getCellBounds(Section<N0> section0, N0 index0, Section<N1> section1, N1 index1) {
-		Bound b0 = axis0.getCellBound(section0, index0);
-		Bound b1 = axis1.getCellBound(section1, index1);
-		if (b0 != null && b1 != null) {
-			return new Rectangle(b1.distance, b0.distance, b1.width, b0.width);
-		}
-		return null; 
-	}
-	
+//	/**
+//	 * Return the rectangular bounds of the cell with the given coordinates.
+//	 * 
+//	 * @param section0 section in the row (vertical) axis where the cell is located 
+//	 * @param index0 index in <code>section0</code> of the cell 
+//	 * @param section1 section in the column (horizontal) axis where the cell is located
+//	 * @param index1 index in <code>section1</code> of the cell 
+//	 * @return
+//	 */
+//	public Rectangle getCellBounds(Section<N0> section0, N0 index0, Section<N1> section1, N1 index1) {
+//		Bound b0 = axis0.getCellBound(section0, index0);
+//		Bound b1 = axis1.getCellBound(section1, index1);
+//		if (b0 != null && b1 != null) {
+//			return new Rectangle(b1.distance, b0.distance, b1.width, b0.width);
+//		}
+//		return null; 
+//	}
+//	
 //	public Rectangle getLineBounds(Section<N0> section0, N0 index0, Section<N1> section1, N1 index1) {
 //		Bound b0 = index0 == null ? axis0.layout.getaxis0.getLineBound(section0, index0);
 //		Bound b1 = axis1.getCellBound(section1, index1);
@@ -491,7 +613,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	/**
 	 * Stops the executor and re-throws wrapped in RuntimeException
 	 */
-	protected void rethrow(Throwable e) {
+	void rethrow(Throwable e) {
 		// Stop auto scroll
 		if (executor != null) {
 			Matrix.this.listener.state0.autoScroll.stop();
@@ -543,6 +665,10 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		layout1.compute();
 		updateScrollBars();
 		listener.refresh();
+		for (Zone zone: model.zones) {
+			zone.setSelectedAll(false);
+		}
+		selectFocusCell();
 		redraw();
 	}
 
@@ -552,15 +678,44 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 //	}
 
 	
+	/**
+	 * Binds the command to the user gesture specified by the event type and code.
+	 * Code is a logical <i>OR</i> of key, state mask and mouse button codes. 
+	 */
+	public void bind(int commandId, int eventType, int code) {
+		listener.bindings.add(new GestureBinding(commandId, eventType, code));
+	}
+	
+	/**
+	 * Removes the binding the command to the user gesture specified by the event type and code.
+	 * Code is a logical <i>OR</i> of key, state mask and mouse button codes. 
+	 */
+	public void unbind(int commandId, int eventType, int code) {
+		for (int i = listener.bindings.size(); i-- > 0;) {
+			GestureBinding binding = listener.bindings.get(i);
+			if (binding.commandId == commandId && binding.eventType == eventType 
+					&& binding.key == code) {
+				listener.bindings.remove(i);
+			};
+		}
+	}
 	
 	/*------------------------------------------------------------------------
 	 * Painters 
 	 */
 
+	/**
+	 * Returns order in which the zones will be painted.
+	 * @return an array of zone indexes indicating the paint order of zones 
+	 */
 	public int[] getZonePaintOrder() {
 		return model.paintOrder;
 	}
-	
+
+	/**
+	 * Sets the order in which the zones will be painted.
+	 * @param order an array of zone indexes indicating the paint order of zones
+	 */
 	public void setZonePaintOrder(int[] order) {
 		Preconditions.checkArgument(order.length == model.paintOrder.length, 
 				"The length of the order array ({0}) must be equal to the number of of zones: ({1})", 
@@ -568,12 +723,12 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		model.paintOrder = order;
 	}
 
-
 	/**
 	 * Adds the painter at the end of the receiver's painters list.
 	 * @param painter the painter to be added
 	 */
 	public void addPainter(Painter<N0, N1> painter) {
+		Preconditions.checkNotNullWithName(painter, "painter");
 		painters.add(painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -586,6 +741,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
      *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
 	 */
 	public void addPainter(int index, Painter<N0, N1> painter) {
+		Preconditions.checkNotNullWithName(painter, "painter");
 		// Check uniqueness of painters names
 		painters.add(index, painter);
 		setPainterMatrixAndZone(painter);
@@ -599,6 +755,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
      *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
 	 */
 	public void setPainter(int index, Painter<N0, N1> painter) {
+		Preconditions.checkNotNullWithName(painter, "painter");
 		painters.set(index, painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -610,6 +767,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	 * @see #getPainter(String)
 	 */
 	public void replacePainter(Painter<N0, N1> painter) {
+		Preconditions.checkNotNull(painter);
 		painters.replacePainter(painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -627,6 +785,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
      *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
      */
 	public Painter<N0, N1> removePainter(int index) {
+		Preconditions.checkPositionIndex(index, painters.size());
 		return painters.remove(index);
 	}
 	
@@ -639,6 +798,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
      * @return the index of a painter with the specified name
      */
 	public int indexOfPainter(String name) {
+		Preconditions.checkNotNullWithName(name, "name");
 		return painters.indexOfPainter(name);
 	}
 	
@@ -650,6 +810,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
      * @return the index of a painter with the specified name
      */
 	public Painter<N0, N1> getPainter(String name) {
+		Preconditions.checkNotNullWithName(name, "name");
 		return painters.get(indexOfPainter(name));
 	}
 	
@@ -671,6 +832,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
      *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
      */
 	public Painter<N0, N1> getPainter(int index) {
+		Preconditions.checkPositionIndex(index, painters.size());
 		return painters.get(index);
 	}
 
@@ -680,5 +842,15 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		{
 			painter.matrix = this;
 		}
+	}
+
+	void copy() {
+//		for (Section section0: axis0.sections) {
+//			for (Section section1: axis1.sections) {
+//				Zone zone = model.getZoneUnchecked(section0, section1);
+//				zone.getSelectedIterator();
+//				
+//			}	
+//		}
 	}
 }

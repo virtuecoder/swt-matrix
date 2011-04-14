@@ -747,7 +747,7 @@ class Layout<N extends Number> {
 
 	
 	
-	public class LayoutSequence {
+	class LayoutSequence {
 
 		private final List<AxisItem> items;
 		private final List<Bound> bounds;
