@@ -4,3 +4,6 @@ javadoc/*
 !javadoc/images
 src_tmp/*
 build/matrix.zip
+*.jar
+*.zip
+.~*

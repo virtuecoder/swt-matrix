@@ -207,7 +207,7 @@ CREATE TABLE `jos_components` (
   `enabled` tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (`id`),
   KEY `parent_option` (`parent`,`option`(32))
-) ENGINE=MyISAM AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -235,7 +235,7 @@ INSERT INTO `jos_components` (`id`, `name`, `link`, `menuid`, `parent`, `admin_m
 INSERT INTO `jos_components` (`id`, `name`, `link`, `menuid`, `parent`, `admin_menu_link`, `admin_menu_alt`, `option`, `ordering`, `admin_menu_img`, `iscore`, `params`, `enabled`) VALUES (17,'Wrapper','option=com_wrapper',0,0,'','Wrapper','com_wrapper',0,'',1,'',1);
 INSERT INTO `jos_components` (`id`, `name`, `link`, `menuid`, `parent`, `admin_menu_link`, `admin_menu_alt`, `option`, `ordering`, `admin_menu_img`, `iscore`, `params`, `enabled`) VALUES (18,'Mail To','',0,0,'','','com_mailto',0,'',1,'',1);
 INSERT INTO `jos_components` (`id`, `name`, `link`, `menuid`, `parent`, `admin_menu_link`, `admin_menu_alt`, `option`, `ordering`, `admin_menu_img`, `iscore`, `params`, `enabled`) VALUES (19,'Media Manager','',0,0,'option=com_media','Media Manager','com_media',0,'',1,'upload_extensions=bmp,csv,doc,epg,gif,ico,jpg,odg,odp,ods,odt,pdf,png,ppt,swf,txt,xcf,xls,BMP,CSV,DOC,EPG,GIF,ICO,JPG,ODG,ODP,ODS,ODT,PDF,PNG,PPT,SWF,TXT,XCF,XLS\nupload_maxsize=10000000\nfile_path=images\nimage_path=images/stories\nrestrict_uploads=1\nallowed_media_usergroup=3\ncheck_mime=1\nimage_extensions=bmp,gif,jpg,png\nignore_extensions=\nupload_mime=image/jpeg,image/gif,image/png,image/bmp,application/x-shockwave-flash,application/msword,application/excel,application/pdf,application/powerpoint,text/plain,application/x-zip\nupload_mime_illegal=text/html\nenable_flash=0\n\n',1);
-INSERT INTO `jos_components` (`id`, `name`, `link`, `menuid`, `parent`, `admin_menu_link`, `admin_menu_alt`, `option`, `ordering`, `admin_menu_img`, `iscore`, `params`, `enabled`) VALUES (20,'Articles','option=com_content',0,0,'','','com_content',0,'',1,'show_noauth=0\nshow_title=1\nlink_titles=0\nshow_intro=0\nshow_section=0\nlink_section=0\nshow_category=0\nlink_category=0\nshow_author=0\nshow_create_date=0\nshow_modify_date=0\nshow_item_navigation=0\nshow_readmore=1\nshow_vote=0\nshow_icons=1\nshow_pdf_icon=0\nshow_print_icon=1\nshow_email_icon=1\nshow_hits=1\nfeed_summary=0\nfilter_tags=\nfilter_attritbutes=\n\n',1);
+INSERT INTO `jos_components` (`id`, `name`, `link`, `menuid`, `parent`, `admin_menu_link`, `admin_menu_alt`, `option`, `ordering`, `admin_menu_img`, `iscore`, `params`, `enabled`) VALUES (20,'Articles','option=com_content',0,0,'','','com_content',0,'',1,'show_noauth=0\nshow_title=1\nlink_titles=0\nshow_intro=0\nshow_section=0\nlink_section=0\nshow_category=0\nlink_category=0\nshow_author=0\nshow_create_date=0\nshow_modify_date=0\nshow_item_navigation=0\nshow_readmore=1\nshow_vote=0\nshow_icons=1\nshow_pdf_icon=0\nshow_print_icon=1\nshow_email_icon=0\nshow_hits=1\nfeed_summary=0\nfilter_tags=\nfilter_attritbutes=\n\n',1);
 INSERT INTO `jos_components` (`id`, `name`, `link`, `menuid`, `parent`, `admin_menu_link`, `admin_menu_alt`, `option`, `ordering`, `admin_menu_img`, `iscore`, `params`, `enabled`) VALUES (21,'Configuration Manager','',0,0,'','Configuration','com_config',0,'',1,'',1);
 INSERT INTO `jos_components` (`id`, `name`, `link`, `menuid`, `parent`, `admin_menu_link`, `admin_menu_alt`, `option`, `ordering`, `admin_menu_img`, `iscore`, `params`, `enabled`) VALUES (22,'Installation Manager','',0,0,'','Installer','com_installer',0,'',1,'',1);
 INSERT INTO `jos_components` (`id`, `name`, `link`, `menuid`, `parent`, `admin_menu_link`, `admin_menu_alt`, `option`, `ordering`, `admin_menu_img`, `iscore`, `params`, `enabled`) VALUES (23,'Language Manager','',0,0,'','Languages','com_languages',0,'',1,'',1);
@@ -263,7 +263,7 @@ INSERT INTO `jos_components` (`id`, `name`, `link`, `menuid`, `parent`, `admin_m
 INSERT INTO `jos_components` (`id`, `name`, `link`, `menuid`, `parent`, `admin_menu_link`, `admin_menu_alt`, `option`, `ordering`, `admin_menu_img`, `iscore`, `params`, `enabled`) VALUES (46,'Upgrade','',0,35,'option=com_sef&task=showUpgrade','Upgrade','com_sef',10,'components/com_sef/assets/images/icon-16-update.png',0,'',1);
 INSERT INTO `jos_components` (`id`, `name`, `link`, `menuid`, `parent`, `admin_menu_link`, `admin_menu_alt`, `option`, `ordering`, `admin_menu_img`, `iscore`, `params`, `enabled`) VALUES (47,'Support','',0,35,'option=com_sef&controller=info&task=help','Support','com_sef',11,'components/com_sef/assets/images/icon-16-help.png',0,'',1);
 INSERT INTO `jos_components` (`id`, `name`, `link`, `menuid`, `parent`, `admin_menu_link`, `admin_menu_alt`, `option`, `ordering`, `admin_menu_img`, `iscore`, `params`, `enabled`) VALUES (49,'Advanced Module Manager','',0,0,'','Advanced Module Manager','com_advancedmodules',0,'',0,'\n',1);
-INSERT INTO `jos_components` (`id`, `name`, `link`, `menuid`, `parent`, `admin_menu_link`, `admin_menu_alt`, `option`, `ordering`, `admin_menu_img`, `iscore`, `params`, `enabled`) VALUES (50,'Kunena Forum','option=com_kunena',0,0,'option=com_kunena','Kunena Forum','com_kunena',0,'components/com_kunena/images/kunenafavicon.png',0,'',1);
+INSERT INTO `jos_components` (`id`, `name`, `link`, `menuid`, `parent`, `admin_menu_link`, `admin_menu_alt`, `option`, `ordering`, `admin_menu_img`, `iscore`, `params`, `enabled`) VALUES (54,'Kunena Forum','option=com_kunena',0,0,'option=com_kunena','Kunena Forum','com_kunena',0,'components/com_kunena/images/kunenafavicon.png',0,'',1);
 /*!40000 ALTER TABLE `jos_components` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -369,20 +369,20 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `jos_content` WRITE;
 /*!40000 ALTER TABLE `jos_content` DISABLE KEYS */;
-INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (1,'Welcome','welcome','','<p>Welcome to SWT Matrix! You must have taken the red pill :-)</p>\r\n<p>This site is under construction. Please come later.</p>\r\n<p><img src=\"images/under_construction.png\" border=\"0\" alt=\"under_construction\" width=\"256\" height=\"256\" style=\"border: 0;\" /></p>','',1,0,0,0,'2011-03-13 22:10:04',62,'','2011-04-14 07:59:33',62,0,'0000-00-00 00:00:00','2011-03-13 22:10:04','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',7,0,5,'','',0,3,'robots=\nauthor=');
+INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (1,'Welcome','welcome','','<p>Welcome to SWT Matrix! You must have taken the red pill :-)</p>\r\n<p>This site is under construction. Please come later.</p>\r\n<p><img src=\"images/under_construction.png\" border=\"0\" alt=\"under_construction\" width=\"256\" height=\"256\" style=\"border: 0;\" /></p>','',1,0,0,0,'2011-03-13 22:10:04',62,'','2011-04-15 07:10:37',62,0,'0000-00-00 00:00:00','2011-03-13 22:10:04','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=0\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',8,0,5,'','',0,3,'robots=\nauthor=');
 INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (2,'Products','products','','<p>Products</p>','',1,0,0,0,'2011-03-14 01:26:16',62,'','0000-00-00 00:00:00',0,0,'0000-00-00 00:00:00','2011-03-14 01:26:16','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',1,0,4,'','',0,62,'robots=\nauthor=');
 INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (3,'SWT Matrix','swtmatrix','','<p>SWT Matrix is a tabular widget for the SWT Java GUI toolkit. Is is characterized by an unlimited capacity and instant rendering.</p>','',1,1,0,1,'2011-03-14 01:58:18',62,'','2011-03-14 14:40:28',62,0,'0000-00-00 00:00:00','2011-03-14 01:58:18','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',2,0,7,'','',0,180,'robots=\nauthor=');
-INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (4,'Download','download','','<h3>Version 0.1 (alpha stage)</h3>\r\n<p><a href=\"swt-matrix/swt-matrix-0.1.jar\">swt-matrix-0.1.jar</a></p>\r\n<p>Java 1.5 required.</p>\r\n<p>The only third party library dependence is the <a href=\"http://www.eclipse.org/swt/\">SWT</a> library &gt;= 3.4 (the lower versions compatibility has not been investigated).</p>','',1,0,0,0,'2011-03-14 03:24:20',62,'','2011-04-13 10:49:36',62,0,'0000-00-00 00:00:00','2011-03-14 03:24:20','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',4,0,3,'','',0,19,'robots=\nauthor=');
-INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (5,'Features','swt-matrix-features','','<p class=\"filters\">Filters: <a id=\"filter-all\" href=\"#\">all</a> <a id=\"filter-current\" href=\"#\">current</a> <a id=\"filter-next\" href=\"#\">next</a> <a id=\"filter-future\" href=\"#\">future</a> <input id=\"filter-outstanding\" type=\"checkbox\"/> outstanding <input id=\"filter-high\" type=\"checkbox\" checked/> high <input id=\"filter-medium\" type=\"checkbox\" checked/> medium <input id=\"filter-low\" type=\"checkbox\" checked/> low</p>\r\n<!-- generated start --><table class=\'data\' cellspacing=\'1\'><tr><th style=\'white-space: nowrap\'>Feature</th><th>Description</th><th>Version</th><th>References</th><th>Importance</th><th>Outstanding</th></tr><tr><td colspan=\'7\' class=\'header\'><h3>Layout</h3></td></tr><tr><td style=\'white-space: nowrap\'>Standard sections</td><td>Header and body</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Custom sections</td><td>For example footer, filters can be set</td><td>0.1</td><td></td><td>high</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Unlimited number of items</td><td>Each section can have an unlimited number of items</td><td>0.1</td><td></td><td>high</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Virtualization</td><td>Results in performance not dependant on the number of items in sections</td><td>0.1</td><td></td><td>high</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Show / hide section</td><td>For example it\'s common to show / hide the header section</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Default cell width</td><td>Any cell that does not have a custom width will have the default width</td><td>0.1</td><td></td><td>medium</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Individual cell width</td><td></td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Default line width</td><td>Any line that does not have a custom width will have the default width</td><td>0.1</td><td></td><td>medium</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Individual line width</td><td></td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Spaces between cells</td><td>Similar to HTML table cellspacing attribute. It does not effect the cell size and cell painting algorithm.</td><td>0.1</td><td></td><td>medium</td><td>outstanding</td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Selection</h3></td></tr><tr><td style=\'white-space: nowrap\'>Select axis items</td><td>Both full rows and full columns can be selected</td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Select cells</td><td>Standard selection by mouse and keyboard.</td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Modify selection</td><td>Works for both full axis items and cells. It is done by standard CTRL selection gestures.</td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Header cells highlight</td><td>Header cells can be automatically highlighted for the selected cells.</td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Enable selection</td><td></td><td>0.1</td><td></td><td></td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Resize</h3></td></tr><tr><td style=\'white-space: nowrap\'>Resize rows and columns</td><td>Not only columns can be resized but rows as well.</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Multiple resize</td><td>Resizes all selected items to the same width as the one being resized</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Instant resize</td><td>See the item repainted with the new width while dragging, as opposed to repaint after drag finished.</td><td>0.1</td><td></td><td>medium</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Resize in all sections</td><td>Not only body items can be resized, but the headers ones as well. For example the row header width can be changed by the user dragging it\'s right edge.</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Default resize ability</td><td>All items in a section can have the resize ability enabled or disabled by default.</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Item resize ability</td><td>Individual items can have the resize ability enabled or disabled</td><td>0.1</td><td></td><td>medium</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Custom resize offset</td><td>Define how far from the line is the resize area</td><td>0.1</td><td></td><td>low</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Auto-resize</td><td>Column width and row height can be automatically calculated by double clicking in the resize area</td><td>0.2</td><td></td><td>high</td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Move</h3></td></tr><tr><td style=\'white-space: nowrap\'>Move rows and columns</td><td>Not only columns can be moved but rows as well.</td><td>0.1</td><td></td><td>high</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Multiple move</td><td>Moves all selected items to the same width as the one being moved</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Instant move</td><td>See the items reordered while dragging, as opposed to repaint only after drag finished.</td><td>0.1</td><td></td><td>medium</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Move in selection order</td><td>If multiple items are moved then they become ordered according to the sequence they were selected.</td><td>0.1</td><td></td><td>medium</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Move in all sections</td><td>Not only body items can be moved, but in other sections as well. </td><td>0.1</td><td></td><td>low</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Default move ability</td><td>All items in a section can have the move ability enabled or disabled by default.</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Item move ability</td><td>Individual items can have the move ability enabled or disabled</td><td>0.1</td><td></td><td>medium</td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Hide</h3></td></tr><tr><td style=\'white-space: nowrap\'>Hide rows and columns</td><td>Not only columns can be hidden but rows as well.</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Multiple hide</td><td>Hides all selected items to the same width as the one being hidden</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Hide in all sections</td><td>Not only body items can be hidden, but in other sections as well. </td><td>0.1</td><td></td><td>low</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Default hide ability</td><td>All items in a section can have the hide ability enabled or disabled by default.</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Item move ability</td><td>Individual items can have the hide ability enabled or disabled</td><td>0.1</td><td></td><td>medium</td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Group</h3></td></tr><tr><td style=\'white-space: nowrap\'>Cell merging</td><td>Individual cell merging</td><td>0.7</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Item hierarchy as groups</td><td>The hierarchy is illustrated by the item in higher level being merged to the extent of its children</td><td>0.7</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Item hierarchy as tree</td><td>A given row or column may display a tree like connections describing the hierarchy </td><td>0.7</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Collapse hierarchy items</td><td></td><td>0.7</td><td></td><td></td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Scroll</h3></td></tr><tr><td style=\'white-space: nowrap\'>Item scrolling</td><td>Scroll position is always snapped to the beginning of a first visible item</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Pixel scrolling</td><td>Smooth scrolling by pixels</td><td>0.5</td><td></td><td>medium</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Scroll to given item</td><td></td><td>0.5</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Auto-scroll with acceleration</td><td>The content will scroll automatically while a dragging operation reaches the edge of the scrollable area. It is during select, resize and move operations.</td><td>0.1</td><td></td><td>high</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Custom auto-scroll offset</td><td>Define how far from the edge of scrollable area is the auto-scrolling will start</td><td>0.1</td><td></td><td>low</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Custom auto-scroll acceleration</td><td>Define how fast the the auto-scroll will accelerate</td><td>1.+</td><td></td><td>low</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Freeze head</td><td>Prevent the first items from scrolling, making them always visible</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Freeze tail</td><td>Prevent the last items from scrolling, making them always visible</td><td>0.1</td><td></td><td>high</td><td>outstanding</td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Paint</h3></td></tr><tr><td style=\'white-space: nowrap\'>Background, foreground colors</td><td></td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Line color, width, style</td><td></td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Text font, color, align, padding</td><td>Custom text aligning horizontally and vertically</td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Automatic numbering in headers</td><td></td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Image size, align, padding</td><td></td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Multiline text</td><td></td><td>0.3</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Tilted text</td><td>Vertical or rotated </td><td>0.9</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Custom painter</td><td></td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Painters composition</td><td>List of matrix and zone painters is fully editable (add, replace, remove)</td><td>0.1</td><td></td><td></td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Background painter</td><td>Custom background painter for the whole matrix, not only the cell. Can be used for current row highlighting</td><td>0.1</td><td>Snippet_0010, Snippet_0015</td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Navigation cell painter</td><td></td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Cell style</td><td>Set of attributes that can be named and applied to a number of cells.</td><td></td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Zoom</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Shorten text at the end</td><td>Three dots at the end of text instead in the middle if the text is to long to fit in a cell.</td><td></td><td></td><td></td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Zones</h3></td></tr><tr><td style=\'white-space: nowrap\'>Zone as crossing of sections</td><td>Body zone = row axis body section and column axis body section, Column header zone = row axis header section and column axis body section</td><td>0.1</td><td></td><td></td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Separate painters</td><td>Each zone can have separate painters</td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Separate event handlers</td><td>Each zone can have separate event handlers</td><td>0.1</td><td></td><td></td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Gestures</h3></td></tr><tr><td style=\'white-space: nowrap\'>Custom gesture binding</td><td>Custom gesture binding for most of the user actions</td><td>0.1</td><td></td><td></td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Edit</h3></td></tr><tr><td style=\'white-space: nowrap\'>Text, combo</td><td>Allow changing the value of a cell.</td><td>0.2</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Native looking check box</td><td></td><td>0.2</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Custom editor</td><td></td><td>0.2</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Cut/copy/paste</td><td></td><td>0.2</td><td></td><td></td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Other</h3></td></tr><tr><td style=\'white-space: nowrap\'>Tooltips</td><td></td><td>0.8</td><td></td><td></td><td></td></tr></table><!-- generated end -->\r\n\r\n<script type=\"text/javascript\">\r\nfilterFeatures();\r\n</script>','',1,1,0,1,'2011-03-14 09:04:13',62,'','2011-04-14 12:18:33',62,62,'2011-04-14 12:18:33','2011-03-14 09:04:13','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',72,0,8,'','',0,349,'robots=\nauthor=');
+INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (4,'Download','download','','<h3><span style=\"color: #333333; font-family: Tahoma, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: normal;\">\r\n<p>Java 1.5 is required. The only third party library dependence is <a href=\"http://www.eclipse.org/swt/\" style=\"color: #1b57b1; text-decoration: none; font-weight: normal;\">SWT</a> library, version &gt;= 3.4 (the lower versions compatibility has not been tested).</p>\r\n</span></h3>\r\n<h3>Version 0.1 (alpha stage)</h3>\r\n<p><a href=\"swt-matrix/swt-matrix-0.1.jar\">swt-matrix-0.1.jar</a></p>\r\n<p><a href=\"swt-matrix/swt-matrix-snippets-0.1.zip\" style=\"color: #1b57b1; text-decoration: none; font-weight: normal;\">swt-matrix-snippets-0.1.zip</a></p>','',1,0,0,0,'2011-03-14 03:24:20',62,'','2011-04-15 19:03:57',62,0,'0000-00-00 00:00:00','2011-03-14 03:24:20','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',6,0,3,'','',0,26,'robots=\nauthor=');
+INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (5,'Features','swt-matrix-features','','<p class=\"filters\">Filters: <a id=\"filter-all\" href=\"#\">all</a> <a id=\"filter-current\" href=\"#\">current</a> <a id=\"filter-next\" href=\"#\">next</a> <a id=\"filter-future\" href=\"#\">future</a> <input id=\"filter-outstanding\" type=\"checkbox\"/> outstanding <input id=\"filter-high\" type=\"checkbox\" checked/> high <input id=\"filter-medium\" type=\"checkbox\" checked/> medium <input id=\"filter-low\" type=\"checkbox\" checked/> low</p>\r\n<!-- generated start --><table class=\'data\' cellspacing=\'1\'><tr><th style=\'white-space: nowrap\'>Feature</th><th>Description</th><th>Version</th><th>References</th><th>Importance</th><th>Outstanding</th></tr><tr><td colspan=\'7\' class=\'header\'><h3>Layout</h3></td></tr><tr><td style=\'white-space: nowrap\'>Standard sections</td><td>Header and body</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Custom sections</td><td>For example footer, filters can be set</td><td>0.1</td><td></td><td>high</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Unlimited number of items</td><td>Each section can have an unlimited number of items</td><td>0.1</td><td></td><td>high</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Virtualization</td><td>Results in performance not dependant on the number of items in sections</td><td>0.1</td><td></td><td>high</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Show / hide section</td><td>For example it\'s common to show / hide the header section</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Default cell width</td><td>Any cell that does not have a custom width will have the default width</td><td>0.1</td><td></td><td>medium</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Individual cell width</td><td></td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Default line width</td><td>Any line that does not have a custom width will have the default width</td><td>0.1</td><td></td><td>medium</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Individual line width</td><td></td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Spaces between cells</td><td>Similar to HTML table cellspacing attribute. It does not effect the cell size and cell painting algorithm.</td><td>0.1</td><td></td><td>medium</td><td>outstanding</td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Selection</h3></td></tr><tr><td style=\'white-space: nowrap\'>Select axis items</td><td>Both full rows and full columns can be selected</td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Select cells</td><td>Standard selection by mouse and keyboard.</td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Modify selection</td><td>Works for both full axis items and cells. It is done by standard CTRL selection gestures.</td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Header cells highlight</td><td>Header cells can be automatically highlighted for the selected cells.</td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Enable selection</td><td></td><td>0.1</td><td></td><td></td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Resize</h3></td></tr><tr><td style=\'white-space: nowrap\'>Resize rows and columns</td><td>Not only columns can be resized but rows as well.</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Multiple resize</td><td>Resizes all selected items to the same width as the one being resized</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Instant resize</td><td>See the item repainted with the new width while dragging, as opposed to repaint after drag finished.</td><td>0.1</td><td></td><td>medium</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Resize in all sections</td><td>Not only body items can be resized, but the headers ones as well. For example the row header width can be changed by the user dragging it\'s right edge.</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Default resize ability</td><td>All items in a section can have the resize ability enabled or disabled by default.</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Item resize ability</td><td>Individual items can have the resize ability enabled or disabled</td><td>0.1</td><td></td><td>medium</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Custom resize offset</td><td>Define how far from the line is the resize area</td><td>0.1</td><td></td><td>low</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Auto-resize</td><td>Column width and row height can be automatically calculated by double clicking in the resize area</td><td>0.2</td><td></td><td>high</td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Move</h3></td></tr><tr><td style=\'white-space: nowrap\'>Move rows and columns</td><td>Not only columns can be moved but rows as well.</td><td>0.1</td><td></td><td>high</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Multiple move</td><td>Moves all selected items to the same width as the one being moved</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Instant move</td><td>See the items reordered while dragging, as opposed to repaint only after drag finished.</td><td>0.1</td><td></td><td>medium</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Move in selection order</td><td>If multiple items are moved then they become ordered according to the sequence they were selected.</td><td>0.1</td><td></td><td>medium</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Move in all sections</td><td>Not only body items can be moved, but in other sections as well. </td><td>0.1</td><td></td><td>low</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Default move ability</td><td>All items in a section can have the move ability enabled or disabled by default.</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Item move ability</td><td>Individual items can have the move ability enabled or disabled</td><td>0.1</td><td></td><td>medium</td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Hide</h3></td></tr><tr><td style=\'white-space: nowrap\'>Hide rows and columns</td><td>Not only columns can be hidden but rows as well.</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Multiple hide</td><td>Hides all selected items to the same width as the one being hidden</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Hide in all sections</td><td>Not only body items can be hidden, but in other sections as well. </td><td>0.1</td><td></td><td>low</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Default hide ability</td><td>All items in a section can have the hide ability enabled or disabled by default.</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Item move ability</td><td>Individual items can have the hide ability enabled or disabled</td><td>0.1</td><td></td><td>medium</td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Group</h3></td></tr><tr><td style=\'white-space: nowrap\'>Cell merging</td><td>Individual cell merging</td><td>0.7</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Item hierarchy as groups</td><td>The hierarchy is illustrated by the item in higher level being merged to the extent of its children</td><td>0.7</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Item hierarchy as tree</td><td>A given row or column may display a tree like connections describing the hierarchy </td><td>0.7</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Collapse hierarchy items</td><td></td><td>0.7</td><td></td><td></td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Scroll</h3></td></tr><tr><td style=\'white-space: nowrap\'>Item scrolling</td><td>Scroll position is always snapped to the beginning of a first visible item</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Pixel scrolling</td><td>Smooth scrolling by pixels</td><td>0.5</td><td></td><td>medium</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Scroll to given item</td><td></td><td>0.5</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Auto-scroll with acceleration</td><td>The content will scroll automatically while a dragging operation reaches the edge of the scrollable area. It is during select, resize and move operations.</td><td>0.1</td><td></td><td>high</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Custom auto-scroll offset</td><td>Define how far from the edge of scrollable area is the auto-scrolling will start</td><td>0.1</td><td></td><td>low</td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Custom auto-scroll acceleration</td><td>Define how fast the the auto-scroll will accelerate</td><td>1.+</td><td></td><td>low</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Freeze head</td><td>Prevent the first items from scrolling, making them always visible</td><td>0.1</td><td></td><td>high</td><td></td></tr><tr><td style=\'white-space: nowrap\'>Freeze tail</td><td>Prevent the last items from scrolling, making them always visible</td><td>0.1</td><td></td><td>high</td><td>outstanding</td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Paint</h3></td></tr><tr><td style=\'white-space: nowrap\'>Background, foreground colors</td><td></td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Line color, width, style</td><td></td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Text font, color, align, padding</td><td>Custom text aligning horizontally and vertically</td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Automatic numbering in headers</td><td></td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Image size, align, padding</td><td></td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Multiline text</td><td></td><td>0.3</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Tilted text</td><td>Vertical or rotated </td><td>0.9</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Custom painter</td><td></td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Painters composition</td><td>List of matrix and zone painters is fully editable (add, replace, remove)</td><td>0.1</td><td></td><td></td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Background painter</td><td>Custom background painter for the whole matrix, not only the cell. Can be used for current row highlighting</td><td>0.1</td><td>Snippet_0010, Snippet_0015</td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Navigation cell painter</td><td></td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Cell style</td><td>Set of attributes that can be named and applied to a number of cells.</td><td></td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Zoom</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Shorten text at the end</td><td>Three dots at the end of text instead in the middle if the text is to long to fit in a cell.</td><td></td><td></td><td></td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Zones</h3></td></tr><tr><td style=\'white-space: nowrap\'>Zone as crossing of sections</td><td>Body zone = row axis body section and column axis body section, Column header zone = row axis header section and column axis body section</td><td>0.1</td><td></td><td></td><td>outstanding</td></tr><tr><td style=\'white-space: nowrap\'>Separate painters</td><td>Each zone can have separate painters</td><td>0.1</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Separate event handlers</td><td>Each zone can have separate event handlers</td><td>0.1</td><td></td><td></td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Gestures</h3></td></tr><tr><td style=\'white-space: nowrap\'>Custom gesture binding</td><td>Custom gesture binding for most of the user actions</td><td>0.1</td><td></td><td></td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Edit</h3></td></tr><tr><td style=\'white-space: nowrap\'>Text, combo</td><td>Allow changing the value of a cell.</td><td>0.2</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Native looking check box</td><td></td><td>0.2</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Custom editor</td><td></td><td>0.2</td><td></td><td></td><td></td></tr><tr><td style=\'white-space: nowrap\'>Cut/copy/paste</td><td></td><td>0.2</td><td></td><td></td><td></td></tr><tr><td colspan=\'7\' class=\'header\'><h3>Other</h3></td></tr><tr><td style=\'white-space: nowrap\'>Tooltips</td><td></td><td>0.8</td><td></td><td></td><td></td></tr></table><!-- generated end -->\r\n\r\n<script type=\"text/javascript\">\r\nfilterFeatures();\r\n</script>','',1,1,0,1,'2011-03-14 09:04:13',62,'','2011-04-14 12:54:15',62,0,'0000-00-00 00:00:00','2011-03-14 09:04:13','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',73,0,8,'','',0,352,'robots=\nauthor=');
 INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (6,'404','404','','<h1>404: Not Found</h1>\r\n<h2>Sorry, but the content you requested could not be found</h2>','',1,0,0,0,'2004-11-11 12:44:38',62,'','2011-03-14 12:01:41',0,62,'2004-11-11 12:45:09','2004-10-17 00:00:00','0000-00-00 00:00:00','','','menu_image=-1\nitem_title=0\npageclass_sfx=\nback_button=\nrating=0\nauthor=0\ncreatedate=0\nmodifydate=0\npdf=0\nprint=0\nemail=0',1,0,2,'','',0,750,'');
 INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (7,'API','api','','<p>api</p>','',-2,1,0,1,'2011-03-14 12:43:56',62,'','2011-03-14 14:40:19',62,0,'0000-00-00 00:00:00','2011-03-14 12:43:56','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',2,0,0,'','',0,5,'robots=\nauthor=');
 INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (8,'Contact','contact','','<p>email: <a href=\"mailto: info@netanel.pl\" title=\"email\">info@netanel.pl</a></p>','',1,0,0,0,'2011-03-14 18:03:36',62,'','0000-00-00 00:00:00',0,0,'0000-00-00 00:00:00','2011-03-14 18:03:36','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',1,0,1,'','',0,5,'robots=\nauthor=');
-INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (9,'SWT Matrix - Overview','swt-matrix-overview','','<p>SWT Matrix is a tabular widget for the <a href=\"http://www.eclipse.org/swt\">SWT </a>Java GUI toolkit.</p>\r\n<p>What makes it different from other grid components is <strong>unlimited capacity</strong> and <strong>instant rendering</strong>. <br />It also focuses on developer productivity by <strong>clean design</strong> with minimal learning curve.</p>\r\n<p><img src=\"images/infinite.png\" border=\"0\" width=\"64\" height=\"64\" style=\"float:left; padding-right:10px\" /></p>\r\n<h3><a name=\"capacity\"></a>Unlimited Capacity</h3>\r\n<p style=\"padding-left: 85px\">SWT Matrix can handle an <strong>unlimited</strong> number of rows and columns. Integer.MAX_VALUE (2 147 483 647) is not a limit, neither is Long.MAX_VALUE (9 223 372 036 854 775 807). And still it performs block selection, moving, resizing scrolling and setting of various properties of cells, rows and columns. More then 2147483647 items is a rare case, but it <span style=\"text-decoration: underline;\">can</span> happen. It\'s better to be <span style=\"text-decoration: underline;\">safe</span> then sorry.</p>\r\n<p><img src=\"images/clock.png\" border=\"0\" width=\"64\" height=\"64\" style=\"float:left; padding-right:10px; \" /></p>\r\n<h3><a name=\"instant\"></a>Instant Rendering</h3>\r\n<p style=\"padding-left: 85px\"><strong>Instant</strong> for GUI applications means responding in less then 0.1 sec. Now consider scrolling a content of a table with 1 million rows and columns in a full screen mode with 1680 x 1050 screen resolution. It\'s around 2000 visible cells of size 50x16. Components that don\'t support virtual display choke completely. BTW don\'t be misled by SWT.VIRTUAL constructor flag of those widgets. Scroll to the end and you will see that it is lazy initialization rather then virtualization. None of the popular tabular components tested on Windows XP 2GHz are consistent to provide instant response for basic operations like navigation. SWT Matrix paints itself in about <strong>50 ms</strong>, which is at least <strong>8x better</strong> then the other grid/table widgets. And not all identified optimizations have been implemented yet.</p>\r\n<p><img src=\"images/design.png\" border=\"0\" width=\"64\" height=\"64\" style=\"float:left; padding-right:10px; \" /></p>\r\n<h3><a name=\"design\"></a>Clean design</h3>\r\n<p style=\"padding-left: 85px\">Total of <strong>7 classes</strong> does not sound like an over complicated design for the amount of supported features. <strong>Symmetry</strong> is also a measure of a clean design. Thus there is no such a thing that works for columns, but does not work for rows and vice versa, or works for one section and does not for another. For example since columns can be resized why not resize in the row header? Even freezing is symetric. If the head of an axis can be frozen why not the tail? A frozen footer may come handy.</p>\r\n<p>The current major limitations are lack of ready matrix editor, cell merging, column/row grouping and hierarchy. But they are coming in the next versions. Look {article swt-matrix-features}{link}here{/link}{/article} for the detail feature list.</p>\r\n<p>The component is released under<strong> dual licence</strong>: commercial one and LGPL for private / non commercial use.</p>\r\n<p>The current stage is <strong>alpha release</strong>.</p>','',1,1,0,1,'2011-03-15 07:00:25',62,'','2011-04-14 08:00:19',62,0,'0000-00-00 00:00:00','2011-03-15 07:00:25','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',71,0,6,'','',0,221,'robots=\nauthor=');
+INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (9,'SWT Matrix - Overview','swt-matrix-overview','','<p>SWT Matrix is a tabular widget for the <a href=\"http://www.eclipse.org/swt\">SWT </a>Java GUI toolkit.</p>\r\n<p>What makes it different from other grid components is <strong>unlimited capacity</strong> and <strong>instant rendering</strong>. <br />It also focuses on developer productivity by <strong>clean design</strong> with minimal learning curve.</p>\r\n<p><img src=\"images/infinite.png\" border=\"0\" width=\"64\" height=\"64\" style=\"float:left; padding-right:10px\" /></p>\r\n<h3><a name=\"capacity\"></a>Unlimited Capacity</h3>\r\n<p style=\"padding-left: 85px\">SWT Matrix can handle an <strong>unlimited</strong> number of rows and columns. Integer.MAX_VALUE (2 147 483 647) is not a limit, neither is Long.MAX_VALUE (9 223 372 036 854 775 807). And still it performs block selection, moving, resizing scrolling and setting of various properties of cells, rows and columns. More then 2147483647 items is a rare case, but it <span style=\"text-decoration: underline;\">can</span> happen. It\'s better to be <span style=\"text-decoration: underline;\">safe</span> then sorry.</p>\r\n<p><img src=\"images/clock.png\" border=\"0\" width=\"64\" height=\"64\" style=\"float:left; padding-right:10px; \" /></p>\r\n<h3><a name=\"instant\"></a>Instant Rendering</h3>\r\n<p style=\"padding-left: 85px\"><strong>Instant</strong> for GUI applications means responding in less then 0.1 sec. Now consider scrolling a content of a table with 1 million rows and columns in a full screen mode with 1680 x 1050 screen resolution. It\'s around 2000 visible cells of size 50x16. Components that don\'t support virtual display choke completely. BTW don\'t be misled by SWT.VIRTUAL constructor flag of those widgets. Scroll to the end and you will see that it is lazy initialization rather then virtualization. None of the popular tabular components tested on Windows XP 2GHz are consistent to provide instant response for basic operations like navigation. SWT Matrix paints itself in about <strong>50 ms</strong>, which is at least <strong>8x better</strong> then the other grid/table widgets. And not all identified optimizations have been implemented yet.</p>\r\n<p><img src=\"images/design.png\" border=\"0\" width=\"64\" height=\"64\" style=\"float:left; padding-right:10px; \" /></p>\r\n<h3><a name=\"design\"></a>Clean design</h3>\r\n<p style=\"padding-left: 85px\">Total of <strong>5 classes</strong> does not sound like an over-complicated design for the amount of supported features and compared to hundreds of classes in other solutions. <strong>Symmetry</strong> is also a measure of a clean design. Thus there is no such a thing that works for columns, but does not work for rows and vice versa, or works for one section and does not for another. For example since columns can be resized why not resize in the row header? Even freezing is symetric. If the head of an axis can be frozen why not the tail? A frozen footer may come handy.</p>\r\n<p>The current major limitations are lack of ready matrix editor, cell merging, column/row grouping and hierarchy. But they are coming in the next versions. Look {article swt-matrix-features}{link}here{/link}{/article} for the detail feature list.</p>\r\n<p>The component is released under<strong> dual licence</strong>: commercial one and LGPL for private / non commercial use.</p>\r\n<p>The current stage is <strong>alpha release</strong>.</p>','',1,1,0,1,'2011-03-15 07:00:25',62,'','2011-04-15 16:05:25',62,0,'0000-00-00 00:00:00','2011-03-15 07:00:25','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',73,0,6,'','',0,230,'robots=\nauthor=');
 INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (10,'Design','swt-matrix-design','','<p>The over arching principle for the matrix widget design is simplicity, that materializes in:</p>\r\n<p>\r\n<ul>\r\n<li>Separation of concerns. The state maintenance has been </li>\r\n</ul>\r\n</p>\r\n<h3>Main concepts</h3>\r\n<p>- Matrix, MatrixAxis</p>\r\n<p>- Cell and line</p>\r\n<p>- AxisLayout</p>\r\n<p>- Index</p>\r\n<p>- Section</p>\r\n<p>- Zone</p>\r\n<p>- Dock</p>\r\n<p>- Painters</p>\r\n<p> </p>\r\n<p> </p>\r\n<p> </p>\r\n<p>Performance</p>\r\n<p>- Loop inversion: loop painters -&gt; loop cells -&gt; paint</p>\r\n<p>- Caching the layout computation results, paint does not recompute widths, distances, visible indexes</p>\r\n<p>- Caching results of GC.stringExtent for single characters of each font used in TextPainter.</p>\r\n<p> </p>\r\n<p>Indexes</p>\r\n<p>model index - original index that numbers the items in the model</p>\r\n<p>order index - position of the model index in the order sequence</p>\r\n<p>visible index - position of the model index in the order seqence after hiding some items</p>\r\n<p>The letter one matches with what the user sees on the screen.</p>\r\n<p> </p>\r\n<p>Selection and reordering is limited to the scope a single section only.</p>\r\n<p> </p>\r\n<p>Freezing</p>\r\n<p> </p>\r\n<p>Command</p>\r\n<p> </p>\r\n<p>Item reordering</p>\r\n<p> </p>\r\n<p>Indexes to selection are interim (position in order sequence ignoring hiding).</p>\r\n<p>This is to naturaly support a scenario of for example selecting extent</p>\r\n<p>from column 4 to column 6 including a hidden column 5 in between.</p>\r\n<p> </p>','',1,1,0,1,'2011-03-15 10:14:57',62,'','2011-04-13 12:27:57',62,62,'2011-04-13 12:27:57','2011-03-15 10:14:57','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',4,0,5,'','',0,5,'robots=\nauthor=');
 INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (11,'Snippets','snippets','','<p>Snippets are minimal stand-alone programs that demonstrate specific techniques or functionality. Often a small example is the easiest way to understand how to use a particular feature.</p>\r\n<!-- generated start --><p>Layout</p><ul><li><a href=\'swt-matrix/snippets/Snippet_0001.java\'>Create matrix with default model.</a></li><li><a href=\'swt-matrix/snippets/Snippet_0002.java\'>Add / remove model items.</a></li></ul><p>Painters</p><ul><li><a href=\'swt-matrix/snippets/Snippet_0010.java\'>Draw custom background for the whole matrix.</a></li><li><a href=\'swt-matrix/snippets/Snippet_0011.java\'>Draw custom current cell marker.</a></li><li><a href=\'swt-matrix/snippets/Snippet_0012.java\'>Change the line style.</a></li><li><a href=\'swt-matrix/snippets/Snippet_0013.java\'>Gap between cells like HTML table cellspacing attribute. Hide lines.</a></li><li><a href=\'swt-matrix/snippets/Snippet_0014.java\'>Altering row background.</a></li><li><a href=\'swt-matrix/snippets/Snippet_0015.java\'>Current row gradient highlighter.</a></li><li><a href=\'swt-matrix/snippets/Snippet_0016.java\'>Mark selection with SWT.COLOR_LIST... colors.</a></li><li><a href=\'swt-matrix/snippets/Snippet_0017.java\'>Cell background calculated</a></li><li><a href=\'swt-matrix/snippets/Snippet_0018.java\'>Image painting</a></li><li><a href=\'swt-matrix/snippets/Snippet_0019.java\'>Align column to the right.</a></li></ul><p>Scrolling</p><ul><li><a href=\'swt-matrix/snippets/Snippet_0200.java\'>Freeze head and tail</a></li><li><a href=\'swt-matrix/snippets/Snippet_0201.java\'>Freeze head and tail with different color for the dividing line</a></li></ul><p>Other</p><ul><li><a href=\'swt-matrix/snippets/Snippet_0901.java\'>Change gesture binding.</a></li></ul><!-- generated end -->','',1,1,0,1,'2011-03-15 10:17:07',62,'','2011-03-25 19:34:37',62,0,'0000-00-00 00:00:00','2011-03-15 10:17:07','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',6,0,4,'','',0,10,'robots=\nauthor=');
 INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (12,'Tutorial','tutorial','','<p>{article swt-matrix-design}{url}design{/article}</p>','',-2,1,0,1,'2011-03-15 10:17:35',62,'','2011-03-15 10:54:36',62,0,'0000-00-00 00:00:00','2011-03-15 10:17:35','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',2,0,0,'','',0,0,'robots=\nauthor=');
-INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (13,'Tutorial','tutorial','','<p>{article swt-matrix-design}<a href=\"{url}\">;design</a>{/article}</p>','',1,1,0,1,'2011-03-15 10:17:35',62,'','2011-03-15 10:56:39',62,0,'0000-00-00 00:00:00','2011-03-15 10:17:35','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',5,0,3,'','',0,6,'robots=\nauthor=');
-INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (14,'Buy','buy','','<p>The commercial licence is not available for purchase yet. The first release of the product is due on June 30th, 2011.</p>\r\n<p>Your donation now though would be deducted from any licence fees in the future and would speed up the product development.</p>\r\n<p><input alt=\"PayPal - The safer, easier way to pay online!\" name=\"submit\" src=\"https://www.paypalobjects.com/WEBSCR-640-20110401-1/en_US/i/btn/btn_donateCC_LG.gif\" type=\"image\" /> <img src=\"https://www.paypalobjects.com/WEBSCR-640-20110401-1/pl_PL/i/scr/pixel.gif\" border=\"0\" width=\"1\" height=\"1\" /></p>\r\n<p> </p>','',1,1,0,1,'2011-03-17 14:17:45',62,'','2011-04-12 07:55:56',62,0,'0000-00-00 00:00:00','2011-03-17 14:17:45','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',5,0,2,'','',0,23,'robots=\nauthor=');
+INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (13,'Tutorial','swt-matrix-tutorial','','<!-- ArticleToC: enabled=yes -->\r\n<h3>Layout</h3>\r\n<p>The diagram below presents the basic concepts of the Matrix layout.</p>\r\n<p><img src=\"swt-matrix/images/Section.png\" border=\"0\" width=\"473\" height=\"267\" /></p>\r\n<p style=\"text-align: left; \"><strong>Diagram 1</strong></p>\r\n<table class=\"dictionary\" border=\"0\">\r\n<tbody>\r\n<tr>\r\n<td>\r\n<p><strong>Axis</strong></p>\r\n</td>\r\n<td>\r\n<p>Axis is one of the two <strong>dimension</strong>s of the two-dimensional matrix. Axis names are appended with 0 and 1 in order to make them as short as possible, even in length and staying next to each other when sorted.</p>\r\n<pre xml:lang=\"java\">Axis axis0 = matrix.getAxis0();\r\nAxis axis1 = matrix.getAxis1();</pre>\r\nis faster to type and more readable then\r\n<pre xml:lang=\"java\">Axis rowAxis = matrix.getRowAxis();\r\nAxis columnAxis = matrix.getColumnAxis();</pre>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<p><strong>Section</strong></p>\r\n</td>\r\n<td>\r\n<p>Section is a continuous <strong>segment</strong> of a matrix axis containing a number of items. for example, Section can serve as a header, body, footer, filter, etc. By default each axis has two sections: <strong>header</strong> with one item and <strong>body</strong> with zero items.</p>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<p><strong>Zone</strong></p>\r\n</td>\r\n<td>\r\n<p>Zone constitutes a <strong>region</strong> of the matrix where a section from <code>axis0</code> and a section from the <code>axis1</code> <strong>intersect</strong> with each other. There are four zones on the diagram above:</p>\r\n<table border=\"0\">\r\n<tbody>\r\n<tr>\r\n<td>body</td>\r\n<td>at intersection of axis0 body and axis1 body</td>\r\n</tr>\r\n<tr>\r\n<td>column header</td>\r\n<td>at intersection of axis0 header and axis1 body</td>\r\n</tr>\r\n<tr>\r\n<td>row header</td>\r\n<td>at intersection of axis0 body and axis1 header</td>\r\n</tr>\r\n<tr>\r\n<td>top left</td>\r\n<td>at intersection of axis0 header and axis1 header</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<h3>Painting</h3>\r\n<p><span style=\"font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; -webkit-border-horizontal-spacing: 2px; -webkit-border-vertical-spacing: 2px; color: #000000; line-height: normal;\">Painter is responsible to <strong>draw</strong> everything that appears on the matrix canvas: background, images, text, lines.</span></p>\r\n<p> </p>\r\n<p> </p>','',1,1,0,1,'2011-03-15 10:17:35',62,'','2011-04-15 22:05:25',62,62,'2011-04-15 22:05:25','2011-03-15 10:17:35','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',43,0,3,'','',0,106,'robots=\nauthor=');
+INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (14,'Buy / Donate','buy','','<p>The commercial licence is not available for purchase yet. The first release of the product is due on June 30th, 2011.</p>\r\n<p>Your donation now though would be deducted from any licence fees in the future and would speed up the product development.</p>\r\n<p><input alt=\"PayPal - The safer, easier way to pay online!\" name=\"submit\" src=\"https://www.paypalobjects.com/WEBSCR-640-20110401-1/en_US/i/btn/btn_donateCC_LG.gif\" type=\"image\" /> <img src=\"https://www.paypalobjects.com/WEBSCR-640-20110401-1/pl_PL/i/scr/pixel.gif\" border=\"0\" width=\"1\" height=\"1\" /></p>\r\n<p> </p>','',1,1,0,1,'2011-03-17 14:17:45',62,'','2011-04-15 21:02:12',62,0,'0000-00-00 00:00:00','2011-03-17 14:17:45','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',6,0,2,'','',0,26,'robots=\nauthor=');
 INSERT INTO `jos_content` (`id`, `title`, `alias`, `title_alias`, `introtext`, `fulltext`, `state`, `sectionid`, `mask`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `parentid`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`) VALUES (15,'FAQ','swt-matrix-faq','','<p>Q. I can\'t find the required method in Matrix class, where is it?</p>\r\n<p>A. Most of the cell related methods are in Zone class. The axis items, which are rows and columns, on the other hand are handled by Section and Axis classes.</p>','',1,1,0,1,'2011-03-27 16:35:28',62,'','0000-00-00 00:00:00',0,0,'0000-00-00 00:00:00','2011-03-27 16:35:28','0000-00-00 00:00:00','','','show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=',1,0,1,'','',0,0,'robots=\nauthor=');
 /*!40000 ALTER TABLE `jos_content` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -454,7 +454,7 @@ CREATE TABLE `jos_core_acl_aro` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `jos_section_value_value_aro` (`section_value`(100),`value`(100)),
   KEY `jos_gacl_hidden_aro` (`hidden`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -464,6 +464,10 @@ SET character_set_client = @saved_cs_client;
 LOCK TABLES `jos_core_acl_aro` WRITE;
 /*!40000 ALTER TABLE `jos_core_acl_aro` DISABLE KEYS */;
 INSERT INTO `jos_core_acl_aro` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (10,'users','62',0,'Administrator',0);
+INSERT INTO `jos_core_acl_aro` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (11,'users','63',0,'Jacek',0);
+INSERT INTO `jos_core_acl_aro` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (12,'users','64',0,'bbb',0);
+INSERT INTO `jos_core_acl_aro` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (13,'users','65',0,'cccc',0);
+INSERT INTO `jos_core_acl_aro` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (14,'users','66',0,'dddd',0);
 /*!40000 ALTER TABLE `jos_core_acl_aro` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -581,6 +585,10 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `jos_core_acl_groups_aro_map` WRITE;
 /*!40000 ALTER TABLE `jos_core_acl_groups_aro_map` DISABLE KEYS */;
+INSERT INTO `jos_core_acl_groups_aro_map` (`group_id`, `section_value`, `aro_id`) VALUES (18,'',11);
+INSERT INTO `jos_core_acl_groups_aro_map` (`group_id`, `section_value`, `aro_id`) VALUES (18,'',12);
+INSERT INTO `jos_core_acl_groups_aro_map` (`group_id`, `section_value`, `aro_id`) VALUES (18,'',13);
+INSERT INTO `jos_core_acl_groups_aro_map` (`group_id`, `section_value`, `aro_id`) VALUES (18,'',14);
 INSERT INTO `jos_core_acl_groups_aro_map` (`group_id`, `section_value`, `aro_id`) VALUES (25,'',10);
 /*!40000 ALTER TABLE `jos_core_acl_groups_aro_map` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -632,6 +640,801 @@ LOCK TABLES `jos_core_log_searches` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `jos_fb_announcement`
+--
+
+DROP TABLE IF EXISTS `jos_fb_announcement`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `jos_fb_announcement` (
+  `id` int(3) NOT NULL auto_increment,
+  `title` tinytext NOT NULL,
+  `sdescription` text NOT NULL,
+  `description` text NOT NULL,
+  `created` datetime NOT NULL default '0000-00-00 00:00:00',
+  `published` tinyint(1) NOT NULL default '0',
+  `ordering` tinyint(4) NOT NULL default '0',
+  `showdate` tinyint(1) NOT NULL default '1',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `jos_fb_announcement`
+--
+
+LOCK TABLES `jos_fb_announcement` WRITE;
+/*!40000 ALTER TABLE `jos_fb_announcement` DISABLE KEYS */;
+/*!40000 ALTER TABLE `jos_fb_announcement` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jos_fb_attachments`
+--
+
+DROP TABLE IF EXISTS `jos_fb_attachments`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `jos_fb_attachments` (
+  `mesid` int(11) NOT NULL default '0',
+  `filelocation` text NOT NULL,
+  KEY `mesid` (`mesid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `jos_fb_attachments`
+--
+
+LOCK TABLES `jos_fb_attachments` WRITE;
+/*!40000 ALTER TABLE `jos_fb_attachments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `jos_fb_attachments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jos_fb_categories`
+--
+
+DROP TABLE IF EXISTS `jos_fb_categories`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `jos_fb_categories` (
+  `id` int(11) NOT NULL auto_increment,
+  `parent` int(11) default '0',
+  `name` tinytext,
+  `cat_emoticon` tinyint(4) NOT NULL default '0',
+  `locked` tinyint(4) NOT NULL default '0',
+  `alert_admin` tinyint(4) NOT NULL default '0',
+  `moderated` tinyint(4) NOT NULL default '1',
+  `moderators` varchar(15) default NULL,
+  `pub_access` tinyint(4) default '1',
+  `pub_recurse` tinyint(4) default '1',
+  `admin_access` tinyint(4) default '0',
+  `admin_recurse` tinyint(4) default '1',
+  `ordering` tinyint(4) NOT NULL default '0',
+  `future2` int(11) default '0',
+  `published` tinyint(4) NOT NULL default '0',
+  `checked_out` tinyint(4) NOT NULL default '0',
+  `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
+  `review` tinyint(4) NOT NULL default '0',
+  `allow_anonymous` tinyint(4) NOT NULL default '0',
+  `post_anonymous` tinyint(4) NOT NULL default '0',
+  `hits` int(11) NOT NULL default '0',
+  `description` text NOT NULL,
+  `headerdesc` text NOT NULL,
+  `class_sfx` varchar(20) NOT NULL,
+  `id_last_msg` int(10) NOT NULL default '0',
+  `numTopics` mediumint(8) NOT NULL default '0',
+  `numPosts` mediumint(8) NOT NULL default '0',
+  `time_last_msg` int(11) default NULL,
+  PRIMARY KEY  (`id`),
+  KEY `parent` (`parent`),
+  KEY `published_pubaccess_id` (`published`,`pub_access`,`id`),
+  KEY `msg_id` (`id_last_msg`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `jos_fb_categories`
+--
+
+LOCK TABLES `jos_fb_categories` WRITE;
+/*!40000 ALTER TABLE `jos_fb_categories` DISABLE KEYS */;
+INSERT INTO `jos_fb_categories` (`id`, `parent`, `name`, `cat_emoticon`, `locked`, `alert_admin`, `moderated`, `moderators`, `pub_access`, `pub_recurse`, `admin_access`, `admin_recurse`, `ordering`, `future2`, `published`, `checked_out`, `checked_out_time`, `review`, `allow_anonymous`, `post_anonymous`, `hits`, `description`, `headerdesc`, `class_sfx`, `id_last_msg`, `numTopics`, `numPosts`, `time_last_msg`) VALUES (1,0,'Main Forum',0,0,0,1,NULL,0,0,0,0,1,0,1,0,'0000-00-00 00:00:00',0,0,0,0,'This is the main forum category. As a level one category it serves as a container for individual boards or forums. It is also referred to as a level 1 category and is a must have for any Kunena Forum setup.','In order to provide additional information for you guests and members, the forum header can be leveraged to display text at the very top of a particular category.','',2,2,0,1302859368);
+INSERT INTO `jos_fb_categories` (`id`, `parent`, `name`, `cat_emoticon`, `locked`, `alert_admin`, `moderated`, `moderators`, `pub_access`, `pub_recurse`, `admin_access`, `admin_recurse`, `ordering`, `future2`, `published`, `checked_out`, `checked_out_time`, `review`, `allow_anonymous`, `post_anonymous`, `hits`, `description`, `headerdesc`, `class_sfx`, `id_last_msg`, `numTopics`, `numPosts`, `time_last_msg`) VALUES (4,1,'General',0,0,0,0,NULL,0,0,0,0,2,0,1,0,'0000-00-00 00:00:00',0,0,0,0,'Forum to discuss any topic','','',2,1,0,1302859368);
+/*!40000 ALTER TABLE `jos_fb_categories` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jos_fb_config`
+--
+
+DROP TABLE IF EXISTS `jos_fb_config`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `jos_fb_config` (
+  `id` int(11) NOT NULL default '0',
+  `board_title` text,
+  `email` text,
+  `board_offline` int(11) default NULL,
+  `board_ofset` text,
+  `offline_message` text,
+  `default_view` text,
+  `enablerss` int(11) default NULL,
+  `enablepdf` int(11) default NULL,
+  `threads_per_page` int(11) default NULL,
+  `messages_per_page` int(11) default NULL,
+  `messages_per_page_search` int(11) default NULL,
+  `showhistory` int(11) default NULL,
+  `historylimit` int(11) default NULL,
+  `shownew` int(11) default NULL,
+  `newchar` text,
+  `jmambot` int(11) default NULL,
+  `disemoticons` int(11) default NULL,
+  `template` text,
+  `templateimagepath` text,
+  `joomlastyle` int(11) default NULL,
+  `showannouncement` int(11) default NULL,
+  `avataroncat` int(11) default NULL,
+  `catimagepath` text,
+  `numchildcolumn` int(11) default NULL,
+  `showchildcaticon` int(11) default NULL,
+  `annmodid` text,
+  `rtewidth` int(11) default NULL,
+  `rteheight` int(11) default NULL,
+  `enablerulespage` int(11) default NULL,
+  `enableforumjump` int(11) default NULL,
+  `reportmsg` int(11) default NULL,
+  `username` int(11) default NULL,
+  `askemail` int(11) default NULL,
+  `showemail` int(11) default NULL,
+  `showuserstats` int(11) default NULL,
+  `poststats` int(11) default NULL,
+  `statscolor` int(11) default NULL,
+  `showkarma` int(11) default NULL,
+  `useredit` int(11) default NULL,
+  `useredittime` int(11) default NULL,
+  `useredittimegrace` int(11) default NULL,
+  `editmarkup` int(11) default NULL,
+  `allowsubscriptions` int(11) default NULL,
+  `subscriptionschecked` int(11) default NULL,
+  `allowfavorites` int(11) default NULL,
+  `wrap` int(11) default NULL,
+  `maxsubject` int(11) default NULL,
+  `maxsig` int(11) default NULL,
+  `regonly` int(11) default NULL,
+  `changename` int(11) default NULL,
+  `pubwrite` int(11) default NULL,
+  `floodprotection` int(11) default NULL,
+  `mailmod` int(11) default NULL,
+  `mailadmin` int(11) default NULL,
+  `captcha` int(11) default NULL,
+  `mailfull` int(11) default NULL,
+  `allowavatar` int(11) default NULL,
+  `allowavatarupload` int(11) default NULL,
+  `allowavatargallery` int(11) default NULL,
+  `imageprocessor` text,
+  `avatarsmallheight` int(11) default NULL,
+  `avatarsmallwidth` int(11) default NULL,
+  `avatarheight` int(11) default NULL,
+  `avatarwidth` int(11) default NULL,
+  `avatarlargeheight` int(11) default NULL,
+  `avatarlargewidth` int(11) default NULL,
+  `avatarquality` int(11) default NULL,
+  `avatarsize` int(11) default NULL,
+  `allowimageupload` int(11) default NULL,
+  `allowimageregupload` int(11) default NULL,
+  `imageheight` int(11) default NULL,
+  `imagewidth` int(11) default NULL,
+  `imagesize` int(11) default NULL,
+  `allowfileupload` int(11) default NULL,
+  `allowfileregupload` int(11) default NULL,
+  `filetypes` text,
+  `filesize` int(11) default NULL,
+  `showranking` int(11) default NULL,
+  `rankimages` int(11) default NULL,
+  `avatar_src` text,
+  `fb_profile` text,
+  `pm_component` text,
+  `cb_profile` int(11) default NULL,
+  `discussbot` int(11) default NULL,
+  `userlist_rows` int(11) default NULL,
+  `userlist_online` int(11) default NULL,
+  `userlist_avatar` int(11) default NULL,
+  `userlist_name` int(11) default NULL,
+  `userlist_username` int(11) default NULL,
+  `userlist_posts` int(11) default NULL,
+  `userlist_karma` int(11) default NULL,
+  `userlist_email` int(11) default NULL,
+  `userlist_usertype` int(11) default NULL,
+  `userlist_joindate` int(11) default NULL,
+  `userlist_lastvisitdate` int(11) default NULL,
+  `userlist_userhits` int(11) default NULL,
+  `showlatest` int(11) default NULL,
+  `latestcount` int(11) default NULL,
+  `latestcountperpage` int(11) default NULL,
+  `latestcategory` text,
+  `latestsinglesubject` int(11) default NULL,
+  `latestreplysubject` int(11) default NULL,
+  `latestsubjectlength` int(11) default NULL,
+  `latestshowdate` int(11) default NULL,
+  `latestshowhits` int(11) default NULL,
+  `latestshowauthor` int(11) default NULL,
+  `showstats` int(11) default NULL,
+  `showwhoisonline` int(11) default NULL,
+  `showgenstats` int(11) default NULL,
+  `showpopuserstats` int(11) default NULL,
+  `popusercount` int(11) default NULL,
+  `showpopsubjectstats` int(11) default NULL,
+  `popsubjectcount` int(11) default NULL,
+  `usernamechange` int(11) default NULL,
+  `rules_infb` int(11) default NULL,
+  `rules_cid` int(11) default NULL,
+  `rules_link` text,
+  `enablehelppage` int(11) default NULL,
+  `help_infb` int(11) default NULL,
+  `help_cid` int(11) default NULL,
+  `help_link` text,
+  `showspoilertag` int(11) default NULL,
+  `showvideotag` int(11) default NULL,
+  `showebaytag` int(11) default NULL,
+  `trimlongurls` int(11) default NULL,
+  `trimlongurlsfront` int(11) default NULL,
+  `trimlongurlsback` int(11) default NULL,
+  `autoembedyoutube` int(11) default NULL,
+  `autoembedebay` int(11) default NULL,
+  `ebaylanguagecode` text,
+  `fbsessiontimeout` int(11) default NULL,
+  `highlightcode` int(11) default NULL,
+  `rsstype` text,
+  `rsshistory` text,
+  `fbdefaultpage` text,
+  `default_sort` text,
+  `alphauserpoints` int(11) default NULL,
+  `alphauserpointsrules` int(11) default NULL,
+  `alphauserpointsnumchars` int(11) default NULL,
+  `sef` int(11) default NULL,
+  `sefcats` int(11) default NULL,
+  `sefutf8` int(11) default NULL,
+  `hide_ip` int(11) default NULL,
+  `js_actstr_integration` int(11) default NULL,
+  `userlist_enable` int(11) default NULL,
+  `showimgforguest` int(11) default NULL,
+  `showfileforguest` int(11) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `jos_fb_config`
+--
+
+LOCK TABLES `jos_fb_config` WRITE;
+/*!40000 ALTER TABLE `jos_fb_config` DISABLE KEYS */;
+INSERT INTO `jos_fb_config` (`id`, `board_title`, `email`, `board_offline`, `board_ofset`, `offline_message`, `default_view`, `enablerss`, `enablepdf`, `threads_per_page`, `messages_per_page`, `messages_per_page_search`, `showhistory`, `historylimit`, `shownew`, `newchar`, `jmambot`, `disemoticons`, `template`, `templateimagepath`, `joomlastyle`, `showannouncement`, `avataroncat`, `catimagepath`, `numchildcolumn`, `showchildcaticon`, `annmodid`, `rtewidth`, `rteheight`, `enablerulespage`, `enableforumjump`, `reportmsg`, `username`, `askemail`, `showemail`, `showuserstats`, `poststats`, `statscolor`, `showkarma`, `useredit`, `useredittime`, `useredittimegrace`, `editmarkup`, `allowsubscriptions`, `subscriptionschecked`, `allowfavorites`, `wrap`, `maxsubject`, `maxsig`, `regonly`, `changename`, `pubwrite`, `floodprotection`, `mailmod`, `mailadmin`, `captcha`, `mailfull`, `allowavatar`, `allowavatarupload`, `allowavatargallery`, `imageprocessor`, `avatarsmallheight`, `avatarsmallwidth`, `avatarheight`, `avatarwidth`, `avatarlargeheight`, `avatarlargewidth`, `avatarquality`, `avatarsize`, `allowimageupload`, `allowimageregupload`, `imageheight`, `imagewidth`, `imagesize`, `allowfileupload`, `allowfileregupload`, `filetypes`, `filesize`, `showranking`, `rankimages`, `avatar_src`, `fb_profile`, `pm_component`, `cb_profile`, `discussbot`, `userlist_rows`, `userlist_online`, `userlist_avatar`, `userlist_name`, `userlist_username`, `userlist_posts`, `userlist_karma`, `userlist_email`, `userlist_usertype`, `userlist_joindate`, `userlist_lastvisitdate`, `userlist_userhits`, `showlatest`, `latestcount`, `latestcountperpage`, `latestcategory`, `latestsinglesubject`, `latestreplysubject`, `latestsubjectlength`, `latestshowdate`, `latestshowhits`, `latestshowauthor`, `showstats`, `showwhoisonline`, `showgenstats`, `showpopuserstats`, `popusercount`, `showpopsubjectstats`, `popsubjectcount`, `usernamechange`, `rules_infb`, `rules_cid`, `rules_link`, `enablehelppage`, `help_infb`, `help_cid`, `help_link`, `showspoilertag`, `showvideotag`, `showebaytag`, `trimlongurls`, `trimlongurlsfront`, `trimlongurlsback`, `autoembedyoutube`, `autoembedebay`, `ebaylanguagecode`, `fbsessiontimeout`, `highlightcode`, `rsstype`, `rsshistory`, `fbdefaultpage`, `default_sort`, `alphauserpoints`, `alphauserpointsrules`, `alphauserpointsnumchars`, `sef`, `sefcats`, `sefutf8`, `hide_ip`, `js_actstr_integration`, `userlist_enable`, `showimgforguest`, `showfileforguest`) VALUES (1,'Forum','info@netanel.pl',0,'0','<h2>The Forum is currently offline for maintenance.</h2>\r\n<div>Check back soon!</div>','flat',1,1,20,10,15,1,10,1,'NEW!',0,1,'default_ex','default_ex',1,0,0,'',0,0,'62',450,300,0,1,1,1,0,0,0,0,9,0,1,0,600,1,1,1,1,250,50,300,0,0,0,0,0,1,0,1,0,1,1,'gd2',50,50,100,100,250,250,65,2048,0,1,800,800,150,0,1,'zip,txt,doc,gz,tgz',120,0,0,'fb','fb','no',0,0,30,1,1,1,1,1,1,0,0,1,1,1,1,10,5,'',1,1,400,1,1,1,0,0,0,0,5,0,5,0,0,1,'http://www.kunena.com/',0,0,1,'http://www.kunena.com/',1,0,0,1,40,20,0,0,'en-us',1800,1,'thread','month','recent','asc',0,0,0,1,0,0,1,1,1,1,1);
+/*!40000 ALTER TABLE `jos_fb_config` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jos_fb_config_backup`
+--
+
+DROP TABLE IF EXISTS `jos_fb_config_backup`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `jos_fb_config_backup` (
+  `id` int(11) NOT NULL default '0',
+  `board_title` text,
+  `email` text,
+  `board_offline` int(11) default NULL,
+  `board_ofset` text,
+  `offline_message` text,
+  `default_view` text,
+  `enablerss` int(11) default NULL,
+  `enablepdf` int(11) default NULL,
+  `threads_per_page` int(11) default NULL,
+  `messages_per_page` int(11) default NULL,
+  `messages_per_page_search` int(11) default NULL,
+  `showhistory` int(11) default NULL,
+  `historylimit` int(11) default NULL,
+  `shownew` int(11) default NULL,
+  `newchar` text,
+  `jmambot` int(11) default NULL,
+  `disemoticons` int(11) default NULL,
+  `template` text,
+  `templateimagepath` text,
+  `joomlastyle` int(11) default NULL,
+  `showannouncement` int(11) default NULL,
+  `avataroncat` int(11) default NULL,
+  `catimagepath` text,
+  `numchildcolumn` int(11) default NULL,
+  `showchildcaticon` int(11) default NULL,
+  `annmodid` text,
+  `rtewidth` int(11) default NULL,
+  `rteheight` int(11) default NULL,
+  `enablerulespage` int(11) default NULL,
+  `enableforumjump` int(11) default NULL,
+  `reportmsg` int(11) default NULL,
+  `username` int(11) default NULL,
+  `askemail` int(11) default NULL,
+  `showemail` int(11) default NULL,
+  `showuserstats` int(11) default NULL,
+  `poststats` int(11) default NULL,
+  `statscolor` int(11) default NULL,
+  `showkarma` int(11) default NULL,
+  `useredit` int(11) default NULL,
+  `useredittime` int(11) default NULL,
+  `useredittimegrace` int(11) default NULL,
+  `editmarkup` int(11) default NULL,
+  `allowsubscriptions` int(11) default NULL,
+  `subscriptionschecked` int(11) default NULL,
+  `allowfavorites` int(11) default NULL,
+  `wrap` int(11) default NULL,
+  `maxsubject` int(11) default NULL,
+  `maxsig` int(11) default NULL,
+  `regonly` int(11) default NULL,
+  `changename` int(11) default NULL,
+  `pubwrite` int(11) default NULL,
+  `floodprotection` int(11) default NULL,
+  `mailmod` int(11) default NULL,
+  `mailadmin` int(11) default NULL,
+  `captcha` int(11) default NULL,
+  `mailfull` int(11) default NULL,
+  `allowavatar` int(11) default NULL,
+  `allowavatarupload` int(11) default NULL,
+  `allowavatargallery` int(11) default NULL,
+  `imageprocessor` text,
+  `avatarsmallheight` int(11) default NULL,
+  `avatarsmallwidth` int(11) default NULL,
+  `avatarheight` int(11) default NULL,
+  `avatarwidth` int(11) default NULL,
+  `avatarlargeheight` int(11) default NULL,
+  `avatarlargewidth` int(11) default NULL,
+  `avatarquality` int(11) default NULL,
+  `avatarsize` int(11) default NULL,
+  `allowimageupload` int(11) default NULL,
+  `allowimageregupload` int(11) default NULL,
+  `imageheight` int(11) default NULL,
+  `imagewidth` int(11) default NULL,
+  `imagesize` int(11) default NULL,
+  `allowfileupload` int(11) default NULL,
+  `allowfileregupload` int(11) default NULL,
+  `filetypes` text,
+  `filesize` int(11) default NULL,
+  `showranking` int(11) default NULL,
+  `rankimages` int(11) default NULL,
+  `avatar_src` text,
+  `fb_profile` text,
+  `pm_component` text,
+  `cb_profile` int(11) default NULL,
+  `discussbot` int(11) default NULL,
+  `userlist_rows` int(11) default NULL,
+  `userlist_online` int(11) default NULL,
+  `userlist_avatar` int(11) default NULL,
+  `userlist_name` int(11) default NULL,
+  `userlist_username` int(11) default NULL,
+  `userlist_posts` int(11) default NULL,
+  `userlist_karma` int(11) default NULL,
+  `userlist_email` int(11) default NULL,
+  `userlist_usertype` int(11) default NULL,
+  `userlist_joindate` int(11) default NULL,
+  `userlist_lastvisitdate` int(11) default NULL,
+  `userlist_userhits` int(11) default NULL,
+  `showlatest` int(11) default NULL,
+  `latestcount` int(11) default NULL,
+  `latestcountperpage` int(11) default NULL,
+  `latestcategory` text,
+  `latestsinglesubject` int(11) default NULL,
+  `latestreplysubject` int(11) default NULL,
+  `latestsubjectlength` int(11) default NULL,
+  `latestshowdate` int(11) default NULL,
+  `latestshowhits` int(11) default NULL,
+  `latestshowauthor` int(11) default NULL,
+  `showstats` int(11) default NULL,
+  `showwhoisonline` int(11) default NULL,
+  `showgenstats` int(11) default NULL,
+  `showpopuserstats` int(11) default NULL,
+  `popusercount` int(11) default NULL,
+  `showpopsubjectstats` int(11) default NULL,
+  `popsubjectcount` int(11) default NULL,
+  `usernamechange` int(11) default NULL,
+  `rules_infb` int(11) default NULL,
+  `rules_cid` int(11) default NULL,
+  `rules_link` text,
+  `enablehelppage` int(11) default NULL,
+  `help_infb` int(11) default NULL,
+  `help_cid` int(11) default NULL,
+  `help_link` text,
+  `showspoilertag` int(11) default NULL,
+  `showvideotag` int(11) default NULL,
+  `showebaytag` int(11) default NULL,
+  `trimlongurls` int(11) default NULL,
+  `trimlongurlsfront` int(11) default NULL,
+  `trimlongurlsback` int(11) default NULL,
+  `autoembedyoutube` int(11) default NULL,
+  `autoembedebay` int(11) default NULL,
+  `ebaylanguagecode` text,
+  `fbsessiontimeout` int(11) default NULL,
+  `highlightcode` int(11) default NULL,
+  `rsstype` text,
+  `rsshistory` text,
+  `fbdefaultpage` text,
+  `default_sort` text,
+  `alphauserpoints` int(11) default NULL,
+  `alphauserpointsrules` int(11) default NULL,
+  `alphauserpointsnumchars` int(11) default NULL,
+  `sef` int(11) default NULL,
+  `sefcats` int(11) default NULL,
+  `sefutf8` int(11) default NULL,
+  `hide_ip` int(11) default NULL,
+  `js_actstr_integration` int(11) default NULL,
+  `userlist_enable` int(11) default NULL,
+  `showimgforguest` int(11) default NULL,
+  `showfileforguest` int(11) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `jos_fb_config_backup`
+--
+
+LOCK TABLES `jos_fb_config_backup` WRITE;
+/*!40000 ALTER TABLE `jos_fb_config_backup` DISABLE KEYS */;
+INSERT INTO `jos_fb_config_backup` (`id`, `board_title`, `email`, `board_offline`, `board_ofset`, `offline_message`, `default_view`, `enablerss`, `enablepdf`, `threads_per_page`, `messages_per_page`, `messages_per_page_search`, `showhistory`, `historylimit`, `shownew`, `newchar`, `jmambot`, `disemoticons`, `template`, `templateimagepath`, `joomlastyle`, `showannouncement`, `avataroncat`, `catimagepath`, `numchildcolumn`, `showchildcaticon`, `annmodid`, `rtewidth`, `rteheight`, `enablerulespage`, `enableforumjump`, `reportmsg`, `username`, `askemail`, `showemail`, `showuserstats`, `poststats`, `statscolor`, `showkarma`, `useredit`, `useredittime`, `useredittimegrace`, `editmarkup`, `allowsubscriptions`, `subscriptionschecked`, `allowfavorites`, `wrap`, `maxsubject`, `maxsig`, `regonly`, `changename`, `pubwrite`, `floodprotection`, `mailmod`, `mailadmin`, `captcha`, `mailfull`, `allowavatar`, `allowavatarupload`, `allowavatargallery`, `imageprocessor`, `avatarsmallheight`, `avatarsmallwidth`, `avatarheight`, `avatarwidth`, `avatarlargeheight`, `avatarlargewidth`, `avatarquality`, `avatarsize`, `allowimageupload`, `allowimageregupload`, `imageheight`, `imagewidth`, `imagesize`, `allowfileupload`, `allowfileregupload`, `filetypes`, `filesize`, `showranking`, `rankimages`, `avatar_src`, `fb_profile`, `pm_component`, `cb_profile`, `discussbot`, `userlist_rows`, `userlist_online`, `userlist_avatar`, `userlist_name`, `userlist_username`, `userlist_posts`, `userlist_karma`, `userlist_email`, `userlist_usertype`, `userlist_joindate`, `userlist_lastvisitdate`, `userlist_userhits`, `showlatest`, `latestcount`, `latestcountperpage`, `latestcategory`, `latestsinglesubject`, `latestreplysubject`, `latestsubjectlength`, `latestshowdate`, `latestshowhits`, `latestshowauthor`, `showstats`, `showwhoisonline`, `showgenstats`, `showpopuserstats`, `popusercount`, `showpopsubjectstats`, `popsubjectcount`, `usernamechange`, `rules_infb`, `rules_cid`, `rules_link`, `enablehelppage`, `help_infb`, `help_cid`, `help_link`, `showspoilertag`, `showvideotag`, `showebaytag`, `trimlongurls`, `trimlongurlsfront`, `trimlongurlsback`, `autoembedyoutube`, `autoembedebay`, `ebaylanguagecode`, `fbsessiontimeout`, `highlightcode`, `rsstype`, `rsshistory`, `fbdefaultpage`, `default_sort`, `alphauserpoints`, `alphauserpointsrules`, `alphauserpointsnumchars`, `sef`, `sefcats`, `sefutf8`, `hide_ip`, `js_actstr_integration`, `userlist_enable`, `showimgforguest`, `showfileforguest`) VALUES (1,'Forum','info@netanel.pl',0,'0','<h2>The Forum is currently offline for maintenance.</h2>\r\n<div>Check back soon!</div>','flat',1,1,20,10,15,1,10,1,'NEW!',0,1,'default_ex','default_ex',1,0,0,'',0,0,'62',450,300,1,1,1,1,0,0,0,0,9,0,1,0,600,1,1,1,1,250,50,300,0,0,0,0,0,1,0,1,0,1,1,'gd2',50,50,100,100,250,250,65,2048,0,1,800,800,150,0,1,'zip,txt,doc,gz,tgz',120,0,0,'fb','fb','no',0,0,30,1,1,1,1,1,1,0,0,1,1,1,1,10,5,'',1,1,400,1,1,1,0,0,0,0,5,0,5,0,1,1,'http://www.kunena.com/',1,1,1,'http://www.kunena.com/',1,0,0,1,40,20,0,0,'en-us',1800,1,'thread','month','recent','asc',0,0,0,1,0,0,1,1,1,1,1);
+/*!40000 ALTER TABLE `jos_fb_config_backup` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jos_fb_favorites`
+--
+
+DROP TABLE IF EXISTS `jos_fb_favorites`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `jos_fb_favorites` (
+  `thread` int(11) NOT NULL default '0',
+  `userid` int(11) NOT NULL default '0',
+  UNIQUE KEY `thread` (`thread`,`userid`),
+  KEY `userid` (`userid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `jos_fb_favorites`
+--
+
+LOCK TABLES `jos_fb_favorites` WRITE;
+/*!40000 ALTER TABLE `jos_fb_favorites` DISABLE KEYS */;
+/*!40000 ALTER TABLE `jos_fb_favorites` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jos_fb_groups`
+--
+
+DROP TABLE IF EXISTS `jos_fb_groups`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `jos_fb_groups` (
+  `id` int(4) NOT NULL auto_increment,
+  `title` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `jos_fb_groups`
+--
+
+LOCK TABLES `jos_fb_groups` WRITE;
+/*!40000 ALTER TABLE `jos_fb_groups` DISABLE KEYS */;
+INSERT INTO `jos_fb_groups` (`id`, `title`) VALUES (1,'\"._KUNENA_REGISTERED.\"');
+/*!40000 ALTER TABLE `jos_fb_groups` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jos_fb_messages`
+--
+
+DROP TABLE IF EXISTS `jos_fb_messages`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `jos_fb_messages` (
+  `id` int(11) NOT NULL auto_increment,
+  `parent` int(11) default '0',
+  `thread` int(11) default '0',
+  `catid` int(11) NOT NULL default '0',
+  `name` tinytext,
+  `userid` int(11) NOT NULL default '0',
+  `email` tinytext,
+  `subject` tinytext,
+  `time` int(11) NOT NULL default '0',
+  `ip` varchar(15) default NULL,
+  `topic_emoticon` int(11) NOT NULL default '0',
+  `locked` tinyint(4) NOT NULL default '0',
+  `hold` tinyint(4) NOT NULL default '0',
+  `ordering` int(11) default '0',
+  `hits` int(11) default '0',
+  `moved` tinyint(4) default '0',
+  `modified_by` int(7) default NULL,
+  `modified_time` int(11) default NULL,
+  `modified_reason` tinytext,
+  PRIMARY KEY  (`id`),
+  KEY `thread` (`thread`),
+  KEY `parent` (`parent`),
+  KEY `catid` (`catid`),
+  KEY `ip` (`ip`),
+  KEY `userid` (`userid`),
+  KEY `time` (`time`),
+  KEY `locked` (`locked`),
+  KEY `hold_time` (`hold`,`time`),
+  KEY `parent_hits` (`parent`,`hits`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `jos_fb_messages`
+--
+
+LOCK TABLES `jos_fb_messages` WRITE;
+/*!40000 ALTER TABLE `jos_fb_messages` DISABLE KEYS */;
+INSERT INTO `jos_fb_messages` (`id`, `parent`, `thread`, `catid`, `name`, `userid`, `email`, `subject`, `time`, `ip`, `topic_emoticon`, `locked`, `hold`, `ordering`, `hits`, `moved`, `modified_by`, `modified_time`, `modified_reason`) VALUES (2,0,2,4,'admin',62,'jacek.p.kolodziejczyk@gmail.com','Welcome',1302859368,'127.0.0.1',0,0,0,0,0,0,NULL,NULL,NULL);
+/*!40000 ALTER TABLE `jos_fb_messages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jos_fb_messages_text`
+--
+
+DROP TABLE IF EXISTS `jos_fb_messages_text`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `jos_fb_messages_text` (
+  `mesid` int(11) NOT NULL default '0',
+  `message` text NOT NULL,
+  PRIMARY KEY  (`mesid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `jos_fb_messages_text`
+--
+
+LOCK TABLES `jos_fb_messages_text` WRITE;
+/*!40000 ALTER TABLE `jos_fb_messages_text` DISABLE KEYS */;
+INSERT INTO `jos_fb_messages_text` (`mesid`, `message`) VALUES (2,'Hello, welcome to the forum.');
+/*!40000 ALTER TABLE `jos_fb_messages_text` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jos_fb_moderation`
+--
+
+DROP TABLE IF EXISTS `jos_fb_moderation`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `jos_fb_moderation` (
+  `catid` int(11) NOT NULL default '0',
+  `userid` int(11) NOT NULL default '0',
+  `future1` tinyint(4) default '0',
+  `future2` int(11) default '0',
+  PRIMARY KEY  (`catid`,`userid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `jos_fb_moderation`
+--
+
+LOCK TABLES `jos_fb_moderation` WRITE;
+/*!40000 ALTER TABLE `jos_fb_moderation` DISABLE KEYS */;
+/*!40000 ALTER TABLE `jos_fb_moderation` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jos_fb_ranks`
+--
+
+DROP TABLE IF EXISTS `jos_fb_ranks`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `jos_fb_ranks` (
+  `rank_id` mediumint(8) unsigned NOT NULL auto_increment,
+  `rank_title` varchar(255) NOT NULL default '',
+  `rank_min` mediumint(8) unsigned NOT NULL default '0',
+  `rank_special` tinyint(1) unsigned NOT NULL default '0',
+  `rank_image` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`rank_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `jos_fb_ranks`
+--
+
+LOCK TABLES `jos_fb_ranks` WRITE;
+/*!40000 ALTER TABLE `jos_fb_ranks` DISABLE KEYS */;
+INSERT INTO `jos_fb_ranks` (`rank_id`, `rank_title`, `rank_min`, `rank_special`, `rank_image`) VALUES (1,'Fresh Boarder',0,0,'rank1.gif');
+INSERT INTO `jos_fb_ranks` (`rank_id`, `rank_title`, `rank_min`, `rank_special`, `rank_image`) VALUES (2,'Junior Boarder',20,0,'rank2.gif');
+INSERT INTO `jos_fb_ranks` (`rank_id`, `rank_title`, `rank_min`, `rank_special`, `rank_image`) VALUES (3,'Senior Boarder',40,0,'rank3.gif');
+INSERT INTO `jos_fb_ranks` (`rank_id`, `rank_title`, `rank_min`, `rank_special`, `rank_image`) VALUES (4,'Expert Boarder',80,0,'rank4.gif');
+INSERT INTO `jos_fb_ranks` (`rank_id`, `rank_title`, `rank_min`, `rank_special`, `rank_image`) VALUES (5,'Gold Boarder',160,0,'rank5.gif');
+INSERT INTO `jos_fb_ranks` (`rank_id`, `rank_title`, `rank_min`, `rank_special`, `rank_image`) VALUES (6,'Platinum Boarder',320,0,'rank6.gif');
+INSERT INTO `jos_fb_ranks` (`rank_id`, `rank_title`, `rank_min`, `rank_special`, `rank_image`) VALUES (7,'Administrator',0,1,'rankadmin.gif');
+INSERT INTO `jos_fb_ranks` (`rank_id`, `rank_title`, `rank_min`, `rank_special`, `rank_image`) VALUES (8,'Moderator',0,1,'rankmod.gif');
+INSERT INTO `jos_fb_ranks` (`rank_id`, `rank_title`, `rank_min`, `rank_special`, `rank_image`) VALUES (9,'Spammer',0,1,'rankspammer.gif');
+/*!40000 ALTER TABLE `jos_fb_ranks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jos_fb_sessions`
+--
+
+DROP TABLE IF EXISTS `jos_fb_sessions`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `jos_fb_sessions` (
+  `userid` int(11) NOT NULL default '0',
+  `allowed` text,
+  `lasttime` int(11) NOT NULL default '0',
+  `readtopics` text,
+  `currvisit` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`userid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `jos_fb_sessions`
+--
+
+LOCK TABLES `jos_fb_sessions` WRITE;
+/*!40000 ALTER TABLE `jos_fb_sessions` DISABLE KEYS */;
+INSERT INTO `jos_fb_sessions` (`userid`, `allowed`, `lasttime`, `readtopics`, `currvisit`) VALUES (62,'na',1271322239,'2',1302859387);
+INSERT INTO `jos_fb_sessions` (`userid`, `allowed`, `lasttime`, `readtopics`, `currvisit`) VALUES (66,'na',1271323473,'',1302860600);
+/*!40000 ALTER TABLE `jos_fb_sessions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jos_fb_smileys`
+--
+
+DROP TABLE IF EXISTS `jos_fb_smileys`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `jos_fb_smileys` (
+  `id` int(4) NOT NULL auto_increment,
+  `code` varchar(12) NOT NULL default '',
+  `location` varchar(50) NOT NULL default '',
+  `greylocation` varchar(60) NOT NULL default '',
+  `emoticonbar` tinyint(4) NOT NULL default '0',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `jos_fb_smileys`
+--
+
+LOCK TABLES `jos_fb_smileys` WRITE;
+/*!40000 ALTER TABLE `jos_fb_smileys` DISABLE KEYS */;
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (1,'B)','cool.png','cool-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (2,':(','sad.png','sad-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (3,':)','smile.png','smile-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (4,':-)','smile.png','smile-grey.png',0);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (5,':-(','sad.png','sad-grey.png',0);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (6,':laugh:','laughing.png','laughing-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (7,':cheer:','cheerful.png','cheerful-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (8,';)','wink.png','wink-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (9,';-)','wink.png','wink-grey.png',0);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (10,':P','tongue.png','tongue-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (12,':X','sick.png','sick-grey.png',0);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (13,':x','sick.png','sick-grey.png',0);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (14,':angry:','angry.png','angry-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (15,':mad:','angry.png','angry-grey.png',0);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (16,':unsure:','unsure.png','unsure-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (17,':ohmy:','shocked.png','shocked-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (18,':huh:','wassat.png','wassat-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (19,':dry:','ermm.png','ermm-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (20,':ermm:','ermm.png','ermm-grey.png',0);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (21,':lol:','grin.png','grin-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (22,':sick:','sick.png','sick-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (23,':silly:','silly.png','silly-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (24,':y32b4:','silly.png','silly-grey.png',0);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (25,':blink:','blink.png','blink-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (26,':blush:','blush.png','blush-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (27,':kiss:','kissing.png','kissing-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (28,':rolleyes:','blink.png','blink-grey.png',0);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (29,':woohoo:','w00t.png','w00t-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (30,':side:','sideways.png','sideways-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (31,':S','dizzy.png','dizzy-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (32,':s','dizzy.png','dizzy-grey.png',0);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (33,':evil:','devil.png','devil-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (34,':whistle:','whistling.png','whistling-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (35,':pinch:','pinch.png','pinch-grey.png',1);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (36,':p','tongue.png','tongue-grey.png',0);
+INSERT INTO `jos_fb_smileys` (`id`, `code`, `location`, `greylocation`, `emoticonbar`) VALUES (37,':D','laughing.png','laughing-grey.png',0);
+/*!40000 ALTER TABLE `jos_fb_smileys` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jos_fb_subscriptions`
+--
+
+DROP TABLE IF EXISTS `jos_fb_subscriptions`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `jos_fb_subscriptions` (
+  `thread` int(11) NOT NULL default '0',
+  `userid` int(11) NOT NULL default '0',
+  `future1` int(11) default '0',
+  UNIQUE KEY `thread` (`thread`,`userid`),
+  KEY `userid` (`userid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `jos_fb_subscriptions`
+--
+
+LOCK TABLES `jos_fb_subscriptions` WRITE;
+/*!40000 ALTER TABLE `jos_fb_subscriptions` DISABLE KEYS */;
+INSERT INTO `jos_fb_subscriptions` (`thread`, `userid`, `future1`) VALUES (2,62,0);
+/*!40000 ALTER TABLE `jos_fb_subscriptions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jos_fb_users`
+--
+
+DROP TABLE IF EXISTS `jos_fb_users`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `jos_fb_users` (
+  `userid` int(11) NOT NULL default '0',
+  `view` varchar(8) NOT NULL default 'flat',
+  `signature` text,
+  `moderator` int(11) default '0',
+  `ordering` int(11) default '0',
+  `posts` int(11) default '0',
+  `avatar` varchar(50) default NULL,
+  `karma` int(11) default '0',
+  `karma_time` int(11) default '0',
+  `group_id` int(4) default '1',
+  `uhits` int(11) default '0',
+  `personalText` tinytext,
+  `gender` tinyint(4) NOT NULL default '0',
+  `birthdate` date NOT NULL default '0001-01-01',
+  `location` varchar(50) default NULL,
+  `ICQ` varchar(50) default NULL,
+  `AIM` varchar(50) default NULL,
+  `YIM` varchar(50) default NULL,
+  `MSN` varchar(50) default NULL,
+  `SKYPE` varchar(50) default NULL,
+  `GTALK` varchar(50) default NULL,
+  `websitename` varchar(50) default NULL,
+  `websiteurl` varchar(50) default NULL,
+  `rank` tinyint(4) NOT NULL default '0',
+  `hideEmail` tinyint(1) NOT NULL default '1',
+  `showOnline` tinyint(1) NOT NULL default '1',
+  PRIMARY KEY  (`userid`),
+  KEY `group_id` (`group_id`),
+  KEY `posts` (`posts`),
+  KEY `uhits` (`uhits`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `jos_fb_users`
+--
+
+LOCK TABLES `jos_fb_users` WRITE;
+/*!40000 ALTER TABLE `jos_fb_users` DISABLE KEYS */;
+INSERT INTO `jos_fb_users` (`userid`, `view`, `signature`, `moderator`, `ordering`, `posts`, `avatar`, `karma`, `karma_time`, `group_id`, `uhits`, `personalText`, `gender`, `birthdate`, `location`, `ICQ`, `AIM`, `YIM`, `MSN`, `SKYPE`, `GTALK`, `websitename`, `websiteurl`, `rank`, `hideEmail`, `showOnline`) VALUES (62,'flat',NULL,1,0,1,NULL,0,0,1,0,NULL,0,'0001-01-01',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,1);
+INSERT INTO `jos_fb_users` (`userid`, `view`, `signature`, `moderator`, `ordering`, `posts`, `avatar`, `karma`, `karma_time`, `group_id`, `uhits`, `personalText`, `gender`, `birthdate`, `location`, `ICQ`, `AIM`, `YIM`, `MSN`, `SKYPE`, `GTALK`, `websitename`, `websiteurl`, `rank`, `hideEmail`, `showOnline`) VALUES (66,'flat',NULL,0,0,0,NULL,0,0,1,0,NULL,0,'0001-01-01',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,1);
+/*!40000 ALTER TABLE `jos_fb_users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `jos_fb_version`
 --
 
@@ -646,7 +1449,7 @@ CREATE TABLE `jos_fb_version` (
   `build` varchar(20) NOT NULL,
   `versionname` varchar(40) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -655,7 +1458,42 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `jos_fb_version` WRITE;
 /*!40000 ALTER TABLE `jos_fb_version` DISABLE KEYS */;
+INSERT INTO `jos_fb_version` (`id`, `version`, `versiondate`, `installdate`, `build`, `versionname`) VALUES (1,'1.5.13','2010-11-04','2011-04-15','1902','Unasema');
 /*!40000 ALTER TABLE `jos_fb_version` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jos_fb_whoisonline`
+--
+
+DROP TABLE IF EXISTS `jos_fb_whoisonline`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `jos_fb_whoisonline` (
+  `id` int(6) NOT NULL auto_increment,
+  `userid` int(7) NOT NULL default '0',
+  `time` varchar(14) NOT NULL default '0',
+  `item` int(6) default '0',
+  `what` varchar(255) default '0',
+  `func` varchar(50) default NULL,
+  `do` varchar(50) default NULL,
+  `task` varchar(50) default NULL,
+  `link` text,
+  `userip` varchar(20) NOT NULL default '',
+  `user` tinyint(2) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  KEY `userid` (`userid`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `jos_fb_whoisonline`
+--
+
+LOCK TABLES `jos_fb_whoisonline` WRITE;
+/*!40000 ALTER TABLE `jos_fb_whoisonline` DISABLE KEYS */;
+INSERT INTO `jos_fb_whoisonline` (`id`, `userid`, `time`, `item`, `what`, `func`, `do`, `task`, `link`, `userip`, `user`) VALUES (4,0,'1302901209',0,'Forum Main','','','','http://localhost:8088/netanel15/index.php','127.0.0.1',0);
+/*!40000 ALTER TABLE `jos_fb_whoisonline` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -801,7 +1639,7 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `jos_huruhelpdesk_config` WRITE;
 /*!40000 ALTER TABLE `jos_huruhelpdesk_config` DISABLE KEYS */;
-INSERT INTO `jos_huruhelpdesk_config` (`id`, `hdreply`, `hdurl`, `notifyuser`, `enablekb`, `defaultpriority`, `defaultstatus`, `closestatus`, `allowanonymous`, `defaultlang`, `pagerpriority`, `userselect`, `version`, `show_username`, `show_email`, `show_department`, `show_location`, `show_phone`, `show_category`, `show_status`, `show_priority`, `show_rep`, `show_timespent`, `set_username`, `set_email`, `set_department`, `set_location`, `set_phone`, `set_category`, `set_status`, `set_priority`, `set_rep`, `set_timespent`, `hdnotifyname`, `defaultdepartment`, `defaultcategory`, `defaultrep`, `fileattach_allow`, `fileattach_allowedextensions`, `fileattach_allowedmimetypes`, `fileattach_maxsize`, `fileattach_type`, `fileattach_path`, `fileattach_download`, `fileattach_maxage`, `notifyadminonnewcases`) VALUES (1,'info@netanel.pl','http://www.netanel.pl/index.php?option=com_huruhelpdesk&view=cpanel&Itemid=2',1,1,3,15,24,1,1,10,0,'0.88 beta',0,0,10000,0,0,0,0,0,0,0,0,0,0,0,0,0,50,50,50,50,'Netanel Helpdesk',1,1,-1,10000,'.jpg,.png','image/jpeg,image/png',1048576,1,'',0,0,'info@netanel.pl');
+INSERT INTO `jos_huruhelpdesk_config` (`id`, `hdreply`, `hdurl`, `notifyuser`, `enablekb`, `defaultpriority`, `defaultstatus`, `closestatus`, `allowanonymous`, `defaultlang`, `pagerpriority`, `userselect`, `version`, `show_username`, `show_email`, `show_department`, `show_location`, `show_phone`, `show_category`, `show_status`, `show_priority`, `show_rep`, `show_timespent`, `set_username`, `set_email`, `set_department`, `set_location`, `set_phone`, `set_category`, `set_status`, `set_priority`, `set_rep`, `set_timespent`, `hdnotifyname`, `defaultdepartment`, `defaultcategory`, `defaultrep`, `fileattach_allow`, `fileattach_allowedextensions`, `fileattach_allowedmimetypes`, `fileattach_maxsize`, `fileattach_type`, `fileattach_path`, `fileattach_download`, `fileattach_maxage`, `notifyadminonnewcases`) VALUES (1,'info@netanel.pl','http://www.netanel.pl/index.php?option=com_huruhelpdesk&view=cpanel&Itemid=2',1,1,3,15,24,1,1,10,50,'0.88 beta',0,0,10000,0,0,0,0,0,0,0,0,0,100,0,0,0,50,50,50,50,'Netanel Helpdesk',1,1,-1,10000,'.jpg,.png','image/jpeg,image/png',1048576,1,'',0,0,'info@netanel.pl');
 /*!40000 ALTER TABLE `jos_huruhelpdesk_config` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1175,7 +2013,7 @@ CREATE TABLE `jos_huruhelpdesk_notes` (
   `priv` int(11) NOT NULL,
   PRIMARY KEY  (`note_id`),
   FULLTEXT KEY `note` (`note`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -1187,6 +2025,7 @@ LOCK TABLES `jos_huruhelpdesk_notes` WRITE;
 INSERT INTO `jos_huruhelpdesk_notes` (`note_id`, `id`, `note`, `adddate`, `uid`, `ip`, `priv`) VALUES (1,1,'Problem created','2011-04-12 10:25:40','','127.0.0.1',1);
 INSERT INTO `jos_huruhelpdesk_notes` (`note_id`, `id`, `note`, `adddate`, `uid`, `ip`, `priv`) VALUES (2,2,'Problem created','2011-04-12 10:26:42','','127.0.0.1',1);
 INSERT INTO `jos_huruhelpdesk_notes` (`note_id`, `id`, `note`, `adddate`, `uid`, `ip`, `priv`) VALUES (3,3,'Problem created','2011-04-12 10:28:52','','127.0.0.1',1);
+INSERT INTO `jos_huruhelpdesk_notes` (`note_id`, `id`, `note`, `adddate`, `uid`, `ip`, `priv`) VALUES (4,4,'Problem created','2011-04-14 20:46:24','dddd','127.0.0.1',1);
 /*!40000 ALTER TABLE `jos_huruhelpdesk_notes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1252,7 +2091,7 @@ CREATE TABLE `jos_huruhelpdesk_problems` (
   FULLTEXT KEY `solution` (`solution`),
   FULLTEXT KEY `description` (`description`),
   FULLTEXT KEY `title` (`title`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -1264,6 +2103,7 @@ LOCK TABLES `jos_huruhelpdesk_problems` WRITE;
 INSERT INTO `jos_huruhelpdesk_problems` (`id`, `uid`, `uemail`, `ulocation`, `uphone`, `rep`, `status`, `time_spent`, `category`, `close_date`, `department`, `title`, `description`, `solution`, `start_date`, `priority`, `entered_by`, `kb`) VALUES (1,'Jacek','jacek.p.kolodziejczyk@gmail.com','','',0,15,0,1,'0000-00-00 00:00:00',1,'test','asdfasdf','','2011-04-12 10:25:40',3,0,0);
 INSERT INTO `jos_huruhelpdesk_problems` (`id`, `uid`, `uemail`, `ulocation`, `uphone`, `rep`, `status`, `time_spent`, `category`, `close_date`, `department`, `title`, `description`, `solution`, `start_date`, `priority`, `entered_by`, `kb`) VALUES (2,'a','jacek.p.kolodziejczyk@gmail.com','Kraków','6132662',0,15,0,1,'0000-00-00 00:00:00',1,'test2','a','','2011-04-12 10:26:42',3,0,0);
 INSERT INTO `jos_huruhelpdesk_problems` (`id`, `uid`, `uemail`, `ulocation`, `uphone`, `rep`, `status`, `time_spent`, `category`, `close_date`, `department`, `title`, `description`, `solution`, `start_date`, `priority`, `entered_by`, `kb`) VALUES (3,'a','jacek.p.kolodziejczyk@gmail.com','Kraków','6132662',0,15,0,1,'0000-00-00 00:00:00',1,'test3','asdfasdf','','2011-04-12 10:28:52',3,0,0);
+INSERT INTO `jos_huruhelpdesk_problems` (`id`, `uid`, `uemail`, `ulocation`, `uphone`, `rep`, `status`, `time_spent`, `category`, `close_date`, `department`, `title`, `description`, `solution`, `start_date`, `priority`, `entered_by`, `kb`) VALUES (4,'dddd','d@d.pl','','',0,15,0,1,'0000-00-00 00:00:00',1,'d1','ddddd','','2011-04-14 20:46:23',3,3,0);
 /*!40000 ALTER TABLE `jos_huruhelpdesk_problems` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1323,7 +2163,7 @@ CREATE TABLE `jos_huruhelpdesk_users` (
   `language` bigint(20) NOT NULL,
   `viewreports` int(11) NOT NULL,
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -1332,6 +2172,9 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `jos_huruhelpdesk_users` WRITE;
 /*!40000 ALTER TABLE `jos_huruhelpdesk_users` DISABLE KEYS */;
+INSERT INTO `jos_huruhelpdesk_users` (`id`, `joomla_id`, `isuser`, `isrep`, `isadmin`, `phone`, `pageraddress`, `phonemobile`, `phonehome`, `location1`, `location2`, `department`, `language`, `viewreports`) VALUES (1,62,0,0,0,'','','','','','',0,1,0);
+INSERT INTO `jos_huruhelpdesk_users` (`id`, `joomla_id`, `isuser`, `isrep`, `isadmin`, `phone`, `pageraddress`, `phonemobile`, `phonehome`, `location1`, `location2`, `department`, `language`, `viewreports`) VALUES (2,63,0,0,0,'','','','','','',0,1,0);
+INSERT INTO `jos_huruhelpdesk_users` (`id`, `joomla_id`, `isuser`, `isrep`, `isadmin`, `phone`, `pageraddress`, `phonemobile`, `phonehome`, `location1`, `location2`, `department`, `language`, `viewreports`) VALUES (3,66,1,0,0,'','','','','','',0,1,0);
 /*!40000 ALTER TABLE `jos_huruhelpdesk_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1367,7 +2210,7 @@ CREATE TABLE `jos_menu` (
   PRIMARY KEY  (`id`),
   KEY `componentid` (`componentid`,`menutype`,`published`,`access`),
   KEY `menutype` (`menutype`)
-) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -1385,7 +2228,7 @@ INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `publ
 INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `published`, `parent`, `componentid`, `sublevel`, `ordering`, `checked_out`, `checked_out_time`, `pollid`, `browserNav`, `access`, `utaccess`, `params`, `lft`, `rgt`, `home`) VALUES (7,'mainmenu','Features','swtmatrixfeatures','index.php?option=com_content&view=article&id=5','component',1,4,20,2,2,0,'0000-00-00 00:00:00',0,0,0,0,'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n',0,0,0);
 INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `published`, `parent`, `componentid`, `sublevel`, `ordering`, `checked_out`, `checked_out_time`, `pollid`, `browserNav`, `access`, `utaccess`, `params`, `lft`, `rgt`, `home`) VALUES (8,'SWT-Matrix','Features','features','index.php?Itemid=7','menulink',1,0,0,0,1,0,'0000-00-00 00:00:00',0,0,0,0,'menu_item=7\n\n',0,0,0);
 INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `published`, `parent`, `componentid`, `sublevel`, `ordering`, `checked_out`, `checked_out_time`, `pollid`, `browserNav`, `access`, `utaccess`, `params`, `lft`, `rgt`, `home`) VALUES (11,'mainmenu','Buy / Donate','swt-matrix-buy','index.php?option=com_content&view=article&id=14','component',1,0,20,0,4,0,'0000-00-00 00:00:00',0,0,0,0,'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n',0,0,0);
-INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `published`, `parent`, `componentid`, `sublevel`, `ordering`, `checked_out`, `checked_out_time`, `pollid`, `browserNav`, `access`, `utaccess`, `params`, `lft`, `rgt`, `home`) VALUES (12,'mainmenu','Contact','contact','index.php?option=com_content&view=article&id=8','component',1,0,20,0,6,0,'0000-00-00 00:00:00',0,0,0,0,'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n',0,0,0);
+INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `published`, `parent`, `componentid`, `sublevel`, `ordering`, `checked_out`, `checked_out_time`, `pollid`, `browserNav`, `access`, `utaccess`, `params`, `lft`, `rgt`, `home`) VALUES (12,'mainmenu','Contact','contact','index.php?option=com_content&view=article&id=8','component',0,0,20,0,6,0,'0000-00-00 00:00:00',0,0,0,0,'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n',0,0,0);
 INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `published`, `parent`, `componentid`, `sublevel`, `ordering`, `checked_out`, `checked_out_time`, `pollid`, `browserNav`, `access`, `utaccess`, `params`, `lft`, `rgt`, `home`) VALUES (9,'SWT-Matrix','API','api','index.php?Itemid=10','menulink',1,0,0,0,2,0,'0000-00-00 00:00:00',0,0,0,0,'menu_item=10\n\n',0,0,0);
 INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `published`, `parent`, `componentid`, `sublevel`, `ordering`, `checked_out`, `checked_out_time`, `pollid`, `browserNav`, `access`, `utaccess`, `params`, `lft`, `rgt`, `home`) VALUES (14,'mainmenu','Design','design','index.php?option=com_content&view=article&id=10','component',0,4,20,2,3,0,'0000-00-00 00:00:00',0,0,0,0,'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n',0,0,0);
 INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `published`, `parent`, `componentid`, `sublevel`, `ordering`, `checked_out`, `checked_out_time`, `pollid`, `browserNav`, `access`, `utaccess`, `params`, `lft`, `rgt`, `home`) VALUES (10,'mainmenu','API','api','swt-matrix\\javadoc','url',1,4,0,2,4,0,'0000-00-00 00:00:00',0,1,0,0,'menu_image=-1\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n',0,0,0);
@@ -1393,7 +2236,9 @@ INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `publ
 INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `published`, `parent`, `componentid`, `sublevel`, `ordering`, `checked_out`, `checked_out_time`, `pollid`, `browserNav`, `access`, `utaccess`, `params`, `lft`, `rgt`, `home`) VALUES (15,'mainmenu','Tutorial','tutorial','index.php?option=com_content&view=article&id=13','component',1,4,20,2,5,0,'0000-00-00 00:00:00',0,0,0,0,'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n',0,0,0);
 INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `published`, `parent`, `componentid`, `sublevel`, `ordering`, `checked_out`, `checked_out_time`, `pollid`, `browserNav`, `access`, `utaccess`, `params`, `lft`, `rgt`, `home`) VALUES (16,'mainmenu','Snippets','snippets','index.php?option=com_content&view=article&id=11','component',1,4,20,2,6,0,'0000-00-00 00:00:00',0,0,0,0,'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n',0,0,0);
 INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `published`, `parent`, `componentid`, `sublevel`, `ordering`, `checked_out`, `checked_out_time`, `pollid`, `browserNav`, `access`, `utaccess`, `params`, `lft`, `rgt`, `home`) VALUES (17,'Hidden','Design','design','index.php?option=com_content&view=article&id=10','component',1,0,20,0,1,0,'0000-00-00 00:00:00',0,0,0,0,'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n',0,0,0);
-INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `published`, `parent`, `componentid`, `sublevel`, `ordering`, `checked_out`, `checked_out_time`, `pollid`, `browserNav`, `access`, `utaccess`, `params`, `lft`, `rgt`, `home`) VALUES (18,'mainmenu','Forum','forum','http://discussions.zoho.com/swtmatrix/','url',1,6,0,1,2,0,'0000-00-00 00:00:00',0,1,0,0,'menu_image=-1\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n',0,0,0);
+INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `published`, `parent`, `componentid`, `sublevel`, `ordering`, `checked_out`, `checked_out_time`, `pollid`, `browserNav`, `access`, `utaccess`, `params`, `lft`, `rgt`, `home`) VALUES (18,'mainmenu','Forum Zoho','forum','http://discussions.zoho.com/swtmatrix/','url',0,6,0,1,2,0,'0000-00-00 00:00:00',0,1,0,0,'menu_image=-1\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n',0,0,0);
+INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `published`, `parent`, `componentid`, `sublevel`, `ordering`, `checked_out`, `checked_out_time`, `pollid`, `browserNav`, `access`, `utaccess`, `params`, `lft`, `rgt`, `home`) VALUES (19,'mainmenu','Login','login','index.php?option=com_user&view=login','component',1,0,14,0,7,0,'0000-00-00 00:00:00',0,0,0,0,'show_login_title=1\nheader_login=\nlogin=\nlogin_message=1\ndescription_login=1\ndescription_login_text=\nimage_login=\nimage_login_align=right\nshow_logout_title=1\nheader_logout=\nlogout=\nlogout_message=1\ndescription_logout=1\ndescription_logout_text=\nimage_logout=\nimage_logout_align=left\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=200\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=mod\nmega_subcontent-mod-modules=19\n\n',0,0,0);
+INSERT INTO `jos_menu` (`id`, `menutype`, `name`, `alias`, `link`, `type`, `published`, `parent`, `componentid`, `sublevel`, `ordering`, `checked_out`, `checked_out_time`, `pollid`, `browserNav`, `access`, `utaccess`, `params`, `lft`, `rgt`, `home`) VALUES (20,'mainmenu','Forum','forum','index.php?option=com_kunena','component',1,6,54,1,3,0,'0000-00-00 00:00:00',0,0,0,0,'page_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n',0,0,0);
 /*!40000 ALTER TABLE `jos_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1561,7 +2406,7 @@ INSERT INTO `jos_modules` (`id`, `title`, `content`, `ordering`, `position`, `ch
 INSERT INTO `jos_modules` (`id`, `title`, `content`, `ordering`, `position`, `checked_out`, `checked_out_time`, `published`, `module`, `numnews`, `access`, `showtitle`, `params`, `iscore`, `client_id`, `control`) VALUES (16,'breadcrumbs','',0,'breadcrumb',0,'0000-00-00 00:00:00',1,'mod_breadcrumbs',0,0,1,'showHome=0\nhomeText=\nshowLast=1\nseparator=\nmoduleclass_sfx=\ncache=0\n\n',0,0,'');
 INSERT INTO `jos_modules` (`id`, `title`, `content`, `ordering`, `position`, `checked_out`, `checked_out_time`, `published`, `module`, `numnews`, `access`, `showtitle`, `params`, `iscore`, `client_id`, `control`) VALUES (17,'SWT Matrix Menu','',0,'menu',0,'0000-00-00 00:00:00',0,'mod_mainmenu',0,0,1,'menutype=SWT-Matrix\nmenu_style=list\nstartLevel=0\nendLevel=0\nshowAllChildren=0\nwindow_open=\nshow_whitespace=0\ncache=1\ntag_id=\nclass_sfx=\nmoduleclass_sfx=\nmaxdepth=10\nmenu_images=0\nmenu_images_align=0\nmenu_images_link=0\nexpand_menu=0\nactivate_parent=0\nfull_active_id=0\nindent_image=0\nindent_image1=\nindent_image2=\nindent_image3=\nindent_image4=\nindent_image5=\nindent_image6=\nspacer=\nend_spacer=\n\n',0,0,'');
 INSERT INTO `jos_modules` (`id`, `title`, `content`, `ordering`, `position`, `checked_out`, `checked_out_time`, `published`, `module`, `numnews`, `access`, `showtitle`, `params`, `iscore`, `client_id`, `control`) VALUES (18,'Search','',0,'search',0,'0000-00-00 00:00:00',1,'mod_search',0,0,0,'moduleclass_sfx=\nwidth=20\ntext=search\nbutton=\nbutton_pos=right\nimagebutton=\nbutton_text=\nset_itemid=\ncache=1\ncache_time=900\n\n',0,0,'');
-INSERT INTO `jos_modules` (`id`, `title`, `content`, `ordering`, `position`, `checked_out`, `checked_out_time`, `published`, `module`, `numnews`, `access`, `showtitle`, `params`, `iscore`, `client_id`, `control`) VALUES (19,'Login','',1,'menu',0,'0000-00-00 00:00:00',1,'mod_login',0,0,1,'cache=0\nmoduleclass_sfx=\npretext=\nposttext=\nlogin=\nlogout=\ngreeting=1\nname=0\nusesecure=0\n\n',0,0,'');
+INSERT INTO `jos_modules` (`id`, `title`, `content`, `ordering`, `position`, `checked_out`, `checked_out_time`, `published`, `module`, `numnews`, `access`, `showtitle`, `params`, `iscore`, `client_id`, `control`) VALUES (19,'Login','',0,'menu',0,'0000-00-00 00:00:00',1,'mod_login',0,0,1,'cache=0\nmoduleclass_sfx=\npretext=\nposttext=\nlogin=\nlogout=\ngreeting=1\nname=0\nusesecure=0\n\n',0,0,'');
 /*!40000 ALTER TABLE `jos_modules` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1653,7 +2498,7 @@ CREATE TABLE `jos_plugins` (
   `params` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `idx_folder` (`published`,`client_id`,`access`,`folder`)
-) ENGINE=MyISAM AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=46 DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -1665,7 +2510,7 @@ LOCK TABLES `jos_plugins` WRITE;
 INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (1,'Authentication - Joomla','joomla','authentication',0,1,1,1,0,0,'0000-00-00 00:00:00','');
 INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (2,'Authentication - LDAP','ldap','authentication',0,2,0,1,0,0,'0000-00-00 00:00:00','host=\nport=389\nuse_ldapV3=0\nnegotiate_tls=0\nno_referrals=0\nauth_method=bind\nbase_dn=\nsearch_string=\nusers_dn=\nusername=\npassword=\nldap_fullname=fullName\nldap_email=mail\nldap_uid=uid\n\n');
 INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (3,'Authentication - GMail','gmail','authentication',0,4,1,0,0,0,'0000-00-00 00:00:00','');
-INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (4,'Authentication - OpenID','openid','authentication',0,3,1,0,0,0,'0000-00-00 00:00:00','');
+INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (4,'Authentication - OpenID','openid','authentication',0,3,0,0,0,0,'0000-00-00 00:00:00','');
 INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (5,'User - Joomla!','joomla','user',0,0,1,0,0,0,'0000-00-00 00:00:00','autoregister=1\n\n');
 INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (6,'Search - Content','content','search',0,1,1,1,0,0,'0000-00-00 00:00:00','search_limit=50\nsearch_content=1\nsearch_uncategorised=1\nsearch_archived=1\n\n');
 INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (7,'Search - Contacts','contacts','search',0,3,1,1,0,0,'0000-00-00 00:00:00','search_limit=50\n\n');
@@ -1676,7 +2521,7 @@ INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `orderin
 INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (12,'Content - Pagebreak','pagebreak','content',0,10000,1,1,0,0,'0000-00-00 00:00:00','enabled=1\ntitle=1\nmultipage_toc=1\nshowall=1\n\n');
 INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (13,'Content - Rating','vote','content',0,4,1,1,0,0,'0000-00-00 00:00:00','');
 INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (14,'Content - Email Cloaking','emailcloak','content',0,5,1,0,0,0,'0000-00-00 00:00:00','mode=1\n\n');
-INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (15,'Content - Code Hightlighter (GeSHi)','geshi','content',0,5,0,0,0,0,'0000-00-00 00:00:00','');
+INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (15,'Content - Code Hightlighter (GeSHi)','geshi','content',0,5,1,0,0,0,'0000-00-00 00:00:00','');
 INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (16,'Content - Load Module','loadmodule','content',0,6,1,0,0,0,'0000-00-00 00:00:00','enabled=1\nstyle=0\n\n');
 INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (17,'Content - Page Navigation','pagenavigation','content',0,2,1,1,0,0,'0000-00-00 00:00:00','position=1\n\n');
 INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (18,'Editor - No Editor','none','editors',0,0,1,1,0,0,'0000-00-00 00:00:00','');
@@ -1701,6 +2546,9 @@ INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `orderin
 INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (38,'System - Articles Anywhere','articlesanywhere','system',0,0,1,0,0,0,'0000-00-00 00:00:00','');
 INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (39,'Editor Button - Articles Anywhere','articlesanywhere','editors-xtd',0,0,1,0,0,0,'0000-00-00 00:00:00','');
 INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (40,'JA Menu Parameters','plg_jamenuparams','system',0,0,1,0,0,0,'0000-00-00 00:00:00','');
+INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (42,'Huru Helpdesk - User Sync','huruhelpdesk_user_sync','user',0,0,1,0,0,0,'0000-00-00 00:00:00','isUser=1\n\n');
+INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (44,'Content AutoToC','autotoc','content',0,0,0,0,0,0,'0000-00-00 00:00:00','enabledDefault=0\nshowOnFrontPage=0\naddNumbering=0\nnumSlice=2\naddToc=1\nuseDefaultCSS=1\nfloatDir=right\nappendClear=1\naddNumberingToc=0\ndisplayToc=table\n\n');
+INSERT INTO `jos_plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`) VALUES (45,'Content - Article Table of Contents','toc','content',0,0,1,0,0,0,'0000-00-00 00:00:00','enabled=1\naddNumbering=0\naddToc=0\nindentToc=1\ndisplayToc=table\n\n');
 /*!40000 ALTER TABLE `jos_plugins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2076,6 +2924,13 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `jos_session` WRITE;
 /*!40000 ALTER TABLE `jos_session` DISABLE KEYS */;
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302806814','agqi68itvki19798gjm1b17np5',1,0,'',0,0,'__default|a:8:{s:15:\"session.counter\";i:2;s:19:\"session.timer.start\";i:1302806381;s:18:\"session.timer.last\";i:1302806381;s:17:\"session.timer.now\";i:1302806381;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:2:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}s:7:\"hh_list\";a:1:{s:4:\"data\";O:8:\"stdClass\":2:{s:4:\"view\";s:4:\"list\";s:4:\"type\";s:3:\"all\";}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"81e3db2619d9553de2262e4ba29e6fcf\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302806433','gtml2hafcngfj3tnvj1kea30u0',1,0,'',0,0,'__default|a:8:{s:15:\"session.counter\";i:4;s:19:\"session.timer.start\";i:1302806388;s:18:\"session.timer.last\";i:1302806407;s:17:\"session.timer.now\";i:1302806410;s:22:\"session.client.browser\";s:90:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.1.18) Gecko/20110319 Firefox/3.5.18\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"54751be47db84c50cf4d265502cd08e7\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302794681','6stn8vjvokv0cecrsjcterg3l1',1,0,'',0,0,'__default|a:8:{s:15:\"session.counter\";i:40;s:19:\"session.timer.start\";i:1302789712;s:18:\"session.timer.last\";i:1302794649;s:17:\"session.timer.now\";i:1302794662;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"02bb1a14011179b6815d094729721dde\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302798001','jiosk44rohqk2kas9cdmqoofu1',1,0,'',0,0,'__default|a:8:{s:15:\"session.counter\";i:22;s:19:\"session.timer.start\";i:1302793192;s:18:\"session.timer.last\";i:1302797878;s:17:\"session.timer.now\";i:1302797881;s:22:\"session.client.browser\";s:90:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.1.18) Gecko/20110319 Firefox/3.5.18\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:2:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}s:7:\"hh_list\";a:1:{s:4:\"data\";O:8:\"stdClass\":24:{s:4:\"type\";s:0:\"\";s:4:\"user\";s:0:\"\";s:4:\"days\";s:0:\"\";s:5:\"stype\";s:0:\"\";s:4:\"task\";s:0:\"\";s:5:\"order\";s:0:\"\";s:4:\"sort\";s:0:\"\";s:10:\"searchuser\";s:0:\"\";s:10:\"searchdays\";s:0:\"\";s:10:\"searchtask\";s:0:\"\";s:14:\"searchusername\";s:0:\"\";s:15:\"searchproblemid\";s:0:\"\";s:9:\"searchrep\";s:0:\"\";s:14:\"searchcategory\";s:0:\"\";s:16:\"searchdepartment\";s:0:\"\";s:12:\"searchstatus\";s:0:\"\";s:14:\"searchpriority\";s:0:\"\";s:13:\"searchkeyword\";s:0:\"\";s:13:\"searchsubject\";s:0:\"\";s:17:\"searchdescription\";s:0:\"\";s:14:\"searchsolution\";s:0:\"\";s:19:\"searchstartdatefrom\";s:0:\"\";s:17:\"searchstartdateto\";s:0:\"\";s:5:\"count\";s:0:\"\";}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"ca4665bae40fc6944c00fb7966b888cc\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302794793','robqh8kruv7lmo9nams8a87g53',1,0,'',0,0,'__default|a:8:{s:15:\"session.counter\";i:1;s:19:\"session.timer.start\";i:1302794784;s:18:\"session.timer.last\";i:1302794784;s:17:\"session.timer.now\";i:1302794784;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"14acaa22cc43b2521592e2509095dc03\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302795070','i4ms1f0sgombv1vr8bcbsbehf1',1,0,'',0,0,'__default|a:8:{s:15:\"session.counter\";i:1;s:19:\"session.timer.start\";i:1302795054;s:18:\"session.timer.last\";i:1302795054;s:17:\"session.timer.now\";i:1302795054;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"ce56442d13a7beb00dba060c928c2a01\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302798009','jel12dd1fji1p9mg9f7mccagl2',1,0,'',0,0,'__default|a:8:{s:15:\"session.counter\";i:1;s:19:\"session.timer.start\";i:1302797822;s:18:\"session.timer.last\";i:1302797822;s:17:\"session.timer.now\";i:1302797822;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"ec59abfcbdf51ce42698cbe4260c1405\";}');
 INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302627307','b896a4i9bkiig5cntgd020k854',1,0,'',0,0,'__default|a:8:{s:15:\"session.counter\";i:109;s:19:\"session.timer.start\";i:1302590986;s:18:\"session.timer.last\";i:1302627302;s:17:\"session.timer.now\";i:1302627307;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:2:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}s:7:\"hh_list\";a:1:{s:4:\"data\";O:8:\"stdClass\":26:{s:4:\"type\";s:0:\"\";s:4:\"user\";s:0:\"\";s:4:\"days\";s:0:\"\";s:5:\"stype\";s:0:\"\";s:4:\"task\";s:0:\"\";s:5:\"order\";s:0:\"\";s:4:\"sort\";s:0:\"\";s:10:\"searchuser\";s:0:\"\";s:10:\"searchdays\";s:0:\"\";s:10:\"searchtask\";s:0:\"\";s:14:\"searchusername\";s:0:\"\";s:15:\"searchproblemid\";s:0:\"\";s:9:\"searchrep\";s:0:\"\";s:14:\"searchcategory\";s:0:\"\";s:16:\"searchdepartment\";s:0:\"\";s:12:\"searchstatus\";s:0:\"\";s:14:\"searchpriority\";s:0:\"\";s:13:\"searchkeyword\";s:0:\"\";s:13:\"searchsubject\";s:0:\"\";s:17:\"searchdescription\";s:0:\"\";s:14:\"searchsolution\";s:0:\"\";s:19:\"searchstartdatefrom\";s:0:\"\";s:17:\"searchstartdateto\";s:0:\"\";s:5:\"count\";s:0:\"\";s:4:\"view\";s:4:\"list\";s:6:\"Itemid\";s:1:\"2\";}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"b061900ac63a75cf14ca7d2075b4d49b\";}');
 INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302591547','qpu1gbs7g5jnika77ac61egd22',1,0,'',0,1,'__default|a:8:{s:15:\"session.counter\";i:1;s:19:\"session.timer.start\";i:1302591533;s:18:\"session.timer.last\";i:1302591533;s:17:\"session.timer.now\";i:1302591533;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"5c53fdcfa7a5b3207810a71df943ae53\";}');
 INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('admin','1302624360','io0k580j30dp1dt2b8jmeof7p1',0,62,'Super Administrator',25,1,'__default|a:8:{s:15:\"session.counter\";i:176;s:19:\"session.timer.start\";i:1302591533;s:18:\"session.timer.last\";i:1302624360;s:17:\"session.timer.now\";i:1302624360;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:9:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}s:11:\"application\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:4:\"lang\";s:0:\"\";}}s:10:\"com_cpanel\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:9:\"mtupgrade\";O:8:\"stdClass\":1:{s:7:\"checked\";b:1;}}}s:11:\"com_content\";a:1:{s:4:\"data\";O:8:\"stdClass\":8:{s:23:\"viewcontentfilter_order\";s:7:\"c.title\";s:27:\"viewcontentfilter_order_Dir\";s:3:\"asc\";s:23:\"viewcontentfilter_state\";s:0:\"\";s:16:\"viewcontentcatid\";i:0;s:26:\"viewcontentfilter_authorid\";i:0;s:27:\"viewcontentfilter_sectionid\";i:-1;s:17:\"viewcontentsearch\";s:0:\"\";s:21:\"viewcontentlimitstart\";i:0;}}s:6:\"global\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:4:\"list\";O:8:\"stdClass\":1:{s:5:\"limit\";i:20;}}}s:9:\"com_menus\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:8:\"menutype\";s:8:\"mainmenu\";}}s:11:\"hh_userlist\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:5:\"count\";i:1;}}s:11:\"com_plugins\";a:1:{s:4:\"data\";O:8:\"stdClass\":2:{s:4:\"site\";O:8:\"stdClass\":5:{s:12:\"filter_order\";s:8:\"p.folder\";s:16:\"filter_order_Dir\";s:0:\"\";s:12:\"filter_state\";s:0:\"\";s:11:\"filter_type\";s:1:\"1\";s:6:\"search\";s:3:\"kun\";}s:10:\"limitstart\";i:0;}}s:13:\"com_installer\";a:1:{s:4:\"data\";O:8:\"stdClass\":2:{s:10:\"limitstart\";O:8:\"stdClass\":3:{s:9:\"component\";i:0;s:6:\"plugin\";i:0;s:6:\"module\";i:20;}s:7:\"plugins\";O:8:\"stdClass\":1:{s:5:\"group\";s:0:\"\";}}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";s:2:\"62\";s:4:\"name\";s:13:\"Administrator\";s:8:\"username\";s:5:\"admin\";s:5:\"email\";s:31:\"jacek.p.kolodziejczyk@gmail.com\";s:8:\"password\";s:65:\"22e72019da69849ad2c8be6adaddf246:qy4KjJ3Zg8OP6AJjhYrdeppD33YQnERh\";s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";s:19:\"Super Administrator\";s:5:\"block\";s:1:\"0\";s:9:\"sendEmail\";s:1:\"1\";s:3:\"gid\";s:2:\"25\";s:12:\"registerDate\";s:19:\"2011-03-13 21:18:07\";s:13:\"lastvisitDate\";s:19:\"2011-03-28 23:14:26\";s:10:\"activation\";s:0:\"\";s:6:\"params\";s:0:\"\";s:3:\"aid\";i:2;s:5:\"guest\";i:0;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"5c53fdcfa7a5b3207810a71df943ae53\";}');
@@ -2083,8 +2938,20 @@ INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, 
 INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('admin','1302697677','g1fnj0vn201h0erjvt59difgt1',0,62,'Super Administrator',25,1,'__default|a:8:{s:15:\"session.counter\";i:85;s:19:\"session.timer.start\";i:1302677757;s:18:\"session.timer.last\";i:1302697677;s:17:\"session.timer.now\";i:1302697677;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:5:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}s:11:\"application\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:4:\"lang\";s:0:\"\";}}s:11:\"com_content\";a:1:{s:4:\"data\";O:8:\"stdClass\":8:{s:23:\"viewcontentfilter_order\";s:7:\"c.title\";s:27:\"viewcontentfilter_order_Dir\";s:3:\"asc\";s:23:\"viewcontentfilter_state\";s:0:\"\";s:16:\"viewcontentcatid\";i:0;s:26:\"viewcontentfilter_authorid\";i:0;s:27:\"viewcontentfilter_sectionid\";i:-1;s:17:\"viewcontentsearch\";s:0:\"\";s:21:\"viewcontentlimitstart\";i:0;}}s:6:\"global\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:4:\"list\";O:8:\"stdClass\":1:{s:5:\"limit\";i:20;}}}s:9:\"com_menus\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:8:\"menutype\";s:8:\"mainmenu\";}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";s:2:\"62\";s:4:\"name\";s:13:\"Administrator\";s:8:\"username\";s:5:\"admin\";s:5:\"email\";s:31:\"jacek.p.kolodziejczyk@gmail.com\";s:8:\"password\";s:65:\"22e72019da69849ad2c8be6adaddf246:qy4KjJ3Zg8OP6AJjhYrdeppD33YQnERh\";s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";s:19:\"Super Administrator\";s:5:\"block\";s:1:\"0\";s:9:\"sendEmail\";s:1:\"1\";s:3:\"gid\";s:2:\"25\";s:12:\"registerDate\";s:19:\"2011-03-13 21:18:07\";s:13:\"lastvisitDate\";s:19:\"2011-04-12 06:59:07\";s:10:\"activation\";s:0:\"\";s:6:\"params\";s:0:\"\";s:3:\"aid\";i:2;s:5:\"guest\";i:0;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"3cbc58a9d4b163d34cf66e36677059b9\";}');
 INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302697115','8cqskdr9560onaae41ct63aic3',1,0,'',0,0,'__default|a:7:{s:15:\"session.counter\";i:30;s:19:\"session.timer.start\";i:1302677784;s:18:\"session.timer.last\";i:1302696902;s:17:\"session.timer.now\";i:1302697115;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}}');
 INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302766835','pr7k6fdn0cd057o0l00osn7rs4',1,0,'',0,1,'__default|a:8:{s:15:\"session.counter\";i:1;s:19:\"session.timer.start\";i:1302766708;s:18:\"session.timer.last\";i:1302766708;s:17:\"session.timer.now\";i:1302766708;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"8c0585b8c17f5dbf8b1583e353839d5f\";}');
-INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('admin','1302783513','ubjf1cql9oi3d919cpkpgk82m2',0,62,'Super Administrator',25,1,'__default|a:8:{s:15:\"session.counter\";i:141;s:19:\"session.timer.start\";i:1302766708;s:18:\"session.timer.last\";i:1302783513;s:17:\"session.timer.now\";i:1302783513;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:4:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}s:11:\"application\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:4:\"lang\";s:0:\"\";}}s:11:\"com_content\";a:1:{s:4:\"data\";O:8:\"stdClass\":8:{s:23:\"viewcontentfilter_order\";s:7:\"c.title\";s:27:\"viewcontentfilter_order_Dir\";s:3:\"asc\";s:23:\"viewcontentfilter_state\";s:0:\"\";s:16:\"viewcontentcatid\";i:0;s:26:\"viewcontentfilter_authorid\";i:0;s:27:\"viewcontentfilter_sectionid\";i:-1;s:17:\"viewcontentsearch\";s:0:\"\";s:21:\"viewcontentlimitstart\";i:0;}}s:6:\"global\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:4:\"list\";O:8:\"stdClass\":1:{s:5:\"limit\";i:20;}}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";s:2:\"62\";s:4:\"name\";s:13:\"Administrator\";s:8:\"username\";s:5:\"admin\";s:5:\"email\";s:31:\"jacek.p.kolodziejczyk@gmail.com\";s:8:\"password\";s:65:\"22e72019da69849ad2c8be6adaddf246:qy4KjJ3Zg8OP6AJjhYrdeppD33YQnERh\";s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";s:19:\"Super Administrator\";s:5:\"block\";s:1:\"0\";s:9:\"sendEmail\";s:1:\"1\";s:3:\"gid\";s:2:\"25\";s:12:\"registerDate\";s:19:\"2011-03-13 21:18:07\";s:13:\"lastvisitDate\";s:19:\"2011-04-13 06:56:14\";s:10:\"activation\";s:0:\"\";s:6:\"params\";s:0:\"\";s:3:\"aid\";i:2;s:5:\"guest\";i:0;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"8c0585b8c17f5dbf8b1583e353839d5f\";}');
-INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302784622','jamn71j6i4j7fu49m3ck3jp190',1,0,'',0,0,'__default|a:7:{s:15:\"session.counter\";i:110;s:19:\"session.timer.start\";i:1302766849;s:18:\"session.timer.last\";i:1302784586;s:17:\"session.timer.now\";i:1302784622;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('admin','1302810429','ubjf1cql9oi3d919cpkpgk82m2',0,62,'Super Administrator',25,1,'__default|a:8:{s:15:\"session.counter\";i:244;s:19:\"session.timer.start\";i:1302766708;s:18:\"session.timer.last\";i:1302806718;s:17:\"session.timer.now\";i:1302810429;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:7:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}s:11:\"application\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:4:\"lang\";s:0:\"\";}}s:11:\"com_content\";a:1:{s:4:\"data\";O:8:\"stdClass\":8:{s:23:\"viewcontentfilter_order\";s:7:\"c.title\";s:27:\"viewcontentfilter_order_Dir\";s:3:\"asc\";s:23:\"viewcontentfilter_state\";s:0:\"\";s:16:\"viewcontentcatid\";i:0;s:26:\"viewcontentfilter_authorid\";i:0;s:27:\"viewcontentfilter_sectionid\";i:-1;s:17:\"viewcontentsearch\";s:0:\"\";s:21:\"viewcontentlimitstart\";i:0;}}s:6:\"global\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:4:\"list\";O:8:\"stdClass\":1:{s:5:\"limit\";i:20;}}}s:9:\"com_menus\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:8:\"menutype\";s:8:\"mainmenu\";}}s:11:\"hh_userlist\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:5:\"count\";i:2;}}s:11:\"com_plugins\";a:1:{s:4:\"data\";O:8:\"stdClass\":2:{s:4:\"site\";O:8:\"stdClass\":5:{s:12:\"filter_order\";s:8:\"p.folder\";s:16:\"filter_order_Dir\";s:0:\"\";s:12:\"filter_state\";s:0:\"\";s:11:\"filter_type\";s:1:\"1\";s:6:\"search\";s:0:\"\";}s:10:\"limitstart\";i:20;}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";s:2:\"62\";s:4:\"name\";s:13:\"Administrator\";s:8:\"username\";s:5:\"admin\";s:5:\"email\";s:31:\"jacek.p.kolodziejczyk@gmail.com\";s:8:\"password\";s:65:\"22e72019da69849ad2c8be6adaddf246:qy4KjJ3Zg8OP6AJjhYrdeppD33YQnERh\";s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";s:19:\"Super Administrator\";s:5:\"block\";s:1:\"0\";s:9:\"sendEmail\";s:1:\"1\";s:3:\"gid\";s:2:\"25\";s:12:\"registerDate\";s:19:\"2011-03-13 21:18:07\";s:13:\"lastvisitDate\";s:19:\"2011-04-13 06:56:14\";s:10:\"activation\";s:0:\"\";s:6:\"params\";s:0:\"\";s:3:\"aid\";i:2;s:5:\"guest\";i:0;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"8c0585b8c17f5dbf8b1583e353839d5f\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302789072','jamn71j6i4j7fu49m3ck3jp190',1,0,'',0,0,'__default|a:8:{s:15:\"session.counter\";i:115;s:19:\"session.timer.start\";i:1302766849;s:18:\"session.timer.last\";i:1302787411;s:17:\"session.timer.now\";i:1302787414;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"f6a3f8583fa7e6a2b13e2d16dd8dffe0\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302789235','ic4a5e1hldggh76amr93p5rgn1',1,0,'',0,0,'__default|a:8:{s:15:\"session.counter\";i:4;s:19:\"session.timer.start\";i:1302789097;s:18:\"session.timer.last\";i:1302789135;s:17:\"session.timer.now\";i:1302789137;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"a417652a879b54544c7ca49aabbca053\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302789595','g4aa7ju2rctj5iaekbjuv6ot63',1,0,'',0,0,'__default|a:8:{s:15:\"session.counter\";i:1;s:19:\"session.timer.start\";i:1302789583;s:18:\"session.timer.last\";i:1302789583;s:17:\"session.timer.now\";i:1302789583;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"cabcfbeb9a2a2753c7e7812823e4b506\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302789678','6jtngfs1798qhtmj0l6ob3bgn4',1,0,'',0,0,'__default|a:8:{s:15:\"session.counter\";i:4;s:19:\"session.timer.start\";i:1302789583;s:18:\"session.timer.last\";i:1302789595;s:17:\"session.timer.now\";i:1302789669;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"cabcfbeb9a2a2753c7e7812823e4b506\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302806726','bj84piu90enrdh323tb4crf0b1',1,0,'',0,0,'__default|a:8:{s:15:\"session.counter\";i:4;s:19:\"session.timer.start\";i:1302806580;s:18:\"session.timer.last\";i:1302806602;s:17:\"session.timer.now\";i:1302806604;s:22:\"session.client.browser\";s:90:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.1.18) Gecko/20110319 Firefox/3.5.18\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"595e000c45989a09871b687029484aec\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302847057','3017qj8aqih1hctnpbunc0npp5',1,0,'',0,1,'__default|a:8:{s:15:\"session.counter\";i:1;s:19:\"session.timer.start\";i:1302847052;s:18:\"session.timer.last\";i:1302847052;s:17:\"session.timer.now\";i:1302847052;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"c4be3b284b7b5adb01709d0a96e7445a\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('admin','1302883525','p88i1748qjp5b24vbn7p0vkmv0',0,62,'Super Administrator',25,1,'__default|a:8:{s:15:\"session.counter\";i:228;s:19:\"session.timer.start\";i:1302847052;s:18:\"session.timer.last\";i:1302883525;s:17:\"session.timer.now\";i:1302883525;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:7:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}s:11:\"application\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:4:\"lang\";s:0:\"\";}}s:11:\"com_plugins\";a:1:{s:4:\"data\";O:8:\"stdClass\":2:{s:4:\"site\";O:8:\"stdClass\":5:{s:12:\"filter_order\";s:8:\"p.folder\";s:16:\"filter_order_Dir\";s:0:\"\";s:12:\"filter_state\";s:0:\"\";s:11:\"filter_type\";s:1:\"1\";s:6:\"search\";s:0:\"\";}s:10:\"limitstart\";i:0;}}s:6:\"global\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:4:\"list\";O:8:\"stdClass\":1:{s:5:\"limit\";i:20;}}}s:13:\"com_installer\";a:1:{s:4:\"data\";O:8:\"stdClass\":2:{s:10:\"limitstart\";O:8:\"stdClass\":2:{s:9:\"component\";i:0;s:6:\"plugin\";i:0;}s:7:\"plugins\";O:8:\"stdClass\":1:{s:5:\"group\";s:0:\"\";}}}s:9:\"com_menus\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:8:\"menutype\";s:8:\"mainmenu\";}}s:11:\"com_content\";a:1:{s:4:\"data\";O:8:\"stdClass\":8:{s:23:\"viewcontentfilter_order\";s:7:\"c.title\";s:27:\"viewcontentfilter_order_Dir\";s:4:\"desc\";s:23:\"viewcontentfilter_state\";s:0:\"\";s:16:\"viewcontentcatid\";i:0;s:26:\"viewcontentfilter_authorid\";i:0;s:27:\"viewcontentfilter_sectionid\";i:-1;s:17:\"viewcontentsearch\";s:0:\"\";s:21:\"viewcontentlimitstart\";i:0;}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";s:2:\"62\";s:4:\"name\";s:13:\"Administrator\";s:8:\"username\";s:5:\"admin\";s:5:\"email\";s:31:\"jacek.p.kolodziejczyk@gmail.com\";s:8:\"password\";s:65:\"22e72019da69849ad2c8be6adaddf246:qy4KjJ3Zg8OP6AJjhYrdeppD33YQnERh\";s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";s:19:\"Super Administrator\";s:5:\"block\";s:1:\"0\";s:9:\"sendEmail\";s:1:\"1\";s:3:\"gid\";s:2:\"25\";s:12:\"registerDate\";s:19:\"2011-03-13 21:18:07\";s:13:\"lastvisitDate\";s:19:\"2011-04-14 18:39:41\";s:10:\"activation\";s:0:\"\";s:6:\"params\";s:0:\"\";s:3:\"aid\";i:2;s:5:\"guest\";i:0;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"c4be3b284b7b5adb01709d0a96e7445a\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302858225','svrhe5h3gkrlbmeq8a92hbn1l2',1,0,'',0,0,'__default|a:9:{s:15:\"session.counter\";i:39;s:19:\"session.timer.start\";i:1302848045;s:18:\"session.timer.last\";i:1302858069;s:17:\"session.timer.now\";i:1302858094;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:2:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}s:10:\"com_kunena\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:10:\"ActionBulk\";s:60:\"/netanel15/index.php?option=com_kunena&Itemid=20&func=latest\";}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"84cd2b11c13645212ae4fd81c0bb83b4\";s:19:\"com_mailto.formtime\";i:1302850987;}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302859472','74f0d2u8jvk8mqavafvfmma1u2',1,0,'',0,0,'__default|a:8:{s:15:\"session.counter\";i:1;s:19:\"session.timer.start\";i:1302859465;s:18:\"session.timer.last\";i:1302859465;s:17:\"session.timer.now\";i:1302859465;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:2:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}s:10:\"com_kunena\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:10:\"ActionBulk\";s:48:\"/netanel15/index.php?option=com_kunena&Itemid=20\";}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"3c2b63494f61a2202a346c95a3396f9c\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302905132','rrad92ir369mld2tr64b86rdq0',1,0,'',0,0,'__default|a:8:{s:15:\"session.counter\";i:74;s:19:\"session.timer.start\";i:1302894239;s:18:\"session.timer.last\";i:1302905065;s:17:\"session.timer.now\";i:1302905132;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:2:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}s:10:\"com_kunena\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:10:\"ActionBulk\";s:48:\"/netanel15/index.php?option=com_kunena&Itemid=20\";}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"0d7f3ab2fda87c24c7e708f7b19c7e52\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302894091','28pi69rs9kk1b1qskc1u2igt10',1,0,'',0,1,'__default|a:8:{s:15:\"session.counter\";i:1;s:19:\"session.timer.start\";i:1302894085;s:18:\"session.timer.last\";i:1302894085;s:17:\"session.timer.now\";i:1302894085;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"5c5011e320de9bed3341903fd51c23cf\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('','1302894081','a9trucfsvt9rams7i7q1o3ns31',1,0,'',0,0,'__default|a:8:{s:15:\"session.counter\";i:1;s:19:\"session.timer.start\";i:1302894081;s:18:\"session.timer.last\";i:1302894081;s:17:\"session.timer.now\";i:1302894081;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:1:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";i:0;s:4:\"name\";N;s:8:\"username\";N;s:5:\"email\";N;s:8:\"password\";N;s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";N;s:5:\"block\";N;s:9:\"sendEmail\";i:0;s:3:\"gid\";i:0;s:12:\"registerDate\";N;s:13:\"lastvisitDate\";N;s:10:\"activation\";N;s:6:\"params\";N;s:3:\"aid\";i:0;s:5:\"guest\";i:1;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"d1bfa9ed924fe09c00f0d6e110fba9fd\";}');
+INSERT INTO `jos_session` (`username`, `time`, `session_id`, `guest`, `userid`, `usertype`, `gid`, `client_id`, `data`) VALUES ('admin','1302905125','sur4mn8gvrk2i25siicobsuv25',0,62,'Super Administrator',25,1,'__default|a:8:{s:15:\"session.counter\";i:102;s:19:\"session.timer.start\";i:1302894085;s:18:\"session.timer.last\";i:1302905125;s:17:\"session.timer.now\";i:1302905125;s:22:\"session.client.browser\";s:120:\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16\";s:8:\"registry\";O:9:\"JRegistry\":3:{s:17:\"_defaultNameSpace\";s:7:\"session\";s:9:\"_registry\";a:5:{s:7:\"session\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}s:11:\"application\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:4:\"lang\";s:0:\"\";}}s:11:\"com_plugins\";a:1:{s:4:\"data\";O:8:\"stdClass\":2:{s:4:\"site\";O:8:\"stdClass\":5:{s:12:\"filter_order\";s:8:\"p.folder\";s:16:\"filter_order_Dir\";s:0:\"\";s:12:\"filter_state\";s:0:\"\";s:11:\"filter_type\";s:1:\"1\";s:6:\"search\";s:0:\"\";}s:10:\"limitstart\";i:0;}}s:6:\"global\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:4:\"list\";O:8:\"stdClass\":1:{s:5:\"limit\";i:20;}}}s:9:\"com_menus\";a:1:{s:4:\"data\";O:8:\"stdClass\":1:{s:8:\"menutype\";s:8:\"mainmenu\";}}}s:7:\"_errors\";a:0:{}}s:4:\"user\";O:5:\"JUser\":19:{s:2:\"id\";s:2:\"62\";s:4:\"name\";s:13:\"Administrator\";s:8:\"username\";s:5:\"admin\";s:5:\"email\";s:31:\"jacek.p.kolodziejczyk@gmail.com\";s:8:\"password\";s:65:\"22e72019da69849ad2c8be6adaddf246:qy4KjJ3Zg8OP6AJjhYrdeppD33YQnERh\";s:14:\"password_clear\";s:0:\"\";s:8:\"usertype\";s:19:\"Super Administrator\";s:5:\"block\";s:1:\"0\";s:9:\"sendEmail\";s:1:\"1\";s:3:\"gid\";s:2:\"25\";s:12:\"registerDate\";s:19:\"2011-03-13 21:18:07\";s:13:\"lastvisitDate\";s:19:\"2011-04-15 09:24:25\";s:10:\"activation\";s:0:\"\";s:6:\"params\";s:0:\"\";s:3:\"aid\";i:2;s:5:\"guest\";i:0;s:7:\"_params\";O:10:\"JParameter\":7:{s:4:\"_raw\";s:0:\"\";s:4:\"_xml\";N;s:9:\"_elements\";a:0:{}s:12:\"_elementPath\";a:1:{i:0;s:65:\"C:\\Dev\\wamp\\www\\netanel15\\libraries\\joomla\\html\\parameter\\element\";}s:17:\"_defaultNameSpace\";s:8:\"_default\";s:9:\"_registry\";a:1:{s:8:\"_default\";a:1:{s:4:\"data\";O:8:\"stdClass\":0:{}}}s:7:\"_errors\";a:0:{}}s:9:\"_errorMsg\";N;s:7:\"_errors\";a:0:{}}s:13:\"session.token\";s:32:\"5c5011e320de9bed3341903fd51c23cf\";}');
 /*!40000 ALTER TABLE `jos_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2164,7 +3031,7 @@ CREATE TABLE `jos_users` (
   KEY `gid_block` (`gid`,`block`),
   KEY `username` (`username`),
   KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=63 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=67 DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -2173,7 +3040,11 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `jos_users` WRITE;
 /*!40000 ALTER TABLE `jos_users` DISABLE KEYS */;
-INSERT INTO `jos_users` (`id`, `name`, `username`, `email`, `password`, `usertype`, `block`, `sendEmail`, `gid`, `registerDate`, `lastvisitDate`, `activation`, `params`) VALUES (62,'Administrator','admin','jacek.p.kolodziejczyk@gmail.com','22e72019da69849ad2c8be6adaddf246:qy4KjJ3Zg8OP6AJjhYrdeppD33YQnERh','Super Administrator',0,1,25,'2011-03-13 21:18:07','2011-04-14 07:40:36','','');
+INSERT INTO `jos_users` (`id`, `name`, `username`, `email`, `password`, `usertype`, `block`, `sendEmail`, `gid`, `registerDate`, `lastvisitDate`, `activation`, `params`) VALUES (62,'Administrator','admin','jacek.p.kolodziejczyk@gmail.com','22e72019da69849ad2c8be6adaddf246:qy4KjJ3Zg8OP6AJjhYrdeppD33YQnERh','Super Administrator',0,1,25,'2011-03-13 21:18:07','2011-04-15 19:01:32','','');
+INSERT INTO `jos_users` (`id`, `name`, `username`, `email`, `password`, `usertype`, `block`, `sendEmail`, `gid`, `registerDate`, `lastvisitDate`, `activation`, `params`) VALUES (63,'Jacek','jacek','jackolo@poczta.fm','8f39acd9fba3134e96c5d4f6b025ab16:iNoq0ku6Jp8BW9swWGvNhHOprddJSpBQ','Registered',0,0,18,'2011-04-14 13:52:15','2011-04-14 14:01:52','f9b1ef19e09e5e4d7ad9faf64839c132','');
+INSERT INTO `jos_users` (`id`, `name`, `username`, `email`, `password`, `usertype`, `block`, `sendEmail`, `gid`, `registerDate`, `lastvisitDate`, `activation`, `params`) VALUES (64,'bbb','bbb','bbb@b.pl','a6544a4c61523f4af13493d38994e040:2wAKjgcH2LeVMJU0cZWDVbLE9cSQBW5m','Registered',0,0,18,'2011-04-14 15:22:19','2011-04-14 18:39:48','f3c72fb900fbf7edf6463172b21f5b7c','');
+INSERT INTO `jos_users` (`id`, `name`, `username`, `email`, `password`, `usertype`, `block`, `sendEmail`, `gid`, `registerDate`, `lastvisitDate`, `activation`, `params`) VALUES (65,'cccc','cccc','c@c.pl','9da19f8c7b4ae5e12d90a27fbe5b1e51:qWhgjF3a6tMLvDmkBPUXhVZuTqdAER7y','Registered',0,0,18,'2011-04-14 18:40:07','2011-04-14 18:43:00','b4df79c17fb4d8a48411228b5102f376','\n');
+INSERT INTO `jos_users` (`id`, `name`, `username`, `email`, `password`, `usertype`, `block`, `sendEmail`, `gid`, `registerDate`, `lastvisitDate`, `activation`, `params`) VALUES (66,'dddd','dddd','d@d.pl','d87e05f38b5389a8e92e59ae941c116a:XvovyXSLl53VZkNLaGKgSAzh1JKc5of2','Registered',0,0,18,'2011-04-14 18:43:22','2011-04-15 09:24:33','4cc3c5a62a7d802ced24c9decbe484c9','\n');
 /*!40000 ALTER TABLE `jos_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2224,4 +3095,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-04-14 12:38:15
+-- Dump completed on 2011-04-15 22:08:43

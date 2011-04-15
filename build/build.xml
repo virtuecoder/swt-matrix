@@ -1,5 +1,5 @@
 <project name="swt-matrix" default="ftp" basedir=".">
-	<property name="version" value="0.01" />
+	<property name="version" value="0.1" />
 	<property name="local_website" value="c:\dev\wamp\www\netanel15\swt-matrix" />
 
 	<property name="build.tmp" value="../bin"/>
@@ -30,7 +30,7 @@
 
 	<target name="jar" depends="clean" description="create the jar">
 
-		<!-- Put everything in ${build} into a jar file -->
+		<!-- swt-matrix.jar-->
 		<jar jarfile="${ant.project.name}.jar">
 			<fileset dir="${build.tmp}">
 				<include name="pl/netanel/swt/matrix/*.class" />
@@ -44,9 +44,15 @@
 			</manifest>
 		</jar>
 
+
+		<!-- swt-matrix-snippets.zip-->
+		<zip destfile="${ant.project.name}-snippets-${version}.zip" 
+			basedir="../src_demo/" 
+			includes="pl/netanel/swt/matrix/snippets/*.java" />
+
 		<!-- obfuscate and optimize by ProGuard -->
 		<taskdef resource="proguard/ant/task.properties" 
-	      classpath="c:/dev/Java/java_lib/proguard4.3/lib/proguard.jar" />
+			classpath="c:/dev/Java/java_lib/proguard4.3/lib/proguard.jar" />
 		<proguard configuration="proguard.cfg"/>
 
 		<!--touch file="ant-jar.timestamp"/-->
@@ -92,6 +98,7 @@
 		</copy>
 
 		<copy todir="${local_website}" file="swt-matrix-0.1.jar" />
+		<copy todir="${local_website}" file="swt-matrix-snippets-0.1.zip" />
 
 		<java classname="JoomlaMysqlUpdate" dir=".." fork="true">
 			<classpath>

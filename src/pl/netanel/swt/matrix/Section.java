@@ -10,9 +10,7 @@ import pl.netanel.util.Preconditions;
  * Section represents a continuous segment of a matrix axis, for example a
  * header, body, footer. It contains a number of items indexed by the 
  * <code>&lt;N extends {@link Number}&gt;</code> type parameter.<br>
- * <p>
- * <img src="../../../../../javadoc/images/Section.png"/>
- * <p>
+ * 
  * Index item width consists of the line width and the cell width - 
  * the line precedes the cell. The last line index equals to getCount().
  * If the item is moved then both the cell and the preceding line are moved.  
@@ -25,10 +23,7 @@ import pl.netanel.util.Preconditions;
  * have the same width, then its a waste to store 1000000 ints with the same
  * values. An example of such function: setDefaultCellWidth(width).
  * <p>
- * Section has boolean flags for visibility and navigation enablement. On the
- * diagram above the current item is 0 in body section of column axis and 2 in
- * the body section of row axis. Only one item on the axis can the be the
- * current one, as opposed to each section having its own current item.
+ * Section has boolean flags for visibility and navigation enablement. 
  * 
  * 
  * @author Jacek Kolodziejczyk created 02-03-2011
