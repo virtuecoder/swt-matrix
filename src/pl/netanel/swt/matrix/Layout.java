@@ -21,6 +21,8 @@ class Layout<N extends Number> {
 	final MutableNumber total, maxInteger, maxScroll, scrollTotal;
 	final MutableNumber scrollPosition; // for head and tail it stores min and max scroll position
 	AxisItem<N> start, end, endNoTrim, current, zeroItem;
+	boolean isTrimmed;
+	int trim;
 
 	ArrayList<Runnable> callbacks;
 
@@ -182,7 +184,7 @@ class Layout<N extends Number> {
 		for (int section = current.section.index; section < axis.getSectionCount(); section++) {
 			N index2 = current.section.nextNotHiddenIndex(current.index, 1);
 			if (index2 != null) {
-				current.index = index2;
+				current = new AxisItem(current.section, index2);
 			}
 			if (math.compare(current.index, current.section.getCount()) >= 0) {
 				current = null;
@@ -286,7 +288,7 @@ class Layout<N extends Number> {
 	}
 
 	public int getScrollThumb() {
-		return main.cells.size() - (compare(endNoTrim, end) == 0 ? 0 : 1);
+		return main.cells.size() - trim;
 	}
 
 	public int getScrollPosition() {
@@ -628,9 +630,15 @@ class Layout<N extends Number> {
 			
 			// Compute last index that fully visible (not trimmed) 
 			endNoTrim = end;
+			isTrimmed = false;
+			trim = 0;
 			if (cells.size() > 1) {
-				if (outerWidth > maxWidth) {
-					endNoTrim = items.get(items.size() - 3); 
+				if (outerWidth > maxWidth && outerWidth != maxWidth +
+						cells.get(cells.size() - 1).width +
+						lines.get(lines.size() - 2).width) {
+					endNoTrim = items.get(items.size() - 3);
+					isTrimmed = true;
+					trim = 1;
 				}
 			}
 			forward.start = start;
@@ -701,7 +709,7 @@ class Layout<N extends Number> {
 	 * @param distance in the viewport
 	 * @return
 	 */
-	public AxisItem getItemByDistance(int distance) {
+	AxisItem getItemByDistance(int distance) {
 		Cache cache = getCache(distance);
 		AxisItem item = null;
 		for (int i = 0; i < cache.cells.size(); i++) {
@@ -865,8 +873,7 @@ class Layout<N extends Number> {
 		}
 		return null;
 	}
-
-
+	
 	public boolean isEmpty() {
 		return head.isEmpty() && main.isEmpty() && tail.isEmpty();
 	}
@@ -910,6 +917,36 @@ class Layout<N extends Number> {
 		}
 	}
 
+	public int indexOf(Section<N> section, N index) {
+		int count = 0;
+		for (Cache cache: caches) {
+			for (int i = 0, imax = cache.cells.size(); i < imax; i++, count++) {
+				AxisItem item = cache.items.get(i);
+				if (item.section.equals(section) && math.compare(item.index, index) == 0) {
+					return count;
+				} 
+			}
+		}
+		return -1;
+	}
+	
+	public AxisItem<N> getIndexAt(int index) {
+		if (index < head.count) return head.items.get(index);
+		index -= head.count;
+		if (index < main.cells.size()) return main.items.get(index);
+		index -= main.cells.size();
+		if (index < tail.count) return tail.items.get(index);
+		return null;
+	}
+	
+	public Bound getLineBound(int index) {
+		if (index < head.count) return head.lines.get(index);
+		index -= head.count;
+		if (index < main.cells.size()) return main.lines.get(index);
+		index -= main.cells.size();
+		if (index < tail.count) return tail.lines.get(index);
+		return null;
+	}
 
 	public boolean reorder(AxisItem<N> source, AxisItem<N> target) {
 		Section<N> section = source.section;

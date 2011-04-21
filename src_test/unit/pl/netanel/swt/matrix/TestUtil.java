@@ -85,6 +85,11 @@ class TestUtil {
 			section.setCount(count[i]);
 		}
 		Layout layout = new Layout(new Axis(sections));
+		for (int i = 0; i < count.length; i++) {
+			Section section = layout.getSection(i);
+			section.setVisible(true);
+//			section.setFocusItemEnabled(true);
+		}
 		return layout;
 	}
 

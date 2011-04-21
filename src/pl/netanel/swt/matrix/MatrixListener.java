@@ -505,7 +505,7 @@ class MatrixListener implements Listener {
 		public void refresh() {
 			N count = item.section.getCount();
 			if (axis.math.compare(item.index, count) >= 0) {
-				item.index = axis.math.decrement(count);
+				item = new AxisItem(item.section, axis.math.decrement(count));
 			}
 		}
 	}

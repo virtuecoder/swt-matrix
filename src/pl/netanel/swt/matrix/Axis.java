@@ -194,6 +194,53 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		};
 	}
 
+	/*------------------------------------------------------------------------
+	 * Viewport 
+	 */
+
+	/**
+	 * Returns number of items visible in the viewport.
+	 * @return number of items visible in the viewport
+	 */
+	public int getViewportItemCount() {
+		layout.computeIfRequired();
+		return layout.head.count + layout.tail.count + 
+			layout.main.cells.size(); // - layout.trim;
+	}
+	
+	
+	boolean isLastCellTrimmed() {
+		layout.computeIfRequired();
+		return layout.isTrimmed;
+	}
+	
+	/**
+	 * Returns the position of the given item in the viewport or <code>null</code>
+	 * if the the viewport does not contain the item.
+	 * 
+	 * @param section 
+	 * @param index
+	 * @return the position of the given item in the viewport
+	 */
+	public int getViewportPosition(Section<N> section, N index) {
+		return layout.indexOf(section, index);
+	}
+	
+	
+	public N getIndexAt(int i) {
+		AxisItem<N> item = layout.getIndexAt(i);
+		return item == null ? null : item.index;
+	}
+	
+	/**
+	 * 
+	 * @param i
+	 * @return
+	 */
+	public int[] getLineBound(int i) {
+		Bound bound = layout.getLineBound(i);
+		return bound == null ? null : new int[] {bound.distance, bound.width};
+	}
 	
 	/*------------------------------------------------------------------------
 	 * Navigation 
@@ -259,9 +306,11 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 *  
 	 * @param section section of the item bounding the head frozen area
 	 * @param index section of the item bounding the head frozen area
+	 * @return number of frozen items
 	 */
-	public void freezeHead(Section<N> section, N index) {
+	public int freezeHead(Section<N> section, N index) {
 		layout.freezeHead(section, index);
+		return layout.head.count;
 	}
 	
 	/**
@@ -270,9 +319,11 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 *  
 	 * @param section section of the item bounding the tail frozen area
 	 * @param index section of the item bounding the tail frozen area
+	 * @return number of frozen items
 	 */
-	public void freezeTail(Section<N> section, N index) {
+	public int freezeTail(Section<N> section, N index) {
 		layout.freezeTail(section, index);
+		return layout.tail.count;
 	}
 	
 	
@@ -554,10 +605,6 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	
 	
 	
-	/*------------------------------------------------------------------------
-	 * Non public 
-	 */
-
 	int[] getZOrder() {
 		// Calculate z-order
 		int[] order = new int[sections.size()];

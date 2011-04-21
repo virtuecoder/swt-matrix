@@ -38,6 +38,9 @@ public class SnippetA {
 		
 		shell.setBounds(200, 20, 1024, 568);
 		shell.open();
+		
+//		matrix.setBounds(5, 5, 600, 300);
+		
 		Display display = shell.getDisplay();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

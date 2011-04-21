@@ -79,6 +79,18 @@ public class JoomlaMysqlUpdate {
 				break;
 			} else {
 				if (i == 0) sb.append(" style='white-space: nowrap'");
+				else if (i == 3) {
+					Pattern p = Pattern.compile("(Snippet_....)"); //, Pattern.DOTALL);
+					Matcher matcher = p.matcher(s);
+					StringBuffer myStringBuffer = new StringBuffer();
+					while (matcher.find()) {
+						matcher.appendReplacement(myStringBuffer, 
+								"<a href='swt-matrix/snippets/" + matcher.group(1) + 
+								"\\.java'>" + matcher.group(1) + "</a>");
+					}
+					matcher.appendTail(myStringBuffer);
+					s = myStringBuffer.toString();
+				}
 				sb.append(">");
 				sb.append(s);
 				sb.append("</").append(tag).append(">");

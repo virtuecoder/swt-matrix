@@ -3,6 +3,7 @@ package pl.netanel.swt.matrix.snippets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -12,9 +13,7 @@ import org.eclipse.swt.widgets.Shell;
 import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
-import pl.netanel.swt.matrix.Resources;
 import pl.netanel.swt.matrix.Section;
-import pl.netanel.swt.matrix.Zone;
 
 /**
  * Freeze head and tail with different color for the dividing line 
@@ -24,6 +23,7 @@ import pl.netanel.swt.matrix.Zone;
 public class Snippet_0201 {
 	static Section freezeHeadSection0, freezeHeadSection1, freezeTailSection0, freezeTailSection1;
 	static Number freezeHeadIndex0, freezeHeadIndex1, freezeTailIndex0, freezeTailIndex1;
+	static int head0, head1, tail0, tail1;
 	
 	public static void main(String[] args) {
 		Shell shell = new Shell();
@@ -37,41 +37,40 @@ public class Snippet_0201 {
 		final Axis axis0 = matrix.getAxis0();
 		final Axis axis1 = matrix.getAxis1();
 		
-		Section colBody = axis1.getBody();
+		final Section colBody = axis1.getBody();
 		colBody.setCount(40);
 		colBody.setDefaultCellWidth(50);
 		
 		Section rowBody = axis0.getBody();
 		rowBody.setCount(100);
 
-		final Zone body = matrix.getBody();
-		body.setSelectionBackground(Resources.getColor(SWT.COLOR_LIST_SELECTION));
-		body.setSelectionForeground(Resources.getColor(SWT.COLOR_LIST_SELECTION_TEXT));
-		
-		body.replacePainter(new Painter("column lines", Painter.SCOPE_VERTICAL_LINES) {
-			@Override
-			protected boolean init() {
-				gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
-				return true;
-			}
+		matrix.addPainter(new Painter("freeze lines") {
 			@Override
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				if (index1.intValue() > 0 &&
-					body.getSection1().equals(freezeHeadSection1) && 
-					index1.equals(freezeHeadIndex1) || 
-					freezeTailSection1 != null && 
-					index1.intValue() < freezeTailSection1.getCount().intValue() &&
-					body.getSection1().equals(freezeTailSection1) && 
-					index1.equals(freezeTailIndex1.intValue() + 1)) 
-				{
-					gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
-					gc.fillRectangle(x, y, width, height);
-					gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
-				} else {
-					gc.fillRectangle(x, y, width, height);
+				Color background = gc.getBackground();
+				gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
+				if (head0 > 0) {
+					int[] bound = axis0.getLineBound(head0);
+					gc.fillRectangle(x, bound[0], width, bound[1]);
+				} 
+				int viewportItemCount = axis0.getViewportItemCount();
+				if (tail0 > 0 ) {
+					int[] bound = axis0.getLineBound(viewportItemCount - tail0);
+					gc.fillRectangle(x, bound[0], width, bound[1]);
 				}
+				if (head1 > 0) {
+					int[] bound = axis1.getLineBound(head1);
+					gc.fillRectangle(bound[0], y, bound[1], height);
+				} 
+				viewportItemCount = axis1.getViewportItemCount();
+				if (tail1 > 0 ) {
+					int[] bound = axis1.getLineBound(viewportItemCount - tail1);
+					gc.fillRectangle(bound[0], y, bound[1], height);
+				}
+				gc.setBackground(background);
 			}
 		});
+		
 		
 		
 		Button add = new Button(shell, SWT.PUSH);
@@ -79,13 +78,12 @@ public class Snippet_0201 {
 		add.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				freezeHeadSection0 = axis0.getFocusSection();
-				freezeHeadSection1 = axis1.getFocusSection();
-				freezeHeadIndex0 = axis0.getFocusIndex();
-				freezeHeadIndex1 = axis1.getFocusIndex();
-				axis0.freezeHead(freezeHeadSection0, freezeHeadIndex0);
-				axis1.freezeHead(freezeHeadSection1, freezeHeadIndex1);
+				head0 = axis0.getViewportPosition(axis0.getFocusSection(), axis0.getFocusIndex());
+				head1 = axis1.getViewportPosition(axis1.getFocusSection(), axis1.getFocusIndex());
+				axis0.freezeHead(head0);
+				axis1.freezeHead(head1);
 				matrix.refresh();
+				matrix.setFocus();
 			}
 		});
 		
@@ -94,13 +92,14 @@ public class Snippet_0201 {
 		remove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				freezeTailSection0 = axis0.getFocusSection();
-				freezeTailSection1 = axis1.getFocusSection();
-				freezeTailIndex0 = axis0.getFocusIndex();
-				freezeTailIndex1 = axis1.getFocusIndex();
-				axis0.freezeTail(freezeTailSection0, freezeTailIndex0);
-				axis1.freezeTail(freezeTailSection1, freezeTailIndex1);
+				tail0 = axis0.getViewportItemCount() - 
+					axis0.getViewportPosition(axis0.getFocusSection(), axis0.getFocusIndex()) - 1;
+				tail1 = axis1.getViewportItemCount() - 
+					axis1.getViewportPosition(axis1.getFocusSection(), axis1.getFocusIndex()) - 1;
+				axis0.freezeTail(tail0);
+				axis1.freezeTail(tail1);
 				matrix.refresh();
+				matrix.setFocus();
 			}
 		});
 		

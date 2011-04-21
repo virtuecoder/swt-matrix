@@ -278,14 +278,14 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	private void setDefaultPainters() {
 		
 		painters.add(new DockPainter(Frozen.NONE, Frozen.NONE));
-		painters.add(new DockPainter(Frozen.TAIL, Frozen.HEAD));
-		painters.add(new DockPainter(Frozen.HEAD, Frozen.TAIL));
-		painters.add(new DockPainter(Frozen.NONE, Frozen.TAIL));
 		painters.add(new DockPainter(Frozen.TAIL, Frozen.NONE));
+		painters.add(new DockPainter(Frozen.NONE, Frozen.TAIL));
 		painters.add(new DockPainter(Frozen.TAIL, Frozen.TAIL));
 		painters.add(new DockPainter(Frozen.NONE, Frozen.HEAD));
 		painters.add(new DockPainter(Frozen.HEAD, Frozen.NONE));
 		painters.add(new DockPainter(Frozen.HEAD, Frozen.HEAD));
+		painters.add(new DockPainter(Frozen.HEAD, Frozen.TAIL));
+		painters.add(new DockPainter(Frozen.TAIL, Frozen.HEAD));
 		
 		painters.add(new Painter("focus cell") {
 			@Override
@@ -294,7 +294,6 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 				if (zone == null) return;
 				Rectangle r = zone.getCellBounds(axis0.getFocusIndex(), axis1.getFocusIndex());
 				if (r == null) return;
-				gc.setClipping((Rectangle) null);
 				gc.setLineWidth(2);
 				gc.setForeground(Resources.getColor(SWT.COLOR_BLACK));
 				gc.drawRectangle(r);
@@ -331,6 +330,13 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 				// Paint cells
 				zone.paint(gc, layout0, layout1, dock0, dock1);
 			}
+			
+		}
+		
+		@Override
+		public void clean() {
+			super.clean();
+			gc.setClipping((Rectangle) null);
 		}
 	}
 	
@@ -343,7 +349,10 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		for (Painter<N0, N1> p: painters) {
 			if (!p.isEnabled() || !p.init(gc)) continue;
 			p.paint(null, null, area.x, area.y, area.width, area.height);
+			p.clean();
 		}
+//		gc.setBackground(Resources.getColor(SWT.COLOR_RED));
+//		gc.fillRectangle(51, 193, 3, 18);
 		
 //		System.out.println(BigDecimal.valueOf(System.nanoTime() - t, 6).toString());
 	}
