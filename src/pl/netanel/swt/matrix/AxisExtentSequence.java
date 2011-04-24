@@ -22,21 +22,21 @@ class AxisExtentSequence<N extends Number> {
 	void init() {
 		Section section2 = sections.get(sections.size() - 1);
 		init(
-			new AxisItem(sections.get(0), math.ZERO_VALUE()), 
-			new AxisItem(section2, math.decrement(section2.getCount())));
+			AxisItem.create(sections.get(0), math.ZERO_VALUE()), 
+			AxisItem.create(section2, math.decrement(section2.getCount())));
 	}
 	void init(AxisItem startItem, AxisItem endItem) {
-		this.startItemIndex = sections.indexOf(startItem.section);
-		this.endItemIndex = sections.indexOf(endItem.section);
+		this.startItemIndex = sections.indexOf(startItem.getSection());
+		this.endItemIndex = sections.indexOf(endItem.getSection());
 		Section sl;
-		sl = startItem.section;
+		sl = startItem.getSection();
 		istart = sl.order.items.isEmpty() ? 0 : sl.order
-				.getExtentIndex(startItem.index);
-		sl = endItem.section;
+				.getExtentIndex(startItem.getIndex());
+		sl = endItem.getSection();
 		iend = sl.order.items.isEmpty() ? 0 : sl.order
-				.getExtentIndex(endItem.index);
+				.getExtentIndex(endItem.getIndex());
 
-		Section section = startItem.section;
+		Section section = startItem.getSection();
 		sectionIndex = sections.indexOf(section);
 		items = section.order.items;
 		i = istart;
@@ -51,11 +51,11 @@ class AxisExtentSequence<N extends Number> {
 			i = 0;
 		}
 		Extent e = items.get(i);
-		start = sectionIndex == startItemIndex && i == istart ? startItem.index
+		start = sectionIndex == startItemIndex && i == istart ? startItem.getIndex()
 				: e.start();
-		end = sectionIndex == endItemIndex && i == iend ? endItem.index : e
+		end = sectionIndex == endItemIndex && i == iend ? endItem.getIndex() : e
 				.end();
-		if (i >= iend && math.compare(end, endItem.index) == 0) {
+		if (i >= iend && math.compare(end, endItem.getIndex()) == 0) {
 			i = items.size();
 		}
 		i++;

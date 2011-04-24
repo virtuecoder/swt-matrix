@@ -6,7 +6,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Matrix;
-import pl.netanel.swt.matrix.Resources;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 
@@ -20,6 +19,7 @@ public class Snippet_0016 {
 		Shell shell = new Shell();
 		shell.setBounds(400, 200, 400, 300);
 		shell.setLayout(new FillLayout());
+		final Display display = shell.getDisplay();
 		
 		final Matrix matrix = new Matrix(shell, SWT.NONE);
 		matrix.setFocusCellEnabled(false);
@@ -32,12 +32,11 @@ public class Snippet_0016 {
 		rowBody.setCount(10);
 
 		final Zone body = matrix.getBody();
-		body.setSelectionBackground(Resources.getColor(SWT.COLOR_LIST_SELECTION));
-		body.setSelectionForeground(Resources.getColor(SWT.COLOR_LIST_SELECTION_TEXT));
+		body.setSelectionBackground(display.getSystemColor(SWT.COLOR_LIST_SELECTION));
+		body.setSelectionForeground(display.getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT));
 		body.setSelected(1, 2, 1, 2, true);
 		
 		shell.open();
-		Display display = shell.getDisplay();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();

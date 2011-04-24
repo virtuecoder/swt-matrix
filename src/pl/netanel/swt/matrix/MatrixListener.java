@@ -92,7 +92,7 @@ class MatrixListener implements Listener {
 				zone = (Zone) e.data;
 			}
 			else if (state0.item != null && state1.item != null) {
-				zone = matrix.model.getZoneUnchecked(state0.item.section, state1.item.section);
+				zone = matrix.model.getZoneUnchecked(state0.item.getSection(), state1.item.getSection());
 			}
 
 			state0.update(e, e.y);
@@ -103,7 +103,7 @@ class MatrixListener implements Listener {
 			 * for other ??? 
 			 */
 			if (zone != null) {
-				//e.data = new AxisItem[] {state0.item, state1.item}; 
+				//e.data = AxisItem.create[] {state0.item, state1.item}; 
 				zone.listeners.sendEvent(e);
 			}
 
@@ -210,9 +210,9 @@ class MatrixListener implements Listener {
 					if (resizeItem != null) {
 						resizing = true;
 						resizeStartDistance = distance;
-						resizeCellWidth = resizeItem.section.getCellWidth(resizeItem.index);
+						resizeCellWidth = resizeItem.getSection().getCellWidth(resizeItem.getIndex());
 					}
-					else if (item.section.isSelected(item.index) && item.section.isMoveable(item.index)) {
+					else if (item.getSection().isSelected(item.getIndex()) && item.getSection().isMoveable(item.getIndex())) {
 						// Start moving
 						moving = true;
 						matrix.setCursor(cursor = Resources.getCursor(SWT.CURSOR_HAND));
@@ -229,9 +229,9 @@ class MatrixListener implements Listener {
 						ExtentSequence<N> seq = section.getSelectedExtentResizableSequence();
 						for (seq.init(); seq.next();) {
 							
-							if (item.section.equals(section) && 
-									layout.math.compare(seq.start, item.index) == 0 &&
-									layout.math.compare(seq.end, item.index) == 0) {
+							if (item.getSection().equals(section) && 
+									layout.math.compare(seq.start, item.getIndex()) == 0 &&
+									layout.math.compare(seq.end, item.getIndex()) == 0) {
 								continue;
 							}
 							section.setCellWidth(seq.start, seq.end, newCellWidth);
@@ -259,7 +259,7 @@ class MatrixListener implements Listener {
 			if (resizing && resizeItem != null) {
 				newCellWidth = resizeCellWidth + distance - resizeStartDistance;
 				if (newCellWidth < 1) newCellWidth = 1;
-				resizeItem.section.setCellWidth(resizeItem.index, resizeItem.index, newCellWidth);
+				resizeItem.getSection().setCellWidth(resizeItem.getIndex(), resizeItem.getIndex(), newCellWidth);
 				layout.compute();
 				matrix.redraw();
 				addEvent(SWT.Resize);
@@ -304,12 +304,12 @@ class MatrixListener implements Listener {
 		}
 		
 		private boolean isSelected(AxisItem item) {
-			return item.section.isSelected(item.index);
+			return item.getSection().isSelected(item.getIndex());
 		}
 		
 		public void setSelected(int commandId) {
 			if (last == null || item == null) return;
-			if (last.section != item.section) return;
+			if (last.getSection() != item.getSection()) return;
 			
 			if (commandId == CMD_SELECT_COLUMN || commandId == CMD_SELECT_COLUMN2 ||
 				commandId == CMD_SELECT_ROW || commandId == CMD_SELECT_ROW2) {
@@ -397,7 +397,7 @@ class MatrixListener implements Listener {
 		public void pack() {
 			if (resizeItem == null) return;
 			if (axis.index == 0) {
-				axis.pack(resizeItem.section, resizeItem.index);
+				axis.pack(resizeItem.getSection(), resizeItem.getIndex());
 				
 			}
 			if ((resizeItem = layout.getResizeItem(distance)) == null) {
@@ -503,9 +503,9 @@ class MatrixListener implements Listener {
 		}
 
 		public void refresh() {
-			N count = item.section.getCount();
-			if (axis.math.compare(item.index, count) >= 0) {
-				item = new AxisItem(item.section, axis.math.decrement(count));
+			N count = item.getSection().getCount();
+			if (axis.math.compare(item.getIndex(), count) >= 0) {
+				item = AxisItem.create(item.getSection(), axis.math.decrement(count));
 			}
 		}
 	}
@@ -608,10 +608,10 @@ class MatrixListener implements Listener {
 			state1.last = state1.item;
 		}
 		if (commandId == CMD_SELECT_TO_LOCATION || commandId == CMD_SELECT_TO_LOCATION2) {
-			if (state0.last.section.equals(state0.axis.getHeader())) {
+			if (state0.last.getSection().equals(state0.axis.getHeader())) {
 				commandId = commandId == CMD_SELECT_TO_LOCATION ? CMD_SELECT_TO_COLUMN : CMD_SELECT_TO_COLUMN2;
 			}
-			else if (state1.last.section.equals(state1.axis.getHeader())) {
+			else if (state1.last.getSection().equals(state1.axis.getHeader())) {
 				commandId = commandId == CMD_SELECT_TO_LOCATION ? CMD_SELECT_TO_ROW : CMD_SELECT_TO_ROW2;
 			}
 		}
@@ -728,8 +728,8 @@ class MatrixListener implements Listener {
 	}
 	
 	private boolean isSelected(AxisItem last0, AxisItem last1) {
-		return matrix.model.getZoneUnchecked(last0.section, last1.section).
-			isSelected(last0.index, last1.index);
+		return matrix.model.getZoneUnchecked(last0.getSection(), last1.getSection()).
+			isSelected(last0.getIndex(), last1.getIndex());
 	}
 
 

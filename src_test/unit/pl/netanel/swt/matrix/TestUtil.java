@@ -53,7 +53,7 @@ class TestUtil {
 		StringBuilder sb = new StringBuilder();
 		for (seq.init(); seq.next();) {
 			if (sb.length() > 0) sb.append(", ");
-			sb.append(seq.getItem().index);
+			sb.append(seq.getItem().getIndex());
 		}
 		return sb.toString();
 	}

@@ -31,11 +31,11 @@ abstract class Direction<N extends Number> {
 
 
 	public boolean set(AxisItem item) {
-		i = sections.indexOf(item.section);
-		section = item.section;
+		i = sections.indexOf(item.getSection());
+		section = item.getSection();
 		seq = getSequence(section, sign);
 		seq.init();
-		seq.set(item.index);
+		seq.set(item.getIndex());
 		seq.level = 1;
 		level = !section.isVisible() || skipWithoutCurrent && !section.isFocusItemEnabled() ? 0 : 1;
 		pending = false;
@@ -44,7 +44,7 @@ abstract class Direction<N extends Number> {
 	
 	public AxisItem getItem() {
 		pending = false;
-		return hasMore ? new AxisItem(section, seq.index().getValue()) : null;
+		return hasMore ? AxisItem.create(section, seq.index().getValue()) : null;
 	}
 	
 	public AxisItem first() {

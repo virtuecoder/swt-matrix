@@ -278,21 +278,23 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	private void setDefaultPainters() {
 		
 		painters.add(new DockPainter(Frozen.NONE, Frozen.NONE));
-		painters.add(new DockPainter(Frozen.TAIL, Frozen.NONE));
 		painters.add(new DockPainter(Frozen.NONE, Frozen.TAIL));
-		painters.add(new DockPainter(Frozen.TAIL, Frozen.TAIL));
+		painters.add(new DockPainter(Frozen.TAIL, Frozen.NONE));
 		painters.add(new DockPainter(Frozen.NONE, Frozen.HEAD));
 		painters.add(new DockPainter(Frozen.HEAD, Frozen.NONE));
-		painters.add(new DockPainter(Frozen.HEAD, Frozen.HEAD));
 		painters.add(new DockPainter(Frozen.HEAD, Frozen.TAIL));
 		painters.add(new DockPainter(Frozen.TAIL, Frozen.HEAD));
+		painters.add(new DockPainter(Frozen.TAIL, Frozen.TAIL));
+		painters.add(new DockPainter(Frozen.HEAD, Frozen.HEAD));
 		
 		painters.add(new Painter("focus cell") {
 			@Override
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				Zone zone = getZoneUnchecked(axis0.getFocusSection(), axis1.getFocusSection());
+				AxisItem<N0> item0 = axis0.getFocusItem();
+				AxisItem<N1> item1 = axis1.getFocusItem();
+				Zone zone = getZoneUnchecked(item0.getSection(), item1.getSection());
 				if (zone == null) return;
-				Rectangle r = zone.getCellBounds(axis0.getFocusIndex(), axis1.getFocusIndex());
+				Rectangle r = zone.getCellBounds(item0.getIndex(), item1.getIndex());
 				if (r == null) return;
 				gc.setLineWidth(2);
 				gc.setForeground(Resources.getColor(SWT.COLOR_BLACK));
@@ -569,9 +571,9 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		layout0.compute();
 		layout1.compute();
 		if (layout0.current != null && layout1.current != null) {
-			Zone<N0, N1> zone = model.getZone(layout0.current.section, layout1.current.section);
-			N0 index0 = layout0.current.index;
-			N1 index1 = layout1.current.index;
+			Zone<N0, N1> zone = model.getZone(layout0.current.getSection(), layout1.current.getSection());
+			N0 index0 = layout0.current.getIndex();
+			N1 index1 = layout1.current.getIndex();
 			zone.setSelected(index0, index0, index1, index1, true);
 		}
 	}

@@ -6,7 +6,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.Axis;
+import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Zone;
@@ -32,11 +32,11 @@ public class Snippet_0011 {
 			@Override
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				// Get bounds of the focus cell 
-				Axis axis0 = matrix.getAxis0();
-				Axis axis1 = matrix.getAxis1();
-				Zone zone = matrix.getZone(axis0.getFocusSection(), axis1.getFocusSection());
+				AxisItem item0 = matrix.getAxis0().getFocusItem();
+				AxisItem item1 = matrix.getAxis1().getFocusItem();
+				Zone zone = matrix.getZone(item0.getSection(), item1.getSection());
 				if (zone == null) return;
-				Rectangle r = zone.getCellBounds(axis0.getFocusIndex(), axis1.getFocusIndex());
+				Rectangle r = zone.getCellBounds(item0.getIndex(), item1.getIndex());
 				
 				// Draw rounded rectangle with a changed color
 				gc.setForeground(display.getSystemColor(SWT.COLOR_LIST_SELECTION));

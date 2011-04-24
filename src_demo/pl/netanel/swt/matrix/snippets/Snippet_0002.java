@@ -77,7 +77,7 @@ public class Snippet_0002 {
 		add.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Number focusIndex = matrix.getAxis0().getFocusIndex();
+				Number focusIndex = matrix.getAxis0().getFocusItem().getIndex();
 				list.add(focusIndex.intValue(), Integer.toString(++counter));
 				rowBody.insert(focusIndex, 1);
 				matrix.refresh();

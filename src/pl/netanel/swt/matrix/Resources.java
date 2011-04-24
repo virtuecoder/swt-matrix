@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Display;
  * @author scheglov_ke
  * @author Dan Rubel
  */
-public class Resources {
+ class Resources {
 	////////////////////////////////////////////////////////////////////////////
 	//
 	// Color

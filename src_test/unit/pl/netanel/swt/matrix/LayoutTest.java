@@ -213,13 +213,13 @@ public class LayoutTest {
 //		assertEquals("1, 6, 7", indexes(layout.cellSequence(Dock.MAIN, body.core)));
 //		showMatrix(layout);
 		
-		assertEquals("0", layout.getItemByDistance(50).index.toString());
-		assertEquals("1", layout.getItemByDistance(101).index.toString());
-		assertEquals("1", layout.getItemByDistance(102).index.toString());
-		assertEquals("6", layout.getItemByDistance(250).index.toString());
-		assertEquals("7", layout.getItemByDistance(348).index.toString());
-		assertEquals("5", layout.getItemByDistance(349).index.toString());
-		assertEquals("5", layout.getItemByDistance(449).index.toString());
+		assertEquals("0", layout.getItemByDistance(50).getIndex().toString());
+		assertEquals("1", layout.getItemByDistance(101).getIndex().toString());
+		assertEquals("1", layout.getItemByDistance(102).getIndex().toString());
+		assertEquals("6", layout.getItemByDistance(250).getIndex().toString());
+		assertEquals("7", layout.getItemByDistance(348).getIndex().toString());
+		assertEquals("5", layout.getItemByDistance(349).getIndex().toString());
+		assertEquals("5", layout.getItemByDistance(449).getIndex().toString());
 		
 	}
 
@@ -245,16 +245,16 @@ public class LayoutTest {
 		
 		layout.compute();
 		
-		assertEquals(0, layout.start.index);
+		assertEquals(0, layout.start.getIndex());
 
 		layout.reorder(item(body, 1), item(body, 0));
-		assertEquals(1, layout.start.index);
+		assertEquals(1, layout.start.getIndex());
 		
 		layout.reorder(item(body, 1), item(body, 0));
-		assertEquals(0, layout.start.index);
+		assertEquals(0, layout.start.getIndex());
 		
 		layout.reorder(item(body, 1), item(body, 9));
-		assertEquals(0, layout.start.index);
+		assertEquals(0, layout.start.getIndex());
 	}
 	
 	@Test

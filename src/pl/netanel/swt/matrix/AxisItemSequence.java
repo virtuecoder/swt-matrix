@@ -1,6 +1,6 @@
 package pl.netanel.swt.matrix;
 
-public class AxisItemSequence<N extends Number> {
+class AxisItemSequence<N extends Number> {
 
 	final Axis<N> axis;
 	N index0, index1;

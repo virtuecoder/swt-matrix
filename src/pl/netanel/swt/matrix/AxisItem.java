@@ -8,16 +8,38 @@ import pl.netanel.util.Preconditions;
  * <p> 
  * Only visible items are cached in the memory. They are created on demand 
  * when the axis layout is computed.
+ * @param <N> defines the indexing class for this axis
+ * @author Jacek Kolodziejczyk created 21-04-2011
  */
-class AxisItem<N extends Number> {
-	final public Section<N> section;
-	final public N index;
+public class AxisItem<N extends Number> {
+	private Section<N> section;
+	private N index;
 	
-	public AxisItem(Section<N> section, N index) {
+	/**
+	 * Constructs axis item in the specified section and at the specified index.
+	 * @param section
+	 * @param index
+	 * @throws IllegalArgumentException if the section is <code>null</code>
+	 * or index is <code>null</code>
+	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getCount()}-1 bounds
+	 */
+	AxisItem(Section<N> section, N index) {
+		Preconditions.checkNotNullWithName(section, "section");
 		Preconditions.checkNotNullWithName(index, "index");
+		section.checkIndex(index, section.math.increment(section.getCount()), "index");
 		this.section = section;
 		this.index = index;
 	}
+	
+	private AxisItem() {}
+	
+	static AxisItem create(Section section, Number index) {
+		AxisItem axisItem = new AxisItem();
+		axisItem.section = section;
+		axisItem.index = index;
+		return axisItem;
+	}
+	
 	@Override
 	public String toString() {
 		return "" + section.index + " " + index;
@@ -36,6 +58,22 @@ class AxisItem<N extends Number> {
 		result = prime * result + index.hashCode();
 		result = prime * result + section.hashCode();
 		return result;
+	}
+
+	/**
+	 * Returns section of this axis item.
+	 * @return section of this axis item
+	 */
+	public Section<N> getSection() {
+		return section;
+	}
+
+	/**
+	 * Return index of this axis item.
+	 * @return index of this axis item
+	 */
+	public N getIndex() {
+		return index;
 	}
 	
 }

@@ -848,9 +848,9 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				for (seq0.init(); seq0.next();) {
 					distance = seq0.getDistance();
 					width = seq0.getWidth();
-					index = seq0.item.index;
+					index = seq0.item.getIndex();
 					for (seq1.init(); seq1.next();) {
-						p.paint(index, seq1.item.index, 
+						p.paint(index, seq1.item.getIndex(), 
 							seq1.getDistance(), distance, seq1.getWidth(), width);
 					}
 				}
@@ -862,9 +862,9 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				for (seq1.init(); seq1.next();) {
 					distance = seq1.getDistance();
 					width = seq1.getWidth();
-					index = seq1.item.index;
+					index = seq1.item.getIndex();
 					for (seq0.init(); seq0.next();) {
-						p.paint(seq0.item.index, seq1.item.index,
+						p.paint(seq0.item.getIndex(), seq1.item.getIndex(),
 							distance, seq0.getDistance(), width, seq0.getWidth());
 					}
 				}
@@ -875,7 +875,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				distance = bounds.x;
 				width = bounds.width;
 				for (seq0.init(); seq0.next();) {
-					p.paint(seq0.item.index, null, distance, seq0.getDistance(), width, seq0.getWidth());
+					p.paint(seq0.item.getIndex(), null, distance, seq0.getDistance(), width, seq0.getWidth());
 				}
 				break;
 				
@@ -884,7 +884,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				distance = bounds.y;
 				width = bounds.height;
 				for (seq1.init(); seq1.next();) {
-					p.paint(null, seq1.item.index, seq1.getDistance(), distance, seq1.getWidth(), width);
+					p.paint(null, seq1.item.getIndex(), seq1.getDistance(), distance, seq1.getWidth(), width);
 				}
 				break;
 				
@@ -893,7 +893,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				distance = bounds.x;
 				width = bounds.width;
 				for (seq0.init(); seq0.next();) {
-					p.paint(seq0.item.index, null, distance, seq0.getDistance(), width, seq0.getWidth());
+					p.paint(seq0.item.getIndex(), null, distance, seq0.getDistance(), width, seq0.getWidth());
 				}
 				break;
 			
@@ -902,7 +902,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				distance = bounds.y;
 				width = bounds.height;
 				for (seq1.init(); seq1.next();) {
-					p.paint(null, seq1.item.index, seq1.getDistance(), distance, seq1.getWidth(), width);
+					p.paint(null, seq1.item.getIndex(), seq1.getDistance(), distance, seq1.getWidth(), width);
 				}
 				break;
 				

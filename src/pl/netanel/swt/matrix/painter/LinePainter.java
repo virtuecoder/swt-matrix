@@ -2,9 +2,9 @@ package pl.netanel.swt.matrix.painter;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
 
 import pl.netanel.swt.matrix.Painter;
-import pl.netanel.swt.matrix.Resources;
 
 
 class LinePainter extends Painter {
@@ -12,7 +12,7 @@ class LinePainter extends Painter {
 	
 	public LinePainter() {
 		super("line");
-		color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
+		color = Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 	}
 
 	@Override

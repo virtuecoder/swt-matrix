@@ -90,15 +90,15 @@ public class DirectionTest {
 		// Not empty
 		layout = layout(3);
 		direction = layout.forward;
-		assertEquals("0", direction.first().index.toString());
+		assertEquals("0", direction.first().getIndex().toString());
 		
 		// First hidden
 		layout.getSection(0).setHidden(0, 0, true);
-		assertEquals("1", direction.first().index.toString());
+		assertEquals("1", direction.first().getIndex().toString());
 		
 		// Only last not hidden
 		layout.getSection(0).setHidden(0, 1, true);
-		assertEquals("2", direction.first().index.toString());
+		assertEquals("2", direction.first().getIndex().toString());
 		
 		// All hidden
 		layout.getSection(0).setHidden(0, 2, true);
@@ -107,12 +107,12 @@ public class DirectionTest {
 		// One not hidden in the first extent 
 		layout.getSection(0).move(1, 2, 0);
 		layout.getSection(0).setHidden(1, 1, false);
-		assertEquals("1", direction.first().index.toString());
+		assertEquals("1", direction.first().getIndex().toString());
 		
 		// One not hidden in the second extent 
 		layout.getSection(0).setHidden(1, 1, true);
 		layout.getSection(0).setHidden(0, 0, false);
-		assertEquals("0", direction.first().index.toString());
+		assertEquals("0", direction.first().getIndex().toString());
 		
 		// All hidden in first section and the second one empty
 		layout = layout(3, 0);
@@ -152,26 +152,26 @@ public class DirectionTest {
 		layout = layout(3);
 		direction = layout.forward;
 		direction.init();
-		assertEquals("0", direction.next().index.toString());
-		assertEquals("1", direction.next().index.toString());
-		assertEquals("2", direction.next().index.toString());
+		assertEquals("0", direction.next().getIndex().toString());
+		assertEquals("1", direction.next().getIndex().toString());
+		assertEquals("2", direction.next().getIndex().toString());
 		assertEquals(null, direction.next());
 		
 		// First hidden
 		layout.getSection(0).setHidden(0, 0, true);
-		assertEquals("1", direction.first().index.toString());
+		assertEquals("1", direction.first().getIndex().toString());
 		
 		// Only last not hidden
 		layout.getSection(0).setHidden(0, 1, true);
 		direction.init();
-		assertEquals("2", direction.first().index.toString());
+		assertEquals("2", direction.first().getIndex().toString());
 		
 		// Last is hidden
 		layout.getSection(0).setHidden(0, 2, false);
 		layout.getSection(0).setHidden(2, 2, true);
 		direction.init();
-		assertEquals("0", direction.next().index.toString());
-		assertEquals("1", direction.next().index.toString());
+		assertEquals("0", direction.next().getIndex().toString());
+		assertEquals("1", direction.next().getIndex().toString());
 		assertEquals(null, direction.next());
 		
 		// All hidden
@@ -184,8 +184,8 @@ public class DirectionTest {
 		layout.getSection(0).setHidden(1, 1, false);
 		layout.getSection(0).setHidden(0, 0, false);
 		direction.init();
-		assertEquals("1", direction.next().index.toString());
-		assertEquals("0", direction.next().index.toString());
+		assertEquals("1", direction.next().getIndex().toString());
+		assertEquals("0", direction.next().getIndex().toString());
 		
 		// Two sections
 		layout = layout(2, 2);
@@ -216,26 +216,26 @@ public class DirectionTest {
 		layout = layout(3);
 		direction = layout.backward;
 		direction.init();
-		assertEquals("2", direction.next().index.toString());
-		assertEquals("1", direction.next().index.toString());
-		assertEquals("0", direction.next().index.toString());
+		assertEquals("2", direction.next().getIndex().toString());
+		assertEquals("1", direction.next().getIndex().toString());
+		assertEquals("0", direction.next().getIndex().toString());
 		assertEquals(null, direction.next());
 		
 		// First hidden
 		layout.getSection(0).setHidden(2, 2, true);
-		assertEquals("1", direction.first().index.toString());
+		assertEquals("1", direction.first().getIndex().toString());
 		
 		// Only last not hidden
 		layout.getSection(0).setHidden(1, 2, true);
 		direction.init();
-		assertEquals("0", direction.first().index.toString());
+		assertEquals("0", direction.first().getIndex().toString());
 		
 		// Last is hidden
 		layout.getSection(0).setHidden(0, 2, false);
 		layout.getSection(0).setHidden(0, 0, true);
 		direction.init();
-		assertEquals("2", direction.next().index.toString());
-		assertEquals("1", direction.next().index.toString());
+		assertEquals("2", direction.next().getIndex().toString());
+		assertEquals("1", direction.next().getIndex().toString());
 		assertEquals(null, direction.next());
 		
 		// All hidden
@@ -248,8 +248,8 @@ public class DirectionTest {
 		layout.getSection(0).setHidden(1, 1, false);
 		layout.getSection(0).setHidden(2, 2, false);
 		direction.init();
-		assertEquals("1", direction.next().index.toString());
-		assertEquals("2", direction.next().index.toString());
+		assertEquals("1", direction.next().getIndex().toString());
+		assertEquals("2", direction.next().getIndex().toString());
 		
 		// Two sections
 		layout = layout(2, 2);
@@ -280,10 +280,10 @@ public class DirectionTest {
 		layout = layout(10);
 		direction = layout.forward;
 		direction.init();
-		assertEquals("2", direction.next(number(3)).index.toString());
-		assertEquals("5", direction.next(number(3)).index.toString());
-		assertEquals("8", direction.next(number(3)).index.toString());
-		assertEquals("9", direction.next(number(3)).index.toString());
+		assertEquals("2", direction.next(number(3)).getIndex().toString());
+		assertEquals("5", direction.next(number(3)).getIndex().toString());
+		assertEquals("8", direction.next(number(3)).getIndex().toString());
+		assertEquals("9", direction.next(number(3)).getIndex().toString());
 		assertEquals(null, direction.next(number(3)));
 		
 		// With hidden
@@ -291,25 +291,25 @@ public class DirectionTest {
 		layout.getSection(0).setHidden(3, 6, true);
 		layout.getSection(0).setHidden(9, 9, true);
 		direction.init();
-		assertEquals("2", direction.next(number(2)).index.toString());
-		assertEquals("8", direction.next(number(2)).index.toString());
+		assertEquals("2", direction.next(number(2)).getIndex().toString());
+		assertEquals("8", direction.next(number(2)).getIndex().toString());
 		assertEquals(null, direction.next(number(2)));
 		
 		direction.init();
-		assertEquals("8", direction.next(number(4)).index.toString());
+		assertEquals("8", direction.next(number(4)).getIndex().toString());
 		
 		// With many hidden on the way
 		layout.getSection(0).setHidden(4, 4, false);
 		direction.init();
-		assertEquals("8", direction.next(number(5)).index.toString());
+		assertEquals("8", direction.next(number(5)).getIndex().toString());
 		
 		// With many extents
 		layout.getSection(0).setHidden(0, 9, false);
 		layout.getSection(0).move(6, 9, 3);
 		layout.getSection(0).setHidden(2, 4, true);
 		direction.init();
-		assertEquals("6", direction.next(number(3)).index.toString());
-		assertEquals("5", direction.next(number(5)).index.toString());
+		assertEquals("6", direction.next(number(3)).getIndex().toString());
+		assertEquals("5", direction.next(number(5)).getIndex().toString());
 		assertEquals(null, direction.next(number(2)));
 		direction.init();
 //		assertEquals("5", direction.next(number(8)).index.toString());
@@ -336,10 +336,10 @@ public class DirectionTest {
 		layout = layout(10);
 		direction = layout.backward;
 		direction.init();
-		assertEquals("7", direction.next(number(3)).index.toString());
-		assertEquals("4", direction.next(number(3)).index.toString());
-		assertEquals("1", direction.next(number(3)).index.toString());
-		assertEquals("0", direction.next(number(3)).index.toString());
+		assertEquals("7", direction.next(number(3)).getIndex().toString());
+		assertEquals("4", direction.next(number(3)).getIndex().toString());
+		assertEquals("1", direction.next(number(3)).getIndex().toString());
+		assertEquals("0", direction.next(number(3)).getIndex().toString());
 		assertEquals(null, direction.next(number(3)));
 		
 		// With hidden
@@ -347,25 +347,25 @@ public class DirectionTest {
 		layout.getSection(0).setHidden(3, 6, true);
 		layout.getSection(0).setHidden(9, 9, true);
 		direction.init();
-		assertEquals("7", direction.next(number(2)).index.toString());
-		assertEquals("1", direction.next(number(2)).index.toString());
+		assertEquals("7", direction.next(number(2)).getIndex().toString());
+		assertEquals("1", direction.next(number(2)).getIndex().toString());
 		assertEquals(null, direction.next(number(2)));
 		
 		direction.init();
-		assertEquals("1", direction.next(number(4)).index.toString());
+		assertEquals("1", direction.next(number(4)).getIndex().toString());
 		
 		// With many hidden on the way
 		layout.getSection(0).setHidden(4, 4, false);
 		direction.init();
-		assertEquals("1", direction.next(number(5)).index.toString());
+		assertEquals("1", direction.next(number(5)).getIndex().toString());
 		
 		// With many extents
 		layout.getSection(0).setHidden(0, 9, false);
 		layout.getSection(0).move(6, 9, 3);
 		layout.getSection(0).setHidden(2, 4, true);
 		direction.init();
-		assertEquals("8", direction.next(number(3)).index.toString());
-		assertEquals("0", direction.next(number(5)).index.toString());
+		assertEquals("8", direction.next(number(3)).getIndex().toString());
+		assertEquals("0", direction.next(number(5)).getIndex().toString());
 		assertEquals(null, direction.next(number(2)));
 		direction.init();
 //		assertEquals("5", direction.next(number(8)).index.toString());
@@ -386,17 +386,17 @@ public class DirectionTest {
 		Direction direction = layout.forward;
 		Section section = layout.getSection(0);
 		direction.set(item(section, 0));
-		assertEquals("0", direction.getItem().index.toString());
+		assertEquals("0", direction.getItem().getIndex().toString());
 		direction.set(item(section, 5));
-		assertEquals("5", direction.getItem().index.toString());
-		assertEquals("6", direction.next().index.toString());
+		assertEquals("5", direction.getItem().getIndex().toString());
+		assertEquals("6", direction.next().getIndex().toString());
 		
 		direction = layout.backward;
 		direction.set(item(section, 9));
-		assertEquals("9", direction.getItem().index.toString());
+		assertEquals("9", direction.getItem().getIndex().toString());
 		direction.set(item(section, 5));
-		assertEquals("5", direction.getItem().index.toString());
-		assertEquals("4", direction.next().index.toString());
+		assertEquals("5", direction.getItem().getIndex().toString());
+		assertEquals("4", direction.next().getIndex().toString());
 	}
 	
 	@Test
@@ -456,27 +456,27 @@ public class DirectionTest {
 		Layout layout = layout(3);
 		Direction direction = layout.forward;
 		direction.init();
-		assertEquals("0", direction.next().index.toString());
-		assertEquals("1", direction.next().index.toString());
-		assertEquals("2", direction.next().index.toString());
+		assertEquals("0", direction.next().getIndex().toString());
+		assertEquals("1", direction.next().getIndex().toString());
+		assertEquals("2", direction.next().getIndex().toString());
 		assertEquals(null, direction.next());
 	
 		// Next count
 		layout = layout(10);
 		direction = layout.forward;
 		direction.init();
-		assertEquals("2", direction.next(number(3)).index.toString());
-		assertEquals("5", direction.next(number(3)).index.toString());
-		assertEquals("8", direction.next(number(3)).index.toString());
-		assertEquals("9", direction.next(number(3)).index.toString());
+		assertEquals("2", direction.next(number(3)).getIndex().toString());
+		assertEquals("5", direction.next(number(3)).getIndex().toString());
+		assertEquals("8", direction.next(number(3)).getIndex().toString());
+		assertEquals("9", direction.next(number(3)).getIndex().toString());
 		assertEquals(null, direction.next(number(3)));
 		
 		// Multiple extents
 		layout.getSection(0).move(6, 9, 3);
 		direction.init();
-		assertEquals("7", direction.next(number(5)).index.toString());
-		assertEquals("4", direction.next(number(4)).index.toString());
-		assertEquals("5", direction.next(number(4)).index.toString());
+		assertEquals("7", direction.next(number(5)).getIndex().toString());
+		assertEquals("4", direction.next(number(4)).getIndex().toString());
+		assertEquals("5", direction.next(number(4)).getIndex().toString());
 		assertEquals(null, direction.next(number(4)));
 		
 		// With many sections
