@@ -7,7 +7,6 @@ import java.util.Iterator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
@@ -155,7 +154,13 @@ public class Zone<N0 extends Number, N1 extends Number> {
 
 	
 	void setDefaultBodyStyle() {
-		Painter painter = new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY);
+		Painter painter = new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+			@Override
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+				text = index0.toString() + ", " + index1.toString();
+				super.paint(index0, index1, x, y, width, height);
+			}
+		};
 		painter.matrix = matrix;
 		painter.zone = this;
 		addPainter(painter);
@@ -164,7 +169,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		addPainter(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
 	}
 	
-	void setDefaultHeaderStyle() {
+	void setDefaultHeaderStyle(Painter cellsPainte) {
 		setDefaultForeground(Resources.getColor(SWT.COLOR_WIDGET_FOREGROUND));
 		setDefaultBackground(Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND));
 		
@@ -174,10 +179,9 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		setSelectionBackground(Resources.getColor(rgb));
 		
 		if (getPainterCount() == 0) {
-			Painter painter = new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY);
-			painter.matrix = matrix;
-			painter.zone = this;
-			addPainter(painter);
+			cellsPainte.matrix = matrix;
+			cellsPainte.zone = this;
+			addPainter(cellsPainte);
 			final Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
 			addPainter(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color));
 			addPainter(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
@@ -201,145 +205,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		}
 		return null; 
 	}
-
-	/**
-	 * Returns text for the cell at given indexes.
-	 * <p>
-	 * <code>index0</code> and <code>index1</code> refer to the model, 
-	 * not the visual position of the item on the screen
-	 * which can be altered by move and hide operations. 
-	 * 
-	 * @param index0 row index of the cell  
-	 * @param index1 column index of the cell 
-	 * @return text for the cell at given indexes
-	 */
-	public String getText(N0 index0, N1 index1) {
-//		return text.getValue(index0, index1);
-		return null;
-	}
 	
-	/**
-	 * Sets text for the cell at given indexes. Method throws
-	 * {@link UnsupportedOperationException} as it is unimplemented because 
-	 * the most optimal storage strategy for text is too much uncertain. 
-	 * <p>
-	 * <code>index0</code> and <code>index1</code> refer to the model, 
-	 * not the visual position of the item on the screen
-	 * which can be altered by move and hide operations. 
-	 * <p>
-	 * Text for ranges of cells should be set by 
-	 * {@link #setText(Number, Number, Number, Number, String)} 
-	 * to achieve the best efficiency.
-	 * 
-	 * @param index0 row index of the cell  
-	 * @param index1 column index of the cell 
-	 * @param value text to set
-	 * @throws UnsupportedOperationException always
-	 * @see #setText(Number, Number, Number, Number, String)
-	 */
-	public void setText(N0 index0, N1 index1, String value) {
-		setText(index0, index0, index1, index1, value);
-	}
-	
-	/**
-	 * Sets text for the specified range of cells. Method throws
-	 * {@link UnsupportedOperationException} as it is unimplemented because 
-	 * the most optimal storage strategy for text is too much uncertain.
-	 * <p>
-	 * <code>start0</code>,<code>end0</code>, <code>start1</code> and <code>end1</code> 
-	 * indexes refer to the model, not the visual position of the item on the screen
-	 * which can be altered by move and hide operations.
-	 *
-	 * @param start0 first index of the range of row items  
-	 * @param end0 last index of the range of row items  
-	 * @param start1 first index of the range of column items  
-	 * @param end1 last index of the range of column items  
-	 * @param value text to set
-	 * @throws UnsupportedOperationException always
-	 */
-	public void setText(N0 start0, N0 end0, N1 start1, N1 end1, String value) {
-//		text.setValue(start0, end0, start1, end1, value);
-		throw new UnsupportedOperationException();
-	}
-	
-	/**
-	 * Returns image for the cell at given indexes.
-	 * <p>
-	 * <code>index0</code> and <code>index1</code> refer to the model, 
-	 * not the visual position of the item on the screen
-	 * which can be altered by move and hide operations. 
-	 * 
-	 * @param index0 row index of the cell  
-	 * @param index1 column index of the cell 
-	 * @return image for the cell at given indexes
-	 */
-	public Image getImage(N0 index0, N1 index1) {
-//		return image.getValue(index0, index1);
-		return null;
-	}
-	
-	/**
-	 * Sets image for the cell at given indexes. Method throws
-	 * {@link UnsupportedOperationException} as it is unimplemented because 
-	 * the most optimal storage strategy for image is too much uncertain. 
-	 * <p>
-	 * <code>index0</code> and <code>index1</code> refer to the model, 
-	 * not the visual position of the item on the screen
-	 * which can be altered by move and hide operations. 
-	 * <p>
-	 * Image for ranges of cells should be set by 
-	 * {@link #setText(Number, Number, Number, Number, Image)} 
-	 * to achieve the best efficiency.
-	 * 
-	 * @param index0 row index of the cell  
-	 * @param index1 column index of the cell 
-	 * @param value image to set
-	 * @throws UnsupportedOperationException always
-	 * @see #setImage(Number, Number, Number, Number, Image)
-	 */
-	public void setImage(N0 index0, N1 index1, Image value) {
-		setImage(index0, index0, index1, index1, value);
-	}
-	
-	/**
-	 * Sets image for the specified range of cells. Method throws
-	 * {@link UnsupportedOperationException} as it is unimplemented because 
-	 * the most optimal storage strategy for images is too much uncertain.
-	 * <p>
-	 * <code>start0</code>,<code>end0</code>, <code>start1</code> and <code>end1</code> 
-	 * indexes refer to the model, not the visual position of the item on the screen
-	 * which can be altered by move and hide operations.
-	 *
-	 * @param start0 first index of the range of row items  
-	 * @param end0 last index of the range of row items  
-	 * @param start1 first index of the range of column items  
-	 * @param end1 last index of the range of column items  
-	 * @param value image to set
-	 * @throws UnsupportedOperationException always
-	 */
-	public void setImage(N0 start0, N0 end0, N1 start1, N1 end1, Image value) {
-//		image.setValue(start0, end0, start1, end1, value);
-		throw new UnsupportedOperationException();
-	}
-	
-	
-	
-//	public boolean isForegroundEnabled() {
-//		return foregroundEnabled;
-//	}
-//
-//	public void setForegroundEnabled(boolean enabled) {
-//		this.foregroundEnabled = enabled;
-//	}
-//
-//	public boolean isBackgroundEnabled() {
-//		return backgroundEnabled;
-//	}
-//	
-//	public void setBackgroundEnabled(boolean enabled) {
-//		this.backgroundEnabled = enabled;
-//	}
-
 	
 	/**
 	 * Sets the default background color for the receiver's cells. 
@@ -373,116 +239,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	public Color getDefaultForeground() {
 		return foreground.getDefaultValue();
 	}	
-	
-	/**
-	 * Returns background color for the cell at given indexes.
-	 * <p>
-	 * <code>index0</code> and <code>index1</code> refer to the model, 
-	 * not the visual position of the item on the screen
-	 * which can be altered by move and hide operations. 
-	 * 
-	 * @param index0 row index of the cell  
-	 * @param index1 column index of the cell 
-	 * @return background color for the cell at given indexes
-	 */
-	public Color getBackground(N0 index0, N1 index1) {
-		return background.getValue(index0, index1);
-	}
-	
-	/**
-	 * Sets background color for the cell at given indexes.  
-	 * <p>
-	 * <code>index0</code> and <code>index1</code> refer to the model, 
-	 * not the visual position of the item on the screen
-	 * which can be altered by move and hide operations. 
-	 * <p>
-	 * Background color for ranges of cells should be set by 
-	 * {@link #setBackground(Number, Number, Number, Number, Color)} 
-	 * to achieve the best efficiency.
-	 * 
-	 * @param index0 row index of the cell  
-	 * @param index1 column index of the cell 
-	 * @param value text to set
-	 * @see #setBackground(Number, Number, Number, Number, Color)
-	 */
-	public void setBackground(N0 index0, N1 index1, Color color) {
-		setBackground(index0, index0, index1, index1, color);
-	}
-	
-	/**
-	 * Sets background color for the specified range of cells. 
-	 * <p>
-	 * <code>start0</code>,<code>end0</code>, <code>start1</code> and <code>end1</code> 
-	 * indexes refer to the model, not the visual position of the item on the screen
-	 * which can be altered by move and hide operations.
-	 *
-	 * @param start0 first index of the range of row items  
-	 * @param end0 last index of the range of row items  
-	 * @param start1 first index of the range of column items  
-	 * @param end1 last index of the range of column items  
-	 * @param color color to set
-	 */
-	public void setBackground(N0 start0, N0 end0, N1 start1, N1 end1, Color color) {
-//		backgroundEnabled = true;
-		background.setValue(start0, end0, start1, end1, color);
-	}
 
-	
-	
-	/**
-	 * Returns foreground color for the cell at given indexes.
-	 * <p>
-	 * <code>index0</code> and <code>index1</code> refer to the model, 
-	 * not the visual position of the item on the screen
-	 * which can be altered by move and hide operations. 
-	 * 
-	 * @param index0 row index of the cell  
-	 * @param index1 column index of the cell 
-	 * @return foreground color for the cell at given indexes
-	 */
-	public Color getForeground(N0 index0, N1 index1) {
-		return foreground.getValue(index0, index1);
-	}
-	
-	/**
-	 * Sets foreground color for the cell at given indexes.  
-	 * <p>
-	 * <code>index0</code> and <code>index1</code> refer to the model, 
-	 * not the visual position of the item on the screen
-	 * which can be altered by move and hide operations. 
-	 * <p>
-	 * Foreground color for ranges of cells should be set by 
-	 * {@link #setForeground(Number, Number, Number, Number, Color)} 
-	 * to achieve the best efficiency.
-	 * 
-	 * @param index0 row index of the cell  
-	 * @param index1 column index of the cell 
-	 * @param value text to set
-	 * @see #setForeground(Number, Number, Number, Number, Color)
-	 */
-	public void setForeground(N0 index0, N1 index1, Color color) {
-		setForeground(index0, index0, index1, index1, color);
-	}
-	
-	/**
-	 * Sets foreground color for the specified range of cells. 
-	 * <p>
-	 * <code>start0</code>,<code>end0</code>, <code>start1</code> and <code>end1</code> 
-	 * indexes refer to the model, not the visual position of the item on the screen
-	 * which can be altered by move and hide operations.
-	 *
-	 * @param start0 first index of the range of row items  
-	 * @param end0 last index of the range of row items  
-	 * @param start1 first index of the range of column items  
-	 * @param end1 last index of the range of column items  
-	 * @param color color to set
-	 */
-	public void setForeground(N0 start0, N0 end0, N1 start1, N1 end1, Color color) {
-//		foregroundEnabled = true;
-		foreground.setValue(start0, end0, start1, end1, color);
-	}
-	
-	
 	
 	/**
 	 * Returns the rectangular boundaries of this zone. 

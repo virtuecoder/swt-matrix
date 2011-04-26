@@ -24,7 +24,6 @@ public class Snippet_0014 {
 		
 		final Matrix matrix = new Matrix(shell, SWT.NONE);
 		
-		
 		Section colBody = matrix.getAxis1().getBody();
 		colBody.setDefaultLineWidth(0);
 		colBody.setCount(4);

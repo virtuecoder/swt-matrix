@@ -292,6 +292,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				AxisItem<N0> item0 = axis0.getFocusItem();
 				AxisItem<N1> item1 = axis1.getFocusItem();
+				if (item0 == null || item1 == null) return;
 				Zone zone = getZoneUnchecked(item0.getSection(), item1.getSection());
 				if (zone == null) return;
 				Rectangle r = zone.getCellBounds(item0.getIndex(), item1.getIndex());

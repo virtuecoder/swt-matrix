@@ -6,10 +6,9 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.Matrix;
+import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
-import pl.netanel.swt.matrix.Zone;
 
 /**
  * Cell background calculated
@@ -17,7 +16,6 @@ import pl.netanel.swt.matrix.Zone;
  * @author Jacek Kolodziejczyk created 03-03-2011
  */
 public class Snippet_0017 {
-	static int counter;
 	
 	public static void main(String[] args) {
 		Shell shell = new Shell();
@@ -25,26 +23,21 @@ public class Snippet_0017 {
 		shell.setLayout(new FillLayout());
 		Display display = shell.getDisplay();
 		
-		Section colBody = new Section();
-		colBody.setCount(8);
-		
-		Section rowBody = new Section();
-		rowBody.setCount(8);
+		Matrix matrix = new Matrix(shell, SWT.V_SCROLL);
+		matrix.getAxis0().getBody().setCount(8);
+		Section body1 = matrix.getAxis1().getBody();
+		body1.setCount(8);
+		body1.setDefaultCellWidth(16);
 		
 		final Color color = display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
-		
-		Zone body = new Zone(rowBody, colBody) {
+		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public Color getBackground(Number index0, Number index1) {
-				return index0.intValue() % 2 + index1.intValue() % 2 == 1 
-					? color : null;
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+				background = index0.intValue() % 2 + index1.intValue() % 2 == 1 ? color : null;
+				super.paint(index0, index1, x, y, width, height);
 			}
-		};
+		});
 		
-		new Matrix(shell, SWT.V_SCROLL, 
-				new Axis(rowBody), new Axis(colBody), body);
-		
-		shell.setBounds(400, 200, 400, 300);
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

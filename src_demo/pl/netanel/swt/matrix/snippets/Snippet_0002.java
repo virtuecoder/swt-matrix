@@ -14,8 +14,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.Matrix;
+import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
-import pl.netanel.swt.matrix.Zone;
 
 /**
  * Add / remove model items.
@@ -38,36 +38,38 @@ public class Snippet_0002 {
 		list.add(Integer.toString(6));
 		counter = 6;
 		
-		final Axis rowAxis = new Axis();
+		final Matrix matrix = new Matrix(shell, SWT.V_SCROLL);
+		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		
+		Axis rowAxis = matrix.getAxis0();
 		final Section rowBody = rowAxis.getBody();
 		rowBody.setCount(list.size());
 		rowAxis.getBody().setDefaultResizable(true);
 		rowAxis.getHeader().setVisible(true);
 		
-		Axis colAxis = new Axis();
+		Axis colAxis = matrix.getAxis1();
 		colAxis.getBody().setCount(2);
-		colAxis.getBody().setDefaultCellWidth(50);
+		colAxis.getHeader().setDefaultCellWidth(16);
 		colAxis.getHeader().setVisible(true);
 		
-		Zone body = new Zone(rowAxis.getBody(), colAxis.getBody()) {
+		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public String getText(Number index0, Number index1) {
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				String value = list.get(index0.intValue());
-				return index1.intValue() == 0 
+				text = index1.intValue() == 0 
 					? value
 					: Integer.toString(value.length());
+				super.paint(index0, index1, x, y, width, height);
 			}
-		};
-		Zone columnHeader = new Zone(rowAxis.getHeader(), colAxis.getBody()) {
-			@Override
-			public String getText(Number index0, Number index1) {
-				return index1.intValue() == 0 ? "Value" : "Length";
-			}
-		};
+		});
 		
-		final Matrix matrix = new Matrix(shell, SWT.V_SCROLL, 
-				rowAxis, colAxis, body, columnHeader);
-		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		matrix.getColumnHeader().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+			@Override
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+				text = index1.intValue() == 0 ? "Value" : "Length";
+				super.paint(index0, index1, x, y, width, height);
+			}
+		});
 		
 		rowBody.setCellWidth(2, 4, 25);
 		rowBody.setResizable(2, 4, false);
@@ -81,6 +83,7 @@ public class Snippet_0002 {
 				list.add(focusIndex.intValue(), Integer.toString(++counter));
 				rowBody.insert(focusIndex, 1);
 				matrix.refresh();
+				matrix.setFocus();
 			}
 		});
 		
@@ -98,6 +101,7 @@ public class Snippet_0002 {
 					}
 				}
 				matrix.refresh();
+				matrix.setFocus();
 			}
 		});
 		

@@ -7,7 +7,6 @@ import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
-import pl.netanel.swt.matrix.Zone;
 
 /**
  * Change the line style.
@@ -24,9 +23,9 @@ public class Snippet_0012 {
 		Matrix matrix = new Matrix(shell, SWT.NONE);
 		matrix.getAxis1().getBody().setCount(4);
 		matrix.getAxis0().getBody().setCount(10);
-		Zone body = matrix.getBody();
 		
-		body.replacePainter(new Painter("row lines", Painter.SCOPE_HORIZONTAL_LINES) {
+		
+		matrix.getBody().replacePainter(new Painter("row lines", Painter.SCOPE_HORIZONTAL_LINES) {
 			@Override
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				switch (index0.intValue()) {

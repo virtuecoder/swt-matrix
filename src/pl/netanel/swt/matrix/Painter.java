@@ -36,7 +36,7 @@ import pl.netanel.util.Preconditions;
  * @author jacek.p.kolodziejczyk@gmail.com
  * @created 2010-06-13
  */
-// TODO add the paint(AxisLayoutIterator) here?
+
 public class Painter<N0 extends Number, N1 extends Number> {
 	/** 
 	 * Single scope of the whole container
@@ -81,7 +81,25 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	final String name;
 	private boolean enabled = true;
 	
-	String text;
+	/**
+	 * Text to be painted. The placement of the text depends on the {@link #textAlignX}, 
+	 * {@link #textAlignY}, {@link #textMarginX}, {@link #textMarginY} properties.
+	 */
+	public String text;
+	/**
+	 * Image to be painted. The placement of the image depends on the {@link #imageAlignX}, 
+	 * {@link #imageAlignY}, {@link #imageMarginX}, {@link #imageMarginY} properties.
+	 */
+	public Image image;
+	/**
+	 * Foreground color.
+	 */
+	public Color foreground;
+	/**
+	 * Background color.
+	 */
+	public Color background;
+	
 	/**
 	 * Horizontal text alignment. One of the following constants defined in class SWT: 
 	 * SWT.LEFT, SWT.RIGHT, SWT.CENTER, SWT.BEGINING, SWT.END.
@@ -127,8 +145,8 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	Zone zone;
 	Matrix matrix;
 
-	private Color lastForeground, lastBackground, defaultBackground, 
-		background, selectionBackground, selectionForeground;
+	private Color lastForeground, lastBackground, defaultBackground, defaultForeground,  
+		 selectionBackground, selectionForeground;
 	private boolean shouldHighlight;
 //	private boolean backgroundEnabled, foregroundEnabled;
 
@@ -194,7 +212,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 */
 	protected boolean init() {
 		if (scope < SCOPE_CELLS_HORIZONTALLY) return true;
-		lastForeground = zone.getDefaultForeground();
+		lastForeground = defaultForeground = zone.getDefaultForeground();
 		lastBackground = defaultBackground = zone.getDefaultBackground();
 		selectionBackground = zone.getSelectionBackground();
 		selectionForeground = zone.getSelectionForeground();
@@ -241,46 +259,36 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 */
 	public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
 		if (zone == null) return;
-		Color foreground = null;
 		boolean isSelected = shouldHighlight && zone.isSelected(index0, index1);
 		
+		// TODO Revise and maybe optimize the background / foreground color setting algorithm
+		Color foreground2, background2;
 		if (isSelected) {
-			foreground = selectionForeground;  
-			background = selectionBackground;
+			foreground2 = selectionForeground;  
+			background2 = selectionBackground;
 		} else {
-//			if (foregroundEnabled) {
-				foreground = zone.getForeground(index0, index1);
-//			} else {
-//				foreground = defaultForeground;
-//			}
-//			if (backgroundEnabled) {
-				background = zone.getBackground(index0, index1);
-//			} else {
-//				background = defaultBackground;
-//			}
+			foreground2 = foreground == null ? defaultForeground : foreground; 
+			background2 = background == null ? defaultBackground : background;
 		}
 		
 		// Only set color if there is a change
-		if (foreground != null && !foreground.equals(lastForeground)) {
-			gc.setForeground(lastForeground = foreground);
+		if (foreground2 != null && !foreground2.equals(lastForeground)) {
+			gc.setForeground(lastForeground = foreground2);
 		}
-		if (background != null) {
-			if (!background.equals(lastBackground)) {
-				gc.setBackground(lastBackground = background);
+		if (background2 != null) {
+			if (!background2.equals(lastBackground)) {
+				gc.setBackground(lastBackground = background2);
 			}
-			if (!background.equals(defaultBackground)) {
+			if (!background2.equals(defaultBackground)) {
 				gc.fillRectangle(x, y, width, height);
 			}
 		}
 		
-//		align0 = model.getVerticalAlignment(item0, item1);
-//		align1 = model.getHorizontalAlignment(item0, item1);
-
 //		lineWidth0 = zone.section0.getLineWidth(index0);
 //		lineWidth1 = zone.section1.getLineWidth(index1);
 //		lineColor = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 		
-		Image image = zone.getImage(index0, index1);
+//		Image image = zone.getImage(index0, index1);
 		if (image != null) {
 			int x2 = x, y2 = y;
 			Rectangle bounds = image.getBounds();
@@ -304,7 +312,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 			width -= bounds.width;
 		}
 		
-		text = zone.getText(index0, index1);
+//		text = zone.getText(index0, index1);
 		if (text != null) {
 //			if (width < 4 || height < 4) return;
 			
@@ -339,7 +347,6 @@ public class Painter<N0 extends Number, N1 extends Number> {
 			gc.drawString(text, x, y, true);
 		}
 	}
-
 	
 	
 	/**
@@ -383,17 +390,15 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	public void computeSize(N0 index0, N1 index1, Point size) {
 		assert zone != null;
 		size.x = 0; size.y = 0;
-		Image image = zone.getImage(index0, index1);
 		if (image != null) {
 			Rectangle bounds = image.getBounds();
 			size.x = bounds.width + 2 * imageMarginX;
 			size.y = bounds.height + 2 * imageMarginY;
 		}
-		String s = zone.getText(index0, index1);
-		if (s != null) {
-			Point p = gc.stringExtent(s);
-			size.x += p.x + 2 * imageMarginX;
-			size.y = java.lang.Math.max(p.y, size.y + 2 * imageMarginY);
+		if (text != null) {
+			Point p = gc.stringExtent(text);
+			size.x += p.x + 2 * textMarginX;
+			size.y = java.lang.Math.max(p.y, size.y + 2 * textMarginY);
 		}
 	}
 	

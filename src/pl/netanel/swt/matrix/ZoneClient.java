@@ -55,8 +55,8 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 		core.setDefaultBodyStyle();
 	}
 
-	void setDefaultHeaderStyle() {
-		core.setDefaultHeaderStyle();
+	void setDefaultHeaderStyle(Painter cellsPainter) {
+		core.setDefaultHeaderStyle(cellsPainter);
 	}
 
 	@Override
@@ -75,44 +75,12 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 		core.removeListener(type, listener);
 	}
 
-	public String getText(Number index0, Number index1) {
-		section0.checkIndex(index0, section0.getCount(), "index0");
-		section1.checkIndex(index1, section1.getCount(), "index1");
-		return core.getText(index0, index1);
-	}
-
-	@Override
-	public void setBackground(Number start0, Number end0, Number start1, Number end1, Color color) {
-		section0.checkRange(start0, end0, section0.getCount());
-		section1.checkRange(start1, end1, section1.getCount());
-		core.setBackground(start0, end0, start1, end1, color);
-	}
-	
-	@Override
-	public void setForeground(Number start0, Number end0, Number start1, Number end1, Color color) {
-		section0.checkRange(start0, end0, section0.getCount());
-		section1.checkRange(start1, end1, section1.getCount());
-		core.setForeground(start0, end0, start1, end1, color);
-	}
-	
-	public Color getBackground(Number index0, Number index1) {
-		section0.checkIndex(index0, section0.getCount(), "index0");
-		section1.checkIndex(index1, section1.getCount(), "index1");
-		return core.getBackground(index0, index1);
-	}
-
 	public void setDefaultBackground(Color color) {
 		core.setDefaultBackground(color);
 	}
 
 	public Color getDefaultBackground() {
 		return core.getDefaultBackground();
-	}
-
-	public Color getForeground(Number index0, Number index1) {
-		section0.checkIndex(index0, section0.getCount(), "index0");
-		section1.checkIndex(index1, section1.getCount(), "index1");
-		return core.getForeground(index0, index1);
 	}
 
 	public void setDefaultForeground(Color color) {

@@ -71,8 +71,6 @@ public class Snippet_0201 {
 			}
 		});
 		
-		
-		
 		Button add = new Button(shell, SWT.PUSH);
 		add.setText("Freeze head");
 		add.addSelectionListener(new SelectionAdapter() {

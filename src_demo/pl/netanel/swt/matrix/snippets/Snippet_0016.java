@@ -24,12 +24,11 @@ public class Snippet_0016 {
 		final Matrix matrix = new Matrix(shell, SWT.NONE);
 		matrix.setFocusCellEnabled(false);
 		
-		Section colBody = matrix.getAxis1().getBody();
-		colBody.setCount(4);
-		colBody.setDefaultCellWidth(50);
-		
-		Section rowBody = matrix.getAxis0().getBody();
-		rowBody.setCount(10);
+		matrix.getAxis0().getBody().setCount(10);
+
+		Section body1 = matrix.getAxis1().getBody();
+		body1.setCount(4);
+		body1.setDefaultCellWidth(50);
 
 		final Zone body = matrix.getBody();
 		body.setSelectionBackground(display.getSystemColor(SWT.COLOR_LIST_SELECTION));

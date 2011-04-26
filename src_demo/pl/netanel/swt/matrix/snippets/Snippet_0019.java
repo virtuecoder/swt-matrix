@@ -17,6 +17,7 @@ public class Snippet_0019 {
 	
 	public static void main(String[] args) {
 		Shell shell = new Shell();
+		shell.setBounds(400, 200, 400, 300);
 		shell.setLayout(new FillLayout());
 		
 		Matrix<Integer, Integer> matrix = new Matrix(shell, SWT.NONE);
@@ -27,9 +28,9 @@ public class Snippet_0019 {
 		matrix.getColumnHeader().replacePainter(
 				new Painter("cells", Painter.SCOPE_CELLS_VERTICALLY) {
 					@Override
-					public void paint(Number index0, Number index1, 
-							int x, int y, int width, int height) 
+					public void paint(Number index0, Number index1, int x, int y, int width, int height)
 					{
+						text = index1.toString();
 						textAlignX = index1.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
 						super.paint(index0, index1, x, y, width, height);
 					}
@@ -38,15 +39,14 @@ public class Snippet_0019 {
 		matrix.getBody().replacePainter(
 			new Painter("cells", Painter.SCOPE_CELLS_VERTICALLY) {
 				@Override
-				public void paint(Number index0, Number index1, 
-						int x, int y, int width, int height) 
+				public void paint(Number index0, Number index1, int x, int y, int width, int height)
 				{
+					text = index0.toString() + ", " + index1;
 					textAlignX = index1.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
 					super.paint(index0, index1, x, y, width, height);
 				}
 		});
 		
-		shell.setBounds(400, 200, 400, 300);
 		shell.open();
 		Display display = shell.getDisplay();
 		while (!shell.isDisposed()) {

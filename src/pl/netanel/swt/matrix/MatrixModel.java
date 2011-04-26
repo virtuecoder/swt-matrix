@@ -35,7 +35,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 			for (Section<N1> section1: axis1.sections) {
 				Zone zone = getZone(section0, section1);
 				if (zone == null) {
-					zone = createZone(section0, section1);
+					zone = new Zone(section0, section1);
 					this.zones.add(zone);
 					this.zoneClients.add(new ZoneClient(zone));
 				}
@@ -44,8 +44,25 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 					if (section0.equals(body0) && section1.equals(body1)) {
 						zone.setDefaultBodyStyle();
 					}
-					else if (section0.equals(header0) || section1.equals(header1)) {
-						zone.setDefaultHeaderStyle();
+					else if (section0.equals(header0) && section1.equals(body1)) {
+						zone.setDefaultHeaderStyle(new Painter("cells", Painter.SCOPE_CELLS_VERTICALLY) {
+							@Override
+							public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+								text = index1.toString();
+								super.paint(index0, index1, x, y, width, height);
+							}
+						});
+					}
+					else if (section1.equals(header1) && section0.equals(body0)) {
+						zone.setDefaultHeaderStyle(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+							@Override
+							public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+								text = index0.toString();
+								super.paint(index0, index1, x, y, width, height);
+							}
+						});						
+					} else {
+						zone.setDefaultHeaderStyle(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY));
 					}
 				}
 			}
@@ -55,45 +72,45 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		seq = new ExtentPairSequence();
 	}
 
-	private Zone createZone(Section section0, Section section1) {
-		Zone zone = null;
-		Section header0 = axis0.getHeader();
-		Section header1 = axis1.getHeader();
-		Section body0 = axis0.getBody();
-		Section body1 = axis1.getBody();
-		if (section0.equals(header0) && section1.equals(header1)) {
-			// top left
-			zone = new Zone(section0, section1);
-		} else {
-			if (body0.equals(section0) && header1.equals(section1)) {
-				// row header
-				zone = new Zone(section0, section1) {
-					@Override
-					public String getText(Number index0, Number index1) {
-						return index0.toString();
-					};
-				};
-			}
-			else if (header0.equals(section0) && body1.equals(section1)) {
-				// column header
-				zone = new Zone(section0, section1) {
-					@Override
-					public String getText(Number index0, Number index1) {
-						return index1.toString();
-					};
-				};
-			} 
-			else {
-				// body
-				zone = new Zone(section0, section1) {
-					public String getText(Number index0, Number index1) {
-						return index0.toString() + ", " + index1.toString();
-					};
-				};
-			}
-		}
-		return zone;
-	}
+//	private Zone createZone(Section section0, Section section1) {
+//		Zone zone = null;
+//		Section header0 = axis0.getHeader();
+//		Section header1 = axis1.getHeader();
+//		Section body0 = axis0.getBody();
+//		Section body1 = axis1.getBody();
+//		if (section0.equals(header0) && section1.equals(header1)) {
+//			// top left
+//			zone = new Zone(section0, section1);
+//		} else {
+//			if (body0.equals(section0) && header1.equals(section1)) {
+//				// row header
+//				zone = new Zone(section0, section1) {
+//					@Override
+//					public String getText(Number index0, Number index1) {
+//						return index0.toString();
+//					};
+//				};
+//			}
+//			else if (header0.equals(section0) && body1.equals(section1)) {
+//				// column header
+//				zone = new Zone(section0, section1) {
+//					@Override
+//					public String getText(Number index0, Number index1) {
+//						return index1.toString();
+//					};
+//				};
+//			} 
+//			else {
+//				// body
+//				zone = new Zone(section0, section1) {
+//					public String getText(Number index0, Number index1) {
+//						return index0.toString() + ", " + index1.toString();
+//					};
+//				};
+//			}
+//		}
+//		return zone;
+//	}
 	
 	private void calculatePaintOrder() {
 		paintOrder = new int[zones.size()];

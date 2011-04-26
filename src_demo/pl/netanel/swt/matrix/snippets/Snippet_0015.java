@@ -9,7 +9,6 @@ import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
-import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 
 /**
@@ -26,15 +25,8 @@ public class Snippet_0015 {
 		
 		final Matrix matrix = new Matrix(shell, SWT.NONE);
 		
-		Axis axis0 = matrix.getAxis0();
-		Axis axis1 = matrix.getAxis1();
-		
-		Section colBody = axis1.getBody();
-		colBody.setCount(4);
-		colBody.setDefaultCellWidth(50);
-		
-		Section rowBody = axis0.getBody();
-		rowBody.setCount(10);
+		matrix.getAxis0().getBody().setCount(10);
+		matrix.getAxis1().getBody().setCount(4);
 		
 		final Zone body = matrix.getBody();
 		body.getPainter("row lines").setEnabled(false);

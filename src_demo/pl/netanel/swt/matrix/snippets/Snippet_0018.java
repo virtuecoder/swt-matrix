@@ -7,10 +7,9 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.Matrix;
+import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
-import pl.netanel.swt.matrix.Zone;
 
 /**
  * Image painting
@@ -28,37 +27,7 @@ public class Snippet_0018 {
 		shell.setLayout(new FillLayout());
 		Display display = shell.getDisplay();
 		
-		Section colBody = new Section();
-		colBody.setCount(COLUMN_COUNT);
-		colBody.setDefaultCellWidth(50);
-		
-		Section rowBody = new Section();
-		rowBody.setCount(ROW_COUNT);
-		
-		
-		Zone body = new Zone(rowBody, colBody) {
-			Image[][] images = new Image[ROW_COUNT][];
-			@Override
-			public Image getImage(Number index0, Number index1) {
-				Image[] row = images[index0.intValue()];
-				if (row == null) return null;
-				return row[index1.intValue()];
-			}
-			@Override
-			public void setImage(Number index0, Number index1, Image value) {
-				Image[] row = images[index0.intValue()];
-				if (row == null) {
-					row = images[index0.intValue()] = new Image[COLUMN_COUNT];
-				}
-				row[index1.intValue()] = value;
-			}
-			
-			@Override
-			public String getText(Number index0, Number index1) {
-				return index0.intValue() + ", " + index1.intValue();
-			}
-		};
-		
+		// Create image
 		Image image = new Image(display, 16, 16);
 		GC gc = new GC(image);
 		gc.setBackground(display.getSystemColor(SWT.COLOR_BLUE));
@@ -66,14 +35,33 @@ public class Snippet_0018 {
 		gc.fillOval(0, 0, 16, 16);
 		gc.dispose();
 		
-		body.setImage(1, 1, image);
-		body.setImage(5, 3, image);
-		body.setImage(2, 0, image);
+		// Image data model
+		final Image[][] images = new Image[ROW_COUNT][];
+		images[1] = new Image[COLUMN_COUNT];
+		images[1][1] = image;
+		images[5] = new Image[COLUMN_COUNT];
+		images[5][3] = image;
+		images[2] = new Image[COLUMN_COUNT];
+		images[2][0] = image;
 		
-		new Matrix(shell, SWT.V_SCROLL, 
-				new Axis(rowBody), new Axis(colBody), body);
+		Matrix matrix = new Matrix(shell, SWT.V_SCROLL);
+		Section colBody = matrix.getAxis1().getBody();
+		colBody.setCount(COLUMN_COUNT);
+		colBody.setDefaultCellWidth(50);
 		
-//		body.getPainter("cells").imageAlignX = SWT.RIGHT;
+		Section rowBody = matrix.getAxis0().getBody();
+		rowBody.setCount(ROW_COUNT);
+		
+		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+			@Override
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+				text = index0.toString() + ", " + index1;
+				Image[] row = images[index0.intValue()];
+				image = row == null ? null : row[index1.intValue()];
+				imageAlignX = index1.intValue() == 1 ? SWT.RIGHT : SWT.LEFT;
+				super.paint(index0, index1, x, y, width, height);
+			}
+		});
 		
 		shell.setBounds(400, 200, 400, 300);
 		shell.open();
