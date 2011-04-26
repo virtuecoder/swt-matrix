@@ -3,6 +3,9 @@ package pl.netanel.swt.matrix;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Event;
+
 import pl.netanel.swt.matrix.Axis.ExtentSequence;
 import pl.netanel.util.ImmutableIterator;
 
@@ -14,6 +17,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	final ArrayList<ZoneClient<N0, N1>> zoneClients;
 	int[] paintOrder;
 	private ExtentPairSequence seq;
+	private Matrix matrix;
 
 	public MatrixModel(Axis<N0> axis0, Axis<N1> axis1, Zone<N0, N1> ...zones) {
 		this.axis0 = axis0;
@@ -28,6 +32,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	}
 
 	void setMatrix(Matrix matrix) {
+		this.matrix = matrix;
 		Section body0  = axis0.getBody(), body1 = axis1.getBody();
 		Section header0 = axis0.getHeader(), header1 = axis1.getHeader();
 		
@@ -177,12 +182,48 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		};
 	}
 
+	
+	private void addSelectionEvent(Listeners listeners) {
+		Event event = new Event();
+		event.type = SWT.Selection;
+		event.widget = matrix;
+		listeners.add(event);
+	}
+	
+	/**
+	 * Attention: it is to be called only by a UI handler, since it emits Selection event.
+	 * @param start0
+	 * @param end0
+	 * @param start1
+	 * @param end1
+	 * @param selected
+	 */
 	public void setSelected(boolean selected) {
 		for (Zone zone: zones) {
 			zone.setSelectedAll(selected);
+			
+			if (selected == true) {
+				addSelectionEvent(zone.listeners);
+			}
+		}
+		if (selected == true) {
+			for (Section section: axis0.sections) {
+				addSelectionEvent(section.listeners);
+			}
+			for (Section section: axis1.sections) {
+				addSelectionEvent(section.listeners);
+			}
 		}
 	}
 	
+	/**
+	 * Attention: it is to be called only by a UI handler, since it emits Selection event.
+	 * @param start0
+	 * @param end0
+	 * @param start1
+	 * @param end1
+	 * @param selected
+	 */
 	void setSelected (
 			AxisItem start0, AxisItem end0, 
 			AxisItem start1, AxisItem end1, boolean selected) {
@@ -201,6 +242,13 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 			Zone zone = getZoneUnchecked(seq.section0, seq.section1);
 			if (zone.selectionEnabled) {
 				zone.setSelected(seq.start0.getValue(), seq.end0.getValue(), seq.start1.getValue(), seq.end1.getValue(), selected);
+				
+				if (selected == true) {
+					Event event = new Event();
+					event.type = SWT.Selection;
+					event.widget = matrix;
+					zone.listeners.add(event);
+				}
 			}	
 		}
 	}
@@ -247,6 +295,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 				this.start0 = seq0.start;
 				this.end0 = seq0.end;
 				seq1.init(startItem1, endItem1);
+				seq1.next();
 			}
 			section1 = seq1.section;
 			start1 = seq1.start;

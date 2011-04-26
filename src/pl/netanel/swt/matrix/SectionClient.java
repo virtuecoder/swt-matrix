@@ -2,6 +2,9 @@ package pl.netanel.swt.matrix;
 
 import java.util.Iterator;
 
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.SelectionListener;
+
 import pl.netanel.util.Preconditions;
 
 
@@ -589,6 +592,26 @@ class SectionClient<N extends Number> extends Section<N> {
 		return core.getSelectedIterator();
 	}
 	
+	
+	@Override
+	public void addControlListener(ControlListener listener) {
+		core.addControlListener(listener);
+	}
+	
+	@Override
+	public void addSelectionListener(SelectionListener listener) {
+		core.addSelectionListener(listener);
+	}
+	
+	@Override
+	public void removeControlListener(ControlListener listener) {
+		core.removeControlListener(listener);
+	}
+	
+	@Override
+	public void removeSelectionListener(SelectionListener listener) {
+		core.removeSelectionListener(listener);
+	}
 	
 	/*------------------------------------------------------------------------
 	 * Moving 

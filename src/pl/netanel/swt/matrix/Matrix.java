@@ -63,15 +63,15 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	public static final int CMD_FOCUS_MOST_RIGHT = 10; 		// binding = SWT.END
 	public static final int CMD_FOCUS_MOST_UP = 11; 			// binding = SWT.MOD1 + SWT.PAGE_UP
 	public static final int CMD_FOCUS_MOST_DOWN = 12; 			// binding = SWT.MOD1 + SWT.PAGE_DOWN
-	public static final int CMD_FOCUS_START = 13; 				// binding = SWT.MOD1 + SWT.HOME
-	public static final int CMD_FOCUS_END = 14; 				// binding = SWT.MOD1 + SWT.END
+	public static final int CMD_FOCUS_MOST_UP_LEFT = 13; 				// binding = SWT.MOD1 + SWT.HOME
+	public static final int CMD_FOCUS_MOST_DOWN_RIGHT = 14; 				// binding = SWT.MOD1 + SWT.END
 	public static final int CMD_FOCUS_LOCATION = 15; 			// binding = SWT.MouseDown
-	public static final int CMD_FOCUS_LOCATION2 = 16; 			// binding = SWT.MOD1 + SWT.MouseDown
+	public static final int CMD_FOCUS_LOCATION_ALTER = 16; 			// binding = SWT.MOD1 + SWT.MouseDown
 //	public static final int WORD_PREVIOUS = 17039363;		// binding = SWT.MOD1 + SWT.ARROW_LEFT
 //	public static final int WORD_NEXT = 17039364; 			// binding = SWT.MOD1 + SWT.ARROW_RIGHT
 	
 	static boolean isCursorMove(int id) {
-		return CMD_FOCUS_UP <= id && id <= CMD_FOCUS_LOCATION2;
+		return CMD_FOCUS_UP <= id && id <= CMD_FOCUS_LOCATION_ALTER;
 	}
 	
 
@@ -91,30 +91,30 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	public static final int CMD_SELECT_FULL_DOWN = 110;   		// binding = SWT.MOD1 + SWT.MOD2 + SWT.ARROW_DOWN
 	public static final int CMD_SELECT_FULL_LEFT = 111; 		// binding = SWT.MOD2 + SWT.HOME
 	public static final int CMD_SELECT_FULL_RIGHT = 112;   		// binding = SWT.MOD2 + SWT.END
-	public static final int CMD_SELECT_START = 113; 			// binding = SWT.MOD1 + SWT.MOD2 + SWT.HOME
-	public static final int CMD_SELECT_END = 114; 				// binding = SWT.MOD1 + SWT.MOD2 + SWT.END
+	public static final int CMD_SELECT_FULL_UP_LEFT = 113; 			// binding = SWT.MOD1 + SWT.MOD2 + SWT.HOME
+	public static final int CMD_SELECT_FULL_DOWN_RIGHT = 114; 				// binding = SWT.MOD1 + SWT.MOD2 + SWT.END
 	public static final int CMD_SELECT_TO_LOCATION = 115; 		// binding = SWT.MOD2 + SWT.MouseDown
-	public static final int CMD_SELECT_TO_LOCATION2 = 116; 		// binding = SWT.MOD2 + SWT.MouseDown
+	public static final int CMD_SELECT_TO_LOCATION_ALTER = 116; 		// binding = SWT.MOD2 + SWT.MouseDown
 	public static final int CMD_SELECT_ROW = 120; 				// binding = SWT.MouseDown + Zone.ROW_HEADER
-	public static final int CMD_SELECT_ROW2 = 121; 				// binding = SWT.MOD1 + SWT.MouseDown + Zone.ROW_HEADER
+	public static final int CMD_SELECT_ROW_ALTER = 121; 				// binding = SWT.MOD1 + SWT.MouseDown + Zone.ROW_HEADER
 	public static final int CMD_SELECT_COLUMN = 122; 			// binding = SWT.MouseDown + Zone.COLUMN_HEADER
-	public static final int CMD_SELECT_COLUMN2 = 123; 			// binding = SWT.MOD1 + SWT.MouseDown + Zone.COLUMN_HEADER
+	public static final int CMD_SELECT_COLUMN_ALTER = 123; 			// binding = SWT.MOD1 + SWT.MouseDown + Zone.COLUMN_HEADER
 	public static final int CMD_SELECT_TO_ROW = 124; 			// binding = SWT.MouseDown + Zone.ROW_HEADER
-	public static final int CMD_SELECT_TO_ROW2 = 125; 			// binding = SWT.MOD1 + SWT.MouseDown + Zone.ROW_HEADER
+	public static final int CMD_SELECT_TO_ROW_ALTER = 125; 			// binding = SWT.MOD1 + SWT.MouseDown + Zone.ROW_HEADER
 	public static final int CMD_SELECT_TO_COLUMN = 126;			// binding = SWT.MouseDown + Zone.COLUMN_HEADER
-	public static final int CMD_SELECT_TO_COLUMN2 = 127;		// binding = SWT.MOD1 + SWT.MouseDown + Zone.COLUMN_HEADER
+	public static final int CMD_SELECT_TO_COLUMN_ALTER = 127;		// binding = SWT.MOD1 + SWT.MouseDown + Zone.COLUMN_HEADER
 	
 	static boolean isBodySelect(int id) {
-		return CMD_FOCUS_LOCATION <= id && id <= CMD_SELECT_TO_LOCATION2;
+		return CMD_FOCUS_LOCATION <= id && id <= CMD_SELECT_TO_LOCATION_ALTER;
 	}
 	
 	static boolean isHeaderSelect(int id) {
-		return CMD_SELECT_ROW <= id && id <= CMD_SELECT_TO_COLUMN2;
+		return CMD_SELECT_ROW <= id && id <= CMD_SELECT_TO_COLUMN_ALTER;
 	}
 	
 	static boolean isExtendingSelect(int id) {
-		return CMD_SELECT_UP <= id && id <= CMD_SELECT_TO_LOCATION2 || 
-			CMD_SELECT_TO_ROW <= id && id <= CMD_SELECT_TO_COLUMN2;
+		return CMD_SELECT_UP <= id && id <= CMD_SELECT_TO_LOCATION_ALTER || 
+			CMD_SELECT_TO_ROW <= id && id <= CMD_SELECT_TO_COLUMN_ALTER;
 	}
 
 	/*
@@ -241,7 +241,6 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 				if (executor != null) executor.shutdownNow();
 			}
 		});
-		
 	}
 
 
@@ -711,6 +710,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 			};
 		}
 	}
+	
 	
 	/*------------------------------------------------------------------------
 	 * Painters 

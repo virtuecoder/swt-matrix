@@ -9,7 +9,7 @@ public class AxisTest {
 	@Ignore
 	@Test(expected = IllegalArgumentException.class)
 	public void zeroSections() throws Exception {
-		new Axis(int.class);
+		new Axis(int.class, 2);
 	}
 	
 	@Test

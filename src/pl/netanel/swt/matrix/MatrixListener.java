@@ -43,7 +43,6 @@ class MatrixListener implements Listener {
 	boolean instantMoving, ctrlSelectionMoving;
 	Zone<? extends Number, ? extends Number> zone;
 	Cursor cursor;
-	Listeners listeners;
 	AxisItem[] lastRange;
 	Zone body, columnHeader, rowHeader, topLeft;
 
@@ -52,7 +51,6 @@ class MatrixListener implements Listener {
 	public MatrixListener(Matrix matrix) {
 		this.matrix = matrix;
 		lastRange = new AxisItem[4]; 
-		listeners = new Listeners();
 		body = ((ZoneClient) matrix.getBody()).core;
 		rowHeader = matrix.model.getZoneUnchecked(matrix.axis0.getBody(), matrix.axis1.getHeader());
 		columnHeader = matrix.model.getZoneUnchecked(matrix.axis0.getHeader(), matrix.axis1.getBody());
@@ -102,10 +100,10 @@ class MatrixListener implements Listener {
 			/* TODO Make zone detection only for x,y events (mouse and maybe something else),
 			 * for other ??? 
 			 */
-			if (zone != null) {
-				//e.data = AxisItem.create[] {state0.item, state1.item}; 
-				zone.listeners.sendEvent(e);
-			}
+//			if (zone != null) {
+//				//e.data = AxisItem.create[] {state0.item, state1.item}; 
+//				zone.listeners.sendEvent(e);
+//			}
 
 			// Execute bound commands
 
@@ -130,7 +128,7 @@ class MatrixListener implements Listener {
 						if (b.isMatching(e)) {
 							executeCommand(b.commandId);
 							/* does not quit loop because can execute 
-					   	   many both any zone and a specific zone bindings */
+					   	   	   many both any zone and a specific zone bindings */
 						}
 					}
 				}
@@ -153,6 +151,7 @@ class MatrixListener implements Listener {
 		Cursor resizeCursor;
 		int headerId, resizeStartDistance, resizeCellWidth, newCellWidth, distance, lastDistance;
 		AutoScroll autoScroll;
+		boolean focusMoved;
 
 		public AxisListener(Axis<N> axis) {
 			this.axis = axis; 
@@ -235,11 +234,11 @@ class MatrixListener implements Listener {
 								continue;
 							}
 							section.setCellWidth(seq.start, seq.end, newCellWidth);
-							layout.compute();
-							matrix.redraw();
+							addEvent(section, SWT.Resize);
 						}
+						layout.compute();
+						matrix.redraw();
 					}
-					addEvent(SWT.Resize);
 				}
 				else if (moving && !instantMoving) {
 					reorder();
@@ -262,7 +261,7 @@ class MatrixListener implements Listener {
 				resizeItem.getSection().setCellWidth(resizeItem.getIndex(), resizeItem.getIndex(), newCellWidth);
 				layout.compute();
 				matrix.redraw();
-				addEvent(SWT.Resize);
+				addEvent(resizeItem.getSection(), SWT.Resize);
 				//event.data = matrix.getZone(axisIndex == 0 ? Zone.ROW_HEADER : Zone.COLUMN_HEADER);
 			}
 			else {
@@ -296,9 +295,9 @@ class MatrixListener implements Listener {
 			}
 		}
 
-		public void moveCurrentItem(Move move) {
-			if (matrix.isFocusCellEnabled() && item != null) { // && item.section.isNavigationEnabled()) {
-				layout.moveCurrentItem(move);
+		public void moveFocusItem(Move move) {
+			if (matrix.isFocusCellEnabled() && item != null)  {
+				focusMoved = layout.moveFocusItem(move);
 				axis.scroll();
 			}
 		}
@@ -311,8 +310,8 @@ class MatrixListener implements Listener {
 			if (last == null || item == null) return;
 			if (last.getSection() != item.getSection()) return;
 			
-			if (commandId == CMD_SELECT_COLUMN || commandId == CMD_SELECT_COLUMN2 ||
-				commandId == CMD_SELECT_ROW || commandId == CMD_SELECT_ROW2) {
+			if (commandId == CMD_SELECT_COLUMN || commandId == CMD_SELECT_COLUMN_ALTER ||
+				commandId == CMD_SELECT_ROW || commandId == CMD_SELECT_ROW_ALTER) {
 				
 				// Backup all sections cell selection
 				for (int i = 0, imax = axis.getSectionCount(); i < imax; i++) {
@@ -320,7 +319,7 @@ class MatrixListener implements Listener {
 				}
 				
 			} 
-			else if (commandId == CMD_SELECT_TO_COLUMN2 || commandId == CMD_SELECT_TO_ROW2) {
+			else if (commandId == CMD_SELECT_TO_COLUMN_ALTER || commandId == CMD_SELECT_TO_ROW_ALTER) {
 				// Restore previous selection from the backup
 				for (int i = 0, imax = axis.getSectionCount(); i < imax; i++) {
 					axis.sections.get(i).restoreSelection();
@@ -333,8 +332,8 @@ class MatrixListener implements Listener {
 			AxisItem end = forward ? item : last; 
 
 			boolean ctrlSelection = 
-				commandId == CMD_SELECT_COLUMN2 || commandId == CMD_SELECT_TO_COLUMN2 ||
-				commandId == CMD_SELECT_ROW2 || commandId == CMD_SELECT_TO_ROW2;
+				commandId == CMD_SELECT_COLUMN_ALTER || commandId == CMD_SELECT_TO_COLUMN_ALTER ||
+				commandId == CMD_SELECT_ROW_ALTER || commandId == CMD_SELECT_TO_ROW_ALTER;
 			
 			if (!ctrlSelection) {
 				axis.setSelected(false);
@@ -349,15 +348,14 @@ class MatrixListener implements Listener {
 				Axis model0 = matrix.model.axis0;
 				matrix.model.setSelected(model0.getFirstItem(), model0.getLastItem(), start, end, true);
 			}
-			addEvent(SWT.Selection);
 		}
 		
-		private void addEvent(int type) {
+		private void addEvent(Section<N> section, int type) {
 			Event event = new Event();
 			event.type = type;
 			event.widget = matrix;
 			//event.data = matrix.getZone(axisIndex == 0 ? Zone.ROW_HEADER : Zone.COLUMN_HEADER);
-			axis.listeners.add(event);
+			section.listeners.add(event);
 		}
 
 		void reorder() {
@@ -508,6 +506,12 @@ class MatrixListener implements Listener {
 				item = AxisItem.create(item.getSection(), axis.math.decrement(count));
 			}
 		}
+
+		public void sendEvents() {
+			for (Section section: axis.sections) {
+				section.listeners.sendEvents();
+			}
+		}
 	}
 	
 	
@@ -525,8 +529,8 @@ class MatrixListener implements Listener {
 		bindKey(Matrix.CMD_FOCUS_MOST_RIGHT, SWT.END);
 		bindKey(Matrix.CMD_FOCUS_MOST_UP, SWT.MOD1 | SWT.PAGE_UP);
 		bindKey(Matrix.CMD_FOCUS_MOST_DOWN, SWT.MOD1 | SWT.PAGE_DOWN);
-		bindKey(Matrix.CMD_FOCUS_START, SWT.MOD1 | SWT.HOME);
-		bindKey(Matrix.CMD_FOCUS_END, SWT.MOD1 | SWT.END);
+		bindKey(Matrix.CMD_FOCUS_MOST_UP_LEFT, SWT.MOD1 | SWT.HOME);
+		bindKey(Matrix.CMD_FOCUS_MOST_DOWN_RIGHT, SWT.MOD1 | SWT.END);
 		
 		// Key Selection
 		bindKey(Matrix.CMD_SELECT_ALL, SWT.MOD1 | 'a');
@@ -542,38 +546,38 @@ class MatrixListener implements Listener {
 		bindKey(Matrix.CMD_SELECT_FULL_DOWN, SWT.MOD1 | SWT.MOD2 | SWT.PAGE_DOWN);
 		bindKey(Matrix.CMD_SELECT_FULL_LEFT, SWT.MOD2 | SWT.HOME);
 		bindKey(Matrix.CMD_SELECT_FULL_RIGHT, SWT.MOD2 | SWT.END);
-		bindKey(Matrix.CMD_SELECT_START, SWT.MOD1 | SWT.MOD2 | SWT.HOME);
-		bindKey(Matrix.CMD_SELECT_END, SWT.MOD1 | SWT.MOD2 | SWT.END);
+		bindKey(Matrix.CMD_SELECT_FULL_UP_LEFT, SWT.MOD1 | SWT.MOD2 | SWT.HOME);
+		bindKey(Matrix.CMD_SELECT_FULL_DOWN_RIGHT, SWT.MOD1 | SWT.MOD2 | SWT.END);
 		
 		bindKey(Matrix.CMD_COPY, SWT.MOD1 | 'c');
 		
 		// Mouse current item 
 		body.bindings.add(new GestureBinding(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1));
-		body.bindings.add(new GestureBinding(Matrix.CMD_FOCUS_LOCATION2, SWT.MouseDown, SWT.MOD1 | 1));
+		body.bindings.add(new GestureBinding(Matrix.CMD_FOCUS_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | 1));
 		
 		// Mouse selection
 		/* 1 is for e.button == 1 */
 		body.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseDown, SWT.MOD2 | 1));
-		body.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION2, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
+		body.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
 		body.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseMove, SWT.BUTTON1));
-		body.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION2, SWT.MouseMove, SWT.MOD1 + SWT.BUTTON1));
+		body.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
 		
 		if (rowHeader != null) {
 			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_ROW, SWT.MouseDown, 1));
-			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_ROW2, SWT.MouseDown, SWT.MOD1 | 1));
+			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_ROW_ALTER, SWT.MouseDown, SWT.MOD1 | 1));
 			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_ROW, SWT.MouseDown, SWT.MOD2 | 1));
-			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_ROW2, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
+			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_ROW_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
 			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_ROW, SWT.MouseMove, SWT.BUTTON1));
-			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_ROW2, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
+			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_ROW_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
 			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_RESIZE_PACK, SWT.MouseDoubleClick, 1));
 		}
 		if (columnHeader != null) {
 			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_COLUMN, SWT.MouseDown, 1));
-			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_COLUMN2, SWT.MouseDown, SWT.MOD1 | 1));
+			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_COLUMN_ALTER, SWT.MouseDown, SWT.MOD1 | 1));
 			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN, SWT.MouseDown, SWT.MOD2 | 1));
-			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN2, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
+			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
 			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN, SWT.MouseMove, SWT.BUTTON1));
-			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN2, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
+			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
 			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_RESIZE_PACK, SWT.MouseDoubleClick, 1));
 		}
 		if (topLeft != null) {
@@ -607,12 +611,12 @@ class MatrixListener implements Listener {
 			state0.last = state0.item;
 			state1.last = state1.item;
 		}
-		if (commandId == CMD_SELECT_TO_LOCATION || commandId == CMD_SELECT_TO_LOCATION2) {
+		if (commandId == CMD_SELECT_TO_LOCATION || commandId == CMD_SELECT_TO_LOCATION_ALTER) {
 			if (state0.last.getSection().equals(state0.axis.getHeader())) {
-				commandId = commandId == CMD_SELECT_TO_LOCATION ? CMD_SELECT_TO_COLUMN : CMD_SELECT_TO_COLUMN2;
+				commandId = commandId == CMD_SELECT_TO_LOCATION ? CMD_SELECT_TO_COLUMN : CMD_SELECT_TO_COLUMN_ALTER;
 			}
 			else if (state1.last.getSection().equals(state1.axis.getHeader())) {
-				commandId = commandId == CMD_SELECT_TO_LOCATION ? CMD_SELECT_TO_ROW : CMD_SELECT_TO_ROW2;
+				commandId = commandId == CMD_SELECT_TO_LOCATION ? CMD_SELECT_TO_ROW : CMD_SELECT_TO_ROW_ALTER;
 			}
 		}
 		
@@ -621,10 +625,10 @@ class MatrixListener implements Listener {
 		switch (commandId) {
 		case CMD_SELECT_ALL:		matrix.model.setSelected(true); matrix.redraw(); return;
 		// Header Selection
-		case CMD_SELECT_ROW:		case CMD_SELECT_ROW2:		state0.setSelected(commandId); break;	
-		case CMD_SELECT_COLUMN: 	case CMD_SELECT_COLUMN2: 	state1.setSelected(commandId); break;
-		case CMD_SELECT_TO_ROW:		case CMD_SELECT_TO_ROW2:	state0.setSelected(commandId); break;	
-		case CMD_SELECT_TO_COLUMN:	case CMD_SELECT_TO_COLUMN2:	state1.setSelected(commandId); break;
+		case CMD_SELECT_ROW:		case CMD_SELECT_ROW_ALTER:		state0.setSelected(commandId); break;	
+		case CMD_SELECT_COLUMN: 	case CMD_SELECT_COLUMN_ALTER: 	state1.setSelected(commandId); break;
+		case CMD_SELECT_TO_ROW:		case CMD_SELECT_TO_ROW_ALTER:	state0.setSelected(commandId); break;	
+		case CMD_SELECT_TO_COLUMN:	case CMD_SELECT_TO_COLUMN_ALTER:	state1.setSelected(commandId); break;
 			
 		// Hiding
 		case CMD_HIDE:				state0.hide(true);  state1.hide(true);  break; 
@@ -633,7 +637,7 @@ class MatrixListener implements Listener {
 		case CMD_COPY:				matrix.copy(); return;
 		}
 
-		if (isBodySelect(commandId) || m0 != null || m1 != null) {
+		if (isBodySelect(commandId) || state0.focusMoved || state1.focusMoved) {
 			selectCells(commandId);
 		}
 		matrix.redraw();
@@ -647,38 +651,38 @@ class MatrixListener implements Listener {
 		
 		case CMD_FOCUS_DOWN: 		case CMD_SELECT_DOWN: 		m0 = Move.NEXT; break;
 		case CMD_FOCUS_UP:   		case CMD_SELECT_UP:			m0 = Move.PREVIOUS; break;
-		case CMD_FOCUS_RIGHT: 	case CMD_SELECT_RIGHT:		m1 = Move.NEXT; break;
+		case CMD_FOCUS_RIGHT: 		case CMD_SELECT_RIGHT:		m1 = Move.NEXT; break;
 		case CMD_FOCUS_LEFT: 		case CMD_SELECT_LEFT:		m1 = Move.PREVIOUS; break;
 		
 		case CMD_FOCUS_PAGE_DOWN:	case CMD_SELECT_PAGE_DOWN:	m0 = Move.NEXT_PAGE; break;
-		case CMD_FOCUS_PAGE_UP:	case CMD_SELECT_PAGE_UP: 	m0 = Move.PREVIOUS_PAGE; break;
-		case CMD_FOCUS_PAGE_RIGHT:case CMD_SELECT_PAGE_RIGHT:	m1 = Move.NEXT_PAGE; break;
+		case CMD_FOCUS_PAGE_UP:		case CMD_SELECT_PAGE_UP: 	m0 = Move.PREVIOUS_PAGE; break;
+		case CMD_FOCUS_PAGE_RIGHT:	case CMD_SELECT_PAGE_RIGHT:	m1 = Move.NEXT_PAGE; break;
 		case CMD_FOCUS_PAGE_LEFT:	case CMD_SELECT_PAGE_LEFT:	m1 = Move.PREVIOUS_PAGE; break;
 
 		case CMD_FOCUS_MOST_DOWN:	case CMD_SELECT_FULL_DOWN:	m0 = Move.END; break;
-		case CMD_FOCUS_MOST_UP:	case CMD_SELECT_FULL_UP:	m0 = Move.HOME; break;
-		case CMD_FOCUS_MOST_RIGHT:case CMD_SELECT_FULL_RIGHT:	m1 = Move.END; break;
+		case CMD_FOCUS_MOST_UP:		case CMD_SELECT_FULL_UP:	m0 = Move.HOME; break;
+		case CMD_FOCUS_MOST_RIGHT:	case CMD_SELECT_FULL_RIGHT:	m1 = Move.END; break;
 		case CMD_FOCUS_MOST_LEFT:	case CMD_SELECT_FULL_LEFT:	m1 = Move.HOME; break;
 		
-		case CMD_FOCUS_START:		case CMD_SELECT_START:		m1 = Move.HOME;
-														m0 = Move.HOME; break;
+		case CMD_FOCUS_MOST_UP_LEFT:	case CMD_SELECT_FULL_UP_LEFT:	 m1 = Move.HOME;
+					 													 m0 = Move.HOME; break;
 						
-		case CMD_FOCUS_END:		case CMD_SELECT_END:		m1 = Move.END;
-														m0 = Move.END; break;
+		case CMD_FOCUS_MOST_DOWN_RIGHT:	case CMD_SELECT_FULL_DOWN_RIGHT: m1 = Move.END;
+																		 m0 = Move.END; break;
 		
-		case CMD_FOCUS_LOCATION: 		case CMD_FOCUS_LOCATION2:
-		case CMD_SELECT_TO_LOCATION:	case CMD_SELECT_TO_LOCATION2:
-		case CMD_SELECT_TO_COLUMN: 		case CMD_SELECT_TO_COLUMN2:
-		case CMD_SELECT_COLUMN:			case CMD_SELECT_COLUMN2:
-		case CMD_SELECT_TO_ROW: 		case CMD_SELECT_TO_ROW2:
-		case CMD_SELECT_ROW:			case CMD_SELECT_ROW2:
+		case CMD_FOCUS_LOCATION: 		case CMD_FOCUS_LOCATION_ALTER:
+		case CMD_SELECT_TO_LOCATION:	case CMD_SELECT_TO_LOCATION_ALTER:
+		case CMD_SELECT_TO_COLUMN: 		case CMD_SELECT_TO_COLUMN_ALTER:
+		case CMD_SELECT_COLUMN:			case CMD_SELECT_COLUMN_ALTER:
+		case CMD_SELECT_TO_ROW: 		case CMD_SELECT_TO_ROW_ALTER:
+		case CMD_SELECT_ROW:			case CMD_SELECT_ROW_ALTER:
 			state0.setCurrentItem();
 			state1.setCurrentItem();
 			break;														
 		}
 		
-		if (m0 != null) state0.moveCurrentItem(m0);
-		if (m1 != null) state1.moveCurrentItem(m1);
+		if (m0 != null) state0.moveFocusItem(m0);
+		if (m1 != null) state1.moveFocusItem(m1);
 		if (m0 != null || m1 != null) {
 			state0.item = state0.layout.current;
 			state1.item = state1.layout.current;
@@ -687,8 +691,8 @@ class MatrixListener implements Listener {
 
 	
 	private void backupRestoreSelection(int commandId) {
-		if (commandId == CMD_FOCUS_LOCATION2 ||  
-			commandId == CMD_SELECT_COLUMN2 || commandId == CMD_SELECT_ROW2) 
+		if (commandId == CMD_FOCUS_LOCATION_ALTER ||  
+			commandId == CMD_SELECT_COLUMN_ALTER || commandId == CMD_SELECT_ROW_ALTER) 
 		{
 			// Backup the zones cell selection
 			for (Zone<? extends Number, ? extends Number> zone: matrix.model.zones) {
@@ -697,8 +701,8 @@ class MatrixListener implements Listener {
 				}
 			}
 		} 
-		else if (commandId == CMD_SELECT_TO_LOCATION2 ||  
-				 commandId == CMD_SELECT_TO_COLUMN2 || commandId == CMD_SELECT_TO_ROW2) 
+		else if (commandId == CMD_SELECT_TO_LOCATION_ALTER ||  
+				 commandId == CMD_SELECT_TO_COLUMN_ALTER || commandId == CMD_SELECT_TO_ROW_ALTER) 
 		{
 			for (Zone zone: matrix.model.zones) {
 				if (zone.selectionEnabled) {
@@ -713,7 +717,7 @@ class MatrixListener implements Listener {
 		if (state0.last == null) state0.last = state0.item;
 		if (state1.last == null) state1.last = state1.item;
 		
-		boolean ctrlSelection = commandId == CMD_FOCUS_LOCATION2 || commandId == CMD_SELECT_TO_LOCATION2;
+		boolean ctrlSelection = commandId == CMD_FOCUS_LOCATION_ALTER || commandId == CMD_SELECT_TO_LOCATION_ALTER;
 		
 		if (ctrlSelection && isSelected(state0.last, state1.last)) {
 			matrix.model.setSelected(state0.last, state0.item, state1.last, state1.item, false);
@@ -724,7 +728,6 @@ class MatrixListener implements Listener {
 			}
 			matrix.model.setSelected(state0.last, state0.item, state1.last, state1.item, true);			
 		}
-		addEvent(SWT.Selection);
 	}
 	
 	private boolean isSelected(AxisItem last0, AxisItem last1) {
@@ -733,17 +736,12 @@ class MatrixListener implements Listener {
 	}
 
 
-	public void addEvent(int type) {
-		Event event = new Event();
-		event.type = type;
-		event.widget = matrix;
-		listeners.add(event);
-	}
-	
 	private void sendEvents() {
-		state0.axis.listeners.sendEvents();
-		state1.axis.listeners.sendEvents();
-		listeners.sendEvents();
+		state0.sendEvents();
+		state1.sendEvents();
+		for (Zone zone: matrix.model.zones) {
+			zone.listeners.sendEvents();
+		}
 	}
 	
 	/**

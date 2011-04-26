@@ -226,20 +226,21 @@ class Layout<N extends Number> {
 	 * @return
 	 */
 	// TODO Performance: prevent computation if current does not change
-	public boolean moveCurrentItem(Move move) {
+	public boolean moveFocusItem(Move move) {
 		AxisItem current2 = null;
 		switch (move) {
 		case HOME: 				current2 = forwardNavigator.first(); break;
 		case END: 				current2 = backwardNavigator.first(); break;
 		case NEXT: 				current2 = nextItem(current, forwardNavigator); break;
 		case PREVIOUS: 			current2 = nextItem(current, backwardNavigator); break;
-		case NEXT_PAGE:			show(current); current = nextPage(current, forwardNavigator); return true;
-		case PREVIOUS_PAGE:		show(current); current = nextPage(current, backwardNavigator); return true;
+		case NEXT_PAGE:			show(current); current2 = nextPage(current, forwardNavigator); break;
+		case PREVIOUS_PAGE:		show(current); current2 = nextPage(current, backwardNavigator); break;
 		}
+		boolean result = current2 != null && compare(current, current2) != 0;
 		if (current2 != null) {
 			show(current = current2);
 		}
-		return true;
+		return result;
 	}
 	
 	/*------------------------------------------------------------------------
@@ -392,16 +393,28 @@ class Layout<N extends Number> {
 	private AxisItem nextPage(AxisItem item, Direction direction) {
 		if (item == null) item = direction.first();
 		if (item == null) return null;
+		AxisItem item2;
 		Direction opposite = opposite(direction);
 		if (item.equals(opposite.start)) {
-			AxisItem item2 = nextItem(item, direction);
+			item2 = nextItem(opposite.start, direction);
 //			boolean math.compare(notEdge = item2, opposite.min) < 0;
 //			notEdge = iterator == forward ? notEdge : !notEdge; 
 			if (item2 != null) { // && notEdge) {
 				compute(item2, direction instanceof Forward ? forward : backward);
 			}
 		}
-		return opposite.start;
+		else {
+			item2 = opposite.start;
+		}
+		if (direction.skipWithoutCurrent) {
+			Direction opposite2 = direction instanceof Forward ? backwardNavigator : forwardNavigator;
+			opposite2.set(item2);
+			item2 = opposite2.getItem();
+//			while (!item2.getSection().isFocusItemEnabled()) {
+//				item2 = opposite2.next();
+//			}
+		}
+		return item2;
 	}
 	
 	/**

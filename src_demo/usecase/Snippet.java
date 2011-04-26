@@ -15,8 +15,8 @@ public class Snippet {
 		Shell shell = new Shell();
 		shell.setLayout(new FillLayout());
 		
-		Axis model0 = new Axis(BigInteger.class);
-		Axis model1 = new Axis(BigInteger.class);
+		Axis model0 = new Axis(BigInteger.class, 2);
+		Axis model1 = new Axis(BigInteger.class, 2);
 		
 		new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL , model0, model1);
 

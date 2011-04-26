@@ -258,17 +258,12 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 * @param height the height of the boundaries
 	 */
 	public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
-		if (zone == null) return;
-		boolean isSelected = shouldHighlight && zone.isSelected(index0, index1);
-		
-		// TODO Revise and maybe optimize the background / foreground color setting algorithm
-		Color foreground2, background2;
-		if (isSelected) {
+		Color foreground2 = foreground == null ? defaultForeground : foreground; 
+		Color background2 = background == null ? defaultBackground : background;
+		if (shouldHighlight && zone != null && zone.isSelected(index0, index1)) {
+			// TODO Revise and maybe optimize the background / foreground color setting algorithm
 			foreground2 = selectionForeground;  
 			background2 = selectionBackground;
-		} else {
-			foreground2 = foreground == null ? defaultForeground : foreground; 
-			background2 = background == null ? defaultBackground : background;
 		}
 		
 		// Only set color if there is a change

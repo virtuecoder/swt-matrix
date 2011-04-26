@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TypedListener;
 
 import pl.netanel.swt.matrix.Layout.LayoutSequence;
 import pl.netanel.util.ImmutableIterator;
@@ -51,6 +54,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	private final Rectangle bounds;
 	
 	private CellValues<N0, N1, Color> background, foreground;
+	
 //	private CellValues<N0, N1, String> text;
 //	private CellValues<N0, N1, Image> image;
 //	private boolean backgroundEnabled, foregroundEnabled;
@@ -540,51 +544,67 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			};
 		}
 	}
-
+	
 	/**
-	 * Adds the listener to the collection of listeners who will be notified
-	 * when an event of the given type occurs. When the event does occur in the
-	 * widget, the listener is notified by sending it the handleEvent() message.
+	 * Adds the listener to the collection of listeners who will
+	 * be notified when a zone cell is selected by the user, by sending
+	 * it one of the messages defined in the <code>SelectionListener</code>
+	 * interface. 
 	 * <p>
-	 * The event type is one of the following event constants defined in class SWT:
-	 * SWT.KeyDown, SWT.KeyUp, 
-		SWT.MouseDown, SWT.MouseUp, SWT.MouseMove, SWT.MouseEnter, SWT.MouseExit, SWT.MouseDoubleClick, 
-		SWT.Selection, SWT.DefaultSelection
-	 * 
-	 * @param type
-	 * @param listener
+	 * The selection event is not emitted by the zone API methods that are
+	 * responsible for selection and deselection of items. It can only be 
+	 * triggered by another SWT event bound to the selection command.
+	 * </p> 
+	 * <p>
+	 * <code>widgetSelected</code> is called when the axis item is selected
+	 * <code>widgetDefaultSelected</code> is not called.
+	 * </p>
+	 *
+	 * @param listener the listener which should be notified when the axis item 
+	 * is selected by the user
+	 *
+	 * @exception IllegalArgumentException <ul>
+	 *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+	 * </ul>
+	 * @exception SWTException <ul>
+	 *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+	 *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+	 * </ul>
+	 *
+	 * @see SelectionListener
+	 * @see #removeSelectionListener
+	 * @see SelectionEvent
 	 */
-	public void addListener(int type, Listener listener) {
+	public void addSelectionListener (SelectionListener listener) {
 		Preconditions.checkNotNullWithName(listener, "listener");
-		listeners.add(type, listener);
+		TypedListener typedListener = new TypedListener(listener);
+		this.listeners.add(SWT.Selection, typedListener);
+		this.listeners.add(SWT.DefaultSelection, typedListener);
 	}
 	
 	/**
 	 * Removes the listener from the collection of listeners who will
-	 * be notified when an event of the given type occurs. 
-	 * <p>
-	 * The event type is one of the following event constants defined in class <code>SWT</code>:
-	 * SWT.KeyDown, SWT.KeyUp, 
-		SWT.MouseDown, SWT.MouseUp, SWT.MouseMove, SWT.MouseEnter, SWT.MouseExit, SWT.MouseDoubleClick, 
-		SWT.Selection, SWT.DefaultSelection
+	 * be notified when a zone cell is selected by the user.
 	 *
-	 * @param eventType the type of event to listen for
 	 * @param listener the listener which should no longer be notified
 	 *
 	 * @exception IllegalArgumentException <ul>
 	 *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
 	 * </ul>
+	 * @exception SWTException <ul>
+	 *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+	 *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+	 * </ul>
 	 *
-	 * @see Listener
-	 * @see SWT
-	 * @see #addListener
-	 * @see #getListeners(int)
-	 * @see #notifyListeners
+	 * @see SelectionListener
+	 * @see #addSelectionListener
 	 */
-	public void removeListener(int type, Listener listener) {
+	public void removeSelectionListener(SelectionListener listener) {
 		Preconditions.checkNotNullWithName(listener, "listener");
-		listeners.remove(type, listener);
+		listeners.remove(SWT.Selection, listener);
+		listeners.remove(SWT.DefaultSelection, listener);
 	}
+
 
 	
 	/*------------------------------------------------------------------------

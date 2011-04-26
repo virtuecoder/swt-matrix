@@ -3,6 +3,13 @@ package pl.netanel.swt.matrix;
 import java.text.MessageFormat;
 import java.util.Iterator;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.TypedListener;
+
 import pl.netanel.util.ImmutableIterator;
 import pl.netanel.util.Preconditions;
 
@@ -52,7 +59,8 @@ public class Section<N extends Number> {
 	private boolean isNavigationEnabled, isVisible;
 	
 	Axis<N> axis;
-	int index; 
+	int index;
+	final Listeners listeners;
 	
 	/**
 	 * Constructs a section indexed by int.class, which is equivalent to Integer.class.
@@ -89,6 +97,7 @@ public class Section<N extends Number> {
 		lastSelection = new NumberQueueSet(math);
 		
 		isNavigationEnabled = isVisible = true;
+		listeners = new Listeners();
 	}
 	
 
@@ -965,6 +974,114 @@ public class Section<N extends Number> {
 			axis.insertInZones(this, target, count);
 		}
 	}
+	
+	/**
+	 * Adds the listener to the collection of listeners who will
+	 * be notified when a section item is moved or resized, by sending
+	 * it one of the messages defined in the <code>ControlListener</code>
+	 * interface.
+	 *
+	 * @param listener the listener which should be notified
+	 *
+	 * @exception IllegalArgumentException <ul>
+	 *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+	 * </ul>
+	 * @exception SWTException <ul>
+	 *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+	 *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+	 * </ul>
+	 *
+	 * @see ControlListener
+	 * @see #removeControlListener
+	 */
+	public void addControlListener(ControlListener listener) {
+		TypedListener typedListener = new TypedListener(listener);
+		listeners.add(SWT.Resize, typedListener);
+		listeners.add(SWT.Move, typedListener);
+	}
+	
+	/**
+	 * Adds the listener to the collection of listeners who will
+	 * be notified when a section item is selected by the user, by sending
+	 * it one of the messages defined in the <code>SelectionListener</code>
+	 * interface. 
+	 * <p>
+	 * The selection event is not emitted by the axis API methods that are
+	 * responsible for selection and deselection of items. It can only be 
+	 * triggered by another SWT event bound to the selection command.
+	 * </p> 
+	 * <p>
+	 * <code>widgetSelected</code> is called when the axis item is selected
+	 * <code>widgetDefaultSelected</code> is not called.
+	 * </p>
+	 *
+	 * @param listener the listener which should be notified when the axis item 
+	 * is selected by the user
+	 *
+	 * @exception IllegalArgumentException <ul>
+	 *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+	 * </ul>
+	 * @exception SWTException <ul>
+	 *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+	 *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+	 * </ul>
+	 *
+	 * @see SelectionListener
+	 * @see #removeSelectionListener
+	 * @see SelectionEvent
+	 */
+	public void addSelectionListener (SelectionListener listener) {
+		Preconditions.checkNotNullWithName(listener, "listener");
+		TypedListener typedListener = new TypedListener(listener);
+		listeners.add(SWT.Selection, typedListener);
+		listeners.add(SWT.DefaultSelection, typedListener);
+	}
+
+	/**
+	 * Removes the listener from the collection of listeners who will
+	 * be notified a section item is moved or resized.
+	 *
+	 * @param listener the listener which should no longer be notified
+	 *
+	 * @exception IllegalArgumentException <ul>
+	 *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+	 * </ul>
+	 * @exception SWTException <ul>
+	 *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+	 *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+	 * </ul>
+	 *
+	 * @see ControlListener
+	 * @see #addControlListener
+	 */
+	public void removeControlListener (ControlListener listener) {
+		Preconditions.checkNotNullWithName(listener, "listener");
+		listeners.remove(SWT.Move, listener);
+		listeners.remove(SWT.Resize, listener);
+	}
+
+	/**
+	 * Removes the listener from the collection of listeners who will
+	 * be notified when a section item is selected by the user.
+	 *
+	 * @param listener the listener which should no longer be notified
+	 *
+	 * @exception IllegalArgumentException <ul>
+	 *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+	 * </ul>
+	 * @exception SWTException <ul>
+	 *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+	 *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+	 * </ul>
+	 *
+	 * @see SelectionListener
+	 * @see #addSelectionListener
+	 */
+	public void removeSelectionListener(SelectionListener listener) {
+		Preconditions.checkNotNullWithName(listener, "listener");
+		listeners.remove(SWT.Selection, listener);
+		listeners.remove(SWT.DefaultSelection, listener);
+	}
 
 	
 	/*------------------------------------------------------------------------
@@ -979,24 +1096,24 @@ public class Section<N extends Number> {
 		return cellSpan.getValue(index);
 	}
 
-	N nextNotHiddenIndex(N item, int direction) {
+	N nextNotHiddenIndex(N index, int direction) {
 		for (Extent e: hidden.items) {
-			if (math.contains(e, item)) {
+			if (math.contains(e, index)) {
 				if (direction > 0) {
-					item = math.increment(e.end());
-					if (math.compare(item, count) >= 0) {
-						item = null;
+					index = math.increment(e.end());
+					if (math.compare(index, count) >= 0) {
+						return null;
 					}
 				} else {
-					item = math.decrement(e.start());
-					if (math.compare(item, math.ZERO_VALUE()) < 0) {
-						item = null;
+					index = math.decrement(e.start());
+					if (math.compare(index, math.ZERO_VALUE()) < 0) {
+						return null;
 					}
 				}
 				break;
 			}
 		}
-		return math.compare(item, count) < 0 ? item : null;
+		return math.compare(index, count) < 0 ? index : null;
 	}
 
 	ExtentSequence<N> getSelectedExtentSequence() {

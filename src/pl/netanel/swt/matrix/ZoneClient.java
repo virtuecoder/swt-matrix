@@ -3,9 +3,9 @@ package pl.netanel.swt.matrix;
 import java.math.BigInteger;
 import java.util.Iterator;
 
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Listener;
 
 class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 	public static final int NONE = -1;
@@ -67,13 +67,13 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 		return core.getCellBounds(index0, index1);
 	}
 	
-	public void addListener(int type, Listener listener) {
-		core.addListener(type, listener);
-	}
-
-	public void removeListener(int type, Listener listener) {
-		core.removeListener(type, listener);
-	}
+//	public void addListener(int type, Listener listener) {
+//		core.addListener(type, listener);
+//	}
+//
+//	public void removeListener(int type, Listener listener) {
+//		core.removeListener(type, listener);
+//	}
 
 	public void setDefaultBackground(Color color) {
 		core.setDefaultBackground(color);
@@ -184,6 +184,16 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 	
 	public BigInteger getSelectionCount() {
 		return core.getSelectionCount();
+	}
+	
+	@Override
+	public void addSelectionListener(SelectionListener listener) {
+		core.addSelectionListener(listener);
+	}
+	
+	@Override
+	public void removeSelectionListener(SelectionListener listener) {
+		core.removeSelectionListener(listener);
 	}
 
 	public void addPainter(Painter painter) {

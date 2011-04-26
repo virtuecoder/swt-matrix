@@ -36,7 +36,6 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	private SectionClient<N> body, header;
 	private int autoScrollOffset, resizeOffset;
 	final Layout<N> layout;
-	final Listeners listeners;
 	
 	int index;
 	Matrix<? extends Number, ? extends Number> matrix;
@@ -47,19 +46,29 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 * @see #Axis(Class)
 	 */
 	public Axis() {
-		this((Class<N>) Integer.class);
+		this((Class<N>) Integer.class, 2);
 	}
 	
 	/**
-	 * Creates axis with the header and body sections indexed by the specified NUmber subclass.
+	 * Creates axis with the specified number of sections indexed by the specified NUmber subclass.
 	 * The header section count is set to one and its visibility to false.
+	 * @param numberClass sub-type of {@link Number} class to index the sections
+	 * @param sectionCount number of sections to create
 	 * @see #Axis(Section...)
 	 */
-	public Axis(Class<N> numberClass) {
-		this(new Section(numberClass), new Section(numberClass));
+	public Axis(Class<N> numberClass, int sectionCount) {
+		this(createSections(numberClass, sectionCount));
 		sections.get(0).setCount(math.ONE_VALUE());
 	}
 
+	private static Section[] createSections(Class numberClass, int sectionCount) {
+		Section[] sections = new Section[sectionCount];
+		for (int i = 0; i < sectionCount; i++) {
+			sections[i] = new Section(numberClass);
+		}
+		return sections;
+	}
+	
 	/**
 	 * Creates axis with the specified sections. 
 	 * <p>
@@ -99,7 +108,6 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		autoScrollOffset = Matrix.AUTOSCROLL_OFFSET_Y;
 		resizeOffset = Matrix.RESIZE_OFFSET_Y;
 		layout = new Layout(this);
-		listeners = new Listeners();
 	}
 
 	/**
@@ -481,6 +489,15 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 			Number endIndex = i == end.getSection().index ? end.getIndex() : 
 				math.increment(section.getCount());
 			section.setSelected(startIndex, endIndex, select);
+			
+			if (select == true) {
+				Event event = new Event();
+				event.type = SWT.Selection;
+				event.widget = matrix;
+				//event.data = matrix.getZone(axisIndex == 0 ? Zone.ROW_HEADER : Zone.COLUMN_HEADER);
+				section.listeners.add(event);
+
+			}
 		}
 	}
 
