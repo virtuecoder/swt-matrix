@@ -1,5 +1,6 @@
 package pl.netanel.swt.matrix;
 
+import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -17,6 +18,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Widget;
 
+import pl.netanel.util.ImmutableIterator;
 import pl.netanel.util.Preconditions;
 
 /**
@@ -36,7 +38,9 @@ import pl.netanel.util.Preconditions;
  * @author Jacek
  * @created 27-03-2011
  */
-public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
+public class Matrix<N0 extends Number, N1 extends Number> extends Canvas 
+	implements Iterable<Zone<N0, N1>> 
+{
 
 	static final int CELL_WIDTH = 16;			
 	static final int LINE_WIDTH = 1;
@@ -176,9 +180,9 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	 * </p><p>
 	 * It the <code>axis0</code> or <code>axis1</code> is null then 
 	 * the axis is created with the {@link Axis#Axis()} constructor.
-	 * 
 	 * </p><p>
-	 * The default colors are 
+	 * If any of <code>zones</code> has zero painters then default painters are attached. 
+	 * </p><p> 
 	 *
 	 * @param parent a composite control which will be the parent of the new instance (cannot be null)
 	 * @param style the style of control to construct
@@ -292,7 +296,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 				AxisItem<N0> item0 = axis0.getFocusItem();
 				AxisItem<N1> item1 = axis1.getFocusItem();
 				if (item0 == null || item1 == null) return;
-				Zone zone = getZoneUnchecked(item0.getSection(), item1.getSection());
+				Zone zone = getZoneUnchecked(item0.getSectionUnchecked(), item1.getSectionUnchecked());
 				if (zone == null) return;
 				Rectangle r = zone.getCellBounds(item0.getIndex(), item1.getIndex());
 				if (r == null) return;
@@ -473,24 +477,24 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		return getZone(axis0.getHeader(), axis1.getHeader());
 	}
 	
-	/**
-	 * Returns the number of zones in this matrix.
-	 * @return the number of zones in this matrix
-	 */
-	public int getZoneCount() {
-		return model.zones.size();
-	}
-	
-	/**
-	 * Returns a unchecked zone by its creation index.  
-	 * <p>
-	 * @param index
-	 * @return zone with the given creation index
-	 */
-	public Zone<N0, N1> getZone(int index) {
-		Preconditions.checkPositionIndex(index, model.zones.size());
-		return model.zoneClients.get(index);
-	}
+//	/**
+//	 * Returns the number of zones in this matrix.
+//	 * @return the number of zones in this matrix
+//	 */
+//	public int getZoneCount() {
+//		return model.zones.size();
+//	}
+//	
+//	/**
+//	 * Returns a unchecked zone by its creation index.  
+//	 * <p>
+//	 * @param index
+//	 * @return zone with the given creation index
+//	 */
+//	public Zone<N0, N1> getZone(int index) {
+//		Preconditions.checkPositionIndex(index, model.zones.size());
+//		return model.zoneClients.get(index);
+//	}
 
 	/**
 	 * Returns a checked zone located at the intersection of the given axis sections.
@@ -501,6 +505,10 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	 * @param section0 section of the row axis
 	 * @param section1 section of the column axis
 	 * @return checked zone located at the intersection of the given axis sections
+	 * @throws IllegalArgumentException if item is <code>null</code> or item's section
+	 * 		does not belong to this axis.
+	 * @throws IndexOutOfBoundsException if item's index is out 
+	 * 		of 0 ... {@link Section#getCount()}-1 bounds
 	 */
 	public Zone<N0, N1> getZone(Section section0, Section section1) {
 		Preconditions.checkNotNullWithName(section0, "section0");
@@ -525,16 +533,20 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	}
 	
 	/**
-	 * Returns a checked zone for the specified zone. 
-	 * If the given zone is checked then the same object is returned.  
+	 * Returns a unchecked zone for the specified checked zone. If the argument is 
+	 * unchecked zone the it is returned itself.
 	 * <p>
+	 * Unchecked zone skips argument validation checking 
+	 * in its methods to improve performance.
+	 * 
 	 * @param index
-	 * @return zone with the given creation index
+	 * @return unchecked zone for the given zone
 	 */
-	public Zone<N0, N1> getZone(Zone<N0, N1> zone) {
+	public Zone<N0, N1> getZoneUnchecked(Zone<N0, N1> zone) {
 		Preconditions.checkNotNullWithName(zone, "zone");
-		if (zone instanceof ZoneClient) return zone;
-		return model.zoneClients.get(model.zones.indexOf(zone));
+		if (zone instanceof ZoneClient) return ((ZoneClient) zone).core;
+		return zone;
+		//return model.zoneClients.get(model.zones.indexOf(zone));
 	}
 	
 	
@@ -571,7 +583,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 		layout0.compute();
 		layout1.compute();
 		if (layout0.current != null && layout1.current != null) {
-			Zone<N0, N1> zone = model.getZone(layout0.current.getSection(), layout1.current.getSection());
+			Zone<N0, N1> zone = model.getZone(layout0.current.getSectionUnchecked(), layout1.current.getSectionUnchecked());
 			N0 index0 = layout0.current.getIndex();
 			N1 index1 = layout1.current.getIndex();
 			zone.setSelected(index0, index0, index1, index1, true);
@@ -670,6 +682,9 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 	 */
 	public void refresh() {
 		// After freeze head to 0 is it would scroll to previous head count.
+//		layout0.start = layout0.current == null ? layout0.start : layout0.current;
+//		layout1.start = layout1.current == null ? layout1.start : layout1.current;
+
 		layout0.start = layout0.current;
 		layout1.start = layout1.current;
 		layout0.compute();
@@ -864,5 +879,21 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas {
 //				
 //			}	
 //		}
+	}
+
+	@Override
+	public Iterator<Zone<N0, N1>> iterator() {
+		final Iterator<ZoneClient<N0, N1>> it = model.zoneClients.iterator();
+		return new ImmutableIterator<Zone<N0, N1>>() {
+			@Override
+			public boolean hasNext() {
+				return it.hasNext();
+			}
+
+			@Override
+			public Zone<N0, N1> next() {
+				return it.next();
+			}
+		};
 	}
 }

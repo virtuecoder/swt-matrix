@@ -2,14 +2,14 @@ package pl.netanel.swt.matrix;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 
-import pl.netanel.util.ImmutableIterator;
 import pl.netanel.util.Preconditions;
 
 /**
@@ -25,8 +25,8 @@ import pl.netanel.util.Preconditions;
  * @author Jacek
  * @created 27-03-2011
  */
-public class Axis<N extends Number> implements Iterable<Section<N>> {
-	private static final String FREEZE_ITEM_COUNT_ERROR = "Freeze item count must greater then 0";
+public class Axis<N extends Number>  {
+	private static final String FREEZE_ITEM_COUNT_ERROR = "Freeze item count cannot be negative";
 	
 	final Math<N> math;
 	final ArrayList<Section<N>> sections;
@@ -113,32 +113,68 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	/**
 	 * Returns the body section wrapped in validation checker.
 	 * @return the body section wrapped in validation checker
-	 * @see #getSection(int)
 	 */
 	public Section<N> getBody() {
 		return body;
 	}
+	
 	/**
 	 * Returns the header section wrapped in validation checker.
 	 * @return the header section wrapped in validation checker
-	 * @see #getSection(int)
 	 */
 	public Section<N> getHeader() {
 		return header;
 	}
 
+//	private ArrayList<Zone> getZones(Section section) {
+//		ArrayList zones = new ArrayList();
+//		if (matrix != null) {
+//			if (index == 0) {
+//				for (Zone zone: matrix.model.zones) {
+//					if (zone.getSection0().equals(section)) {
+//						zones.add(zone);
+//					}
+//				}
+//			} else {
+//				for (Zone zone: matrix.model.zones) {
+//					if (zone.getSection1().equals(section)) {
+//						zones.add(zone);
+//					}
+//				}
+//			}
+//		}
+//		return zones;
+//	}
+	
 	/**
 	 * Specifies which section is the body section.
 	 * @param sectionIndex
 	 */
 	public void setBody(int sectionIndex) {
 		Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
-		this.body = sectionMap.get(sections.get(sectionIndex));
+		SectionClient<N> section = sectionMap.get(sections.get(sectionIndex));
+
+//		if (body != null) {
+//			for (Zone oldZone: getZones(body.core)) {
+//				Zone newZone = matrix.model.getZoneUnchecked(section.core, oldZone.getSection1());
+//
+//				newZone.painters.clear();
+//				newZone.painters.addAll(oldZone.painters);
+//				oldZone.painters.clear();
+//
+//				newZone.bindings.clear();
+//				newZone.bindings.add(oldZone.bindings);
+//				oldZone.bindings.clear();
+//			}
+//		}
+		this.body = section;
 	}
 
 	/**
 	 * Specifies which section is the header section.
 	 * @param sectionIndex
+	 * @throws IndexOutOfBoundsException if sectionIndex is out 
+	 * 		of 0 ... {@link #getSectionCount()}-1 bounds
 	 */
 	public void setHeader(int sectionIndex) {
 		Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
@@ -148,7 +184,6 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	/**
 	 * Returns the number of sections in the receiver. 
 	 * @return the number of sections in the receiver.
-	 * @see #setCount(Number)
 	 */
 	public int getSectionCount() {
 		return sections.size();
@@ -162,10 +197,13 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 * 
 	 * @param sectionIndex index of the section to return
 	 * @return the section at the specified position in this axis
+	 * @throws IndexOutOfBoundsException if sectionIndex 
+	 * 		is out of 0 ... {@link #getSectionCount()}-1 bounds
 	 * 
 	 * @see #getSectionUnchecked(int)
 	 */
 	public Section<N> getSection(int sectionIndex) {
+		Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
 		return clientSections.get(sectionIndex);
 	}
 	
@@ -184,30 +222,13 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		return sections.get(sectionIndex);
 	}
 	
-	/**
-	 * Returns iterator for checked sections.
-	 */
-	@Override
-	public Iterator<Section<N>> iterator() {
-		final Iterator<SectionClient<N>> it = clientSections.iterator();
-		return new ImmutableIterator<Section<N>>() {
-			@Override
-			public boolean hasNext() {
-				return it.hasNext();
-			}
-			@Override
-			public Section<N> next() {
-				return it.next();
-			}
-		};
-	}
-
+	
 	/*------------------------------------------------------------------------
 	 * Viewport 
 	 */
 
 	/**
-	 * Returns number of items visible in the viewport.
+	 * Returns number of items visible in the viewport. Including items partially visible.
 	 * @return number of items visible in the viewport
 	 */
 	public int getViewportItemCount() {
@@ -223,31 +244,75 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	}
 	
 	/**
-	 * Returns the position of the given item in the viewport or <code>null</code>
-	 * if the the viewport does not contain the item.
+	 * Returns the position of the given item in the viewport or -1
+	 * if the viewport does not display the item.
 	 * 
-	 * @param section 
-	 * @param index
+	 * @param item the item to get position for
 	 * @return the position of the given item in the viewport
+	 * @throws IllegalArgumentException if item is <code>null</code> or item's section
+	 * 		does not belong to this axis.
+	 * @throws IndexOutOfBoundsException if item's index is out 
+	 * 		of 0 ... {@link Section#getCount()}-1 bounds
 	 */
 	public int getViewportPosition(AxisItem<N> item) {
+		Preconditions.checkNotNullWithName(item, "item");
+		Section<N> section = item.getSectionUnchecked();
+		section = checkSection(section);
+		section.checkIndex(item.getIndex(), section.getCount(), "item index");
+		
 		layout.computeIfRequired();
 		return layout.indexOf(item);
 	}
 	
-	
-	public N getIndexAt(int i) {
-		AxisItem<N> item = layout.getIndexAt(i);
-		return item == null ? null : item.getIndex();
+	/**
+	 * Returns item visible at the specified position in the viewport or <code>null</code>
+	 * if the position is outside of the viewport bounds.
+	 * 
+	 * @param position the position the get the item for
+	 * @return item visible at the specified position in the viewport
+	 */
+	public AxisItem<N> getItemAt(int position) {
+		AxisItem<N> item = layout.getIndexAt(position);
+		return item == null ? null : item;
 	}
 	
 	/**
+	 * Returns item visible at the specified distance from the beginning of viewport area 
+	 * or <code>null</code> if the distance is outside of the viewport bounds.
 	 * 
-	 * @param i
-	 * @return
+	 * @param position the position the get the item for
+	 * @return the position of the given item in the viewport
 	 */
-	public int[] getLineBound(int i) {
-		Bound bound = layout.getLineBound(i);
+	public AxisItem<N> getItemByDistance(int distance) {
+		AxisItem<N> item = layout.getItemByDistance(distance);
+		return item == null ? null : item;
+	}
+	
+	/**
+	 * Returns the cell bound at the specified position in the viewport or <code>null</code>
+	 * if the position is outside of the viewport scope. Cell bound is an array of integers, 
+	 * where the first one is the distance from the beginning of viewport and the second one
+	 * is the cell width. 
+	 * 
+	 * @param position the position the line bound the item for
+	 * @return the cell bound at the specified position in the viewport
+	 */
+	public int[] getCellBound(int position) {
+		Bound bound = layout.getLineBound(position);
+		return bound == null ? null : new int[] {bound.distance, bound.width};
+	}
+	
+	/**
+	 * Returns the line bound at the specified position in the viewport or <code>null</code>
+	 * if the position is outside of the viewport scope. Line bound is an array of integers, 
+	 * where the first one is the distance from the beginning of viewport and the second one
+	 * is the line width. 
+	 * 
+	 * @param position the position the line bound the item for
+	 * @return the line bound at the specified position in the viewport
+	 */
+	public int[] getLineBound(int position) {
+		Bound bound = layout.getCellBound(position);
 		return bound == null ? null : new int[] {bound.distance, bound.width};
 	}
 	
@@ -272,8 +337,15 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	 *   
 	 * @param section section in which to set the focus
 	 * @param index index in the section at which to set the focus 
+	 * @throws IllegalArgumentException if the section is <code>null</code> or 
+	 * 		does not belong to this axis.
+	 * @throws IndexOutOfBoundsException if index is out 
+	 * 		of 0 ... {@link Section#getCount()}-1 bounds
 	 */
 	public void setFocusItem(Section<N> section, N index) {
+		section = checkSection(section);
+		section.checkIndex(index, section.getCount(), "index");
+		
 		layout.setCurrentItem(AxisItem.create(section, index));
 	}
 
@@ -285,6 +357,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	/**
 	 * Freezes the specified amount of first items on this axis. 
 	 * @param freezeItemCount amount of first items to freeze
+	 * @throws IllegalArgumentException if the argument is lower then zero
 	 */
 	public void freezeHead(int freezeItemCount) {
 		Preconditions.checkArgument(freezeItemCount >= 0, FREEZE_ITEM_COUNT_ERROR);
@@ -294,6 +367,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	/**
 	 * Freezes the specified amount of last items on this axis. 
 	 * @param freezeItemCount amount of last items to freeze
+	 * @throws IllegalArgumentException if the argument is lower then zero
 	 */
 	public void freezeTail(int freezeItemCount) {
 		Preconditions.checkArgument(freezeItemCount >= 0, FREEZE_ITEM_COUNT_ERROR);
@@ -326,6 +400,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 //		return layout.tail.count;
 //	}
 	
+
 	
 	/*------------------------------------------------------------------------
 	 *
@@ -343,8 +418,13 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	/**
 	 * Sets the offset from the edge of scrolling area within which dragging causes 
 	 * the content to scroll automatically and extend the dragged distance.
+	 * 
+	 * @param offset maximum distance from the edge of the scrolling area in which dragging will 
+	 * 	cause the content to scroll automatically 
+	 * @throws IllegalArgumentException if the argument is lower then zero
 	 */  
 	public void setAutoScrollOffset(int offset) {
+		Preconditions.checkArgument(offset >= 0, "offset cannot be negative");
 		this.autoScrollOffset = offset;
 	}
 
@@ -358,41 +438,59 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 
 	/**
 	 * Sets the offset from the dividing line within which dragging changes the axis item width. 
-	 * @param offset
+	 * 
+	 * @param offset maximum distance from the edge of the line in which dragging will 
+	 * 	cause cell width change
+	 * @throws IllegalArgumentException if the argument is lower then zero
 	 */
 	public void setResizeOffset(int offset) {
+		Preconditions.checkArgument(offset >= 0, "offset cannot be negative");
 		this.resizeOffset = offset;
 	}
 	
 	
-	public void pack(Section<N> section, N index) {
-//		Cursor cursor = matrix.getCursor();
-//		GC gc = new GC(matrix.getDisplay());
-//		try {
-//			int x = 0, y = 0, w = 0;
-//			Point size = new Point(0, 0);
-//			for (Zone<? extends Number, ? extends Number> zone: matrix.model.zones) {
-//				if (this.index == 0 && zone.section0.equals(section)) {
-//					for (Painter painter: zone.painters) {
-//						painter.init();
-//						AxisItemSequence seq = AxisItem.createSequence(matrix.axis1);
-//						for (seq.init(); seq.next();) {
-//							painter.computeSize1(seq.index0, seq.index1, size);
-//							x = java.lang.Math.max(x, size.x);
-//							y = java.lang.Math.max(y, size.y);
-//						}
-//						
-//					}
-//				}
-//			}
-//			
-//			if (w != 0) section.setCellWidth(index, index, w);
-//			layout.compute();
-//			matrix.redraw();
-//		} finally {
-//			matrix.setCursor(cursor);
-//			gc.dispose();
-//		}
+	public void pack(AxisItem<N> item) {
+		Cursor cursor = matrix.getCursor();
+		GC gc = new GC(matrix);
+		try {
+			int w = 0;
+			for (Zone<? extends Number, ? extends Number> zone: matrix.model.zones) {
+				if (this.index == 0 && zone.section0.equals(item.getSectionUnchecked())) {
+					CellSet set = new CellSet(zone.section0.math, zone.section1.math);
+					set.add(item.getIndex(), item.getIndex(),
+						zone.section1.math.ZERO_VALUE(), 
+						zone.section1.math.decrement(zone.section1.getCount()));
+					NumberPairSequence seq = new NumberPairSequence(set);
+					for (Painter painter: zone.painters) {
+						painter.init(gc);
+						for (seq.init(); seq.next();) {
+							w = java.lang.Math.max(w, painter.computeHeight(seq.index0(), seq.index1()));
+						}
+					}
+				}
+				else if (this.index == 1 && zone.section1.equals(item.getSectionUnchecked())) {
+					CellSet set = new CellSet(zone.section0.math, zone.section1.math);
+					set.add(zone.section0.math.ZERO_VALUE(), 
+							zone.section0.math.decrement(zone.section0.getCount()), 
+							item.getIndex(), item.getIndex());
+					NumberPairSequence seq = new NumberPairSequence(set);
+					for (Painter painter: zone.painters) {
+						painter.init(gc);
+						for (seq.init(); seq.next();) {
+							w = java.lang.Math.max(w, painter.computeWidth(seq.index0(), seq.index1()));
+						}
+					}
+				}
+			}
+			
+			if (w != 0) item.getSectionUnchecked().setCellWidth(item.getIndex(), w);
+		} 
+		finally {
+			gc.dispose();
+			matrix.setCursor(cursor);
+		}
+		layout.compute();
+		matrix.redraw();
 	}
 
 	
@@ -483,10 +581,10 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 			AxisItem tmp = start; start = end; end = tmp;
 		}
 		
-		for (int i = start.getSection().index; i <= end.getSection().index; i++) {
+		for (int i = start.getSectionUnchecked().index; i <= end.getSectionUnchecked().index; i++) {
 			Section section = sections.get(i);
-			Number startIndex = i == start.getSection().index ? start.getIndex() : math.ZERO_VALUE();
-			Number endIndex = i == end.getSection().index ? end.getIndex() : 
+			Number startIndex = i == start.getSectionUnchecked().index ? start.getIndex() : math.ZERO_VALUE();
+			Number endIndex = i == end.getSectionUnchecked().index ? end.getIndex() : 
 				math.increment(section.getCount());
 			section.setSelected(startIndex, endIndex, select);
 			
@@ -528,11 +626,11 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 	}
 
 	int comparePosition(AxisItem<N> item1, AxisItem<N> item2) {
-		int diff = item1.getSection().index - item2.getSection().index;
+		int diff = item1.getSectionUnchecked().index - item2.getSectionUnchecked().index;
 		if (diff != 0) return diff; 
 		return math.compare(
-				item1.getSection().indexOf(item1.getIndex()), 
-				item2.getSection().indexOf(item2.getIndex()));
+				item1.getSectionUnchecked().indexOf(item1.getIndex()), 
+				item2.getSectionUnchecked().indexOf(item2.getIndex()));
 	}
 	
 	/**
@@ -563,16 +661,16 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		void init(AxisItem<N> startItem, AxisItem<N> endItem) {
 			this.startItem = startItem;
 			this.endItem = endItem;
-			istart = startItem.getSection().order.items.isEmpty() ? 0 : 
-				startItem.getSection().order.getExtentIndex(startItem.getIndex());
-			iend = endItem.getSection().order.items.isEmpty() ? 0 : 
-				endItem.getSection().order.getExtentIndex(endItem.getIndex());
+			istart = startItem.getSectionUnchecked().order.items.isEmpty() ? 0 : 
+				startItem.getSectionUnchecked().order.getExtentIndex(startItem.getIndex());
+			iend = endItem.getSectionUnchecked().order.items.isEmpty() ? 0 : 
+				endItem.getSectionUnchecked().order.getExtentIndex(endItem.getIndex());
 			startItemIndex = math.create(startItem.getIndex());
 			endItemIndex = math.create(endItem.getIndex());
 			
-			section = startItem.getSection();
+			section = startItem.getSectionUnchecked();
 			sectionIndex = section.index; 
-			lastSectionIndex = sections.indexOf(endItem.getSection()); 
+			lastSectionIndex = sections.indexOf(endItem.getSectionUnchecked()); 
 			items = sections.get(sectionIndex).order.items;
 			i = istart;
 		}
@@ -586,9 +684,9 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 				i = 0;
 			}
 			Extent e = items.get(i);	
-			start = section == startItem.getSection() && i == istart ? 
+			start = section == startItem.getSectionUnchecked() && i == istart ? 
 					startItemIndex : e.start;
-			end = section == endItem.getSection() && i == iend ? 
+			end = section == endItem.getSectionUnchecked() && i == iend ? 
 					endItemIndex : e.end;
 			if (i >= iend && math.compare(end, endItemIndex) == 0) {
 				i = items.size();
@@ -630,7 +728,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 
 	void deleteInZones(Section section, N start, N end) {
 		matrix.model.deleteInZones(index, section, start, end);
-		if (layout.current.getSection().equals(section) && layout.math.contains(start, end, layout.current.getIndex())) {
+		if (layout.current.getSectionUnchecked().equals(section) && layout.math.contains(start, end, layout.current.getIndex())) {
 			layout.ensureCurrentIsValid();
 		}
 	}
@@ -640,7 +738,8 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 		layout.show(AxisItem.create(section, target));
 	}
 
-	void checkSection(Section section) {
+	Section checkSection(Section section) {
+		Preconditions.checkNotNullWithName(section, "section");
 		end: {
 			for (Section section2 : sections) {
 				if (section2.equals(section)) {
@@ -650,5 +749,7 @@ public class Axis<N extends Number> implements Iterable<Section<N>> {
 			Preconditions.checkArgument(false,
 					"Section {0} does not belong to axis {1}", section, index);
 		}
+		if (section instanceof SectionClient) return ((SectionClient) section).core;
+		return section;
 	}
 }

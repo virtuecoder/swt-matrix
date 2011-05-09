@@ -8,9 +8,7 @@ import org.eclipse.swt.widgets.Shell;
 import pl.netanel.swt.matrix.Matrix;
 
 /**
- * Create matrix with default model.
- * 
- * @author Jacek Kolodziejczyk created 04-03-2011
+ * Simplest matrix.
  */
 public class Snippet_0001 {
 	public static void main(String[] args) {

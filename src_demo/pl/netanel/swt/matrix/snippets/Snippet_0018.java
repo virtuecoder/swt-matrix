@@ -13,8 +13,6 @@ import pl.netanel.swt.matrix.Section;
 
 /**
  * Image painting
- * 
- * @author Jacek Kolodziejczyk created 03-03-2011
  */
 public class Snippet_0018 {
 	
@@ -45,12 +43,11 @@ public class Snippet_0018 {
 		images[2][0] = image;
 		
 		Matrix matrix = new Matrix(shell, SWT.V_SCROLL);
-		Section colBody = matrix.getAxis1().getBody();
-		colBody.setCount(COLUMN_COUNT);
-		colBody.setDefaultCellWidth(50);
+		Section body1 = matrix.getAxis1().getBody();
+		body1.setCount(COLUMN_COUNT);
+		body1.setDefaultCellWidth(50);
 		
-		Section rowBody = matrix.getAxis0().getBody();
-		rowBody.setCount(ROW_COUNT);
+		matrix.getAxis0().getBody().setCount(ROW_COUNT);
 		
 		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override

@@ -1,0 +1,132 @@
+package pl.netanel.swt.matrix.snippets;
+
+import java.io.FileInputStream;
+import java.util.ArrayList;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+
+import pl.netanel.swt.matrix.Axis;
+import pl.netanel.swt.matrix.Matrix;
+import pl.netanel.swt.matrix.Painter;
+import pl.netanel.swt.matrix.Section;
+
+/**
+ * Filter section between header and body.
+ */
+/*
+ * 	Make sure filter.png is on your class path.
+ */
+public class Snippet_0003 {
+	static String filter;
+	
+	public static void main(String[] args) throws Exception {
+		Shell shell = new Shell();
+		shell.setLayout(new GridLayout(2, false));
+		Display display = shell.getDisplay();
+		
+		final ArrayList<Object[]> list = new ArrayList();
+		list.add(new Object[] {"Task 1", "high"});
+		list.add(new Object[] {"Task 2", "medium"});
+		list.add(new Object[] {"Task 3", "low"});
+		list.add(new Object[] {"Task 4", "medium"});
+		list.add(new Object[] {"Task 5", "high"});
+		final ArrayList<Object[]> filtered = new ArrayList();
+		filtered.addAll(list);
+		
+		Axis axis0 = new Axis(Integer.class, 3);
+		axis0.setBody(2);
+		axis0.getSection(1).setCount(1);
+		axis0.getSection(1).setFocusItemEnabled(false);
+		final Section body0 = axis0.getBody();
+		body0.setCount(list.size());
+		body0.setDefaultResizable(true);
+		
+		final Matrix matrix = new Matrix(shell, SWT.V_SCROLL, axis0, null);
+		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		
+		axis0.getHeader().setVisible(true);
+		
+		Axis axis1 = matrix.getAxis1();
+		axis1.getBody().setCount(2);
+		axis1.getHeader().setDefaultCellWidth(16);
+		axis1.getHeader().setVisible(true);
+		
+		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+			@Override
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+				text = filtered.get(index0.intValue())[index1.intValue()].toString();
+				super.paint(index0, index1, x, y, width, height);
+			}
+		});
+		
+		FileInputStream stream = new FileInputStream("filter.png");
+		Image image = new Image(display, new ImageData(stream));
+		stream.close();
+		
+		matrix.getColumnHeader().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+			@Override
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+				text = index1.intValue() == 0 ? "Task" : "Priority";
+				super.paint(index0, index1, x, y, width, height);
+			}
+		});
+		
+		// Filter row header
+		matrix.getZone(axis0.getSection(1), axis1.getHeader()).getPainter("cells").image = image;
+		
+		// Filter columns
+		matrix.getZone(axis0.getSection(1), axis1.getBody()).replacePainter(
+			new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+				public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+					text = index1.intValue() == 1 ? filter : null;
+					super.paint(index0, index1, x, y, width, height);
+				};					
+			}
+		); 
+		
+		Label label = new Label(shell, SWT.NONE);
+		label.setText("Press to filter by priority: h - high, m - medium, l - low, a - all");
+		
+		matrix.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				switch (e.character) {
+				case 'a': filter = null; break;
+				case 'h': filter = "high"; break;
+				case 'm': filter = "medium"; break;
+				case 'l': filter = "low"; break;
+				default: return;
+				}
+				filtered.clear();
+				if (filter == null) {
+					filtered.addAll(list);
+				} else {
+					for (Object[] item: list) {
+						if (item[1].equals(filter)) {
+							filtered.add(item);
+						}
+					}
+				}
+				body0.setCount(filtered.size());
+				matrix.refresh();
+			}
+		});
+		
+		shell.setBounds(400, 200, 400, 300);
+		shell.open();
+		while (!shell.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+	}
+}

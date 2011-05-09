@@ -90,7 +90,7 @@ class MatrixListener implements Listener {
 				zone = (Zone) e.data;
 			}
 			else if (state0.item != null && state1.item != null) {
-				zone = matrix.model.getZoneUnchecked(state0.item.getSection(), state1.item.getSection());
+				zone = matrix.model.getZoneUnchecked(state0.item.getSectionUnchecked(), state1.item.getSectionUnchecked());
 			}
 
 			state0.update(e, e.y);
@@ -149,19 +149,18 @@ class MatrixListener implements Listener {
 		boolean moving, resizing, itemModified = true, mouseDown;
 		Event mouseMoveEvent;
 		Cursor resizeCursor;
-		int headerId, resizeStartDistance, resizeCellWidth, newCellWidth, distance, lastDistance;
+		int resizeStartDistance, resizeCellWidth, newCellWidth, distance, lastDistance;
 		AutoScroll autoScroll;
-		boolean focusMoved;
+		boolean focusMoved = true;
+		private int resizeEvent;
 
 		public AxisListener(Axis<N> axis) {
 			this.axis = axis; 
 			this.axisIndex = axis.index;
 			if (axisIndex == 0) {
 				resizeCursor = Resources.getCursor(SWT.CURSOR_SIZENS);
-				headerId = ZoneClient.ROW_HEADER;
 			} else {
 				resizeCursor = Resources.getCursor(SWT.CURSOR_SIZEWE);
-				headerId = ZoneClient.COLUMN_HEADER;
 			}
 		}
 		
@@ -209,9 +208,9 @@ class MatrixListener implements Listener {
 					if (resizeItem != null) {
 						resizing = true;
 						resizeStartDistance = distance;
-						resizeCellWidth = resizeItem.getSection().getCellWidth(resizeItem.getIndex());
+						resizeCellWidth = resizeItem.getSectionUnchecked().getCellWidth(resizeItem.getIndex());
 					}
-					else if (item.getSection().isSelected(item.getIndex()) && item.getSection().isMoveable(item.getIndex())) {
+					else if (item.getSectionUnchecked().isSelected(item.getIndex()) && item.getSectionUnchecked().isMoveable(item.getIndex())) {
 						// Start moving
 						moving = true;
 						matrix.setCursor(cursor = Resources.getCursor(SWT.CURSOR_HAND));
@@ -221,24 +220,38 @@ class MatrixListener implements Listener {
 				
 			case SWT.MouseUp:
 				// Resize all selected except the current one
-				if (resizing) {
+				if (resizeEvent == SWT.MouseMove) {
 					int len = axis.sections.size();
 					for (int i = 0; i < len; i++) {
 						Section<N> section = axis.sections.get(i);
 						ExtentSequence<N> seq = section.getSelectedExtentResizableSequence();
 						for (seq.init(); seq.next();) {
 							
-							if (item.getSection().equals(section) && 
+							if (item.getSectionUnchecked().equals(section) && 
 									layout.math.compare(seq.start, item.getIndex()) == 0 &&
 									layout.math.compare(seq.end, item.getIndex()) == 0) {
 								continue;
 							}
 							section.setCellWidth(seq.start, seq.end, newCellWidth);
-							addEvent(section, SWT.Resize);
 						}
+						addEvent(section, SWT.Resize, resizeItem);
 						layout.compute();
 						matrix.redraw();
 					}
+				}
+				else if (resizeEvent == SWT.MouseDoubleClick) {
+					int len = axis.sections.size();
+					for (int i = 0; i < len; i++) {
+						Section<N> section = axis.sections.get(i);
+						NumberSequence<N> seq = section.getSelected();
+						for (seq.init(); seq.next();) {
+							axis.pack(AxisItem.create(section, seq.index()));
+						}
+						addEvent(section, SWT.Resize, resizeItem);
+						layout.compute();
+						matrix.redraw();
+					}
+					
 				}
 				else if (moving && !instantMoving) {
 					reorder();
@@ -254,14 +267,17 @@ class MatrixListener implements Listener {
 		}
 
 		private void handleDrag(Event e) {
+			resizeEvent = 0;
 			// Resize item
 			if (resizing && resizeItem != null) {
 				newCellWidth = resizeCellWidth + distance - resizeStartDistance;
 				if (newCellWidth < 1) newCellWidth = 1;
-				resizeItem.getSection().setCellWidth(resizeItem.getIndex(), resizeItem.getIndex(), newCellWidth);
+				resizeItem.getSectionUnchecked().setCellWidth(
+						resizeItem.getIndex(), resizeItem.getIndex(), newCellWidth);
 				layout.compute();
 				matrix.redraw();
-				addEvent(resizeItem.getSection(), SWT.Resize);
+				resizeEvent = SWT.MouseMove;
+				addEvent(resizeItem.getSectionUnchecked(), SWT.Resize, resizeItem);
 				//event.data = matrix.getZone(axisIndex == 0 ? Zone.ROW_HEADER : Zone.COLUMN_HEADER);
 			}
 			else {
@@ -298,17 +314,19 @@ class MatrixListener implements Listener {
 		public void moveFocusItem(Move move) {
 			if (matrix.isFocusCellEnabled() && item != null)  {
 				focusMoved = layout.moveFocusItem(move);
-				axis.scroll();
+				if (focusMoved) {
+					axis.scroll();
+				}
 			}
 		}
 		
 		private boolean isSelected(AxisItem item) {
-			return item.getSection().isSelected(item.getIndex());
+			return item.getSectionUnchecked().isSelected(item.getIndex());
 		}
 		
 		public void setSelected(int commandId) {
 			if (last == null || item == null) return;
-			if (last.getSection() != item.getSection()) return;
+			if (last.getSectionUnchecked() != item.getSectionUnchecked()) return;
 			
 			if (commandId == CMD_SELECT_COLUMN || commandId == CMD_SELECT_COLUMN_ALTER ||
 				commandId == CMD_SELECT_ROW || commandId == CMD_SELECT_ROW_ALTER) {
@@ -350,10 +368,11 @@ class MatrixListener implements Listener {
 			}
 		}
 		
-		private void addEvent(Section<N> section, int type) {
+		private void addEvent(Section<N> section, int type, Object data) {
 			Event event = new Event();
 			event.type = type;
 			event.widget = matrix;
+			event.data = data;
 			//event.data = matrix.getZone(axisIndex == 0 ? Zone.ROW_HEADER : Zone.COLUMN_HEADER);
 			section.listeners.add(event);
 		}
@@ -385,8 +404,8 @@ class MatrixListener implements Listener {
 //					p = display.map(matrix, null, p);
 //					display.setCursorLocation(p);
 //				}
-//				addEvent(SWT.Move);
-//				axis.scroll();
+				addEvent(item.getSectionUnchecked(), SWT.Move, item);
+				axis.scroll();
 				matrix.redraw();
 //				return true;
 			}
@@ -394,10 +413,9 @@ class MatrixListener implements Listener {
 		
 		public void pack() {
 			if (resizeItem == null) return;
-			if (axis.index == 0) {
-				axis.pack(resizeItem.getSection(), resizeItem.getIndex());
-				
-			}
+			axis.pack(resizeItem);
+			resizeEvent = SWT.MouseDoubleClick;
+			addEvent(resizeItem.getSectionUnchecked(), SWT.Resize, resizeItem);
 			if ((resizeItem = layout.getResizeItem(distance)) == null) {
 				matrix.setCursor(cursor = null);
 			}
@@ -501,9 +519,9 @@ class MatrixListener implements Listener {
 		}
 
 		public void refresh() {
-			N count = item.getSection().getCount();
+			N count = item.getSectionUnchecked().getCount();
 			if (axis.math.compare(item.getIndex(), count) >= 0) {
-				item = AxisItem.create(item.getSection(), axis.math.decrement(count));
+				item = AxisItem.create(item.getSectionUnchecked(), axis.math.decrement(count));
 			}
 		}
 
@@ -606,16 +624,16 @@ class MatrixListener implements Listener {
 		
 		if (!isSelectable()) return;
 		
-		moveCursor(commandId);
+		if (!moveCursor(commandId)) return;
 		if (!isExtendingSelect(commandId)) {
 			state0.last = state0.item;
 			state1.last = state1.item;
 		}
 		if (commandId == CMD_SELECT_TO_LOCATION || commandId == CMD_SELECT_TO_LOCATION_ALTER) {
-			if (state0.last.getSection().equals(state0.axis.getHeader())) {
+			if (state0.last.getSectionUnchecked().equals(state0.axis.getHeader())) {
 				commandId = commandId == CMD_SELECT_TO_LOCATION ? CMD_SELECT_TO_COLUMN : CMD_SELECT_TO_COLUMN_ALTER;
 			}
-			else if (state1.last.getSection().equals(state1.axis.getHeader())) {
+			else if (state1.last.getSectionUnchecked().equals(state1.axis.getHeader())) {
 				commandId = commandId == CMD_SELECT_TO_LOCATION ? CMD_SELECT_TO_ROW : CMD_SELECT_TO_ROW_ALTER;
 			}
 		}
@@ -637,15 +655,17 @@ class MatrixListener implements Listener {
 		case CMD_COPY:				matrix.copy(); return;
 		}
 
-		if (isBodySelect(commandId) || state0.focusMoved || state1.focusMoved) {
+		if (isBodySelect(commandId)) { // || state0.focusMoved || state1.focusMoved) {
 			selectCells(commandId);
 		}
 		matrix.redraw();
 		// forceFocus(); // in order to make focus go out of a pop-up editor
 	}
 	
-	protected void moveCursor(int commandId) {
-		if (!matrix.isFocusCellEnabled()) return;
+	protected boolean moveCursor(int commandId) {
+		if (!matrix.isFocusCellEnabled()) return true;
+		state0.focusMoved = true;
+		state1.focusMoved = true;
 		m0 = null; m1 = null;
 		switch (commandId) {
 		
@@ -687,6 +707,7 @@ class MatrixListener implements Listener {
 			state0.item = state0.layout.current;
 			state1.item = state1.layout.current;
 		}
+		return state0.focusMoved && state1.focusMoved;
 	}
 
 	
@@ -731,7 +752,7 @@ class MatrixListener implements Listener {
 	}
 	
 	private boolean isSelected(AxisItem last0, AxisItem last1) {
-		return matrix.model.getZoneUnchecked(last0.getSection(), last1.getSection()).
+		return matrix.model.getZoneUnchecked(last0.getSectionUnchecked(), last1.getSectionUnchecked()).
 			isSelected(last0.getIndex(), last1.getIndex());
 	}
 

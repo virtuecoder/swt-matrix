@@ -10,8 +10,6 @@ import pl.netanel.swt.matrix.Painter;
 
 /**
  * Change the line style.
- * 
- * @author Jacek Kolodziejczyk created 04-03-2011
  */
 public class Snippet_0012 {
 	public static void main(String[] args) {

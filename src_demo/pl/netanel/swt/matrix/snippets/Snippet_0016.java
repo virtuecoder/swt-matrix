@@ -11,8 +11,6 @@ import pl.netanel.swt.matrix.Zone;
 
 /**
  * Mark selection with SWT.COLOR_LIST... colors.
- * 
- * @author Jacek Kolodziejczyk created 04-03-2011
  */
 public class Snippet_0016 {
 	public static void main(String[] args) {

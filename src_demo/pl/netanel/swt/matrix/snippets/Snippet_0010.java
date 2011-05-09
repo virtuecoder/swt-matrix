@@ -13,8 +13,6 @@ import pl.netanel.swt.matrix.Painter;
 
 /**
  * Draw custom background for the whole matrix.
- * 
- * @author Jacek Kolodziejczyk created 04-03-2011
  */
 public class Snippet_0010 {
 	public static void main(String[] args) {

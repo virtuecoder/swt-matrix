@@ -12,8 +12,6 @@ import pl.netanel.swt.matrix.Section;
 
 /**
  * Cell background calculated
- * 
- * @author Jacek Kolodziejczyk created 03-03-2011
  */
 public class Snippet_0017 {
 	

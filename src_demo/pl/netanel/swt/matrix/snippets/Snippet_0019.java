@@ -10,8 +10,6 @@ import pl.netanel.swt.matrix.Painter;
 
 /**
  * Align column to the right.
- * 
- * @author Jacek Kolodziejczyk created 03-03-2011
  */
 public class Snippet_0019 {
 	

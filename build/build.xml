@@ -35,6 +35,7 @@
 			<fileset dir="${build.tmp}">
 				<include name="pl/netanel/swt/matrix/*.class" />
 				<include name="pl/netanel/util/*.class" />
+				<include name="../doc/EULA.txt" />
 				<exclude name="**/*Test.class" />
 			</fileset>
 			<!--fileset dir="${lib}" includes="**/*" /-->
@@ -48,7 +49,8 @@
 		<!-- swt-matrix-snippets.zip-->
 		<zip destfile="${ant.project.name}-snippets-${version}.zip" 
 			basedir="../src_demo/" 
-			includes="pl/netanel/swt/matrix/snippets/*.java" />
+			includes="pl/netanel/swt/matrix/snippets/*.java, *.png" 
+		/>
 
 		<!-- obfuscate and optimize by ProGuard -->
 		<taskdef resource="proguard/ant/task.properties" 
@@ -95,6 +97,9 @@
 		</delete>
 		<copy todir="${local_website}\javadoc">
 			<fileset dir="../javadoc" includes="*/**"/>
+		</copy>
+		<copy todir="${local_website}">
+			<fileset dir="../doc" includes="EULA.txt"/>
 		</copy>
 
 		<copy todir="${local_website}" file="swt-matrix-0.1.jar" />

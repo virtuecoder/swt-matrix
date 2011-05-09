@@ -9,8 +9,6 @@ import pl.netanel.swt.matrix.Matrix;
 
 /**
  * Change gesture binding.
- * 
- * @author Jacek Kolodziejczyk created 04-03-2011
  */
 public class Snippet_0901 {
 	public static void main(String[] args) {

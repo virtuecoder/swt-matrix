@@ -1,7 +1,7 @@
 - copy
 -
 - snippet to swap axises
-- snippet for selection event
+- width of line at the edge of sections schould be maximum of the width from both sections
 
 ? constructor style options SWT.CHECK, SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT
 - remove binding

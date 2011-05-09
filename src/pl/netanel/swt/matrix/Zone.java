@@ -24,7 +24,6 @@ import pl.netanel.util.Preconditions;
  * and a section from the column axis intersect with each other.  
  * <p>
  * Zone has painters to paint itself on the screen.
- * It can also have dedicated event listeners to customize reaction to user gestures.
  * </p><p>
  * </p>
  * 
@@ -163,6 +162,16 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				text = index0.toString() + ", " + index1.toString();
 				super.paint(index0, index1, x, y, width, height);
+			}
+			@Override
+			public int computeWidth(Number index0, Number index1) {
+				text = index0.toString() + ", " + index1.toString();
+				return super.computeWidth(index0, index1);
+			}
+			@Override
+			public int computeHeight(Number index0, Number index1) {
+				text = index0.toString() + ", " + index1.toString();
+				return super.computeHeight(index0, index1);
 			}
 		};
 		painter.matrix = matrix;

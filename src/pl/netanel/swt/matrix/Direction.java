@@ -23,7 +23,7 @@ abstract class Direction<N extends Number> {
 	public boolean init() {
 		i = firstSection();
 		level = 0;
-		return hasMore = pending = nextItem(null);
+		return hasMore = pending = nextInternal(null);
 	}
 	
 	protected abstract int firstSection();
@@ -31,15 +31,15 @@ abstract class Direction<N extends Number> {
 
 
 	public boolean set(AxisItem item) {
-		i = sections.indexOf(item.getSection());
-		section = item.getSection();
+		i = sections.indexOf(item.getSectionUnchecked());
+		section = item.getSectionUnchecked();
 		seq = getSequence(section, sign);
 		seq.init();
 		seq.set(item.getIndex());
 		seq.level = 1;
 		level = !section.isVisible() || skipWithoutCurrent && !section.isFocusItemEnabled() ? 0 : 1;
 		pending = false;
-		return hasMore = nextItem(null);
+		return hasMore = nextInternal(null);
 	}
 	
 	public AxisItem getItem() {
@@ -50,6 +50,11 @@ abstract class Direction<N extends Number> {
 	public AxisItem first() {
 		if (!init()) return null;
 		return next();
+	}
+	
+	public AxisItem nextItem(AxisItem item) {
+		set(item);
+		return getItem();
 	}
 
 	public AxisItem next() {
@@ -63,7 +68,7 @@ abstract class Direction<N extends Number> {
 			pending = false;
 		}
 		if (!pending) {
-			hasMore = pending = nextItem(count);
+			hasMore = pending = nextInternal(count);
 		}
 		if (pending) {
 			return getItem();
@@ -71,7 +76,7 @@ abstract class Direction<N extends Number> {
 		return null;
 	}
 	
-	private boolean nextItem(MutableNumber count) {
+	private boolean nextInternal(MutableNumber count) {
 		int lastSection = -1;
 		moved = false;
 		if (count == null) count = math.create(1);

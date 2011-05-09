@@ -12,9 +12,7 @@ import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Zone;
 
 /**
- * Draw custom current cell marker.
- * 
- * @author Jacek Kolodziejczyk created 04-03-2011
+ * Draw custom focus cell marker.
  */
 public class Snippet_0011 {
 	public static void main(String[] args) {

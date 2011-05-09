@@ -24,6 +24,7 @@ public class AxisItem<N extends Number> {
 	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	AxisItem(Section<N> section, N index) {
+		if (section instanceof SectionClient) section = ((SectionClient) section).core;
 		Preconditions.checkNotNullWithName(section, "section");
 		Preconditions.checkNotNullWithName(index, "index");
 		section.checkIndex(index, section.math.increment(section.getCount()), "index");
@@ -44,6 +45,7 @@ public class AxisItem<N extends Number> {
 	public String toString() {
 		return "" + section.index + " " + index;
 	}
+	
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -62,10 +64,26 @@ public class AxisItem<N extends Number> {
 
 	/**
 	 * Returns section of this axis item.
+	 * <p>
+	 * Unchecked section skips argument validation checking in getters 
+	 * to improve performance. 
+	 *
+	 * @return section of this axis item
+	 */
+	public Section<N> getSectionUnchecked() {
+		return section;
+	}
+	
+	/**
+	 * Returns section of this axis item.
+	 * <p>
+	 * A checked section delegates calls to an unchecked section proceeding it with an
+	 * argument validation checking.
+	 * 
 	 * @return section of this axis item
 	 */
 	public Section<N> getSection() {
-		return section;
+		return new SectionClient(section);
 	}
 
 	/**

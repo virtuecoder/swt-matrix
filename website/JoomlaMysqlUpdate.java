@@ -79,7 +79,7 @@ public class JoomlaMysqlUpdate {
 				break;
 			} else {
 				if (i == 0) sb.append(" style='white-space: nowrap'");
-				else if (i == 3) {
+				else if (i == 5) {
 					Pattern p = Pattern.compile("(Snippet_....)"); //, Pattern.DOTALL);
 					Matcher matcher = p.matcher(s);
 					StringBuffer myStringBuffer = new StringBuffer();
@@ -111,7 +111,7 @@ public class JoomlaMysqlUpdate {
 				if (matcher.find()) {
 					String description = matcher.group(1);
 					description = description.replace("*", "").replaceAll("\\s{2,}", "").trim();
-					sb.append("<li><a href='swt-matrix/snippets/"+file.getName()+"'>")
+					sb.append("<li><a href='http://netanel.pl/swt-matrix/snippets/"+file.getName()+"'>")
 						.append(description).append("</a></li>");
 				}
 			} else {

@@ -12,8 +12,6 @@ import pl.netanel.swt.matrix.Zone;
 
 /**
  * Gap between cells like HTML table cellspacing attribute. Hide lines.
- * 
- * @author Jacek Kolodziejczyk created 04-03-2011
  */
 public class Snippet_0013 {
 	public static void main(String[] args) {
@@ -25,13 +23,13 @@ public class Snippet_0013 {
 		Matrix matrix = new Matrix(shell, SWT.NONE);
 		matrix.getAxis0().getHeader().setVisible(true);
 		
-		Section rowBody = matrix.getAxis0().getBody();
-		rowBody.setDefaultLineWidth(3);
-		rowBody.setCount(10);
+		Section body0 = matrix.getAxis0().getBody();
+		body0.setDefaultLineWidth(3);
+		body0.setCount(10);
 		
-		Section colBody = matrix.getAxis1().getBody();
-		colBody.setDefaultLineWidth(3);
-		colBody.setCount(4);
+		Section body1 = matrix.getAxis1().getBody();
+		body1.setDefaultLineWidth(3);
+		body1.setCount(4);
 		
 		// Column header painting
 		Zone columnHeader = matrix.getColumnHeader();

@@ -12,8 +12,6 @@ import pl.netanel.swt.matrix.Zone;
 
 /**
  * Altering row background.
- * 
- * @author Jacek Kolodziejczyk created 04-03-2011
  */
 public class Snippet_0014 {
 	public static void main(String[] args) {
@@ -24,14 +22,14 @@ public class Snippet_0014 {
 		
 		final Matrix matrix = new Matrix(shell, SWT.NONE);
 		
-		Section colBody = matrix.getAxis1().getBody();
-		colBody.setDefaultLineWidth(0);
-		colBody.setCount(4);
-		colBody.setDefaultCellWidth(50);
+		Section body1 = matrix.getAxis1().getBody();
+		body1.setDefaultLineWidth(0);
+		body1.setCount(4);
+		body1.setDefaultCellWidth(50);
 		
-		Section rowBody = matrix.getAxis0().getBody();
-		rowBody.setDefaultLineWidth(0);
-		rowBody.setCount(10);
+		Section body0 = matrix.getAxis0().getBody();
+		body0.setDefaultLineWidth(0);
+		body0.setCount(10);
 		
 
 		final Zone body = matrix.getBody();

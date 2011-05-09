@@ -56,6 +56,16 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 								text = index1.toString();
 								super.paint(index0, index1, x, y, width, height);
 							}
+							@Override
+							public int computeWidth(Number index0, Number index1) {
+								text = index1.toString();
+								return super.computeWidth(index0, index1);
+							}
+							@Override
+							public int computeHeight(Number index0, Number index1) {
+								text = index1.toString();
+								return super.computeHeight(index0, index1);
+							}
 						});
 					}
 					else if (section1.equals(header1) && section0.equals(body0)) {
@@ -64,6 +74,16 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 							public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 								text = index0.toString();
 								super.paint(index0, index1, x, y, width, height);
+							}
+							@Override
+							public int computeWidth(Number index0, Number index1) {
+								text = index0.toString();
+								return super.computeWidth(index0, index1);
+							}
+							@Override
+							public int computeHeight(Number index0, Number index1) {
+								text = index0.toString();
+								return super.computeHeight(index0, index1);
 							}
 						});						
 					} else {

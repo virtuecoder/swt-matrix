@@ -3,20 +3,21 @@ package pl.netanel.swt.matrix.snippets;
 import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 
 /**
- * Selection event handling.
- * 
- * @author Jacek Kolodziejczyk created 26-04-2011
+ * Selection and control event handling.
  */
 public class Snippet_0902 {
 	public static void main(String[] args) {
@@ -30,6 +31,8 @@ public class Snippet_0902 {
 		final Section<Integer> body1 = matrix.getAxis1().getBody();
 		body0.setCount(10);
 		body1.setCount(4);
+		body1.setDefaultResizable(true);
+		body1.setDefaultMoveable(true);
 		
 		// Cell selection
 		final Zone<Integer, Integer> body = matrix.getBody();
@@ -52,30 +55,36 @@ public class Snippet_0902 {
 		body0.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				StringBuilder sb = new StringBuilder();
-				Iterator<Integer[]> it = body0.getSelectedExtentIterator();
-				while (it.hasNext()) {
-					if (sb.length() > 0) sb.append(", ");
-					Number[] n = it.next();
-					sb.append(n[0]).append("-").append(n[1]);
-				}
-				sb.insert(0, "Rows selected: ");
-				System.out.println(sb);
+				selectedItems("Rows selected: ", body0.getSelectedExtentIterator());
 			}
 		});
 		
 		body1.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				StringBuilder sb = new StringBuilder();
-				Iterator<Integer[]> it = body1.getSelectedExtentIterator();
-				while (it.hasNext()) {
-					if (sb.length() > 0) sb.append(", ");
-					Number[] n = it.next();
-					sb.append(n[0]).append("-").append(n[1]);
+				selectedItems("Columns selected: ", body1.getSelectedExtentIterator());
+			}
+		});
+		
+		body1.addControlListener(new ControlAdapter() {
+			@Override
+			public void controlResized(ControlEvent e) {
+				AxisItem<Integer> item = (AxisItem<Integer>) e.data;
+				if (body1.getSelectedCount() > 0) {
+					selectedItems("Columns resized: ", body1.getSelectedExtentIterator());
+				} else {
+					System.out.println("Columns resized: " + item.getIndex()); 
 				}
-				sb.insert(0, "Columns selected: ");
-				System.out.println(sb);
+				
+				System.out.println("New size: " + 
+						body1.getCellWidth(item.getIndex()));
+			}
+			@Override
+			public void controlMoved(ControlEvent e) {
+				selectedItems("Columns moved: ", body1.getSelectedExtentIterator());
+				
+				AxisItem<Integer> item = (AxisItem<Integer>) e.data;
+				System.out.println("Target: " + item);
 			}
 		});
 		
@@ -87,5 +96,16 @@ public class Snippet_0902 {
 				display.sleep();
 			}
 		}
+	}
+	
+	static void selectedItems(String caption, Iterator<Integer[]> it) {
+		StringBuilder sb = new StringBuilder();
+		while (it.hasNext()) {
+			if (sb.length() > 0) sb.append(", ");
+			Number[] n = it.next();
+			sb.append(n[0]).append("-").append(n[1]);
+		}
+		sb.insert(0, caption);
+		System.out.println(sb.toString());
 	}
 }

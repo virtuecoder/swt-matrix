@@ -19,7 +19,7 @@ public class MatrixPerformance {
 	protected long t;
 	
 	@Test
-	public void cursorNavigation() throws Exception {
+	public void cursorNavigationInteger() throws Exception {
 		Shell shell = new Shell();
 		Display display = shell.getDisplay();
 		shell.setLayout(new FillLayout());
@@ -57,6 +57,52 @@ public class MatrixPerformance {
 		System.out.println(avg);
 		assertTrue("" + avg + " expected to be <60", avg < 60);
 	
+//		while (!shell.isDisposed()) {
+//			if (!display.readAndDispatch()) {
+//				display.sleep();
+//			}
+//		}
+	}
+	
+	@Test
+	public void cursorNavigationBigInteger() throws Exception {
+		Shell shell = new Shell();
+		Display display = shell.getDisplay();
+		shell.setLayout(new FillLayout());
+		
+		Matrix matrix = new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		matrix.addPainter(0, new Painter("start timer") {
+			@Override
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+				t = System.currentTimeMillis();
+			}
+		});
+		matrix.addPainter(new Painter("stop timer") {
+			@Override
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+				t = System.currentTimeMillis() - t;
+				time.add(t);
+			}
+		});
+		//, new MatrixModel(new AxisModel(BigInteger.class), new AxisModel(BigInteger.class)));
+		matrix.getAxis0().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
+		matrix.getAxis1().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
+		
+		shell.setBounds(display.getBounds());
+		shell.open();
+		
+		for (int i = 0; i < 10; i++) {
+			press(SWT.ARROW_DOWN);
+		}
+		
+		long sum = 0;
+		for (int i = 1, imax = time.size(); i < imax; i++) {
+			sum += time.get(i);
+		}
+		long avg = sum / (time.size() - 1);
+		System.out.println(avg);
+		assertTrue("" + avg + " expected to be <60", avg < 60);
+		
 //		while (!shell.isDisposed()) {
 //			if (!display.readAndDispatch()) {
 //				display.sleep();

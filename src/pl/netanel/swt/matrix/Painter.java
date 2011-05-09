@@ -224,7 +224,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 //		backgroundEnabled = zone.isBackgroundEnabled();
 //		foregroundEnabled = zone.isForegroundEnabled();
 		
-		shouldHighlight = !zone.equals(matrix.getBody()) || 
+		shouldHighlight = //!zone.equals(matrix.getBody()) || 
 			zone.getSelectionCount().compareTo(BigInteger.ONE) != 0;
 		
 		extentCache = FontWidthCache.get(gc, gc.getFont());
@@ -368,8 +368,9 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		return enabled;
 	}
 
+
 	/**
-	 * Computes the optimal size to fit the content of the cell at specified indexes.
+	 * Computes the optimal width to fit the content of the cell at specified indexes.
 	 * <p>
 	 * To be called only by the framework, since the {@link GC} instance must be
 	 * injected to measure the text extent.
@@ -380,21 +381,46 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 * 
 	 * @param index0 row index of the cell  
 	 * @param index1 column index of the cell 
-	 * @param size mutable {@link Point} instance to return the computed size
 	 */
-	public void computeSize(N0 index0, N1 index1, Point size) {
+	public int computeWidth(N0 index0, N1 index1) {
 		assert zone != null;
-		size.x = 0; size.y = 0;
+		int x = 0;
 		if (image != null) {
 			Rectangle bounds = image.getBounds();
-			size.x = bounds.width + 2 * imageMarginX;
-			size.y = bounds.height + 2 * imageMarginY;
+			x = bounds.width + 2 * imageMarginX;
 		}
 		if (text != null) {
 			Point p = gc.stringExtent(text);
-			size.x += p.x + 2 * textMarginX;
-			size.y = java.lang.Math.max(p.y, size.y + 2 * textMarginY);
+			x += p.x + 2 * textMarginX;
 		}
+		return x;
+	}
+	
+	/**
+	 * Computes the optimal height to fit the content of the cell at specified indexes.
+	 * <p>
+	 * To be called only by the framework, since the {@link GC} instance must be
+	 * injected to measure the text extent.
+	 * <p>
+	 * <code>index0</code> and <code>index1</code> refer to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations. 
+	 * 
+	 * @param index0 row index of the cell  
+	 * @param index1 column index of the cell 
+	 */
+	public int computeHeight(N0 index0, N1 index1) {
+		assert zone != null;
+		int y = 0;
+		if (image != null) {
+			Rectangle bounds = image.getBounds();
+			y = bounds.height + 2 * imageMarginY;
+		}
+		if (text != null) {
+			Point p = gc.stringExtent(text);
+			y = java.lang.Math.max(p.y, y + 2 * textMarginY);
+		}
+		return y;
 	}
 	
 	/**

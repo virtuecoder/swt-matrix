@@ -17,8 +17,6 @@ import pl.netanel.swt.matrix.Section;
 
 /**
  * Freeze head and tail with different color for the dividing line 
- * 
- * @author Jacek Kolodziejczyk created 04-03-2011
  */
 public class Snippet_0201 {
 	static Section freezeHeadSection0, freezeHeadSection1, freezeTailSection0, freezeTailSection1;
@@ -37,12 +35,12 @@ public class Snippet_0201 {
 		final Axis axis0 = matrix.getAxis0();
 		final Axis axis1 = matrix.getAxis1();
 		
-		final Section colBody = axis1.getBody();
-		colBody.setCount(40);
-		colBody.setDefaultCellWidth(50);
+		final Section body1 = axis1.getBody();
+		body1.setCount(40);
+		body1.setDefaultCellWidth(50);
 		
-		Section rowBody = axis0.getBody();
-		rowBody.setCount(100);
+		Section body0 = axis0.getBody();
+		body0.setCount(100);
 
 		matrix.addPainter(new Painter("freeze lines") {
 			@Override

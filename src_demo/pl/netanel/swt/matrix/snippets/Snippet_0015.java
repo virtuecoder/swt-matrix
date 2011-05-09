@@ -13,8 +13,6 @@ import pl.netanel.swt.matrix.Zone;
 
 /**
  * Current row gradient highlighter.
- * 
- * @author Jacek Kolodziejczyk created 04-03-2011
  */
 public class Snippet_0015 {
 	public static void main(String[] args) {

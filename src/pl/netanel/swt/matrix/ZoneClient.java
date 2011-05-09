@@ -5,19 +5,10 @@ import java.util.Iterator;
 
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 
 class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
-	public static final int NONE = -1;
-	public static final int ANY = 0;
-	public static final int BODY = 1;
-	public static final int TOP_LEFT= 2;
-	public static final int ROW_HEADER = 3;
-	public static final int COLUMN_HEADER = 4;
-//	public static final int ROW_FOOTER = 5;
-//	public static final int COLUMN_FOOTER = 6;
-//	public static final int BOTTOM_RIGHT = 7;
-	
 	final Zone core;
 	
 	public ZoneClient(Zone<N0, N1> zone) {
@@ -237,4 +228,47 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 		core.setMatrix(matrix);
 	}
 
+	public void setSelected(Number index0, Number index1, boolean state) {
+		core.setSelected(index0, index1, state);
+	}
+
+	public void bind(int commandId, int eventType, int code) {
+		core.bind(commandId, eventType, code);
+	}
+
+	public void unbind(int commandId, int eventType, int code) {
+		core.unbind(commandId, eventType, code);
+	}
+
+	@Override
+	void backupSelection() {
+		core.backupSelection();
+	}
+	
+	@Override
+	void delete(int axisIndex, Section section, Number start, Number end) {
+		core.delete(axisIndex, section, start, end);
+	}
+	
+	@Override
+	void insert(int axisIndex, Section section, Number target, Number count) {
+		core.insert(axisIndex, section, target, count);
+	}
+	
+	@Override
+	void paint(GC gc, Layout layout0, Layout layout1, Frozen dock0, Frozen dock1) {
+		core.paint(gc, layout0, layout1, dock0, dock1);
+	}
+	
+	@Override
+	void restoreSelection() {
+		core.restoreSelection();
+	}
+	
+	@Override
+	void setBounds(int x, int y, int width, int height) {
+		core.setBounds(x, y, width, height);
+	}
+
+	
 }

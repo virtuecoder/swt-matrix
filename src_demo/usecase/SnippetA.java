@@ -18,8 +18,8 @@ public class SnippetA {
 		Axis axis1 = matrix.getAxis1();
 		Axis axis0 = matrix.getAxis0();
 		
-		axis0.getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
-		axis1.getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
+		axis0.getBody().setCount(100); //new BigInteger("1000000000000000"));
+		axis1.getBody().setCount(100); //new BigInteger("1000000000000000"));
 //		matrix.getAxis1().getBody().setDefaultCellWidth(100);
 		axis0.getHeader().setVisible(true);
 		axis1.getHeader().setVisible(true);

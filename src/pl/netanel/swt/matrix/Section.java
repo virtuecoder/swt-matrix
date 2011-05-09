@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -980,6 +981,10 @@ public class Section<N extends Number> {
 	 * be notified when a section item is moved or resized, by sending
 	 * it one of the messages defined in the <code>ControlListener</code>
 	 * interface.
+	 * <p> The data property of the {@link ControlEvent} contains the item being resized
+	 * or the target item for the moved items. In order to get moved items or a set of 
+	 * resized items (if more then one is resized) {@link #getSelectedExtentIterator()} or 
+	 * {@link #getSelectedExtentResizableSequence()} can be utilized.
 	 *
 	 * @param listener the listener which should be notified
 	 *
