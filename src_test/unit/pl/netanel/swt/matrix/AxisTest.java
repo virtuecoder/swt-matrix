@@ -29,4 +29,5 @@ public class AxisTest {
 		
 		assertEquals(1, model.getFocusItem().getIndex());
 	}
+	
 }

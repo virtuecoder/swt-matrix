@@ -583,7 +583,9 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		layout0.compute();
 		layout1.compute();
 		if (layout0.current != null && layout1.current != null) {
-			Zone<N0, N1> zone = model.getZone(layout0.current.getSectionUnchecked(), layout1.current.getSectionUnchecked());
+			Zone<N0, N1> zone = model.getZoneUnchecked(
+					layout0.current.getSectionUnchecked(), 
+					layout1.current.getSectionUnchecked());
 			N0 index0 = layout0.current.getIndex();
 			N1 index1 = layout1.current.getIndex();
 			zone.setSelected(index0, index0, index1, index1, true);

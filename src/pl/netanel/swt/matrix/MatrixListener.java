@@ -519,9 +519,11 @@ class MatrixListener implements Listener {
 		}
 
 		public void refresh() {
+			if (item == null) return;
 			N count = item.getSectionUnchecked().getCount();
 			if (axis.math.compare(item.getIndex(), count) >= 0) {
-				item = AxisItem.create(item.getSectionUnchecked(), axis.math.decrement(count));
+				item = axis.math.compare(count, axis.math.ZERO_VALUE()) == 0 ? null : 
+					AxisItem.create(item.getSectionUnchecked(), axis.math.decrement(count));
 			}
 		}
 

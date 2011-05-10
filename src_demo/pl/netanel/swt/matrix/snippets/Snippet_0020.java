@@ -21,7 +21,7 @@ public class Snippet_0020 {
 	public static void main(String[] args) {
 		Shell shell = new Shell();
 		shell.setLayout(new GridLayout(2, false));
-		
+		shell.setText("Double click on the right edge of a column header in order to resize it");
 		final ArrayList<Object[]> data = new ArrayList();
 		data.add(new Object[] {"Task 1", "2001-02-02"});
 		data.add(new Object[] {"Task 2", "2001-04-02"});
@@ -52,9 +52,9 @@ public class Snippet_0020 {
 				super.paint(index0, index1, x, y, width, height);
 			}
 			@Override
-			public int computeHeight(Number index0, Number index1) {
+			public int computeWidth(Number index0, Number index1) {
 				text = data.get(index0.intValue())[index1.intValue()].toString();
-				return super.computeHeight(index0, index1);
+				return super.computeWidth(index0, index1);
 			}
 		});
 		
@@ -72,7 +72,7 @@ public class Snippet_0020 {
 		});
 		
 		
-		shell.setBounds(400, 200, 400, 300);
+		shell.setBounds(400, 200, 600, 300);
 		shell.open();
 		Display display = shell.getDisplay();
 		while (!shell.isDisposed()) {

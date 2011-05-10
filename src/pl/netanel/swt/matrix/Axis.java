@@ -298,7 +298,7 @@ public class Axis<N extends Number>  {
 	 * @return the cell bound at the specified position in the viewport
 	 */
 	public int[] getCellBound(int position) {
-		Bound bound = layout.getLineBound(position);
+		Bound bound = layout.getCellBound(position);
 		return bound == null ? null : new int[] {bound.distance, bound.width};
 	}
 	
@@ -312,7 +312,7 @@ public class Axis<N extends Number>  {
 	 * @return the line bound at the specified position in the viewport
 	 */
 	public int[] getLineBound(int position) {
-		Bound bound = layout.getCellBound(position);
+		Bound bound = layout.getLineBound(position);
 		return bound == null ? null : new int[] {bound.distance, bound.width};
 	}
 	
@@ -728,7 +728,8 @@ public class Axis<N extends Number>  {
 
 	void deleteInZones(Section section, N start, N end) {
 		matrix.model.deleteInZones(index, section, start, end);
-		if (layout.current.getSectionUnchecked().equals(section) && layout.math.contains(start, end, layout.current.getIndex())) {
+		if (layout.current.getSectionUnchecked().equals(section) && 
+				layout.math.contains(start, end, layout.current.getIndex())) {
 			layout.ensureCurrentIsValid();
 		}
 	}

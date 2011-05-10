@@ -148,14 +148,15 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 		return next(this.section.math.create(1));
 	}
 
-	void set(N index) {
+	boolean set(N index) {
 		i = this.section.order.getExtentIndex(index);
-		if (i == -1) return;
+		if (i == -1) return false;
 		extent = this.section.order.items.get(i);
 		number.set(index).add(-sign);
 		lastInExtent.set(end(extent));
 		h = firstIndex(this.section.hidden.items);
 		he = null;
+		return true;
 	}
 	
 	static class Forward<N extends Number> extends DirectionIndexSequence<N> {

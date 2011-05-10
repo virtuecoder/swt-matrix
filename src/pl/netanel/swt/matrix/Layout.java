@@ -184,10 +184,16 @@ class Layout<N extends Number> {
 	public void ensureCurrentIsValid() {
 		if (current == null) return;
 		Section<N> currentSection = current.getSectionUnchecked();
-
-		boolean isHidden = currentSection.hidden.contains(current.getIndex());
-		boolean outOfScope = math.compare(current.getIndex(), currentSection.getCount()) >= 0;
-		if (isHidden || outOfScope) {
+		
+		// Out of scope
+		N count = currentSection.getCount();
+		if (math.compare(current.getIndex(), count) >= 0) {
+			current = math.compare(count, math.ZERO_VALUE()) == 0 ? null : 
+				AxisItem.create(currentSection, math.decrement(current.getIndex()));
+		}
+		
+		// Hidden
+		if (current != null && currentSection.hidden.contains(current.getIndex())) {
 			AxisItem item2 = forwardNavigator.nextItem(current);
 			if (item2 == null) {
 				item2 = backwardNavigator.nextItem(current);
@@ -669,7 +675,12 @@ class Layout<N extends Number> {
 			
 			maxScroll.set(total).add(-tail.count);
 			scrollTotal.set(maxScroll).add(-head.count);
-			if (!main.isEmpty()) scrollPosition.set(getItemPosition(start));
+			if (!main.isEmpty()) {
+				MutableNumber itemPosition = getItemPosition(start);
+				if (itemPosition != null) {
+					scrollPosition.set(itemPosition);
+				}
+			}
 		}
 	}
 
@@ -701,7 +712,8 @@ class Layout<N extends Number> {
 		for (int i = 0, size = sections.size(); i < size; i++) {
 			Section<N> section = sections.get(i);
 			if (item.getSectionUnchecked().equals(section)) {
-				return position.add(math.getValue(section.indexOfNotHidden(item.getIndex())));
+				N index = section.indexOfNotHidden(item.getIndex());
+				return index == null ? null : position.add(math.getValue(index));
 			}
 			if (section.isVisible()) {
 				position.add(section.getVisibleCount());

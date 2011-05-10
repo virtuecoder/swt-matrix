@@ -72,17 +72,20 @@ public class Snippet_0401 {
 				// Matrix event
 				else {
 					// Apply when clicked outside of the text editor
-					if (e.type == SWT.MouseDown && text.isVisible()) {
-						Rectangle bounds = text.getBounds();
-						if (!bounds.contains(e.x, e.y)) {
-							apply();
+					if (e.type == SWT.MouseDown) {
+						if (text.isVisible()) {
+							Rectangle bounds = text.getBounds();
+							if (!bounds.contains(e.x, e.y)) {
+								apply();
+							}
 						}
 					}		
 					// Open text editor on F2 or double click
 					else if (e.keyCode == SWT.F2 || e.type == SWT.MouseDoubleClick) {
 						int i = matrix.getAxis0().getFocusItem().getIndex().intValue();
 						int j = matrix.getAxis1().getFocusItem().getIndex().intValue();
-						if (matrix.getBody().getCellBounds(i, j).contains(e.x, e.y)) {
+						if (e.keyCode == SWT.F2 || 
+								matrix.getBody().getCellBounds(i, j).contains(e.x, e.y)) {
 							editing[0] = i; editing[1] = j;
 							text.setText(data.get(i).get(j).toString());
 							Rectangle bounds = matrix.getBody().getCellBounds(i, j);

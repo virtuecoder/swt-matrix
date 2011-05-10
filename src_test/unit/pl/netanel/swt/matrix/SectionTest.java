@@ -182,13 +182,23 @@ public class SectionTest {
 	}
 
 	@Test
-	public void removeItems() throws Exception {
+	public void delete() throws Exception {
 		Section section = new Section(int.class);
 		section.setCount(5);
 		section.setCellWidth(4, 4, 33);
 		assertEquals(33, section.getCellWidth(4));
 		section.delete(2, 2);
 		assertEquals(33, section.getCellWidth(3));
+		assertEquals(4, section.getCount());		
+	}
+	
+	@Test
+	public void insertEmpty() throws Exception {
+		Section section = new Section(int.class);
+		section.insert(0, 1);
+		assertEquals(1, section.getCount());
+//		section.insert(0, 1);
+//		assertEquals(2, section.getCount());
 	}
 	
 //	private static String moveSelected(SectionUnchecked section, int source, int target) {

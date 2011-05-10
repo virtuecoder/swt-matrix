@@ -35,7 +35,7 @@ abstract class Direction<N extends Number> {
 		section = item.getSectionUnchecked();
 		seq = getSequence(section, sign);
 		seq.init();
-		seq.set(item.getIndex());
+		if (!seq.set(item.getIndex())) return false;
 		seq.level = 1;
 		level = !section.isVisible() || skipWithoutCurrent && !section.isFocusItemEnabled() ? 0 : 1;
 		pending = false;
@@ -53,7 +53,7 @@ abstract class Direction<N extends Number> {
 	}
 	
 	public AxisItem nextItem(AxisItem item) {
-		set(item);
+		if (!set(item)) return null;
 		return getItem();
 	}
 

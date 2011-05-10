@@ -29,8 +29,8 @@ public class Snippet_0010 {
 		matrix.getBody().setDefaultForeground(matrix.getBackground());
 		
 		// Create an image
-		final Image image = new Image(display, 100, 100);
-		GC gc = new GC(image);
+		final Image image2 = new Image(display, 100, 100);
+		GC gc = new GC(image2);
 		gc.setBackground(display.getSystemColor(SWT.COLOR_BLUE));
 		gc.setAntialias(SWT.ON);
 		gc.fillOval(0, 0, 100, 100);
@@ -38,11 +38,11 @@ public class Snippet_0010 {
 		
 		matrix.addPainter(0, new Painter("background") {
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				Rectangle r = image.getBounds();
+				Rectangle r = image2.getBounds();
 				x = align(SWT.RIGHT, 50, x, r.width, width);
 				y = align(SWT.CENTER, 0, y, r.height, height);
 				
-				gc.drawImage(image, x, y);
+				gc.drawImage(image2, x, y);
 			};
 		});
 		
@@ -52,7 +52,7 @@ public class Snippet_0010 {
 				display.sleep();
 			}
 		}
-		image.dispose();
+		image2.dispose();
 	}
 
 }
