@@ -85,7 +85,7 @@ public class JoomlaMysqlUpdate {
 					StringBuffer myStringBuffer = new StringBuffer();
 					while (matcher.find()) {
 						matcher.appendReplacement(myStringBuffer, 
-								"<a href='swt-matrix/snippets/" + matcher.group(1) + 
+								"<a href='http://netanel.pl/swt-matrix/snippets/" + matcher.group(1) + 
 								"\\.java'>" + matcher.group(1) + "</a>");
 					}
 					matcher.appendTail(myStringBuffer);
