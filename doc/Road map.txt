@@ -1,10 +1,17 @@
+From nebula forum
+- different colors for the fore- and background of cells. If i select one colored cell, the selection "overwrites" the color setting, so that every selected cell looks the same. Is there a way to change the color of selected cells, so that i can still see the differences?
+- I wanted to support the MS Excel features in my RCP app. Features like 'Auto Filter'.
+- Nebula CompositeTable, flexible row layout
+
+To do:
+- multiline text, text wraping
 - copy
 -
 - snippet to swap axises
 - width of line at the edge of sections schould be maximum of the width from both sections
 
 ? constructor style options SWT.CHECK, SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT
-- remove binding
+
 
 - thread safety
 - immutable indexes

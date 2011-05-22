@@ -7,26 +7,27 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Listener;
 
-class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
+class ZoneClient<N0 extends Number, N1 extends Number> extends Zone {
 	final Zone core;
-	
+
 	public ZoneClient(Zone<N0, N1> zone) {
 		core = zone;
 		section0 = new SectionClient(zone.section0);
 		section1 = new SectionClient(zone.section1);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		return core.equals(obj);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return core.hashCode();
 	}
-	
+
 	@Override
 	public String toString() {
 		return core.toString();
@@ -41,7 +42,7 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 	public Section getSection1() {
 		return core.section1;
 	}
-	
+
 	void setDefaultBodyStyle() {
 		core.setDefaultBodyStyle();
 	}
@@ -52,19 +53,20 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 
 	@Override
 	public Rectangle getCellBounds(Number index0, Number index1) {
-		if (index0 == null || index1 == null) return null;
+		if (index0 == null || index1 == null)
+			return null;
 		section0.checkIndex(index0, section0.getCount(), "index0");
 		section1.checkIndex(index1, section1.getCount(), "index1");
 		return core.getCellBounds(index0, index1);
 	}
-	
-//	public void addListener(int type, Listener listener) {
-//		core.addListener(type, listener);
-//	}
-//
-//	public void removeListener(int type, Listener listener) {
-//		core.removeListener(type, listener);
-//	}
+
+	// public void addListener(int type, Listener listener) {
+	// core.addListener(type, listener);
+	// }
+	//
+	// public void removeListener(int type, Listener listener) {
+	// core.removeListener(type, listener);
+	// }
 
 	public void setDefaultBackground(Color color) {
 		core.setDefaultBackground(color);
@@ -86,9 +88,9 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 		return core.getBounds();
 	}
 
-//	public boolean isVisible() {
-//		return core.isVisible();
-//	}
+	// public boolean isVisible() {
+	// return core.isVisible();
+	// }
 
 	public void setSelectionForeground(Color color) {
 		core.setSelectionForeground(color);
@@ -106,27 +108,27 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 		return core.getSelectionBackground();
 	}
 
-	
-	
 	/*------------------------------------------------------------------------
 	 * Selection
 	 */
 
 	/**
-     * Returns <code>true</code> if selection is enabled, false otherwise.
-     * @return the selection enabled state
+	 * Returns <code>true</code> if selection is enabled, false otherwise.
+	 * 
+	 * @return the selection enabled state
 	 */
 	public boolean isSelectionEnabled() {
 		return core.isSelectionEnabled();
 	}
 
 	/**
-     * Enables cell selection if the argument is <code>true</code>, 
-     * or disables it otherwise.
-     *
-	 * @param selectionEnabled the new selection ability state.
+	 * Enables cell selection if the argument is <code>true</code>, or disables
+	 * it otherwise.
+	 * 
+	 * @param selectionEnabled
+	 *            the new selection ability state.
 	 */
-	
+
 	public void setSelectionEnabled(boolean isSelectionEnabled) {
 		core.setSelectionEnabled(isSelectionEnabled);
 	}
@@ -137,9 +139,8 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 		return core.isSelected(index0, index1);
 	}
 
-	public void setSelected(Number start0, Number end0, 
-			Number start1, Number end1, boolean selected) 
-	{
+	public void setSelected(Number start0, Number end0, Number start1,
+			Number end1, boolean selected) {
 		section0.checkRange(start0, end0, section0.getCount());
 		section1.checkRange(start1, end1, section1.getCount());
 		core.setSelected(start0, end0, start1, end1, selected);
@@ -157,12 +158,12 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 	public Iterator getSelectedExtentIterator() {
 		return core.getSelectedExtentIterator();
 	}
-	
+
 	@Override
 	public Iterator getSelectedIterator() {
 		return core.getSelectedIterator();
 	}
-	
+
 	@Override
 	public Section getSectionUnchecked0() {
 		return core.getSectionUnchecked0();
@@ -172,16 +173,16 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 	public Section getSectionUnchecked1() {
 		return core.getSectionUnchecked1();
 	}
-	
+
 	public BigInteger getSelectionCount() {
 		return core.getSelectionCount();
 	}
-	
+
 	@Override
 	public void addSelectionListener(SelectionListener listener) {
 		core.addSelectionListener(listener);
 	}
-	
+
 	@Override
 	public void removeSelectionListener(SelectionListener listener) {
 		core.removeSelectionListener(listener);
@@ -244,31 +245,35 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone{
 	void backupSelection() {
 		core.backupSelection();
 	}
-	
+
 	@Override
 	void delete(int axisIndex, Section section, Number start, Number end) {
 		core.delete(axisIndex, section, start, end);
 	}
-	
+
 	@Override
 	void insert(int axisIndex, Section section, Number target, Number count) {
 		core.insert(axisIndex, section, target, count);
 	}
-	
+
 	@Override
 	void paint(GC gc, Layout layout0, Layout layout1, Frozen dock0, Frozen dock1) {
 		core.paint(gc, layout0, layout1, dock0, dock1);
 	}
-	
+
 	@Override
 	void restoreSelection() {
 		core.restoreSelection();
 	}
-	
+
 	@Override
 	void setBounds(int x, int y, int width, int height) {
 		core.setBounds(x, y, width, height);
 	}
 
-	
+	@Override
+	public void addListener(int eventType, Listener listener) {
+		core.addListener(eventType, listener);
+	}
+
 }

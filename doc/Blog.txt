@@ -1,3 +1,8 @@
+Tabular widgets are required for most of the GUI applications. Yet I was frustrated by the state of the <a href="http://www.eclipse.org/swt">SWT</a> Java GUI toolkit components I've come across. To the point I have implemented my own widget called <a href="http://netanel.pl">SWT Matrix</a>. I can hear you say "Yeah, yet another component". But wait a minute.
+
+What makes it different from other such components is <strong>unlimited capacity</strong> and <strong>instant rendering</strong>. It also focuses on developer productivity by <strong>clean design</strong> with minimal learning curve.
+
+
 Title: SWT tabular widget done right.
 
 Tabular widgets are required for most of the GUI applications. Yet I was frustrated by the state of the SWT components I've come across. To the point I have implemented my own widget called Matrix. I can hear you say "Yeah, yet another component". But here's what makes it distinct.

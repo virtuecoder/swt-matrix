@@ -12,6 +12,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TypedListener;
 
 import pl.netanel.swt.matrix.Layout.LayoutSequence;
@@ -614,6 +616,46 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		listeners.remove(SWT.DefaultSelection, listener);
 	}
 
+	/**
+	 * Adds the listener to the collection of listeners who will
+	 * be notified when an event of the given type occurs. When the
+	 * event does occur in the zone, the listener is notified by
+	 * sending it the <code>handleEvent()</code> message. The event
+	 * type is one of the event constants defined in class <code>SWT</code>.
+	 *
+	 * @param eventType the type of event to listen for
+	 * @param listener the listener which should be notified when the event occurs
+	 *
+	 * @exception IllegalArgumentException <ul>
+	 *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+	 * </ul>
+	 * @exception SWTException <ul>
+	 *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+	 *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+	 * </ul>
+	 *
+	 * @see Listener
+	 * @see SWT
+	 * @see #getListeners(int)
+	 * @see #removeListener(int, Listener)
+	 * @see #notifyListeners
+	 */
+	public void addListener(int eventType, final Listener listener) {
+		matrix.addListener(eventType, new Listener() {
+			@Override
+			public void handleEvent(Event e) {
+				AxisItem<N0> item0 = matrix.getAxis0().getItemByDistance(e.y);
+				AxisItem<N1> item1 = matrix.getAxis1().getItemByDistance(e.x);
+				if (item0 != null && item1 != null && Zone.this == 
+						matrix.getZoneUnchecked(
+								item0.getSectionUnchecked(), 
+								item1.getSectionUnchecked())) 
+				{
+					listener.handleEvent(e);
+				}
+			}
+		});
+	}
 
 	
 	/*------------------------------------------------------------------------
