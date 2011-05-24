@@ -42,6 +42,18 @@ public class MatrixPerformance {
 		matrix.getAxis0().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
 		matrix.getAxis1().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
 		
+		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+			@Override
+			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+				text = getText(index0, index1);
+				super.paint(index0, index1, x, y, width, height);
+			}
+
+			private String getText(Number index0, Number index1) {
+				return index0.toString() + ", " + index1;
+			}
+		});
+		
 		shell.setBounds(display.getBounds());
 		shell.open();
 		

@@ -102,3 +102,8 @@ AxisMatrix
 - getSelection () -> ItemIterator
 
 
+
+
+FAQ
+Q: Why there is no model interface with getText() and getImage() methods?
+A: Performance.

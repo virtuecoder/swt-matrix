@@ -276,4 +276,8 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone {
 		core.addListener(eventType, listener);
 	}
 
+	public Number[] getSelectedExtent() {
+		return core.getSelectedExtent();
+	}
+
 }

@@ -106,7 +106,7 @@ public class Snippet_0005 {
 						return o1[column].compareTo(o2[column]) * direction[column];
 					}
 				});
-				matrix.refresh();
+				matrix.redraw();
 			}
 		});
 		

@@ -425,6 +425,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		return cellSelection.getCount().getValue();
 	}
 
+	
 	/**
 	 * Returns a sequence of index pairs for selected cells. 
 	 * @return a sequence of index pairs for selected cells
@@ -483,6 +484,8 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		};
 	}
 	
+	
+	
 	/*static class Cell<N0, N1> {
 		public N0 index0;
 		public N1 index1;
@@ -520,6 +523,79 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			}
 		};
 	}
+	
+	
+	/**
+	 * Returns iterator for a minimal rectangular set of cells covering the selected cells. 
+	 * First number in the array returned by the {@link Iterator#next()} method 
+	 * is a row axis index, the second one is a column axis index.
+	 * <p>
+	 * <code>index0</code> and <code>index1</code> refer to the model, 
+	 * not the visual position of the item on the screen
+	 * which can be altered by move and hide operations.  
+	 * <p>
+	 * <strong>Warning</strong> iterating index by index over large extents 
+	 * may cause a performance problem.
+	 */
+	Iterator<Number[]> getSelectedBoundsIterator() {
+		return new ImmutableIterator<Number[]>() {
+			NumberPairSequence seq;
+			{
+				Number[] e = cellSelection.getExtent();
+				CellSet set = new CellSet(section0.math, section1.math);
+				set.add(e[0], e[1], e[2], e[3]);
+				seq = new NumberPairSequence(set);
+			}
+			
+			private boolean next;
+			{
+				seq.init();
+			}
+			@Override
+			public boolean hasNext() {
+				next = seq.next();
+				return next;
+			}
+
+			@Override
+			public Number[] next() {
+				return next ? new Number[] {seq.index0(), seq.index1()} : null;
+			}
+		};
+	}
+	
+	
+	
+	/**
+	 * Returns selection index bounds. The numbers in the returning array are 
+	 * minimal axis0 index, maximal axis0 index, minimal axis1 index, maximal axis1 index. 
+	 * @return selection index bounds
+	 */
+	public Number[] getSelectedExtent() {
+		return cellSelection.getExtent();
+	}
+//	
+//	/**
+//	 * Copies selected data to the clip board using tab for cells and new line for rows concatenation.
+//	 */
+//	void copy() {
+//		StringBuilder sb = new StringBuilder();
+//		Number[] e = cellSelection.getExtent();
+//		NumberSet set0 = new NumberSet(section0.math);
+//		NumberSet set1 = new NumberSet(section1.math);
+//		set0.add(e[0], e[1]);
+//		set1.add(e[2], e[3]);
+//		NumberSequence seq0 = new NumberSequence(set0);
+//		NumberSequence seq1 = new NumberSequence(set1);
+//		for (seq0.init(); seq0.next();) {
+//			int i = 0;
+//			for (seq1.init(); seq1.next();) {
+//				if (i++ > 0) sb.append("\t");
+//				sb.append(NEW_LINE);
+//			}
+//			sb.append(NEW_LINE);
+//		}
+//	}
 	
 	void backupSelection() {
 		lastSelection = cellSelection.copy();
@@ -692,7 +768,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 					width = seq1.getWidth();
 					index = seq1.item.getIndex();
 					for (seq0.init(); seq0.next();) {
-						p.paint(seq0.item.getIndex(), seq1.item.getIndex(),
+						p.paint(seq0.item.getIndex(), index,
 							distance, seq0.getDistance(), width, seq0.getWidth());
 					}
 				}
@@ -923,6 +999,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			}
 		}
 	}
+
 	
 
 }

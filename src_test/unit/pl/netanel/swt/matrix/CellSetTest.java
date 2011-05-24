@@ -523,6 +523,31 @@ public class CellSetTest {
 		assertInSequence("0:0, 0:1, 1:0, 1:1");
 	}
 
+	@Test
+	public void getExtentEmpty() throws Exception {
+		assertExtent(0, 0, 0, 0);
+	}
+	
+	@Test
+	public void getExtentOne() throws Exception {
+		insert( "∟■" );
+		assertExtent(0, 0, 1, 1);
+	}
+	
+	@Test
+	public void getExtent() throws Exception {
+		insert( "∟■∟"	,
+				"■∟■"	,
+				"∟■∟"	);
+		assertExtent(0, 2, 0, 2);
+	}
+	
+	private void assertExtent(int start0, int end0, int start1, int end1) {
+		Number[] e = set.getExtent();
+		assertEquals(start0 + " " + end0 + " " + start1 + " " + end1, 
+				e[0] + " " + e[1] + " " + e[2] + " " + e[3]);
+	}
+	
 	private void assertInSequence(String expected) {
 		String[] cells = expected.split(", "); if (cells[0].equals("")) cells = new String[0];
 		

@@ -35,6 +35,9 @@ public class Snippet_0401 {
 		
 		// Matrix
 		final Matrix<Integer, Integer> matrix = new Matrix(shell, SWT.NONE);
+		matrix.getAxis0().getHeader().setVisible(true);
+		matrix.getAxis1().getBody().setDefaultResizable(true);
+
 		matrix.getAxis0().getBody().setCount(count0);
 		matrix.getAxis1().getBody().setCount(count1);
 		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
@@ -43,15 +46,21 @@ public class Snippet_0401 {
 				text = data.get(index0.intValue()).get(index1.intValue()).toString();
 				super.paint(index0, index1, x, y, width, height);
 			}
+			
+			@Override
+			public int computeWidth(Number index0, Number index1) {
+				text = data.get(index0.intValue()).get(index1.intValue()).toString();
+				return super.computeWidth(index0, index1);
+			}
 		});
 		
 		
-		// Edit
+		// Editor control
 		final Text text = new Text(matrix, SWT.BORDER);
 		text.setLocation(-1000, -1000);
 		text.setVisible(false);
 		
-		// Editor events
+		// Listener for both the editor control and the matrix control
 		Listener listener = new Listener() {
 			int[] editing = new int[2];
 			@Override
@@ -104,14 +113,11 @@ public class Snippet_0401 {
 				matrix.redraw();
 			}
 		};
-		text.addListener(SWT.KeyDown, listener);
-		text.addListener(SWT.FocusOut, listener);
-		matrix.addListener(SWT.MouseDown, listener);
-		matrix.addListener(SWT.MouseDoubleClick, listener);
-		matrix.addListener(SWT.KeyDown, listener);
+		text.addListener(SWT.KeyDown, listener); // to handle enter and escape
+		matrix.addListener(SWT.MouseDown, listener); // to handle focus out of the editor control
+		matrix.addListener(SWT.MouseDoubleClick, listener); // to handle double click editor activation 
+		matrix.addListener(SWT.KeyDown, listener); // to handle F2 editor activation
 		
-		matrix.getAxis0().getHeader().setVisible(true);
-		matrix.getAxis1().getBody().setDefaultResizable(true);
 		
 		shell.setBounds(400, 200, 400, 300);
 		shell.open();

@@ -132,6 +132,10 @@ abstract class Math<N extends Number> {
 	public MutableNumber min(MutableNumber x, MutableNumber y) {
 		return x.min(y);
 	}
+	
+	N getCount(Extent<N> e) {
+		return create(e.end).subtract(e.start).increment().getValue();
+	}
 
 	abstract public N getValue(N n);
 	abstract Class<N> getNumberClass();

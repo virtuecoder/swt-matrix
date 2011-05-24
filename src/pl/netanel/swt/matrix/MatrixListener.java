@@ -313,6 +313,7 @@ class MatrixListener implements Listener {
 
 		public void moveFocusItem(Move move) {
 			if (matrix.isFocusCellEnabled() && item != null)  {
+				matrix.model.setSelected(false);
 				focusMoved = layout.moveFocusItem(move);
 				if (focusMoved) {
 					axis.scroll();

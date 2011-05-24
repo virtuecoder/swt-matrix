@@ -221,6 +221,43 @@ class CellSet<N0 extends Number, N1 extends Number> {
 		return count;
 	}
 	
+
+	public Number[] getExtent() {
+		int size = items0.size();
+		if (size == 0) {
+			return new Number[] {
+				math0.ZERO_VALUE(), math0.ZERO_VALUE(),
+				math1.ZERO_VALUE(), math1.ZERO_VALUE()};
+		} else {
+			Number[] e = new Number[4];
+			for (int i = 0; i < size; i++) {
+				Extent<N0> extent0 = items0.get(i);
+				Extent<N1> extent1 = items1.get(i);
+				if (e[0] == null || math0.compare(extent0.start, (N0) e[0]) < 0) {
+					e[0] = extent0.start.getValue();
+				}
+				if (e[1] == null || math0.compare(extent0.end, (N0) e[1]) > 0) {
+					e[1] = extent0.end.getValue();
+				}
+				if (e[2] == null || math1.compare(extent1.start, (N1) e[2]) < 0) {
+					e[2] = extent1.start.getValue();
+				}
+				if (e[3] == null || math1.compare(extent1.end, (N1) e[3]) > 0) {
+					e[3] = extent1.end.getValue();
+				}
+			}
+			return e;
+		}
+	}
+	
+	
+	boolean hasOne() {
+		int size = items0.size();
+		return size == 1 && 
+				math0.compare(math0.getCount(items0.get(0)), math0.ONE_VALUE()) == 0 &&
+				math1.compare(math1.getCount(items1.get(0)), math1.ONE_VALUE()) == 0;
+	}
+	
 	private BigInteger count(Extent e) {
 		return e.end.toBigInteger().subtract(e.start.toBigInteger()).add(BigInteger.ONE);
 	}
@@ -265,8 +302,8 @@ class CellSet<N0 extends Number, N1 extends Number> {
 			Extent.insert(math1, items1, target, count);
 		}
 	}
-	
-	
+
+			
 	
 	
 //	int intersect(MutableNumber start0, MutableNumber end0, MutableNumber start1, MutableNumber end1, 

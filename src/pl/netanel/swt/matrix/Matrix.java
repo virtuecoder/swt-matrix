@@ -699,6 +699,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		selectFocusCell();
 		redraw();
 	}
+	
 
 //	@Override
 //	public Iterator<Zone<N0, N1>> iterator() {
