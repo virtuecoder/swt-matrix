@@ -154,6 +154,17 @@
 
 			<fileset dir=".\" includes="matrix.zip"/>
 		</ftp>
+		
+		<ftp 
+	  	 server="www.netanel.pl"
+	     remotedir="wsb6077281001/swt-matrix"
+       userid="u60772810"
+		   password="jackolo">
+
+      <fileset dir=".\" includes="swt-matrix-{$version}.jar"/>
+      <fileset dir=".\" includes="swt-matrix-snippets{$version}.jar"/>
+		</ftp>
+		
 	</target>
 
 
