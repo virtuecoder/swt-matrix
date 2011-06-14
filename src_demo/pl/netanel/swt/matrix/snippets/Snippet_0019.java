@@ -24,24 +24,20 @@ public class Snippet_0019 {
 		matrix.getAxis0().getHeader().setVisible(true);
 		
 		matrix.getColumnHeader().replacePainter(
-				new Painter("cells", Painter.SCOPE_CELLS_VERTICALLY) {
-					@Override
-					public void paint(Number index0, Number index1, int x, int y, int width, int height)
-					{
-						text = index1.toString();
-						textAlignX = index1.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
-						super.paint(index0, index1, x, y, width, height);
-					}
-				});
+			new Painter("cells", Painter.SCOPE_CELLS_VERTICALLY) {
+				@Override
+				public String getText(Number index0, Number index1) {
+					textAlignX = index1.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
+					return index1.toString();
+				}
+			});
 
 		matrix.getBody().replacePainter(
 			new Painter("cells", Painter.SCOPE_CELLS_VERTICALLY) {
 				@Override
-				public void paint(Number index0, Number index1, int x, int y, int width, int height)
-				{
-					text = index0.toString() + ", " + index1;
+				public String getText(Number index0, Number index1) {
 					textAlignX = index1.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
-					super.paint(index0, index1, x, y, width, height);
+					return index0.toString() + ", " + index1;
 				}
 		});
 		

@@ -47,30 +47,17 @@ public class Snippet_0020 {
 		
 		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				text = data.get(index0.intValue())[index1.intValue()].toString();
-				super.paint(index0, index1, x, y, width, height);
-			}
-			@Override
-			public int computeWidth(Number index0, Number index1) {
-				text = data.get(index0.intValue())[index1.intValue()].toString();
-				return super.computeWidth(index0, index1);
+			public String getText(Number index0, Number index1) {
+				return data.get(index0.intValue())[index1.intValue()].toString();
 			}
 		});
 		
 		matrix.getColumnHeader().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				text = index1.intValue() == 0 ? "Task" : "Completion date";
-				super.paint(index0, index1, x, y, width, height);
-			}
-			@Override
-			public int computeWidth(Number index0, Number index1) {
-				text = index1.intValue() == 0 ? "Task" : "Completion date";
-				return super.computeWidth(index0, index1);
+			public String getText(Number index0, Number index1) {
+				return index1.intValue() == 0 ? "Task" : "Completion date";
 			}
 		});
-		
 		
 		shell.setBounds(400, 200, 600, 300);
 		shell.open();

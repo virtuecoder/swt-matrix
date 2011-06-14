@@ -78,8 +78,7 @@
 "ControlEvent","Handling of ControlEvent","0.1","high",,"Snippet_0902"
 "+Edit",,,,,
 "Text, combo","Allow changing the value of a cell.","0.2","high",,"Snippet_0401"
-"Native looking check box","Even for custom OS themes.","0.2","high",,
-"Custom editor","Extensible base editor class .","0.2","high",,
-"Cut/copy/paste","Using clipboard tab separated format compatible with Excel","0.2","high",,
+"Native looking check box","Even for custom OS themes.","0.2","high",,"Snippet_0401, Matrix#snapSystemTheme(java.lang.String)"
+"Cut/copy/paste","Using clipboard tab separated format compatible with Excel","0.2","high",,"Snippet_0402"
 "+Other",,,,,
 "Tooltips","Tooltips for individual cells","0.8","medium",,

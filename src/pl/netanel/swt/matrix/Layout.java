@@ -32,8 +32,6 @@ class Layout<N extends Number> {
 	final Axis<N> axis;
 
 	private ArrayList<Section<N>> sections;
-
-
 	
 	public Layout(Axis<N> axis) {
 		Preconditions.checkArgument(axis.getSectionCount() > 0, "Layout must have at least one section");
@@ -71,6 +69,7 @@ class Layout<N extends Number> {
 		scrollTotal = math.create(0);
 		scrollPosition = math.create(0);
 		
+		callbacks = new ArrayList();
 		isComputingRequired = true;
 	}
 
@@ -118,12 +117,12 @@ class Layout<N extends Number> {
 		}
 		ensureCurrentIsValid();
 		
-//		// Run callbacks
-//		for (Runnable runnable: callbacks) {
-//			runnable.run();
-//		}
-//		callbacks.clear();
 		isComputingRequired = false;
+		
+		for (Runnable r: callbacks) {
+			r.run();
+		}
+		
 	}
 	
 	public void computeCache(AxisItem origin, Direction dir) {

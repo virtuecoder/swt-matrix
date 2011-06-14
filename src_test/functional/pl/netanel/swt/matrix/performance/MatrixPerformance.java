@@ -44,12 +44,7 @@ public class MatrixPerformance {
 		
 		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				text = getText(index0, index1);
-				super.paint(index0, index1, x, y, width, height);
-			}
-
-			private String getText(Number index0, Number index1) {
+			public String getText(Number index0, Number index1) {
 				return index0.toString() + ", " + index1;
 			}
 		});

@@ -24,6 +24,7 @@ public class JoomlaMysqlUpdate {
 		Connection con = DriverManager.getConnection(url, "root", "");
 		try {
 			JoomlaMysqlUpdate app = new JoomlaMysqlUpdate();
+			//app.version(con);
 			app.features(con);
 			app.snippets(con);
 		} 
@@ -32,73 +33,33 @@ public class JoomlaMysqlUpdate {
 		}
 	}
 
-	void features(Connection con) throws Exception {
-		Csv csv = new Csv();
-		List<String[]> lines = csv.read(new FileReader("website/Features.csv"));
-		StringBuilder sb = new StringBuilder();
-		sb.append("<table class='data' cellspacing='1'>");
-		appendRow(sb, "th", lines.get(0));
-		for (int i = 1, imax = lines.size(); i < imax; i++) {
-			appendRow(sb, "td", lines.get(i));
-		}
-		sb.append("</table>");
+
+	void version(Connection con) throws Exception {
+		// Get the list of snippets
+		String s = readText(new File("build/build.xml"));
+		Pattern p = Pattern.compile("property name=\"version\" value=\"(.*)\"");
+		Matcher m = p.matcher(s);
+		m.find(); 
+		String version = m.group(1).replaceAll("\\.", "\\.");
 		
 		// Get the current content and replace with the new list of snippets
-		int id = 5;
+		int id = 4;
 		Statement stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery("select introtext from jos_content where id = "+id);
 		rs.next();
-		Pattern p = Pattern.compile(
-				"(.*<!-- generated start -->)(.*)(<!-- generated end -->.*)", 
-				Pattern.DOTALL);
-		String content = rs.getString("introtext");
+        s = rs.getString("introtext");
+        s = s.replaceAll("swt-matrix-.*?\\.jar", "swt-matrix-" + version + ".jar");
+        s = s.replaceAll("swt-matrix-snippets-.*?\\.zip", "swt-matrix-snippets-" + version + ".zip");
 		rs.close();
 
-		Matcher matcher = p.matcher(content);
-		if (matcher.find()) {
-			// Update content
-			PreparedStatement stmt2 = con.prepareStatement(
-					"update jos_content set introtext = ? where id = "+id);
-			stmt2.setString(1, matcher.replaceFirst("$1"+sb+"$3"));
-			stmt2.execute();
-		}
-	}
-	
-	void appendRow(StringBuilder sb, String tag, String[] row) {
-		sb.append("<tr>");
-		for (int i = 0; i < row.length; i++) {
-			String s = row[i];
-			boolean h = i == 0 && s.startsWith("+");
-			sb.append("<").append(tag);
-			if (h) { 
-				sb.append(" colspan='7' class='header'>");
-				sb.append("<h3>"); s = s.substring(1);
-				sb.append(s);
-				sb.append("</h3>");
-				sb.append("</").append(tag).append(">");
-				break;
-			} else {
-				if (i == 0) sb.append(" style='white-space: nowrap'");
-				else if (i == 5) {
-					Pattern p = Pattern.compile("(Snippet_....)"); //, Pattern.DOTALL);
-					Matcher matcher = p.matcher(s);
-					StringBuffer myStringBuffer = new StringBuffer();
-					while (matcher.find()) {
-						matcher.appendReplacement(myStringBuffer, 
-								"<a href='http://netanel.pl/swt-matrix/snippets/" + matcher.group(1) + 
-								"\\.java'>" + matcher.group(1) + "</a>");
-					}
-					matcher.appendTail(myStringBuffer);
-					s = myStringBuffer.toString();
-				}
-				sb.append(">");
-				sb.append(s);
-				sb.append("</").append(tag).append(">");
-			}
-		}
-		sb.append("</tr>");
+		// Update content
+		PreparedStatement stmt2 = con.prepareStatement(
+				"update jos_content set introtext = ? where id = "+id);
+		stmt2.setString(1, s);
+		stmt2.execute();
 	}
 
+	
 	void snippets(Connection con) throws Exception {
 		// Get the list of snippets
 		StringBuilder sb = new StringBuilder();
@@ -106,7 +67,7 @@ public class JoomlaMysqlUpdate {
 			
 			if (file.getName().endsWith(".java")) {
 				// Get the description
-				Pattern p = Pattern.compile(".*\\/\\*\\*(.*?)(@|\\*\\/).*", Pattern.DOTALL);
+				Pattern p = Pattern.compile(".*\\/\\*\\*(.*?)(<p>|\\*\\/).*", Pattern.DOTALL);
 				Matcher matcher = p.matcher(readText(file));
 				if (matcher.find()) {
 					String description = matcher.group(1);
@@ -136,6 +97,91 @@ public class JoomlaMysqlUpdate {
 		stmt2.setString(1, s);
 		stmt2.execute();
 	}
+	
+	void features(Connection con) throws Exception {
+		Csv csv = new Csv();
+		List<String[]> lines = csv.read(new FileReader("website/Features.csv"));
+		StringBuilder sb = new StringBuilder();
+		sb.append("<table class='data' cellspacing='1'>");
+		appendFeatureRow(sb, "th", lines.get(0));
+		for (int i = 1, imax = lines.size(); i < imax; i++) {
+			appendFeatureRow(sb, "td", lines.get(i));
+		}
+		sb.append("</table>");
+		
+		// Get the current content and replace with the new list of snippets
+		int id = 5;
+		Statement stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery("select introtext from jos_content where id = "+id);
+		rs.next();
+		Pattern p = Pattern.compile(
+				"(.*<!-- generated start -->)(.*)(<!-- generated end -->.*)", 
+				Pattern.DOTALL);
+		String content = rs.getString("introtext");
+		rs.close();
+
+		Matcher matcher = p.matcher(content);
+		if (matcher.find()) {
+			// Update content
+			PreparedStatement stmt2 = con.prepareStatement(
+					"update jos_content set introtext = ? where id = "+id);
+			stmt2.setString(1, matcher.replaceFirst("$1"+sb+"$3"));
+			stmt2.execute();
+		}
+	}
+	
+	void appendFeatureRow(StringBuilder sb, String tag, String[] row) {
+		sb.append("<tr>");
+		for (int i = 0; i < row.length; i++) {
+			String s = row[i];
+			boolean h = i == 0 && s.startsWith("+");
+			sb.append("<").append(tag);
+			if (h) { 
+				sb.append(" colspan='7' class='header'>");
+				sb.append("<h3>"); s = s.substring(1);
+				sb.append(s);
+				sb.append("</h3>");
+				sb.append("</").append(tag).append(">");
+				break;
+			} else {
+				if (i == 0) {
+					sb.append(" style='white-space: nowrap'>");
+					sb.append(s);
+				}
+				else {
+					sb.append(">");
+					if (i == 5) {
+						String[] tokens = s.split(",");
+						for (int j = 0; j < tokens.length; j++) {
+							String s2 = tokens[j].trim();
+							if (s2.startsWith("Snippet_")) {
+								s2 = "<a href='http://netanel.pl/swt-matrix/snippets/" + 
+									s2 + ".java'>" + s2 + "</a>";
+							}
+							else if (!"th".equals(tag) ){
+								String[] javadoc = s2.split("#");
+								if (javadoc.length == 0 || javadoc[0].equals("")) continue;
+								String s3 = "<a href='http://netanel.pl/swt-matrix/javadoc/pl/netanel/swt/matrix/" 
+									+ javadoc[0] + ".html";
+								if (javadoc.length > 1) {
+									s3 += "#" + javadoc[1];
+								}
+								s2 = s3 + "'>" + s2 + "</a>";
+							}
+							if (j > 0) sb.append(", ");
+							sb.append(s2); 
+						}
+					} else {
+						sb.append(s);
+					}
+				}
+				sb.append("</").append(tag).append(">");
+			}
+		}
+		sb.append("</tr>");
+	}
+
+	
 	
 	
 	

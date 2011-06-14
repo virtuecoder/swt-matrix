@@ -39,22 +39,24 @@ import pl.netanel.util.Preconditions;
 public class Zone<N0 extends Number, N1 extends Number> {
 	
 	final Painters<N0, N1> painters;
-	Matrix<N0, N1> matrix;
 	Section<N0> section0;
 	Section<N1> section1;
 	SectionClient<N0> sectionClient0;
 	SectionClient<N1> sectionClient1;
 	CellSet cellSelection;
 	CellSet lastSelection; // For adding selection
+	ZoneEditor<N0, N1> editor;
 	
 	final Listeners listeners;
 	final ArrayList<GestureBinding> bindings;
 	boolean selectionEnabled;
 	
+	private Matrix<N0, N1> matrix;
 	private Color selectionBackground, selectionForeground;
 	private final Rectangle bounds;
 	
 	private CellValues<N0, N1, Color> background, foreground;
+	
 	
 //	private CellValues<N0, N1, String> text;
 //	private CellValues<N0, N1, Image> image;
@@ -161,22 +163,11 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	void setDefaultBodyStyle() {
 		Painter painter = new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				text = index0.toString() + ", " + index1.toString();
-				super.paint(index0, index1, x, y, width, height);
-			}
-			@Override
-			public int computeWidth(Number index0, Number index1) {
-				text = index0.toString() + ", " + index1.toString();
-				return super.computeWidth(index0, index1);
-			}
-			@Override
-			public int computeHeight(Number index0, Number index1) {
-				text = index0.toString() + ", " + index1.toString();
-				return super.computeHeight(index0, index1);
+			public String getText(Number index0, Number index1) {
+				return index0.toString() + ", " + index1.toString();
 			}
 		};
-		painter.matrix = matrix;
+		painter.setMatrix(matrix);
 		painter.zone = this;
 		addPainter(painter);
 		Color color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
@@ -194,7 +185,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		setSelectionBackground(Resources.getColor(rgb));
 		
 		if (getPainterCount() == 0) {
-			cellsPainte.matrix = matrix;
+			cellsPainte.setMatrix(matrix);
 			cellsPainte.zone = this;
 			addPainter(cellsPainte);
 			final Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
@@ -616,6 +607,11 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 */
 	public void bind(int commandId, int eventType, int code) {
 		bindings.add(new GestureBinding(commandId, eventType, code));
+		if (editor != null && (
+				commandId == Matrix.CMD_APPLY_EDIT || 
+				commandId == Matrix.CMD_CANCEL_EDIT )) {
+			editor.controlListener.bind(commandId, eventType, code);
+		}
 	}
 	
 	/**
@@ -623,12 +619,19 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 * Code is a logical <i>OR</i> of key, state mask and mouse button codes. 
 	 */
 	public void unbind(int commandId, int eventType, int code) {
-		for (int i = bindings.size(); i-- > 0;) {
-			GestureBinding binding = bindings.get(i);
-			if (binding.commandId == commandId && binding.eventType == eventType 
-					&& binding.key == code) {
-				bindings.remove(i);
-			};
+		if (editor != null && (
+				commandId == Matrix.CMD_APPLY_EDIT || 
+				commandId == Matrix.CMD_CANCEL_EDIT )) {
+			editor.controlListener.unbind(commandId, eventType, code);
+		}
+		else {
+			for (int i = bindings.size(); i-- > 0;) {
+				GestureBinding binding = bindings.get(i);
+				if (binding.commandId == commandId && binding.eventType == eventType 
+						&& binding.key == code) {
+					bindings.remove(i);
+				};
+			}
 		}
 	}
 	
@@ -854,6 +857,8 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	
 	/**
 	 * Replaces the painter at the index of painter with the same name.
+	 * If a painter with the specified name does not exist, 
+	 * then the new painter is added at the end.
 	 * @param painter painter to replace a painter with the same name
 	 * @throws IndexOutOfBoundsException if there is no painter with the same name
 	 * @see #getPainter(String)
@@ -933,7 +938,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				painter.scope == Painter.SCOPE_CELLS_VERTICALLY) 
 		{
 			painter.zone = this;
-			painter.matrix = matrix;
+			painter.setMatrix(matrix);
 		}
 	}
 	
@@ -995,11 +1000,17 @@ public class Zone<N0 extends Number, N1 extends Number> {
 					painter.scope == Painter.SCOPE_CELLS_VERTICALLY) 
 			{
 				painter.zone = this;
-				painter.matrix = matrix;
+				painter.setMatrix(matrix);
 			}
 		}
 	}
 
+	public Matrix<N0, N1> getMatrix() {
+		return matrix;
+	}
 	
+	void setEditor(ZoneEditor editor) {
+		this.editor = editor;
+	}
 
 }

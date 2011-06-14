@@ -38,7 +38,7 @@ public class Snippet_0015 {
 				gc.setBackground(display.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 				gc.setAdvanced(true);
 				if (gc.getAdvanced()) gc.setAlpha(127);
-				matrixWidth = matrix.getClientArea().width;
+				matrixWidth = getMatrix().getClientArea().width;
 				return true;
 			}
 			@Override
@@ -48,7 +48,7 @@ public class Snippet_0015 {
 			
 			@Override
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				Axis axis0 = matrix.getAxis0();
+				Axis axis0 = getMatrix().getAxis0();
 				AxisItem focusItem = axis0.getFocusItem();
 				if (body.getSection0().equals(focusItem.getSection()) &&
 					index0.equals(focusItem.getIndex())) 

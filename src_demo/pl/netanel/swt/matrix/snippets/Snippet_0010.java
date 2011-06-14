@@ -12,7 +12,7 @@ import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 
 /**
- * Draw custom background for the whole matrix.
+ * Draw custom background for the whole matrix. 
  */
 public class Snippet_0010 {
 	public static void main(String[] args) {
@@ -39,8 +39,8 @@ public class Snippet_0010 {
 		matrix.addPainter(0, new Painter("background") {
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				Rectangle r = image2.getBounds();
-				x = align(SWT.RIGHT, 50, x, r.width, width);
-				y = align(SWT.CENTER, 0, y, r.height, height);
+				x += align(SWT.RIGHT, 50, r.width, width);
+				y += align(SWT.CENTER, 0, r.height, height);
 				
 				gc.drawImage(image2, x, y);
 			};

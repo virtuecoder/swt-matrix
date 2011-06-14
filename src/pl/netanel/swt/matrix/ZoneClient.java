@@ -280,4 +280,18 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone {
 		return core.getSelectedExtent();
 	}
 
+	@Override
+	Iterator getSelectedBoundsIterator() {
+		return core.getSelectedBoundsIterator();
+	}
+
+	public Matrix getMatrix() {
+		return core.getMatrix();
+	}
+
+	@Override
+	void setEditor(ZoneEditor editor) {
+		core.setEditor(editor);
+	}
+	
 }

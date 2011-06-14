@@ -570,7 +570,7 @@ class MatrixListener implements Listener {
 		bindKey(Matrix.CMD_SELECT_FULL_UP_LEFT, SWT.MOD1 | SWT.MOD2 | SWT.HOME);
 		bindKey(Matrix.CMD_SELECT_FULL_DOWN_RIGHT, SWT.MOD1 | SWT.MOD2 | SWT.END);
 		
-		bindKey(Matrix.CMD_COPY, SWT.MOD1 | 'c');
+//		bindKey(Matrix.CMD_COPY, SWT.MOD1 | 'c');
 		
 		// Mouse current item 
 		body.bindings.add(new GestureBinding(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1));
@@ -623,6 +623,12 @@ class MatrixListener implements Listener {
 //		System.out.println("execute " + commandId);
 		switch (commandId) {
 		case CMD_RESIZE_PACK:		state0.pack(); state1.pack(); break;
+		
+		case CMD_EDIT:				if (zone.editor != null) zone.editor.edit(); return;
+		case CMD_CUT:				if (zone.editor != null) zone.editor.cut(); return;
+		case CMD_COPY:				if (zone.editor != null) zone.editor.copy(); return;
+		case CMD_PASTE:				if (zone.editor != null) zone.editor.paste(); return;
+		case CMD_DELETE:			if (zone.editor != null) zone.editor.delete(); return;
 		}
 		
 		if (!isSelectable()) return;
@@ -631,6 +637,7 @@ class MatrixListener implements Listener {
 		if (!isExtendingSelect(commandId)) {
 			state0.last = state0.item;
 			state1.last = state1.item;
+			matrix.selectFocusCell();
 		}
 		if (commandId == CMD_SELECT_TO_LOCATION || commandId == CMD_SELECT_TO_LOCATION_ALTER) {
 			if (state0.last.getSectionUnchecked().equals(state0.axis.getHeader())) {
@@ -655,7 +662,6 @@ class MatrixListener implements Listener {
 		case CMD_HIDE:				state0.hide(true);  state1.hide(true);  break; 
 		case CMD_UNHIDE:			state0.hide(false); state1.hide(false); break;
 		case CMD_RESIZE_PACK:		state0.pack(); break;
-		case CMD_COPY:				matrix.copy(); return;
 		}
 
 		if (isBodySelect(commandId)) { // || state0.focusMoved || state1.focusMoved) {

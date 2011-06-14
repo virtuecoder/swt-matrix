@@ -65,20 +65,18 @@ public class Snippet_0005 {
 		
 		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				text = sorted.get(index0.intValue())[index1.intValue()].toString();
-				super.paint(index0, index1, x, y, width, height);
+			public String getText(Number index0, Number index1) {
+				return sorted.get(index0.intValue())[index1.intValue()].toString();
 			}
 		});
 		
 		Painter columnHeaderPainter = new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+			public String getText(Number index0, Number index1) {
 				int column = index1.intValue();
 				image = direction[column] == 0 ? null : 
 					direction[column] == 1 ? sortAsc : sortDesc; 
-				text = index1.toString();
-				super.paint(index0, index1, x, y, width, height);
+				return index1.toString();
 			}
 		};
 		columnHeaderPainter.imageAlignX = SWT.RIGHT;

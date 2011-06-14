@@ -41,7 +41,6 @@ import pl.netanel.util.Preconditions;
 public class Matrix<N0 extends Number, N1 extends Number> extends Canvas 
 	implements Iterable<Zone<N0, N1>> 
 {
-
 	static final int CELL_WIDTH = 16;			
 	static final int LINE_WIDTH = 1;
 	static final int RESIZE_OFFSET_X = 3;
@@ -124,16 +123,21 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	/*
 	 *  Modification Key Actions 
 	 */
-	static final int CMD_CUT = 200; 						// binding = SWT.MOD2 + SWT.DEL
+	public static final int CMD_CUT = 200; 						// binding = SWT.MOD2 + SWT.DEL
 	public static final int CMD_COPY = 201; 					// binding = SWT.MOD1 + SWT.INSERT;
-	static final int CMD_PASTE = 202;					// binding = SWT.MOD2 + SWT.INSERT ;
+	public static final int CMD_PASTE = 202;					// binding = SWT.MOD2 + SWT.INSERT ;
+
+	public static final int CMD_EDIT = 205;						
+	public static final int CMD_APPLY_EDIT = 206;						
+	public static final int CMD_CANCEL_EDIT = 207;						
+	public static final int CMD_DELETE = 209;						
 	
-	public static final int CMD_HIDE = 210;						// binding = SWT.MOD3 + SWT.DEL;
-	public static final int CMD_UNHIDE = 211;					// binding = SWT.MOD3 + SWT.INSERT;
+	public static final int CMD_HIDE = 301;						// binding = SWT.MOD3 + SWT.DEL;
+	public static final int CMD_UNHIDE = 302;					// binding = SWT.MOD3 + SWT.INSERT;
 	
-	static final int RESIZE_START = 220;					    
-	static final int RESIZE_STOP = 221;					    
-	public static final int CMD_RESIZE_PACK = 222;					    
+	static final int RESIZE_START = 320;					    
+	static final int RESIZE_STOP = 321;					    
+	public static final int CMD_RESIZE_PACK = 322;					    
 	
 
 	/*------------------------------------------------------------------------
@@ -578,10 +582,10 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 //		return null; 
 //	}
 	
-	private void selectFocusCell() {
+	void selectFocusCell() {
 		if (!focusCellEnabled) return;
-		layout0.compute();
-		layout1.compute();
+		layout0.computeIfRequired();
+		layout1.computeIfRequired();
 		if (layout0.current != null && layout1.current != null) {
 			Zone<N0, N1> zone = model.getZoneUnchecked(
 					layout0.current.getSectionUnchecked(), 
@@ -792,6 +796,8 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	
 	/**
 	 * Replaces the painter at the index of painter with the same name.
+	 * If a painter with the specified name does not exist, 
+	 * then the new painter is added at the end.
 	 * @param painter painter to replace a painter with the same name
 	 * @throws IndexOutOfBoundsException if there is no painter with the same name
 	 * @see #getPainter(String)
@@ -870,18 +876,8 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		if (painter.scope == Painter.SCOPE_CELLS_HORIZONTALLY ||
 				painter.scope == Painter.SCOPE_CELLS_VERTICALLY) 
 		{
-			painter.matrix = this;
+			painter.setMatrix(this);
 		}
-	}
-
-	void copy() {
-//		for (Section section0: axis0.sections) {
-//			for (Section section1: axis1.sections) {
-//				Zone zone = model.getZoneUnchecked(section0, section1);
-//				zone.getSelectedIterator();
-//				
-//			}	
-//		}
 	}
 
 	@Override

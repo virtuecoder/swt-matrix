@@ -39,7 +39,12 @@ class Painters<N0 extends Number, N1 extends Number> extends DelegatingList<Pain
 	}
 	
 	public void replacePainter(Painter<N0, N1> painter) {
-		set(indexOfPainter(painter.name), painter);
+		int indexOfPainter = indexOfPainter(painter.name);
+		if (indexOfPainter == -1) {
+			add(painter);
+		} else {
+			set(indexOfPainter, painter);
+		}
 	}
 
 	

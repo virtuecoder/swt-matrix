@@ -1,102 +1,78 @@
 package pl.netanel.swt.matrix.snippets;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
-import pl.netanel.swt.matrix.Zone;
+import pl.netanel.swt.matrix.ZoneEditor;
 
 /**
- * Copy / paste.
- */
-/*
- * Can also copy/paste irregular sets of selected cells, 
- * e.g. (0,0) and (1,1) cells at once.
+ * Simplest zone editor.
  */
 public class Snippet_0402 {
-	static final String NEW_LINE = System.getProperty("line.separator");
-	static final int count0 = 10, count1 = 4;
-	
-	public static void main(String[] args) {
-		final Display display = Display.getDefault();
+
+	public static void main(String[] args) throws IOException {
+		Display display = Display.getDefault();
 		Shell shell = new Shell(display);
-		shell.setLayout(new GridLayout(2, false));
+		shell.setLayout(new FillLayout());
 		
 		// Data model
-		final ArrayList<ArrayList> data = new ArrayList();
-		for (int i = 0; i < count0; i++) {
-			ArrayList row = new ArrayList();
-			for (int j = 0; j < count1; j++) {
-				row.add("" + i + ", " + j);
-			}	
-			data.add(row);
-		}
+		final ArrayList<Object[]> data = new ArrayList();
+		data.add(new Object[] {"a", true, new Date()});
+		data.add(new Object[] {true, false, "Monday"});
+		data.add(new Object[] {new Date(), "Sunday", "b"});
 		
 		// Matrix
-		final Matrix<Integer, Integer> matrix = new Matrix(shell, SWT.NONE);
-		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		final Matrix matrix = new Matrix(shell, SWT.NONE);
 		
-		// Configure the matrix
-		matrix.getAxis0().getHeader().setVisible(true);
-		matrix.getAxis0().getBody().setCount(count0);
-		matrix.getAxis1().getBody().setCount(count1);
+		matrix.getAxis0().getBody().setCount(data.size());
+		matrix.getAxis1().getBody().setCount(3);
+		matrix.getAxis1().getBody().setDefaultCellWidth(80);
+
+		// Data painter
 		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				text = data.get(index0.intValue()).get(index1.intValue()).toString();
-				super.paint(index0, index1, x, y, width, height);
+			public String getText(Number index0, Number index1) {
+				Object value = data.get(index0.intValue())[index1.intValue()];
+				return value == null || value instanceof Boolean ? "" : value.toString();
 			}
 		});
 		
-		// Copy button
-		Button copy = new Button(shell, SWT.PUSH);
-		copy.setText("Copy");
-		copy.addSelectionListener(new SelectionAdapter() {
+		// Body editor
+		new ZoneEditor(matrix.getBody()) {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				copy(display, data, matrix);
+			protected Object getModelValue(Number index0, Number index1) {
+				return data.get(index0.intValue())[index1.intValue()];
 			}
-		});
-		matrix.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyPressed(KeyEvent e) {
-				if ((e.stateMask & SWT.MOD1) != 0 && e.keyCode == 'c') {
-					copy(display, data, matrix);
+			public void setModelValue(Number index0, Number index1, Object value) {
+				data.get(index0.intValue())[index1.intValue()] = value;
+			}
+			
+			@Override
+			public boolean hasEmbededControl(Number index0, Number index1) {
+				Object value = data.get(index0.intValue())[index1.intValue()];
+				return value instanceof Boolean;
+			}
+			
+			@Override
+			protected Control createControl(Number index0, Number index1) {
+				Object value = data.get(index0.intValue())[index1.intValue()];
+				if (value instanceof Boolean) {
+					return new Button(matrix.getShell(), SWT.CHECK);
 				}
+				return super.createControl(index0, index1);
 			}
-		});
-		
-		Button paste = new Button(shell, SWT.PUSH);
-		paste.setText("Paste");
-		paste.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				paste(display, data, matrix);
-			}
-		});
-		matrix.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if ((e.stateMask & SWT.MOD1) != 0 && e.keyCode == 'v') {
-					paste(display, data, matrix);
-				}
-			}
-		});
+		};
 		
 		shell.setBounds(400, 200, 400, 300);
 		shell.open();
@@ -105,82 +81,5 @@ public class Snippet_0402 {
 				display.sleep();
 			}
 		}
-	}
-	
-	private static void copy(final Display display,
-			final ArrayList<ArrayList> data,
-			final Matrix<Integer, Integer> matrix) 
-	{
-		StringBuilder sb = new StringBuilder();
-		Zone<Integer, Integer> body = matrix.getBody();
-		Number[] n = body.getSelectedExtent();
-		int max0 = n[1].intValue();
-		int max1 = n[3].intValue();
-		int min1 = n[2].intValue();
-		for (int i = n[0].intValue(); i <= max0; i++) {
-			for (int j = min1; j <= max1; j++) {
-				if (j > min1) sb.append("\t");
-				if (body.isSelected(i, j)) {
-					sb.append(data.get(i).get(j).toString());
-				}
-			}
-			if (i < max0) sb.append(NEW_LINE);
-		}
-		Clipboard clipboard = new Clipboard(display);
-		clipboard.setContents(new Object[] {sb.toString()},
-				new Transfer[] {TextTransfer.getInstance()});		
-		clipboard.dispose();
-		matrix.setFocus();
-	}
-	
-	private static void paste(final Display display,
-			final ArrayList<ArrayList> data,
-			final Matrix<Integer, Integer> matrix) 
-	{
-		Clipboard clipboard = new Clipboard(display);
-		Object contents = clipboard.getContents(TextTransfer.getInstance());
-		clipboard.dispose();
-		
-		if (contents == null) return;
-		
-		AxisItem focusItem0 = matrix.getAxis0().getFocusItem();
-		AxisItem focusItem1 = matrix.getAxis1().getFocusItem();
-		if (focusItem0 == null || focusItem1 == null) return;
-		
-		int start0 = focusItem0.getIndex().intValue();
-		int start1 = focusItem1.getIndex().intValue();
-		String[] rows = contents.toString().split(NEW_LINE);
-		for (int i = 0; i < rows.length && start0 + i < count0; i++) {
-			String[] cells = split(rows[i], "\t");
-			for (int j = 0; j < cells.length && start1 + j < count1; j++) {
-				String value = cells[j];
-				if (value != null) {
-					data.get(start0 + i).set(start1 + j, value);
-				}
-			}
-		}
-		
-		matrix.redraw();
-		matrix.setFocus();
-	}
-	
-	private static String[] split(String s, String separator) {
-		ArrayList<String> list = new ArrayList();
-		int pos1 = 0, pos2 = 0;
-		while (true) {
-			pos1 = pos2;
-			pos2 = s.indexOf("\t", pos2);
-			if (pos2 == -1) {
-				list.add(pos1 == s.length() ? null : s.substring(pos1, s.length()));
-				break;
-			}
-			if (pos1 == pos2) {
-				list.add(null);
-			} else {
-				list.add(s.substring(pos1, pos2));
-			}
-			pos2++;
-		}
-		return list.toArray(new String[] {});
 	}
 }

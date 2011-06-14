@@ -53,20 +53,18 @@ public class Snippet_0004 {
 		
 		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+			public String getText(Number index0, Number index1) {
 				String value = list.get(index0.intValue());
-				text = index1.intValue() == 0 
+				return index1.intValue() == 0 
 					? value
 					: Integer.toString(value.length());
-				super.paint(index0, index1, x, y, width, height);
 			}
 		});
 		
 		matrix.getColumnHeader().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				text = index1.intValue() == 0 ? "Value" : "Length";
-				super.paint(index0, index1, x, y, width, height);
+			public String getText(Number index0, Number index1) {
+				return index1.intValue() == 0 ? "Value" : "Length";
 			}
 		});
 		

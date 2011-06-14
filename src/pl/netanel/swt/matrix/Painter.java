@@ -143,7 +143,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 
 	TextClipMethod textClipMethod;
 	Zone zone;
-	Matrix matrix;
+	private Matrix matrix;
 
 	private Color lastForeground, lastBackground, defaultBackground, defaultForeground,  
 		 selectionBackground, selectionForeground;
@@ -224,7 +224,8 @@ public class Painter<N0 extends Number, N1 extends Number> {
 //		backgroundEnabled = zone.isBackgroundEnabled();
 //		foregroundEnabled = zone.isForegroundEnabled();
 		
-		shouldHighlight = //!zone.equals(matrix.getBody()) || 
+		// Body must be checked otherwise a header of a single item selected would not be highlighted 
+		shouldHighlight = !zone.equals(getMatrix().getBody()) || 
 			zone.getSelectionCount().compareTo(BigInteger.ONE) != 0;
 		
 		extentCache = FontWidthCache.get(gc, gc.getFont());
@@ -282,14 +283,17 @@ public class Painter<N0 extends Number, N1 extends Number> {
 //		lineWidth0 = zone.section0.getLineWidth(index0);
 //		lineWidth1 = zone.section1.getLineWidth(index1);
 //		lineColor = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
+		int x2 = x, y2 = y;
+		int x3 = x, y3 = y;
 		
-//		Image image = zone.getImage(index0, index1);
+		image = getImage(index0, index1);
+//		imageAlignX = getImageAlignX(index0, index1);
+//		imageAlignY = getImageAlignY(index0, index1);
 		if (image != null) {
-			int x2 = x, y2 = y;
 			Rectangle bounds = image.getBounds();
 			switch (imageAlignX) {
 			case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP: 
-				x2 += imageMarginX; x += bounds.width; break;
+				x2 += imageMarginX; x3 += bounds.width; break;
 			case SWT.CENTER:
 				x2 += (width - bounds.width) / 2; break; 
 			case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
@@ -303,11 +307,16 @@ public class Painter<N0 extends Number, N1 extends Number> {
 			case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
 				y2 += height - bounds.height - imageMarginY; break;
 			}
+			Rectangle lastClipping = gc.getClipping();
+			gc.setClipping(x, y, width, height);
 			gc.drawImage(image, x2, y2);
+			gc.setClipping(lastClipping);
 			width -= bounds.width;
 		}
 		
-//		text = zone.getText(index0, index1);
+		text = getText(index0, index1);
+//		textAlignX = getTextAlignX(index0, index1);
+//		textAlignY = getTextAlignY(index0, index1);
 		if (text != null) {
 //			if (width < 4 || height < 4) return;
 			
@@ -324,23 +333,67 @@ public class Painter<N0 extends Number, N1 extends Number> {
 			
 			switch (textAlignX) {
 			case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP: 
-				x += textMarginX; break;
+				x3 += textMarginX; break;
 			case SWT.CENTER:
-				x += (width - extent.x) / 2; break; 
+				x3 += (width - extent.x) / 2; break; 
 			case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
-				x += width - extent.x - textMarginX; break;
+				x3 += width - extent.x - textMarginX; break;
 			}
 			switch (textAlignY) {
 			case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
-				y += textMarginY; break;
+				y3 += textMarginY; break;
 			case SWT.CENTER:
-				y += (height - extent.y) / 2; break; 
+				y3 += (height - extent.y) / 2; break; 
 			case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
-				y += height - extent.y - textMarginY; break;
+				y3 += height - extent.y - textMarginY; break;
 			}
 
-			gc.drawString(text, x, y, true);
+			gc.drawString(text, x3, y3, true);
 		}
+	}
+	
+	public int getTextAlignY(N0 index0, N1 index1) {
+		return textAlignX;
+	}
+
+	public int getTextAlignX(N0 index0, N1 index1) {
+		return textAlignY;
+	}
+	
+	public int getImageAlignY(N0 index0, N1 index1) {
+		return imageAlignX;
+	}
+	
+	public int getImageAlignX(N0 index0, N1 index1) {
+		return imageAlignY;
+	}
+
+	/**
+	 * Returns the text to be drawn by the painter.
+	 * <p>
+	 * This method is used both by {@link #paint(Number, Number, int, int, int, int)} 
+	 * and by {@link #computeHeight(Number, Number)} and {@link #computeWidth(Number, Number)}
+	 *  
+	 * @param index0 row index of the cell  
+	 * @param index1 column index of the cell 
+	 * @return the text to be drawn by the painter
+	 */
+	public String getText(N0 index0, N1 index1) {
+		return text;
+	}
+	
+	/**
+	 * Returns the image to be drawn by the painter.
+	 * <p>
+	 * This method is used both by {@link #paint(Number, Number, int, int, int, int)} 
+	 * and by {@link #computeHeight(Number, Number)} and {@link #computeWidth(Number, Number)}
+	 *  
+	 * @param index0 row index of the cell  
+	 * @param index1 column index of the cell 
+	 * @return the image to be drawn by the painter
+	 */
+	public Image getImage(N0 index0, N1 index1) {
+		return image;
 	}
 	
 	
@@ -385,10 +438,12 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	public int computeWidth(N0 index0, N1 index1) {
 		assert zone != null;
 		int x = 0;
+		image = getImage(index0, index1);
 		if (image != null) {
 			Rectangle bounds = image.getBounds();
 			x = bounds.width + 2 * imageMarginX;
 		}
+		text = getText(index0, index1);
 		if (text != null) {
 			Point p = gc.stringExtent(text);
 			x += p.x + 2 * textMarginX;
@@ -412,16 +467,24 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	public int computeHeight(N0 index0, N1 index1) {
 		assert zone != null;
 		int y = 0;
+		image = getImage(index0, index1);
 		if (image != null) {
 			Rectangle bounds = image.getBounds();
 			y = bounds.height + 2 * imageMarginY;
 		}
+		text = getText(index0, index1);
 		if (text != null) {
 			Point p = gc.stringExtent(text);
 			y = java.lang.Math.max(p.y, y + 2 * textMarginY);
 		}
 		return y;
 	}
+
+	
+	
+	/*------------------------------------------------------------------------
+	 * Static members 
+	 */
 	
 	/**
 	 * Returns the distance of a graphical element based on the align mode and the padding margin.
@@ -429,29 +492,35 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 * @param align the alignment mode, one of: {@link SWT#LEFT}, {@link SWT#RIGHT}, {@link SWT#CENTER}, 
 	 * 		{@link SWT#TOP}, {@link SWT#BOTTOM}, {@link SWT#BEGINNING}, {@link SWT#END}
 	 * @param margin the number of pixels from the edge to which to align, does not matter with {@link SWT#CENTER}
-	 * @param distance the distance of the cell 
 	 * @param width the width of the element
 	 * @param bound the width of the cell
 	 * @return
 	 */
-	protected int align(int align, int margin, int distance, int width, int bound) {
+	public static int align(int align, int margin, int width, int bound) {
 		switch (align) {
 		// Fast return
 		case SWT.LEFT: case SWT.TOP: case SWT.BEGINNING:
-			return distance + margin;
+			return margin;
 		case SWT.CENTER:
-			return distance + (bound - width) / 2; 
+			return (bound - width) / 2; 
 		case SWT.RIGHT: case SWT.BOTTOM: case SWT.END:
-			return distance + bound - width - margin; 
+			return bound - width - margin; 
 		}
-		return distance + margin;
+		return margin;
 	}
 	
-	
-	
-	/*------------------------------------------------------------------------
-	 * Static members 
+	/**
+	 * Enlarge or shrink the rectangle by the given offset. 
+	 * The rectangle is enlarged if the offset is positive and shrunk otherwise. 
+	 * @param r
+	 * @param offset
 	 */
+	public static void offsetRectangle(Rectangle r, int offset) {
+		r.x -= offset;
+		r.y -= offset;
+		r.width += 2 *offset;
+		r.height += 2 *offset;
+	}
 	
 	static RGB blend(RGB c1, RGB c2, int ratio) {
 		int r = blend(c1.red, c2.red, ratio);
@@ -464,6 +533,12 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		return (ratio*v1 + (100-ratio)*v2)/100;
 	}
 
-		
-	
+	protected void setMatrix(Matrix matrix) {
+		this.matrix = matrix;
+	}
+
+	protected Matrix getMatrix() {
+		return matrix;
+	}
+
 }

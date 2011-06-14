@@ -4,8 +4,8 @@ From nebula forum
 - Nebula CompositeTable, flexible row layout
 
 To do:
+- 
 - multiline text, text wraping
-- copy
 -
 - snippet to swap axises
 - width of line at the edge of sections schould be maximum of the width from both sections

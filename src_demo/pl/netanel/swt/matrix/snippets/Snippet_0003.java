@@ -62,9 +62,8 @@ public class Snippet_0003 {
 		
 		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				text = filtered.get(index0.intValue())[index1.intValue()].toString();
-				super.paint(index0, index1, x, y, width, height);
+			public String getText(Number index0, Number index1) {
+				return filtered.get(index0.intValue())[index1.intValue()].toString();
 			}
 		});
 		
@@ -74,9 +73,8 @@ public class Snippet_0003 {
 		
 		matrix.getColumnHeader().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				text = index1.intValue() == 0 ? "Task" : "Priority";
-				super.paint(index0, index1, x, y, width, height);
+			public String getText(Number index0, Number index1) {
+				return index1.intValue() == 0 ? "Task" : "Priority";
 			}
 		});
 		
@@ -86,10 +84,9 @@ public class Snippet_0003 {
 		// Filter columns
 		matrix.getZone(axis0.getSection(1), axis1.getBody()).replacePainter(
 			new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
-				public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-					text = index1.intValue() == 1 ? filter : null;
-					super.paint(index0, index1, x, y, width, height);
-				};					
+				public String getText(Number index0, Number index1) {
+					return index1.intValue() == 1 ? filter : null;
+				};
 			}
 		); 
 		

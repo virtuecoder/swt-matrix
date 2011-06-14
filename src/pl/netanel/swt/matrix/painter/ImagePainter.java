@@ -23,8 +23,8 @@ class ImagePainter extends Painter {
 	@Override
 	public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 		Rectangle r = image.getBounds();
-		x = align(alignX, marginX, x, r.width, width);
-		y = align(alignY, marginY, y, r.height, height);
+		x += align(alignX, marginX, r.width, width);
+		y += align(alignY, marginY, r.height, height);
 		
 		gc.drawImage(image, x, y);
 	}
