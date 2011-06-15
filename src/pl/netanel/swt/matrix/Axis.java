@@ -347,7 +347,7 @@ public class Axis<N extends Number>  {
 		section.checkIndex(index, section.getCount(), "index");
 		
 		layout.setCurrentItem(AxisItem.create(section, index));
-		matrix.redraw();
+		if (matrix != null) matrix.redraw();
 	}
 
 	

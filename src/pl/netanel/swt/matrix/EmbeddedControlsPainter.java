@@ -1,37 +1,37 @@
 package pl.netanel.swt.matrix;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import pl.netanel.swt.matrix.ZoneEditor.ZoneEditorData;
+
 /**
  * Creates embedded controls rather then drawing directly if the layout has been modified. 
  * 
  * @author Jacek Kolodziejczyk created 14-06-2011
  */
-class EmbeddedControlsPainter extends Painter {
-
-	private static final String EDITED_CELL = "edited cell";
-	
+class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Painter<N0, N1> {
 	private final ZoneEditor editor;
-	private ArrayList<Control> controls;
+	private HashMap<Number, HashMap<Number, Control>> controls;
 	boolean layoutModified;
 	private Listener listener;
 
-	public EmbeddedControlsPainter(final ZoneEditor editor) {
+	public EmbeddedControlsPainter(final ZoneEditor<N0, N1> editor) {
 		super("editor controls", Painter.SCOPE_CELLS_HORIZONTALLY);
 		this.editor = editor;
-		controls = new ArrayList<Control>();
+		controls = new HashMap<Number, HashMap<Number, Control>>();
 		listener = new Listener() {
 			@Override
 			public void handleEvent(Event e) {
 				Matrix matrix = getMatrix();
-				Number[] data = (Number[]) e.widget.getData(EDITED_CELL);
-				matrix.axis0.setFocusItem(editor.zone.getSection0(), data[0]);
-				matrix.axis1.setFocusItem(editor.zone.getSection1(), data[1]);
+				ZoneEditorData data = editor.getData(e.widget);
+				matrix.axis0.setFocusItem(editor.zone.getSection0(), data.index0);
+				matrix.axis1.setFocusItem(editor.zone.getSection1(), data.index1);
 				matrix.setFocus();
 			}
 		};
@@ -40,24 +40,28 @@ class EmbeddedControlsPainter extends Painter {
 	@Override
 	protected boolean init() {
 		if (!layoutModified) return false;
-		for (Control control: controls) {
-			control.dispose();
+		for (Entry<Number, HashMap<Number, Control>> entry: controls.entrySet()) {
+			for (Control control: entry.getValue().values()) {
+				control.dispose();
+			}
 		}	
+		controls.clear();
 		return true;
 	}
 	
 	@Override
-	public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-		if (editor.hasEmbededControl(index0, index1)) {
-			System.out.println("paint");
-			Control control = editor.edit(index0, index1);
-			controls.add(control);
-			control.moveAbove(getMatrix());
+	public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
+		if (editor.hasEmbeddedControl(index0, index1)) {
+			Control control = editor.addControl(index0, index1);
 			control.addListener(SWT.KeyUp, listener );
 			control.addListener(SWT.MouseUp, listener );
 			
 //			control.addListener(SWT.Selection, listener );
-			control.setData(EDITED_CELL, new Number[] {index0, index1});
+			HashMap<Number, Control> row = controls.get(index0);
+			if (row == null) {
+				controls.put(index0, row = new HashMap<Number, Control>());
+			}
+			row.put(index1, control);
 		}
 	}
 	
@@ -68,6 +72,16 @@ class EmbeddedControlsPainter extends Painter {
 		}
 		layoutModified = false;
 		
+	}
+	
+	public Control getControl(N0 index0, N1 index1) {
+		HashMap<Number, Control> row = controls.get(index0);
+		if (row == null) {
+			return null;
+		}
+		else {
+			return row.get(index1);
+		}
 	}
 	
 	@Override
@@ -82,9 +96,4 @@ class EmbeddedControlsPainter extends Painter {
 		matrix.layout1.callbacks.add(r);
 		super.setMatrix(matrix);
 	}
-
-	public boolean isEmbedded(Control control) {
-		return control.getData(EDITED_CELL) != null;
-	}
-	
 }

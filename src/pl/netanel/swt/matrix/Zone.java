@@ -198,8 +198,8 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 * Return rectangular bounds of the cell with the given coordinates.
 	 * If one of the indexes is null it return null.
 	 * 
-	 * @param index0 index in <code>section0</code> of the cell 
-	 * @param index1 index in <code>section1</code> of the cell 
+	 * @param index0 cell index on <code>axis0</code> 
+	 * @param index1 cell index on <code>axis1</code> 
 	 * @return rectangular bounds of the cell with the given coordinates.
 	 */
 	public Rectangle getCellBounds(N0 index0, N1 index1) {
@@ -606,13 +606,19 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 * Code is a logical <i>OR</i> of key, state mask and mouse button codes. 
 	 */
 	public void bind(int commandId, int eventType, int code) {
-		bindings.add(new GestureBinding(commandId, eventType, code));
+		bind(new GestureBinding(commandId, eventType, code));
+	}
+	
+	void bind(GestureBinding binding) {
 		if (editor != null && (
-				commandId == Matrix.CMD_APPLY_EDIT || 
-				commandId == Matrix.CMD_CANCEL_EDIT )) {
-			editor.controlListener.bind(commandId, eventType, code);
+				binding.commandId == Matrix.CMD_APPLY_EDIT || 
+				binding.commandId == Matrix.CMD_CANCEL_EDIT )) {
+			editor.controlListener.bindings.add(binding);
+		} else {
+			bindings.add(binding);
 		}
 	}
+	
 	
 	/**
 	 * Removes the binding the command to the user gesture specified by the event type and code.

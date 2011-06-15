@@ -271,9 +271,10 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 			body.setDefaultForeground(getForeground());
 		}
 		
+		selectFocusCell();
+		
 		this.listener = new MatrixListener(this);
 		listener.setLayout(layout0, layout1);
-		selectFocusCell();
 	}
 	
 	
@@ -422,6 +423,9 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		model.axis0.updateScrollBarValues(area.height);
 		
 		area = getClientArea();
+		
+		listener.state0.item = layout0.current;
+		listener.state1.item = layout1.current;
 	}
 
 	/**
@@ -559,9 +563,9 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 //	 * Return the rectangular bounds of the cell with the given coordinates.
 //	 * 
 //	 * @param section0 section in the row (vertical) axis where the cell is located 
-//	 * @param index0 index in <code>section0</code> of the cell 
+//	 * @param index0 cell index on <code>axis0</code> 
 //	 * @param section1 section in the column (horizontal) axis where the cell is located
-//	 * @param index1 index in <code>section1</code> of the cell 
+//	 * @param index1 cell index on <code>axis1</code> 
 //	 * @return
 //	 */
 //	public Rectangle getCellBounds(Section<N0> section0, N0 index0, Section<N1> section1, N1 index1) {

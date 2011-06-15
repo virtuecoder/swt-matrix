@@ -293,5 +293,9 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone {
 	void setEditor(ZoneEditor editor) {
 		core.setEditor(editor);
 	}
-	
+
+	@Override
+	void bind(GestureBinding binding) {
+		core.bind(binding);
+	}
 }

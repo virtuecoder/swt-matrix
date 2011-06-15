@@ -220,12 +220,17 @@ class Layout<N extends Number> {
 	 */
 
 	public void setCurrentItem(AxisItem item) {
-		if (!item.getSectionUnchecked().isFocusItemEnabled()) return;
-		if (isComputingRequired) compute();
-		
-    		 if (forwardNavigator.set(item))  	current = forwardNavigator.getItem();
-		else if (backwardNavigator.set(item))   current = backwardNavigator.getItem();
-		else 									current = null;
+		if (!item.getSectionUnchecked().isFocusItemEnabled()) {
+			current = null;
+		} 
+		else {
+			if (isComputingRequired) compute();
+			
+			if (forwardNavigator.set(item))  		current = forwardNavigator.getItem();
+			else if (backwardNavigator.set(item))   current = backwardNavigator.getItem();
+			else 									current = null;
+			
+		}
 	}
 	
 	/**

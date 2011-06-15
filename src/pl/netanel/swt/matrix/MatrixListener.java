@@ -162,6 +162,7 @@ class MatrixListener implements Listener {
 			} else {
 				resizeCursor = Resources.getCursor(SWT.CURSOR_SIZEWE);
 			}
+			item = axis.getFocusItem();
 		}
 		
 		public void setItem(Event e) {
@@ -637,7 +638,7 @@ class MatrixListener implements Listener {
 		if (!isExtendingSelect(commandId)) {
 			state0.last = state0.item;
 			state1.last = state1.item;
-			matrix.selectFocusCell();
+//			matrix.selectFocusCell();
 		}
 		if (commandId == CMD_SELECT_TO_LOCATION || commandId == CMD_SELECT_TO_LOCATION_ALTER) {
 			if (state0.last.getSectionUnchecked().equals(state0.axis.getHeader())) {

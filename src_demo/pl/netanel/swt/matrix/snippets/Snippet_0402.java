@@ -30,6 +30,9 @@ public class Snippet_0402 {
 		data.add(new Object[] {"a", true, new Date()});
 		data.add(new Object[] {true, false, "Monday"});
 		data.add(new Object[] {new Date(), "Sunday", "b"});
+//		for (int i = 0; i < 100; i++) {
+//			data.add(new Object[] {i % 3 == 0 ? true : null, null, null});
+//		}
 		
 		// Matrix
 		final Matrix matrix = new Matrix(shell, SWT.NONE);
@@ -59,7 +62,7 @@ public class Snippet_0402 {
 			}
 			
 			@Override
-			public boolean hasEmbededControl(Number index0, Number index1) {
+			public boolean hasEmbeddedControl(Number index0, Number index1) {
 				Object value = data.get(index0.intValue())[index1.intValue()];
 				return value instanceof Boolean;
 			}
@@ -68,7 +71,7 @@ public class Snippet_0402 {
 			protected Control createControl(Number index0, Number index1) {
 				Object value = data.get(index0.intValue())[index1.intValue()];
 				if (value instanceof Boolean) {
-					return new Button(matrix.getShell(), SWT.CHECK);
+					return new Button(matrix.getParent(), SWT.CHECK);
 				}
 				return super.createControl(index0, index1);
 			}

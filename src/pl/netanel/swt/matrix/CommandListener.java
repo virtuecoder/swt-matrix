@@ -11,6 +11,8 @@ class CommandListener implements Listener {
 	ArrayList<GestureBinding> bindings = new ArrayList<GestureBinding>();
 	
 	public void attachTo(Control control) {
+		control.addListener(SWT.KeyDown, this);
+		control.addListener(SWT.KeyUp, this);
 		control.addListener(SWT.MouseDown, this);
 		control.addListener(SWT.MouseUp, this);
 		control.addListener(SWT.MouseMove, this);
@@ -21,23 +23,19 @@ class CommandListener implements Listener {
 		control.addListener(SWT.MouseHorizontalWheel, this);
 		control.addListener(SWT.MouseVerticalWheel, this);
 		control.addListener(SWT.MouseWheel, this);
-		control.addListener(SWT.KeyDown, this);
-		control.addListener(SWT.KeyUp, this);
 		control.addListener(SWT.Selection, this);
+		control.addListener(SWT.DefaultSelection, this);
+		control.addListener(SWT.FocusOut, this);
+		control.addListener(SWT.FocusIn, this);
 	}
 	
 	@Override
 	public void handleEvent(Event e) {
-		if (e.type == SWT.Selection && (e.widget.getStyle() & SWT.CHECK) != 0) {
-			executeCommand(Matrix.CMD_APPLY_EDIT);
-		}
-		else {
-			for (GestureBinding b: bindings) {
-				if (b.isMatching(e)) {
-					executeCommand(b.commandId);
-					/* does not quit loop because can execute 
-			   	   many both any zone and a specific zone bindings */
-				}
+		for (GestureBinding b: bindings) {
+			if (b.isMatching(e)) {
+				executeCommand(b.commandId);
+				/* does not quit loop because can execute 
+		   	   many both any zone and a specific zone bindings */
 			}
 		}
 	}
