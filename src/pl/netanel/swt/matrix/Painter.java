@@ -537,7 +537,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		this.matrix = matrix;
 	}
 
-	protected Matrix getMatrix() {
+	protected Matrix<N0, N1> getMatrix() {
 		return matrix;
 	}
 

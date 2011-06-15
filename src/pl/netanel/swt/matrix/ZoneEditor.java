@@ -48,7 +48,7 @@ public abstract class ZoneEditor<N0 extends Number, N1 extends Number> {
 	private static final String NEW_LINE = System.getProperty("line.separator");
 	private static final String ZONE_EDITOR_DATA = "edited cell";
 	
-	Control control;
+	Control popupControl;
 	Number[] editedCell;
 	Image trueImage, falseImage;
 	Calendar calendar = Calendar.getInstance();
@@ -65,7 +65,7 @@ public abstract class ZoneEditor<N0 extends Number, N1 extends Number> {
 	private EmbeddedControlsPainter embedded;
 
 	/**
-	 * Default constructor, facilitates the specified zone editing. 
+	 * Default constructor, facilitates editing of the specified zone. 
 	 * @param zone
 	 */
 	public ZoneEditor(Zone<N0, N1> zone) {
@@ -108,8 +108,8 @@ public abstract class ZoneEditor<N0 extends Number, N1 extends Number> {
 		zone.bind(new GestureBinding(CMD_EDIT, SWT.KeyDown, ' ') {
 			@Override
 			public boolean isMatching(Event e) {
+				if (!super.isMatching(e)) return false;
 				
-				// Change boolean value when clicked on the check box image
 				N0 index0 = getMatrix().getAxis0().getFocusItem().getIndex();
 				N1 index1 = getMatrix().getAxis1().getFocusItem().getIndex();
 				Control control2 = embedded.getControl(index0, index1);
@@ -127,14 +127,15 @@ public abstract class ZoneEditor<N0 extends Number, N1 extends Number> {
 			public boolean isMatching(Event e) {
 				
 				// Change boolean value when clicked on the check box image
-				N0 index0 = getMatrix().getAxis0().getFocusItem().getIndex();
-				N1 index1 = getMatrix().getAxis1().getFocusItem().getIndex();
+				Matrix<N0, N1> matrix = getMatrix();
+				N0 index0 = matrix.getAxis0().getFocusItem().getIndex();
+				N1 index1 = matrix.getAxis1().getFocusItem().getIndex();
 				Object[] emulation = getCheckboxEmulation(index0, index1);
 				
 				if (emulation != null && 
 						(emulation[0] instanceof Image || emulation[1] instanceof Image)) {
 					// Calculate the image bounds
-					Rectangle cellBounds = getMatrix().getBody().getCellBounds(index0, index1);
+					Rectangle cellBounds = matrix.getBody().getCellBounds(index0, index1);
 					Rectangle imageBounds = trueImage.getBounds();
 					imageBounds.x = cellBounds.x + (cellBounds.width - imageBounds.width) / 2;
 					imageBounds.y = cellBounds.y + (cellBounds.height - imageBounds.height) / 2;
@@ -145,15 +146,6 @@ public abstract class ZoneEditor<N0 extends Number, N1 extends Number> {
 		});
 		
 		controlListener = new CommandListener() {
-			public void handleEvent(Event e) {
-				if (e.type == SWT.Selection && (e.widget.getStyle() & SWT.CHECK) != 0) {
-					control = (Control) e.widget;
-					apply();
-				}
-				else {
-					super.handleEvent(e);
-				}
-			};
 			protected void executeCommand(int commandId) {
 				
 				switch (commandId) {
@@ -182,6 +174,9 @@ public abstract class ZoneEditor<N0 extends Number, N1 extends Number> {
 		if (control instanceof Text) {
 			return ((Text) control).getText();
 		} 
+		else if (control instanceof Button) {
+			return ((Button) control).getSelection();
+		}
 		else if (control instanceof Combo) {
 			return ((Combo) control).getText();
 //			Combo combo = (Combo) control;
@@ -249,17 +244,27 @@ public abstract class ZoneEditor<N0 extends Number, N1 extends Number> {
 	protected abstract void setModelValue(N0 index0, N1 index1, Object value);
 	
 	
-	private void apply() {
-		ZoneEditorData data = (ZoneEditorData) getData(control);
-		setModelValue(data.index0, data.index1, getEditorValue(control));
+	void apply() {
+		if (popupControl == null) {
+			Matrix<N0, N1> matrix = getMatrix();
+			N0 index0 = matrix.getAxis0().getFocusItem().getIndex();
+			N1 index1 = matrix.getAxis1().getFocusItem().getIndex();
+			Control control = embedded.getControl(index0, index1);
+			if (control != null) {
+				setModelValue(index0, index1, getEditorValue(control));
+			}
+		} else {
+			ZoneEditorData data = (ZoneEditorData) getData(popupControl);
+			setModelValue(data.index0, data.index1, getEditorValue(popupControl));
+		}
 		cancel();
 		getMatrix().redraw();
 	}
 	
 	private void cancel() {
-		if (control != null && !getData(control).isEmbedded) {
-			control.dispose();
-			control = null;
+		if (popupControl != null && !getData(popupControl).isEmbedded) {
+			popupControl.dispose();
+			popupControl = null;
 		}
 		getMatrix().setFocus();
 	}
@@ -271,18 +276,28 @@ public abstract class ZoneEditor<N0 extends Number, N1 extends Number> {
 	Control activate(N0 index0, N1 index1) {
 		cellsPainter = zone.getPainter("cells");
 		
-		Control control = embedded.getControl(index0, index1);
+//		Control control = embedded.getControl(index0, index1);
 		Object[] emulation = getCheckboxEmulation(index0, index1);
-		if (control != null || emulation != null) {			
-			setModelValue(index0, index1, !Boolean.TRUE.equals(getModelValue(index0, index1)));
+		Control control = embedded.getControl(index0, index1);
+		if (emulation != null || isCheckbox(control)) {			
+			boolean value = !Boolean.TRUE.equals(getModelValue(index0, index1));
+			setModelValue(index0, index1, value);
 			getMatrix().redraw();
-		} 
-		else {
-			control = addControl(index0, index1);
-			this.control = control; 
+			if (control != null) {
+				((Button) control).setSelection(value);
+			}
+		} else {
+			if (control == null) {
+				control = addControl(index0, index1);
+				this.popupControl = control; 
+			}
+			control.setFocus();
 		}
-		
 		return control;
+	}
+	
+	private boolean isCheckbox(Control control) {
+		return control instanceof Button && (control.getStyle() & SWT.CHECK) != 0;
 	}
 	
 	Control addControl(N0 index0, N1 index1) {
@@ -294,12 +309,8 @@ public abstract class ZoneEditor<N0 extends Number, N1 extends Number> {
 			setEditorValue(control, getModelValue(index0, index1));
 			setBounds(index0, index1, control);
 			control.moveAbove(getMatrix());
-			
-			if (!data.isEmbedded) {
-				controlListener.attachTo(control);
-				control.moveAbove(getMatrix());
-				control.setFocus();
-			}
+			controlListener.attachTo(control);
+			control.moveAbove(getMatrix());
 		}
 		return control;
 	}
@@ -410,7 +421,7 @@ public abstract class ZoneEditor<N0 extends Number, N1 extends Number> {
 			N1 index1 = (N1) next[1];
 			setModelValue(index0, index1, null);
 		}
-		embedded.layoutModified = true;
+		embedded.needsPainting = true;
 		getMatrix().redraw();
 	}
 	
@@ -488,7 +499,7 @@ public abstract class ZoneEditor<N0 extends Number, N1 extends Number> {
 			index0 = math0.increment(index0);
 		}
 		
-		embedded.layoutModified = true;
+		embedded.needsPainting = true;
 		getMatrix().redraw();
 	}
 
@@ -513,7 +524,7 @@ public abstract class ZoneEditor<N0 extends Number, N1 extends Number> {
 				setModelValue(index0, index1, null);
 			}
 		}
-		embedded.layoutModified = true;
+		embedded.needsPainting = true;
 		getMatrix().redraw();
 	}
 	

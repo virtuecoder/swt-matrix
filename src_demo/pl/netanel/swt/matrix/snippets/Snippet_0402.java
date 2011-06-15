@@ -38,8 +38,11 @@ public class Snippet_0402 {
 		final Matrix matrix = new Matrix(shell, SWT.NONE);
 		
 		matrix.getAxis0().getBody().setCount(data.size());
+		matrix.getAxis0().getHeader().setVisible(true);
 		matrix.getAxis1().getBody().setCount(3);
 		matrix.getAxis1().getBody().setDefaultCellWidth(80);
+		// To test positioning of the embedded controls while resizing columns
+		matrix.getAxis1().getBody().setDefaultResizable(true);
 
 		// Data painter
 		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
