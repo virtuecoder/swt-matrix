@@ -86,7 +86,6 @@ public class Snippet_0005 {
 		
 		
 		matrix.getColumnHeader().addListener(SWT.MouseDown, new Listener() {
-			@Override
 			public void handleEvent(Event e) {
 				//AxisItem<N0> item0 = matrix.getAxis0().getItemByDistance(e.y);
 				AxisItem item1 = matrix.getAxis1().getItemByDistance(e.x);
@@ -99,7 +98,6 @@ public class Snippet_0005 {
 				direction[column] = previousDirection <= 0 ? 1 : -1;
 				
 				Collections.sort(sorted, new Comparator<String[]>() {
-					@Override
 					public int compare(String[] o1, String[] o2) {
 						return o1[column].compareTo(o2[column]) * direction[column];
 					}

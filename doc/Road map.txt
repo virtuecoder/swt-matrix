@@ -4,7 +4,7 @@ From nebula forum
 - Nebula CompositeTable, flexible row layout
 
 To do:
-- 
+- rezize with embedded controls
 - multiline text, text wraping
 -
 - snippet to swap axises

@@ -899,4 +899,8 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 			}
 		};
 	}
+
+	public void execute(int commandId) {
+		listener.executeCommand(commandId);
+	}
 }

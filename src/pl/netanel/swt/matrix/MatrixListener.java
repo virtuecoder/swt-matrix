@@ -2,7 +2,57 @@ package pl.netanel.swt.matrix;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
-import static pl.netanel.swt.matrix.Matrix.*;
+import static pl.netanel.swt.matrix.Matrix.CMD_COPY;
+import static pl.netanel.swt.matrix.Matrix.CMD_CUT;
+import static pl.netanel.swt.matrix.Matrix.CMD_DELETE;
+import static pl.netanel.swt.matrix.Matrix.CMD_EDIT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_DOWN_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_UP_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_HIDE;
+import static pl.netanel.swt.matrix.Matrix.CMD_PASTE;
+import static pl.netanel.swt.matrix.Matrix.CMD_RESIZE_PACK;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ALL;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_COLUMN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_COLUMN_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_DOWN_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_UP_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ROW;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ROW_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_COLUMN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_COLUMN_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_UNHIDE;
+import static pl.netanel.swt.matrix.Matrix.isBodySelect;
+import static pl.netanel.swt.matrix.Matrix.isExtendingSelect;
 
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
@@ -10,6 +60,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -124,7 +175,7 @@ class MatrixListener implements Listener {
 					}
 				}
 				if (zone != null) {
-					for (GestureBinding b: zone.bindings) {
+					for (GestureBinding b: zone.getBindings()) {
 						if (b.isMatching(e)) {
 							executeCommand(b.commandId);
 							/* does not quit loop because can execute 
@@ -574,37 +625,37 @@ class MatrixListener implements Listener {
 //		bindKey(Matrix.CMD_COPY, SWT.MOD1 | 'c');
 		
 		// Mouse current item 
-		body.bindings.add(new GestureBinding(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1));
-		body.bindings.add(new GestureBinding(Matrix.CMD_FOCUS_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | 1));
+		body.bind(new GestureBinding(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1));
+		body.bind(new GestureBinding(Matrix.CMD_FOCUS_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | 1));
 		
 		// Mouse selection
 		/* 1 is for e.button == 1 */
-		body.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseDown, SWT.MOD2 | 1));
-		body.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
-		body.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseMove, SWT.BUTTON1));
-		body.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
+		body.bind(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseDown, SWT.MOD2 | 1));
+		body.bind(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
+		body.bind(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseMove, SWT.BUTTON1));
+		body.bind(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
 		
 		if (rowHeader != null) {
-			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_ROW, SWT.MouseDown, 1));
-			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_ROW_ALTER, SWT.MouseDown, SWT.MOD1 | 1));
-			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_ROW, SWT.MouseDown, SWT.MOD2 | 1));
-			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_ROW_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
-			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_ROW, SWT.MouseMove, SWT.BUTTON1));
-			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_ROW_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
-			rowHeader.bindings.add(new GestureBinding(Matrix.CMD_RESIZE_PACK, SWT.MouseDoubleClick, 1));
+			rowHeader.bind(new GestureBinding(Matrix.CMD_SELECT_ROW, SWT.MouseDown, 1));
+			rowHeader.bind(new GestureBinding(Matrix.CMD_SELECT_ROW_ALTER, SWT.MouseDown, SWT.MOD1 | 1));
+			rowHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_ROW, SWT.MouseDown, SWT.MOD2 | 1));
+			rowHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_ROW_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
+			rowHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_ROW, SWT.MouseMove, SWT.BUTTON1));
+			rowHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_ROW_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
+			rowHeader.bind(new GestureBinding(Matrix.CMD_RESIZE_PACK, SWT.MouseDoubleClick, 1));
 		}
 		if (columnHeader != null) {
-			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_COLUMN, SWT.MouseDown, 1));
-			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_COLUMN_ALTER, SWT.MouseDown, SWT.MOD1 | 1));
-			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN, SWT.MouseDown, SWT.MOD2 | 1));
-			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
-			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN, SWT.MouseMove, SWT.BUTTON1));
-			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
-			columnHeader.bindings.add(new GestureBinding(Matrix.CMD_RESIZE_PACK, SWT.MouseDoubleClick, 1));
+			columnHeader.bind(new GestureBinding(Matrix.CMD_SELECT_COLUMN, SWT.MouseDown, 1));
+			columnHeader.bind(new GestureBinding(Matrix.CMD_SELECT_COLUMN_ALTER, SWT.MouseDown, SWT.MOD1 | 1));
+			columnHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN, SWT.MouseDown, SWT.MOD2 | 1));
+			columnHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
+			columnHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN, SWT.MouseMove, SWT.BUTTON1));
+			columnHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
+			columnHeader.bind(new GestureBinding(Matrix.CMD_RESIZE_PACK, SWT.MouseDoubleClick, 1));
 		}
 		if (topLeft != null) {
 			// Select all on top left click
-			topLeft.bindings.add(new GestureBinding(Matrix.CMD_SELECT_ALL, SWT.MouseDown, 1));
+			topLeft.bind(new GestureBinding(Matrix.CMD_SELECT_ALL, SWT.MouseDown, 1));
 		}
 		
 		// Modification
@@ -807,5 +858,97 @@ class MatrixListener implements Listener {
 		state0.refresh();
 		state1.refresh();
 	}
+	
+	static void listenToAll(Control control, Listener listener) {
+    	control.addListener(SWT.KeyDown, listener);
+    	control.addListener(SWT.KeyUp, listener);
+    	control.addListener(SWT.MouseDown, listener);
+    	control.addListener(SWT.MouseUp, listener);
+//    	control.addListener(SWT.MouseMove, listener);
+//    	control.addListener(SWT.MouseEnter, listener);
+//    	control.addListener(SWT.MouseExit, listener);
+    	control.addListener(SWT.MouseDoubleClick, listener);
+    	control.addListener(SWT.Paint, listener);
+    	control.addListener(SWT.Move, listener);
+    	control.addListener(SWT.Resize, listener);
+    	control.addListener(SWT.Dispose, listener);
+    	control.addListener(SWT.Selection, listener);
+    	control.addListener(SWT.DefaultSelection, listener);
+    	control.addListener(SWT.FocusIn, listener);
+    	control.addListener(SWT.FocusOut, listener);
+    	control.addListener(SWT.Expand, listener);
+    	control.addListener(SWT.Collapse, listener);
+    	control.addListener(SWT.Iconify, listener);
+    	control.addListener(SWT.Deiconify, listener);
+    	control.addListener(SWT.Close, listener);
+    	control.addListener(SWT.Show, listener);
+    	control.addListener(SWT.Hide, listener);
+    	control.addListener(SWT.Modify, listener);
+    	control.addListener(SWT.Verify, listener);
+    	control.addListener(SWT.Activate, listener);
+    	control.addListener(SWT.Deactivate, listener);
+    	control.addListener(SWT.Help, listener);
+    	control.addListener(SWT.DragDetect, listener);
+    	control.addListener(SWT.Arm, listener);
+    	control.addListener(SWT.Traverse, listener);
+//    	control.addListener(SWT.MouseHover, listener);
+    	control.addListener(SWT.HardKeyDown, listener);
+    	control.addListener(SWT.HardKeyUp, listener);
+    	control.addListener(SWT.MenuDetect, listener);
+    	control.addListener(SWT.SetData, listener);
+    	control.addListener(SWT.MouseWheel, listener);
+    	control.addListener(SWT.Settings, listener);
+    	control.addListener(SWT.EraseItem, listener);
+    	control.addListener(SWT.MeasureItem, listener);
+    	control.addListener(SWT.PaintItem, listener);
+    	control.addListener(SWT.ImeComposition, listener);
+    }
+
+    static String getEventType(Event e) {
+    	int x = e.type;
+    	return x == 1 ? "KeyDown" :
+    		x == 2 ? "KeyUp" :
+    		x == 3 ? "MouseDown" :
+    		x == 4 ? "MouseUp" :
+    		x == 5 ? "MouseMove" :
+    		x == 6 ? "MouseEnter" :
+    		x == 7 ? "MouseExit" :
+    		x == 8 ? "MouseDoubleClick" :
+    		x == 9 ? "Paint" :
+    		x == 10 ? "Move" :
+    		x == 11 ? "Resize" :
+    		x == 12 ? "Dispose" :
+    		x == 13 ? "Selection" :
+    		x == 14 ? "DefaultSelection" :
+    		x == 15 ? "FocusIn" :
+    		x == 16 ? "FocusOut" :
+    		x == 17 ? "Expand" :
+    		x == 18 ? "Collapse" :
+    		x == 19 ? "Iconify" :
+    		x == 20 ? "Deiconify" :
+    		x == 21 ? "Close" :
+    		x == 22 ? "Show" :
+    		x == 23 ? "Hide" :
+    		x == 24 ? "Modify" :
+    		x == 25 ? "Verify" :
+    		x == 26 ? "Activate" :
+    		x == 27 ? "Deactivate" :
+    		x == 28 ? "Help" :
+    		x == 29 ? "DragDetect" :
+    		x == 30 ? "Arm" :
+    		x == 31 ? "Traverse" :
+    		x == 32 ? "MouseHover" :
+    		x == 33 ? "HardKeyDown" :
+    		x == 34 ? "HardKeyUp" :
+    		x == 35 ? "MenuDetect" :
+    		x == 36 ? "SetData" :
+    		x == 37 ? "MouseWheel" :
+    		x == 39 ? "Settings" :
+    		x == 40 ? "EraseItem" :
+    		x == 41 ? "MeasureItem" :
+    		x == 42 ? "PaintItem" :
+    		x == 43 ? "ImeComposition" : "";
+    }
+
 }
 

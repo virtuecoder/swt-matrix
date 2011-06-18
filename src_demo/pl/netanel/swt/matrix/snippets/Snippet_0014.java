@@ -53,7 +53,7 @@ public class Snippet_0014 {
 			
 			@Override
 			public void clean() {
-				gc.setBackground(getMatrix().getBackground());
+				gc.setBackground(matrix.getBackground());
 			}
 		});
 		

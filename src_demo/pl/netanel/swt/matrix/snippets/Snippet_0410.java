@@ -6,13 +6,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -20,9 +20,10 @@ import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Zone;
+import pl.netanel.swt.matrix.ZoneEditor;
 
 /**
- * Copy / paste.
+ * Custom copy / paste.
  */
 /*
  * Can also copy/paste irregular sets of selected cells, 
@@ -63,21 +64,73 @@ public class Snippet_0410 {
 			}
 		});
 		
+		new ZoneEditor(matrix.getBody()) {
+			@Override
+			protected Control createControl(Number index0, Number index1, Composite parent) {
+				return null;
+			}
+			
+			@Override
+			protected void copy() {
+				StringBuilder sb = new StringBuilder();
+				Zone<Integer, Integer> body = matrix.getBody();
+				Number[] n = body.getSelectedExtent();
+				int max0 = n[1].intValue();
+				int max1 = n[3].intValue();
+				int min1 = n[2].intValue();
+				for (int i = n[0].intValue(); i <= max0; i++) {
+					for (int j = min1; j <= max1; j++) {
+						if (j > min1) sb.append("\t");
+						if (body.isSelected(i, j)) {
+							sb.append(data.get(i).get(j).toString());
+						}
+					}
+					if (i < max0) sb.append(NEW_LINE);
+				}
+				Clipboard clipboard = new Clipboard(display);
+				clipboard.setContents(new Object[] {sb.toString()},
+						new Transfer[] {TextTransfer.getInstance()});		
+				clipboard.dispose();
+				matrix.setFocus();
+			}
+			
+			@Override
+			protected void paste() {
+				Clipboard clipboard = new Clipboard(display);
+				Object contents = clipboard.getContents(TextTransfer.getInstance());
+				clipboard.dispose();
+				
+				if (contents == null) return;
+				
+				AxisItem focusItem0 = matrix.getAxis0().getFocusItem();
+				AxisItem focusItem1 = matrix.getAxis1().getFocusItem();
+				if (focusItem0 == null || focusItem1 == null) return;
+				
+				int start0 = focusItem0.getIndex().intValue();
+				int start1 = focusItem1.getIndex().intValue();
+				String[] rows = contents.toString().split(NEW_LINE);
+				for (int i = 0; i < rows.length && start0 + i < count0; i++) {
+					String[] cells = split(rows[i], "\t");
+					for (int j = 0; j < cells.length && start1 + j < count1; j++) {
+						String value = cells[j];
+						if (value != null) {
+							data.get(start0 + i).set(start1 + j, value);
+						}
+					}
+				}
+				
+				matrix.redraw();
+				matrix.setFocus();
+			}
+		};
+		
 		// Copy button
 		Button copy = new Button(shell, SWT.PUSH);
 		copy.setText("Copy");
 		copy.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				copy(display, data, matrix);
-			}
-		});
-		matrix.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if ((e.stateMask & SWT.MOD1) != 0 && e.keyCode == 'c') {
-					copy(display, data, matrix);
-				}
+				matrix.execute(Matrix.CMD_COPY);
 			}
 		});
 		
@@ -86,17 +139,10 @@ public class Snippet_0410 {
 		paste.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				paste(display, data, matrix);
+				matrix.execute(Matrix.CMD_PASTE);
 			}
 		});
-		matrix.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if ((e.stateMask & SWT.MOD1) != 0 && e.keyCode == 'v') {
-					paste(display, data, matrix);
-				}
-			}
-		});
+		
 		
 		shell.setBounds(400, 200, 400, 300);
 		shell.open();
@@ -105,63 +151,6 @@ public class Snippet_0410 {
 				display.sleep();
 			}
 		}
-	}
-	
-	private static void copy(final Display display,
-			final ArrayList<ArrayList> data,
-			final Matrix<Integer, Integer> matrix) 
-	{
-		StringBuilder sb = new StringBuilder();
-		Zone<Integer, Integer> body = matrix.getBody();
-		Number[] n = body.getSelectedExtent();
-		int max0 = n[1].intValue();
-		int max1 = n[3].intValue();
-		int min1 = n[2].intValue();
-		for (int i = n[0].intValue(); i <= max0; i++) {
-			for (int j = min1; j <= max1; j++) {
-				if (j > min1) sb.append("\t");
-				if (body.isSelected(i, j)) {
-					sb.append(data.get(i).get(j).toString());
-				}
-			}
-			if (i < max0) sb.append(NEW_LINE);
-		}
-		Clipboard clipboard = new Clipboard(display);
-		clipboard.setContents(new Object[] {sb.toString()},
-				new Transfer[] {TextTransfer.getInstance()});		
-		clipboard.dispose();
-		matrix.setFocus();
-	}
-	
-	private static void paste(final Display display,
-			final ArrayList<ArrayList> data,
-			final Matrix<Integer, Integer> matrix) 
-	{
-		Clipboard clipboard = new Clipboard(display);
-		Object contents = clipboard.getContents(TextTransfer.getInstance());
-		clipboard.dispose();
-		
-		if (contents == null) return;
-		
-		AxisItem focusItem0 = matrix.getAxis0().getFocusItem();
-		AxisItem focusItem1 = matrix.getAxis1().getFocusItem();
-		if (focusItem0 == null || focusItem1 == null) return;
-		
-		int start0 = focusItem0.getIndex().intValue();
-		int start1 = focusItem1.getIndex().intValue();
-		String[] rows = contents.toString().split(NEW_LINE);
-		for (int i = 0; i < rows.length && start0 + i < count0; i++) {
-			String[] cells = split(rows[i], "\t");
-			for (int j = 0; j < cells.length && start1 + j < count1; j++) {
-				String value = cells[j];
-				if (value != null) {
-					data.get(start0 + i).set(start1 + j, value);
-				}
-			}
-		}
-		
-		matrix.redraw();
-		matrix.setFocus();
 	}
 	
 	private static String[] split(String s, String separator) {

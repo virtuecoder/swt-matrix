@@ -28,37 +28,37 @@ pl.netanel.swt.matrix.Axis -> pl.netanel.swt.matrix.Axis:
     301:302:int[] getCellBound(int) -> getCellBound
     315:316:int[] getLineBound(int) -> getLineBound
     328:329:pl.netanel.swt.matrix.AxisItem getFocusItem() -> getFocusItem
-    346:350:void setFocusItem(pl.netanel.swt.matrix.Section,java.lang.Number) -> setFocusItem
-    363:365:void freezeHead(int) -> freezeHead
-    373:375:void freezeTail(int) -> freezeTail
-    415:415:int getAutoScrollOffset() -> getAutoScrollOffset
-    427:429:void setAutoScrollOffset(int) -> setAutoScrollOffset
-    436:436:int getResizeOffset() -> getResizeOffset
-    447:449:void setResizeOffset(int) -> setResizeOffset
-    453:494:void pack(pl.netanel.swt.matrix.AxisItem) -> pack
-    502:528:void setMatrix(pl.netanel.swt.matrix.Matrix,int) -> a
-    534:537:void scroll() -> b
-    546:549:boolean updateScrollBarVisibility(int) -> a
-    561:575:void updateScrollBarValues(int) -> b
-    580:600:void setSelected(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem,boolean) -> a
-    603:607:void setSelected(boolean) -> a
-    610:613:void selectInZones(pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number) -> a
-    616:621:pl.netanel.swt.matrix.AxisItem getLastItem() -> c
-    625:625:pl.netanel.swt.matrix.AxisItem getFirstItem() -> d
-    629:631:int comparePosition(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem) -> a
-    641:645:void setHidden(boolean) -> b
-    700:703:pl.netanel.swt.matrix.Bound getCellBound(pl.netanel.swt.matrix.Section,java.lang.Number) -> a
-    707:710:pl.netanel.swt.matrix.Bound getLineBound(pl.netanel.swt.matrix.Section,java.lang.Number) -> b
-    717:726:int[] getZOrder() -> e
-    730:735:void deleteInZones(pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number) -> b
-    738:740:void insertInZones(pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number) -> c
-    743:754:pl.netanel.swt.matrix.Section checkSection(pl.netanel.swt.matrix.Section) -> a
+    346:351:void setFocusItem(pl.netanel.swt.matrix.Section,java.lang.Number) -> setFocusItem
+    364:366:void freezeHead(int) -> freezeHead
+    374:376:void freezeTail(int) -> freezeTail
+    416:416:int getAutoScrollOffset() -> getAutoScrollOffset
+    428:430:void setAutoScrollOffset(int) -> setAutoScrollOffset
+    437:437:int getResizeOffset() -> getResizeOffset
+    448:450:void setResizeOffset(int) -> setResizeOffset
+    454:495:void pack(pl.netanel.swt.matrix.AxisItem) -> pack
+    503:529:void setMatrix(pl.netanel.swt.matrix.Matrix,int) -> a
+    535:538:void scroll() -> b
+    547:550:boolean updateScrollBarVisibility(int) -> a
+    562:576:void updateScrollBarValues(int) -> b
+    581:601:void setSelected(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem,boolean) -> a
+    604:608:void setSelected(boolean) -> a
+    611:614:void selectInZones(pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number) -> a
+    617:622:pl.netanel.swt.matrix.AxisItem getLastItem() -> c
+    626:626:pl.netanel.swt.matrix.AxisItem getFirstItem() -> d
+    630:632:int comparePosition(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem) -> a
+    642:646:void setHidden(boolean) -> b
+    701:704:pl.netanel.swt.matrix.Bound getCellBound(pl.netanel.swt.matrix.Section,java.lang.Number) -> a
+    708:711:pl.netanel.swt.matrix.Bound getLineBound(pl.netanel.swt.matrix.Section,java.lang.Number) -> b
+    718:727:int[] getZOrder() -> e
+    731:736:void deleteInZones(pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number) -> b
+    739:741:void insertInZones(pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number) -> c
+    744:755:pl.netanel.swt.matrix.Section checkSection(pl.netanel.swt.matrix.Section) -> a
     42:42:org.eclipse.swt.widgets.ScrollBar access$0(pl.netanel.swt.matrix.Axis) -> a
 pl.netanel.swt.matrix.Axis$1 -> pl.netanel.swt.matrix.Axis$b:
     int selection -> b
     pl.netanel.swt.matrix.Axis this$0 -> a
     pl.netanel.swt.matrix.Matrix val$matrix -> c
-    511:525:void handleEvent(org.eclipse.swt.widgets.Event) -> handleEvent
+    512:526:void handleEvent(org.eclipse.swt.widgets.Event) -> handleEvent
 pl.netanel.swt.matrix.Axis$ExtentSequence -> pl.netanel.swt.matrix.Axis$a:
     pl.netanel.swt.matrix.Section section -> a
     pl.netanel.swt.matrix.MutableNumber start -> b
@@ -74,9 +74,9 @@ pl.netanel.swt.matrix.Axis$ExtentSequence -> pl.netanel.swt.matrix.Axis$a:
     pl.netanel.swt.matrix.AxisItem startItem -> m
     pl.netanel.swt.matrix.AxisItem endItem -> n
     pl.netanel.swt.matrix.Axis this$0 -> f
-    662:676:void init(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem) -> a
-    679:695:boolean next() -> a
-pl.netanel.swt.matrix.AxisExtentSequence -> pl.netanel.swt.matrix.d:
+    663:677:void init(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem) -> a
+    680:696:boolean next() -> a
+pl.netanel.swt.matrix.AxisExtentSequence -> pl.netanel.swt.matrix.b:
     java.util.List sections -> a
     pl.netanel.swt.matrix.Section section -> b
     int sectionIndex -> c
@@ -104,21 +104,21 @@ pl.netanel.swt.matrix.AxisItem -> pl.netanel.swt.matrix.AxisItem:
     74:74:pl.netanel.swt.matrix.Section getSectionUnchecked() -> getSectionUnchecked
     86:86:pl.netanel.swt.matrix.Section getSection() -> getSection
     94:94:java.lang.Number getIndex() -> getIndex
-pl.netanel.swt.matrix.AxisState -> pl.netanel.swt.matrix.G:
+pl.netanel.swt.matrix.AxisState -> pl.netanel.swt.matrix.t:
     pl.netanel.swt.matrix.Math math -> a
     java.util.ArrayList extents -> b
     pl.netanel.util.IntArray toRemove -> c
-    22:28:int indexOf(java.lang.Number) -> c
-    32:105:void doSetValue(java.lang.Number,java.lang.Number) -> b
-    124:124:pl.netanel.util.IntArray delete(java.lang.Number,java.lang.Number) -> a
+    22:28:int indexOf(java.lang.Number) -> a
+    32:105:void doSetValue(java.lang.Number,java.lang.Number) -> a
+    124:124:pl.netanel.util.IntArray delete(java.lang.Number,java.lang.Number) -> b
     128:129:void insert(java.lang.Number,java.lang.Number) -> c
     boolean equalValue(int) -> a
-    boolean equalValues(int,int) -> b
+    boolean equalValues(int,int) -> a
     void addValue(int) -> b
-    void addValue(int,int) -> a
+    void addValue(int,int) -> b
     void setValue(int) -> c
     void removeValue(int) -> d
-pl.netanel.swt.matrix.BigIntegerMath -> pl.netanel.swt.matrix.p:
+pl.netanel.swt.matrix.BigIntegerMath -> pl.netanel.swt.matrix.m:
     pl.netanel.swt.matrix.MutableBigInteger ZERO -> a
     pl.netanel.swt.matrix.MutableBigInteger ONE -> b
     pl.netanel.swt.matrix.BigIntegerMath instance -> c
@@ -150,12 +150,12 @@ pl.netanel.swt.matrix.BigIntegerMath -> pl.netanel.swt.matrix.p:
     1:1:pl.netanel.swt.matrix.MutableNumber create(pl.netanel.swt.matrix.MutableNumber) -> b
     1:1:pl.netanel.swt.matrix.MutableNumber create(java.lang.Number) -> f
     1:1:pl.netanel.swt.matrix.MutableNumber create(int) -> b
-pl.netanel.swt.matrix.Bound -> pl.netanel.swt.matrix.o:
+pl.netanel.swt.matrix.Bound -> pl.netanel.swt.matrix.l:
     int distance -> a
     int width -> b
     20:20:java.lang.String toString() -> toString
     24:24:pl.netanel.swt.matrix.Bound copy() -> a
-pl.netanel.swt.matrix.CellSet -> pl.netanel.swt.matrix.H:
+pl.netanel.swt.matrix.CellSet -> pl.netanel.swt.matrix.u:
     java.util.ArrayList items0 -> a
     java.util.ArrayList items1 -> b
     pl.netanel.swt.matrix.Math math0 -> c
@@ -178,7 +178,7 @@ pl.netanel.swt.matrix.CellSet -> pl.netanel.swt.matrix.H:
     289:292:void delete1(java.lang.Number,java.lang.Number) -> c
     295:298:void insert0(java.lang.Number,java.lang.Number) -> d
     301:304:void insert1(java.lang.Number,java.lang.Number) -> e
-pl.netanel.swt.matrix.CellValues -> pl.netanel.swt.matrix.l:
+pl.netanel.swt.matrix.CellValues -> pl.netanel.swt.matrix.j:
     void setValue(java.lang.Number,java.lang.Number,java.lang.Number,java.lang.Number,java.lang.Object) -> a
     java.lang.Object getValue(java.lang.Number,java.lang.Number) -> a
     void setDefaultValue(java.lang.Object) -> a
@@ -187,7 +187,15 @@ pl.netanel.swt.matrix.CellValues -> pl.netanel.swt.matrix.l:
     void delete1(java.lang.Number,java.lang.Number) -> c
     void insert0(java.lang.Number,java.lang.Number) -> d
     void insert1(java.lang.Number,java.lang.Number) -> e
-pl.netanel.swt.matrix.Direction -> pl.netanel.swt.matrix.g:
+pl.netanel.swt.matrix.CommandListener -> pl.netanel.swt.matrix.e:
+    java.util.ArrayList bindings -> a
+    org.eclipse.swt.widgets.Event event -> b
+    15:29:void attachTo(org.eclipse.swt.widgets.Control) -> a
+    32:40:void handleEvent(org.eclipse.swt.widgets.Event) -> handleEvent
+    47:48:void bind(int,int,int) -> a
+    55:63:void unbind(int,int,int) -> b
+    66:66:void executeCommand(int) -> a
+pl.netanel.swt.matrix.Direction -> pl.netanel.swt.matrix.f:
     java.util.List sections -> a
     pl.netanel.swt.matrix.Math math -> b
     pl.netanel.swt.matrix.Section section -> c
@@ -213,13 +221,13 @@ pl.netanel.swt.matrix.Direction -> pl.netanel.swt.matrix.g:
     66:76:pl.netanel.swt.matrix.AxisItem next(pl.netanel.swt.matrix.MutableNumber) -> a
     80:83:boolean nextInternal(pl.netanel.swt.matrix.MutableNumber) -> b
     119:119:pl.netanel.swt.matrix.DirectionIndexSequence getSequence(pl.netanel.swt.matrix.Section,int) -> a
-pl.netanel.swt.matrix.Direction$Backward -> pl.netanel.swt.matrix.g$a:
+pl.netanel.swt.matrix.Direction$Backward -> pl.netanel.swt.matrix.f$a:
     153:153:int firstSection() -> a
     158:158:boolean hasNextSection() -> b
-pl.netanel.swt.matrix.Direction$Forward -> pl.netanel.swt.matrix.g$b:
+pl.netanel.swt.matrix.Direction$Forward -> pl.netanel.swt.matrix.f$b:
     135:135:int firstSection() -> a
     140:140:boolean hasNextSection() -> b
-pl.netanel.swt.matrix.DirectionIndexSequence -> pl.netanel.swt.matrix.z:
+pl.netanel.swt.matrix.DirectionIndexSequence -> pl.netanel.swt.matrix.v:
     pl.netanel.swt.matrix.Section section -> a
     pl.netanel.swt.matrix.Math math -> b
     pl.netanel.swt.matrix.MutableNumber number -> c
@@ -234,42 +242,72 @@ pl.netanel.swt.matrix.DirectionIndexSequence -> pl.netanel.swt.matrix.z:
     pl.netanel.swt.matrix.Extent extent -> l
     pl.netanel.swt.matrix.Extent he -> m
     boolean moved -> n
-    36:37:void init() -> a
-    40:41:boolean next(pl.netanel.swt.matrix.MutableNumber) -> a
-    69:96:boolean nextNumber(pl.netanel.swt.matrix.MutableNumber) -> b
-    102:114:void nextHidden(pl.netanel.swt.matrix.MutableNumber) -> c
-    117:123:boolean skipHidden(pl.netanel.swt.matrix.MutableNumber,pl.netanel.swt.matrix.MutableNumber) -> c
-    128:128:boolean hasNextNumber() -> e
+    35:36:void init() -> a_
+    39:40:boolean next(pl.netanel.swt.matrix.MutableNumber) -> a
+    68:95:boolean nextNumber(pl.netanel.swt.matrix.MutableNumber) -> b
+    101:113:void nextHidden(pl.netanel.swt.matrix.MutableNumber) -> c
+    116:122:boolean skipHidden(pl.netanel.swt.matrix.MutableNumber,pl.netanel.swt.matrix.MutableNumber) -> c
+    127:127:boolean hasNextNumber() -> c
     int compare(pl.netanel.swt.matrix.MutableNumber,pl.netanel.swt.matrix.MutableNumber) -> a
     void add(pl.netanel.swt.matrix.MutableNumber,java.lang.Number) -> a
     pl.netanel.swt.matrix.MutableNumber subtract(pl.netanel.swt.matrix.MutableNumber,pl.netanel.swt.matrix.MutableNumber) -> b
-    boolean hasNextExtent() -> c
-    boolean hasNextHidden() -> d
+    boolean hasNextExtent() -> a
+    boolean hasNextHidden() -> b
     int firstIndex(java.util.List) -> a
     pl.netanel.swt.matrix.MutableNumber start(pl.netanel.swt.matrix.Extent) -> a
     pl.netanel.swt.matrix.MutableNumber end(pl.netanel.swt.matrix.Extent) -> b
-    142:142:pl.netanel.swt.matrix.MutableNumber index() -> f
-    148:148:boolean next() -> b
-    152:159:boolean set(java.lang.Number) -> a
-pl.netanel.swt.matrix.DirectionIndexSequence$Backward -> pl.netanel.swt.matrix.z$b:
-    219:219:int compare(pl.netanel.swt.matrix.MutableNumber,pl.netanel.swt.matrix.MutableNumber) -> a
-    224:225:void add(pl.netanel.swt.matrix.MutableNumber,java.lang.Number) -> a
-    230:230:pl.netanel.swt.matrix.MutableNumber subtract(pl.netanel.swt.matrix.MutableNumber,pl.netanel.swt.matrix.MutableNumber) -> b
-    236:236:boolean hasNextExtent() -> c
-    241:241:boolean hasNextHidden() -> d
-    246:246:int firstIndex(java.util.List) -> a
-    251:251:pl.netanel.swt.matrix.MutableNumber start(pl.netanel.swt.matrix.Extent) -> a
-    256:256:pl.netanel.swt.matrix.MutableNumber end(pl.netanel.swt.matrix.Extent) -> b
-pl.netanel.swt.matrix.DirectionIndexSequence$Forward -> pl.netanel.swt.matrix.z$a:
-    171:171:int compare(pl.netanel.swt.matrix.MutableNumber,pl.netanel.swt.matrix.MutableNumber) -> a
-    176:177:void add(pl.netanel.swt.matrix.MutableNumber,java.lang.Number) -> a
-    181:181:pl.netanel.swt.matrix.MutableNumber subtract(pl.netanel.swt.matrix.MutableNumber,pl.netanel.swt.matrix.MutableNumber) -> b
-    186:186:boolean hasNextExtent() -> c
-    191:191:boolean hasNextHidden() -> d
-    196:196:int firstIndex(java.util.List) -> a
-    201:201:pl.netanel.swt.matrix.MutableNumber start(pl.netanel.swt.matrix.Extent) -> a
-    206:206:pl.netanel.swt.matrix.MutableNumber end(pl.netanel.swt.matrix.Extent) -> b
-pl.netanel.swt.matrix.Extent -> pl.netanel.swt.matrix.m:
+    141:141:pl.netanel.swt.matrix.MutableNumber index() -> d
+    147:147:boolean next() -> b_
+    151:158:boolean set(java.lang.Number) -> a
+pl.netanel.swt.matrix.DirectionIndexSequence$Backward -> pl.netanel.swt.matrix.v$a:
+    218:218:int compare(pl.netanel.swt.matrix.MutableNumber,pl.netanel.swt.matrix.MutableNumber) -> a
+    223:224:void add(pl.netanel.swt.matrix.MutableNumber,java.lang.Number) -> a
+    229:229:pl.netanel.swt.matrix.MutableNumber subtract(pl.netanel.swt.matrix.MutableNumber,pl.netanel.swt.matrix.MutableNumber) -> b
+    235:235:boolean hasNextExtent() -> a
+    240:240:boolean hasNextHidden() -> b
+    245:245:int firstIndex(java.util.List) -> a
+    250:250:pl.netanel.swt.matrix.MutableNumber start(pl.netanel.swt.matrix.Extent) -> a
+    255:255:pl.netanel.swt.matrix.MutableNumber end(pl.netanel.swt.matrix.Extent) -> b
+pl.netanel.swt.matrix.DirectionIndexSequence$Forward -> pl.netanel.swt.matrix.v$b:
+    170:170:int compare(pl.netanel.swt.matrix.MutableNumber,pl.netanel.swt.matrix.MutableNumber) -> a
+    175:176:void add(pl.netanel.swt.matrix.MutableNumber,java.lang.Number) -> a
+    180:180:pl.netanel.swt.matrix.MutableNumber subtract(pl.netanel.swt.matrix.MutableNumber,pl.netanel.swt.matrix.MutableNumber) -> b
+    185:185:boolean hasNextExtent() -> a
+    190:190:boolean hasNextHidden() -> b
+    195:195:int firstIndex(java.util.List) -> a
+    200:200:pl.netanel.swt.matrix.MutableNumber start(pl.netanel.swt.matrix.Extent) -> a
+    205:205:pl.netanel.swt.matrix.MutableNumber end(pl.netanel.swt.matrix.Extent) -> b
+pl.netanel.swt.matrix.EmbeddedControlsPainter -> pl.netanel.swt.matrix.c:
+    pl.netanel.swt.matrix.ZoneEditor editor -> g
+    java.util.HashMap controls -> h
+    boolean needsPainting -> a
+    org.eclipse.swt.widgets.Listener focusInListener -> i
+    org.eclipse.swt.events.ControlListener controlListener -> j
+    org.eclipse.swt.graphics.Point location -> k
+    org.eclipse.swt.graphics.Rectangle bounds -> l
+    65:72:boolean init() -> init
+    77:88:void paint(java.lang.Number,java.lang.Number,int,int,int,int) -> paint
+    92:100:void clean() -> clean
+    103:108:org.eclipse.swt.widgets.Control getControl(java.lang.Number,java.lang.Number) -> a
+    114:136:void setMatrix(pl.netanel.swt.matrix.Matrix) -> a
+    28:28:void access$0(pl.netanel.swt.matrix.EmbeddedControlsPainter,org.eclipse.swt.graphics.Point) -> a
+    29:29:void access$1(pl.netanel.swt.matrix.EmbeddedControlsPainter,org.eclipse.swt.graphics.Rectangle) -> a
+pl.netanel.swt.matrix.EmbeddedControlsPainter$1 -> pl.netanel.swt.matrix.c$d:
+    pl.netanel.swt.matrix.EmbeddedControlsPainter this$0 -> a
+    pl.netanel.swt.matrix.ZoneEditor val$editor -> b
+    40:44:void handleEvent(org.eclipse.swt.widgets.Event) -> handleEvent
+pl.netanel.swt.matrix.EmbeddedControlsPainter$2 -> pl.netanel.swt.matrix.c$c:
+    pl.netanel.swt.matrix.EmbeddedControlsPainter this$0 -> a
+    51:52:void controlMoved(org.eclipse.swt.events.ControlEvent) -> controlMoved
+    55:56:void controlResized(org.eclipse.swt.events.ControlEvent) -> controlResized
+pl.netanel.swt.matrix.EmbeddedControlsPainter$3 -> pl.netanel.swt.matrix.c$b:
+    pl.netanel.swt.matrix.EmbeddedControlsPainter this$0 -> a
+    117:118:void run() -> run
+pl.netanel.swt.matrix.EmbeddedControlsPainter$4 -> pl.netanel.swt.matrix.c$a:
+    pl.netanel.swt.matrix.EmbeddedControlsPainter this$0 -> a
+    pl.netanel.swt.matrix.Matrix val$matrix -> b
+    129:133:void handleEvent(org.eclipse.swt.widgets.Event) -> handleEvent
+pl.netanel.swt.matrix.Extent -> pl.netanel.swt.matrix.B:
     pl.netanel.swt.matrix.MutableNumber start -> a
     pl.netanel.swt.matrix.MutableNumber end -> b
     21:21:java.lang.String toString() -> toString
@@ -277,14 +315,14 @@ pl.netanel.swt.matrix.Extent -> pl.netanel.swt.matrix.m:
     29:29:java.lang.Number end() -> b
     46:77:pl.netanel.util.IntArray delete(pl.netanel.swt.matrix.Math,java.util.ArrayList,java.lang.Number,java.lang.Number) -> a
     81:92:void insert(pl.netanel.swt.matrix.Math,java.util.ArrayList,java.lang.Number,java.lang.Number) -> b
-pl.netanel.swt.matrix.ExtentSequence -> pl.netanel.swt.matrix.s:
+pl.netanel.swt.matrix.ExtentSequence -> pl.netanel.swt.matrix.E:
     java.util.List items -> a
     int i -> b
     java.lang.Number start -> c
     java.lang.Number end -> d
-    17:18:void init() -> a
-    22:26:boolean next() -> b
-pl.netanel.swt.matrix.FontWidthCache -> pl.netanel.swt.matrix.A:
+    17:18:void init() -> a_
+    22:26:boolean next() -> b_
+pl.netanel.swt.matrix.FontWidthCache -> pl.netanel.swt.matrix.q:
     int[] PRINTABLE_CHARS -> PRINTABLE_CHARS
     java.util.HashMap cache -> a
     22:30:int[] get(org.eclipse.swt.graphics.GC,org.eclipse.swt.graphics.Font) -> a
@@ -299,31 +337,31 @@ pl.netanel.swt.matrix.Frozen -> pl.netanel.swt.matrix.Frozen:
     pl.netanel.swt.matrix.Frozen[] ENUM$VALUES -> ENUM$VALUES
     1:1:pl.netanel.swt.matrix.Frozen[] values() -> values
     1:1:pl.netanel.swt.matrix.Frozen valueOf(java.lang.String) -> valueOf
-pl.netanel.swt.matrix.GestureBinding -> pl.netanel.swt.matrix.f:
+pl.netanel.swt.matrix.GestureBinding -> pl.netanel.swt.matrix.d:
     int commandId -> a
     int eventType -> b
     int key -> c
     boolean enabled -> d
     23:24:void setKey(int) -> a
     27:27:boolean isMatching(org.eclipse.swt.widgets.Event) -> a
-pl.netanel.swt.matrix.IntAxisState -> pl.netanel.swt.matrix.w:
+pl.netanel.swt.matrix.IntAxisState -> pl.netanel.swt.matrix.H:
     pl.netanel.util.IntArray values -> a
     int defaultValue -> b
     int value -> c
     17:17:boolean equalValue(int) -> a
     22:23:void addValue(int) -> b
     27:28:void setValue(int) -> c
-    32:33:void addValue(int,int) -> a
+    32:33:void addValue(int,int) -> b
     37:38:void removeValue(int) -> d
-    42:42:boolean equalValues(int,int) -> b
-    47:48:int getValue(java.lang.Number) -> a
+    42:42:boolean equalValues(int,int) -> a
+    47:48:int getValue(java.lang.Number) -> b
     52:53:void setValue(pl.netanel.swt.matrix.Extent,int) -> a
     59:61:void setValue(java.lang.Number,java.lang.Number,int) -> a
     71:71:int getCount() -> a
     76:76:int getDefault() -> b
     80:81:void setDefault(int) -> e
-    86:91:pl.netanel.util.IntArray delete(java.lang.Number,java.lang.Number) -> a
-pl.netanel.swt.matrix.IntMath -> pl.netanel.swt.matrix.v:
+    86:91:pl.netanel.util.IntArray delete(java.lang.Number,java.lang.Number) -> b
+pl.netanel.swt.matrix.IntMath -> pl.netanel.swt.matrix.F:
     pl.netanel.swt.matrix.MutableInt ZERO -> a
     pl.netanel.swt.matrix.MutableInt ONE -> b
     java.lang.Integer ZERO_VALUE -> c
@@ -357,7 +395,7 @@ pl.netanel.swt.matrix.IntMath -> pl.netanel.swt.matrix.v:
     1:1:pl.netanel.swt.matrix.MutableNumber create(pl.netanel.swt.matrix.MutableNumber) -> b
     1:1:pl.netanel.swt.matrix.MutableNumber create(java.lang.Number) -> f
     1:1:pl.netanel.swt.matrix.MutableNumber create(int) -> b
-pl.netanel.swt.matrix.Layout -> pl.netanel.swt.matrix.j:
+pl.netanel.swt.matrix.Layout -> pl.netanel.swt.matrix.i:
     pl.netanel.swt.matrix.Math math -> a
     int viewportSize -> y
     pl.netanel.swt.matrix.Layout$CountCache head -> b
@@ -385,67 +423,67 @@ pl.netanel.swt.matrix.Layout -> pl.netanel.swt.matrix.j:
     pl.netanel.swt.matrix.Axis axis -> x
     java.util.ArrayList sections -> z
     int[] $SWITCH_TABLE$pl$netanel$swt$matrix$Move -> A
-    78:78:int getViewportSize() -> a
-    82:84:void setViewportSize(int) -> a
-    87:87:pl.netanel.swt.matrix.Section getSection(int) -> b
-    94:95:void compute() -> b
-    104:127:void compute(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.Direction) -> a
-    131:163:void computeCache(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.Direction) -> b
-    166:169:void computeIfRequired() -> c
-    171:177:int computeSize(int,int,boolean) -> a
-    185:203:void ensureCurrentIsValid() -> d
-    206:206:pl.netanel.swt.matrix.Direction opposite(pl.netanel.swt.matrix.Direction) -> a
-    210:212:int compare(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem) -> a
-    224:230:void setCurrentItem(pl.netanel.swt.matrix.AxisItem) -> a
-    239:252:boolean moveFocusItem(pl.netanel.swt.matrix.Move) -> a
-    260:270:void show(pl.netanel.swt.matrix.AxisItem) -> b
-    273:278:pl.netanel.swt.matrix.AxisItem scroll(pl.netanel.swt.matrix.MutableNumber,pl.netanel.swt.matrix.Direction) -> a
-    282:289:void scrollTo(pl.netanel.swt.matrix.AxisItem) -> c
-    292:292:int getScrollMin() -> e
-    296:296:int getScrollMax() -> f
-    301:301:int getScrollThumb() -> g
-    305:309:int getScrollPosition() -> h
-    322:349:void setScrollPosition(int,pl.netanel.swt.matrix.Move) -> a
-    352:352:boolean isIntegerTooSmall() -> l
-    356:357:boolean isScrollRequired() -> i
-    361:370:boolean autoScroll(int) -> c
-    374:385:int getAutoScrollOffset(int,int) -> a
-    389:392:pl.netanel.swt.matrix.AxisItem nextItem(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.Direction) -> c
-    397:399:pl.netanel.swt.matrix.AxisItem nextItem(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.MutableNumber,pl.netanel.swt.matrix.Direction) -> a
-    403:433:pl.netanel.swt.matrix.AxisItem nextPage(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.Direction) -> d
-    444:456:pl.netanel.swt.matrix.AxisItem getResizeItem(int) -> d
-    463:463:boolean isOutOfBounds(pl.netanel.swt.matrix.AxisItem) -> d
-    688:688:pl.netanel.swt.matrix.Layout$Cache getCache(pl.netanel.swt.matrix.Frozen) -> b
-    693:693:pl.netanel.swt.matrix.Layout$Cache getCache(int) -> k
-    698:707:pl.netanel.swt.matrix.Layout$Cache getCache(pl.netanel.swt.matrix.Section,java.lang.Number) -> a
-    711:722:pl.netanel.swt.matrix.MutableNumber getItemPosition(pl.netanel.swt.matrix.AxisItem) -> e
-    726:738:pl.netanel.swt.matrix.AxisItem getItemByPosition(pl.netanel.swt.matrix.MutableNumber) -> a
-    748:757:pl.netanel.swt.matrix.AxisItem getItemByDistance(int) -> e
-    763:765:pl.netanel.swt.matrix.Layout$LayoutSequence cellSequence(pl.netanel.swt.matrix.Frozen,pl.netanel.swt.matrix.Section) -> a
-    769:771:pl.netanel.swt.matrix.Layout$LayoutSequence lineSequence(pl.netanel.swt.matrix.Frozen,pl.netanel.swt.matrix.Section) -> b
-    775:788:pl.netanel.swt.matrix.Layout$LayoutSequence singleSequence(int,int) -> b
-    852:856:boolean contains(pl.netanel.swt.matrix.Frozen,pl.netanel.swt.matrix.Section) -> c
-    860:861:pl.netanel.swt.matrix.Bound getBound(pl.netanel.swt.matrix.Frozen) -> a
-    868:885:pl.netanel.swt.matrix.Bound getBound(pl.netanel.swt.matrix.Frozen,pl.netanel.swt.matrix.Section) -> d
-    891:898:pl.netanel.swt.matrix.Bound getCellBound(pl.netanel.swt.matrix.AxisItem) -> f
-    902:909:pl.netanel.swt.matrix.Bound getLineBound(pl.netanel.swt.matrix.AxisItem) -> g
-    913:913:boolean isEmpty() -> j
-    918:920:void freezeHead(int) -> f
-    923:925:void freezeTail(int) -> g
-    928:939:void freezeHead(pl.netanel.swt.matrix.AxisItem) -> h
-    942:955:void freezeTail(pl.netanel.swt.matrix.AxisItem) -> i
-    958:968:int indexOf(pl.netanel.swt.matrix.AxisItem) -> j
-    972:977:pl.netanel.swt.matrix.AxisItem getIndexAt(int) -> h
-    981:986:pl.netanel.swt.matrix.Bound getCellBound(int) -> i
-    989:994:pl.netanel.swt.matrix.Bound getLineBound(int) -> j
-    998:1017:boolean reorder(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem) -> b
+    77:77:int getViewportSize() -> a
+    81:83:void setViewportSize(int) -> a
+    86:86:pl.netanel.swt.matrix.Section getSection(int) -> b
+    93:94:void compute() -> b
+    103:126:void compute(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.Direction) -> a
+    130:162:void computeCache(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.Direction) -> b
+    165:168:void computeIfRequired() -> c
+    170:176:int computeSize(int,int,boolean) -> a
+    184:202:void ensureCurrentIsValid() -> d
+    205:205:pl.netanel.swt.matrix.Direction opposite(pl.netanel.swt.matrix.Direction) -> a
+    209:211:int compare(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem) -> a
+    223:234:void setCurrentItem(pl.netanel.swt.matrix.AxisItem) -> a
+    243:256:boolean moveFocusItem(pl.netanel.swt.matrix.Move) -> a
+    264:274:void show(pl.netanel.swt.matrix.AxisItem) -> b
+    277:282:pl.netanel.swt.matrix.AxisItem scroll(pl.netanel.swt.matrix.MutableNumber,pl.netanel.swt.matrix.Direction) -> a
+    286:293:void scrollTo(pl.netanel.swt.matrix.AxisItem) -> c
+    296:296:int getScrollMin() -> e
+    300:300:int getScrollMax() -> f
+    305:305:int getScrollThumb() -> g
+    309:313:int getScrollPosition() -> h
+    326:353:void setScrollPosition(int,pl.netanel.swt.matrix.Move) -> a
+    356:356:boolean isIntegerTooSmall() -> l
+    360:361:boolean isScrollRequired() -> i
+    365:374:boolean autoScroll(int) -> c
+    378:389:int getAutoScrollOffset(int,int) -> a
+    393:396:pl.netanel.swt.matrix.AxisItem nextItem(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.Direction) -> c
+    401:403:pl.netanel.swt.matrix.AxisItem nextItem(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.MutableNumber,pl.netanel.swt.matrix.Direction) -> a
+    407:437:pl.netanel.swt.matrix.AxisItem nextPage(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.Direction) -> d
+    448:460:pl.netanel.swt.matrix.AxisItem getResizeItem(int) -> d
+    467:467:boolean isOutOfBounds(pl.netanel.swt.matrix.AxisItem) -> d
+    692:692:pl.netanel.swt.matrix.Layout$Cache getCache(pl.netanel.swt.matrix.Frozen) -> b
+    697:697:pl.netanel.swt.matrix.Layout$Cache getCache(int) -> k
+    702:711:pl.netanel.swt.matrix.Layout$Cache getCache(pl.netanel.swt.matrix.Section,java.lang.Number) -> a
+    715:726:pl.netanel.swt.matrix.MutableNumber getItemPosition(pl.netanel.swt.matrix.AxisItem) -> e
+    730:742:pl.netanel.swt.matrix.AxisItem getItemByPosition(pl.netanel.swt.matrix.MutableNumber) -> a
+    752:761:pl.netanel.swt.matrix.AxisItem getItemByDistance(int) -> e
+    767:769:pl.netanel.swt.matrix.Layout$LayoutSequence cellSequence(pl.netanel.swt.matrix.Frozen,pl.netanel.swt.matrix.Section) -> a
+    773:775:pl.netanel.swt.matrix.Layout$LayoutSequence lineSequence(pl.netanel.swt.matrix.Frozen,pl.netanel.swt.matrix.Section) -> b
+    779:792:pl.netanel.swt.matrix.Layout$LayoutSequence singleSequence(int,int) -> b
+    856:860:boolean contains(pl.netanel.swt.matrix.Frozen,pl.netanel.swt.matrix.Section) -> c
+    864:865:pl.netanel.swt.matrix.Bound getBound(pl.netanel.swt.matrix.Frozen) -> a
+    872:889:pl.netanel.swt.matrix.Bound getBound(pl.netanel.swt.matrix.Frozen,pl.netanel.swt.matrix.Section) -> d
+    895:902:pl.netanel.swt.matrix.Bound getCellBound(pl.netanel.swt.matrix.AxisItem) -> f
+    906:913:pl.netanel.swt.matrix.Bound getLineBound(pl.netanel.swt.matrix.AxisItem) -> g
+    917:917:boolean isEmpty() -> j
+    922:924:void freezeHead(int) -> f
+    927:929:void freezeTail(int) -> g
+    932:943:void freezeHead(pl.netanel.swt.matrix.AxisItem) -> h
+    946:959:void freezeTail(pl.netanel.swt.matrix.AxisItem) -> i
+    962:972:int indexOf(pl.netanel.swt.matrix.AxisItem) -> j
+    976:981:pl.netanel.swt.matrix.AxisItem getIndexAt(int) -> h
+    985:990:pl.netanel.swt.matrix.Bound getCellBound(int) -> i
+    993:998:pl.netanel.swt.matrix.Bound getLineBound(int) -> j
+    1002:1021:boolean reorder(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem) -> b
     13:13:int[] $SWITCH_TABLE$pl$netanel$swt$matrix$Move() -> k
-pl.netanel.swt.matrix.Layout$1 -> pl.netanel.swt.matrix.j$a:
+pl.netanel.swt.matrix.Layout$1 -> pl.netanel.swt.matrix.i$a:
     boolean started -> e
     pl.netanel.swt.matrix.Layout this$0 -> a
-    779:780:void init() -> a
-    783:784:boolean next() -> b
-pl.netanel.swt.matrix.Layout$Cache -> pl.netanel.swt.matrix.j$c:
+    783:784:void init() -> a
+    787:788:boolean next() -> b
+pl.netanel.swt.matrix.Layout$Cache -> pl.netanel.swt.matrix.i$b:
     java.util.ArrayList items -> a
     java.util.ArrayList cells -> b
     java.util.ArrayList lines -> c
@@ -458,23 +496,23 @@ pl.netanel.swt.matrix.Layout$Cache -> pl.netanel.swt.matrix.j$c:
     pl.netanel.swt.matrix.Direction direction -> j
     pl.netanel.swt.matrix.AxisItem item -> k
     pl.netanel.swt.matrix.Layout this$0 -> l
-    504:569:void compute(pl.netanel.swt.matrix.Direction,int,int,boolean) -> a
-    572:576:pl.netanel.swt.matrix.Bound lastLine(pl.netanel.swt.matrix.Section,java.lang.Number) -> a
-    581:585:void reverse() -> a
-    588:600:void setDistances(int) -> a
-    603:607:void clear() -> b
-    609:609:boolean condition() -> c
-    610:610:boolean isEmpty() -> d
-pl.netanel.swt.matrix.Layout$CountCache -> pl.netanel.swt.matrix.j$e:
+    508:573:void compute(pl.netanel.swt.matrix.Direction,int,int,boolean) -> a
+    576:580:pl.netanel.swt.matrix.Bound lastLine(pl.netanel.swt.matrix.Section,java.lang.Number) -> a
+    585:589:void reverse() -> a
+    592:604:void setDistances(int) -> a
+    607:611:void clear() -> b
+    613:613:boolean condition() -> c
+    614:614:boolean isEmpty() -> d
+pl.netanel.swt.matrix.Layout$CountCache -> pl.netanel.swt.matrix.i$d:
     int count -> m
     pl.netanel.swt.matrix.Layout this$0 -> n
-    627:627:boolean condition() -> c
-    631:637:void compute(int) -> b
-pl.netanel.swt.matrix.Layout$DistanceCache -> pl.netanel.swt.matrix.j$d:
+    631:631:boolean condition() -> c
+    635:641:void compute(int) -> b
+pl.netanel.swt.matrix.Layout$DistanceCache -> pl.netanel.swt.matrix.i$c:
     pl.netanel.swt.matrix.Layout this$0 -> m
-    649:649:boolean condition() -> c
-    653:684:void compute(pl.netanel.swt.matrix.Direction,int) -> a
-pl.netanel.swt.matrix.Layout$LayoutSequence -> pl.netanel.swt.matrix.j$b:
+    653:653:boolean condition() -> c
+    657:688:void compute(pl.netanel.swt.matrix.Direction,int) -> a
+pl.netanel.swt.matrix.Layout$LayoutSequence -> pl.netanel.swt.matrix.i$e:
     java.util.List items -> a
     java.util.List bounds -> e
     pl.netanel.swt.matrix.Section section -> f
@@ -482,13 +520,13 @@ pl.netanel.swt.matrix.Layout$LayoutSequence -> pl.netanel.swt.matrix.j$b:
     pl.netanel.swt.matrix.Bound bound -> b
     pl.netanel.swt.matrix.AxisItem item -> c
     pl.netanel.swt.matrix.Layout this$0 -> d
-    809:812:void init() -> a
-    815:831:boolean next() -> b
-    835:835:pl.netanel.swt.matrix.AxisItem getItem() -> c
-    839:839:int getDistance() -> d
-    843:843:int getWidth() -> e
-    847:847:java.lang.Number getIndex() -> f
-pl.netanel.swt.matrix.Listeners -> pl.netanel.swt.matrix.C:
+    813:816:void init() -> a
+    819:835:boolean next() -> b
+    839:839:pl.netanel.swt.matrix.AxisItem getItem() -> c
+    843:843:int getDistance() -> d
+    847:847:int getWidth() -> e
+    851:851:java.lang.Number getIndex() -> f
+pl.netanel.swt.matrix.Listeners -> pl.netanel.swt.matrix.I:
     pl.netanel.util.HashMapArrayList listeners -> a
     java.util.ArrayList events -> b
     23:25:void add(int,org.eclipse.swt.widgets.Listener) -> a
@@ -496,7 +534,7 @@ pl.netanel.swt.matrix.Listeners -> pl.netanel.swt.matrix.C:
     43:44:void add(org.eclipse.swt.widgets.Event) -> a
     47:52:void sendEvents() -> a
     55:58:void sendEvent(org.eclipse.swt.widgets.Event) -> b
-pl.netanel.swt.matrix.MapIndexMapIndexToValue -> pl.netanel.swt.matrix.F:
+pl.netanel.swt.matrix.MapIndexMapIndexToValue -> pl.netanel.swt.matrix.s:
     java.util.HashMap values -> a
     pl.netanel.swt.matrix.Math math0 -> b
     pl.netanel.swt.matrix.Math math1 -> c
@@ -509,7 +547,7 @@ pl.netanel.swt.matrix.MapIndexMapIndexToValue -> pl.netanel.swt.matrix.F:
     58:58:void delete1(java.lang.Number,java.lang.Number) -> c
     62:62:void insert0(java.lang.Number,java.lang.Number) -> d
     66:66:void insert1(java.lang.Number,java.lang.Number) -> e
-pl.netanel.swt.matrix.MapValueToCellSet -> pl.netanel.swt.matrix.e:
+pl.netanel.swt.matrix.MapValueToCellSet -> pl.netanel.swt.matrix.z:
     java.util.HashMap values -> a
     pl.netanel.swt.matrix.Math math0 -> b
     pl.netanel.swt.matrix.Math math1 -> c
@@ -522,7 +560,7 @@ pl.netanel.swt.matrix.MapValueToCellSet -> pl.netanel.swt.matrix.e:
     82:85:void delete1(java.lang.Number,java.lang.Number) -> c
     92:95:void insert0(java.lang.Number,java.lang.Number) -> d
     101:104:void insert1(java.lang.Number,java.lang.Number) -> e
-pl.netanel.swt.matrix.Math -> pl.netanel.swt.matrix.D:
+pl.netanel.swt.matrix.Math -> pl.netanel.swt.matrix.J:
     int BEFORE -> BEFORE
     int ADJACENT_BEFORE -> ADJACENT_BEFORE
     int ADJACENT_AFTER -> ADJACENT_AFTER
@@ -611,58 +649,61 @@ pl.netanel.swt.matrix.Matrix -> pl.netanel.swt.matrix.Matrix:
     int CMD_SELECT_TO_ROW_ALTER -> CMD_SELECT_TO_ROW_ALTER
     int CMD_SELECT_TO_COLUMN -> CMD_SELECT_TO_COLUMN
     int CMD_SELECT_TO_COLUMN_ALTER -> CMD_SELECT_TO_COLUMN_ALTER
-    int CMD_CUT -> h
+    int CMD_CUT -> CMD_CUT
     int CMD_COPY -> CMD_COPY
-    int CMD_PASTE -> i
+    int CMD_PASTE -> CMD_PASTE
+    int CMD_EDIT -> CMD_EDIT
+    int CMD_APPLY_EDIT -> CMD_APPLY_EDIT
+    int CMD_CANCEL_EDIT -> CMD_CANCEL_EDIT
+    int CMD_DELETE -> CMD_DELETE
     int CMD_HIDE -> CMD_HIDE
     int CMD_UNHIDE -> CMD_UNHIDE
-    int RESIZE_START -> j
-    int RESIZE_STOP -> k
+    int RESIZE_START -> h
+    int RESIZE_STOP -> i
     int CMD_RESIZE_PACK -> CMD_RESIZE_PACK
-    pl.netanel.swt.matrix.MatrixModel model -> l
-    pl.netanel.swt.matrix.Axis axis0 -> m
-    pl.netanel.swt.matrix.Axis axis1 -> n
-    pl.netanel.swt.matrix.Layout layout0 -> o
-    pl.netanel.swt.matrix.Layout layout1 -> p
-    pl.netanel.swt.matrix.MatrixListener listener -> q
-    org.eclipse.swt.widgets.Listener listener2 -> r
-    org.eclipse.swt.graphics.Rectangle area -> s
-    pl.netanel.swt.matrix.Painters painters -> t
-    java.util.concurrent.ScheduledExecutorService executor -> u
-    boolean focusCellEnabled -> v
-    java.lang.String snappedThemePath -> w
-    87:87:boolean isCursorMove(int) -> a
-    121:121:boolean isBodySelect(int) -> b
-    125:125:boolean isHeaderSelect(int) -> c
-    129:129:boolean isExtendingSelect(int) -> d
-    262:283:void setModel(pl.netanel.swt.matrix.MatrixModel) -> a
-    293:318:void setDefaultPainters() -> c
-    361:374:void onPaint(org.eclipse.swt.widgets.Event) -> a
-    389:404:void resize() -> d
-    410:431:void updateScrollBars() -> e
-    438:438:pl.netanel.swt.matrix.Axis getAxis0() -> getAxis0
-    446:446:pl.netanel.swt.matrix.Axis getAxis1() -> getAxis1
-    457:457:pl.netanel.swt.matrix.Zone getBody() -> getBody
-    467:467:pl.netanel.swt.matrix.Zone getColumnHeader() -> getColumnHeader
-    477:477:pl.netanel.swt.matrix.Zone getRowHeader() -> getRowHeader
-    487:487:pl.netanel.swt.matrix.Zone getTopLeft() -> getTopLeft
-    524:528:pl.netanel.swt.matrix.Zone getZone(pl.netanel.swt.matrix.Section,pl.netanel.swt.matrix.Section) -> getZone
-    542:542:pl.netanel.swt.matrix.Zone getZoneUnchecked(pl.netanel.swt.matrix.Section,pl.netanel.swt.matrix.Section) -> getZoneUnchecked
-    556:558:pl.netanel.swt.matrix.Zone getZoneUnchecked(pl.netanel.swt.matrix.Zone) -> getZoneUnchecked
-    592:603:void selectFocusCell() -> f
-    615:618:void setFocusCellEnabled(boolean) -> setFocusCellEnabled
-    627:627:boolean isFocusCellEnabled() -> isFocusCellEnabled
-    636:645:java.util.concurrent.ScheduledExecutorService getExecutor() -> a
-    653:663:void rethrow(java.lang.Throwable) -> a
-    667:689:void selectInZones(int,pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number) -> a
-    700:711:void refresh() -> refresh
-    725:726:void bind(int,int,int) -> bind
-    733:740:void unbind(int,int,int) -> unbind
-    752:752:int[] getZonePaintOrder() -> getZonePaintOrder
-    760:764:void setZonePaintOrder(int[]) -> setZonePaintOrder
-    771:774:void addPainter(pl.netanel.swt.matrix.Painter) -> addPainter
-    784:788:void addPainter(int,pl.netanel.swt.matrix.Painter) -> addPainter
-    798:801:void setPainter(int,pl.netanel.swt.matrix.Painter) -> setPainter
+    pl.netanel.swt.matrix.MatrixModel model -> j
+    pl.netanel.swt.matrix.Axis axis0 -> k
+    pl.netanel.swt.matrix.Axis axis1 -> l
+    pl.netanel.swt.matrix.Layout layout0 -> m
+    pl.netanel.swt.matrix.Layout layout1 -> n
+    pl.netanel.swt.matrix.MatrixListener listener -> o
+    org.eclipse.swt.widgets.Listener listener2 -> p
+    org.eclipse.swt.graphics.Rectangle area -> q
+    pl.netanel.swt.matrix.Painters painters -> r
+    java.util.concurrent.ScheduledExecutorService executor -> s
+    boolean focusCellEnabled -> t
+    77:77:boolean isCursorMove(int) -> a
+    111:111:boolean isBodySelect(int) -> b
+    115:115:boolean isHeaderSelect(int) -> c
+    119:119:boolean isExtendingSelect(int) -> d
+    256:278:void setModel(pl.netanel.swt.matrix.MatrixModel) -> a
+    288:313:void setDefaultPainters() -> c
+    356:369:void onPaint(org.eclipse.swt.widgets.Event) -> a
+    384:399:void resize() -> d
+    405:429:void updateScrollBars() -> e
+    436:436:pl.netanel.swt.matrix.Axis getAxis0() -> getAxis0
+    444:444:pl.netanel.swt.matrix.Axis getAxis1() -> getAxis1
+    455:455:pl.netanel.swt.matrix.Zone getBody() -> getBody
+    465:465:pl.netanel.swt.matrix.Zone getColumnHeader() -> getColumnHeader
+    475:475:pl.netanel.swt.matrix.Zone getRowHeader() -> getRowHeader
+    485:485:pl.netanel.swt.matrix.Zone getTopLeft() -> getTopLeft
+    522:526:pl.netanel.swt.matrix.Zone getZone(pl.netanel.swt.matrix.Section,pl.netanel.swt.matrix.Section) -> getZone
+    540:540:pl.netanel.swt.matrix.Zone getZoneUnchecked(pl.netanel.swt.matrix.Section,pl.netanel.swt.matrix.Section) -> getZoneUnchecked
+    554:556:pl.netanel.swt.matrix.Zone getZoneUnchecked(pl.netanel.swt.matrix.Zone) -> getZoneUnchecked
+    590:601:void selectFocusCell() -> a
+    613:616:void setFocusCellEnabled(boolean) -> setFocusCellEnabled
+    625:625:boolean isFocusCellEnabled() -> isFocusCellEnabled
+    634:643:java.util.concurrent.ScheduledExecutorService getExecutor() -> b
+    651:661:void rethrow(java.lang.Throwable) -> a
+    665:687:void selectInZones(int,pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number) -> a
+    698:709:void refresh() -> refresh
+    723:724:void bind(int,int,int) -> bind
+    731:738:void unbind(int,int,int) -> unbind
+    750:750:int[] getZonePaintOrder() -> getZonePaintOrder
+    758:762:void setZonePaintOrder(int[]) -> setZonePaintOrder
+    769:772:void addPainter(pl.netanel.swt.matrix.Painter) -> addPainter
+    782:786:void addPainter(int,pl.netanel.swt.matrix.Painter) -> addPainter
+    796:799:void setPainter(int,pl.netanel.swt.matrix.Painter) -> setPainter
     810:813:void replacePainter(pl.netanel.swt.matrix.Painter) -> replacePainter
     828:829:pl.netanel.swt.matrix.Painter removePainter(int) -> removePainter
     841:842:int indexOfPainter(java.lang.String) -> indexOfPainter
@@ -670,41 +711,34 @@ pl.netanel.swt.matrix.Matrix -> pl.netanel.swt.matrix.Matrix:
     863:863:int getPainterCount() -> getPainterCount
     875:876:pl.netanel.swt.matrix.Painter getPainter(int) -> getPainter
     880:885:void setPainterMatrixAndZone(pl.netanel.swt.matrix.Painter) -> a
-    895:895:void copy() -> b
-    899:900:java.util.Iterator iterator() -> iterator
-    923:975:void snapSystemTheme(java.lang.String) -> snapSystemTheme
-    387:387:void access$0(pl.netanel.swt.matrix.Matrix) -> a
-    165:165:java.util.concurrent.ScheduledExecutorService access$1(pl.netanel.swt.matrix.Matrix) -> b
+    889:890:java.util.Iterator iterator() -> iterator
+    904:905:void execute(int) -> execute
+    382:382:void access$0(pl.netanel.swt.matrix.Matrix) -> a
+    160:160:java.util.concurrent.ScheduledExecutorService access$1(pl.netanel.swt.matrix.Matrix) -> b
 pl.netanel.swt.matrix.Matrix$1 -> pl.netanel.swt.matrix.Matrix$c:
     pl.netanel.swt.matrix.Matrix this$0 -> a
-    239:246:void handleEvent(org.eclipse.swt.widgets.Event) -> handleEvent
+    233:240:void handleEvent(org.eclipse.swt.widgets.Event) -> handleEvent
 pl.netanel.swt.matrix.Matrix$2 -> pl.netanel.swt.matrix.Matrix$b:
     pl.netanel.swt.matrix.Matrix this$0 -> a
-    255:256:void widgetDisposed(org.eclipse.swt.events.DisposeEvent) -> widgetDisposed
+    249:250:void widgetDisposed(org.eclipse.swt.events.DisposeEvent) -> widgetDisposed
 pl.netanel.swt.matrix.Matrix$3 -> pl.netanel.swt.matrix.Matrix$e:
-    pl.netanel.swt.matrix.Matrix this$0 -> g
-    306:316:void paint(java.lang.Number,java.lang.Number,int,int,int,int) -> paint
+    pl.netanel.swt.matrix.Matrix this$0 -> a
+    301:311:void paint(java.lang.Number,java.lang.Number,int,int,int,int) -> paint
 pl.netanel.swt.matrix.Matrix$4 -> pl.netanel.swt.matrix.Matrix$d:
     pl.netanel.swt.matrix.Matrix this$0 -> a
-    641:641:java.lang.Thread newThread(java.lang.Runnable) -> newThread
+    639:639:java.lang.Thread newThread(java.lang.Runnable) -> newThread
 pl.netanel.swt.matrix.Matrix$5 -> pl.netanel.swt.matrix.Matrix$a:
     pl.netanel.swt.matrix.Matrix this$0 -> a
     java.util.Iterator val$it -> b
-    903:903:boolean hasNext() -> hasNext
-    908:908:pl.netanel.swt.matrix.Zone next() -> a
+    893:893:boolean hasNext() -> hasNext
+    898:898:pl.netanel.swt.matrix.Zone next() -> a
     1:1:java.lang.Object next() -> next
 pl.netanel.swt.matrix.Matrix$DockPainter -> pl.netanel.swt.matrix.Matrix$f:
-    pl.netanel.swt.matrix.Frozen dock0 -> h
-    pl.netanel.swt.matrix.Frozen dock1 -> i
-    pl.netanel.swt.matrix.Matrix this$0 -> g
-    332:350:void paint(java.lang.Number,java.lang.Number,int,int,int,int) -> paint
-    354:356:void clean() -> clean
-pl.netanel.swt.matrix.MatrixEditor -> pl.netanel.swt.matrix.MatrixEditor:
-    org.eclipse.swt.widgets.Control control -> a
-    10:10:void activate() -> activate
-    13:13:boolean isActive() -> isActive
-    18:18:void apply() -> apply
-    22:22:void cancel() -> cancel
+    pl.netanel.swt.matrix.Frozen dock0 -> g
+    pl.netanel.swt.matrix.Frozen dock1 -> h
+    pl.netanel.swt.matrix.Matrix this$0 -> a
+    327:345:void paint(java.lang.Number,java.lang.Number,int,int,int,int) -> paint
+    349:351:void clean() -> clean
 pl.netanel.swt.matrix.MatrixListener -> pl.netanel.swt.matrix.h:
     int[] EVENTS -> n
     pl.netanel.swt.matrix.Matrix matrix -> a
@@ -722,19 +756,21 @@ pl.netanel.swt.matrix.MatrixListener -> pl.netanel.swt.matrix.h:
     pl.netanel.swt.matrix.Zone topLeft -> m
     pl.netanel.swt.matrix.Move m0 -> o
     pl.netanel.swt.matrix.Move m1 -> p
-    86:142:void handleEvent(org.eclipse.swt.widgets.Event) -> handleEvent
-    541:612:void bindCommands() -> a
-    615:616:void bindKey(int,int) -> a
-    619:619:boolean isSelectable() -> c
-    624:666:void executeCommand(int) -> a
-    669:713:boolean moveCursor(int) -> b
-    718:737:void backupRestoreSelection(int) -> c
-    740:755:void selectCells(int) -> d
-    758:758:boolean isSelected(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem) -> a
-    764:769:void sendEvents() -> d
-    778:783:pl.netanel.swt.matrix.GestureBinding getBinding(int,int) -> b
-    787:793:void setLayout(pl.netanel.swt.matrix.Layout,pl.netanel.swt.matrix.Layout) -> a
-    800:802:void refresh() -> b
+    137:193:void handleEvent(org.eclipse.swt.widgets.Event) -> handleEvent
+    593:664:void bindCommands() -> a
+    667:668:void bindKey(int,int) -> a
+    671:671:boolean isSelectable() -> c
+    676:724:void executeCommand(int) -> a
+    727:771:boolean moveCursor(int) -> b
+    776:795:void backupRestoreSelection(int) -> c
+    798:813:void selectCells(int) -> d
+    816:816:boolean isSelected(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem) -> a
+    822:827:void sendEvents() -> d
+    836:841:pl.netanel.swt.matrix.GestureBinding getBinding(int,int) -> b
+    845:851:void setLayout(pl.netanel.swt.matrix.Layout,pl.netanel.swt.matrix.Layout) -> a
+    858:860:void refresh() -> b
+    863:905:void listenToAll(org.eclipse.swt.widgets.Control,org.eclipse.swt.widgets.Listener) -> a
+    908:909:java.lang.String getEventType(org.eclipse.swt.widgets.Event) -> a
 pl.netanel.swt.matrix.MatrixListener$AxisListener -> pl.netanel.swt.matrix.h$a:
     int axisIndex -> t
     pl.netanel.swt.matrix.Axis axis -> a
@@ -757,23 +793,23 @@ pl.netanel.swt.matrix.MatrixListener$AxisListener -> pl.netanel.swt.matrix.h$a:
     boolean focusMoved -> r
     int resizeEvent -> u
     pl.netanel.swt.matrix.MatrixListener this$0 -> s
-    168:181:void setItem(org.eclipse.swt.widgets.Event) -> a
-    184:267:void update(org.eclipse.swt.widgets.Event,int) -> a
-    270:294:void handleDrag(org.eclipse.swt.widgets.Event) -> b
-    297:297:boolean isSelectable() -> a
-    301:304:boolean isInHeader() -> g
-    309:312:void setCurrentItem() -> b
-    315:322:void moveFocusItem(pl.netanel.swt.matrix.Move) -> a
-    325:325:boolean isSelected(pl.netanel.swt.matrix.AxisItem) -> a
-    329:370:void setSelected(int) -> a
-    373:379:void addEvent(pl.netanel.swt.matrix.Section,int,java.lang.Object) -> a
-    382:413:void reorder() -> c
-    416:423:void pack() -> d
-    426:428:void hide(boolean) -> a
-    523:529:void refresh() -> e
-    532:535:void sendEvents() -> f
-    145:145:int access$0(pl.netanel.swt.matrix.MatrixListener$AxisListener) -> a
-    144:144:pl.netanel.swt.matrix.MatrixListener access$1(pl.netanel.swt.matrix.MatrixListener$AxisListener) -> b
+    220:233:void setItem(org.eclipse.swt.widgets.Event) -> a
+    236:319:void update(org.eclipse.swt.widgets.Event,int) -> a
+    322:346:void handleDrag(org.eclipse.swt.widgets.Event) -> b
+    349:349:boolean isSelectable() -> a
+    353:356:boolean isInHeader() -> g
+    361:364:void setCurrentItem() -> b
+    367:374:void moveFocusItem(pl.netanel.swt.matrix.Move) -> a
+    377:377:boolean isSelected(pl.netanel.swt.matrix.AxisItem) -> a
+    381:422:void setSelected(int) -> a
+    425:431:void addEvent(pl.netanel.swt.matrix.Section,int,java.lang.Object) -> a
+    434:465:void reorder() -> c
+    468:475:void pack() -> d
+    478:480:void hide(boolean) -> a
+    575:581:void refresh() -> e
+    584:587:void sendEvents() -> f
+    196:196:int access$0(pl.netanel.swt.matrix.MatrixListener$AxisListener) -> a
+    195:195:pl.netanel.swt.matrix.MatrixListener access$1(pl.netanel.swt.matrix.MatrixListener$AxisListener) -> b
 pl.netanel.swt.matrix.MatrixListener$AxisListener$AutoScroll -> pl.netanel.swt.matrix.h$a$a:
     java.util.concurrent.ScheduledFuture future -> a
     int offset -> b
@@ -783,16 +819,16 @@ pl.netanel.swt.matrix.MatrixListener$AxisListener$AutoScroll -> pl.netanel.swt.m
     pl.netanel.swt.matrix.AxisItem item -> f
     pl.netanel.swt.matrix.MutableNumber itemCountIndex -> g
     pl.netanel.swt.matrix.MatrixListener$AxisListener this$1 -> h
-    446:467:void handle() -> a
-    474:486:void run() -> run
-    492:512:void doRun() -> c
-    515:519:void stop() -> b
-    491:491:void access$0(pl.netanel.swt.matrix.MatrixListener$AxisListener$AutoScroll) -> a
-    435:435:pl.netanel.swt.matrix.MatrixListener$AxisListener access$1(pl.netanel.swt.matrix.MatrixListener$AxisListener$AutoScroll) -> b
+    498:519:void handle() -> a
+    526:538:void run() -> run
+    544:564:void doRun() -> c
+    567:571:void stop() -> b
+    543:543:void access$0(pl.netanel.swt.matrix.MatrixListener$AxisListener$AutoScroll) -> a
+    487:487:pl.netanel.swt.matrix.MatrixListener$AxisListener access$1(pl.netanel.swt.matrix.MatrixListener$AxisListener$AutoScroll) -> b
 pl.netanel.swt.matrix.MatrixListener$AxisListener$AutoScroll$1 -> pl.netanel.swt.matrix.h$a$a$a:
     pl.netanel.swt.matrix.MatrixListener$AxisListener$AutoScroll this$2 -> a
-    478:484:void run() -> run
-pl.netanel.swt.matrix.MatrixModel -> pl.netanel.swt.matrix.i:
+    530:536:void run() -> run
+pl.netanel.swt.matrix.MatrixModel -> pl.netanel.swt.matrix.g:
     pl.netanel.swt.matrix.Axis axis0 -> a
     pl.netanel.swt.matrix.Axis axis1 -> b
     java.util.ArrayList zones -> c
@@ -800,37 +836,33 @@ pl.netanel.swt.matrix.MatrixModel -> pl.netanel.swt.matrix.i:
     int[] paintOrder -> e
     pl.netanel.swt.matrix.MatrixModel$ExtentPairSequence seq -> f
     pl.netanel.swt.matrix.Matrix matrix -> g
-    35:98:void setMatrix(pl.netanel.swt.matrix.Matrix) -> a
-    141:150:void calculatePaintOrder() -> e
-    153:153:pl.netanel.swt.matrix.Zone getBody() -> a
-    156:156:pl.netanel.swt.matrix.Zone getColumneHeader() -> b
-    159:159:pl.netanel.swt.matrix.Zone getRowHeader() -> c
-    162:162:pl.netanel.swt.matrix.Zone getTopLeft() -> d
-    167:172:pl.netanel.swt.matrix.Zone getZone(pl.netanel.swt.matrix.Section,pl.netanel.swt.matrix.Section) -> a
-    176:181:pl.netanel.swt.matrix.Zone getZoneUnchecked(pl.netanel.swt.matrix.Section,pl.netanel.swt.matrix.Section) -> b
-    189:189:java.util.Iterator iterator() -> iterator
-    207:211:void addSelectionEvent(pl.netanel.swt.matrix.Listeners) -> a
-    222:237:void setSelected(boolean) -> a
-    253:274:void setSelected(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem,boolean) -> a
-    328:332:void deleteInZones(int,pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number) -> a
-    335:338:void insertInZones(int,pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number) -> b
-pl.netanel.swt.matrix.MatrixModel$1 -> pl.netanel.swt.matrix.i$c:
-    pl.netanel.swt.matrix.MatrixModel this$0 -> g
-    56:58:void paint(java.lang.Number,java.lang.Number,int,int,int,int) -> paint
-    61:62:int computeWidth(java.lang.Number,java.lang.Number) -> computeWidth
-    66:67:int computeHeight(java.lang.Number,java.lang.Number) -> computeHeight
-pl.netanel.swt.matrix.MatrixModel$2 -> pl.netanel.swt.matrix.i$b:
-    pl.netanel.swt.matrix.MatrixModel this$0 -> g
-    75:77:void paint(java.lang.Number,java.lang.Number,int,int,int,int) -> paint
-    80:81:int computeWidth(java.lang.Number,java.lang.Number) -> computeWidth
-    85:86:int computeHeight(java.lang.Number,java.lang.Number) -> computeHeight
-pl.netanel.swt.matrix.MatrixModel$3 -> pl.netanel.swt.matrix.i$a:
+    35:76:void setMatrix(pl.netanel.swt.matrix.Matrix) -> a
+    119:128:void calculatePaintOrder() -> e
+    131:131:pl.netanel.swt.matrix.Zone getBody() -> a
+    134:134:pl.netanel.swt.matrix.Zone getColumneHeader() -> b
+    137:137:pl.netanel.swt.matrix.Zone getRowHeader() -> c
+    140:140:pl.netanel.swt.matrix.Zone getTopLeft() -> d
+    145:150:pl.netanel.swt.matrix.Zone getZone(pl.netanel.swt.matrix.Section,pl.netanel.swt.matrix.Section) -> a
+    154:159:pl.netanel.swt.matrix.Zone getZoneUnchecked(pl.netanel.swt.matrix.Section,pl.netanel.swt.matrix.Section) -> b
+    167:167:java.util.Iterator iterator() -> iterator
+    185:189:void addSelectionEvent(pl.netanel.swt.matrix.Listeners) -> a
+    200:215:void setSelected(boolean) -> a
+    231:252:void setSelected(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem,boolean) -> a
+    306:310:void deleteInZones(int,pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number) -> a
+    313:316:void insertInZones(int,pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number) -> b
+pl.netanel.swt.matrix.MatrixModel$1 -> pl.netanel.swt.matrix.g$c:
+    pl.netanel.swt.matrix.MatrixModel this$0 -> a
+    56:56:java.lang.String getText(java.lang.Number,java.lang.Number) -> getText
+pl.netanel.swt.matrix.MatrixModel$2 -> pl.netanel.swt.matrix.g$b:
+    pl.netanel.swt.matrix.MatrixModel this$0 -> a
+    64:64:java.lang.String getText(java.lang.Number,java.lang.Number) -> getText
+pl.netanel.swt.matrix.MatrixModel$3 -> pl.netanel.swt.matrix.g$a:
     int i -> a
     pl.netanel.swt.matrix.MatrixModel this$0 -> b
-    194:194:boolean hasNext() -> hasNext
-    199:199:pl.netanel.swt.matrix.Zone next() -> a
+    172:172:boolean hasNext() -> hasNext
+    177:177:pl.netanel.swt.matrix.Zone next() -> a
     1:1:java.lang.Object next() -> next
-pl.netanel.swt.matrix.MatrixModel$ExtentPairSequence -> pl.netanel.swt.matrix.i$d:
+pl.netanel.swt.matrix.MatrixModel$ExtentPairSequence -> pl.netanel.swt.matrix.g$d:
     pl.netanel.swt.matrix.Section section0 -> a
     pl.netanel.swt.matrix.Section section1 -> b
     pl.netanel.swt.matrix.MutableNumber start0 -> c
@@ -843,8 +875,8 @@ pl.netanel.swt.matrix.MatrixModel$ExtentPairSequence -> pl.netanel.swt.matrix.i$
     pl.netanel.swt.matrix.AxisItem startItem1 -> k
     pl.netanel.swt.matrix.AxisItem endItem1 -> l
     pl.netanel.swt.matrix.MatrixModel this$0 -> j
-    297:305:void init(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem) -> a
-    308:323:boolean next() -> a
+    275:283:void init(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem) -> a
+    286:301:boolean next() -> a
 pl.netanel.swt.matrix.Move -> pl.netanel.swt.matrix.Move:
     pl.netanel.swt.matrix.Move NEXT -> NEXT
     pl.netanel.swt.matrix.Move PREVIOUS -> PREVIOUS
@@ -856,111 +888,111 @@ pl.netanel.swt.matrix.Move -> pl.netanel.swt.matrix.Move:
     pl.netanel.swt.matrix.Move[] ENUM$VALUES -> ENUM$VALUES
     1:1:pl.netanel.swt.matrix.Move[] values() -> values
     1:1:pl.netanel.swt.matrix.Move valueOf(java.lang.String) -> valueOf
-pl.netanel.swt.matrix.MutableBigInteger -> pl.netanel.swt.matrix.B:
+pl.netanel.swt.matrix.MutableBigInteger -> pl.netanel.swt.matrix.r:
     long serialVersionUID -> b
     java.math.BigInteger value -> a
     16:16:java.lang.String toString() -> toString
     21:22:boolean equals(java.lang.Object) -> equals
     27:27:int hashCode() -> hashCode
-    33:33:pl.netanel.swt.matrix.MutableBigInteger copy() -> h
-    38:38:java.math.BigInteger getValue() -> i
+    33:33:pl.netanel.swt.matrix.MutableBigInteger copy() -> a
+    38:38:java.math.BigInteger getValue() -> b
     43:44:pl.netanel.swt.matrix.MutableBigInteger set(java.math.BigInteger) -> a
     49:50:pl.netanel.swt.matrix.MutableNumber set(pl.netanel.swt.matrix.MutableNumber) -> a
-    56:57:pl.netanel.swt.matrix.MutableBigInteger increment() -> j
-    62:63:pl.netanel.swt.matrix.MutableBigInteger decrement() -> k
-    68:69:pl.netanel.swt.matrix.MutableBigInteger negate() -> l
-    74:75:pl.netanel.swt.matrix.MutableBigInteger add(pl.netanel.swt.matrix.MutableNumber) -> g
-    81:82:pl.netanel.swt.matrix.MutableBigInteger add(int) -> b
-    87:87:java.math.BigInteger toBigInteger() -> a
+    56:57:pl.netanel.swt.matrix.MutableBigInteger increment() -> c
+    62:63:pl.netanel.swt.matrix.MutableBigInteger decrement() -> d
+    68:69:pl.netanel.swt.matrix.MutableBigInteger negate() -> e
+    74:75:pl.netanel.swt.matrix.MutableBigInteger add(pl.netanel.swt.matrix.MutableNumber) -> b
+    81:82:pl.netanel.swt.matrix.MutableBigInteger add(int) -> a
+    87:87:java.math.BigInteger toBigInteger() -> f
     93:94:pl.netanel.swt.matrix.MutableBigInteger add(java.math.BigInteger) -> b
     99:100:pl.netanel.swt.matrix.MutableBigInteger subtract(java.math.BigInteger) -> c
     105:105:int intValue() -> g
-    110:111:pl.netanel.swt.matrix.MutableNumber subtract(pl.netanel.swt.matrix.MutableNumber) -> c
-    116:117:pl.netanel.swt.matrix.MutableNumber multiply(pl.netanel.swt.matrix.MutableNumber) -> d
-    122:123:pl.netanel.swt.matrix.MutableNumber divide(pl.netanel.swt.matrix.MutableNumber) -> e
+    110:111:pl.netanel.swt.matrix.MutableNumber subtract(pl.netanel.swt.matrix.MutableNumber) -> g
+    116:117:pl.netanel.swt.matrix.MutableNumber multiply(pl.netanel.swt.matrix.MutableNumber) -> j
+    122:123:pl.netanel.swt.matrix.MutableNumber divide(pl.netanel.swt.matrix.MutableNumber) -> h
     128:128:pl.netanel.swt.matrix.MutableNumber min(pl.netanel.swt.matrix.MutableNumber) -> f
     133:133:int compareTo(java.math.BigInteger) -> d
-    1:1:java.lang.Number getValue() -> b
-    1:1:pl.netanel.swt.matrix.MutableNumber negate() -> f
-    1:1:pl.netanel.swt.matrix.MutableNumber increment() -> d
-    1:1:pl.netanel.swt.matrix.MutableNumber decrement() -> e
-    1:1:pl.netanel.swt.matrix.MutableNumber subtract(java.lang.Number) -> c
+    1:1:java.lang.Number getValue() -> h
+    1:1:pl.netanel.swt.matrix.MutableNumber negate() -> i
+    1:1:pl.netanel.swt.matrix.MutableNumber increment() -> j
+    1:1:pl.netanel.swt.matrix.MutableNumber decrement() -> k
+    1:1:pl.netanel.swt.matrix.MutableNumber subtract(java.lang.Number) -> a
     1:1:pl.netanel.swt.matrix.MutableNumber add(java.lang.Number) -> b
-    1:1:pl.netanel.swt.matrix.MutableNumber add(int) -> a
-    1:1:pl.netanel.swt.matrix.MutableNumber add(pl.netanel.swt.matrix.MutableNumber) -> b
-    1:1:pl.netanel.swt.matrix.MutableNumber set(java.lang.Number) -> a
-    1:1:pl.netanel.swt.matrix.MutableNumber copy() -> c
+    1:1:pl.netanel.swt.matrix.MutableNumber add(int) -> c
+    1:1:pl.netanel.swt.matrix.MutableNumber add(pl.netanel.swt.matrix.MutableNumber) -> i
+    1:1:pl.netanel.swt.matrix.MutableNumber set(java.lang.Number) -> c
+    1:1:pl.netanel.swt.matrix.MutableNumber copy() -> l
     1:1:int compareTo(java.lang.Number) -> d
-pl.netanel.swt.matrix.MutableInt -> pl.netanel.swt.matrix.c:
+pl.netanel.swt.matrix.MutableInt -> pl.netanel.swt.matrix.a:
     long serialVersionUID -> b
     int value -> a
     16:16:java.lang.String toString() -> toString
     21:22:boolean equals(java.lang.Object) -> equals
     27:27:int hashCode() -> hashCode
-    32:32:pl.netanel.swt.matrix.MutableInt copy() -> h
-    37:37:java.lang.Integer getValue() -> i
+    32:32:pl.netanel.swt.matrix.MutableInt copy() -> a
+    37:37:java.lang.Integer getValue() -> b
     42:43:pl.netanel.swt.matrix.MutableInt set(java.lang.Integer) -> a
-    47:48:pl.netanel.swt.matrix.MutableInt set(int) -> b
+    47:48:pl.netanel.swt.matrix.MutableInt set(int) -> a
     53:54:pl.netanel.swt.matrix.MutableNumber set(pl.netanel.swt.matrix.MutableNumber) -> a
-    59:60:pl.netanel.swt.matrix.MutableInt increment() -> j
-    65:66:pl.netanel.swt.matrix.MutableInt decrement() -> k
-    71:72:pl.netanel.swt.matrix.MutableInt negate() -> l
-    77:78:pl.netanel.swt.matrix.MutableInt add(pl.netanel.swt.matrix.MutableNumber) -> g
-    83:84:pl.netanel.swt.matrix.MutableInt subtract(pl.netanel.swt.matrix.MutableNumber) -> h
-    89:90:pl.netanel.swt.matrix.MutableInt multiply(pl.netanel.swt.matrix.MutableNumber) -> i
-    95:96:pl.netanel.swt.matrix.MutableInt divide(pl.netanel.swt.matrix.MutableNumber) -> j
-    102:103:pl.netanel.swt.matrix.MutableInt add(int) -> c
-    108:108:java.math.BigInteger toBigInteger() -> a
+    59:60:pl.netanel.swt.matrix.MutableInt increment() -> c
+    65:66:pl.netanel.swt.matrix.MutableInt decrement() -> d
+    71:72:pl.netanel.swt.matrix.MutableInt negate() -> e
+    77:78:pl.netanel.swt.matrix.MutableInt add(pl.netanel.swt.matrix.MutableNumber) -> b
+    83:84:pl.netanel.swt.matrix.MutableInt subtract(pl.netanel.swt.matrix.MutableNumber) -> c
+    89:90:pl.netanel.swt.matrix.MutableInt multiply(pl.netanel.swt.matrix.MutableNumber) -> d
+    95:96:pl.netanel.swt.matrix.MutableInt divide(pl.netanel.swt.matrix.MutableNumber) -> e
+    102:103:pl.netanel.swt.matrix.MutableInt add(int) -> b
+    108:108:java.math.BigInteger toBigInteger() -> f
     113:114:pl.netanel.swt.matrix.MutableInt add(java.lang.Integer) -> b
     119:120:pl.netanel.swt.matrix.MutableInt subtract(java.lang.Integer) -> c
     125:125:int intValue() -> g
     130:130:pl.netanel.swt.matrix.MutableNumber min(pl.netanel.swt.matrix.MutableNumber) -> f
     136:137:int compareTo(java.lang.Integer) -> d
-    1:1:java.lang.Number getValue() -> b
-    1:1:pl.netanel.swt.matrix.MutableNumber negate() -> f
-    1:1:pl.netanel.swt.matrix.MutableNumber increment() -> d
-    1:1:pl.netanel.swt.matrix.MutableNumber decrement() -> e
-    1:1:pl.netanel.swt.matrix.MutableNumber subtract(java.lang.Number) -> c
-    1:1:pl.netanel.swt.matrix.MutableNumber subtract(pl.netanel.swt.matrix.MutableNumber) -> c
-    1:1:pl.netanel.swt.matrix.MutableNumber divide(pl.netanel.swt.matrix.MutableNumber) -> e
+    1:1:java.lang.Number getValue() -> h
+    1:1:pl.netanel.swt.matrix.MutableNumber negate() -> i
+    1:1:pl.netanel.swt.matrix.MutableNumber increment() -> j
+    1:1:pl.netanel.swt.matrix.MutableNumber decrement() -> k
+    1:1:pl.netanel.swt.matrix.MutableNumber subtract(java.lang.Number) -> a
+    1:1:pl.netanel.swt.matrix.MutableNumber subtract(pl.netanel.swt.matrix.MutableNumber) -> g
+    1:1:pl.netanel.swt.matrix.MutableNumber divide(pl.netanel.swt.matrix.MutableNumber) -> h
     1:1:pl.netanel.swt.matrix.MutableNumber add(java.lang.Number) -> b
-    1:1:pl.netanel.swt.matrix.MutableNumber add(int) -> a
-    1:1:pl.netanel.swt.matrix.MutableNumber add(pl.netanel.swt.matrix.MutableNumber) -> b
-    1:1:pl.netanel.swt.matrix.MutableNumber set(java.lang.Number) -> a
-    1:1:pl.netanel.swt.matrix.MutableNumber multiply(pl.netanel.swt.matrix.MutableNumber) -> d
-    1:1:pl.netanel.swt.matrix.MutableNumber copy() -> c
+    1:1:pl.netanel.swt.matrix.MutableNumber add(int) -> c
+    1:1:pl.netanel.swt.matrix.MutableNumber add(pl.netanel.swt.matrix.MutableNumber) -> i
+    1:1:pl.netanel.swt.matrix.MutableNumber set(java.lang.Number) -> c
+    1:1:pl.netanel.swt.matrix.MutableNumber multiply(pl.netanel.swt.matrix.MutableNumber) -> j
+    1:1:pl.netanel.swt.matrix.MutableNumber copy() -> l
     1:1:int compareTo(java.lang.Number) -> d
-pl.netanel.swt.matrix.MutableNumber -> pl.netanel.swt.matrix.b:
+pl.netanel.swt.matrix.MutableNumber -> pl.netanel.swt.matrix.y:
     long serialVersionUID -> a
-    java.math.BigInteger toBigInteger() -> a
-    java.lang.Number getValue() -> b
-    pl.netanel.swt.matrix.MutableNumber copy() -> c
-    pl.netanel.swt.matrix.MutableNumber set(java.lang.Number) -> a
+    java.math.BigInteger toBigInteger() -> f
+    java.lang.Number getValue() -> h
+    pl.netanel.swt.matrix.MutableNumber copy() -> l
+    pl.netanel.swt.matrix.MutableNumber set(java.lang.Number) -> c
     pl.netanel.swt.matrix.MutableNumber set(pl.netanel.swt.matrix.MutableNumber) -> a
-    pl.netanel.swt.matrix.MutableNumber increment() -> d
-    pl.netanel.swt.matrix.MutableNumber decrement() -> e
-    pl.netanel.swt.matrix.MutableNumber negate() -> f
-    pl.netanel.swt.matrix.MutableNumber add(pl.netanel.swt.matrix.MutableNumber) -> b
-    pl.netanel.swt.matrix.MutableNumber subtract(pl.netanel.swt.matrix.MutableNumber) -> c
-    pl.netanel.swt.matrix.MutableNumber multiply(pl.netanel.swt.matrix.MutableNumber) -> d
-    pl.netanel.swt.matrix.MutableNumber divide(pl.netanel.swt.matrix.MutableNumber) -> e
-    pl.netanel.swt.matrix.MutableNumber add(int) -> a
+    pl.netanel.swt.matrix.MutableNumber increment() -> j
+    pl.netanel.swt.matrix.MutableNumber decrement() -> k
+    pl.netanel.swt.matrix.MutableNumber negate() -> i
+    pl.netanel.swt.matrix.MutableNumber add(pl.netanel.swt.matrix.MutableNumber) -> i
+    pl.netanel.swt.matrix.MutableNumber subtract(pl.netanel.swt.matrix.MutableNumber) -> g
+    pl.netanel.swt.matrix.MutableNumber multiply(pl.netanel.swt.matrix.MutableNumber) -> j
+    pl.netanel.swt.matrix.MutableNumber divide(pl.netanel.swt.matrix.MutableNumber) -> h
+    pl.netanel.swt.matrix.MutableNumber add(int) -> c
     pl.netanel.swt.matrix.MutableNumber add(java.lang.Number) -> b
-    pl.netanel.swt.matrix.MutableNumber subtract(java.lang.Number) -> c
+    pl.netanel.swt.matrix.MutableNumber subtract(java.lang.Number) -> a
     int compareTo(java.lang.Number) -> d
     pl.netanel.swt.matrix.MutableNumber min(pl.netanel.swt.matrix.MutableNumber) -> f
     int intValue() -> g
-pl.netanel.swt.matrix.NumberOrder -> pl.netanel.swt.matrix.x:
+pl.netanel.swt.matrix.NumberOrder -> pl.netanel.swt.matrix.o:
     java.lang.Number count -> h
     boolean $assertionsDisabled -> g
     16:37:void setCount(java.lang.Number) -> f
     41:70:void move(java.lang.Number,java.lang.Number,java.lang.Number) -> a
     79:105:void move(pl.netanel.swt.matrix.NumberSet,java.lang.Number) -> a
-    108:116:void mergeAdjacentExtents() -> b
+    108:116:void mergeAdjacentExtents() -> e
     120:130:java.lang.Number indexOf(java.lang.Number) -> g
     135:154:void insert(java.lang.Number,java.lang.Number) -> e
     157:195:void insert2(java.lang.Number,java.lang.Number) -> f
-pl.netanel.swt.matrix.NumberPairSequence -> pl.netanel.swt.matrix.I:
+pl.netanel.swt.matrix.NumberPairSequence -> pl.netanel.swt.matrix.L:
     pl.netanel.swt.matrix.CellSet set -> a
     int i -> b
     int size -> c
@@ -968,8 +1000,8 @@ pl.netanel.swt.matrix.NumberPairSequence -> pl.netanel.swt.matrix.I:
     pl.netanel.swt.matrix.Extent e1 -> e
     pl.netanel.swt.matrix.MutableNumber index0 -> f
     pl.netanel.swt.matrix.MutableNumber index1 -> g
-    40:48:void init() -> a
-    56:66:boolean next() -> b
+    40:48:void init() -> a_
+    56:66:boolean next() -> b_
     75:75:java.lang.Number index0() -> c
     84:84:java.lang.Number index1() -> d
     89:95:boolean nextExtent() -> e
@@ -977,27 +1009,27 @@ pl.netanel.swt.matrix.NumberPairSequence -> pl.netanel.swt.matrix.I:
     102:102:java.lang.Number end0() -> g
     105:105:java.lang.Number start1() -> h
     108:108:java.lang.Number end1() -> i
-pl.netanel.swt.matrix.NumberQueueSet -> pl.netanel.swt.matrix.k:
+pl.netanel.swt.matrix.NumberQueueSet -> pl.netanel.swt.matrix.A:
     51:75:boolean add(java.lang.Number,java.lang.Number) -> a
     91:113:boolean remove(java.lang.Number,java.lang.Number) -> b
-    122:122:boolean isEmpty() -> a
+    122:122:boolean isEmpty() -> c
     134:139:boolean contains(java.lang.Number) -> a
-    157:161:pl.netanel.swt.matrix.NumberQueueSet copy() -> b
-    1:1:pl.netanel.swt.matrix.NumberSet copy() -> c
-pl.netanel.swt.matrix.NumberSequence -> pl.netanel.swt.matrix.J:
+    157:161:pl.netanel.swt.matrix.NumberQueueSet copy() -> e
+    1:1:pl.netanel.swt.matrix.NumberSet copy() -> d
+pl.netanel.swt.matrix.NumberSequence -> pl.netanel.swt.matrix.w:
     pl.netanel.swt.matrix.NumberSet set -> a
     int i -> b
     int size -> c
     pl.netanel.swt.matrix.Extent e -> d
     pl.netanel.swt.matrix.MutableNumber index -> e
-    35:41:void init() -> a
-    49:55:boolean next() -> b
+    35:41:void init() -> a_
+    49:55:boolean next() -> b_
     64:64:java.lang.Number index() -> c
     68:68:boolean hasNext() -> d
     73:76:boolean nextExtent() -> e
     80:80:java.lang.Number start() -> f
     84:84:java.lang.Number end() -> g
-pl.netanel.swt.matrix.NumberSet -> pl.netanel.swt.matrix.n:
+pl.netanel.swt.matrix.NumberSet -> pl.netanel.swt.matrix.k:
     pl.netanel.swt.matrix.Math math -> a
     boolean sorted -> b
     java.util.ArrayList items -> c
@@ -1016,29 +1048,29 @@ pl.netanel.swt.matrix.NumberSet -> pl.netanel.swt.matrix.n:
     166:166:boolean remove(pl.netanel.swt.matrix.Extent) -> c
     170:208:boolean remove(java.lang.Number,java.lang.Number) -> b
     212:222:boolean removeAll(pl.netanel.swt.matrix.NumberSet) -> b
-    231:235:pl.netanel.swt.matrix.MutableNumber getCount() -> d
+    231:235:pl.netanel.swt.matrix.MutableNumber getCount() -> a
     245:259:pl.netanel.swt.matrix.MutableNumber getCount(java.lang.Number,java.lang.Number) -> c
-    268:270:void clear() -> e
+    268:270:void clear() -> b
     273:277:void replace(pl.netanel.swt.matrix.NumberSet) -> c
-    280:280:boolean isEmpty() -> a
-    285:289:pl.netanel.swt.matrix.NumberSet copy() -> c
+    280:280:boolean isEmpty() -> c
+    285:289:pl.netanel.swt.matrix.NumberSet copy() -> d
     293:298:void change(java.lang.Number,java.lang.Number,boolean) -> a
     301:307:int getExtentIndex(java.lang.Number) -> d
     311:319:java.lang.Number firstExcluded(java.lang.Number) -> e
     323:324:void delete(java.lang.Number,java.lang.Number) -> d
     327:328:void insert(java.lang.Number,java.lang.Number) -> e
-pl.netanel.swt.matrix.ObjectAxisState -> pl.netanel.swt.matrix.q:
+pl.netanel.swt.matrix.ObjectAxisState -> pl.netanel.swt.matrix.C:
     java.lang.Object defaultValue -> a
     java.lang.Object value -> b
     java.util.ArrayList values -> c
     18:18:boolean equalValue(int) -> a
     23:24:void addValue(int) -> b
     28:29:void setValue(int) -> c
-    33:34:void addValue(int,int) -> a
+    33:34:void addValue(int,int) -> b
     38:39:void removeValue(int) -> d
-    43:43:boolean equalValues(int,int) -> b
-    48:49:java.lang.Object getValue(java.lang.Number) -> a
-    53:54:java.lang.Object getValueNUllable(java.lang.Number) -> b
+    43:43:boolean equalValues(int,int) -> a
+    48:49:java.lang.Object getValue(java.lang.Number) -> b
+    53:54:java.lang.Object getValueNUllable(java.lang.Number) -> c
     58:59:void setValue(pl.netanel.swt.matrix.Extent,java.lang.Object) -> a
     62:64:void setValue(java.lang.Number,java.lang.Number,java.lang.Object) -> a
     67:68:void setValue(java.lang.Number,java.lang.Object) -> a
@@ -1053,11 +1085,11 @@ pl.netanel.swt.matrix.Painter -> pl.netanel.swt.matrix.Painter:
     int SCOPE_COLUMN_CELLS -> SCOPE_COLUMN_CELLS
     int SCOPE_CELLS_HORIZONTALLY -> SCOPE_CELLS_HORIZONTALLY
     int SCOPE_CELLS_VERTICALLY -> SCOPE_CELLS_VERTICALLY
-    int[] EXTENT_ALIGN -> g
+    int[] EXTENT_ALIGN -> a
     org.eclipse.swt.graphics.GC gc -> gc
-    int scope -> a
-    java.lang.String name -> b
-    boolean enabled -> h
+    int scope -> b
+    java.lang.String name -> c
+    boolean enabled -> g
     java.lang.String text -> text
     org.eclipse.swt.graphics.Image image -> image
     org.eclipse.swt.graphics.Color foreground -> foreground
@@ -1070,9 +1102,9 @@ pl.netanel.swt.matrix.Painter -> pl.netanel.swt.matrix.Painter:
     int textMarginY -> textMarginY
     int imageMarginX -> imageMarginX
     int imageMarginY -> imageMarginY
-    pl.netanel.swt.matrix.Painter$TextClipMethod textClipMethod -> c
-    pl.netanel.swt.matrix.Zone zone -> d
-    pl.netanel.swt.matrix.Matrix matrix -> e
+    pl.netanel.swt.matrix.Painter$TextClipMethod textClipMethod -> d
+    pl.netanel.swt.matrix.Zone zone -> e
+    pl.netanel.swt.matrix.Matrix matrix -> h
     org.eclipse.swt.graphics.Color lastForeground -> i
     org.eclipse.swt.graphics.Color lastBackground -> j
     org.eclipse.swt.graphics.Color defaultBackground -> k
@@ -1088,16 +1120,23 @@ pl.netanel.swt.matrix.Painter -> pl.netanel.swt.matrix.Painter:
     200:201:boolean init(org.eclipse.swt.graphics.GC) -> a
     214:233:boolean init() -> init
     241:241:void clean() -> clean
-    262:348:void paint(java.lang.Number,java.lang.Number,int,int,int,int) -> paint
-    351:351:java.lang.String getText(java.lang.Number,java.lang.Number) -> getText
-    355:355:org.eclipse.swt.graphics.Image getImage(java.lang.Number,java.lang.Number) -> getImage
-    368:369:void setEnabled(boolean) -> setEnabled
-    380:380:boolean isEnabled() -> isEnabled
-    398:410:int computeWidth(java.lang.Number,java.lang.Number) -> computeWidth
-    427:439:int computeHeight(java.lang.Number,java.lang.Number) -> computeHeight
-    454:463:int align(int,int,int,int,int) -> align
-    473:476:org.eclipse.swt.graphics.RGB blend(org.eclipse.swt.graphics.RGB,org.eclipse.swt.graphics.RGB,int) -> a
-    480:480:int blend(int,int,int) -> a
+    262:353:void paint(java.lang.Number,java.lang.Number,int,int,int,int) -> paint
+    356:356:int getTextAlignY(java.lang.Number,java.lang.Number) -> getTextAlignY
+    360:360:int getTextAlignX(java.lang.Number,java.lang.Number) -> getTextAlignX
+    364:364:int getImageAlignY(java.lang.Number,java.lang.Number) -> getImageAlignY
+    368:368:int getImageAlignX(java.lang.Number,java.lang.Number) -> getImageAlignX
+    382:382:java.lang.String getText(java.lang.Number,java.lang.Number) -> getText
+    396:396:org.eclipse.swt.graphics.Image getImage(java.lang.Number,java.lang.Number) -> getImage
+    409:410:void setEnabled(boolean) -> setEnabled
+    421:421:boolean isEnabled() -> isEnabled
+    439:451:int computeWidth(java.lang.Number,java.lang.Number) -> computeWidth
+    468:480:int computeHeight(java.lang.Number,java.lang.Number) -> computeHeight
+    500:509:int align(int,int,int,int) -> align
+    519:523:void offsetRectangle(org.eclipse.swt.graphics.Rectangle,int) -> offsetRectangle
+    526:529:org.eclipse.swt.graphics.RGB blend(org.eclipse.swt.graphics.RGB,org.eclipse.swt.graphics.RGB,int) -> a
+    533:533:int blend(int,int,int) -> a
+    537:538:void setMatrix(pl.netanel.swt.matrix.Matrix) -> a
+    541:541:pl.netanel.swt.matrix.Matrix getMatrix() -> a
 pl.netanel.swt.matrix.Painter$TextClipMethod -> pl.netanel.swt.matrix.Painter$TextClipMethod:
     pl.netanel.swt.matrix.Painter$TextClipMethod DOTS_IN_THE_MIDDLE -> DOTS_IN_THE_MIDDLE
     pl.netanel.swt.matrix.Painter$TextClipMethod DOTS_AT_THE_END -> DOTS_AT_THE_END
@@ -1106,17 +1145,17 @@ pl.netanel.swt.matrix.Painter$TextClipMethod -> pl.netanel.swt.matrix.Painter$Te
     pl.netanel.swt.matrix.Painter$TextClipMethod[] ENUM$VALUES -> ENUM$VALUES
     1:1:pl.netanel.swt.matrix.Painter$TextClipMethod[] values() -> values
     1:1:pl.netanel.swt.matrix.Painter$TextClipMethod valueOf(java.lang.String) -> valueOf
-pl.netanel.swt.matrix.Painters -> pl.netanel.swt.matrix.r:
+pl.netanel.swt.matrix.Painters -> pl.netanel.swt.matrix.D:
     19:20:boolean add(pl.netanel.swt.matrix.Painter) -> a
     25:27:void add(int,pl.netanel.swt.matrix.Painter) -> a
     32:38:pl.netanel.swt.matrix.Painter set(int,pl.netanel.swt.matrix.Painter) -> b
-    42:43:void replacePainter(pl.netanel.swt.matrix.Painter) -> b
-    47:52:void checkUniqueness(pl.netanel.swt.matrix.Painter) -> c
-    56:61:int indexOfPainter(java.lang.String) -> a
+    42:48:void replacePainter(pl.netanel.swt.matrix.Painter) -> b
+    52:57:void checkUniqueness(pl.netanel.swt.matrix.Painter) -> c
+    61:66:int indexOfPainter(java.lang.String) -> a
     1:1:void add(int,java.lang.Object) -> add
     1:1:boolean add(java.lang.Object) -> add
     1:1:java.lang.Object set(int,java.lang.Object) -> set
-pl.netanel.swt.matrix.Resources -> pl.netanel.swt.matrix.E:
+pl.netanel.swt.matrix.Resources -> pl.netanel.swt.matrix.K:
     java.util.Map m_colorMap -> b
     java.util.Map m_imageMap -> c
     int MISSING_IMAGE_SIZE -> d
@@ -1258,14 +1297,14 @@ pl.netanel.swt.matrix.Section$2 -> pl.netanel.swt.matrix.Section$b:
     1:1:java.lang.Object next() -> next
 pl.netanel.swt.matrix.Section$3 -> pl.netanel.swt.matrix.Section$d:
     pl.netanel.swt.matrix.Section this$0 -> e
-    1138:1138:boolean next() -> b
+    1138:1138:boolean next() -> b_
 pl.netanel.swt.matrix.Section$IndexIterator -> pl.netanel.swt.matrix.Section$a:
     pl.netanel.swt.matrix.NumberSequence seq -> b
     pl.netanel.swt.matrix.Section this$0 -> a
     1211:1211:boolean hasNext() -> hasNext
     1216:1217:java.lang.Number next() -> a
     1:1:java.lang.Object next() -> next
-pl.netanel.swt.matrix.SectionClient -> pl.netanel.swt.matrix.t:
+pl.netanel.swt.matrix.SectionClient -> pl.netanel.swt.matrix.n:
     pl.netanel.swt.matrix.Section core -> a
     50:54:boolean equals(java.lang.Object) -> equals
     62:62:java.lang.String toString() -> toString
@@ -1338,10 +1377,10 @@ pl.netanel.swt.matrix.SectionClient -> pl.netanel.swt.matrix.t:
     884:884:java.lang.Number getVisibleCount() -> f
     888:888:boolean moveSelected(java.lang.Number,java.lang.Number) -> a
     892:892:java.lang.Number nextNotHiddenIndex(java.lang.Number,int) -> a
-pl.netanel.swt.matrix.Sequence -> pl.netanel.swt.matrix.u:
-    void init() -> a
-    boolean next() -> b
-pl.netanel.swt.matrix.TestUtil -> pl.netanel.swt.matrix.y:
+pl.netanel.swt.matrix.Sequence -> pl.netanel.swt.matrix.G:
+    void init() -> a_
+    boolean next() -> b_
+pl.netanel.swt.matrix.TestUtil -> pl.netanel.swt.matrix.p:
     12:12:pl.netanel.swt.matrix.MutableNumber number(int) -> a
     16:16:pl.netanel.swt.matrix.Extent extent(int,int) -> a
     20:20:pl.netanel.swt.matrix.Extent extent(int) -> b
@@ -1359,107 +1398,120 @@ pl.netanel.swt.matrix.TestUtil -> pl.netanel.swt.matrix.y:
     123:134:void showMatrix(pl.netanel.swt.matrix.Matrix) -> a
 pl.netanel.swt.matrix.Zone -> pl.netanel.swt.matrix.Zone:
     pl.netanel.swt.matrix.Painters painters -> b
-    pl.netanel.swt.matrix.Matrix matrix -> c
-    pl.netanel.swt.matrix.Section section0 -> d
-    pl.netanel.swt.matrix.Section section1 -> e
-    pl.netanel.swt.matrix.SectionClient sectionClient0 -> f
-    pl.netanel.swt.matrix.SectionClient sectionClient1 -> g
-    pl.netanel.swt.matrix.CellSet cellSelection -> h
-    pl.netanel.swt.matrix.CellSet lastSelection -> i
+    pl.netanel.swt.matrix.Section section0 -> c
+    pl.netanel.swt.matrix.Section section1 -> d
+    pl.netanel.swt.matrix.SectionClient sectionClient0 -> e
+    pl.netanel.swt.matrix.SectionClient sectionClient1 -> f
+    pl.netanel.swt.matrix.CellSet cellSelection -> g
+    pl.netanel.swt.matrix.CellSet lastSelection -> h
+    pl.netanel.swt.matrix.ZoneEditor editor -> i
     pl.netanel.swt.matrix.Listeners listeners -> j
-    java.util.ArrayList bindings -> k
-    boolean selectionEnabled -> l
-    org.eclipse.swt.graphics.Color selectionBackground -> a
-    org.eclipse.swt.graphics.Color selectionForeground -> m
-    org.eclipse.swt.graphics.Rectangle bounds -> n
-    pl.netanel.swt.matrix.CellValues background -> o
-    pl.netanel.swt.matrix.CellValues foreground -> p
-    97:98:boolean equals(java.lang.Object) -> equals
-    103:103:java.lang.String toString() -> toString
-    117:117:pl.netanel.swt.matrix.Section getSectionUnchecked0() -> getSectionUnchecked0
-    130:130:pl.netanel.swt.matrix.Section getSectionUnchecked1() -> getSectionUnchecked1
-    144:144:pl.netanel.swt.matrix.Section getSection0() -> getSection0
-    157:157:pl.netanel.swt.matrix.Section getSection1() -> getSection1
-    162:185:void setDefaultBodyStyle() -> a
-    188:204:void setDefaultHeaderStyle(pl.netanel.swt.matrix.Painter) -> a
-    215:221:org.eclipse.swt.graphics.Rectangle getCellBounds(java.lang.Number,java.lang.Number) -> getCellBounds
-    230:231:void setDefaultBackground(org.eclipse.swt.graphics.Color) -> setDefaultBackground
-    238:238:org.eclipse.swt.graphics.Color getDefaultBackground() -> getDefaultBackground
-    247:248:void setDefaultForeground(org.eclipse.swt.graphics.Color) -> setDefaultForeground
-    255:255:org.eclipse.swt.graphics.Color getDefaultForeground() -> getDefaultForeground
-    264:264:org.eclipse.swt.graphics.Rectangle getBounds() -> getBounds
-    268:272:void setBounds(int,int,int,int) -> a
-    291:292:void setSelectionForeground(org.eclipse.swt.graphics.Color) -> setSelectionForeground
-    299:299:org.eclipse.swt.graphics.Color getSelectionForeground() -> getSelectionForeground
-    307:308:void setSelectionBackground(org.eclipse.swt.graphics.Color) -> setSelectionBackground
-    315:315:org.eclipse.swt.graphics.Color getSelectionBackground() -> getSelectionBackground
-    324:324:boolean isSelectionEnabled() -> isSelectionEnabled
-    334:338:void setSelectionEnabled(boolean) -> setSelectionEnabled
-    354:354:boolean isSelected(java.lang.Number,java.lang.Number) -> isSelected
-    373:379:void setSelected(java.lang.Number,java.lang.Number,java.lang.Number,java.lang.Number,boolean) -> setSelected
-    398:399:void setSelected(java.lang.Number,java.lang.Number,boolean) -> setSelected
-    407:418:void setSelectedAll(boolean) -> setSelectedAll
-    425:425:java.math.BigInteger getSelectedCount() -> getSelectedCount
-    448:451:java.math.BigInteger getSelectionCount() -> getSelectionCount
-    468:468:java.util.Iterator getSelectedIterator() -> getSelectedIterator
-    508:508:java.util.Iterator getSelectedExtentIterator() -> getSelectedExtentIterator
-    541:541:java.util.Iterator getSelectedBoundsIterator() -> d
-    575:575:java.lang.Number[] getSelectedExtent() -> getSelectedExtent
-    601:602:void backupSelection() -> b
-    605:606:void restoreSelection() -> c
-    618:619:void bind(int,int,int) -> bind
-    626:633:void unbind(int,int,int) -> unbind
-    666:670:void addSelectionListener(org.eclipse.swt.events.SelectionListener) -> addSelectionListener
-    690:693:void removeSelectionListener(org.eclipse.swt.events.SelectionListener) -> removeSelectionListener
-    720:734:void addListener(int,org.eclipse.swt.widgets.Listener) -> addListener
-    742:816:void paint(org.eclipse.swt.graphics.GC,pl.netanel.swt.matrix.Layout,pl.netanel.swt.matrix.Layout,pl.netanel.swt.matrix.Frozen,pl.netanel.swt.matrix.Frozen) -> a
-    823:826:void addPainter(pl.netanel.swt.matrix.Painter) -> addPainter
-    836:840:void addPainter(int,pl.netanel.swt.matrix.Painter) -> addPainter
-    850:853:void setPainter(int,pl.netanel.swt.matrix.Painter) -> setPainter
-    862:865:void replacePainter(pl.netanel.swt.matrix.Painter) -> replacePainter
-    880:881:pl.netanel.swt.matrix.Painter removePainter(int) -> removePainter
-    893:894:int indexOfPainter(java.lang.String) -> indexOfPainter
-    905:906:pl.netanel.swt.matrix.Painter getPainter(java.lang.String) -> getPainter
-    915:915:int getPainterCount() -> getPainterCount
-    927:928:pl.netanel.swt.matrix.Painter getPainter(int) -> getPainter
-    932:938:void setPainterMatrixAndZone(pl.netanel.swt.matrix.Painter) -> b
-    957:969:void insert(int,pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number) -> b
-    972:984:void delete(int,pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number) -> a
-    992:1001:void setMatrix(pl.netanel.swt.matrix.Matrix) -> a
-pl.netanel.swt.matrix.Zone$1 -> pl.netanel.swt.matrix.Zone$a:
-    pl.netanel.swt.matrix.Zone this$0 -> g
-    165:167:void paint(java.lang.Number,java.lang.Number,int,int,int,int) -> paint
-    170:171:int computeWidth(java.lang.Number,java.lang.Number) -> computeWidth
-    175:176:int computeHeight(java.lang.Number,java.lang.Number) -> computeHeight
-pl.netanel.swt.matrix.Zone$2 -> pl.netanel.swt.matrix.Zone$e:
+    java.util.ArrayList bindings -> a
+    boolean selectionEnabled -> k
+    pl.netanel.swt.matrix.Matrix matrix -> l
+    org.eclipse.swt.graphics.Color selectionBackground -> m
+    org.eclipse.swt.graphics.Color selectionForeground -> n
+    org.eclipse.swt.graphics.Rectangle bounds -> o
+    pl.netanel.swt.matrix.CellValues background -> p
+    pl.netanel.swt.matrix.CellValues foreground -> q
+    100:101:boolean equals(java.lang.Object) -> equals
+    106:106:java.lang.String toString() -> toString
+    120:120:pl.netanel.swt.matrix.Section getSectionUnchecked0() -> getSectionUnchecked0
+    133:133:pl.netanel.swt.matrix.Section getSectionUnchecked1() -> getSectionUnchecked1
+    147:147:pl.netanel.swt.matrix.Section getSection0() -> getSection0
+    160:160:pl.netanel.swt.matrix.Section getSection1() -> getSection1
+    165:177:void setDefaultBodyStyle() -> a
+    180:196:void setDefaultHeaderStyle(pl.netanel.swt.matrix.Painter) -> a
+    207:213:org.eclipse.swt.graphics.Rectangle getCellBounds(java.lang.Number,java.lang.Number) -> getCellBounds
+    222:223:void setDefaultBackground(org.eclipse.swt.graphics.Color) -> setDefaultBackground
+    230:230:org.eclipse.swt.graphics.Color getDefaultBackground() -> getDefaultBackground
+    239:240:void setDefaultForeground(org.eclipse.swt.graphics.Color) -> setDefaultForeground
+    247:247:org.eclipse.swt.graphics.Color getDefaultForeground() -> getDefaultForeground
+    256:256:org.eclipse.swt.graphics.Rectangle getBounds() -> getBounds
+    260:264:void setBounds(int,int,int,int) -> a
+    283:284:void setSelectionForeground(org.eclipse.swt.graphics.Color) -> setSelectionForeground
+    291:291:org.eclipse.swt.graphics.Color getSelectionForeground() -> getSelectionForeground
+    299:300:void setSelectionBackground(org.eclipse.swt.graphics.Color) -> setSelectionBackground
+    307:307:org.eclipse.swt.graphics.Color getSelectionBackground() -> getSelectionBackground
+    316:316:boolean isSelectionEnabled() -> isSelectionEnabled
+    326:330:void setSelectionEnabled(boolean) -> setSelectionEnabled
+    346:346:boolean isSelected(java.lang.Number,java.lang.Number) -> isSelected
+    365:371:void setSelected(java.lang.Number,java.lang.Number,java.lang.Number,java.lang.Number,boolean) -> setSelected
+    390:391:void setSelected(java.lang.Number,java.lang.Number,boolean) -> setSelected
+    399:410:void setSelectedAll(boolean) -> setSelectedAll
+    417:417:java.math.BigInteger getSelectedCount() -> getSelectedCount
+    440:443:java.math.BigInteger getSelectionCount() -> getSelectionCount
+    460:460:java.util.Iterator getSelectedIterator() -> getSelectedIterator
+    500:500:java.util.Iterator getSelectedExtentIterator() -> getSelectedExtentIterator
+    533:533:java.util.Iterator getSelectedBoundsIterator() -> d
+    567:567:java.lang.Number[] getSelectedExtent() -> getSelectedExtent
+    593:594:void backupSelection() -> b
+    597:598:void restoreSelection() -> c
+    610:611:void bind(int,int,int) -> bind
+    614:621:void bind(pl.netanel.swt.matrix.GestureBinding) -> a
+    629:643:void unbind(int,int,int) -> unbind
+    646:646:java.lang.Iterable getBindings() -> e
+    681:685:void addSelectionListener(org.eclipse.swt.events.SelectionListener) -> addSelectionListener
+    705:708:void removeSelectionListener(org.eclipse.swt.events.SelectionListener) -> removeSelectionListener
+    735:749:void addListener(int,org.eclipse.swt.widgets.Listener) -> addListener
+    757:859:void paint(org.eclipse.swt.graphics.GC,pl.netanel.swt.matrix.Layout,pl.netanel.swt.matrix.Layout,pl.netanel.swt.matrix.Frozen,pl.netanel.swt.matrix.Frozen) -> a
+    866:869:void addPainter(pl.netanel.swt.matrix.Painter) -> addPainter
+    879:883:void addPainter(int,pl.netanel.swt.matrix.Painter) -> addPainter
+    893:896:void setPainter(int,pl.netanel.swt.matrix.Painter) -> setPainter
+    907:910:void replacePainter(pl.netanel.swt.matrix.Painter) -> replacePainter
+    925:926:pl.netanel.swt.matrix.Painter removePainter(int) -> removePainter
+    938:939:int indexOfPainter(java.lang.String) -> indexOfPainter
+    950:951:pl.netanel.swt.matrix.Painter getPainter(java.lang.String) -> getPainter
+    960:960:int getPainterCount() -> getPainterCount
+    972:973:pl.netanel.swt.matrix.Painter getPainter(int) -> getPainter
+    977:983:void setPainterMatrixAndZone(pl.netanel.swt.matrix.Painter) -> b
+    1002:1014:void insert(int,pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number) -> b
+    1017:1029:void delete(int,pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number) -> a
+    1037:1046:void setMatrix(pl.netanel.swt.matrix.Matrix) -> a
+    1049:1049:pl.netanel.swt.matrix.Matrix getMatrix() -> getMatrix
+    1053:1054:void setEditor(pl.netanel.swt.matrix.ZoneEditor) -> a
+    55:55:pl.netanel.swt.matrix.Matrix access$0(pl.netanel.swt.matrix.Zone) -> a
+pl.netanel.swt.matrix.Zone$1 -> pl.netanel.swt.matrix.Zone$b:
+    pl.netanel.swt.matrix.Zone this$0 -> a
+    168:168:java.lang.String getText(java.lang.Number,java.lang.Number) -> getText
+pl.netanel.swt.matrix.Zone$2 -> pl.netanel.swt.matrix.Zone$f:
     pl.netanel.swt.matrix.NumberPairSequence seq -> a
     boolean next -> c
     pl.netanel.swt.matrix.Zone this$0 -> b
-    476:477:boolean hasNext() -> hasNext
-    482:482:java.lang.Number[] next() -> a
+    468:469:boolean hasNext() -> hasNext
+    474:474:java.lang.Number[] next() -> a
     1:1:java.lang.Object next() -> next
-pl.netanel.swt.matrix.Zone$3 -> pl.netanel.swt.matrix.Zone$f:
+pl.netanel.swt.matrix.Zone$3 -> pl.netanel.swt.matrix.Zone$g:
     pl.netanel.swt.matrix.NumberPairSequence seq -> a
     boolean next -> c
     pl.netanel.swt.matrix.Zone this$0 -> b
-    516:517:boolean hasNext() -> hasNext
-    522:522:java.lang.Number[] next() -> a
+    508:509:boolean hasNext() -> hasNext
+    514:514:java.lang.Number[] next() -> a
     1:1:java.lang.Object next() -> next
-pl.netanel.swt.matrix.Zone$4 -> pl.netanel.swt.matrix.Zone$c:
+pl.netanel.swt.matrix.Zone$4 -> pl.netanel.swt.matrix.Zone$d:
     pl.netanel.swt.matrix.NumberPairSequence seq -> a
     boolean next -> c
     pl.netanel.swt.matrix.Zone this$0 -> b
-    556:557:boolean hasNext() -> hasNext
-    562:562:java.lang.Number[] next() -> a
+    548:549:boolean hasNext() -> hasNext
+    554:554:java.lang.Number[] next() -> a
     1:1:java.lang.Object next() -> next
-pl.netanel.swt.matrix.Zone$5 -> pl.netanel.swt.matrix.Zone$d:
+pl.netanel.swt.matrix.Zone$5 -> pl.netanel.swt.matrix.Zone$e:
     pl.netanel.swt.matrix.Zone this$0 -> a
     org.eclipse.swt.widgets.Listener val$listener -> b
-    723:732:void handleEvent(org.eclipse.swt.widgets.Event) -> handleEvent
-pl.netanel.swt.matrix.Zone$LinePainter -> pl.netanel.swt.matrix.Zone$b:
-    org.eclipse.swt.graphics.Color color -> g
-    950:952:void paint(java.lang.Number,java.lang.Number,int,int,int,int) -> paint
-pl.netanel.swt.matrix.ZoneClient -> pl.netanel.swt.matrix.a:
+    738:747:void handleEvent(org.eclipse.swt.widgets.Event) -> handleEvent
+pl.netanel.swt.matrix.Zone$6 -> pl.netanel.swt.matrix.Zone$c:
+    pl.netanel.swt.matrix.Zone this$0 -> a
+    pl.netanel.swt.matrix.Painter val$p -> b
+    org.eclipse.swt.graphics.GC val$gc -> c
+    pl.netanel.swt.matrix.Layout val$layout0 -> d
+    pl.netanel.swt.matrix.Frozen val$dock0 -> e
+    pl.netanel.swt.matrix.Layout val$layout1 -> f
+    pl.netanel.swt.matrix.Frozen val$dock1 -> g
+    842:856:void run() -> run
+pl.netanel.swt.matrix.Zone$LinePainter -> pl.netanel.swt.matrix.Zone$a:
+    org.eclipse.swt.graphics.Color color -> a
+    995:997:void paint(java.lang.Number,java.lang.Number,int,int,int,int) -> paint
+pl.netanel.swt.matrix.ZoneClient -> pl.netanel.swt.matrix.x:
     pl.netanel.swt.matrix.Zone core -> a
     23:23:boolean equals(java.lang.Object) -> equals
     28:28:int hashCode() -> hashCode
@@ -1512,6 +1564,74 @@ pl.netanel.swt.matrix.ZoneClient -> pl.netanel.swt.matrix.a:
     271:272:void setBounds(int,int,int,int) -> a
     276:277:void addListener(int,org.eclipse.swt.widgets.Listener) -> addListener
     280:280:java.lang.Number[] getSelectedExtent() -> getSelectedExtent
+    285:285:java.util.Iterator getSelectedBoundsIterator() -> d
+    289:289:pl.netanel.swt.matrix.Matrix getMatrix() -> getMatrix
+    294:295:void setEditor(pl.netanel.swt.matrix.ZoneEditor) -> a
+    299:300:void bind(pl.netanel.swt.matrix.GestureBinding) -> a
+pl.netanel.swt.matrix.ZoneEditor -> pl.netanel.swt.matrix.ZoneEditor:
+    java.lang.String ZONE_EDITOR_DATA -> c
+    java.lang.String DEFAULT_TRUE_TEXT -> d
+    java.util.Calendar CALENDAR -> e
+    java.lang.String NEW_LINE -> f
+    pl.netanel.swt.matrix.Zone zone -> a
+    pl.netanel.swt.matrix.CommandListener controlListener -> b
+    pl.netanel.swt.matrix.EmbeddedControlsPainter embedded -> g
+    pl.netanel.swt.matrix.Painter cellsPainter -> h
+    org.eclipse.swt.graphics.Image trueImage -> i
+    org.eclipse.swt.graphics.Image falseImage -> j
+    java.lang.String trueLabel -> k
+    java.lang.String falseLabel -> l
+    java.lang.String systemThemePath -> m
+    187:187:java.lang.Object getModelValue(java.lang.Number,java.lang.Number) -> getModelValue
+    201:201:void setModelValue(java.lang.Number,java.lang.Number,java.lang.Object) -> setModelValue
+    216:238:java.lang.Object getEditorValue(org.eclipse.swt.widgets.Control) -> getEditorValue
+    254:281:void setEditorValue(org.eclipse.swt.widgets.Control,java.lang.Object) -> setEditorValue
+    285:291:void apply(org.eclipse.swt.widgets.Control) -> a
+    294:298:void cancel(org.eclipse.swt.widgets.Control) -> b
+    305:323:org.eclipse.swt.widgets.Control activate(java.lang.Number,java.lang.Number) -> b
+    327:327:boolean isCheckbox(org.eclipse.swt.widgets.Control) -> c
+    331:342:org.eclipse.swt.widgets.Control addControl(java.lang.Number,java.lang.Number) -> a
+    363:363:org.eclipse.swt.widgets.Control createControl(java.lang.Number,java.lang.Number,org.eclipse.swt.widgets.Composite) -> createControl
+    375:376:void disposeControl(org.eclipse.swt.widgets.Control) -> disposeControl
+    392:407:void setBounds(java.lang.Number,java.lang.Number,org.eclipse.swt.widgets.Control) -> setBounds
+    421:421:boolean hasEmbeddedControl(java.lang.Number,java.lang.Number) -> hasEmbeddedControl
+    431:444:void edit() -> a
+    450:460:void delete() -> b
+    469:493:void copy() -> copy
+    502:538:void paste() -> paste
+    549:563:void cut() -> cut
+    575:575:java.lang.String format(java.lang.Number,java.lang.Number) -> format
+    590:590:java.lang.Object parse(java.lang.Number,java.lang.Number,java.lang.String) -> parse
+    602:618:java.lang.String[] split(java.lang.String,java.lang.String) -> a
+    624:624:pl.netanel.swt.matrix.Matrix getMatrix() -> c
+    646:646:java.lang.Object[] getCheckboxEmulation(java.lang.Number,java.lang.Number) -> getCheckboxEmulation
+    663:667:java.lang.Object[] getDefaultCheckBoxImages() -> getDefaultCheckBoxImages
+    682:686:java.lang.Object[] getDefaultCheckBoxLabels() -> getDefaultCheckBoxLabels
+    700:752:void snapControlImages(java.lang.String) -> snapControlImages
+    760:781:void setEmulationPath(java.lang.String) -> setEmulationPath
+    789:789:java.lang.String getEmulationPath() -> getEmulationPath
+    806:806:pl.netanel.swt.matrix.ZoneEditor$ZoneEditorData getData(org.eclipse.swt.widgets.Widget) -> a
+    63:63:pl.netanel.swt.matrix.EmbeddedControlsPainter access$0(pl.netanel.swt.matrix.ZoneEditor) -> a
+    66:66:org.eclipse.swt.graphics.Image access$1(pl.netanel.swt.matrix.ZoneEditor) -> b
+    284:284:void access$2(pl.netanel.swt.matrix.ZoneEditor,org.eclipse.swt.widgets.Control) -> a
+    293:293:void access$3(pl.netanel.swt.matrix.ZoneEditor,org.eclipse.swt.widgets.Control) -> b
+pl.netanel.swt.matrix.ZoneEditor$1 -> pl.netanel.swt.matrix.ZoneEditor$b:
+    pl.netanel.swt.matrix.ZoneEditor this$0 -> a
+    88:102:void paint(java.lang.Number,java.lang.Number,int,int,int,int) -> paint
+pl.netanel.swt.matrix.ZoneEditor$2 -> pl.netanel.swt.matrix.ZoneEditor$a:
+    pl.netanel.swt.matrix.ZoneEditor this$0 -> e
+    118:128:boolean isMatching(org.eclipse.swt.widgets.Event) -> a
+pl.netanel.swt.matrix.ZoneEditor$3 -> pl.netanel.swt.matrix.ZoneEditor$d:
+    pl.netanel.swt.matrix.ZoneEditor this$0 -> e
+    136:153:boolean isMatching(org.eclipse.swt.widgets.Event) -> a
+pl.netanel.swt.matrix.ZoneEditor$4 -> pl.netanel.swt.matrix.ZoneEditor$c:
+    pl.netanel.swt.matrix.ZoneEditor this$0 -> c
+    159:165:void executeCommand(int) -> a
+pl.netanel.swt.matrix.ZoneEditor$ZoneEditorData -> pl.netanel.swt.matrix.ZoneEditor$e:
+    java.lang.Number index0 -> a
+    java.lang.Number index1 -> b
+    boolean isEmbedded -> c
+    pl.netanel.swt.matrix.ZoneEditor this$0 -> d
 pl.netanel.util.Arrays -> pl.netanel.util.Arrays:
     20:25:java.lang.Object[] remove(java.lang.Object[],int) -> remove
     36:42:java.lang.Object[] insert(java.lang.Object[],int,java.lang.Object) -> insert

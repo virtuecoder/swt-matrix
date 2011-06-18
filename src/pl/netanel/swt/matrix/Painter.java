@@ -533,11 +533,11 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		return (ratio*v1 + (100-ratio)*v2)/100;
 	}
 
-	protected void setMatrix(Matrix matrix) {
+	void setMatrix(Matrix matrix) {
 		this.matrix = matrix;
 	}
 
-	protected Matrix<N0, N1> getMatrix() {
+	Matrix<N0, N1> getMatrix() {
 		return matrix;
 	}
 

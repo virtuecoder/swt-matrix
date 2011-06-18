@@ -30,9 +30,9 @@ public class Snippet_0011 {
 			@Override
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 				// Get bounds of the focus cell 
-				AxisItem item0 = getMatrix().getAxis0().getFocusItem();
-				AxisItem item1 = getMatrix().getAxis1().getFocusItem();
-				Zone zone = getMatrix().getZone(item0.getSection(), item1.getSection());
+				AxisItem item0 = matrix.getAxis0().getFocusItem();
+				AxisItem item1 = matrix.getAxis1().getFocusItem();
+				Zone zone = matrix.getZone(item0.getSection(), item1.getSection());
 				if (zone == null) return;
 				Rectangle r = zone.getCellBounds(item0.getIndex(), item1.getIndex());
 				

@@ -1,25 +1,27 @@
-package pl.netanel.swt.matrix.snippets;
+package usecase;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.ZoneEditor;
 
 /**
- * Embedded check buttons.
+ * Simplest zone editor.
  */
-public class Snippet_0402 {
+public class EmbeddedControls {
 
 	public static void main(String[] args) throws IOException {
 		Display display = Display.getDefault();
@@ -33,7 +35,7 @@ public class Snippet_0402 {
 		data.add(new Object[] {new Date(), "Sunday", "b"});
 //		for (int i = 0; i < 100; i++) {
 //			data.add(new Object[] {i % 3 == 0 ? true : null, null, null});
-//		}J
+//		}
 		
 		// Matrix
 		final Matrix matrix = new Matrix(shell, SWT.NONE);
@@ -67,8 +69,9 @@ public class Snippet_0402 {
 			
 			@Override
 			public boolean hasEmbeddedControl(Number index0, Number index1) {
-				Object value = data.get(index0.intValue())[index1.intValue()];
-				return value instanceof Boolean;
+//				Object value = data.get(index0.intValue())[index1.intValue()];
+//				return value instanceof Boolean;
+				return true;
 			}
 			
 			@Override
@@ -77,7 +80,17 @@ public class Snippet_0402 {
 				if (value instanceof Boolean) {
 					return new Button(parent, SWT.CHECK);
 				}
-				return super.createControl(index0, index1, parent);
+				return new Text(matrix.getParent(), SWT.NONE);
+			}
+			
+			@Override
+			protected void setBounds(Number index0, Number index1, Control control) {
+				if (control instanceof Text) {
+					Rectangle bounds = matrix.getBody().getCellBounds(index0, index1);
+					control.setBounds(bounds);
+				} else {
+					super.setBounds(index0, index1, control);
+				}
 			}
 		};
 		

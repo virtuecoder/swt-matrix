@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Listener;
 
 class CommandListener implements Listener {
 	ArrayList<GestureBinding> bindings = new ArrayList<GestureBinding>();
+	protected Event event;
 	
 	public void attachTo(Control control) {
 		control.addListener(SWT.KeyDown, this);
@@ -20,8 +21,6 @@ class CommandListener implements Listener {
 		control.addListener(SWT.MouseExit, this);
 		control.addListener(SWT.MouseHover, this);
 		control.addListener(SWT.MouseDoubleClick, this);
-		control.addListener(SWT.MouseHorizontalWheel, this);
-		control.addListener(SWT.MouseVerticalWheel, this);
 		control.addListener(SWT.MouseWheel, this);
 		control.addListener(SWT.Selection, this);
 		control.addListener(SWT.DefaultSelection, this);
@@ -29,8 +28,8 @@ class CommandListener implements Listener {
 		control.addListener(SWT.FocusIn, this);
 	}
 	
-	@Override
 	public void handleEvent(Event e) {
+		event = e;
 		for (GestureBinding b: bindings) {
 			if (b.isMatching(e)) {
 				executeCommand(b.commandId);

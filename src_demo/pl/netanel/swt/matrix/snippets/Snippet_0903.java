@@ -28,7 +28,6 @@ public class Snippet_0903 {
 		body1.setCount(4);
 		
 		matrix.addMouseMoveListener(new MouseMoveListener() {
-			@Override
 			public void mouseMove(MouseEvent e) {
 				AxisItem<Integer> item0 = matrix.getAxis0().getItemByDistance(e.y);
 				AxisItem<Integer> item1 = matrix.getAxis1().getItemByDistance(e.x);

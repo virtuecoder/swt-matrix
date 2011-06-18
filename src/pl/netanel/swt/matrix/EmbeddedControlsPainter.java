@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -23,6 +25,8 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 	boolean needsPainting;
 	private Listener focusInListener;
 	private ControlListener controlListener;
+	private Point location;
+	private Rectangle bounds;
 
 	public EmbeddedControlsPainter(final ZoneEditor<N0, N1> editor) {
 		super("editor controls", Painter.SCOPE_CELLS_HORIZONTALLY);
@@ -54,6 +58,7 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 		editor.zone.getSectionUnchecked0().addControlListener(controlListener);
 		editor.zone.getSectionUnchecked1().addControlListener(controlListener);
 	}
+	
 	
 	@Override
 	protected boolean init() {
@@ -88,7 +93,10 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 			getMatrix().setFocus();
 		}
 		needsPainting = false;
-		
+		getMatrix().setLocation(location);
+		if (bounds.width > 0) {
+			getMatrix().setBounds(bounds);
+		}
 	}
 	
 	public Control getControl(N0 index0, N1 index1) {
@@ -102,7 +110,7 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 	}
 	
 	@Override
-	protected void setMatrix(Matrix matrix) {
+	protected void setMatrix(final Matrix matrix) {
 		Runnable r = new Runnable() {
 			@Override
 			public void run() {
@@ -111,6 +119,19 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 		};
 		matrix.layout0.callbacks.add(r);
 		matrix.layout1.callbacks.add(r);
+		
+		// Resize
+		location = matrix.getLocation();
+		bounds = matrix.getBounds();
+		matrix.getParent().addListener(SWT.Resize, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				needsPainting = true;
+				location = matrix.getLocation();
+				bounds = matrix.getBounds();
+				matrix.redraw();
+			}
+		});
 		super.setMatrix(matrix);
 	}
 }

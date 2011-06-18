@@ -12,6 +12,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TypedListener;
@@ -48,7 +49,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	ZoneEditor<N0, N1> editor;
 	
 	final Listeners listeners;
-	final ArrayList<GestureBinding> bindings;
+	private final ArrayList<GestureBinding> bindings;
 	boolean selectionEnabled;
 	
 	private Matrix<N0, N1> matrix;
@@ -94,13 +95,13 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		selectionEnabled = true;
 	}
 	
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (obj instanceof ZoneClient) obj = ((ZoneClient) obj).core;
 		return super.equals(obj);
 	}
 	
-	@Override
+	
 	public String toString() {
 		return section0.toString() + " " + section1.toString();
 	}
@@ -162,7 +163,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	
 	void setDefaultBodyStyle() {
 		Painter painter = new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
-			@Override
+			
 			public String getText(Number index0, Number index1) {
 				return index0.toString() + ", " + index1.toString();
 			}
@@ -462,13 +463,13 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			{
 				seq.init();
 			}
-			@Override
+			
 			public boolean hasNext() {
 				next = seq.next();
 				return next;
 			}
 
-			@Override
+			
 			public Number[] next() {
 				return next ? new Number[] {seq.index0(), seq.index1()} : null;
 			}
@@ -502,13 +503,13 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			{
 				seq.init();
 			}
-			@Override
+			
 			public boolean hasNext() {
 				next = seq.nextExtent();
 				return next;
 			}
 
-			@Override
+			
 			public Number[] next() {
 				return next ? new Number[] {seq.start0(), seq.end0(), seq.start1(), seq.end1()} : null;
 			}
@@ -542,13 +543,13 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			{
 				seq.init();
 			}
-			@Override
+			
 			public boolean hasNext() {
 				next = seq.next();
 				return next;
 			}
 
-			@Override
+			
 			public Number[] next() {
 				return next ? new Number[] {seq.index0(), seq.index1()} : null;
 			}
@@ -641,6 +642,11 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		}
 	}
 	
+	Iterable<GestureBinding> getBindings() {
+		return bindings;
+	}
+	
+	
 	/**
 	 * Adds the listener to the collection of listeners who will
 	 * be notified when a zone cell is selected by the user, by sending
@@ -727,7 +733,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 */
 	public void addListener(int eventType, final Listener listener) {
 		matrix.addListener(eventType, new Listener() {
-			@Override
+			
 			public void handleEvent(Event e) {
 				AxisItem<N0> item0 = matrix.getAxis0().getItemByDistance(e.y);
 				AxisItem<N1> item1 = matrix.getAxis1().getItemByDistance(e.x);
@@ -747,8 +753,13 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 * Painting 
 	 */
 
-	void paint(GC gc, final Layout layout0, final Layout layout1, final Frozen dock0, final Frozen dock1) {
+	void paint(final GC gc, final Layout layout0, final Layout layout1, final Frozen dock0, final Frozen dock1) {
+		Painter embedded = null;
 		for (Painter p: painters) {
+			if (p instanceof EmbeddedControlsPainter) {
+				embedded = p;
+				continue;
+			}
 			if (!p.isEnabled() || !p.init(gc)) continue;
 			
 			int distance = 0, width = 0;
@@ -821,6 +832,29 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				
 			}
 			p.clean();
+		}
+		
+		if (embedded != null) {
+			final Painter p = embedded;
+			Display display = matrix.getDisplay();
+			display.asyncExec(new Runnable() {
+				public void run() {
+					if (!p.isEnabled() || !p.init(gc)) return;
+					
+					LayoutSequence seq0 = layout0.cellSequence(dock0, section0);
+					LayoutSequence seq1 = layout1.cellSequence(dock1, section1);
+					for (seq0.init(); seq0.next();) {
+						int distance = seq0.getDistance();
+						int width = seq0.getWidth();
+						Number index = seq0.item.getIndex();
+						for (seq1.init(); seq1.next();) {
+							p.paint(index, seq1.item.getIndex(), 
+									seq1.getDistance(), distance, seq1.getWidth(), width);
+						}
+					}
+					p.clean();
+				}
+			});
 		}
 	}
 	
@@ -956,7 +990,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			this.color = color;
 		}
 		
-		@Override
+		
 		public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 			gc.setBackground(color);
 			gc.fillRectangle(x, y, width, height);

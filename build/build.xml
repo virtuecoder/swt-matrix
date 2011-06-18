@@ -16,10 +16,12 @@
 	</target>
 
 	<target name="proguard/check">
-	    <uptodate property="proguard.uptodate">
+	    <uptodate property="proguard.uptodate" targetfile="${ant.project.name}-${version}.jar">
+	        <srcfiles dir="../src" includes="**/*"/>
 	        <srcfiles dir="." includes="proguard.cfg"/>
-	        <mapper type="merge" to="proguard.done"/>
+	        <mapper type="merge" to="${ant.project.name}-${version}.jar"/>
 	    </uptodate>
+	    <echo message="${proguard.uptodate}"/>
 	</target>
 
 	<target name="jar" description="create the jar" depends="proguard/check" unless="proguard.uptodate">
@@ -44,7 +46,7 @@
 			classpath="c:/dev/Java/java_lib/proguard4.3/lib/proguard.jar" />
 		<proguard configuration="proguard.cfg"/>
 
-		<rename src="obfuscated.${ant.project.name}.jar" dest="swt-matrix-${version}.jar"/>
+		<rename src="obfuscated.${ant.project.name}.jar" dest="${ant.project.name}-${version}.jar"/>
 
 		<touch file="proguard.done"/>
 
@@ -130,6 +132,12 @@
 			<pathelement path="../bin" />
 		</classpath>
 	</java>
+	
+  <replaceregexp file="${local_website}\media\system\js\netanel.js"
+        match="var current_version = (.+);"
+          replace='var current_version = "${version}";'
+          byline="true" />
+
 
 </target> 
 

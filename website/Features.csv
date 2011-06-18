@@ -40,9 +40,9 @@
 "Default hide ability","All items in a section can have the hide ability enabled or disabled by default.","0.1","high",,
 "Item move ability","Individual items can have the hide ability enabled or disabled","0.1","medium",,
 "+Group",,,,,
+"TreeTable","A column may display a tree like structure of the row axis items","0.3","high",,
 "Cell merging","Individual cell merging","0.7","medium",,
 "Item hierarchy as groups","The hierarchy is illustrated by the item in higher level being merged to the extent of its children","0.7","medium",,
-"Item hierarchy as tree","A given row or column may display a tree like connections describing the hierarchy ","0.7","high",,
 "Collapse hierarchy items","Node collapse/expand typical for tree widgets","0.7","high",,
 "+Scroll",,,,,
 "Item scrolling","Scroll position is always snapped to the beginning of a first visible item","0.1","high",,
@@ -59,7 +59,7 @@
 "Text font, align, padding","Drawing text with padding and aligning horizontally and vertically with custom colors and fonts for each cell.","0.1","high",,
 "Automatic numbering in headers","The default header painter draws text as sequential numbers starting from 0.","0.1","high",,
 "Image align, padding","Drawing image with padding and aligning horizontally and vertically","0.1","high",,"Snippet_0018"
-"Multiline text","Text wrapping inside of a cell","0.3","medium",,
+"Multiline text","Text wrapping inside of a cell","0.4","medium",,
 "Tilted text","Vertical or rotated ","0.9","low",,
 "Custom painter","All that is draw on the canvas can be replaced by a custom painter.","0.1","high",,"Snippet_0014, Snippet_0015"
 "Painters composition","List of matrix and zone painters is fully editable (add, replace, remove)","0.1","high","outstanding",
@@ -77,8 +77,10 @@
 "SelectionEvent","Handling of SelectionEvent","0.1","high",,"Snippet_0902"
 "ControlEvent","Handling of ControlEvent","0.1","high",,"Snippet_0902"
 "+Edit",,,,,
-"Text, combo","Allow changing the value of a cell.","0.2","high",,"Snippet_0401"
-"Native looking check box","Even for custom OS themes.","0.2","high",,"Snippet_0401, Matrix#snapSystemTheme(java.lang.String)"
-"Cut/copy/paste","Using clipboard tab separated format compatible with Excel","0.2","high",,"Snippet_0402"
+"Text, combo, date/time","Allow changing the value of a cell using standard SWT controls as pop-ups","0.2","high",,"Snippet_0404"
+"Embedded native controls","Check buttons or other controls constantly embedded in the cell","0.2","middle","outstanding","Snippet_0402"
+"Checkbox emulation","For bettern performance then lots of native controls. Support for custom OS themes.","0.2","high",,"Snippet_0403"
+"Cut/copy/paste","Using clipboard tab separated format compatible with Excel","0.2","high",,"Snippet_0410"
+"Delete","Delete a cell value","0.2","high",,
 "+Other",,,,,
 "Tooltips","Tooltips for individual cells","0.8","medium",,

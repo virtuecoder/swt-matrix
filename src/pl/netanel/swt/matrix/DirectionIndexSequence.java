@@ -31,7 +31,6 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 	/* (non-Javadoc)
 	 * @see pl.netanel.swt.matrix.IndexSequence#init()
 	 */
-	@Override
 	public void init() {
 		i = firstIndex(this.section.order.items);
 	}
