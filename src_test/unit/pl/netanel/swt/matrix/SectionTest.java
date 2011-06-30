@@ -1,6 +1,7 @@
 package pl.netanel.swt.matrix;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -14,16 +15,26 @@ public class SectionTest {
 		new Section(float.class);
 	}
 
-	
 	@Test
-	public void itemCount() throws Exception {
+	public void setCount() throws Exception {
 		Section section = new Section(int.class);
 		section.setCount(2);
 		assertEquals(2, section.getCount().intValue());
 		
 		section.setCount(3);
 		assertEquals(3, section.getCount().intValue());
-		
+	}
+	
+	@Test(expected = NullPointerException.class)
+	public void setCountNull() throws Exception {
+	  Section section = new Section(int.class);
+	  section.setCount(null);
+	}
+	
+	@Test
+	public void getIndexOutOfBounds() throws Exception {
+	  Section section = new Section(int.class);
+	  assertNull(section.get(-1));
 	}
 	
 	@Ignore

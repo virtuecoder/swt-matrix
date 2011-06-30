@@ -822,6 +822,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			});
 		}
 	}
+	
 	/**
 	 * Adds the painter at the end of the receiver's painters list.
 	 * @param painter the painter to be added

@@ -126,8 +126,12 @@ public class Section<N extends Number> {
 
 	/**
 	 * Specifies the number of section items.
+	 * <p>
+	 * <code>count</code> input parameter is not validated against negative or null values.
+	 * 
 	 * @param count the new count of the receiver's items
 	 * @see #getCount()
+	 * @throws NullPointerException if the count is <tt>null</tt>.
 	 */
 	public void setCount(N count) {
 		this.count = count;
@@ -155,6 +159,8 @@ public class Section<N extends Number> {
 	/**
 	 * Returns the item at given visual position according 
 	 * to the current order of items and skipping the hidden ones.
+	 * <p>
+	 * If the <code>index</code> is out of range null value is returned.
 	 * 
 	 * @param position visual index of given item
 	 * @return item at the given position
@@ -182,7 +188,7 @@ public class Section<N extends Number> {
 	
 	/**
 	 * Returns the visual position of the given item according to the current order of items.
-	 * Hidden items are included. 
+	 * Hidden items are not skipped. 
 	 * If the item is null or out of scope then the method returns null.
 	 *  
 	 * @param item to get the position for
@@ -230,7 +236,7 @@ public class Section<N extends Number> {
 	 */
 
 	/**
-	 * Marks the receiver as visible if the argument is <code>true</code>,
+	 * Marks the receiver as visible if the argument is <tt>true</tt>,
 	 * and marks it invisible otherwise. 
 	 *
 	 * @param visible the new visibility state
@@ -240,8 +246,8 @@ public class Section<N extends Number> {
 	}
 	
 	/**
-	 * Returns <code>true</code> if the receiver is visible. 
-	 * Otherwise, <code>false</code> is returned.
+	 * Returns <tt>true</tt> if the receiver is visible. 
+	 * Otherwise, <tt>false</tt> is returned.
 	 *
 	 * @return the receiver's visibility state
 	 */
@@ -250,7 +256,7 @@ public class Section<N extends Number> {
 	}
 
 	/**
-	 * Enables focus item navigation in the receiver if the argument is <code>true</code>,
+	 * Enables focus item navigation in the receiver if the argument is <tt>true</tt>,
 	 * and disables it invisible otherwise. 
 	 *
 	 * @param enabled the new focus item enablement state
@@ -260,8 +266,8 @@ public class Section<N extends Number> {
 	}
 	
 	/**
-	 * Returns <code>true</code> if the focus item navigation is enabled in the receiver. 
-	 * Otherwise, <code>false</code> is returned.
+	 * Returns <tt>true</tt> if the focus item navigation is enabled in the receiver. 
+	 * Otherwise, <tt>false</tt> is returned.
 	 *
 	 * @return the receiver's focus item enablement state
 	 */
@@ -275,15 +281,16 @@ public class Section<N extends Number> {
 	 * Default values 
 	 */
 	
-	/**
-	 * Sets the default width of cells in this section to the given value. 
-	 * Cell width excludes the width of lines.
-	 * Negative argument values are ignored.
-	 * <p>
-	 * This allows to save storage memory of the width attribute if many cells share the same value 
-	 * and the newly created items to have the default value automatically.  
-	 * @param width new value for default width.
-	 */
+	  /**
+   * Sets the default width of cells in this section to the given value. Cell
+   * width excludes the width of lines. Negative argument values are ignored.
+   * <p>
+   * Default value allows to save storage memory of the width attribute if many
+   * cells share the same value and the newly created items to have the default
+   * value automatically.
+   * 
+   * @param width new value for default width.
+   */
 	public void setDefaultCellWidth(int width) {
 		if (width < 0) return;
 		cellWidth.setDefault(width);
@@ -299,13 +306,15 @@ public class Section<N extends Number> {
 	}
 	
 	/**
-	 * Sets default width of lines in this section to the given value.  
-	 * Negative argument values are ignored.
-	 * <p>
-	 * This allows to save storage memory of the width attribute if many lines share the same value
-	 * and the newly created items to have the default value automatically. 
-	 * @param width new value for default width.
-	 */
+   * Sets default width of lines in this section to the given value. Negative
+   * argument values are ignored.
+   * <p>
+   * Default value allows to save storage memory of the width attribute if many
+   * lines share the same value and the newly created items to have the default
+   * value automatically.
+   * 
+   * @param width new value for default width.
+   */
 	public void setDefaultLineWidth(int width) {
 		if (width < 0) return;
 		lineWidth.setDefault(width);
@@ -330,18 +339,16 @@ public class Section<N extends Number> {
 		return defaultResizable;
 	}
 
-	/**
-	 * Sets the default resize ability of the receiver's items to the given argument.
-	 * <p>
-	 * This allows to save storage memory of the "resizable" attribute if many items share the same value
-	 * and the newly created items to have this default value automatically. 
-	 * <p>
-	 * The value of the <code>resizable</code> argument is returned by 
-	 * {@link #isResizable(Number)} method if a different value for the particular index 
-	 * has not been set by {@link #setResizable(Number, Number, boolean)}.
-	 *
-	 * @param resizable the new resize ability state
-	 */
+	  /**
+   * Sets the default resize ability of the receiver's items to the given
+   * argument.
+   * <p>
+   * Default value allows to save storage memory of the "resizable" attribute if
+   * many items share the same value and the newly created items to have this
+   * default value automatically.
+   * 
+   * @param resizable the new resize ability state
+   */
 	public void setDefaultResizable(boolean resizable) {
 		this.defaultResizable = resizable;
 	}
@@ -357,18 +364,15 @@ public class Section<N extends Number> {
 	}
 
 	/**
-	 * Sets the default move ability of the receiver's items to the given argument. 
-	 * <p>
-	 * This allows to save storage memory of the "moveable" attribute if many items share the same value
-	 * and the newly created items to have this default value automatically. 
-	 * <p>
-	 * The value of the <code>movable</code> argument is returned by 
-	 * {@link #isMoveable(Number)} method if a different value for the particular index 
-	 * has not been set by {@link #setMoveable(Number, Number, boolean)}.
-	 * 
-	 * @param moveable the new move ability state
-
-	 */
+   * Sets the default move ability of the receiver's items to the given
+   * argument.
+   * <p>
+   * Default value allows to save storage memory of the "moveable" attribute if
+   * many items share the same value and the newly created items to have this
+   * default value automatically.
+   * 
+   * @param moveable the new move ability state
+   */
 	public void setDefaultMoveable(boolean moveable) {
 		this.defaultMoveable = moveable;
 	}
@@ -383,18 +387,16 @@ public class Section<N extends Number> {
 		return defaultHideable;
 	}
 
-	/**
-	 * Sets the default hide ability of the receiver's items to the given argument. 
-	 * <p>
-	 * This allows to save storage memory of the "hideable" attribute if many items share the same value
-	 * and the newly created items to have this default value automatically. 
-	 * <p>
-	 * The value of the <code>hideable</code> argument is returned by 
-	 * {@link #isHideable(Number)} method if a different value for the particular index 
-	 * has not been set by {@link #setHideable(Number, Number, boolean)}.
-	 * 
-	 * @param hideable the new hide ability state
-	 */
+	  /**
+   * Sets the default hide ability of the receiver's items to the given
+   * argument.
+   * <p>
+   * Default value allows to save storage memory of the "hideable" attribute if
+   * many items share the same value and the newly created items to have this
+   * default value automatically.
+   * 
+   * @param hideable the new hide ability state
+   */
 	public void setDefaultHideable(boolean hideable) {
 		this.defaultHideable = hideable;
 	}

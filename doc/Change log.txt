@@ -3,7 +3,10 @@ Version 0.2.1
 API changes
 - Matrix class:
   - renamed all editing commands to have the CMD_EDIT_ prefix.
-  - new command CMD_EDIT_APPLY
+  - added command CMD_EDIT_APPLY
+  - removed GetZoneUnchecked()
+- Zone
+  - removed getSectionUnchecked()
 - ZoneEditor class:
   - renamed setEmulationPath(String) to setImagePath(String)
   - removed snapControlImages(String)

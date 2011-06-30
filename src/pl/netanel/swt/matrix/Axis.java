@@ -658,7 +658,7 @@ public class Axis<N extends Number>  {
 		}
 		
 		boolean next() {
-			if (i >= items.size()) {
+			while (i >= items.size()) {
 				sectionIndex++;
 				if (sectionIndex > lastSectionIndex) return false;
 				section = sections.get(sectionIndex);

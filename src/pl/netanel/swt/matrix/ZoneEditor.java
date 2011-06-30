@@ -389,7 +389,7 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	 * @param control to set the bounds for
 	 */
 	protected void setBounds(N0 index0, N1 index1, Control control) {
-		Rectangle bounds = getMatrix().getBody().getCellBounds(index0, index1);
+		Rectangle bounds = zone.getCellBounds(index0, index1);
 		Painter.offsetRectangle(bounds, 1);			
 
 		Point size  = null;
@@ -788,7 +788,7 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	public String getEmulationPath() {
 		return systemThemePath;
 	}
-
+	
 
 	class ZoneEditorData {
 		public N0 index0;
@@ -805,4 +805,9 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	ZoneEditorData getData(Widget widget) {
 		return (ZoneEditorData) widget.getData(ZONE_EDITOR_DATA);
 	}
+	
+	
+	void clearEmbedded() {
+    embedded  
+  }
 }
