@@ -9,6 +9,7 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TypedListener;
 
 import pl.netanel.util.ImmutableIterator;
@@ -1267,4 +1268,11 @@ public class Section<N extends Number> {
 					"index ({0}) must be lower then limit {1}", index, limit)) ;
 		}
 	}
+
+	void addSelectionEvent() {
+    Event event = new Event();
+    event.type = SWT.Selection;
+    event.widget = axis.matrix;
+    listeners.add(event);
+  }
 }

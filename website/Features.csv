@@ -10,6 +10,10 @@
 "Default line width","Any line that does not have a custom width will have the default width","0.1","medium","outstanding",
 "Individual line width","Each line can have a different width","0.1","high",,
 "Spaces between cells","Similar to HTML table cellspacing attribute. It does not effect the cell size and cell painting algorithm.","0.1","medium","outstanding",
+"+Zones",,,,,
+"Zone as crossing of sections","Body zone = row axis body section and column axis body section, Column header zone = row axis header section and column axis body section","0.1","high","outstanding",
+"Separate painters","Each zone can have separate painters","0.1","high",,
+"Separate event handlers","Each zone can have separate event handlers","0.1","high",,
 "+Selection",,,,,
 "Select axis items","Both full rows and full columns can be selected","0.1","high",,
 "Select cells","Standard cell selection by mouse and keyboard.","0.1","high",,
@@ -59,7 +63,7 @@
 "Text font, align, padding","Drawing text with padding and aligning horizontally and vertically with custom colors and fonts for each cell.","0.1","high",,
 "Automatic numbering in headers","The default header painter draws text as sequential numbers starting from 0.","0.1","high",,
 "Image align, padding","Drawing image with padding and aligning horizontally and vertically","0.1","high",,"Snippet_0018"
-"Multiline text","Text wrapping inside of a cell","0.4","medium",,
+"Multiline text","Text wrapping inside of a cell","0.3","medium",,
 "Tilted text","Vertical or rotated ","0.9","low",,
 "Custom painter","All that is draw on the canvas can be replaced by a custom painter.","0.1","high",,"Snippet_0014, Snippet_0015"
 "Painters composition","List of matrix and zone painters is fully editable (add, replace, remove)","0.1","high","outstanding",
@@ -68,10 +72,10 @@
 "Cell style","Set of attributes that can be named and applied to a number of cells.",,"medium",,
 "Zoom","Zoom in  and zoom out the view port area.",">1","low",,
 "Shorten text at the end","Three dots at the end of text instead in the middle if the text is to long to fit in a cell.","0.9","medium",,
-"+Zones",,,,,
-"Zone as crossing of sections","Body zone = row axis body section and column axis body section, Column header zone = row axis header section and column axis body section","0.1","high","outstanding",
-"Separate painters","Each zone can have separate painters","0.1","high",,
-"Separate event handlers","Each zone can have separate event handlers","0.1","high",,
+"+Data",,,,,
+"Filtering","Filtering can be implemented by simply taking data to paint from a reduced collection of items.","0.1","high",,"Snippet_003"
+"Sorting","Sorting marker can be displayed using painter method and sorting cen be triggered by the header zone event listener","0.1","high",,"Snippet_005"
+"Add/remove items","Adding or removing items in the model is reflected in the matrix","0.1","high",,"Snippet_004"
 "+Gestures",,,,,
 "Command binding","Custom binding many of the user activated commands to key/mouse gestures","0.1","high","outstanding","Snippet_0901"
 "SelectionEvent","Handling of SelectionEvent","0.1","high",,"Snippet_0902"

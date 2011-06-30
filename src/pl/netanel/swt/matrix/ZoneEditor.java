@@ -1,11 +1,11 @@
 package pl.netanel.swt.matrix;
 
-import static pl.netanel.swt.matrix.Matrix.CMD_APPLY_EDIT;
-import static pl.netanel.swt.matrix.Matrix.CMD_CANCEL_EDIT;
+import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_DEACTIVATE_APPLY;
+import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_DEACTIVATE_CANCEL;
 import static pl.netanel.swt.matrix.Matrix.CMD_COPY;
 import static pl.netanel.swt.matrix.Matrix.CMD_CUT;
 import static pl.netanel.swt.matrix.Matrix.CMD_DELETE;
-import static pl.netanel.swt.matrix.Matrix.CMD_EDIT;
+import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_ACTIVATE;
 import static pl.netanel.swt.matrix.Matrix.CMD_PASTE;
 
 import java.io.File;
@@ -78,7 +78,7 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 		zone.setEditor(this);
 		
 		trueLabel = DEFAULT_TRUE_TEXT;
-		setEmulationPath(null);
+		setImagePath(null);
 		
 		// Painters
 		cellsPainter = zone.getPainter("cells");
@@ -107,12 +107,12 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 		zone.bind(CMD_CUT, SWT.KeyDown, SWT.MOD1 | 'x');
 		zone.bind(CMD_COPY, SWT.KeyDown, SWT.MOD1 | 'c');
 		zone.bind(CMD_PASTE, SWT.KeyDown, SWT.MOD1 | 'v');
-		zone.bind(CMD_EDIT, SWT.KeyUp, SWT.F2);
-		zone.bind(CMD_EDIT, SWT.MouseDoubleClick, 1);
+		zone.bind(CMD_EDIT_ACTIVATE, SWT.KeyUp, SWT.F2);
+		zone.bind(CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1);
 		zone.bind(CMD_DELETE, SWT.KeyDown, SWT.DEL);
 	
 		// Space bar for check boxes
-		zone.bind(new GestureBinding(CMD_EDIT, SWT.KeyDown, ' ') {
+		zone.bind(new GestureBinding(CMD_EDIT_ACTIVATE, SWT.KeyDown, ' ') {
 			
 			public boolean isMatching(Event e) {
 				if (!super.isMatching(e)) return false;
@@ -130,7 +130,7 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 		});
 		
 		// Clicking on the image emulation
-		zone.bind(new GestureBinding(CMD_EDIT, SWT.MouseDown, 1) {
+		zone.bind(new GestureBinding(CMD_EDIT_ACTIVATE, SWT.MouseDown, 1) {
 			
 			public boolean isMatching(Event e) {
 				if (!super.isMatching(e)) return false;
@@ -159,15 +159,15 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 				Control control = (Control) event.widget;
 				
 				switch (commandId) {
-				case CMD_APPLY_EDIT: apply(control); break;
-				case CMD_CANCEL_EDIT: cancel(control); break;
+				case CMD_EDIT_DEACTIVATE_APPLY: apply(control); break;
+				case CMD_EDIT_DEACTIVATE_CANCEL: cancel(control); break;
 				}
 			};
 		};
-		controlListener.bind(CMD_APPLY_EDIT, SWT.KeyDown, SWT.CR);
-		controlListener.bind(CMD_APPLY_EDIT, SWT.FocusOut, 0);
-		controlListener.bind(CMD_APPLY_EDIT, SWT.Selection, 0);
-		controlListener.bind(CMD_CANCEL_EDIT, SWT.KeyDown, SWT.ESC);
+		controlListener.bind(CMD_EDIT_DEACTIVATE_APPLY, SWT.KeyDown, SWT.CR);
+		controlListener.bind(CMD_EDIT_DEACTIVATE_APPLY, SWT.FocusOut, 0);
+//		controlListener.bind(CMD_EDIT_DEACTIVATE_APPLY, SWT.Selection, 0);
+		controlListener.bind(CMD_EDIT_DEACTIVATE_CANCEL, SWT.KeyDown, SWT.ESC);
 	}
 
 
@@ -464,7 +464,7 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	 * <p>
 	 * Only rectangular area can be copied. 
 	 */
-	protected void copy() 
+	public void copy() 
 	{
 		StringBuilder sb = new StringBuilder();
 		cellsPainter = zone.getPainter("cells");
@@ -497,7 +497,7 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	 * <p>
 	 * The items in the clipboard exceeding the section item count will be ignored. 
 	 */
-	protected void paste() 
+	public void paste() 
 	{
 		Clipboard clipboard = new Clipboard(getMatrix().getDisplay());
 		Object contents = clipboard.getContents(TextTransfer.getInstance());
@@ -545,7 +545,7 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	 *  
 	 * @see #copy()
 	 */
-	protected void cut() {
+	public void cut() {
 		copy();
 
 		// Set null value in the selected cells
@@ -652,11 +652,11 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	 * the second one is for the <code>false</code> value.
 	 * <p>
 	 * The default check box images can be configured with the {@link #snapControlImages(String)}
-	 * and the {@link #setEmulationPath(String)}
+	 * and the {@link #setImagePath(String)}
 	 *    
 	 * @return default images to emulate check boxes.
 	 * @see #getCheckboxEmulation(Number, Number)
-	 * @see #setEmulationPath(String)
+	 * @see #setImagePath(String)
 	 * @see #snapControlImages(String)
 	 */
 	protected final Object[] getDefaultCheckBoxImages() {
@@ -676,7 +676,7 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	 *    
 	 * @return default labels to emulate check boxes.
 	 * @see #getCheckboxEmulation(Number, Number)
-	 * @see #setEmulationPath(String)
+	 * @see #setImagePath(String)
 	 */
 	protected final Object[] getDefaultCheckBoxLabels() {
 		if (trueLabel == null && falseLabel == null) {
@@ -696,12 +696,12 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	 * Note: it opens a temporary shell in order to snap the images and then closes it immediately.
 	 * @param imagePath
 	 */
-	public void snapControlImages(String imagePath) {
+	void snapControlImages(String imagePath) {
 		if (imagePath == null) {
 			systemThemePath = OsUtil.getUserDirectory("SWT Matrix").getAbsolutePath();
 			new File(systemThemePath).mkdirs();
 		} else {
-			setEmulationPath(imagePath);
+			setImagePath(imagePath);
 		}
 				
 		File file = new File(systemThemePath);
@@ -752,11 +752,11 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	}
 
 	/**
-	 * Sets the path to the folder containing system theme emulation images.
+	 * Sets the path to the folder containing images emulating the system theme.
 	 * @param systemThemePath path to the folder containing system theme emulation images
 	 * @see #snapControlImages(String)
 	 */
-	public void setEmulationPath(String path) {
+	public void setImagePath(String path) {
 		systemThemePath = path == null 
 			? "" : path + System.getProperty("file.separator");
 		File file = new File(systemThemePath);

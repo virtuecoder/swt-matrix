@@ -3,7 +3,6 @@ package pl.netanel.swt.matrix;
 import java.math.BigInteger;
 
 class MutableInt extends MutableNumber<Integer> {
-	private static final long serialVersionUID = 1L;
 	
 	int value;
 	

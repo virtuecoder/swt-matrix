@@ -182,7 +182,7 @@ class Layout<N extends Number> {
 	 */
 	public void ensureCurrentIsValid() {
 		if (current == null) return;
-		Section<N> currentSection = current.getSectionUnchecked();
+		Section<N> currentSection = current.getSection();
 		
 		// Out of scope
 		N count = currentSection.getCount();
@@ -206,11 +206,11 @@ class Layout<N extends Number> {
 	}
 	
 	int compare(AxisItem<N> item1, AxisItem<N> item2) {
-		int diff = item1.getSectionUnchecked().index - item2.getSectionUnchecked().index;
+		int diff = item1.getSection().index - item2.getSection().index;
 		if (diff != 0) return diff;
 		return math.compare(
-				item1.getSectionUnchecked().indexOf(item1.getIndex()), 
-				item2.getSectionUnchecked().indexOf(item2.getIndex()));
+				item1.getSection().indexOf(item1.getIndex()), 
+				item2.getSection().indexOf(item2.getIndex()));
 	}
 	
 	
@@ -220,7 +220,7 @@ class Layout<N extends Number> {
 	 */
 
 	public void setCurrentItem(AxisItem item) {
-		if (!item.getSectionUnchecked().isFocusItemEnabled()) {
+		if (!item.getSection().isFocusItemEnabled()) {
 			current = null;
 		} 
 		else {
@@ -454,7 +454,7 @@ class Layout<N extends Number> {
 			int right = bound.distance + bound.width + resizeMargin;
 			if (left <= distance && distance <= right) {
 				AxisItem item = cache.items.get(i - 1);
-				return item.getSectionUnchecked().isResizable(item.getIndex()) ? item : null;		
+				return item.getSection().isResizable(item.getIndex()) ? item : null;		
 			}
 		}
 		return null; 
@@ -464,7 +464,7 @@ class Layout<N extends Number> {
 	 * in case index is not lower then the section count.  
 	 */
 	protected boolean isOutOfBounds(AxisItem<N> item) {
-		return math.compare(item.getIndex(), item.getSectionUnchecked().getCount()) >= 0;
+		return math.compare(item.getIndex(), item.getSection().getCount()) >= 0;
 	}
 
 	
@@ -515,7 +515,7 @@ class Layout<N extends Number> {
 			if (dir instanceof Backward) {
 				lastLine(dir.section, dir.seq.index().getValue());
 			}
-			for (int i = 0; condition() && item != null; i++) {
+			while (condition() && item != null) {
 				bound1 = new Bound(0, dir.section.getLineWidth(dir.seq.index().getValue()));
 				bound2 = new Bound(0, dir.section.getCellWidth(dir.seq.index().getValue()));
 				int width = bound1.width + bound2.width;
@@ -556,7 +556,7 @@ class Layout<N extends Number> {
 			if (!isEmpty()) {
 				if (dir instanceof Forward) { 
 					AxisItem item2 = items.get(items.size() - 1);
-					lastLine = lastLine(item2.getSectionUnchecked(), item2.getIndex());
+					lastLine = lastLine(item2.getSection(), item2.getIndex());
 				} else {
 					lastLine = lines.get(0);
 				}
@@ -703,7 +703,7 @@ class Layout<N extends Number> {
 			int len = cache.cells.size();
 			for (int i = 0; i < len; i++) {
 				AxisItem<N> item = cache.items.get(i);
-				if (item.getSectionUnchecked().equals(section) && math.compare(item.getIndex(), index) == 0) {
+				if (item.getSection().equals(section) && math.compare(item.getIndex(), index) == 0) {
 					return cache;
 				}
 			}
@@ -715,7 +715,7 @@ class Layout<N extends Number> {
 		MutableNumber position = math.create(0);
 		for (int i = 0, size = sections.size(); i < size; i++) {
 			Section<N> section = sections.get(i);
-			if (item.getSectionUnchecked().equals(section)) {
+			if (item.getSection().equals(section)) {
 				N index = section.indexOfNotHidden(item.getIndex());
 				return index == null ? null : position.add(math.getValue(index));
 			}
@@ -811,19 +811,19 @@ class Layout<N extends Number> {
 
 		public void init() {
 			for (i = 0; i < items.size(); i++) {
-				if (items.get(i).getSectionUnchecked().equals(section)) break;
+				if (items.get(i).getSection().equals(section)) break;
 			}
 		}
 		
 		public boolean next() {
 			if (i >= bounds.size()) return false;
-			Section section2 = items.get(i).getSectionUnchecked();
+			Section section2 = items.get(i).getSection();
 			if (section2 != section) {
 				// Make sure last line is included between sections  
 				if (items.size() == bounds.size() /*&& 
 					axis.getZIndex(section2) < axis.getZIndex(item.section)*/) 
 				{
-					item = AxisItem.create(item.getSectionUnchecked(), math.increment(item.getIndex()));
+					item = AxisItem.create(item.getSection(), math.increment(item.getIndex()));
 					bound = bounds.get(i);
 					i = bounds.size();
 					return true;
@@ -872,7 +872,7 @@ class Layout<N extends Number> {
 		Cache cache = getCache(frozen);
 		int first = -1, last = -1;
 		for (int i = 0, size = cache.items.size(); i < size; i++) {
-			if (cache.items.get(i).getSectionUnchecked().equals(section)) {
+			if (cache.items.get(i).getSection().equals(section)) {
 				if (first == -1) {
 					first = i;
 				}
@@ -892,7 +892,7 @@ class Layout<N extends Number> {
 	}
 	
 	public Bound getCellBound(AxisItem item) {
-		Cache cache = getCache(item.getSectionUnchecked(), item.getIndex());
+		Cache cache = getCache(item.getSection(), item.getIndex());
 		if (cache == null) return null;
 		for (int i = 0, size = cache.cells.size(); i < size; i++) {
 			if (cache.items.get(i).equals(item)) {
@@ -903,7 +903,7 @@ class Layout<N extends Number> {
 	}
 	
 	public Bound getLineBound(AxisItem item) {
-		Cache cache = getCache(item.getSectionUnchecked(), item.getIndex());
+		Cache cache = getCache(item.getSection(), item.getIndex());
 		if (cache == null) return null;
 		for (int i = 0, size = cache.lines.size(); i < size; i++) {
 			if (cache.items.get(i).equals(item)) {
@@ -933,7 +933,7 @@ class Layout<N extends Number> {
 		for (Cache cache: caches) {
 			for (int i = 0, imax = cache.cells.size(); i < imax; i++, count++) {
 				AxisItem item2 = cache.items.get(i);
-				if (item2.getSectionUnchecked().equals(item.getSectionUnchecked()) && 
+				if (item2.getSection().equals(item.getSection()) && 
 						math.compare(item2.getIndex(), item.getIndex()) == 0) {
 					freezeHead(count);
 					return;
@@ -949,7 +949,7 @@ class Layout<N extends Number> {
 		for (Cache cache: list) {
 			for (int i = cache.cells.size(); i-- > 0; count++) {
 				AxisItem item2 = cache.items.get(i);
-				if (item2.getSectionUnchecked().equals(item.getSectionUnchecked()) && 
+				if (item2.getSection().equals(item.getSection()) && 
 						math.compare(item2.getIndex(), item.getIndex()) == 0) {
 					freezeTail(count);
 					return;
@@ -963,7 +963,7 @@ class Layout<N extends Number> {
 		for (Cache cache: caches) {
 			for (int i = 0, imax = cache.cells.size(); i < imax; i++, count++) {
 				AxisItem item2 = cache.items.get(i);
-				if (item2.getSectionUnchecked().equals(item.getSectionUnchecked()) && 
+				if (item2.getSection().equals(item.getSection()) && 
 						math.compare(item2.getIndex(), item.getIndex()) == 0) {
 					return count;
 				} 
@@ -999,8 +999,8 @@ class Layout<N extends Number> {
 	}
 
 	public boolean reorder(AxisItem<N> source, AxisItem<N> target) {
-		Section<N> section = source.getSectionUnchecked();
-		if (!section.equals(target.getSectionUnchecked())) return false;
+		Section<N> section = source.getSection();
+		if (!section.equals(target.getSection())) return false;
 		
 		int position = compare(target, start);
 		

@@ -64,26 +64,10 @@ public class AxisItem<N extends Number> {
 
 	/**
 	 * Returns section of this axis item.
-	 * <p>
-	 * Unchecked section skips argument validation checking in getters 
-	 * to improve performance. 
-	 *
-	 * @return section of this axis item
-	 */
-	public Section<N> getSectionUnchecked() {
-		return section;
-	}
-	
-	/**
-	 * Returns section of this axis item.
-	 * <p>
-	 * A checked section delegates calls to an unchecked section proceeding it with an
-	 * argument validation checking.
-	 * 
 	 * @return section of this axis item
 	 */
 	public Section<N> getSection() {
-		return new SectionClient(section);
+	  return section;
 	}
 
 	/**

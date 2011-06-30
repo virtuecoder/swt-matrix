@@ -127,17 +127,33 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	public static final int CMD_COPY = 201; 					// binding = SWT.MOD1 + SWT.INSERT;
 	public static final int CMD_PASTE = 202;					// binding = SWT.MOD2 + SWT.INSERT ;
 
-	public static final int CMD_EDIT = 205;						
-	public static final int CMD_APPLY_EDIT = 206;						
-	public static final int CMD_CANCEL_EDIT = 207;						
+	/**
+	 * Command to activate the editor control by setting focus on it.
+	 */
+	public static final int CMD_EDIT_ACTIVATE = 205;						
+  /**
+   * Command to deactivate the editor control with applying it's value to the model. 
+   */
+	public static final int CMD_EDIT_DEACTIVATE_APPLY = 206;						
+  /**
+   * Command to deactivate the editor control without applying it's value to the model.
+   */
+	public static final int CMD_EDIT_DEACTIVATE_CANCEL = 207;						
+	/**
+	 * Command to apply the value from the editor control to the model without deactivating the control.
+	 */
+	public static final int CMD_EDIT_APPLY = 208;			
+	/**
+	 * Command to delete (set to null) the values of the selected cells.
+	 */
 	public static final int CMD_DELETE = 209;						
 	
-	public static final int CMD_HIDE = 301;						// binding = SWT.MOD3 + SWT.DEL;
-	public static final int CMD_UNHIDE = 302;					// binding = SWT.MOD3 + SWT.INSERT;
+	public static final int CMD_ITEM_HIDE = 301;						// binding = SWT.MOD3 + SWT.DEL;
+	public static final int CMD_ITEM_SHOW = 302;					// binding = SWT.MOD3 + SWT.INSERT;
 	
 	static final int RESIZE_START = 320;					    
 	static final int RESIZE_STOP = 321;					    
-	public static final int CMD_RESIZE_PACK = 322;					    
+	static final int CMD_RESIZE_PACK = 322;					    
 	
 
 	/*------------------------------------------------------------------------
@@ -301,7 +317,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 				AxisItem<N0> item0 = axis0.getFocusItem();
 				AxisItem<N1> item1 = axis1.getFocusItem();
 				if (item0 == null || item1 == null) return;
-				Zone zone = getZoneUnchecked(item0.getSectionUnchecked(), item1.getSectionUnchecked());
+				Zone zone = getZone(item0.getSection(), item1.getSection());
 				if (zone == null) return;
 				Rectangle r = zone.getCellBounds(item0.getIndex(), item1.getIndex());
 				if (r == null) return;
@@ -445,146 +461,50 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	}
 	
 	/**
-	 * Returns the checked body zone of this matrix.
-	 * <p>
-	 * A checked zone delegates calls to an unchecked zone proceeding it with 
-	 * an argument validation checking.
-	 * @return
+	 * Returns the body zone of this matrix.
+	 * @return the body zone of this matrix
 	 */
 	public Zone<N0, N1> getBody() {
 		return getZone(axis0.getBody(), axis1.getBody());
 	}
 	/**
-	 * Returns the checked column header zone of this matrix.
-	 * <p>
-	 * A checked zone delegates calls to an unchecked zone proceeding it with 
-	 * an argument validation checking.
-	 * @return
+	 * Returns the column header zone of this matrix.
+	 * @return the column header zone of this matrix
 	 */
 	public Zone<N0, N1> getColumnHeader() {
 		return getZone(axis0.getHeader(), axis1.getBody());
 	}
 	/**
-	 * Returns the checked row header zone of this matrix.
-	 * <p>
-	 * A checked zone delegates calls to an unchecked zone proceeding it with 
-	 * an argument validation checking.
-	 * @return
+	 * Returns the row header zone of this matrix.
+	 * @return the row header zone of this matrix
 	 */
 	public Zone<N0, N1> getRowHeader() {
 		return getZone(axis0.getBody(), axis1.getHeader());
 	}
 	/**
-	 * Returns the checked top left zone of this matrix.
-	 * <p>
-	 * A checked zone delegates calls to an unchecked zone proceeding it with 
-	 * an argument validation checking.
-	 * @return
+	 * Returns the top left zone of this matrix.
+	 * @return the top left zone of this matrix
 	 */
 	public Zone<N0, N1> getTopLeft() {
 		return getZone(axis0.getHeader(), axis1.getHeader());
 	}
-	
-//	/**
-//	 * Returns the number of zones in this matrix.
-//	 * @return the number of zones in this matrix
-//	 */
-//	public int getZoneCount() {
-//		return model.zones.size();
-//	}
-//	
-//	/**
-//	 * Returns a unchecked zone by its creation index.  
-//	 * <p>
-//	 * @param index
-//	 * @return zone with the given creation index
-//	 */
-//	public Zone<N0, N1> getZone(int index) {
-//		Preconditions.checkPositionIndex(index, model.zones.size());
-//		return model.zoneClients.get(index);
-//	}
 
 	/**
-	 * Returns a checked zone located at the intersection of the given axis sections.
-	 * <p>
-	 * A checked zone delegates calls to an unchecked zone proceeding it with an
-	 * argument validation checking.
+	 * Returns a zone located at the intersection of the given axis sections.
 	 * 
 	 * @param section0 section of the row axis
 	 * @param section1 section of the column axis
-	 * @return checked zone located at the intersection of the given axis sections
-	 * @throws IllegalArgumentException if item is <code>null</code> or item's section
-	 * 		does not belong to this axis.
-	 * @throws IndexOutOfBoundsException if item's index is out 
-	 * 		of 0 ... {@link Section#getCount()}-1 bounds
+	 * @return zone located at the intersection of the given axis sections
+	 * @throws IllegalArgumentException if item is <code>null</code> or section
+	 * 		does not belong to an axis of this matrix.
 	 */
 	public Zone<N0, N1> getZone(Section section0, Section section1) {
-		Preconditions.checkNotNullWithName(section0, "section0");
-		Preconditions.checkNotNullWithName(section1, "section1");
-		axis0.checkSection(section0);
-		axis1.checkSection(section1);
-		return model.getZone(section0, section1);
+	  Preconditions.checkNotNullWithName(section0, "section0");
+	  Preconditions.checkNotNullWithName(section1, "section1");
+	  axis0.checkSection(section0);
+	  axis1.checkSection(section1);
+	  return model.getZoneUnchecked(section0, section1);
 	}
-	
-	/**
-	 * Returns a unchecked zone located at the intersection of the given axis sections.
-	 * <p>
-	 * Unchecked zone skips argument validation checking 
-	 * in its methods to improve performance.
-	 * 
-	 * @param section0 section of the row axis
-	 * @param section1 section of the column axis
-	 * @return unchecked zone located at the intersection of the given axis sections
-	 */
-	public Zone<N0, N1> getZoneUnchecked(Section section0, Section section1) {
-		return model.getZoneUnchecked(section0, section1);
-	}
-	
-	/**
-	 * Returns a unchecked zone for the specified checked zone. If the argument is 
-	 * unchecked zone the it is returned itself.
-	 * <p>
-	 * Unchecked zone skips argument validation checking 
-	 * in its methods to improve performance.
-	 * 
-	 * @param index
-	 * @return unchecked zone for the given zone
-	 */
-	public Zone<N0, N1> getZoneUnchecked(Zone<N0, N1> zone) {
-		Preconditions.checkNotNullWithName(zone, "zone");
-		if (zone instanceof ZoneClient) return ((ZoneClient) zone).core;
-		return zone;
-		//return model.zoneClients.get(model.zones.indexOf(zone));
-	}
-	
-	
-	
-//	/**
-//	 * Return the rectangular bounds of the cell with the given coordinates.
-//	 * 
-//	 * @param section0 section in the row (vertical) axis where the cell is located 
-//	 * @param index0 cell index on <code>axis0</code> 
-//	 * @param section1 section in the column (horizontal) axis where the cell is located
-//	 * @param index1 cell index on <code>axis1</code> 
-//	 * @return
-//	 */
-//	public Rectangle getCellBounds(Section<N0> section0, N0 index0, Section<N1> section1, N1 index1) {
-//		Bound b0 = axis0.getCellBound(section0, index0);
-//		Bound b1 = axis1.getCellBound(section1, index1);
-//		if (b0 != null && b1 != null) {
-//			return new Rectangle(b1.distance, b0.distance, b1.width, b0.width);
-//		}
-//		return null; 
-//	}
-//	
-//	public Rectangle getLineBounds(Section<N0> section0, N0 index0, Section<N1> section1, N1 index1) {
-//		Bound b0 = index0 == null ? axis0.layout.getaxis0.getLineBound(section0, index0);
-//		Bound b1 = axis1.getCellBound(section1, index1);
-//		if (b0 != null && b1 != null) {
-//			return new Rectangle(b1.distance, b0.distance, b1.width, b0.width);
-//		}
-//		return null; 
-//	}
 	
 	void selectFocusCell() {
 		if (!focusCellEnabled) return;
@@ -592,8 +512,8 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		layout1.computeIfRequired();
 		if (layout0.current != null && layout1.current != null) {
 			Zone<N0, N1> zone = model.getZoneUnchecked(
-					layout0.current.getSectionUnchecked(), 
-					layout1.current.getSectionUnchecked());
+					layout0.current.getSection(), 
+					layout1.current.getSection());
 			N0 index0 = layout0.current.getIndex();
 			N1 index1 = layout1.current.getIndex();
 			zone.setSelected(index0, index0, index1, index1, true);
@@ -707,12 +627,6 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		selectFocusCell();
 		redraw();
 	}
-	
-
-//	@Override
-//	public Iterator<Zone<N0, N1>> iterator() {
-//		return model.zoneClients.iterator();
-//	}
 
 	
 	/**
@@ -766,7 +680,6 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	 * @param painter the painter to be added
 	 */
 	public void addPainter(Painter<N0, N1> painter) {
-		Preconditions.checkNotNullWithName(painter, "painter");
 		painters.add(painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -776,10 +689,12 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	 * @param index at which the specified painter is to be inserted
 	 * @param painter painter to be inserted
 	 * @throws IndexOutOfBoundsException if the index is out of range
-     *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+   *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+   * @throws IllegalArgumentException if the painter is null
+   * @throws IllegalArgumentException if the painter's name already exists 
+   *         in the collection of painters. 
 	 */
-	public void addPainter(int index, Painter<N0, N1> painter) {
-		Preconditions.checkNotNullWithName(painter, "painter");
+  public void addPainter(int index, Painter<N0, N1> painter) {
 		// Check uniqueness of painters names
 		painters.add(index, painter);
 		setPainterMatrixAndZone(painter);
@@ -790,10 +705,12 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	 * @param index index of the element to replace
 	 * @param painter painter to be stored at the specified position
 	 * @throws IndexOutOfBoundsException if the index is out of range
-     *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+   *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)   *         
+   * @throws IllegalArgumentException if the painter is null
+   * @throws IllegalArgumentException if the painter's name already exists 
+   *         in the collection of painters. 
 	 */
 	public void setPainter(int index, Painter<N0, N1> painter) {
-		Preconditions.checkNotNullWithName(painter, "painter");
 		painters.set(index, painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -803,74 +720,86 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	 * If a painter with the specified name does not exist, 
 	 * then the new painter is added at the end.
 	 * @param painter painter to replace a painter with the same name
-	 * @throws IndexOutOfBoundsException if there is no painter with the same name
-	 * @see #getPainter(String)
+	 * @throws IllegalArgumentException if the painter is null
 	 */
 	public void replacePainter(Painter<N0, N1> painter) {
-		Preconditions.checkNotNull(painter);
 		painters.replacePainter(painter);
 		setPainterMatrixAndZone(painter);
 	}
 	
 	/**
-     * Removes the element at the specified position in the list of painters. 
-     * Shifts any subsequent painters to the left (subtracts one
-     * from their indices). Returns the painter that was removed from the
-     * list.
-     *
-     * @param index the index of the painter to be removed
-	 * @return 
-     * @return the painter previously at the specified position
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
-     */
+   * Removes the element at the specified position in the list of painters. 
+   * Shifts any subsequent painters to the left (subtracts one
+   * from their indices). Returns the painter that was removed from the
+   * list.
+   *
+   * @param index the index of the painter to be removed
+   * @return the painter previously at the specified position
+   * @throws IndexOutOfBoundsException if the index is out of range
+   *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+   */
 	public Painter<N0, N1> removePainter(int index) {
-		Preconditions.checkPositionIndex(index, painters.size());
 		return painters.remove(index);
 	}
 	
+	
 	/**
-     * Returns the index of a painter with the specified name
-     * in the list of the receiver's painters, or -1 
-     * if this list does not contain the element.
-     *
-     * @param name painter name to search for
-     * @return the index of a painter with the specified name
-     */
+   * Removes the first occurrence of the specified element from this list,
+   * if it is present (optional operation). If this list does not contain
+   * the element, it is unchanged.
+   * @param painter element to be removed from this list, if present
+   * @return <tt>true</tt> if this list contained the specified element
+   * @throws ClassCastException if the type of the specified element
+   *         is incompatible with this list (optional)
+   * @throws IllegalArgumentException if the painter is null
+   */
+  public boolean removePainter(Painter painter) {
+    return painters.remove(painter);
+  }
+  
+	/**
+   * Returns the index of a painter with the specified name
+   * in the list of the receiver's painters, or -1 
+   * if this list does not contain the element.
+   *
+   * @param name painter name to search for
+   * @return the index of a painter with the specified name
+   * @throws IllegalArgumentException if the name is null
+   */
 	public int indexOfPainter(String name) {
-		Preconditions.checkNotNullWithName(name, "name");
 		return painters.indexOfPainter(name);
 	}
 	
 	/**
-     * Returns a painter with the specified name, or <code>null</code>
-     * if the painters list does not contain such painter.
-     *
-     * @param name painter name to search for
-     * @return the index of a painter with the specified name
-     */
+   * Returns a painter with the specified name, or <code>null</code>
+   * if the painters list does not contain such painter.
+   *
+   * @param name painter name to search for
+   * @return the index of a painter with the specified name
+   * @throws IllegalArgumentException if the name is null
+   */
 	public Painter<N0, N1> getPainter(String name) {
 		Preconditions.checkNotNullWithName(name, "name");
 		return painters.get(indexOfPainter(name));
 	}
 	
 	/**
-     * Returns the number of the receiver's painters. 
-     *
-     * @return the number of the receiver's painters
-     */
+   * Returns the number of the receiver's painters. 
+   *
+   * @return the number of the receiver's painters
+   */
 	public int getPainterCount() {
 		return painters.size();
 	}
 	
 	/**
-     * Returns the painter at the specified position in the receiver's list of painters.
-     *
-     * @param index index of the painter to return
-     * @return the painter at the specified position in the receiver's list of painters.
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
-     */
+   * Returns the painter at the specified position in the receiver's list of painters.
+   *
+   * @param index index of the painter to return
+   * @return the painter at the specified position in the receiver's list of painters.
+   * @throws IndexOutOfBoundsException if the index is out of range
+   *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+   */
 	public Painter<N0, N1> getPainter(int index) {
 		Preconditions.checkPositionIndex(index, painters.size());
 		return painters.get(index);
@@ -900,7 +829,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		};
 	}
 
-	public void execute(int commandId) {
-		listener.executeCommand(commandId);
-	}
+//	public void execute(int commandId) {
+//		listener.executeCommand(commandId);
+//	}
 }

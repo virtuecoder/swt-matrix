@@ -14,7 +14,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -117,33 +116,10 @@ public class Snippet_0404 {
 				Object value = data.get(index0.intValue())[index1.intValue()];
 				return value instanceof Boolean ? getDefaultCheckBoxImages() : null;
 			}
-			
-			@Override
-			public void setEditorValue(Control control, Object value) {
-				if (control instanceof List) {
-					List list = ((List) control);
-					list.deselectAll();
-					int position = list.indexOf((String) value);
-					if (position != -1) {
-						list.select(position);
-					}
-				} else {
-					super.setEditorValue(control, value);
-				}
-			}
-			
-			@Override
-			public Object getEditorValue(Control control) {
-				if (control instanceof List) {
-					List list = (List) control;
-					int position = list.getSelectionIndex();
-					return position == -1 ? null : list.getItem(position);
-				} else {
-					return super.getEditorValue(control);
-				}
-			}
 		};
+
 		
+		// Paint text from the model in the body
 		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
 			public String getText(Number index0, Number index1) {

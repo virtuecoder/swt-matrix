@@ -164,15 +164,15 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone {
 		return core.getSelectedIterator();
 	}
 
-	@Override
-	public Section getSectionUnchecked0() {
-		return core.getSectionUnchecked0();
-	}
-
-	@Override
-	public Section getSectionUnchecked1() {
-		return core.getSectionUnchecked1();
-	}
+//	@Override
+//	public Section getSectionUnchecked0() {
+//		return core.getSectionUnchecked0();
+//	}
+//
+//	@Override
+//	public Section getSectionUnchecked1() {
+//		return core.getSectionUnchecked1();
+//	}
 
 	public BigInteger getSelectionCount() {
 		return core.getSelectionCount();

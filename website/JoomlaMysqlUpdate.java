@@ -132,7 +132,7 @@ public class JoomlaMysqlUpdate {
 	
 	void appendFeatureRow(StringBuilder sb, String tag, String[] row) {
 		sb.append("<tr>");
-		for (int i = 0; i < row.length; i++) {
+		for (int i = 0; i < 6; i++) {
 			String s = row[i];
 			boolean h = i == 0 && s.startsWith("+");
 			sb.append("<").append(tag);

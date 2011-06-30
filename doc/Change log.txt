@@ -1,0 +1,30 @@
+-------------------------------------------------------------------------------
+Version 0.2.1
+API changes
+- Matrix class:
+  - renamed all editing commands to have the CMD_EDIT_ prefix.
+  - new command CMD_EDIT_APPLY
+- ZoneEditor class:
+  - renamed setEmulationPath(String) to setImagePath(String)
+  - removed snapControlImages(String)
+    
+Bug fixes:
+- Selection event was causing control deactivation in ZoneEditor.
+- Sorting did not work correctly in Snippet_0005.
+
+-------------------------------------------------------------------------------s
+Version 0.2
+New features:
+- Zone editor with support for Text, Combo, DateTime and check Button controls
+- Embedded controls
+- Emulated checkboxes with current system theme
+- Customizeable copy and paste
+
+API changes
+- Painter class:
+  - added getText(N0 index0, N1 index1)
+  - added getImage(N0 index0, N1 index1) 
+  
+Bug fixes:
+- Single column/row selection did not highlight the header
+

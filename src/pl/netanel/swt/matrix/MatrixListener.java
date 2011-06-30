@@ -5,7 +5,7 @@ import static java.lang.Math.max;
 import static pl.netanel.swt.matrix.Matrix.CMD_COPY;
 import static pl.netanel.swt.matrix.Matrix.CMD_CUT;
 import static pl.netanel.swt.matrix.Matrix.CMD_DELETE;
-import static pl.netanel.swt.matrix.Matrix.CMD_EDIT;
+import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_ACTIVATE;
 import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_DOWN;
 import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LEFT;
 import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION;
@@ -22,7 +22,7 @@ import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_RIGHT;
 import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_UP;
 import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_RIGHT;
 import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_HIDE;
+import static pl.netanel.swt.matrix.Matrix.CMD_ITEM_HIDE;
 import static pl.netanel.swt.matrix.Matrix.CMD_PASTE;
 import static pl.netanel.swt.matrix.Matrix.CMD_RESIZE_PACK;
 import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ALL;
@@ -50,7 +50,7 @@ import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION_ALTER;
 import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW;
 import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW_ALTER;
 import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_UNHIDE;
+import static pl.netanel.swt.matrix.Matrix.CMD_ITEM_SHOW;
 import static pl.netanel.swt.matrix.Matrix.isBodySelect;
 import static pl.netanel.swt.matrix.Matrix.isExtendingSelect;
 
@@ -102,7 +102,7 @@ class MatrixListener implements Listener {
 	public MatrixListener(Matrix matrix) {
 		this.matrix = matrix;
 		lastRange = new AxisItem[4]; 
-		body = ((ZoneClient) matrix.getBody()).core;
+		body = matrix.getBody();
 		rowHeader = matrix.model.getZoneUnchecked(matrix.axis0.getBody(), matrix.axis1.getHeader());
 		columnHeader = matrix.model.getZoneUnchecked(matrix.axis0.getHeader(), matrix.axis1.getBody());
 		topLeft = matrix.model.getZoneUnchecked(matrix.axis0.getHeader(), matrix.axis1.getHeader());
@@ -141,7 +141,7 @@ class MatrixListener implements Listener {
 				zone = (Zone) e.data;
 			}
 			else if (state0.item != null && state1.item != null) {
-				zone = matrix.model.getZoneUnchecked(state0.item.getSectionUnchecked(), state1.item.getSectionUnchecked());
+				zone = matrix.model.getZoneUnchecked(state0.item.getSection(), state1.item.getSection());
 			}
 
 			state0.update(e, e.y);
@@ -260,9 +260,9 @@ class MatrixListener implements Listener {
 					if (resizeItem != null) {
 						resizing = true;
 						resizeStartDistance = distance;
-						resizeCellWidth = resizeItem.getSectionUnchecked().getCellWidth(resizeItem.getIndex());
+						resizeCellWidth = resizeItem.getSection().getCellWidth(resizeItem.getIndex());
 					}
-					else if (item.getSectionUnchecked().isSelected(item.getIndex()) && item.getSectionUnchecked().isMoveable(item.getIndex())) {
+					else if (item.getSection().isSelected(item.getIndex()) && item.getSection().isMoveable(item.getIndex())) {
 						// Start moving
 						moving = true;
 						matrix.setCursor(cursor = Resources.getCursor(SWT.CURSOR_HAND));
@@ -279,7 +279,7 @@ class MatrixListener implements Listener {
 						ExtentSequence<N> seq = section.getSelectedExtentResizableSequence();
 						for (seq.init(); seq.next();) {
 							
-							if (item.getSectionUnchecked().equals(section) && 
+							if (item.getSection().equals(section) && 
 									layout.math.compare(seq.start, item.getIndex()) == 0 &&
 									layout.math.compare(seq.end, item.getIndex()) == 0) {
 								continue;
@@ -324,12 +324,12 @@ class MatrixListener implements Listener {
 			if (resizing && resizeItem != null) {
 				newCellWidth = resizeCellWidth + distance - resizeStartDistance;
 				if (newCellWidth < 1) newCellWidth = 1;
-				resizeItem.getSectionUnchecked().setCellWidth(
+				resizeItem.getSection().setCellWidth(
 						resizeItem.getIndex(), resizeItem.getIndex(), newCellWidth);
 				layout.compute();
 				matrix.redraw();
 				resizeEvent = SWT.MouseMove;
-				addEvent(resizeItem.getSectionUnchecked(), SWT.Resize, resizeItem);
+				addEvent(resizeItem.getSection(), SWT.Resize, resizeItem);
 				//event.data = matrix.getZone(axisIndex == 0 ? Zone.ROW_HEADER : Zone.COLUMN_HEADER);
 			}
 			else {
@@ -374,12 +374,12 @@ class MatrixListener implements Listener {
 		}
 		
 		private boolean isSelected(AxisItem item) {
-			return item.getSectionUnchecked().isSelected(item.getIndex());
+			return item.getSection().isSelected(item.getIndex());
 		}
 		
 		public void setSelected(int commandId) {
 			if (last == null || item == null) return;
-			if (last.getSectionUnchecked() != item.getSectionUnchecked()) return;
+			if (last.getSection() != item.getSection()) return;
 			
 			if (commandId == CMD_SELECT_COLUMN || commandId == CMD_SELECT_COLUMN_ALTER ||
 				commandId == CMD_SELECT_ROW || commandId == CMD_SELECT_ROW_ALTER) {
@@ -457,7 +457,7 @@ class MatrixListener implements Listener {
 //					p = display.map(matrix, null, p);
 //					display.setCursorLocation(p);
 //				}
-				addEvent(item.getSectionUnchecked(), SWT.Move, item);
+				addEvent(item.getSection(), SWT.Move, item);
 				axis.scroll();
 				matrix.redraw();
 //				return true;
@@ -468,7 +468,7 @@ class MatrixListener implements Listener {
 			if (resizeItem == null) return;
 			axis.pack(resizeItem);
 			resizeEvent = SWT.MouseDoubleClick;
-			addEvent(resizeItem.getSectionUnchecked(), SWT.Resize, resizeItem);
+			addEvent(resizeItem.getSection(), SWT.Resize, resizeItem);
 			if ((resizeItem = layout.getResizeItem(distance)) == null) {
 				matrix.setCursor(cursor = null);
 			}
@@ -573,10 +573,10 @@ class MatrixListener implements Listener {
 
 		public void refresh() {
 			if (item == null) return;
-			N count = item.getSectionUnchecked().getCount();
+			N count = item.getSection().getCount();
 			if (axis.math.compare(item.getIndex(), count) >= 0) {
 				item = axis.math.compare(count, axis.math.ZERO_VALUE()) == 0 ? null : 
-					AxisItem.create(item.getSectionUnchecked(), axis.math.decrement(count));
+					AxisItem.create(item.getSection(), axis.math.decrement(count));
 			}
 		}
 
@@ -659,8 +659,8 @@ class MatrixListener implements Listener {
 		}
 		
 		// Modification
-		bindKey(Matrix.CMD_HIDE, SWT.MOD3 | SWT.DEL);
-		bindKey(Matrix.CMD_UNHIDE, SWT.MOD3 | SWT.INSERT);
+		bindKey(Matrix.CMD_ITEM_HIDE, SWT.MOD3 | SWT.DEL);
+		bindKey(Matrix.CMD_ITEM_SHOW, SWT.MOD3 | SWT.INSERT);
 	}
 
 	protected void bindKey(int commandId, int condition) {
@@ -676,7 +676,7 @@ class MatrixListener implements Listener {
 		switch (commandId) {
 		case CMD_RESIZE_PACK:		state0.pack(); state1.pack(); break;
 		
-		case CMD_EDIT:				if (zone.editor != null) zone.editor.edit(); return;
+		case CMD_EDIT_ACTIVATE:				if (zone.editor != null) zone.editor.edit(); return;
 		case CMD_CUT:				if (zone.editor != null) zone.editor.cut(); return;
 		case CMD_COPY:				if (zone.editor != null) zone.editor.copy(); return;
 		case CMD_PASTE:				if (zone.editor != null) zone.editor.paste(); return;
@@ -692,10 +692,10 @@ class MatrixListener implements Listener {
 //			matrix.selectFocusCell();
 		}
 		if (commandId == CMD_SELECT_TO_LOCATION || commandId == CMD_SELECT_TO_LOCATION_ALTER) {
-			if (state0.last.getSectionUnchecked().equals(state0.axis.getHeader())) {
+			if (state0.last.getSection().equals(state0.axis.getHeader())) {
 				commandId = commandId == CMD_SELECT_TO_LOCATION ? CMD_SELECT_TO_COLUMN : CMD_SELECT_TO_COLUMN_ALTER;
 			}
-			else if (state1.last.getSectionUnchecked().equals(state1.axis.getHeader())) {
+			else if (state1.last.getSection().equals(state1.axis.getHeader())) {
 				commandId = commandId == CMD_SELECT_TO_LOCATION ? CMD_SELECT_TO_ROW : CMD_SELECT_TO_ROW_ALTER;
 			}
 		}
@@ -711,8 +711,8 @@ class MatrixListener implements Listener {
 		case CMD_SELECT_TO_COLUMN:	case CMD_SELECT_TO_COLUMN_ALTER:	state1.setSelected(commandId); break;
 			
 		// Hiding
-		case CMD_HIDE:				state0.hide(true);  state1.hide(true);  break; 
-		case CMD_UNHIDE:			state0.hide(false); state1.hide(false); break;
+		case CMD_ITEM_HIDE:				state0.hide(true);  state1.hide(true);  break; 
+		case CMD_ITEM_SHOW:			state0.hide(false); state1.hide(false); break;
 		case CMD_RESIZE_PACK:		state0.pack(); break;
 		}
 
@@ -778,7 +778,7 @@ class MatrixListener implements Listener {
 		{
 			// Backup the zones cell selection
 			for (Zone<? extends Number, ? extends Number> zone: matrix.model.zones) {
-				if (zone.selectionEnabled) {
+				if (zone.isSelectionEnabled()) {
 					zone.backupSelection();
 				}
 			}
@@ -787,7 +787,7 @@ class MatrixListener implements Listener {
 				 commandId == CMD_SELECT_TO_COLUMN_ALTER || commandId == CMD_SELECT_TO_ROW_ALTER) 
 		{
 			for (Zone zone: matrix.model.zones) {
-				if (zone.selectionEnabled) {
+				if (zone.isSelectionEnabled()) {
 					zone.restoreSelection();
 				}
 			}
@@ -813,7 +813,7 @@ class MatrixListener implements Listener {
 	}
 	
 	private boolean isSelected(AxisItem last0, AxisItem last1) {
-		return matrix.model.getZoneUnchecked(last0.getSectionUnchecked(), last1.getSectionUnchecked()).
+		return matrix.model.getZoneUnchecked(last0.getSection(), last1.getSection()).
 			isSelected(last0.getIndex(), last1.getIndex());
 	}
 
@@ -822,7 +822,7 @@ class MatrixListener implements Listener {
 		state0.sendEvents();
 		state1.sendEvents();
 		for (Zone zone: matrix.model.zones) {
-			zone.listeners.sendEvents();
+			zone.sendEvents();
 		}
 	}
 	

@@ -48,9 +48,9 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	CellSet lastSelection; // For adding selection
 	ZoneEditor<N0, N1> editor;
 	
-	final Listeners listeners;
+	private final Listeners listeners;
 	private final ArrayList<GestureBinding> bindings;
-	boolean selectionEnabled;
+	private boolean selectionEnabled;
 	
 	private Matrix<N0, N1> matrix;
 	private Color selectionBackground, selectionForeground;
@@ -105,59 +105,24 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	public String toString() {
 		return section0.toString() + " " + section1.toString();
 	}
+
 	
 	/**
-	 * Returns the row axis section that is unchecked.
-	 * <p>
-	 * Unchecked section skips argument validation checking in getters 
-	 * to improve performance. 
-	 * 
-	 * @return the row axis section that is unchecked
-	 * 
-	 * @see #getSection0()
-	 */
-	public Section getSectionUnchecked0() {
-		return section0;
-	}
-	/**
-	 * Returns the column axis section that is unchecked.
-	 * <p>
-	 * Unchecked section skips argument validation checking in getters 
-	 * to improve performance. 
-	 * 
-	 * @return the column axis section that is unchecked
-	 * 
-	 * @see #getSection1()
-	 */
-	public Section getSectionUnchecked1() {
-		return section1;
-	}
-
-	/**
-	 * Returns the row axis section that is checked.
-	 * <p>
-	 * A checked section delegates calls to an unchecked section proceeding it with an
-	 * argument validation checking.
-	 * 
-	 * @return the row axis section that is unchecked
+	 * Returns the zone section at row axis.
+	 * @return the zone section at row axis
 	 * 
 	 * @see #getSectionUnchecked0()
 	 */
 	public Section getSection0() {
-		return matrix.axis0.sections.get(section0.index);
+	  return section0;
 	}
+	
 	/**
-	 * Returns the column axis section that is checked.
-	 * <p>
-	 * A checked section delegates calls to an unchecked section proceeding it with an
-	 * argument validation checking.
-	 * 
-	 * @return the column axis section that is unchecked
-	 * 
-	 * @see #getSectionUnchecked1()
+	 * Returns the zone section column axis.
+	 * @return the zone section column axis
 	 */
 	public Section getSection1() {
-		return matrix.axis1.sections.get(section1.index);
+	  return section1;
 	}
 
 	
@@ -612,8 +577,8 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	
 	void bind(GestureBinding binding) {
 		if (editor != null && (
-				binding.commandId == Matrix.CMD_APPLY_EDIT || 
-				binding.commandId == Matrix.CMD_CANCEL_EDIT )) {
+				binding.commandId == Matrix.CMD_EDIT_DEACTIVATE_APPLY || 
+				binding.commandId == Matrix.CMD_EDIT_DEACTIVATE_CANCEL )) {
 			editor.controlListener.bindings.add(binding);
 		} else {
 			bindings.add(binding);
@@ -627,8 +592,8 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 */
 	public void unbind(int commandId, int eventType, int code) {
 		if (editor != null && (
-				commandId == Matrix.CMD_APPLY_EDIT || 
-				commandId == Matrix.CMD_CANCEL_EDIT )) {
+				commandId == Matrix.CMD_EDIT_DEACTIVATE_APPLY || 
+				commandId == Matrix.CMD_EDIT_DEACTIVATE_CANCEL )) {
 			editor.controlListener.unbind(commandId, eventType, code);
 		}
 		else {
@@ -738,9 +703,9 @@ public class Zone<N0 extends Number, N1 extends Number> {
 				AxisItem<N0> item0 = matrix.getAxis0().getItemByDistance(e.y);
 				AxisItem<N1> item1 = matrix.getAxis1().getItemByDistance(e.x);
 				if (item0 != null && item1 != null && Zone.this == 
-						matrix.getZoneUnchecked(
-								item0.getSectionUnchecked(), 
-								item1.getSectionUnchecked())) 
+						matrix.getZone(
+								item0.getSection(), 
+								item1.getSection())) 
 				{
 					listener.handleEvent(e);
 				}
@@ -857,13 +822,11 @@ public class Zone<N0 extends Number, N1 extends Number> {
 			});
 		}
 	}
-	
 	/**
 	 * Adds the painter at the end of the receiver's painters list.
 	 * @param painter the painter to be added
 	 */
 	public void addPainter(Painter<N0, N1> painter) {
-		Preconditions.checkNotNullWithName(painter, "painter");
 		painters.add(painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -873,10 +836,12 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 * @param index at which the specified painter is to be inserted
 	 * @param painter painter to be inserted
 	 * @throws IndexOutOfBoundsException if the index is out of range
-     *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+   *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+   * @throws IllegalArgumentException if the painter is null
+   * @throws IllegalArgumentException if the painter's name already exists 
+   *         in the collection of painters. 
 	 */
-	public void addPainter(int index, Painter<N0, N1> painter) {
-		Preconditions.checkNotNullWithName(painter, "painter");
+  public void addPainter(int index, Painter<N0, N1> painter) {
 		// Check uniqueness of painters names
 		painters.add(index, painter);
 		setPainterMatrixAndZone(painter);
@@ -887,10 +852,12 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 * @param index index of the element to replace
 	 * @param painter painter to be stored at the specified position
 	 * @throws IndexOutOfBoundsException if the index is out of range
-     *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+   *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)   *         
+   * @throws IllegalArgumentException if the painter is null
+   * @throws IllegalArgumentException if the painter's name already exists 
+   *         in the collection of painters. 
 	 */
 	public void setPainter(int index, Painter<N0, N1> painter) {
-		Preconditions.checkNotNullWithName(painter, "painter");
 		painters.set(index, painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -900,79 +867,90 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 * If a painter with the specified name does not exist, 
 	 * then the new painter is added at the end.
 	 * @param painter painter to replace a painter with the same name
-	 * @throws IndexOutOfBoundsException if there is no painter with the same name
-	 * @see #getPainter(String)
+	 * @throws IllegalArgumentException if the painter is null
 	 */
 	public void replacePainter(Painter<N0, N1> painter) {
-		Preconditions.checkNotNull(painter);
 		painters.replacePainter(painter);
 		setPainterMatrixAndZone(painter);
 	}
 	
 	/**
-     * Removes the element at the specified position in the list of painters. 
-     * Shifts any subsequent painters to the left (subtracts one
-     * from their indices). Returns the painter that was removed from the
-     * list.
-     *
-     * @param index the index of the painter to be removed
-	 * @return 
-     * @return the painter previously at the specified position
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
-     */
+   * Removes the element at the specified position in the list of painters. 
+   * Shifts any subsequent painters to the left (subtracts one
+   * from their indices). Returns the painter that was removed from the
+   * list.
+   *
+   * @param index the index of the painter to be removed
+   * @return the painter previously at the specified position
+   * @throws IndexOutOfBoundsException if the index is out of range
+   *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+   */
 	public Painter<N0, N1> removePainter(int index) {
-		Preconditions.checkPositionIndex(index, painters.size());
 		return painters.remove(index);
 	}
 	
+	
 	/**
-     * Returns the index of a painter with the specified name
-     * in the list of the receiver's painters, or -1 
-     * if this list does not contain the element.
-     *
-     * @param name painter name to search for
-     * @return the index of a painter with the specified name
-     */
+   * Removes the first occurrence of the specified element from this list,
+   * if it is present (optional operation). If this list does not contain
+   * the element, it is unchanged.
+   * @param painter element to be removed from this list, if present
+   * @return <tt>true</tt> if this list contained the specified element
+   * @throws ClassCastException if the type of the specified element
+   *         is incompatible with this list (optional)
+   * @throws IllegalArgumentException if the painter is null
+   */
+  public boolean removePainter(Painter painter) {
+    return painters.remove(painter);
+  }
+  
+	/**
+   * Returns the index of a painter with the specified name
+   * in the list of the receiver's painters, or -1 
+   * if this list does not contain the element.
+   *
+   * @param name painter name to search for
+   * @return the index of a painter with the specified name
+   * @throws IllegalArgumentException if the name is null
+   */
 	public int indexOfPainter(String name) {
-		Preconditions.checkNotNullWithName(name, "name");
 		return painters.indexOfPainter(name);
 	}
 	
 	/**
-     * Returns a painter with the specified name, or <code>null</code>
-     * if the painters list does not contain such painter.
-     *
-     * @param name painter name to search for
-     * @return the index of a painter with the specified name
-     */
+   * Returns a painter with the specified name, or <code>null</code>
+   * if the painters list does not contain such painter.
+   *
+   * @param name painter name to search for
+   * @return the index of a painter with the specified name
+   * @throws IllegalArgumentException if the name is null
+   */
 	public Painter<N0, N1> getPainter(String name) {
 		Preconditions.checkNotNullWithName(name, "name");
 		return painters.get(indexOfPainter(name));
 	}
 	
 	/**
-     * Returns the number of the receiver's painters. 
-     *
-     * @return the number of the receiver's painters
-     */
+   * Returns the number of the receiver's painters. 
+   *
+   * @return the number of the receiver's painters
+   */
 	public int getPainterCount() {
 		return painters.size();
 	}
 	
 	/**
-     * Returns the painter at the specified position in the receiver's list of painters.
-     *
-     * @param index index of the painter to return
-     * @return the painter at the specified position in the receiver's list of painters.
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
-     */
+   * Returns the painter at the specified position in the receiver's list of painters.
+   *
+   * @param index index of the painter to return
+   * @return the painter at the specified position in the receiver's list of painters.
+   * @throws IndexOutOfBoundsException if the index is out of range
+   *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+   */
 	public Painter<N0, N1> getPainter(int index) {
 		Preconditions.checkPositionIndex(index, painters.size());
 		return painters.get(index);
 	}
-
 	private void setPainterMatrixAndZone(Painter painter) {
 		if (painter.scope == Painter.SCOPE_CELLS_HORIZONTALLY ||
 				painter.scope == Painter.SCOPE_CELLS_VERTICALLY) 
@@ -1052,5 +1030,16 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	void setEditor(ZoneEditor editor) {
 		this.editor = editor;
 	}
+
+  void sendEvents() {
+    listeners.sendEvents();
+  }
+
+  void addSelectionEvent() {
+    Event event = new Event();
+    event.type = SWT.Selection;
+    event.widget = matrix;
+    listeners.add(event);
+  }
 
 }

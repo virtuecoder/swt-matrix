@@ -55,8 +55,8 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 				needsPainting = true;
 			}
 		};
-		editor.zone.getSectionUnchecked0().addControlListener(controlListener);
-		editor.zone.getSectionUnchecked1().addControlListener(controlListener);
+		editor.zone.getSection0().addControlListener(controlListener);
+		editor.zone.getSection1().addControlListener(controlListener);
 	}
 	
 	

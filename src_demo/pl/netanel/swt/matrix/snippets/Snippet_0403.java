@@ -17,7 +17,10 @@ import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.ZoneEditor;
 
 /**
- * Emulated check buttons.
+ * Check buttons emulated by images.
+ */
+/*
+ * Note: The checked.png and unchecked.png images must be on the class path.
  */
 public class Snippet_0403 {
 
@@ -31,9 +34,6 @@ public class Snippet_0403 {
 		data.add(new Object[] {"a", true, new Date()});
 		data.add(new Object[] {true, false, "Monday"});
 		data.add(new Object[] {new Date(), "Sunday", "b"});
-//		for (int i = 0; i < 100; i++) {
-//			data.add(new Object[] {i % 3 == 0 ? true : null, null, null});
-//		}J
 		
 		// Matrix
 		final Matrix matrix = new Matrix(shell, SWT.NONE);

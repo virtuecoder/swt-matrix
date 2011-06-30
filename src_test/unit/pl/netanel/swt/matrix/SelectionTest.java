@@ -60,9 +60,12 @@ public class SelectionTest {
 		
 		e = new Event();
 		e.type = SWT.MouseDown;
+//		e.x = r.x + 1;
+//    e.y = r.y + 1;
+    e.button = 1;
 		e.stateMask = SWT.MOD1;
 		matrix.listener.handleEvent(e);
 		
-		assertEquals(2, matrix.getBody().getSelectedCount());
+		assertEquals(2, matrix.getBody().getSelectedCount().intValue());
 	}
 }

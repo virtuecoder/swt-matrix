@@ -64,14 +64,13 @@ public class Snippet_0410 {
 			}
 		});
 		
-		new ZoneEditor(matrix.getBody()) {
+		final ZoneEditor zoneEditor = new ZoneEditor(matrix.getBody()) {
 			@Override
 			protected Control createControl(Number index0, Number index1, Composite parent) {
 				return null;
 			}
 			
-			@Override
-			protected void copy() {
+			@Override public void copy() {
 				StringBuilder sb = new StringBuilder();
 				Zone<Integer, Integer> body = matrix.getBody();
 				Number[] n = body.getSelectedExtent();
@@ -94,8 +93,7 @@ public class Snippet_0410 {
 				matrix.setFocus();
 			}
 			
-			@Override
-			protected void paste() {
+			@Override public void paste() {
 				Clipboard clipboard = new Clipboard(display);
 				Object contents = clipboard.getContents(TextTransfer.getInstance());
 				clipboard.dispose();
@@ -130,7 +128,7 @@ public class Snippet_0410 {
 		copy.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				matrix.execute(Matrix.CMD_COPY);
+				zoneEditor.copy();
 			}
 		});
 		
@@ -139,7 +137,7 @@ public class Snippet_0410 {
 		paste.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				matrix.execute(Matrix.CMD_PASTE);
+			  zoneEditor.paste();
 			}
 		});
 		

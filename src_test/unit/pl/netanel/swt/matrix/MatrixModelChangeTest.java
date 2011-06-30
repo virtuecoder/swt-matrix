@@ -16,6 +16,5 @@ public class MatrixModelChangeTest {
 		Section section = axis.getBody();
 		section.insert(0, 1);
 		section.insert(0, 1);
-		
 	}
 }

@@ -26,17 +26,17 @@ class AxisExtentSequence<N extends Number> {
 			AxisItem.create(section2, math.decrement(section2.getCount())));
 	}
 	void init(AxisItem startItem, AxisItem endItem) {
-		this.startItemIndex = sections.indexOf(startItem.getSectionUnchecked());
-		this.endItemIndex = sections.indexOf(endItem.getSectionUnchecked());
+		this.startItemIndex = sections.indexOf(startItem.getSection());
+		this.endItemIndex = sections.indexOf(endItem.getSection());
 		Section sl;
-		sl = startItem.getSectionUnchecked();
+		sl = startItem.getSection();
 		istart = sl.order.items.isEmpty() ? 0 : sl.order
 				.getExtentIndex(startItem.getIndex());
-		sl = endItem.getSectionUnchecked();
+		sl = endItem.getSection();
 		iend = sl.order.items.isEmpty() ? 0 : sl.order
 				.getExtentIndex(endItem.getIndex());
 
-		Section section = startItem.getSectionUnchecked();
+		Section section = startItem.getSection();
 		sectionIndex = sections.indexOf(section);
 		items = section.order.items;
 		i = istart;

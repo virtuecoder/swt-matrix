@@ -190,36 +190,17 @@ public class Axis<N extends Number>  {
 	}
 	
 	/**
-	 * Returns the checked section at the specified position in this axis.
-	 * <p>
-	 * A checked section delegates calls to an unchecked section proceeding it with an
-	 * argument validation checking.
+	 * Returns the section at the specified position in this axis.
 	 * 
 	 * @param sectionIndex index of the section to return
 	 * @return the section at the specified position in this axis
 	 * @throws IndexOutOfBoundsException if sectionIndex 
 	 * 		is out of 0 ... {@link #getSectionCount()}-1 bounds
 	 * 
-	 * @see #getSectionUnchecked(int)
 	 */
 	public Section<N> getSection(int sectionIndex) {
-		Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
-		return clientSections.get(sectionIndex);
-	}
-	
-	/**
-	 * Returns the unchecked section at the specified position in this axis.
-	 * <p>
-	 * Unchecked section skips argument validation checking in getters 
-	 * to improve performance. 
-	 * 
-	 * @param sectionIndex index of the section to return
-	 * @return the section at the specified position in this axis
-	 * 
-	 * @see #getSection(int)
-	 */
-	public Section<N> getSectionUnchecked(int sectionIndex) {
-		return sections.get(sectionIndex);
+	  Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
+	  return sections.get(sectionIndex);
 	}
 	
 	
@@ -256,7 +237,7 @@ public class Axis<N extends Number>  {
 	 */
 	public int getViewportPosition(AxisItem<N> item) {
 		Preconditions.checkNotNullWithName(item, "item");
-		Section<N> section = item.getSectionUnchecked();
+		Section<N> section = item.getSection();
 		section = checkSection(section);
 		section.checkIndex(item.getIndex(), section.getCount(), "item index");
 		
@@ -456,7 +437,7 @@ public class Axis<N extends Number>  {
 		try {
 			int w = 0;
 			for (Zone<? extends Number, ? extends Number> zone: matrix.model.zones) {
-				if (this.index == 0 && zone.section0.equals(item.getSectionUnchecked())) {
+				if (this.index == 0 && zone.section0.equals(item.getSection())) {
 					CellSet set = new CellSet(zone.section0.math, zone.section1.math);
 					set.add(item.getIndex(), item.getIndex(),
 						zone.section1.math.ZERO_VALUE(), 
@@ -469,7 +450,7 @@ public class Axis<N extends Number>  {
 						}
 					}
 				}
-				else if (this.index == 1 && zone.section1.equals(item.getSectionUnchecked())) {
+				else if (this.index == 1 && zone.section1.equals(item.getSection())) {
 					CellSet set = new CellSet(zone.section0.math, zone.section1.math);
 					set.add(zone.section0.math.ZERO_VALUE(), 
 							zone.section0.math.decrement(zone.section0.getCount()), 
@@ -484,7 +465,7 @@ public class Axis<N extends Number>  {
 				}
 			}
 			
-			if (w != 0) item.getSectionUnchecked().setCellWidth(item.getIndex(), w);
+			if (w != 0) item.getSection().setCellWidth(item.getIndex(), w);
 		} 
 		finally {
 			gc.dispose();
@@ -582,10 +563,10 @@ public class Axis<N extends Number>  {
 			AxisItem tmp = start; start = end; end = tmp;
 		}
 		
-		for (int i = start.getSectionUnchecked().index; i <= end.getSectionUnchecked().index; i++) {
+		for (int i = start.getSection().index; i <= end.getSection().index; i++) {
 			Section section = sections.get(i);
-			Number startIndex = i == start.getSectionUnchecked().index ? start.getIndex() : math.ZERO_VALUE();
-			Number endIndex = i == end.getSectionUnchecked().index ? end.getIndex() : 
+			Number startIndex = i == start.getSection().index ? start.getIndex() : math.ZERO_VALUE();
+			Number endIndex = i == end.getSection().index ? end.getIndex() : 
 				math.increment(section.getCount());
 			section.setSelected(startIndex, endIndex, select);
 			
@@ -627,11 +608,11 @@ public class Axis<N extends Number>  {
 	}
 
 	int comparePosition(AxisItem<N> item1, AxisItem<N> item2) {
-		int diff = item1.getSectionUnchecked().index - item2.getSectionUnchecked().index;
+		int diff = item1.getSection().index - item2.getSection().index;
 		if (diff != 0) return diff; 
 		return math.compare(
-				item1.getSectionUnchecked().indexOf(item1.getIndex()), 
-				item2.getSectionUnchecked().indexOf(item2.getIndex()));
+				item1.getSection().indexOf(item1.getIndex()), 
+				item2.getSection().indexOf(item2.getIndex()));
 	}
 	
 	/**
@@ -662,16 +643,16 @@ public class Axis<N extends Number>  {
 		void init(AxisItem<N> startItem, AxisItem<N> endItem) {
 			this.startItem = startItem;
 			this.endItem = endItem;
-			istart = startItem.getSectionUnchecked().order.items.isEmpty() ? 0 : 
-				startItem.getSectionUnchecked().order.getExtentIndex(startItem.getIndex());
-			iend = endItem.getSectionUnchecked().order.items.isEmpty() ? 0 : 
-				endItem.getSectionUnchecked().order.getExtentIndex(endItem.getIndex());
+			istart = startItem.getSection().order.items.isEmpty() ? 0 : 
+				startItem.getSection().order.getExtentIndex(startItem.getIndex());
+			iend = endItem.getSection().order.items.isEmpty() ? 0 : 
+				endItem.getSection().order.getExtentIndex(endItem.getIndex());
 			startItemIndex = math.create(startItem.getIndex());
 			endItemIndex = math.create(endItem.getIndex());
 			
-			section = startItem.getSectionUnchecked();
+			section = startItem.getSection();
 			sectionIndex = section.index; 
-			lastSectionIndex = sections.indexOf(endItem.getSectionUnchecked()); 
+			lastSectionIndex = sections.indexOf(endItem.getSection()); 
 			items = sections.get(sectionIndex).order.items;
 			i = istart;
 		}
@@ -685,9 +666,9 @@ public class Axis<N extends Number>  {
 				i = 0;
 			}
 			Extent e = items.get(i);	
-			start = section == startItem.getSectionUnchecked() && i == istart ? 
+			start = section == startItem.getSection() && i == istart ? 
 					startItemIndex : e.start;
-			end = section == endItem.getSectionUnchecked() && i == iend ? 
+			end = section == endItem.getSection() && i == iend ? 
 					endItemIndex : e.end;
 			if (i >= iend && math.compare(end, endItemIndex) == 0) {
 				i = items.size();
@@ -729,7 +710,7 @@ public class Axis<N extends Number>  {
 
 	void deleteInZones(Section section, N start, N end) {
 		matrix.model.deleteInZones(index, section, start, end);
-		if (layout.current.getSectionUnchecked().equals(section) && 
+		if (layout.current.getSection().equals(section) && 
 				layout.math.contains(start, end, layout.current.getIndex())) {
 			layout.ensureCurrentIsValid();
 		}
