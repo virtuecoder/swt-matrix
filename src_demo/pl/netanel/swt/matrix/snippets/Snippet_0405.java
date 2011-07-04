@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
@@ -59,15 +58,10 @@ public class Snippet_0405 {
 			}
 			
 			@Override
-			public Control createControl(Number index0, Number index1, Composite parent) {
-			  if (index1.intValue() == 1) {
-			    List list = new List(matrix, SWT.BORDER);
-			    list.setItems(new String[] {"a", "b", "c"});
-			    return list;
-			  }
-			  else {
-			    return super.createControl(index0, index1, parent);
-			  }
+			public Control createControl(Number index0, Number index1) {
+		    List list = new List(matrix, SWT.BORDER);
+		    list.setItems(new String[] {"a", "b", "c"});
+		    return list;
 			}
 			
 			@Override

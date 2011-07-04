@@ -1,10 +1,14 @@
-
 From nebula forum
 - different colors for the fore- and background of cells. If i select one colored cell, the selection "overwrites" the color setting, so that every selected cell looks the same. Is there a way to change the color of selected cells, so that i can still see the differences?
 - I wanted to support the MS Excel features in my RCP app. Features like 'Auto Filter'.
 - Nebula CompositeTable, flexible row layout
 
 To do:
+- Replace refresh() with layout() and redraw()
+- various matrix layouts?
+- traverse cells with tab
+- emulate combo
+- snippet hide control instead of dispose
 - sample on different editor in for edit then display
 - asynchronous mode in GestureBinding for command processing, cancel.
 - readme.txt for snippets and individual snippet files comment about images

@@ -143,7 +143,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 
 	TextClipMethod textClipMethod;
 	Zone zone;
-	private Matrix matrix;
+	private Matrix<N0, N1> matrix;
 
 	private Color lastForeground, lastBackground, defaultBackground, defaultForeground,  
 		 selectionBackground, selectionForeground;
@@ -201,15 +201,17 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		return init();
 	};
 
-	/** 
-	 * Allows graphic optimization by performing operation that can be taken out of the cell painting loop.
-	 * <p>
-	 * If this method returns false the {@link #paint(Number, Number, int, int, int, int)} 
-	 * and {@link #clean()} methods will not be executed.
-	 * 
-	 * @return true if the initialization succeeded or false otherwise.
-	 * @see <code>clean()</code>
-	 */
+	  /**
+   * Allows graphic optimization by performing operation that can be taken out
+   * of the cell painting loop.
+   * <p>
+   * If this method returns false the
+   * {@link #paint(Number, Number, int, int, int, int)} and {@link #clean()}
+   * methods will not be executed.
+   * 
+   * @return true if the initialization succeeded or false otherwise.
+   * @see <code>clean()</code>
+   */
 	protected boolean init() {
 		if (scope < SCOPE_CELLS_HORIZONTALLY) return true;
 		lastForeground = defaultForeground = zone.getDefaultForeground();
@@ -225,13 +227,25 @@ public class Painter<N0 extends Number, N1 extends Number> {
 //		foregroundEnabled = zone.isForegroundEnabled();
 		
 		// Body must be checked otherwise a header of a single item selected would not be highlighted 
-		shouldHighlight = !zone.equals(getMatrix().getBody()) || 
-			zone.getSelectionCount().compareTo(BigInteger.ONE) != 0;
+		BigInteger selectionCount = BigInteger.ZERO;
+		for (Zone zone: matrix) {
+		  selectionCount = selectionCount.add(zone.getSelectedCount());
+		}
+		
+		shouldHighlight = 
+		  !zone.section0.isFocusItemEnabled() ||
+		  !zone.section1.isFocusItemEnabled() ||
+		  selectionCount.compareTo(BigInteger.ONE) > 0;
+		  
+//		shouldHighlight = zone.isSingleCellSelectionHighlight() || 
+//		  zone.getSelectionCount().compareTo(BigInteger.ONE) != 0;
+		
 		
 		extentCache = FontWidthCache.get(gc, gc.getFont());
 		extent = new Point(-1, gc.stringExtent("ty").y);
 		return true; 
 	}
+	
 
 	/**
 	 * Restores the default {@link GC} settings modified by modified by in {@link #init()} 

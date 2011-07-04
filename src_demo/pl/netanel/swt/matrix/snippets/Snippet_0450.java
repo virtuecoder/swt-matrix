@@ -11,12 +11,13 @@ import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
+import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.ZoneEditor;
 
 /**
- * Simplest zone editor.
+ * Activate editor with single click instead of double click.
  */
-public class Snippet_0401 {
+public class Snippet_0450 {
 
 	public static void main(String[] args) throws IOException {
 		Display display = Display.getDefault();
@@ -35,8 +36,10 @@ public class Snippet_0401 {
 		matrix.getAxis0().getBody().setCount(data.size());
 		matrix.getAxis1().getBody().setCount(3);
 
+		Zone body = matrix.getBody();
+		
 		// Data painter
-		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+    body.replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
 			public String getText(Number index0, Number index1) {
 				Object value = data.get(index0.intValue())[index1.intValue()];
@@ -45,12 +48,15 @@ public class Snippet_0401 {
 		});
 		
 		// Body editor
-		new ZoneEditor(matrix.getBody()) {
+		new ZoneEditor(body) {
 			@Override
 			public void setModelValue(Number index0, Number index1, Object value) {
 				data.get(index0.intValue())[index1.intValue()] = value;
 			}
 		};
+		
+		body.unbind(Matrix.CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1);
+		body.bind(Matrix.CMD_EDIT_ACTIVATE, SWT.MouseDown, 1);
 		
 		shell.setBounds(400, 200, 400, 300);
 		shell.open();

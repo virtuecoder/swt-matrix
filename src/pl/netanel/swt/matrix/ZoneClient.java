@@ -43,7 +43,7 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone {
 		return core.section1;
 	}
 
-	void setDefaultBodyStyle() {
+	public void setDefaultBodyStyle() {
 		core.setDefaultBodyStyle();
 	}
 

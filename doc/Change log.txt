@@ -1,5 +1,9 @@
 -------------------------------------------------------------------------------
 Version 0.2.1
+New featues:
+- Ability to activate an editor control by typing printable characters
+- Snippet for in-place addidng a new row
+
 API changes
 - Matrix class:
   - renamed all editing commands to have the CMD_EDIT_ prefix.
@@ -14,6 +18,8 @@ API changes
 Bug fixes:
 - Selection event was causing control deactivation in ZoneEditor.
 - Sorting did not work correctly in Snippet_0005.
+- Resizing of embedded controls did layout incorrectly.
+- Combo item was not getting selected after editor activation.
 
 -------------------------------------------------------------------------------s
 Version 0.2

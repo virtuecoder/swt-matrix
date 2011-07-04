@@ -11,7 +11,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -66,7 +65,7 @@ public class Snippet_0490 {
 		
 		final ZoneEditor zoneEditor = new ZoneEditor(matrix.getBody()) {
 			@Override
-			protected Control createControl(Number index0, Number index1, Composite parent) {
+			protected Control createControl(Number index0, Number index1) {
 				return null;
 			}
 			

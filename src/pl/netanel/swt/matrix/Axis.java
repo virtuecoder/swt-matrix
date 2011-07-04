@@ -327,7 +327,7 @@ public class Axis<N extends Number>  {
 		section = checkSection(section);
 		section.checkIndex(index, section.getCount(), "index");
 		
-		layout.setCurrentItem(AxisItem.create(section, index));
+		layout.setFocusItem(AxisItem.create(section, index));
 		if (matrix != null) matrix.redraw();
 	}
 

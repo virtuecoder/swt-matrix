@@ -58,12 +58,12 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	
 	private CellValues<N0, N1, Color> background, foreground;
 	
-	
 //	private CellValues<N0, N1, String> text;
 //	private CellValues<N0, N1, Image> image;
 //	private boolean backgroundEnabled, foregroundEnabled;
 	
-	/**
+
+  /**
 	 * Constructs zone at intersection of the specified sections.
 	 * 
 	 * @param section0 section of the row axis
@@ -96,13 +96,13 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	}
 	
 	
-	public boolean equals(Object obj) {
+	@Override public boolean equals(Object obj) {
 		if (obj instanceof ZoneClient) obj = ((ZoneClient) obj).core;
 		return super.equals(obj);
 	}
 	
 	
-	public String toString() {
+	@Override public String toString() {
 		return section0.toString() + " " + section1.toString();
 	}
 
@@ -126,19 +126,20 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	}
 
 	
-	void setDefaultBodyStyle() {
+void setDefaultBodyStyle() {
+	  setDefaultBackground(matrix.getBackground());
+	  
 		Painter painter = new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
-			
-			public String getText(Number index0, Number index1) {
+			@Override public String getText(Number index0, Number index1) {
 				return index0.toString() + ", " + index1.toString();
 			}
 		};
 		painter.setMatrix(matrix);
 		painter.zone = this;
-		addPainter(painter);
+		replacePainter(painter);
 		Color color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
-		addPainter(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color ));
-		addPainter(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
+		replacePainter(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color ));
+		replacePainter(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
 	}
 	
 	void setDefaultHeaderStyle(Painter cellsPainte) {
@@ -970,7 +971,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 		}
 		
 		
-		public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+		@Override public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 			gc.setBackground(color);
 			gc.fillRectangle(x, y, width, height);
 		}

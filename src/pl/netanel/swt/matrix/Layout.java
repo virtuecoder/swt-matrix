@@ -219,18 +219,12 @@ class Layout<N extends Number> {
 	 * Navigation 
 	 */
 
-	public void setCurrentItem(AxisItem item) {
-		if (!item.getSection().isFocusItemEnabled()) {
-			current = null;
-		} 
-		else {
-			if (isComputingRequired) compute();
-			
-			if (forwardNavigator.set(item))  		current = forwardNavigator.getItem();
-			else if (backwardNavigator.set(item))   current = backwardNavigator.getItem();
-			else 									current = null;
-			
-		}
+	public void setFocusItem(AxisItem item) {
+		if (isComputingRequired) compute();
+		
+		     if (forwardNavigator.set(item))    current = forwardNavigator.getItem();
+		else if (backwardNavigator.set(item))   current = backwardNavigator.getItem();
+		else 									                  current = null;
 	}
 	
 	/**
@@ -240,7 +234,7 @@ class Layout<N extends Number> {
 	 */
 	// TODO Performance: prevent computation if current does not change
 	public boolean moveFocusItem(Move move) {
-   		AxisItem current2 = null;
+  	AxisItem current2 = null;
 		switch (move) {
 		case HOME: 				current2 = forwardNavigator.first(); break;
 		case END: 				current2 = backwardNavigator.first(); break;

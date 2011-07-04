@@ -21,7 +21,7 @@ import pl.netanel.swt.matrix.ZoneEditor.ZoneEditorData;
  */
 class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Painter<N0, N1> {
 	private final ZoneEditor editor;
-	private HashMap<Number, HashMap<Number, Control>> controls;
+	HashMap<Number, HashMap<Number, Control>> controls;
 	boolean needsPainting;
 	private Listener focusInListener;
 	private ControlListener controlListener;
@@ -29,7 +29,7 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 	private Rectangle bounds;
 
 	public EmbeddedControlsPainter(final ZoneEditor<N0, N1> editor) {
-		super("editor controls", Painter.SCOPE_CELLS_HORIZONTALLY);
+		super("embedded controls", Painter.SCOPE_CELLS_HORIZONTALLY);
 		this.editor = editor;
 		controls = new HashMap<Number, HashMap<Number, Control>>();
 		
@@ -65,14 +65,19 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 	@Override
 	protected boolean init() {
 		if (!needsPainting) return false;
-		for (Entry<Number, HashMap<Number, Control>> entry: controls.entrySet()) {
+		clearControls();
+		return true;
+	}
+
+
+  void clearControls() {
+    for (Entry<Number, HashMap<Number, Control>> entry: controls.entrySet()) {
 			for (Control control: entry.getValue().values()) {
 				control.dispose();
 			}
 		}	
 		controls.clear();
-		return true;
-	}
+  }
 	
 	@Override
 	public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
@@ -92,7 +97,7 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 	@Override
 	public void clean() {
 		if (needsPainting) {
-			getMatrix().setFocus();
+			getMatrix().forceFocus();
 		}
 		needsPainting = false;
 		getMatrix().setLocation(location);

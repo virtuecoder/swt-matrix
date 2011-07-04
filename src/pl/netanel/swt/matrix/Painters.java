@@ -94,7 +94,7 @@ class Painters<N0 extends Number, N1 extends Number> implements Iterable<Painter
     for (int i = 0, imax = items.size(); i < imax; i++) {
       Painter painter2 = items.get(i);
       Preconditions.checkArgument(!painter2.name.equals(painter.name), 
-          "A painter with '{0}' name already exist in the collection", painter.name);
+          "A painter with '%s' name already exist in the collection", painter.name);
     }
   }
 

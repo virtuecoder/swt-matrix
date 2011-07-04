@@ -1,11 +1,11 @@
 package pl.netanel.swt.matrix;
 
-import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_DEACTIVATE_APPLY;
-import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_DEACTIVATE_CANCEL;
 import static pl.netanel.swt.matrix.Matrix.CMD_COPY;
 import static pl.netanel.swt.matrix.Matrix.CMD_CUT;
 import static pl.netanel.swt.matrix.Matrix.CMD_DELETE;
 import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_ACTIVATE;
+import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_DEACTIVATE_APPLY;
+import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_DEACTIVATE_CANCEL;
 import static pl.netanel.swt.matrix.Matrix.CMD_PASTE;
 
 import java.io.File;
@@ -30,7 +30,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
@@ -60,7 +59,7 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	final Zone<N0, N1> zone;
 	final CommandListener controlListener;
 	
-	private EmbeddedControlsPainter embedded;
+	EmbeddedControlsPainter embedded;
 	private Painter<N0, N1> cellsPainter;
 
 	private Image trueImage, falseImage;
@@ -82,9 +81,11 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 		
 		// Painters
 		cellsPainter = zone.getPainter("cells");
-		zone.replacePainter(new Painter<N0, N1>("editor emulation", 
-				Painter.SCOPE_CELLS_HORIZONTALLY) {
-			public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
+		zone.replacePainter(new Painter<N0, N1>("editor emulation", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		  @Override protected boolean init() {
+		    return true;
+		  }
+		  @Override public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
 				Object[] emul = getCheckboxEmulation(index0, index1);
 				if (emul == null) return;
 				Object value = getModelValue(index0, index1);
@@ -107,27 +108,27 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 		zone.bind(CMD_CUT, SWT.KeyDown, SWT.MOD1 | 'x');
 		zone.bind(CMD_COPY, SWT.KeyDown, SWT.MOD1 | 'c');
 		zone.bind(CMD_PASTE, SWT.KeyDown, SWT.MOD1 | 'v');
+		zone.bind(CMD_DELETE, SWT.KeyDown, SWT.DEL);
 		zone.bind(CMD_EDIT_ACTIVATE, SWT.KeyUp, SWT.F2);
 		zone.bind(CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1);
-		zone.bind(CMD_DELETE, SWT.KeyDown, SWT.DEL);
-	
-		// Space bar for check boxes
-		zone.bind(new GestureBinding(CMD_EDIT_ACTIVATE, SWT.KeyDown, ' ') {
-			
-			public boolean isMatching(Event e) {
-				if (!super.isMatching(e)) return false;
-				
-				N0 index0 = getMatrix().getAxis0().getFocusItem().getIndex();
-				N1 index1 = getMatrix().getAxis1().getFocusItem().getIndex();
-				Control control2 = embedded.getControl(index0, index1);
-				if (control2 != null && 
-						control2 instanceof Button && (control2.getStyle() & SWT.CHECK) != 0 ||
-						getCheckboxEmulation(index0, index1) != null ) {
-					return true;
-				}
-				return false;
-			}
-		});
+		zone.bind(CMD_EDIT_ACTIVATE, SWT.KeyDown, Matrix.PRINTABLE_CHARS);
+
+//		// Space bar for check boxes
+//		zone.bind(new GestureBinding(CMD_EDIT_ACTIVATE, SWT.KeyDown, ' ') {
+//			
+//			public boolean isMatching(Event e) {
+//				if (!super.isMatching(e)) return false;
+//				
+//				N0 index0 = getMatrix().getAxis0().getFocusItem().getIndex();
+//				N1 index1 = getMatrix().getAxis1().getFocusItem().getIndex();
+//				Control control2 = embedded.getControl(index0, index1);
+//				if (control2 instanceof Button && (control2.getStyle() & SWT.CHECK) != 0 ||
+//						  getCheckboxEmulation(index0, index1) != null ) {
+//					return true;
+//				}
+//				return false;
+//			}
+//		});
 		
 		// Clicking on the image emulation
 		zone.bind(new GestureBinding(CMD_EDIT_ACTIVATE, SWT.MouseDown, 1) {
@@ -252,11 +253,21 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	 */
 	protected void setEditorValue(Control control, Object value) {
 		if (control == null || control.isDisposed()) return;
-		if (control instanceof Text) {
-			((Text) control).setText(value == null ? "" : value.toString());
+		String s = value == null ? "" : value.toString();
+		
+    if (control instanceof Text) {
+			Text text = (Text) control;
+      text.setText(s);
+			text.setSelection(s.length());
 		} 
 		else if (control instanceof Combo) {
-			((Combo) control).setText(value == null ? "" : value.toString());
+			Combo combo = (Combo) control;
+			int indexOf = combo.indexOf(s);
+			if (indexOf == -1) {
+			  combo.setText(s);
+			} else {
+			  combo.select(indexOf);
+			}
 		} 
 		else if (control instanceof Button && (control.getStyle() & SWT.CHECK) != 0) {
 			Button button = (Button) control;
@@ -294,14 +305,14 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 		if (control != null && !getData(control).isEmbedded) {
 			disposeControl(control);
 		}
-		getMatrix().setFocus();
+		getMatrix().forceFocus();
 	}
 
 	
 	/**
 	 * Shows a control to edit the value of the specified cell. 
 	 */
-	private Control activate(N0 index0, N1 index1) {
+	private Control activate(N0 index0, N1 index1, GestureBinding b) {
 		cellsPainter = zone.getPainter("cells");
 		
 //		Control control = embedded.getControl(index0, index1);
@@ -317,6 +328,15 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 		} else {
 			if (control == null) {
 				control = addControl(index0, index1);
+				if (b.isCharActivated) {
+				  if (isCheckbox(control)) {
+				    boolean value = !Boolean.TRUE.equals(getModelValue(index0, index1));
+				    ((Button) control).setSelection(value);
+			      setModelValue(index0, index1, value);
+				  } else {
+				    setEditorValue(control, b.character);
+				  }
+				}
 			}
 			control.setFocus();
 		}
@@ -328,7 +348,7 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	}
 	
 	Control addControl(N0 index0, N1 index1) {
-		Control control = createControl(index0, index1, getMatrix().getParent());
+		Control control = createControl(index0, index1);
 		if (control != null) {
 			ZoneEditorData data = new ZoneEditorData(index0, index1, 
 					hasEmbeddedControl(index0, index1));
@@ -359,8 +379,8 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	 * @return control to edit the value of the specified cell
 	 * @see #createControl(Number, Number)
 	 */
-	protected Control createControl(N0 index0, N1 index1, Composite parent) {
-		return new Text(parent, SWT.BORDER);
+	protected Control createControl(N0 index0, N1 index1) {
+		return new Text(getMatrix(), SWT.BORDER);
 	}
 	
 	/**
@@ -427,20 +447,13 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	 * Commands
 	 */
 	
-	void edit() {
+	void edit(GestureBinding b) {
 		Matrix<N0, N1> matrix = getMatrix();
 		final AxisItem<N0> focusItem0 = matrix.axis0.getFocusItem();
 		final AxisItem<N1> focusItem1 = matrix.axis1.getFocusItem();
 		if (focusItem0 == null || focusItem1 == null) return;
 
-//		final Display display = getMatrix().getDisplay();
-//		display.asyncExec(new Runnable() {
-//			
-//			public void run() {
-//				if (getMatrix().isDisposed()) return;
-				activate(focusItem0.getIndex(), focusItem1.getIndex());
-//			}
-//		});
+		activate(focusItem0.getIndex(), focusItem1.getIndex(), b);
 	}
 
 	/**
@@ -696,60 +709,62 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	 * Note: it opens a temporary shell in order to snap the images and then closes it immediately.
 	 * @param imagePath
 	 */
-	void snapControlImages(String imagePath) {
-		if (imagePath == null) {
-			systemThemePath = OsUtil.getUserDirectory("SWT Matrix").getAbsolutePath();
-			new File(systemThemePath).mkdirs();
-		} else {
-			setImagePath(imagePath);
-		}
-				
-		File file = new File(systemThemePath);
-		Preconditions.checkArgument(file.exists(), 
-				"Directory {0} does not exist.", file.getAbsoluteFile()); 
-		Preconditions.checkArgument(file.isDirectory(), 
-				"Path {0} is not e directory.", file.getAbsoluteFile());
-		
-		Shell shell = new Shell();
-		RowLayout layout = new RowLayout();
-		layout.spacing = layout.marginBottom = layout.marginTop = 0;
-		layout.marginLeft = layout.marginRight = 0; 
-		shell.setLayout(layout);
-		shell.setSize(100, 100);
-		shell.open();
+  void snapControlImages(String imagePath) {
+    if (imagePath == null) {
+      systemThemePath = OsUtil.getUserDirectory("SWT Matrix").getAbsolutePath();
+      new File(systemThemePath).mkdirs();
+    }
+    else {
+      setImagePath(imagePath);
+    }
 
-		Display display = shell.getDisplay();
-		ImageLoader loader = new ImageLoader();
-		
-		// Check boxes
-		Button button = new Button(shell, SWT.CHECK);
-		shell.layout();
-		shell.update();
-		Point size = button.getSize();
-        GC gc = new GC(button);
-		Image image = new Image(display, size.x, size.y);
-        gc.copyArea(image, 0, 0);
-        loader.data = new ImageData[] {image.getImageData()};
-        loader.save(new File(imagePath, "unchecked.png").getAbsolutePath(), SWT.IMAGE_PNG);
-        gc.dispose();
-        image.dispose();
-        button.dispose();
-        
-        button = new Button(shell, SWT.CHECK);
-        button.setSelection(true);
-		shell.layout();
-		shell.update();
-		gc = new GC(button);
-		image = new Image(display, size.x, size.y);
-        gc.copyArea(image, 0, 0);
-        loader.data = new ImageData[] {image.getImageData()};
-        loader.save(new File(imagePath, "checked.png").getAbsolutePath(), SWT.IMAGE_PNG);
-        gc.dispose();
-        image.dispose();
-        button.dispose();
+    File file = new File(systemThemePath);
+    Preconditions.checkArgument(file.exists(), "Directory {0} does not exist.",
+      file.getAbsoluteFile());
+    Preconditions.checkArgument(file.isDirectory(),
+      "Path {0} is not e directory.", file.getAbsoluteFile());
 
-        shell.dispose();
-	}
+    Shell shell = new Shell();
+    RowLayout layout = new RowLayout();
+    layout.spacing = layout.marginBottom = layout.marginTop = 0;
+    layout.marginLeft = layout.marginRight = 0;
+    shell.setLayout(layout);
+    shell.setSize(100, 100);
+    shell.open();
+
+    Display display = shell.getDisplay();
+    ImageLoader loader = new ImageLoader();
+
+    // Check boxes
+    Button button = new Button(shell, SWT.CHECK);
+    shell.layout();
+    shell.update();
+    Point size = button.getSize();
+    GC gc = new GC(button);
+    Image image = new Image(display, size.x, size.y);
+    gc.copyArea(image, 0, 0);
+    loader.data = new ImageData[] { image.getImageData() };
+    loader.save(new File(imagePath, "unchecked.png").getAbsolutePath(), SWT.IMAGE_PNG);
+    gc.dispose();
+    image.dispose();
+    button.dispose();
+
+    button = new Button(shell, SWT.CHECK);
+    button.setSelection(true);
+    shell.layout();
+    shell.update();
+    gc = new GC(button);
+    image = new Image(display, size.x, size.y);
+    gc.copyArea(image, 0, 0);
+    loader.data = new ImageData[] { image.getImageData() };
+    loader.save(new File(imagePath, "checked.png").getAbsolutePath(),
+      SWT.IMAGE_PNG);
+    gc.dispose();
+    image.dispose();
+    button.dispose();
+
+    shell.dispose();
+  }
 
 	/**
 	 * Sets the path to the folder containing images emulating the system theme.
@@ -789,6 +804,13 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 		return systemThemePath;
 	}
 	
+	/**
+	 * Makes the embedded controls to be recreated.
+	 */
+	public void redraw() {
+	  embedded.needsPainting = true;
+	  getMatrix().redraw();
+	}
 
 	class ZoneEditorData {
 		public N0 index0;
@@ -805,9 +827,4 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	ZoneEditorData getData(Widget widget) {
 		return (ZoneEditorData) widget.getData(ZONE_EDITOR_DATA);
 	}
-	
-	
-	void clearEmbedded() {
-    embedded  
-  }
 }

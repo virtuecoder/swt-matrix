@@ -10,7 +10,6 @@ import java.util.Date;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
@@ -82,7 +81,7 @@ public class Snippet_0404 {
 			}
 			
 			@Override
-			public Control createControl(Number index0, Number index1, Composite parent) {
+			public Control createControl(Number index0, Number index1) {
 				Object value = data.get(index0.intValue())[index1.intValue()];
 				
 				// Date

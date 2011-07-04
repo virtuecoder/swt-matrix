@@ -49,6 +49,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	static final int AUTOSCROLL_OFFSET_Y = 6;
 	static final int AUTOSCROLL_RATE = 50;
 
+	public static final int PRINTABLE_CHARS = 10;
 	
 	/*
 	 *  Navigation Key Actions. Key bindings for the actions are set
@@ -265,6 +266,18 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 				if (executor != null) executor.shutdownNow();
 			}
 		});
+		
+//		parent.addControlListener(new ControlListener() {
+//      @Override public void controlResized(ControlEvent e) {
+//        for (Zone zone: Matrix.this) {
+//          if (zone.editor != null) {
+//            zone.editor.embedded.clearControls();
+//          }
+//        }
+//      }
+//      
+//      @Override public void controlMoved(ControlEvent e) {}
+//    });
 	}
 
 
@@ -384,8 +397,6 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 //		System.out.println(BigDecimal.valueOf(System.nanoTime() - t, 6).toString());
 	}
 
-
-	
 	
 	/*------------------------------------------------------------------------
 	 * Resize and scrolling
@@ -440,8 +451,8 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		
 		area = getClientArea();
 		
-		listener.state0.item = layout0.current;
-		listener.state1.item = layout1.current;
+//		listener.state0.item = layout0.current;
+//		listener.state1.item = layout1.current;
 	}
 
 	/**
