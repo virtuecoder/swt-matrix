@@ -3,12 +3,14 @@ Version 0.2.1
 New featues:
 - Ability to activate an editor control by typing printable characters
 - Snippet for in-place addidng a new row
+- Executing focus cell navigation commands with Matrix.executeCommand(int commandId)
 
 API changes
 - Matrix class:
   - renamed all editing commands to have the CMD_EDIT_ prefix.
   - added command CMD_EDIT_APPLY
   - removed GetZoneUnchecked()
+  - Matrix.executeCommand(int commandId)
 - Zone
   - removed getSectionUnchecked()
 - ZoneEditor class:
@@ -16,6 +18,7 @@ API changes
   - removed snapControlImages(String)
     
 Bug fixes:
+- Traversing with (Shift+) Tab from Matrix was not bound by default
 - Selection event was causing control deactivation in ZoneEditor.
 - Sorting did not work correctly in Snippet_0005.
 - Resizing of embedded controls did layout incorrectly.

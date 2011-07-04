@@ -7,10 +7,10 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class EditorTest extends SwtTestCase {
-  
   @Test public void activateEmbeddedCheckBoxBySpace() throws Exception {
     final Matrix matrix = new Matrix(shell, 0);
 //    listenToAll(matrix);
@@ -45,6 +45,7 @@ public class EditorTest extends SwtTestCase {
   
   @Test public void activateBySingleClick() throws Exception {
     final Matrix matrix = new Matrix(shell, 0);
+//    listenToAll(matrix);
     matrix.getAxis0().getBody().setCount(1);
     matrix.getAxis1().getBody().setCount(1);
     
@@ -91,7 +92,7 @@ public class EditorTest extends SwtTestCase {
   }
   
  
-  
+  @Ignore
   @Test public void copyPaste() throws Exception {
     final Matrix matrix = createMatrixAndEditor();
     

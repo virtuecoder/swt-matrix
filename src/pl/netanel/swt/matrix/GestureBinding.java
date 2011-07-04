@@ -34,6 +34,8 @@ class GestureBinding {
 		isCharActivated = key == Matrix.PRINTABLE_CHARS && isPrintable(e.character) && 
 		  (e.stateMask == 0 || (e.stateMask & SWT.MOD2) != 0);
 		character = e.character;
+		if (isCharActivated && SwtTestCase.breakFlag) 
+		  TestUtil.log(character, e.stateMask);
 		return isCharActivated;
 	}
 	

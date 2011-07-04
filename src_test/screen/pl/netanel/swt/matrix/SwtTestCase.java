@@ -53,16 +53,17 @@ public class SwtTestCase {
   protected int remedyCommandIndex = -1;
 
   @Before public void setUp() throws Exception {
-    shell = new Shell();
-    display = shell.getDisplay();
+    display = Display.getDefault();
+    shell = new Shell(display);
     shell.setLayout(new FillLayout());
     shell.setBounds(new Rectangle(600, 400, 400, 400));
     // Main.setUpShell(shell, MockSession.INSTANCE);
   }
 
   @After public  void tearDown() throws Exception {
+    processEvents();
     Resources.dispose();
-    if (display != null) {
+    if (display != null && !display.isDisposed()) {
       display.dispose();
     }
   }
@@ -253,6 +254,9 @@ public class SwtTestCase {
       });
       return result[0];
     }
+    if (breakFlag) 
+      TestUtil.log("post", getEventType(event), event.keyCode, event.character, 
+        display.getFocusControl());
     return display.post(event);
   }
 
@@ -287,6 +291,8 @@ public class SwtTestCase {
       if (isPrintable(ch)) ch = Character.toLowerCase(ch);
       if (shift) {
         postKey(SWT.SHIFT, SWT.KeyDown);
+        processEvents();
+//        if (breakFlag) TestUtil.log("shift", ch);
       }
       postChar(ch, SWT.KeyDown);
       postChar(ch, SWT.KeyUp);
@@ -298,7 +304,7 @@ public class SwtTestCase {
   }
 
   /**
-   * Recognizes whether a keyCode is an uppercase
+   * Recognizes whether a keyCode is an upper case
    * 
    * @param keyCode
    * @return
@@ -345,6 +351,13 @@ public class SwtTestCase {
    */
   public void click(Control control, Rectangle rect) {
     postClick(middle(control, rect), SWT.BUTTON1);
+    processEvents();
+    
+    Event event = new Event();
+    event.type = SWT.MouseMove;
+    event.x = -1;
+    event.y = -1;
+    postEvent(event);
     processEvents();
   }
   
@@ -506,12 +519,12 @@ public class SwtTestCase {
     event.x = pt.x;
     event.y = pt.y;
     postEvent(event);
+    processEvents();
     
     int decodedButton = decodeButton(code);
-    
-    if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyDown);
-    if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyDown);
-    if ((code& SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyDown);
+//    if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyDown);
+//    if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyDown);
+//    if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyDown);
     
     event = new Event();
     event.type = SWT.MouseDown;
@@ -520,6 +533,7 @@ public class SwtTestCase {
     event.button = decodedButton;
 //    event.stateMask = code;
     postEvent(event);
+    processEvents();
     
     event = new Event();
     event.type = SWT.MouseUp;
@@ -529,11 +543,22 @@ public class SwtTestCase {
 //    event.stateMask = code;
     postEvent(event);
     
-    if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyUp);
-    if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyUp);
-    if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyUp);
+//    if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyUp);
+//    if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyUp);
+//    if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyUp);
 
     setLastClick(pt);
+    
+    // To avoid hovering over a text box before exit, which causes typing 
+    // with modifier keys in a next test to fail 
+    event = new Event();
+    event.type = SWT.MouseMove;
+    event.x = -1;
+    event.y = -1;
+    postEvent(event);
+    
+    processEvents();
+    
   }
   
   private int decodeButton(int button) {
@@ -979,7 +1004,7 @@ public class SwtTestCase {
   public static void listenToAll(Control control) {
     listenToAll(control, new Listener() {
       @Override public void handleEvent(Event event) {
-        System.out.println(getEventType(event) + " " + event.stateMask);
+        System.out.println(getEventType(event));
       }
     });
   }
@@ -1053,5 +1078,19 @@ public class SwtTestCase {
                                         : x == 41 ? "MeasureItem"
                                           : x == 42 ? "PaintItem"
                                             : x == 43 ? "ImeComposition" : "";
+  }
+  
+  public static String getTraverseName(int x) {
+    return 
+      x == SWT.TRAVERSE_NONE ? "TRAVERSE_NONE" :
+      x == SWT.TRAVERSE_ESCAPE ? "TRAVERSE_ESCAPE" :
+      x == SWT.TRAVERSE_RETURN ? "TRAVERSE_RETURN" :
+      x == SWT.TRAVERSE_TAB_PREVIOUS ? "TRAVERSE_TAB_PREVIOUS" :
+      x == SWT.TRAVERSE_TAB_NEXT ? "TRAVERSE_TAB_NEXT" :
+      x == SWT.TRAVERSE_ARROW_PREVIOUS ? "TRAVERSE_ARROW_PREVIOUS" :
+      x == SWT.TRAVERSE_ARROW_NEXT ? "TRAVERSE_ARROW_NEXT" :
+      x == SWT.TRAVERSE_MNEMONIC ? "TRAVERSE_MNEMONIC" :
+      x == SWT.TRAVERSE_PAGE_PREVIOUS ? "TRAVERSE_PAGE_PREVIOUS" :
+      x == SWT.TRAVERSE_PAGE_NEXT ? "TRAVERSE_PAGE_NEXT" : "";
   }
 }

@@ -171,5 +171,11 @@ class TestUtil {
     matrix.listener.handleEvent(e); 
 	}
 
-
+  public static void log(Object ...o) {
+    for (int i = 0; i < o.length; i++) {
+      if (i > 0) System.out.print(", ");
+      System.out.print(o[i]);
+    }
+    System.out.println();
+  }
 }

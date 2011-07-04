@@ -2,57 +2,7 @@ package pl.netanel.swt.matrix;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
-import static pl.netanel.swt.matrix.Matrix.CMD_COPY;
-import static pl.netanel.swt.matrix.Matrix.CMD_CUT;
-import static pl.netanel.swt.matrix.Matrix.CMD_DELETE;
-import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_ACTIVATE;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_DOWN_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_UP_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_ITEM_HIDE;
-import static pl.netanel.swt.matrix.Matrix.CMD_ITEM_SHOW;
-import static pl.netanel.swt.matrix.Matrix.CMD_PASTE;
-import static pl.netanel.swt.matrix.Matrix.CMD_RESIZE_PACK;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ALL;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_COLUMN;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_COLUMN_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_DOWN_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_UP_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ROW;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ROW_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_COLUMN;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_COLUMN_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_UP;
-import static pl.netanel.swt.matrix.Matrix.isBodySelect;
-import static pl.netanel.swt.matrix.Matrix.isExtendingSelect;
+import static pl.netanel.swt.matrix.Matrix.*;
 
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
@@ -612,6 +562,8 @@ class MatrixListener implements Listener {
 		bindKey(Matrix.CMD_FOCUS_MOST_DOWN, SWT.MOD1 | SWT.PAGE_DOWN);
 		bindKey(Matrix.CMD_FOCUS_MOST_UP_LEFT, SWT.MOD1 | SWT.HOME);
 		bindKey(Matrix.CMD_FOCUS_MOST_DOWN_RIGHT, SWT.MOD1 | SWT.END);
+		bindKey(Matrix.CMD_TRAVERSE_TAB_NEXT, SWT.TAB);
+		bindKey(Matrix.CMD_TRAVERSE_TAB_PREVIOUS, SWT.MOD2 | SWT.TAB);
 		
 		// Key Selection
 		bindKey(Matrix.CMD_SELECT_ALL, SWT.MOD1 | 'a');
@@ -629,6 +581,7 @@ class MatrixListener implements Listener {
 		bindKey(Matrix.CMD_SELECT_FULL_RIGHT, SWT.MOD2 | SWT.END);
 		bindKey(Matrix.CMD_SELECT_FULL_UP_LEFT, SWT.MOD1 | SWT.MOD2 | SWT.HOME);
 		bindKey(Matrix.CMD_SELECT_FULL_DOWN_RIGHT, SWT.MOD1 | SWT.MOD2 | SWT.END);
+		
 		
 //		bindKey(Matrix.CMD_COPY, SWT.MOD1 | 'c');
 		
@@ -695,6 +648,8 @@ class MatrixListener implements Listener {
 		case CMD_COPY:				if (zone.editor != null) zone.editor.copy(); return;
 		case CMD_PASTE:				if (zone.editor != null) zone.editor.paste(); return;
 		case CMD_DELETE:			if (zone.editor != null) zone.editor.delete(); return;
+		case CMD_TRAVERSE_TAB_NEXT:			matrix.traverse(SWT.TRAVERSE_TAB_NEXT); return;
+		case CMD_TRAVERSE_TAB_PREVIOUS: matrix.traverse(SWT.TRAVERSE_TAB_PREVIOUS); return;
 		}
 		
 		if (!isSelectable()) return;

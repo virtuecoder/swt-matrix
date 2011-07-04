@@ -71,8 +71,11 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	public static final int CMD_FOCUS_MOST_DOWN_RIGHT = 14; 				// binding = SWT.MOD1 + SWT.END
 	public static final int CMD_FOCUS_LOCATION = 15; 			// binding = SWT.MouseDown
 	public static final int CMD_FOCUS_LOCATION_ALTER = 16; 			// binding = SWT.MOD1 + SWT.MouseDown
+	public static final int CMD_TRAVERSE_TAB_NEXT = 17; 			// binding = SWT.TAB
+	public static final int CMD_TRAVERSE_TAB_PREVIOUS = 18; 			// binding = SWT.MOD2 + SWT.TAB
 //	public static final int WORD_PREVIOUS = 17039363;		// binding = SWT.MOD1 + SWT.ARROW_LEFT
 //	public static final int WORD_NEXT = 17039364; 			// binding = SWT.MOD1 + SWT.ARROW_RIGHT
+	
 	
 	static boolean isCursorMove(int id) {
 		return CMD_FOCUS_UP <= id && id <= CMD_FOCUS_LOCATION_ALTER;
@@ -840,7 +843,9 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		};
 	}
 
-//	public void execute(int commandId) {
-//		listener.executeCommand(commandId);
-//	}
+	public void execute(int commandId) {
+	  Preconditions.checkArgument(CMD_FOCUS_UP <= commandId && commandId <= CMD_TRAVERSE_TAB_PREVIOUS,
+	    "Only cell focus navigation commands are permitted");
+		listener.executeCommand(new GestureBinding(commandId, 0, 0));
+	}
 }
