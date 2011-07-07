@@ -112,7 +112,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	public static final int CMD_SELECT_TO_COLUMN_ALTER = 127;		// binding = SWT.MOD1 + SWT.MouseDown + Zone.COLUMN_HEADER
 	
 	static boolean isBodySelect(int id) {
-		return CMD_FOCUS_LOCATION <= id && id <= CMD_SELECT_TO_LOCATION_ALTER;
+		return CMD_FOCUS_UP <= id && id <= CMD_SELECT_TO_LOCATION_ALTER;
 	}
 	
 	static boolean isHeaderSelect(int id) {
@@ -425,7 +425,6 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 //		layout1.compute();
 		
 		updateScrollBars();
-		
 	}
 	
 	/**
@@ -595,7 +594,9 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e); 
 	}
 	
-	void selectInZones(int axisIndex, Section section, Number start, Number end) {
+	void selectInZones(int axisIndex, Section section, Number start, Number end, 
+	    boolean state, boolean notify) 
+	{
 		if (axisIndex == 0) {
 			for (Zone zone: model.zones) {
 				if (zone.section0.equals(section)) {
@@ -603,7 +604,11 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 					zone.setSelected(
 							(N0) start, (N0) end, 
 							math1.ZERO_VALUE(), math1.decrement(zone.section1.getCount()), 
-							true);
+							state);
+					
+					if (notify && state == true) {
+	          zone.addSelectionEvent();
+	        }
 				}
 			}
 		}
@@ -614,7 +619,11 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 					zone.setSelected( 
 							math0.ZERO_VALUE(), math0.decrement(zone.section0.getCount()),
 							start, end,
-							true);
+							state);
+					
+					if (notify && state == true) {
+					  zone.addSelectionEvent();
+					}
 				}
 			}
 		}
@@ -648,7 +657,9 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	 * Code is a logical <i>OR</i> of key, state mask and mouse button codes. 
 	 */
 	public void bind(int commandId, int eventType, int code) {
-		listener.bindings.add(new GestureBinding(commandId, eventType, code));
+	  for (Zone zone: this) {
+	    zone.bind(commandId, eventType, code);
+	  }
 	}
 	
 	/**
@@ -656,13 +667,9 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	 * Code is a logical <i>OR</i> of key, state mask and mouse button codes. 
 	 */
 	public void unbind(int commandId, int eventType, int code) {
-		for (int i = listener.bindings.size(); i-- > 0;) {
-			GestureBinding binding = listener.bindings.get(i);
-			if (binding.commandId == commandId && binding.eventType == eventType 
-					&& binding.key == code) {
-				listener.bindings.remove(i);
-			};
-		}
+	  for (Zone zone: this) {
+	    zone.unbind(commandId, eventType, code);
+	  }
 	}
 	
 	

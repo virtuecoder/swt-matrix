@@ -1,5 +1,5 @@
 <project name="swt-matrix" default="local website" basedir=".">
-	<property name="version" value="0.2" />
+	<property name="version" value="0.2.1" />
 	<property name="local_website" value="c:\dev\wamp\www\netanel15" />
 
 	<property name="db.username" value="root"/>
@@ -144,7 +144,6 @@
 <target name="backup" description="copy all project files to ftp site">
 	<!-- Command to dump the database to *.sql file.-->
 	<exec executable="${mysqldump}" output="${db.export.file}">
-		<arg value="--hex-blfob"/>
 		<arg value="--extended-insert=false"/>
 		<arg value="--complete-insert=true"/>
 		<arg value="--add-drop-table"/>

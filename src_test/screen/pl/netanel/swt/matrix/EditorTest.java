@@ -43,6 +43,39 @@ public class EditorTest extends SwtTestCase {
     assertEquals(true, editor.getModelValue(0, 0));
   }
   
+  @Test public void embeddedCheckBoxLoosesFocusAfterSelection() throws Exception {
+    final Matrix matrix = new Matrix(shell, 0);
+//    listenToAll(matrix);
+    matrix.getAxis0().getBody().setCount(1);
+    matrix.getAxis1().getBody().setCount(1);
+    
+    final Button button = new Button(matrix, SWT.CHECK);
+    final boolean[] data = new boolean[] {false};
+    
+    ZoneEditor editor = new ZoneEditor(matrix.getBody()) {
+      @Override protected boolean hasEmbeddedControl(Number index0, Number index1) {
+        return true;
+      }
+      @Override protected Control createControl(Number index0, Number index1) {
+        return button;
+      }
+      @Override protected Object getModelValue(Number index0, Number index1) {
+        return data[0];
+      }
+      @Override protected void setModelValue(Number index0, Number index1, Object value) {
+        data[0] = (Boolean) value;
+      }
+    };
+ 
+    shell.open();
+    
+    processEvents();
+    click(button);
+    assertEquals(true, button.getSelection());
+    assertEquals(true, editor.getModelValue(0, 0));
+    assertEquals(matrix, display.getFocusControl());
+  }
+  
   @Test public void activateBySingleClick() throws Exception {
     final Matrix matrix = new Matrix(shell, 0);
 //    listenToAll(matrix);

@@ -2,9 +2,60 @@ package pl.netanel.swt.matrix;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
-import static pl.netanel.swt.matrix.Matrix.*;
+import static pl.netanel.swt.matrix.Matrix.CMD_COPY;
+import static pl.netanel.swt.matrix.Matrix.CMD_CUT;
+import static pl.netanel.swt.matrix.Matrix.CMD_DELETE;
+import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_ACTIVATE;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_DOWN_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_UP_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_ITEM_HIDE;
+import static pl.netanel.swt.matrix.Matrix.CMD_ITEM_SHOW;
+import static pl.netanel.swt.matrix.Matrix.CMD_PASTE;
+import static pl.netanel.swt.matrix.Matrix.CMD_RESIZE_PACK;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ALL;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_COLUMN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_COLUMN_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_DOWN_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_UP_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ROW;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ROW_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_COLUMN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_COLUMN_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_TRAVERSE_TAB_NEXT;
+import static pl.netanel.swt.matrix.Matrix.CMD_TRAVERSE_TAB_PREVIOUS;
+import static pl.netanel.swt.matrix.Matrix.isBodySelect;
+import static pl.netanel.swt.matrix.Matrix.isExtendingSelect;
 
-import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -40,9 +91,9 @@ class MatrixListener implements Listener {
 	};
 
 	Matrix<? extends Number, ? extends Number> matrix;
-	ArrayList<GestureBinding> bindings;
+//	ArrayList<GestureBinding> bindings;
 	AxisListener state0, state1;
-	boolean instantMoving, ctrlSelectionMoving;
+	boolean instantMoving, ctrlSelectionMoving, mouseDown;
 	Zone<? extends Number, ? extends Number> zone;
 	Cursor cursor;
 	AxisItem[] lastRange;
@@ -62,8 +113,8 @@ class MatrixListener implements Listener {
 		state0 = new AxisListener(matrix.axis0);
 		state1 = new AxisListener(matrix.axis1);
 		
-		bindings = new ArrayList<GestureBinding>();
-    	bindCommands();
+//		bindings = new ArrayList<GestureBinding>();
+  	bindCommands();
 
 		// Remove previous listener 
 		if (matrix.listener != null) {
@@ -88,8 +139,16 @@ class MatrixListener implements Listener {
 			state0.setItem(e);
 			state1.setItem(e);
 
+			boolean keyEvent = e.type == SWT.KeyDown || e.type == SWT.KeyUp;
 			if (e.data instanceof Zone) {
 				zone = (Zone) e.data;
+			}
+			else if (keyEvent) {
+			  AxisItem<? extends Number> focusItem0 = matrix.getAxis0().getFocusItem();
+			  AxisItem<? extends Number> focusItem1 = matrix.getAxis1().getFocusItem();
+			  if (focusItem0 != null && focusItem1 != null) {
+			    zone = matrix.model.getZoneUnchecked(focusItem0.getSection(), focusItem1.getSection());
+			  }
 			}
 			else if (state0.item != null && state1.item != null) {
 				zone = matrix.model.getZoneUnchecked(state0.item.getSection(), state1.item.getSection());
@@ -111,32 +170,25 @@ class MatrixListener implements Listener {
 //			}
 
 			// Execute bound commands
-
-			boolean mouseEvent = SWT.MouseDown <= e.type && e.type <= SWT.MouseDoubleClick;
-			boolean keyEvent = e.type == SWT.KeyDown || e.type == SWT.KeyUp;
-			if (e.type == SWT.MouseMove && !(state0.itemModified || state1.itemModified)) {
-				mouseEvent = false;
-			}
-			if (e.doit && (mouseEvent || keyEvent)) {
-//				matrix.t = System.nanoTime();
-
-				// Find a command for the current zone or otherwise a command for any zone
-				for (GestureBinding b: bindings) {
-					if (b.isMatching(e)) {
-						executeCommand(b);
-						/* does not quit loop because can execute 
-					   	   many both any zone and a specific zone bindings */
-					}
-				}
-				if (zone != null) {
-					for (GestureBinding b: zone.getBindings()) {
-						if (b.isMatching(e)) {
-							executeCommand(b);
-							/* does not quit loop because can execute 
-					   	   	   many both any zone and a specific zone bindings */
-						}
-					}
-				}
+			
+			if (zone != null) {
+			  boolean mouseEvent = SWT.MouseDown <= e.type && e.type <= SWT.MouseDoubleClick;
+			  if (e.type == SWT.MouseMove && !(state0.itemModified || state1.itemModified)) {
+			    mouseEvent = false;
+			  }
+			  if (e.doit && (mouseEvent || keyEvent)) {
+			    //				matrix.t = System.nanoTime();
+			    
+			    // Find a command for the current zone or otherwise a command for any zone
+			    for (GestureBinding b: zone.getBindings()) {
+			      if (b.isMatching(e)) {
+			        if (e.type != SWT.MouseMove || mouseDown) {
+			          executeCommand(b);
+			        }
+			        // does not quit the loop because can execute many bindings 
+			      }
+			    }
+			  }
 			}
 			sendEvents();
 		
@@ -150,14 +202,15 @@ class MatrixListener implements Listener {
 		private final int axisIndex;
 		Axis<N> axis;
 		Layout layout;
-		AxisItem<N> last, item, resizeItem;
-		boolean moving, resizing, itemModified = true, mouseDown;
+		AxisItem<N> last, item, prev, resizeItem;
+		boolean moving, resizing, itemModified = true;
 		Event mouseMoveEvent;
 		Cursor resizeCursor;
 		int resizeStartDistance, resizeCellWidth, newCellWidth, distance, lastDistance;
 		AutoScroll autoScroll;
 		boolean focusMoved = true;
 		private int resizeEvent;
+    private boolean selectState;
 
 		public AxisListener(Axis<N> axis) {
 			this.axis = axis; 
@@ -226,6 +279,7 @@ class MatrixListener implements Listener {
 						matrix.setCursor(cursor = Resources.getCursor(SWT.CURSOR_HAND));
 					}
 				}
+				prev = null;
 				break;
 				
 			case SWT.MouseUp:
@@ -244,7 +298,8 @@ class MatrixListener implements Listener {
 							}
 							section.setCellWidth(seq.start, seq.end, newCellWidth);
 						}
-						addEvent(section, SWT.Resize, resizeItem);
+//						addEvent(section, SWT.Resize, resizeItem);
+						resizeEvent = 0;
 						layout.compute();
 						matrix.redraw();
 					}
@@ -272,6 +327,7 @@ class MatrixListener implements Listener {
 					matrix.setCursor(cursor = null);
 				}
 				autoScroll.stop();
+				prev = null;
 				break;
 			}
 		}
@@ -339,6 +395,22 @@ class MatrixListener implements Listener {
 			if (last == null || item == null) return;
 			if (last.getSection() != item.getSection()) return;
 			
+
+      boolean ctrlSelection = 
+        commandId == CMD_SELECT_COLUMN_ALTER || commandId == CMD_SELECT_TO_COLUMN_ALTER ||
+        commandId == CMD_SELECT_ROW_ALTER || commandId == CMD_SELECT_TO_ROW_ALTER;
+      
+      selectState = ctrlSelection 
+        ? prev == null ? !isSelected(last) : selectState   
+        : true;
+      
+      TestUtil.log(last, item, isSelected(last), prev, selectState);
+      
+      // Make sure start < end
+      boolean forward = axis.comparePosition(last, item) <= 0;
+      AxisItem start = forward ? last : item; 
+      AxisItem end = forward ? item : last; 
+      
 			if (commandId == CMD_SELECT_COLUMN || commandId == CMD_SELECT_COLUMN_ALTER ||
 				commandId == CMD_SELECT_ROW || commandId == CMD_SELECT_ROW_ALTER) {
 				
@@ -355,28 +427,15 @@ class MatrixListener implements Listener {
 				}
 			}
 			
-			// Make sure start < end
-			boolean forward = axis.comparePosition(last, item) <= 0;
-			AxisItem start = forward ? last : item; 
-			AxisItem end = forward ? item : last; 
-
-			boolean ctrlSelection = 
-				commandId == CMD_SELECT_COLUMN_ALTER || commandId == CMD_SELECT_TO_COLUMN_ALTER ||
-				commandId == CMD_SELECT_ROW_ALTER || commandId == CMD_SELECT_TO_ROW_ALTER;
-			
 			if (!ctrlSelection) {
 				axis.setSelected(false);
 				matrix.model.setSelected(false);
 			}
 			
-			axis.setSelected(start, end, !(ctrlSelection && isSelected(start)));
-			if (axisIndex == 0) {
-				Axis model1 = matrix.model.axis1;
-				matrix.model.setSelected(start, end, model1.getFirstItem(), model1.getLastItem(), true);
-			} else {
-				Axis model0 = matrix.model.axis0;
-				matrix.model.setSelected(model0.getFirstItem(), model0.getLastItem(), start, end, true);
-			}
+			axis.setSelected(start, end, selectState);
+//			TestUtil.log(Arrays.toString(start.getSection().selection.items.toArray())); 
+			
+			prev = ctrlSelection ? item : null;
 		}
 		
 		private void addEvent(Section<N> section, int type, Object data) {
@@ -589,16 +648,16 @@ class MatrixListener implements Listener {
 //		body.bind(new GestureBinding(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1));
 //		body.bind(new GestureBinding(Matrix.CMD_FOCUS_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | 1));
 		
-    bindings.add(new GestureBinding(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1));
-    bindings.add(new GestureBinding(Matrix.CMD_FOCUS_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | 1));
+    matrix.bind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
+    matrix.bind(Matrix.CMD_FOCUS_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | 1);
 
 		
 		// Mouse selection
 		/* 1 is for e.button == 1 */
-		bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseDown, SWT.MOD2 | 1));
-		bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
-		bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseMove, SWT.BUTTON1));
-		bindings.add(new GestureBinding(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
+		matrix.bind(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseDown, SWT.MOD2 | 1);
+		matrix.bind(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1);
+		matrix.bind(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseMove, SWT.BUTTON1);
+		matrix.bind(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1);
 		
 		if (rowHeader != null) {
 			rowHeader.bind(new GestureBinding(Matrix.CMD_SELECT_ROW, SWT.MouseDown, 1));
@@ -608,6 +667,12 @@ class MatrixListener implements Listener {
 			rowHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_ROW, SWT.MouseMove, SWT.BUTTON1));
 			rowHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_ROW_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
 			rowHeader.bind(new GestureBinding(Matrix.CMD_RESIZE_PACK, SWT.MouseDoubleClick, 1));
+
+			rowHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseDown, SWT.MOD2 | 1);
+			rowHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1);
+			rowHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseMove, SWT.BUTTON1);
+			rowHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1);
+
 		}
 		if (columnHeader != null) {
 			columnHeader.bind(new GestureBinding(Matrix.CMD_SELECT_COLUMN, SWT.MouseDown, 1));
@@ -617,6 +682,11 @@ class MatrixListener implements Listener {
 			columnHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN, SWT.MouseMove, SWT.BUTTON1));
 			columnHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
 			columnHeader.bind(new GestureBinding(Matrix.CMD_RESIZE_PACK, SWT.MouseDoubleClick, 1));
+			
+			columnHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseDown, SWT.MOD2 | 1);
+			columnHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1);
+			columnHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseMove, SWT.BUTTON1);
+			columnHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1);
 		}
 		if (topLeft != null) {
 			// Select all on top left click
@@ -629,7 +699,7 @@ class MatrixListener implements Listener {
 	}
 
 	protected void bindKey(int commandId, int condition) {
-		bindings.add(new GestureBinding(commandId, SWT.KeyDown, condition));
+		matrix.bind(commandId, SWT.KeyDown, condition);
 	}
 	
 	private boolean isSelectable() {
@@ -659,14 +729,6 @@ class MatrixListener implements Listener {
 			state0.last = state0.item;
 			state1.last = state1.item;
 //			matrix.selectFocusCell();
-		}
-		if (commandId == CMD_SELECT_TO_LOCATION || commandId == CMD_SELECT_TO_LOCATION_ALTER) {
-			if (state0.last.getSection().equals(state0.axis.getHeader())) {
-				commandId = commandId == CMD_SELECT_TO_LOCATION ? CMD_SELECT_TO_COLUMN : CMD_SELECT_TO_COLUMN_ALTER;
-			}
-			else if (state1.last.getSection().equals(state1.axis.getHeader())) {
-				commandId = commandId == CMD_SELECT_TO_LOCATION ? CMD_SELECT_TO_ROW : CMD_SELECT_TO_ROW_ALTER;
-			}
 		}
 		
 		backupRestoreSelection(commandId);
@@ -793,21 +855,6 @@ class MatrixListener implements Listener {
 		for (Zone zone: matrix.model.zones) {
 			zone.sendEvents();
 		}
-	}
-	
-	/**
-	 * Gets the 
-	 * @param commandId command id defined by a constant in {@link M}
-	 * @param eventType SWT event type
-	 * @return
-	 */
-	public GestureBinding getBinding(int commandId, int eventType) {
-		for (GestureBinding b: bindings) {
-			if (b.commandId == commandId && b.eventType == eventType) {
-				return b;
-			}
-		}
-		return null;
 	}
 	
 	void setLayout(Layout layout0, Layout layout1) {

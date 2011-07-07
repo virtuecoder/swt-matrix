@@ -115,6 +115,10 @@ public class Snippet_0005 {
         matrix.redraw();
       }
     });
+    
+    // Unbind column selection on click
+    matrix.getColumnHeader().unbind(Matrix.CMD_SELECT_COLUMN, SWT.MouseDown, 1);
+    matrix.getColumnHeader().unbind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
 
     shell.setBounds(400, 200, 400, 300);
     shell.open();

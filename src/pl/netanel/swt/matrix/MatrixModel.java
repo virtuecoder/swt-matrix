@@ -223,14 +223,16 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 			tmp = start1; start1 = end1; end1 = tmp;
 		}
 	
+		Zone lastZone = null;
 		seq.init(start0, end0, start1, end1);
 		while (seq.next()) {
 			Zone zone = getZoneUnchecked(seq.section0, seq.section1);
 			if (zone.isSelectionEnabled()) {
 				zone.setSelected(seq.start0.getValue(), seq.end0.getValue(), seq.start1.getValue(), seq.end1.getValue(), selected);
 				
-				if (selected == true) {
+				if (selected == true && !zone.equals(lastZone)) {
 					zone.addSelectionEvent();
+					lastZone = zone;
 				}
 			}	
 		}

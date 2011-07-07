@@ -1,7 +1,6 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -191,8 +190,7 @@ public class SectionTest {
 		section.moveSelected(3, 1);
 		assertEquals("0, 1, 2, 3, 4", toString(section));
 	}
-
-	@Test
+	
 	public void delete() throws Exception {
 		Section section = new Section(int.class);
 		section.setCount(5);

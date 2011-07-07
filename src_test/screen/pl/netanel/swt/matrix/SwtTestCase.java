@@ -77,7 +77,7 @@ public class SwtTestCase {
       }
     }
   }
-
+  
   /**
    * Imitates pressing a key that is not a character
    * 
@@ -254,9 +254,7 @@ public class SwtTestCase {
       });
       return result[0];
     }
-    if (breakFlag) 
-      TestUtil.log("post", getEventType(event), event.keyCode, event.character, 
-        display.getFocusControl());
+    log(event);
     return display.post(event);
   }
 
@@ -513,18 +511,26 @@ public class SwtTestCase {
       }
       catch (InterruptedException e) {}
     }
-    
+
     Event event = new Event();
+    event.type = SWT.MouseEnter;
+    event.x = pt.x;
+    event.y = pt.y;
+    postEvent(event);
+
+    event = new Event();
     event.type = SWT.MouseMove;
     event.x = pt.x;
     event.y = pt.y;
     postEvent(event);
-    processEvents();
     
     int decodedButton = decodeButton(code);
-//    if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyDown);
-//    if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyDown);
-//    if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyDown);
+    if (decodedButton < 1 || 3 < decodedButton) {
+      throw new IllegalArgumentException("Mouse button must be between 1 and 3");
+    }
+    if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyDown);
+    if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyDown);
+    if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyDown);
     
     event = new Event();
     event.type = SWT.MouseDown;
@@ -533,7 +539,6 @@ public class SwtTestCase {
     event.button = decodedButton;
 //    event.stateMask = code;
     postEvent(event);
-    processEvents();
     
     event = new Event();
     event.type = SWT.MouseUp;
@@ -543,19 +548,19 @@ public class SwtTestCase {
 //    event.stateMask = code;
     postEvent(event);
     
-//    if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyUp);
-//    if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyUp);
-//    if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyUp);
+    if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyUp);
+    if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyUp);
+    if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyUp);
 
     setLastClick(pt);
     
-    // To avoid hovering over a text box before exit, which causes typing 
-    // with modifier keys in a next test to fail 
-    event = new Event();
-    event.type = SWT.MouseMove;
-    event.x = -1;
-    event.y = -1;
-    postEvent(event);
+//    // To avoid hovering over a text box before exit, which causes typing 
+//    // with modifier keys in a next test to fail 
+//    event = new Event();
+//    event.type = SWT.MouseMove;
+//    event.x = -1;
+//    event.y = -1;
+//    postEvent(event);
     
     processEvents();
     
@@ -567,7 +572,7 @@ public class SwtTestCase {
         (button & SWT.BUTTON2) != 0 ? 2 :
           (button & SWT.BUTTON3) != 0 ? 3 :
             (button & SWT.BUTTON4) != 0 ? 4 :
-              (button & SWT.BUTTON5) != 0 ? 5 : 0;
+              (button & SWT.BUTTON5) != 0 ? 5 : 1;
   }
 
   /**
@@ -578,7 +583,16 @@ public class SwtTestCase {
    * @param end
    */
   public void dragAndDrop(Rectangle start, Rectangle end) {
-    postDragAndDrop(middle(focusControl, start), middle(focusControl, end));
+    dragAndDrop(0, middle(focusControl, start), middle(focusControl, end));
+    processEvents();
+  }
+  
+  public void dragAndDrop(int code, Rectangle ...r) {
+    Point[] p = new Point[r.length];
+    for (int i = 0; i < p.length; i++) {
+      p[i] = middle(focusControl, r[i]);
+    }
+    dragAndDrop(code, p);
     processEvents();
   }
 
@@ -700,8 +714,13 @@ public class SwtTestCase {
    * @param start
    * @param end
    */
-  public void postDragAndDrop(Point start, Point end) {
+  public void dragAndDrop(int code, Point ...p) {
     checkShellVisible();
+    if (p.length == 0) return;
+    
+    Point start = p[0];
+    Point end = p[p.length - 1];
+    
     long duration = System.currentTimeMillis() - lastClickTime;
     if (duration < display.getDoubleClickTime() && start.equals(lastClickPoint)) {
       try {
@@ -709,44 +728,52 @@ public class SwtTestCase {
       }
       catch (InterruptedException e) {}
     }
+    
     Event event = new Event();
     event.type = SWT.MouseMove;
     event.x = start.x;
     event.y = start.y;
     postEvent(event);
-
+    processEvents();
+    
+    int decodedButton = decodeButton(code);
+    if (decodedButton < 1 || 3 < decodedButton) {
+      throw new IllegalArgumentException("Mouse button must be between 1 and 3");
+    }
+    if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyDown);
+    if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyDown);
+    if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyDown);
+    
     event = new Event();
     event.type = SWT.MouseDown;
     event.x = start.x;
     event.y = start.y;
-    event.button = 1;
+    event.button = decodedButton;
     postEvent(event);
+    processEvents();
 
-    // in case start equals end
-    event = new Event();
-    event.type = SWT.MouseMove;
-    event.x = start.x + 5;
-    event.y = start.y + 5;
-    postEvent(event);
-
-    // Dragging columns in Grid does not work without it.
-    // if (focusControl instanceof Grid) {
-    // processEvents();
-    // }
-
-    event = new Event();
-    event.type = SWT.MouseMove;
-    event.x = end.x;
-    event.y = end.y;
-    postEvent(event);
-    // sleep(100);
+    for (int i = 1; i < p.length; i++) {
+      event = new Event();
+      event.type = SWT.MouseMove;
+      event.x = p[i].x;
+      event.y = p[i].y;
+      event.stateMask = code;
+      postEvent(event);
+      processEvents();
+    }
 
     event = new Event();
     event.type = SWT.MouseUp;
     event.x = end.x;
     event.y = end.y;
-    event.button = 1;
+    event.button = decodedButton;
     postEvent(event);
+    processEvents();
+    
+    if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyUp);
+    if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyUp);
+    if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyUp);
+    
     setLastClick(start);
   }
 
@@ -975,8 +1002,24 @@ public class SwtTestCase {
   public static void br() {
     breakFlag = true;
   }
+  
+  
 
   public void assertColor(Color color, int x, int y) {
+    RGB rgb = getRGB(x, y);
+    
+    if (color.getBlue() != rgb.blue || 
+        color.getGreen() != rgb.green ||
+        color.getRed() != rgb.red) {
+      fail(String.format("Wrong color, expected %s, actual %s", color.toString(), rgb.toString()));
+    }
+  }
+
+  public RGB getRGB(Rectangle r, int offset) {
+    return getRGB(r.x + offset, r.y + offset);
+  }
+  
+  public RGB getRGB(int x, int y) {
     GC gc = new GC(display);
     Rectangle bounds = shell.getClientArea();
     Image image = new Image(display, bounds.width, bounds.height);
@@ -989,13 +1032,7 @@ public class SwtTestCase {
     
     RGB rgb = data.palette.getRGB(data.getPixel(x, y));
     gc.dispose();
-    
-    
-    if (color.getBlue() != rgb.blue || 
-        color.getGreen() != rgb.green ||
-        color.getRed() != rgb.red) {
-      fail(String.format("Wrong color, expected %s, actual %s", color.toString(), rgb.toString()));
-    }
+    return rgb;
   }
   
   
@@ -1004,7 +1041,7 @@ public class SwtTestCase {
   public static void listenToAll(Control control) {
     listenToAll(control, new Listener() {
       @Override public void handleEvent(Event event) {
-        System.out.println(getEventType(event));
+        log(event);
       }
     });
   }
@@ -1055,7 +1092,7 @@ public class SwtTestCase {
   }
 
   
-  public static String getEventType(Event e) {
+  public static String getTypeName(Event e) {
     int x = e.type;
     return x == 1 ? "KeyDown" : x == 2 ? "KeyUp" : x == 3 ? "MouseDown"
       : x == 4 ? "MouseUp" : x == 5 ? "MouseMove" : x == 6 ? "MouseEnter"
@@ -1092,5 +1129,58 @@ public class SwtTestCase {
       x == SWT.TRAVERSE_MNEMONIC ? "TRAVERSE_MNEMONIC" :
       x == SWT.TRAVERSE_PAGE_PREVIOUS ? "TRAVERSE_PAGE_PREVIOUS" :
       x == SWT.TRAVERSE_PAGE_NEXT ? "TRAVERSE_PAGE_NEXT" : "";
+  }
+  
+  public static String getStateMaskName(int x) {
+    int[] mask = new int[] 
+      {SWT.MOD1, SWT.MOD2, SWT.MOD3, SWT.BUTTON1, SWT.BUTTON2, SWT.BUTTON3};
+    String[] name= new String[] 
+      {"SWT.MOD1", "SWT.MOD2", "SWT.MOD3", "SWT.BUTTON1", "SWT.BUTTON2", "SWT.BUTTON3"};
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < mask.length; i++) {
+      if ((x & mask[i]) != 0) {
+        if (sb.length() > 0) sb.append("+");
+        sb.append(name[i]);
+      }
+    }
+    return sb.toString();
+  }
+  
+  public static void log(Event e) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(getTypeName(e));
+    if (e.stateMask > 0) {
+      if (sb.length() > 0) sb.append(" ");
+      sb.append(getStateMaskName(e.stateMask));
+    }
+    if (e.character > 0) {
+      if (sb.length() > 0) sb.append(" ");
+      sb.append(e.character);
+    }
+    sb.append(" ");
+    sb.append(e.button + e.keyCode);
+    TestUtil.log(sb);
+  }
+  
+  public Matrix createMatrix() {
+    Matrix matrix = new Matrix(shell, 0);
+//    listenToAll(matrix);
+    matrix.getAxis0().getHeader().setVisible(true);
+    matrix.getAxis1().getHeader().setVisible(true);
+    matrix.getAxis0().getBody().setCount(5);
+    matrix.getAxis1().getBody().setCount(5);
+    focusControl = matrix;
+    shell.open();
+    processEvents();
+    return matrix;
+  }
+
+  public static void log(Object ...s) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < s.length; i++) {
+      if (i > 0) sb.append(" ");
+      sb.append(s[i]);
+    }
+    System.out.println(sb);
   }
 }

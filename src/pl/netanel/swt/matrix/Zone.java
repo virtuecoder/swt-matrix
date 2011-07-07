@@ -127,7 +127,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 
 	
 void setDefaultBodyStyle() {
-	  setDefaultBackground(matrix.getBackground());
+//	  setDefaultBackground(matrix.getBackground());
 	  
 		Painter painter = new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override public String getText(Number index0, Number index1) {
@@ -1041,6 +1041,9 @@ void setDefaultBodyStyle() {
     Event event = new Event();
     event.type = SWT.Selection;
     event.widget = matrix;
+    if (SwtTestCase.breakFlag) {
+//      TestUtil.log(this);
+    }
     listeners.add(event);
   }
 

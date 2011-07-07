@@ -61,8 +61,8 @@ public class MatrixPerformance {
 			sum += time.get(i);
 		}
 		long avg = sum / (time.size() - 1);
-		System.out.println(avg);
-		assertTrue("" + avg + " expected to be <60", avg < 60);
+//		System.out.println(avg);
+		assertTrue("" + avg + " expected to be <= 60", avg <= 60);
 	
 //		while (!shell.isDisposed()) {
 //			if (!display.readAndDispatch()) {
@@ -107,8 +107,8 @@ public class MatrixPerformance {
 			sum += time.get(i);
 		}
 		long avg = sum / (time.size() - 1);
-		System.out.println(avg);
-		assertTrue("" + avg + " expected to be <60", avg < 60);
+//		System.out.println(avg);
+		assertTrue("" + avg + " expected to be <= 60", avg <= 60);
 		
 //		while (!shell.isDisposed()) {
 //			if (!display.readAndDispatch()) {

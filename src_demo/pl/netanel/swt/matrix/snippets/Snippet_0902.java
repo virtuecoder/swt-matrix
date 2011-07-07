@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Shell;
 import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Section;
+import pl.netanel.swt.matrix.SwtTestCase;
 import pl.netanel.swt.matrix.Zone;
 
 /**
@@ -25,6 +26,7 @@ public class Snippet_0902 {
 		shell.setLayout(new FillLayout());
 		
 		Matrix<Integer, Integer> matrix = new Matrix(shell, SWT.NONE);
+		SwtTestCase.listenToAll(matrix);
 		matrix.getAxis0().getHeader().setVisible(true);
 		matrix.getAxis1().getHeader().setVisible(true);
 		final Section<Integer> body0 = matrix.getAxis0().getBody();
@@ -34,59 +36,60 @@ public class Snippet_0902 {
 		body1.setDefaultResizable(true);
 		body1.setDefaultMoveable(true);
 		
-		// Cell selection
-		final Zone<Integer, Integer> body = matrix.getBody();
-		body.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				StringBuilder sb = new StringBuilder();
-				Iterator<Number[]> it = body.getSelectedExtentIterator();
-				while (it.hasNext()) {
-					if (sb.length() > 0) sb.append(", ");
-					Number[] n = it.next();
-					sb.append(n[0]).append("-").append(n[1]).append(":");
-					sb.append(n[2]).append("-").append(n[3]);
-				}
-				sb.insert(0, "Cells selected: ");
-				System.out.println(sb);
-			}
-		});
-		
-		body0.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				selectedItems("Rows selected: ", body0.getSelectedExtentIterator());
-			}
-		});
-		
-		body1.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				selectedItems("Columns selected: ", body1.getSelectedExtentIterator());
-			}
-		});
-		
-		body1.addControlListener(new ControlAdapter() {
-			@Override
-			public void controlResized(ControlEvent e) {
-				AxisItem<Integer> item = (AxisItem<Integer>) e.data;
-				if (body1.getSelectedCount() > 0) {
-					selectedItems("Columns resized: ", body1.getSelectedExtentIterator());
-				} else {
-					System.out.println("Columns resized: " + item.getIndex()); 
-				}
-				
-				System.out.println("New size: " + 
-						body1.getCellWidth(item.getIndex()));
-			}
-			@Override
-			public void controlMoved(ControlEvent e) {
-				selectedItems("Columns moved: ", body1.getSelectedExtentIterator());
-				
-				AxisItem<Integer> item = (AxisItem<Integer>) e.data;
-				System.out.println("Target: " + item);
-			}
-		});
+//		// Cell selection
+//		final Zone<Integer, Integer> body = matrix.getBody();
+//		body.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				StringBuilder sb = new StringBuilder();
+//				Iterator<Number[]> it = body.getSelectedExtentIterator();
+//				while (it.hasNext()) {
+//					if (sb.length() > 0) sb.append(", ");
+//					Number[] n = it.next();
+//					sb.append(n[0]).append("-").append(n[1]).append(":");
+//					sb.append(n[2]).append("-").append(n[3]);
+//				}
+//				sb.insert(0, "Cells selected: ");
+//				System.out.println(sb);
+//			}
+//		});
+//		
+//		body0.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				selectedItems("Rows selected: ", body0.getSelectedExtentIterator());
+//			}
+//		});
+//		
+//		body1.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				selectedItems("Columns selected: ", body1.getSelectedExtentIterator());
+//			}
+//		});
+//		
+//		body1.addControlListener(new ControlAdapter() {
+//			@Override
+//			public void controlResized(ControlEvent e) {
+//				AxisItem<Integer> item = (AxisItem<Integer>) e.data;
+//				Section<Integer> section = item.getSection();
+//        if (section.getSelectedCount() > 0) {
+//					selectedItems("Columns resized: ", section.getSelectedExtentIterator());
+//				} else {
+//					System.out.println("Columns resized: " + item.getIndex()); 
+//				}
+//				
+//				System.out.println("New size: " + 
+//				  section.getCellWidth(item.getIndex()));
+//			}
+//			@Override
+//			public void controlMoved(ControlEvent e) {
+//				selectedItems("Columns moved: ", body1.getSelectedExtentIterator());
+//				
+//				AxisItem<Integer> item = (AxisItem<Integer>) e.data;
+//				System.out.println("Target: section " + item.getSection() + ", index " + item.getIndex());
+//			}
+//		});
 		
 		shell.setBounds(400, 200, 400, 300);
 		shell.open();

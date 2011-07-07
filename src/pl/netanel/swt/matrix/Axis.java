@@ -562,23 +562,40 @@ public class Axis<N extends Number>  {
 		if (comparePosition(start, end) > 0) {
 			AxisItem tmp = start; start = end; end = tmp;
 		}
-		
-		for (int i = start.getSection().index; i <= end.getSection().index; i++) {
-			Section section = sections.get(i);
-			Number startIndex = i == start.getSection().index ? start.getIndex() : math.ZERO_VALUE();
-			Number endIndex = i == end.getSection().index ? end.getIndex() : 
-				math.increment(section.getCount());
-			section.setSelected(startIndex, endIndex, select);
-			
-			if (select == true) {
-				Event event = new Event();
-				event.type = SWT.Selection;
-				event.widget = matrix;
-				//event.data = matrix.getZone(axisIndex == 0 ? Zone.ROW_HEADER : Zone.COLUMN_HEADER);
-				section.listeners.add(event);
 
-			}
-		}
+		Section lastSection = null;
+    AxisExtentSequence seq = new AxisExtentSequence(math, sections);
+    for (seq.init(start, end); seq.next();) {
+      boolean sameSection = !seq.section.equals(lastSection);
+      seq.section.setSelected(seq.start, seq.end, select, sameSection);
+      
+      if (select == true && sameSection) {
+        lastSection = seq.section;
+        Event event = new Event();
+        event.type = SWT.Selection;
+        event.widget = matrix;
+        //event.data = matrix.getZone(axisIndex == 0 ? Zone.ROW_HEADER : Zone.COLUMN_HEADER);
+        seq.section.listeners.add(event);
+      }
+    }
+
+//		for (int i = start.getSection().index; i <= end.getSection().index; i++) {
+//			Section section = sections.get(i);
+//			Number startIndex = i == start.getSection().index ? start.getIndex() : math.ZERO_VALUE();
+//			Number endIndex = i == end.getSection().index ? end.getIndex() : 
+//				math.increment(section.getCount());
+//			
+//			section.setSelected(startIndex, endIndex, select);
+//			
+//			if (select == true) {
+//				Event event = new Event();
+//				event.type = SWT.Selection;
+//				event.widget = matrix;
+//				//event.data = matrix.getZone(axisIndex == 0 ? Zone.ROW_HEADER : Zone.COLUMN_HEADER);
+//				section.listeners.add(event);
+//
+//			}
+//		}
 	}
 
 	void setSelected(boolean selected) {
@@ -588,9 +605,9 @@ public class Axis<N extends Number>  {
 		}
 	}
 
-	void selectInZones(Section<N> section, N start, N end) {
+	void selectInZones(Section<N> section, N start, N end, boolean state, boolean notify) {
 		if (matrix != null) {
-			matrix.selectInZones(index, section, start, end);
+			matrix.selectInZones(index, section, start, end, state, notify);
 		}
 	}
 	

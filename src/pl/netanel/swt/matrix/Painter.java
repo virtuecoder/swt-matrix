@@ -218,7 +218,9 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		lastBackground = defaultBackground = zone.getDefaultBackground();
 		selectionBackground = zone.getSelectionBackground();
 		selectionForeground = zone.getSelectionForeground();
-		gc.setForeground(lastForeground);
+		if (lastForeground != null) {
+		  gc.setForeground(lastForeground);
+		}
 		if (lastBackground != null) {
 			gc.setBackground(lastBackground);
 			gc.fillRectangle(zone.getBounds());

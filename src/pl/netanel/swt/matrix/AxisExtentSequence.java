@@ -26,7 +26,9 @@ class AxisExtentSequence<N extends Number> {
 			AxisItem.create(section2, math.decrement(section2.getCount())));
 	}
 	void init(AxisItem startItem, AxisItem endItem) {
-		this.startItemIndex = sections.indexOf(startItem.getSection());
+		this.startItem = startItem;
+    this.endItem = endItem;
+    this.startItemIndex = sections.indexOf(startItem.getSection());
 		this.endItemIndex = sections.indexOf(endItem.getSection());
 		Section sl;
 		sl = startItem.getSection();
@@ -36,7 +38,7 @@ class AxisExtentSequence<N extends Number> {
 		iend = sl.order.items.isEmpty() ? 0 : sl.order
 				.getExtentIndex(endItem.getIndex());
 
-		Section section = startItem.getSection();
+		section = startItem.getSection();
 		sectionIndex = sections.indexOf(section);
 		items = section.order.items;
 		i = istart;
@@ -47,7 +49,8 @@ class AxisExtentSequence<N extends Number> {
 			sectionIndex++;
 			if (sectionIndex > endItemIndex)
 				return false;
-			items = sections.get(sectionIndex).order.items;
+			section = sections.get(sectionIndex);
+      items = section.order.items;
 			i = 0;
 		}
 		Extent e = items.get(i);

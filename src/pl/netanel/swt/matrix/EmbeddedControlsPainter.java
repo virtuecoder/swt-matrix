@@ -6,8 +6,6 @@ import java.util.Map.Entry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -25,8 +23,6 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 	boolean needsPainting;
 	private Listener focusInListener;
 	private ControlListener controlListener;
-	private Point location;
-	private Rectangle bounds;
 
 	public EmbeddedControlsPainter(final ZoneEditor<N0, N1> editor) {
 		super("embedded controls", Painter.SCOPE_CELLS_HORIZONTALLY);
@@ -84,6 +80,11 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 		if (editor.hasEmbeddedControl(index0, index1)) {
 			Control control = editor.addControl(index0, index1);
 			control.addListener(SWT.FocusIn, focusInListener );
+			control.addListener(SWT.Selection, new Listener() {
+        @Override public void handleEvent(Event event) {
+          getMatrix().forceFocus();
+        }
+      });
 			
 //			control.addListener(SWT.Selection, listener );
 			HashMap<Number, Control> row = controls.get(index0);
@@ -98,11 +99,7 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 	public void clean() {
 		if (needsPainting) {
 			getMatrix().forceFocus();
-		}
 		needsPainting = false;
-		getMatrix().setLocation(location);
-		if (bounds.width > 0) {
-			getMatrix().setBounds(bounds);
 		}
 	}
 	
@@ -127,18 +124,6 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 		matrix.layout0.callbacks.add(r);
 		matrix.layout1.callbacks.add(r);
 		
-		// Resize
-		location = matrix.getLocation();
-		bounds = matrix.getBounds();
-		matrix.getParent().addListener(SWT.Resize, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				needsPainting = true;
-				location = matrix.getLocation();
-				bounds = matrix.getBounds();
-				matrix.redraw();
-			}
-		});
 		super.setMatrix(matrix);
 	}
 }

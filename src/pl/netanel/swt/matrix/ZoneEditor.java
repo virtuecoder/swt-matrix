@@ -55,7 +55,6 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	private static final Calendar CALENDAR = Calendar.getInstance();
 	private static final String NEW_LINE = System.getProperty("line.separator");
  
-
 	final Zone<N0, N1> zone;
 	final CommandListener controlListener;
 	
@@ -165,10 +164,15 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 				}
 			};
 		};
+		controlListener.bind(CMD_EDIT_DEACTIVATE_CANCEL, SWT.KeyDown, SWT.ESC);
 		controlListener.bind(CMD_EDIT_DEACTIVATE_APPLY, SWT.KeyDown, SWT.CR);
 		controlListener.bind(CMD_EDIT_DEACTIVATE_APPLY, SWT.FocusOut, 0);
-//		controlListener.bind(CMD_EDIT_DEACTIVATE_APPLY, SWT.Selection, 0);
-		controlListener.bind(CMD_EDIT_DEACTIVATE_CANCEL, SWT.KeyDown, SWT.ESC);
+		controlListener.bindings.add(new GestureBinding(CMD_EDIT_DEACTIVATE_APPLY, SWT.Selection, 0) {
+		  @Override public boolean isMatching(Event e) {
+		    if (!(e.widget instanceof Button)) return false;
+		    return super.isMatching(e);
+		  }
+		});
 	}
 
 

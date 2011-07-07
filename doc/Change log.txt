@@ -1,36 +1,40 @@
 -------------------------------------------------------------------------------
-Version 0.2.1
-New featues:
+Version 0.3
+New features:
 - Ability to activate an editor control by typing printable characters
-- Snippet for in-place addidng a new row
+- Snippet for in-place adding a new row
 - Executing focus cell navigation commands with Matrix.executeCommand(int commandId)
+- New commands CMD_EDIT_DEACTIVATE_APPLY and CMD_EDIT_DEACTIVATE_CANCEL 
 
-API changes
-- Matrix class:
-  - renamed all editing commands to have the CMD_EDIT_ prefix.
-  - added command CMD_EDIT_APPLY
-  - removed GetZoneUnchecked()
-  - Matrix.executeCommand(int commandId)
-- Zone
-  - removed getSectionUnchecked()
-- ZoneEditor class:
-  - renamed setEmulationPath(String) to setImagePath(String)
-  - removed snapControlImages(String)
-    
 Bug fixes:
 - Traversing with (Shift+) Tab from Matrix was not bound by default
 - Selection event was causing control deactivation in ZoneEditor.
 - Sorting did not work correctly in Snippet_0005.
 - Resizing of embedded controls did layout incorrectly.
 - Combo item was not getting selected after editor activation.
+- Change of focus cell by keyboard did not add the focus cell to selection.
+- Removed double selection notification when selecting columns or rows
+- Columns selection after reordering was incorrect
+- Altering of columns selection with Ctrl did not work
+
+API changes
+- Matrix class:
+  - renamed all editing commands to have the CMD_EDIT_ prefix.
+  - removed getZoneUnchecked() - now the zone returned by getZone() is not checking the parameters to speed up performance
+  - Matrix.executeCommand(int commandId)
+- Zone
+  - removed getSectionUnchecked() - now the section returned by getSection() is not checking the parameters to speed up performance
+- ZoneEditor class:
+  - renamed setEmulationPath(String) to setImagePath(String)
+  - removed snapControlImages(String)
 
 -------------------------------------------------------------------------------s
 Version 0.2
 New features:
 - Zone editor with support for Text, Combo, DateTime and check Button controls
 - Embedded controls
-- Emulated checkboxes with current system theme
-- Customizeable copy and paste
+- Emulated check boxes with current system theme
+- Customizable copy and paste
 
 API changes
 - Painter class:

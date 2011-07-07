@@ -835,7 +835,7 @@ class SectionClient<N extends Number> extends Section<N> {
 	}
 
 	public void setSelected(N index, boolean state) {
-		core.setSelected(index, state);
+	  core.setSelected(index, state);
 	}
 
 	/*------------------------------------------------------------------------

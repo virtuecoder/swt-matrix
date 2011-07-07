@@ -4,9 +4,11 @@ From nebula forum
 - Nebula CompositeTable, flexible row layout
 
 To do:
+- single focus cell should not be considered selected (like in spreadsheets)
+- snippet with selection background and custom foreground
+- scroll to focus on resizing
 - Replace refresh() with layout() and redraw()
 - various matrix layouts?
-- traverse cells with tab
 - emulate combo
 - snippet hide control instead of dispose
 - sample on different editor in for edit then display

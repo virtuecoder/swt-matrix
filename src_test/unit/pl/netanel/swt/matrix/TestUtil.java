@@ -1,11 +1,8 @@
 package pl.netanel.swt.matrix;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Layout.LayoutSequence;
@@ -134,41 +131,6 @@ class TestUtil {
 				display.sleep();
 			}
 		}
-	}
-
-	static void click(Matrix matrix, Rectangle bounds, int button, int stateMask) {
-//	  Point p = matrix.toDisplay(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
-	  Point p = new Point(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
-
-	  // Move
-	  handleEvent(matrix, SWT.MouseMove, p, 0, 0);
-	  handleEvent(matrix, SWT.MouseDown, p, 1, 0);
-	  handleEvent(matrix, SWT.MouseUp, p, 1, 0);
-	}
-	
-	public static void type(Matrix matrix, String s) {
-	  for (int i = 0; i < s.length(); i++) {
-	    char c = s.charAt(i);
-      handleEvent(matrix, SWT.KeyDown, c);
-	    handleEvent(matrix, SWT.KeyUp, c);
-    }
-	}
-	
-	static void handleEvent(Matrix matrix, int type, char c) {
-	  Event e = new Event();
-	  e.type = type;
-	  e.character = c;
-	  matrix.listener.handleEvent(e); 
-	}
-
-  static void handleEvent(Matrix matrix, int type, Point p, int button, int stateMask) {
-	  Event e = new Event();
-	  e.type = type;
-    e.x = p.x;
-    e.y = p.y;
-    e.button = button;
-    e.stateMask = stateMask;
-    matrix.listener.handleEvent(e); 
 	}
 
   public static void log(Object ...o) {

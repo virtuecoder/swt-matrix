@@ -54,7 +54,7 @@ public class Section<N extends Number> {
 	private final IntAxisState lineWidth;
 	private final ObjectAxisState<N> cellSpan;
 	
-	private final NumberQueueSet<N> selection;
+	final NumberQueueSet<N> selection;
 	private final NumberQueueSet<N> lastSelection;
 
 	private boolean defaultResizable, defaultMoveable, defaultHideable; 
@@ -777,16 +777,19 @@ public class Section<N extends Number> {
 	 *
 	 * @param index index of the item to hide   
 	 * @param state the new hiding state
+	 * @param notify 
 	 * @see #setSelected(Number, Number, boolean)
 	 */ 
 	public void setSelected(N index, boolean state) {
 		hidden.change(index, index, state);
 	}
 	
+	
 	/**
 	 * Sets the selection state for the range of items.
 	 * <p>
-	 * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position of the item on the screen
+	 * <code>start</code> and <code>end</code> indexes refer to the model, 
+	 * not the visual position of the item on the screen
 	 * which can be altered by move and hide operations.
 	 *
 	 * @param start first index of the range of items  
@@ -797,8 +800,16 @@ public class Section<N extends Number> {
 		selection.change(start, end, state);
 		
 		if (axis != null) {
-			axis.selectInZones(this, start, end);
+			axis.selectInZones(this, start, end, state, false);
 		}
+	}
+	
+	void setSelected(N start, N end, boolean state, boolean notify) {
+	  selection.change(start, end, state);
+	  
+	  if (axis != null) {
+	    axis.selectInZones(this, start, end, state, notify);
+	  }
 	}
 	
 	/**

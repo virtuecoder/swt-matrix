@@ -27,6 +27,7 @@ public class Snippet_0010 {
 		matrix.getAxis0().getBody().setCount(1000);
 		
 		matrix.getBody().setDefaultForeground(matrix.getBackground());
+		matrix.getBody().setDefaultBackground(null);
 		
 		// Create an image
 		final Image image2 = new Image(display, 100, 100);
