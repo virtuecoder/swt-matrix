@@ -13,7 +13,7 @@ import org.junit.Test;
 public class SelectTest extends SwtTestCase {
   
   @Test public void initialSelection() throws Exception {
-    Matrix matrix = createMatrix();
+    Matrix matrix = createMatrix(); 
     Zone body = matrix.getBody();
     Zone columnHeader = matrix.getColumnHeader();
     Rectangle bounds = body.getCellBounds(0, 0);
@@ -22,22 +22,99 @@ public class SelectTest extends SwtTestCase {
     assertEquals(0, matrix.getAxis1().getBody().getSelectedCount());
     assertEquals(0, columnHeader.getSelectedCount().intValue());
     
-    // Body cell should be selected
-    assertEquals(1, body.getSelectedCount().intValue());
+    // Body cell should be not selected
+    assertEquals(0, body.getSelectedCount().intValue());
     
     // Body cell should not be highlighted    
     assertColor(matrix.getBackground(), bounds.x+2, bounds.y+2);
   }
   
-  @Test public void notifyWhenBodySelectedByFocusKey() throws Exception {
+  @Test public void noNotificationOnBodyNavigationKey() throws Exception {
     Matrix matrix = createMatrix();
     Zone body = matrix.getBody();
-    ZoneSelectionCounter counter = new ZoneSelectionCounter(body);
+    Rectangle bounds = body.getCellBounds(0, 0);
+
+    press(SWT.ARROW_RIGHT);
+    
+    // Body cell should not be selected
+    assertEquals(0, body.getSelectedCount().intValue());
+    
+    // Body cell should not be highlighted    
+    assertColor(matrix.getBackground(), bounds.x+2, bounds.y+2);
+  }
+  
+  @Test public void noNotificationOnBodyMouseClick() throws Exception {
+    Matrix matrix = createMatrix();
+    Zone body = matrix.getBody();
+    Section columnSection = matrix.getAxis1().getBody();
+    Rectangle bounds = body.getCellBounds(2, 2);
+    
+    ZoneSelectionCounter zoneCounter = new ZoneSelectionCounter(body);
+    SectionSelectionCounter sectionCounter = new SectionSelectionCounter(columnSection);
+    click(matrix, bounds);
+    
+    assertEquals(0, zoneCounter.count);
+    assertEquals(0, sectionCounter.count);
+    
+    // Body cell should not be selected
+    assertEquals(0, body.getSelectedCount().intValue());
+    
+    // Body cell should not be highlighted    
+    assertColor(matrix.getBackground(), bounds.x+2, bounds.y+2);
+  }
+  
+  @Test
+  public void selectBodyAppend() throws Exception {
+    Matrix matrix = createMatrix();
+    Zone body = matrix.getBody();
+    Rectangle bounds = matrix.getBody().getCellBounds(2, 2);
+    
+    click(matrix, bounds, SWT.MOD1 | SWT.BUTTON1);
+    
+    assertEquals(2, matrix.getBody().getSelectedCount().intValue());
+    assertColor(body.getSelectionBackground(), bounds.x+2, bounds.y+2);
+  }
+  
+  
+  @Test public void unselectBodyByKeyFocusChange() throws Exception {
+    Matrix matrix = createMatrix();
+    Zone body = matrix.getBody();
+    Rectangle bounds = body.getCellBounds(0, 0);
+    body.setSelected(0, 2, 0, 2, true);
     
     press(SWT.ARROW_RIGHT);
-    assertEquals(1, body.getSelectedCount().intValue());
-    assertEquals(1, counter.count);
+    
+    // Body cell should not be selected
+    assertEquals(0, body.getSelectedCount().intValue());
+    
+    // Body cell should not be highlighted    
+    assertColor(matrix.getBackground(), bounds.x+2, bounds.y+2);
   }
+  
+  @Test public void unselectBodyByClick() throws Exception {
+    Matrix matrix = createMatrix();
+    Zone body = matrix.getBody();
+    Rectangle bounds = body.getCellBounds(0, 0);
+    body.setSelected(0, 2, 0, 2, true);
+    
+    click(matrix, body.getCellBounds(3, 3));
+    
+    // Body cell should not be selected
+    assertEquals(0, body.getSelectedCount().intValue());
+    
+    // Body cell should not be highlighted    
+    assertColor(matrix.getBackground(), bounds.x+2, bounds.y+2);
+  }
+  
+//  @Test public void notifyWhenBodySelectedByFocusKey() throws Exception {
+//    Matrix matrix = createMatrix();
+//    Zone body = matrix.getBody();
+//    ZoneSelectionCounter counter = new ZoneSelectionCounter(body);
+//    
+//    press(SWT.ARROW_RIGHT);
+//    assertEquals(1, body.getSelectedCount().intValue());
+//    assertEquals(1, counter.count);
+//  }
   
   @Test public void notifiedWhenColumnsSelectedByShiftClick() throws Exception {
     Matrix matrix = createMatrix();
@@ -65,13 +142,12 @@ public class SelectTest extends SwtTestCase {
     
     SectionSelectionCounter sectionCounter = new SectionSelectionCounter(matrix.getAxis1().getBody());
     ZoneSelectionCounter zoneCounter = new ZoneSelectionCounter(columnHeader);
-    br();
-    click(matrix, columnHeader.getCellBounds(0, 3), SWT.MOD2 | SWT.BUTTON1);
-    SwtTestCase.breakFlag = false;
-    assertEquals(3, columnHeader.getSelectedCount().intValue());
-    assertEquals(1, sectionCounter.count);
-    assertEquals(1, zoneCounter.count);
     
+    click(matrix, columnHeader.getCellBounds(0, 3), SWT.MOD2 | SWT.BUTTON1);
+    
+    assertEquals(3, columnHeader.getSelectedCount().intValue());
+    assertEquals(2, sectionCounter.count);
+    assertEquals(2, zoneCounter.count);
     
     click(matrix, columnHeader.getCellBounds(0, 1), SWT.MOD2 | SWT.BUTTON1);
   }
@@ -94,13 +170,18 @@ public class SelectTest extends SwtTestCase {
     Matrix matrix = createMatrix();
     Zone body = matrix.getBody();
     Zone columnHeader = matrix.getColumnHeader();
+    Section columnSection = matrix.getAxis1().getBody();
     Rectangle bounds = body.getCellBounds(0, 0);
     Rectangle bounds2 = columnHeader.getCellBounds(0, 0);
     
+    SectionSelectionCounter sectionCounter = new SectionSelectionCounter(columnSection);
     click(matrix, bounds2);
     
+    // Notification count
+    assertEquals(1, sectionCounter.count);
+    
     // Axis item and header cell should be selected
-    assertEquals(1, matrix.getAxis1().getBody().getSelectedCount());
+    assertEquals(1, columnSection.getSelectedCount());
     assertEquals(1, columnHeader.getSelectedCount().intValue());
     
     // Body cell should be highlighted
@@ -108,6 +189,15 @@ public class SelectTest extends SwtTestCase {
     
     // Column header cell should be highlighted
     assertColor(columnHeader.getSelectionBackground(), bounds2.x+2, bounds2.y+2);
+    
+    // Click again should notify 
+    sectionCounter.count = 0;
+    click(matrix, bounds2);
+    assertEquals(1, sectionCounter.count);
+
+    // Click another column should deselect body cells in the previous one
+    click(matrix, columnHeader.getCellBounds(0, 2));
+    assertColor(matrix.getBackground(), bounds.x+2, bounds.y+2);
   }
   
   @Test public void unselectColumnOnHeaderCtrlClick() throws Exception {
@@ -132,7 +222,8 @@ public class SelectTest extends SwtTestCase {
     Rectangle bounds2 = columnHeader.getCellBounds(0, 3);
     
     matrix.getAxis1().getBody().setSelected(0, 2, true);
-    
+    matrix.redraw();
+
     dragAndDrop(SWT.MOD1, bounds1, bounds2);
     
     // Axis item and header cell should be selected
@@ -192,18 +283,7 @@ public class SelectTest extends SwtTestCase {
   }
   
   
-  @Test
-  public void selectBodyAppend() throws Exception {
-    Matrix matrix = createMatrix();
-    Zone body = matrix.getBody();
-    Rectangle bounds = matrix.getBody().getCellBounds(2, 2);
-    
-    click(matrix, bounds, SWT.MOD1 | SWT.BUTTON1);
-    
-    assertEquals(2, matrix.getBody().getSelectedCount().intValue());
-    assertColor(body.getSelectionBackground(), bounds.x+2, bounds.y+2);
-  }
-  
+
   
   static class ZoneSelectionCounter implements SelectionListener {
     int count;

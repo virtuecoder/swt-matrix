@@ -110,13 +110,11 @@ public class Section<N extends Number> {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof SectionClient) obj = ((SectionClient) obj).core;
 		return super.equals(obj);
 	}
 	
 	@Override
 	public int hashCode() {
-		if (this instanceof SectionClient) return ((SectionClient) this).hashCode();
 		return super.hashCode();
 	}
 
@@ -805,7 +803,28 @@ public class Section<N extends Number> {
 	}
 	
 	void setSelected(N start, N end, boolean state, boolean notify) {
+	// Determine if there is a selection change
+//    boolean modified = false;
+//    if (notify) {
+//        if (state == true) {
+//          boolean allSelected = getSelectedCount().equals(getCount());
+//          if (!allSelected) {
+//            modified = true;
+//          }
+//        }
+//        else {
+//          boolean nothingSelected = getSelectedCount().equals(math.ZERO_VALUE());
+//          if (!nothingSelected) {
+//            modified = true;
+//          }
+//        }
+//    }
+    
 	  selection.change(start, end, state);
+	  
+//	  if (modified) {
+      addSelectionEvent();
+//    }
 	  
 	  if (axis != null) {
 	    axis.selectInZones(this, start, end, state, notify);
@@ -816,13 +835,20 @@ public class Section<N extends Number> {
 	 * Sets the selection state for all the items.
 	 * 
 	 * @param state the new selection state
+	 * @param notify 
 	 */ 
-	public void setSelectedAll(boolean state) {
+	public void setSelectedAll(boolean state, boolean notify, boolean notifyInZones) {
+	  N start = math.ZERO_VALUE();
+	  N end = math.decrement(count);
 		if (state) {
-			selection.add(math.ZERO_VALUE(), math.decrement(count));
+      selection.add(start, end);
 		} else {
 			selection.clear();
 		}
+		
+		if (axis != null) {
+      axis.selectInZones(this, start, end, state, notifyInZones);
+    }
 	}
 	
 	/**

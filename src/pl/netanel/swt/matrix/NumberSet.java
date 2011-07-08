@@ -269,9 +269,9 @@ class NumberSet<N extends Number> {
 		modCount++;
 	}
 	
-	public void replace(NumberSet set) {
+	public void replace(NumberSet<N> set) {
 		items.clear();
-		for (Extent<N> e: items) {
+		for (Extent<N> e: set.items) {
 			items.add(new Extent(math.create(e.start()), math.create(e.end())));
 		}
 	}

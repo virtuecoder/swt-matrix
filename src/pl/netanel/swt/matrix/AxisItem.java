@@ -24,7 +24,6 @@ public class AxisItem<N extends Number> {
 	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	AxisItem(Section<N> section, N index) {
-		if (section instanceof SectionClient) section = ((SectionClient) section).core;
 		Preconditions.checkNotNullWithName(section, "section");
 		Preconditions.checkNotNullWithName(index, "index");
 		section.checkIndex(index, section.math.increment(section.getCount()), "index");

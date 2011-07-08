@@ -1,7 +1,5 @@
 package pl.netanel.swt.matrix;
 
-import java.math.BigInteger;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -147,7 +145,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 
 	private Color lastForeground, lastBackground, defaultBackground, defaultForeground,  
 		 selectionBackground, selectionForeground;
-	private boolean shouldHighlight;
+//	private boolean shouldHighlight;
 //	private boolean backgroundEnabled, foregroundEnabled;
 
 	private Font lastFont;
@@ -229,15 +227,15 @@ public class Painter<N0 extends Number, N1 extends Number> {
 //		foregroundEnabled = zone.isForegroundEnabled();
 		
 		// Body must be checked otherwise a header of a single item selected would not be highlighted 
-		BigInteger selectionCount = BigInteger.ZERO;
-		for (Zone zone: matrix) {
-		  selectionCount = selectionCount.add(zone.getSelectedCount());
-		}
-		
-		shouldHighlight = 
-		  !zone.section0.isFocusItemEnabled() ||
-		  !zone.section1.isFocusItemEnabled() ||
-		  selectionCount.compareTo(BigInteger.ONE) > 0;
+//		BigInteger selectionCount = BigInteger.ZERO;
+//		for (Zone zone: matrix) {
+//		  selectionCount = selectionCount.add(zone.getSelectedCount());
+//		}
+//		
+//		shouldHighlight = 
+//		  !zone.section0.isFocusItemEnabled() ||
+//		  !zone.section1.isFocusItemEnabled() ||
+//		  selectionCount.compareTo(BigInteger.ONE) > 0;
 		  
 //		shouldHighlight = zone.isSingleCellSelectionHighlight() || 
 //		  zone.getSelectionCount().compareTo(BigInteger.ONE) != 0;
@@ -277,7 +275,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
 		Color foreground2 = foreground == null ? defaultForeground : foreground; 
 		Color background2 = background == null ? defaultBackground : background;
-		if (shouldHighlight && zone != null && zone.isSelected(index0, index1)) {
+		if (zone != null && zone.isSelected(index0, index1)) {
 			// TODO Revise and maybe optimize the background / foreground color setting algorithm
 			foreground2 = selectionForeground;  
 			background2 = selectionBackground;

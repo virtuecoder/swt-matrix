@@ -56,6 +56,7 @@ import static pl.netanel.swt.matrix.Matrix.CMD_TRAVERSE_TAB_PREVIOUS;
 import static pl.netanel.swt.matrix.Matrix.isBodySelect;
 import static pl.netanel.swt.matrix.Matrix.isExtendingSelect;
 
+import java.math.BigInteger;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -84,7 +85,8 @@ class MatrixListener implements Listener {
 		SWT.FocusIn, SWT.FocusOut, SWT.Expand, SWT.Collapse, SWT.Iconify, SWT.Deiconify, SWT.Close, 
 		SWT.Show, SWT.Hide, SWT.Modify, SWT.Verify, */
 		SWT.Activate, SWT.Deactivate,  
-		/* SWT.Help, SWT.DragDetect, listening to DragDetect causes the MouseMove to skip 4 pixels */ 
+		/* SWT.Help, */
+		SWT.DragDetect, //listening to DragDetect causes the MouseMove to skip 4 pixels  
 		/* SWT.Arm, SWT.Traverse, SWT.MouseHover, SWT.HardKeyDown, SWT.HardKeyUp, SWT.MenuDetect, 
 		SWT.SetData, SWT.MouseWheel, SWT.Settings, SWT.EraseItem, SWT.MeasureItem, 
 		SWT.PaintItem, SWT.ImeComposition */
@@ -123,13 +125,13 @@ class MatrixListener implements Listener {
 			}
 		}
 
-    	// Add new Listener 
-    	for (int i = 0; i < EVENTS.length; i++) {
-    		matrix.addListener(EVENTS[i], this);
+		// Add new Listener 
+		for (int i = 0; i < EVENTS.length; i++) {
+		  matrix.addListener(EVENTS[i], this);
 		}
-    	matrix.listener = this; 
-    	
-    	instantMoving = true;
+		matrix.listener = this; 
+
+		instantMoving = true;
 	}
 
 	
@@ -154,11 +156,12 @@ class MatrixListener implements Listener {
 				zone = matrix.model.getZoneUnchecked(state0.item.getSection(), state1.item.getSection());
 			}
 
-			state0.update(e, e.y);
-			state1.update(e, e.x);
 			if (e.type == SWT.MouseDown && e.button == 1) {
+			  mouseDown = true;
 			  matrix.forceFocus();
 			}
+			state0.update(e, e.y);
+			state1.update(e, e.x);
 			
 			// Execute zone listeners
 			/* TODO Make zone detection only for x,y events (mouse and maybe something else),
@@ -202,7 +205,7 @@ class MatrixListener implements Listener {
 		private final int axisIndex;
 		Axis<N> axis;
 		Layout layout;
-		AxisItem<N> last, item, prev, resizeItem;
+		AxisItem<N> last, item, prev, resizeItem, lastFocus;
 		boolean moving, resizing, itemModified = true;
 		Event mouseMoveEvent;
 		Cursor resizeCursor;
@@ -265,9 +268,15 @@ class MatrixListener implements Listener {
 				break;
 				
 			case SWT.MouseDown:
-				mouseDown = e.button == 1;
-				lastDistance = distance;
-				if (mouseDown && isInHeader() && e.stateMask == 0) {
+			  lastFocus = axis.getFocusItem();
+			  lastDistance = distance;
+			  prev = null;
+			  break;
+			  
+			case SWT.DragDetect:
+				boolean noModifiers = (e.stateMask & SWT.MOD1) == 0 && (e.stateMask & SWT.MOD2) == 0
+				  && (e.stateMask & SWT.MOD3) == 0;
+				if (mouseDown && isInHeader() && noModifiers) {
 					if (resizeItem != null) {
 						resizing = true;
 						resizeStartDistance = distance;
@@ -279,7 +288,6 @@ class MatrixListener implements Listener {
 						matrix.setCursor(cursor = Resources.getCursor(SWT.CURSOR_HAND));
 					}
 				}
-				prev = null;
 				break;
 				
 			case SWT.MouseUp:
@@ -379,7 +387,7 @@ class MatrixListener implements Listener {
 
 		public void moveFocusItem(Move move) {
 			if (matrix.isFocusCellEnabled() && item != null)  {
-				matrix.model.setSelected(false);
+//				matrix.model.setSelected(false, false);
 				focusMoved = layout.moveFocusItem(move);
 				if (focusMoved) {
 					axis.scroll();
@@ -404,7 +412,7 @@ class MatrixListener implements Listener {
         ? prev == null ? !isSelected(last) : selectState   
         : true;
       
-      TestUtil.log(last, item, isSelected(last), prev, selectState);
+//      TestUtil.log(last, item, isSelected(last), prev, selectState);
       
       // Make sure start < end
       boolean forward = axis.comparePosition(last, item) <= 0;
@@ -428,8 +436,8 @@ class MatrixListener implements Listener {
 			}
 			
 			if (!ctrlSelection) {
-				axis.setSelected(false);
-				matrix.model.setSelected(false);
+				axis.setSelected(false, false, false);
+//				matrix.model.setSelected(false);
 			}
 			
 			axis.setSelected(start, end, selectState);
@@ -672,6 +680,8 @@ class MatrixListener implements Listener {
 			rowHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1);
 			rowHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseMove, SWT.BUTTON1);
 			rowHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1);
+			rowHeader.unbind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
+			rowHeader.unbind(Matrix.CMD_FOCUS_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | 1);
 
 		}
 		if (columnHeader != null) {
@@ -687,10 +697,14 @@ class MatrixListener implements Listener {
 			columnHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1);
 			columnHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseMove, SWT.BUTTON1);
 			columnHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1);
+			columnHeader.unbind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
+			columnHeader.unbind(Matrix.CMD_FOCUS_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | 1);
 		}
 		if (topLeft != null) {
 			// Select all on top left click
 			topLeft.bind(new GestureBinding(Matrix.CMD_SELECT_ALL, SWT.MouseDown, 1));
+			topLeft.unbind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
+			topLeft.unbind(Matrix.CMD_FOCUS_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | 1);
 		}
 		
 		// Modification
@@ -734,7 +748,7 @@ class MatrixListener implements Listener {
 		backupRestoreSelection(commandId);
 		
 		switch (commandId) {
-		case CMD_SELECT_ALL:		    matrix.model.setSelected(true); matrix.redraw(); return;
+		case CMD_SELECT_ALL:		    matrix.model.setSelected(true, true); matrix.redraw(); return;
 		// Header Selection
 		case CMD_SELECT_ROW:		    case CMD_SELECT_ROW_ALTER:		    state0.setSelected(commandId); break;	
 		case CMD_SELECT_COLUMN: 	  case CMD_SELECT_COLUMN_ALTER: 	  state1.setSelected(commandId); break;
@@ -830,16 +844,39 @@ class MatrixListener implements Listener {
 		if (state0.last == null) state0.last = state0.item;
 		if (state1.last == null) state1.last = state1.item;
 		
-		boolean ctrlSelection = commandId == CMD_FOCUS_LOCATION_ALTER || commandId == CMD_SELECT_TO_LOCATION_ALTER;
+		boolean ctrlSelection = commandId == CMD_FOCUS_LOCATION_ALTER || 
+		  commandId == CMD_SELECT_TO_LOCATION_ALTER;
 		
 		if (ctrlSelection && isSelected(state0.last, state1.last)) {
 			matrix.model.setSelected(state0.last, state0.item, state1.last, state1.item, false);
 		}
 		else {
-			if (!ctrlSelection) {
-				matrix.model.setSelected(false);
+			if (ctrlSelection) {
+			  if (state0.lastFocus != null && state1.lastFocus != null) {
+			    Zone zone = matrix.getZone(state0.lastFocus.getSection(), state1.lastFocus.getSection());
+			    if (BigInteger.ZERO.equals(zone.getSelectionCount())) {
+			      Number index0 = state0.lastFocus.getIndex();
+			      Number index1 = state1.lastFocus.getIndex();
+			      zone.setSelected(index0, index0, index1, index1, true);
+			    }
+			  }
 			}
-			matrix.model.setSelected(state0.last, state0.item, state1.last, state1.item, true);			
+			else {
+			  boolean notify = commandId <= CMD_FOCUS_LOCATION_ALTER;
+			  if (notify) {
+			    notify = false;
+			    for (Zone zone: matrix) {
+			      if (BigInteger.ZERO.compareTo(zone.getSelectedCount()) < 0) {
+			        notify = true;
+			        break;
+			      }
+			    }
+			  }
+				matrix.model.setSelected(false, notify);
+			}
+			if (commandId > CMD_FOCUS_LOCATION) {
+			  matrix.model.setSelected(state0.last, state0.item, state1.last, state1.item, true);
+			}
 		}
 	}
 	
@@ -920,59 +957,8 @@ class MatrixListener implements Listener {
     	control.addListener(SWT.ImeComposition, listener);
     }
 	
-	static void listenToAll(Control control) {
-	  listenToAll(control, new Listener() {
-      @Override public void handleEvent(Event event) {
-        System.out.println(MatrixListener.getEventType(event));
-      }
-    });
-	}
-
-    static String getEventType(Event e) {
-    	int x = e.type;
-    	return x == 1 ? "KeyDown" :
-    		x == 2 ? "KeyUp" :
-    		x == 3 ? "MouseDown" :
-    		x == 4 ? "MouseUp" :
-    		x == 5 ? "MouseMove" :
-    		x == 6 ? "MouseEnter" :
-    		x == 7 ? "MouseExit" :
-    		x == 8 ? "MouseDoubleClick" :
-    		x == 9 ? "Paint" :
-    		x == 10 ? "Move" :
-    		x == 11 ? "Resize" :
-    		x == 12 ? "Dispose" :
-    		x == 13 ? "Selection" :
-    		x == 14 ? "DefaultSelection" :
-    		x == 15 ? "FocusIn" :
-    		x == 16 ? "FocusOut" :
-    		x == 17 ? "Expand" :
-    		x == 18 ? "Collapse" :
-    		x == 19 ? "Iconify" :
-    		x == 20 ? "Deiconify" :
-    		x == 21 ? "Close" :
-    		x == 22 ? "Show" :
-    		x == 23 ? "Hide" :
-    		x == 24 ? "Modify" :
-    		x == 25 ? "Verify" :
-    		x == 26 ? "Activate" :
-    		x == 27 ? "Deactivate" :
-    		x == 28 ? "Help" :
-    		x == 29 ? "DragDetect" :
-    		x == 30 ? "Arm" :
-    		x == 31 ? "Traverse" :
-    		x == 32 ? "MouseHover" :
-    		x == 33 ? "HardKeyDown" :
-    		x == 34 ? "HardKeyUp" :
-    		x == 35 ? "MenuDetect" :
-    		x == 36 ? "SetData" :
-    		x == 37 ? "MouseWheel" :
-    		x == 39 ? "Settings" :
-    		x == 40 ? "EraseItem" :
-    		x == 41 ? "MeasureItem" :
-    		x == 42 ? "PaintItem" :
-    		x == 43 ? "ImeComposition" : "";
-    }
+	
+    
 
 }
 

@@ -42,8 +42,6 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	final Painters<N0, N1> painters;
 	Section<N0> section0;
 	Section<N1> section1;
-	SectionClient<N0> sectionClient0;
-	SectionClient<N1> sectionClient1;
 	CellSet cellSelection;
 	CellSet lastSelection; // For adding selection
 	ZoneEditor<N0, N1> editor;
@@ -71,8 +69,8 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 */
 	public Zone(Section<N0> section0, Section<N1> section1) {
 		this();
-		this.section0 = section0 instanceof SectionClient ? ((SectionClient) section0).core : section0;
-		this.section1 = section1 instanceof SectionClient ? ((SectionClient) section1).core : section1;
+		this.section0 = section0;
+		this.section1 = section1;
 		cellSelection = new CellSet(section0.math, section1.math);
 		lastSelection = new CellSet(section0.math, section1.math);
 		
@@ -97,7 +95,6 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	
 	
 	@Override public boolean equals(Object obj) {
-		if (obj instanceof ZoneClient) obj = ((ZoneClient) obj).core;
 		return super.equals(obj);
 	}
 	
@@ -371,8 +368,8 @@ void setDefaultBodyStyle() {
 			cellSelection.clear();
 			lastSelection.clear();
 		}
-		section0.setSelectedAll(state);
-		section1.setSelectedAll(state);
+//		section0.setSelectedAll(state);
+//		section1.setSelectedAll(state);
 	}
 	
 	/**
@@ -1041,9 +1038,6 @@ void setDefaultBodyStyle() {
     Event event = new Event();
     event.type = SWT.Selection;
     event.widget = matrix;
-    if (SwtTestCase.breakFlag) {
-//      TestUtil.log(this);
-    }
     listeners.add(event);
   }
 

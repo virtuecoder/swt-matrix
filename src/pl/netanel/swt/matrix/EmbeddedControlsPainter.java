@@ -35,7 +35,7 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 			public void handleEvent(Event e) {
 				Matrix<N0, N1> matrix = getMatrix();
 				ZoneEditorData data = editor.getData(e.widget);
-				matrix.model.setSelected(false); 
+				matrix.model.setSelected(false, true); 
 				matrix.axis0.setFocusItem(editor.zone.getSection0(), (N0) data.index0);
 				matrix.axis1.setFocusItem(editor.zone.getSection1(), (N1) data.index1);
 				matrix.redraw();

@@ -254,7 +254,7 @@ public class SwtTestCase {
       });
       return result[0];
     }
-    log(event);
+//    log(event);
     return display.post(event);
   }
 
@@ -351,12 +351,12 @@ public class SwtTestCase {
     postClick(middle(control, rect), SWT.BUTTON1);
     processEvents();
     
-    Event event = new Event();
-    event.type = SWT.MouseMove;
-    event.x = -1;
-    event.y = -1;
-    postEvent(event);
-    processEvents();
+//    Event event = new Event();
+//    event.type = SWT.MouseMove;
+//    event.x = -1;
+//    event.y = -1;
+//    postEvent(event);
+//    processEvents();
   }
   
   public void click(Control control, Rectangle rect, int code) {
@@ -751,6 +751,15 @@ public class SwtTestCase {
     event.button = decodedButton;
     postEvent(event);
     processEvents();
+    
+    event = new Event();
+    event.type = SWT.DragDetect;
+    event.x = start.x;
+    event.y = start.y;
+    event.button = decodedButton;
+    event.stateMask = code;
+    postEvent(event);
+    processEvents();
 
     for (int i = 1; i < p.length; i++) {
       event = new Event();
@@ -1092,29 +1101,108 @@ public class SwtTestCase {
   }
 
   
-  public static String getTypeName(Event e) {
-    int x = e.type;
-    return x == 1 ? "KeyDown" : x == 2 ? "KeyUp" : x == 3 ? "MouseDown"
-      : x == 4 ? "MouseUp" : x == 5 ? "MouseMove" : x == 6 ? "MouseEnter"
-        : x == 7 ? "MouseExit" : x == 8 ? "MouseDoubleClick" : x == 9 ? "Paint"
-          : x == 10 ? "Move" : x == 11 ? "Resize" : x == 12 ? "Dispose"
-            : x == 13 ? "Selection" : x == 14 ? "DefaultSelection"
-              : x == 15 ? "FocusIn" : x == 16 ? "FocusOut" : x == 17 ? "Expand"
-                : x == 18 ? "Collapse" : x == 19 ? "Iconify"
-                  : x == 20 ? "Deiconify" : x == 21 ? "Close"
-                    : x == 22 ? "Show" : x == 23 ? "Hide" : x == 24 ? "Modify"
-                      : x == 25 ? "Verify" : x == 26 ? "Activate"
-                        : x == 27 ? "Deactivate" : x == 28 ? "Help"
-                          : x == 29 ? "DragDetect" : x == 30 ? "Arm"
-                            : x == 31 ? "Traverse" : x == 32 ? "MouseHover"
-                              : x == 33 ? "HardKeyDown" : x == 34 ? "HardKeyUp"
-                                : x == 35 ? "MenuDetect" : x == 36 ? "SetData"
-                                  : x == 37 ? "MouseWheel"
-                                    : x == 39 ? "Settings"
-                                      : x == 40 ? "EraseItem"
-                                        : x == 41 ? "MeasureItem"
-                                          : x == 42 ? "PaintItem"
-                                            : x == 43 ? "ImeComposition" : "";
+  static String getCommandName(int x) {
+    return
+    x == Matrix.CMD_FOCUS_UP ? "CMD_FOCUS_UP" :
+    x == Matrix.CMD_FOCUS_DOWN ? "CMD_FOCUS_DOWN" :
+    x == Matrix.CMD_FOCUS_LEFT ? "CMD_FOCUS_LEFT" :
+    x == Matrix.CMD_FOCUS_RIGHT ? "CMD_FOCUS_RIGHT" :
+    x == Matrix.CMD_FOCUS_PAGE_UP ? "CMD_FOCUS_PAGE_UP" :
+    x == Matrix.CMD_FOCUS_PAGE_DOWN ? "CMD_FOCUS_PAGE_DOWN" :
+    x == Matrix.CMD_FOCUS_PAGE_LEFT ? "CMD_FOCUS_PAGE_LEFT" :
+    x == Matrix.CMD_FOCUS_PAGE_RIGHT ? "CMD_FOCUS_PAGE_RIGHT" :
+    x == Matrix.CMD_FOCUS_MOST_LEFT ? "CMD_FOCUS_MOST_LEFT" :
+    x == Matrix.CMD_FOCUS_MOST_RIGHT ? "CMD_FOCUS_MOST_RIGHT" :
+    x == Matrix.CMD_FOCUS_MOST_UP ? "CMD_FOCUS_MOST_UP" :
+    x == Matrix.CMD_FOCUS_MOST_DOWN ? "CMD_FOCUS_MOST_DOWN" :
+    x == Matrix.CMD_FOCUS_MOST_UP_LEFT ? "CMD_FOCUS_MOST_UP_LEFT" :
+    x == Matrix.CMD_FOCUS_MOST_DOWN_RIGHT ? "CMD_FOCUS_MOST_DOWN_RIGHT" :
+    x == Matrix.CMD_FOCUS_LOCATION ? "CMD_FOCUS_LOCATION" :
+    x == Matrix.CMD_FOCUS_LOCATION_ALTER ? "CMD_FOCUS_LOCATION_ALTER" :
+    x == Matrix.CMD_SELECT_ALL ? "CMD_SELECT_ALL" :
+    x == Matrix.CMD_SELECT_UP ? "CMD_SELECT_UP" :
+    x == Matrix.CMD_SELECT_DOWN ? "CMD_SELECT_DOWN" :
+    x == Matrix.CMD_SELECT_LEFT ? "CMD_SELECT_LEFT" :
+    x == Matrix.CMD_SELECT_RIGHT ? "CMD_SELECT_RIGHT" :
+    x == Matrix.CMD_SELECT_PAGE_UP ? "CMD_SELECT_PAGE_UP" :
+    x == Matrix.CMD_SELECT_PAGE_DOWN ? "CMD_SELECT_PAGE_DOWN" :
+    x == Matrix.CMD_SELECT_PAGE_LEFT ? "CMD_SELECT_PAGE_LEFT" :
+    x == Matrix.CMD_SELECT_PAGE_RIGHT ? "CMD_SELECT_PAGE_RIGHT" :
+    x == Matrix.CMD_SELECT_FULL_UP ? "CMD_SELECT_FULL_UP" :
+    x == Matrix.CMD_SELECT_FULL_DOWN ? "CMD_SELECT_FULL_DOWN" :
+    x == Matrix.CMD_SELECT_FULL_LEFT ? "CMD_SELECT_FULL_LEFT" :
+    x == Matrix.CMD_SELECT_FULL_RIGHT ? "CMD_SELECT_FULL_RIGHT" :
+    x == Matrix.CMD_SELECT_FULL_UP_LEFT ? "CMD_SELECT_FULL_UP_LEFT" :
+    x == Matrix.CMD_SELECT_FULL_DOWN_RIGHT ? "CMD_SELECT_FULL_DOWN_RIGHT" :
+    x == Matrix.CMD_SELECT_TO_LOCATION ? "CMD_SELECT_TO_LOCATION" :
+    x == Matrix.CMD_SELECT_TO_LOCATION_ALTER ? "CMD_SELECT_TO_LOCATION_ALTER" :
+    x == Matrix.CMD_SELECT_ROW ? "CMD_SELECT_ROW" :
+    x == Matrix.CMD_SELECT_ROW_ALTER ? "CMD_SELECT_ROW_ALTER" :
+    x == Matrix.CMD_SELECT_COLUMN ? "CMD_SELECT_COLUMN" :
+    x == Matrix.CMD_SELECT_COLUMN_ALTER ? "CMD_SELECT_COLUMN_ALTER" :
+    x == Matrix.CMD_SELECT_TO_ROW ? "CMD_SELECT_TO_ROW" :
+    x == Matrix.CMD_SELECT_TO_ROW_ALTER ? "CMD_SELECT_TO_ROW_ALTER" :
+    x == Matrix.CMD_SELECT_TO_COLUMN ? "CMD_SELECT_TO_COLUMN" :
+    x == Matrix.CMD_SELECT_TO_COLUMN_ALTER ? "CMD_SELECT_TO_COLUMN_ALTER" :
+    x == Matrix.CMD_CUT ? "CMD_CUT" :
+    x == Matrix.CMD_COPY ? "CMD_COPY" :
+    x == Matrix.CMD_PASTE ? "CMD_PASTE" :
+    x == Matrix.CMD_EDIT_ACTIVATE ? "CMD_EDIT_ACTIVATE" :
+    x == Matrix.CMD_EDIT_DEACTIVATE_APPLY ? "CMD_EDIT_DEACTIVATE_APPLY" :
+    x == Matrix.CMD_EDIT_DEACTIVATE_CANCEL ? "CMD_EDIT_DEACTIVATE_CANCEL" :
+    x == Matrix.CMD_EDIT_APPLY ? "CMD_EDIT_APPLY" :
+    x == Matrix.CMD_DELETE ? "CMD_DELETE" :
+    x == Matrix.CMD_ITEM_HIDE ? "CMD_ITEM_HIDE" :
+    x == Matrix.CMD_ITEM_SHOW ? "CMD_ITEM_SHOW" :
+    x == Matrix.CMD_RESIZE_PACK ? "CMD_RESIZE_PACK" :
+    x == Matrix.CMD_TRAVERSE_TAB_NEXT ? "CMD_TRAVERSE_TAB_NEXT" :
+    x == Matrix.CMD_TRAVERSE_TAB_PREVIOUS ? "CMD_TRAVERSE_TAB_PREVIOUS" : "";
+
+  }
+  
+  static String getTypeName(int x) {
+    return x == 1 ? "KeyDown" :
+      x == 2 ? "KeyUp" :
+      x == 3 ? "MouseDown" :
+      x == 4 ? "MouseUp" :
+      x == 5 ? "MouseMove" :
+      x == 6 ? "MouseEnter" :
+      x == 7 ? "MouseExit" :
+      x == 8 ? "MouseDoubleClick" :
+      x == 9 ? "Paint" :
+      x == 10 ? "Move" :
+      x == 11 ? "Resize" :
+      x == 12 ? "Dispose" :
+      x == 13 ? "Selection" :
+      x == 14 ? "DefaultSelection" :
+      x == 15 ? "FocusIn" :
+      x == 16 ? "FocusOut" :
+      x == 17 ? "Expand" :
+      x == 18 ? "Collapse" :
+      x == 19 ? "Iconify" :
+      x == 20 ? "Deiconify" :
+      x == 21 ? "Close" :
+      x == 22 ? "Show" :
+      x == 23 ? "Hide" :
+      x == 24 ? "Modify" :
+      x == 25 ? "Verify" :
+      x == 26 ? "Activate" :
+      x == 27 ? "Deactivate" :
+      x == 28 ? "Help" :
+      x == 29 ? "DragDetect" :
+      x == 30 ? "Arm" :
+      x == 31 ? "Traverse" :
+      x == 32 ? "MouseHover" :
+      x == 33 ? "HardKeyDown" :
+      x == 34 ? "HardKeyUp" :
+      x == 35 ? "MenuDetect" :
+      x == 36 ? "SetData" :
+      x == 37 ? "MouseWheel" :
+      x == 39 ? "Settings" :
+      x == 40 ? "EraseItem" :
+      x == 41 ? "MeasureItem" :
+      x == 42 ? "PaintItem" :
+      x == 43 ? "ImeComposition" : "";
   }
   
   public static String getTraverseName(int x) {
@@ -1148,7 +1236,7 @@ public class SwtTestCase {
   
   public static void log(Event e) {
     StringBuilder sb = new StringBuilder();
-    sb.append(getTypeName(e));
+    sb.append(getTypeName(e.type));
     if (e.stateMask > 0) {
       if (sb.length() > 0) sb.append(" ");
       sb.append(getStateMaskName(e.stateMask));

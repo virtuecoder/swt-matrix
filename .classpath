@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="pl/netanel/swt/matrix/SectionClient.java|pl/netanel/swt/matrix/ZoneClient.java" kind="src" path="src"/>
 	<classpathentry kind="src" path="src_demo"/>
 	<classpathentry kind="src" path="src_test/unit"/>
 	<classpathentry kind="src" path="src_test/spec"/>
 	<classpathentry kind="src" path="src_test/screen"/>
 	<classpathentry kind="src" path="website"/>
-	<classpathentry kind="var" path="ECLIPSE_SWT" />
+	<classpathentry kind="var" path="ECLIPSE_SWT"/>
 	<classpathentry kind="lib" path="C:/Dev/Java/java_lib/commons-net-2.2/commons-net-2.2.jar"/>
-	<classpathentry kind="lib" path="C:\Dev\Java\java_lib\mysql-connector-java-5.1.8/mysql-connector-java-5.1.8-bin.jar"/>
+	<classpathentry kind="lib" path="C:/Dev/Java/java_lib/mysql-connector-java-5.1.8/mysql-connector-java-5.1.8-bin.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-
 	<classpathentry kind="output" path="bin"/>
 </classpath>

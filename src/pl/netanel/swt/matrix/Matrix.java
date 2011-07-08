@@ -71,8 +71,6 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	public static final int CMD_FOCUS_MOST_DOWN_RIGHT = 14; 				// binding = SWT.MOD1 + SWT.END
 	public static final int CMD_FOCUS_LOCATION = 15; 			// binding = SWT.MouseDown
 	public static final int CMD_FOCUS_LOCATION_ALTER = 16; 			// binding = SWT.MOD1 + SWT.MouseDown
-	public static final int CMD_TRAVERSE_TAB_NEXT = 17; 			// binding = SWT.TAB
-	public static final int CMD_TRAVERSE_TAB_PREVIOUS = 18; 			// binding = SWT.MOD2 + SWT.TAB
 //	public static final int WORD_PREVIOUS = 17039363;		// binding = SWT.MOD1 + SWT.ARROW_LEFT
 //	public static final int WORD_NEXT = 17039364; 			// binding = SWT.MOD1 + SWT.ARROW_RIGHT
 	
@@ -157,7 +155,11 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	
 	static final int RESIZE_START = 320;					    
 	static final int RESIZE_STOP = 321;					    
-	static final int CMD_RESIZE_PACK = 322;					    
+	static final int CMD_RESIZE_PACK = 322;					   
+	
+	public static final int CMD_TRAVERSE_TAB_NEXT = 400;       // binding = SWT.TAB
+	public static final int CMD_TRAVERSE_TAB_PREVIOUS = 401;       // binding = SWT.MOD2 + SWT.TAB
+
 	
 
 	/*------------------------------------------------------------------------
@@ -303,8 +305,6 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 			body.setDefaultForeground(getForeground());
 		}
 		
-		selectFocusCell();
-		
 		this.listener = new MatrixListener(this);
 		listener.setLayout(layout0, layout1);
 	}
@@ -420,9 +420,6 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		
 		layout0.setViewportSize(area.height);
 		layout1.setViewportSize(area.width);
-		selectFocusCell();
-//		layout0.compute();
-//		layout1.compute();
 		
 		updateScrollBars();
 	}
@@ -519,20 +516,6 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	  return model.getZoneUnchecked(section0, section1);
 	}
 	
-	void selectFocusCell() {
-		if (!focusCellEnabled) return;
-		layout0.computeIfRequired();
-		layout1.computeIfRequired();
-		if (layout0.current != null && layout1.current != null) {
-			Zone<N0, N1> zone = model.getZoneUnchecked(
-					layout0.current.getSection(), 
-					layout1.current.getSection());
-			N0 index0 = layout0.current.getIndex();
-			N1 index1 = layout1.current.getIndex();
-			zone.setSelected(index0, index0, index1, index1, true);
-		}
-	}
-	
 	/**
 	 * Enables current cell navigation in the receiver if the argument is <code>true</code>,
 	 * and disables it invisible otherwise.
@@ -606,7 +589,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 							math1.ZERO_VALUE(), math1.decrement(zone.section1.getCount()), 
 							state);
 					
-					if (notify && state == true) {
+					if (notify) {
 	          zone.addSelectionEvent();
 	        }
 				}
@@ -621,7 +604,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 							start, end,
 							state);
 					
-					if (notify && state == true) {
+					if (notify) {
 					  zone.addSelectionEvent();
 					}
 				}
@@ -647,7 +630,6 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		for (Zone zone: model.zones) {
 			zone.setSelectedAll(false);
 		}
-		selectFocusCell();
 		redraw();
 	}
 
@@ -836,7 +818,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 
 	@Override
 	public Iterator<Zone<N0, N1>> iterator() {
-		final Iterator<ZoneClient<N0, N1>> it = model.zoneClients.iterator();
+		final Iterator<Zone<N0, N1>> it = model.zones.iterator();
 		return new ImmutableIterator<Zone<N0, N1>>() {
 			@Override
 			public boolean hasNext() {

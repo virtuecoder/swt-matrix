@@ -629,12 +629,13 @@ class SectionClient<N extends Number> extends Section<N> {
 
 	/**
 	 * Sets the selection state for all the items.
+	 * @param notify 
 	 * 
 	 * @param state
 	 *            the new selection state
 	 */
-	public void setSelectedAll(boolean selected) {
-		core.setSelectedAll(selected);
+	public void setSelectedAll(boolean selected, boolean notify, boolean notifyInZones) {
+		core.setSelectedAll(selected, notify, notifyInZones);
 	}
 
 	/**

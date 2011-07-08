@@ -10,25 +10,25 @@ public class SelectionTest {
 	public void emptyAxis() throws Exception {
 		Matrix matrix = new Matrix(new Shell(), SWT.None);
 		Section body = matrix.getAxis0().getBody();
-		body.setSelectedAll(true);
+		body.setSelectedAll(true, false, false);
 		assertEquals(0, body.getSelectedCount());
 	}
 	
-	@Test(expected = IndexOutOfBoundsException.class)
-	public void emptyBoundsException() throws Exception {
-		Matrix matrix = new Matrix(new Shell(), SWT.None);
-		Section body = matrix.getAxis0().getBody();
-		body.isSelected(0);
-	}
+//	@Test(expected = IndexOutOfBoundsException.class)
+//	public void emptyBoundsException() throws Exception {
+//		Matrix matrix = new Matrix(new Shell(), SWT.None);
+//		Section body = matrix.getAxis0().getBody();
+//		body.isSelected(0);
+//	}
 	
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void selectItemBackwards() throws Exception {
-		Matrix matrix = new Matrix(new Shell(), SWT.None);
-		Section body = matrix.getAxis0().getBody();
-		body.setCount(4);
-		body.setSelected(2, 1, true);
-	}
+//	@Test(expected = IllegalArgumentException.class)
+//	public void selectItemBackwards() throws Exception {
+//		Matrix matrix = new Matrix(new Shell(), SWT.None);
+//		Section body = matrix.getAxis0().getBody();
+//		body.setCount(4);
+//		body.setSelected(2, 1, true);
+//	}
 	
 	@Test
 	public void selectItemSelectsCells() throws Exception {

@@ -11,7 +11,6 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	final Axis<N0> axis0;
 	final Axis<N1> axis1;
 	final ArrayList<Zone<N0, N1>> zones;
-	final ArrayList<ZoneClient<N0, N1>> zoneClients;
 	int[] paintOrder;
 	private ExtentPairSequence seq;
 
@@ -20,10 +19,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		this.axis1 = axis1;
 		
 		this.zones = new ArrayList<Zone<N0, N1>>(zones.length);
-		this.zoneClients = new ArrayList<ZoneClient<N0, N1>>(zones.length);
 		for (int i = 0; i < zones.length; i++) {
 			this.zones.add(zones[i]);
-			this.zoneClients.add(new ZoneClient(zones[i]));
 		}
 	}
 
@@ -37,7 +34,6 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 				if (zone == null) {
 					zone = new Zone(section0, section1);
 					this.zones.add(zone);
-					this.zoneClients.add(new ZoneClient(zone));
 				}
 				zone.setMatrix(matrix);
 				if (zone.getPainterCount() == 0) {
@@ -137,8 +133,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	
 	
 	public Zone getZone(Section section0, Section section1) {
-		for (ZoneClient zone: zoneClients) {
-			if (zone.core.section0.equals(section0) && zone.core.section1.equals(section1)) {
+		for (Zone zone: zones) {
+			if (zone.section0.equals(section0) && zone.section1.equals(section1)) {
 				return zone;
 			}
 		}
@@ -182,24 +178,50 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	 * @param end0
 	 * @param start1
 	 * @param end1
-	 * @param selected
+	 * @param selectState
 	 */
-	public void setSelected(boolean selected) {
+	public void setSelected(boolean selectState, boolean notify) {
+//	  // Determine if there is a selection change
+//	  boolean modified = false;
+//	  if (notify) {
+//	    for (Zone zone: zones) {
+//	      if (selectState) {
+//	        boolean allSelected = zone.getSelectedCount().equals(
+//	          new BigInteger(zone.getSection0().getCount().toString()).multiply(
+//            new BigInteger(zone.getSection1().getCount().toString())));
+//	        if (!allSelected) {
+//	          modified = true;
+//	          break;
+//	        }
+//	      }
+//	      else {
+//	        boolean nothingSelected = BigInteger.ZERO.equals(zone.getSelectionCount());
+//	        if (!nothingSelected) {
+//	          modified = true;
+//	          break;
+//	        }
+//	      }
+//	    }
+//	  }
+	  
+	  // Set selection and notify
 		for (Zone zone: zones) {
-			zone.setSelectedAll(selected);
-			
-			if (selected == true) {
-				zone.addSelectionEvent();
+		  zone.setSelectedAll(selectState);
+
+			if (notify) {
+			  zone.addSelectionEvent();
 			}
 		}
-		if (selected == true) {
-			for (Section section: axis0.sections) {
-				section.addSelectionEvent();
-			}
-			for (Section section: axis1.sections) {
-				section.addSelectionEvent();
-			}
-		}
+		axis0.setSelected(selectState, notify, false);
+		axis1.setSelected(selectState, notify, false);
+//		if (notify && modified) {
+//			for (Section section: axis0.sections) {
+//				section.addSelectionEvent();
+//			}
+//			for (Section section: axis1.sections) {
+//				section.addSelectionEvent();
+//			}
+//		}
 	}
 	
 	/**
@@ -230,7 +252,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 			if (zone.isSelectionEnabled()) {
 				zone.setSelected(seq.start0.getValue(), seq.end0.getValue(), seq.start1.getValue(), seq.end1.getValue(), selected);
 				
-				if (selected == true && !zone.equals(lastZone)) {
+				if (!zone.equals(lastZone)) {
 					zone.addSelectionEvent();
 					lastZone = zone;
 				}

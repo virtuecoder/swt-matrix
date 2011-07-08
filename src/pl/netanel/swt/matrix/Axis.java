@@ -1,7 +1,6 @@
 package pl.netanel.swt.matrix;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
@@ -30,10 +29,8 @@ public class Axis<N extends Number>  {
 	
 	final Math<N> math;
 	final ArrayList<Section<N>> sections;
-	final ArrayList<SectionClient<N>> clientSections;
-	final HashMap<Section<N>, SectionClient<N>> sectionMap;
 	
-	private SectionClient<N> body, header;
+	private Section<N> body, header;
 	private int autoScrollOffset, resizeOffset;
 	final Layout<N> layout;
 	
@@ -83,25 +80,21 @@ public class Axis<N extends Number>  {
 		Preconditions.checkArgument(sections.length > 0, "Model must have at least one section");
 		math = sections[0].math;
 		this.sections = new ArrayList(sections.length);
-		this.clientSections = new ArrayList(sections.length);
-		this.sectionMap = new HashMap(sections.length);
 		for (int i = 0; i < sections.length; i++) {
-			Preconditions.checkArgument(sections[i].math.equals(math), 
+			Section<N> section = sections[i];
+      Preconditions.checkArgument(section.math.equals(math), 
 				"Section at {0} must be indexed by the same Number subclass as the first section {1}", 
-				sections[i].math.getNumberClass(), math.getNumberClass());				
-			SectionClient section = new SectionClient(sections[i]);
-			section.core.index = i;
-			section.core.axis = this;
-			this.sections.add(section.core);
-			this.clientSections.add(section);
-			this.sectionMap.put(section.core, section);
+				section.math.getNumberClass(), math.getNumberClass());				
+			section.index = i;
+			section.axis = this;
+			this.sections.add(section);
 		}
 		if (sections.length == 1) {
 			setBody(0);
 		} else {
 			setHeader(0);
 			setBody(1);
-			header.setNavigationEnabled(false);
+			header.setFocusItemEnabled(false);
 			header.setVisible(false);
 		}
 		
@@ -152,7 +145,6 @@ public class Axis<N extends Number>  {
 	 */
 	public void setBody(int sectionIndex) {
 		Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
-		SectionClient<N> section = sectionMap.get(sections.get(sectionIndex));
 
 //		if (body != null) {
 //			for (Zone oldZone: getZones(body.core)) {
@@ -167,7 +159,7 @@ public class Axis<N extends Number>  {
 //				oldZone.bindings.clear();
 //			}
 //		}
-		this.body = section;
+		this.body = sections.get(sectionIndex);
 	}
 
 	/**
@@ -178,7 +170,7 @@ public class Axis<N extends Number>  {
 	 */
 	public void setHeader(int sectionIndex) {
 		Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
-		this.header = sectionMap.get(sections.get(sectionIndex));
+		this.header = sections.get(sectionIndex);
 	}
 	
 	/**
@@ -562,21 +554,12 @@ public class Axis<N extends Number>  {
 		if (comparePosition(start, end) > 0) {
 			AxisItem tmp = start; start = end; end = tmp;
 		}
-
+		
 		Section lastSection = null;
     AxisExtentSequence seq = new AxisExtentSequence(math, sections);
     for (seq.init(start, end); seq.next();) {
-      boolean sameSection = !seq.section.equals(lastSection);
-      seq.section.setSelected(seq.start, seq.end, select, sameSection);
-      
-      if (select == true && sameSection) {
-        lastSection = seq.section;
-        Event event = new Event();
-        event.type = SWT.Selection;
-        event.widget = matrix;
-        //event.data = matrix.getZone(axisIndex == 0 ? Zone.ROW_HEADER : Zone.COLUMN_HEADER);
-        seq.section.listeners.add(event);
-      }
+      boolean sameSection = seq.section.equals(lastSection);
+      seq.section.setSelected(seq.start, seq.end, select, !sameSection);
     }
 
 //		for (int i = start.getSection().index; i <= end.getSection().index; i++) {
@@ -598,10 +581,35 @@ public class Axis<N extends Number>  {
 //		}
 	}
 
-	void setSelected(boolean selected) {
+	void setSelected(boolean selectState, boolean notify, boolean notifyInZones) {
+//	  // Determine if there is a selection change
+//    boolean modified = false;
+//    if (notify) {
+//      for (Section section: sections) {
+//        if (selectState) {
+//          boolean allSelected = section.getSelectedCount().equals(section.getCount());
+//          if (!allSelected) {
+//            modified = true;
+//            break;
+//          }
+//        }
+//        else {
+//          boolean nothingSelected = section.getSelectedCount().equals(section.math.ZERO_VALUE());
+//          if (!nothingSelected) {
+//            modified = true;
+//            break;
+//          }
+//        }
+//      }
+//    }
+    
 		for (int i = 0, imax = sections.size(); i < imax; i++) {
 			Section section = sections.get(i);
-			section.setSelectedAll(selected);
+			section.setSelectedAll(selectState, notify, notifyInZones);
+			
+			if (notify) {
+			  section.addSelectionEvent();
+			}
 		}
 	}
 
@@ -697,14 +705,12 @@ public class Axis<N extends Number>  {
 
 	Bound getCellBound(Section<N> section, N index) {
 		if (section == null || index == null) return null;
-		if (section instanceof SectionClient) section = ((SectionClient) section).core;
 		Bound bound = layout.getCellBound(AxisItem.create(section, index));
 		return bound == null ? null : bound.copy();
 	}
 
 	Bound getLineBound(Section<N> section, N index) {
 		if (section == null || index == null) return null;
-		if (section instanceof SectionClient) section = ((SectionClient) section).core;
 		Bound bound = layout.getLineBound(AxisItem.create(section, index));
 		return bound == null ? null : bound.copy();
 	}
@@ -715,7 +721,7 @@ public class Axis<N extends Number>  {
 		// Calculate z-order
 		int[] order = new int[sections.size()];
 		int j = 0;
-		int bodyIndex = sections.indexOf(body.core);
+		int bodyIndex = sections.indexOf(body);
 		for (int i = bodyIndex, imax = this.sections.size(); i < imax; i++) {
 			order[j++] = i;
 		}
@@ -749,7 +755,6 @@ public class Axis<N extends Number>  {
 			Preconditions.checkArgument(false,
 					"Section {0} does not belong to axis {1}", section, index);
 		}
-		if (section instanceof SectionClient) return ((SectionClient) section).core;
 		return section;
 	}
 }

@@ -24,10 +24,6 @@ class TestUtil {
 		return new AxisItem(section, index);
 	}
 	
-	public static AxisItem item(SectionClient section, int index) {
-		return new AxisItem(section.core, index);
-	}
-	
 	public static AxisItem item(Axis axis, int section, int index) {
 		return new AxisItem((Section) axis.sections.get(section), index);
 	}
