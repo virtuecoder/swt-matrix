@@ -19,16 +19,16 @@ public class Snippet_0016 {
 		shell.setLayout(new FillLayout());
 		final Display display = shell.getDisplay();
 		
-		final Matrix matrix = new Matrix(shell, SWT.NONE);
+		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		matrix.setFocusCellEnabled(false);
 		
 		matrix.getAxis0().getBody().setCount(10);
 
-		Section body1 = matrix.getAxis1().getBody();
+		Section<Integer> body1 = matrix.getAxis1().getBody();
 		body1.setCount(4);
 		body1.setDefaultCellWidth(50);
 
-		final Zone body = matrix.getBody();
+		final Zone<Integer, Integer> body = matrix.getBody();
 		body.setSelectionBackground(display.getSystemColor(SWT.COLOR_LIST_SELECTION));
 		body.setSelectionForeground(display.getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT));
 		body.setSelected(1, 2, 1, 2, true);

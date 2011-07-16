@@ -24,7 +24,7 @@ public class Snippet_0902 {
 		Shell shell = new Shell();
 		shell.setLayout(new FillLayout());
 		
-		Matrix<Integer, Integer> matrix = new Matrix(shell, SWT.NONE);
+		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		matrix.getAxis0().getHeader().setVisible(true);
 		matrix.getAxis1().getHeader().setVisible(true);
 		final Section<Integer> body0 = matrix.getAxis0().getBody();
@@ -69,7 +69,7 @@ public class Snippet_0902 {
 		body1.addControlListener(new ControlAdapter() {
 			@Override
 			public void controlResized(ControlEvent e) {
-				AxisItem<Integer> item = (AxisItem<Integer>) e.data;
+				@SuppressWarnings("unchecked") AxisItem<Integer> item = (AxisItem<Integer>) e.data;
 				Section<Integer> section = item.getSection();
         if (section.getSelectedCount() > 0) {
 					selectedItems("Columns resized: ", section.getSelectedExtentIterator());
@@ -84,7 +84,7 @@ public class Snippet_0902 {
 			public void controlMoved(ControlEvent e) {
 				selectedItems("Columns moved: ", body1.getSelectedExtentIterator());
 				
-				AxisItem<Integer> item = (AxisItem<Integer>) e.data;
+				@SuppressWarnings("unchecked") AxisItem<Integer> item = (AxisItem<Integer>) e.data;
 				System.out.println("Target: section " + item.getSection() + ", index " + item.getIndex());
 			}
 		});
@@ -103,7 +103,7 @@ public class Snippet_0902 {
 		StringBuilder sb = new StringBuilder();
 		while (it.hasNext()) {
 			if (sb.length() > 0) sb.append(", ");
-			Number[] n = it.next();
+			Integer[] n = it.next();
 			sb.append(n[0]).append("-").append(n[1]);
 		}
 		sb.insert(0, caption);

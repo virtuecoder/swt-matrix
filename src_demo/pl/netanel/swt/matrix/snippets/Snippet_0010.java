@@ -22,7 +22,7 @@ public class Snippet_0010 {
 		shell.setText("Resize me !");
 		Display display = shell.getDisplay();
 		
-		Matrix matrix = new Matrix(shell, SWT.NONE);
+		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		matrix.getAxis1().getBody().setCount(40);
 		matrix.getAxis0().getBody().setCount(1000);
 		
@@ -37,8 +37,8 @@ public class Snippet_0010 {
 		gc.fillOval(0, 0, 100, 100);
 		gc.dispose();
 		
-		matrix.addPainter(0, new Painter("background") {
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+		matrix.addPainter(0, new Painter<Integer, Integer>("background") {
+			public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
 				Rectangle r = image2.getBounds();
 				x += align(SWT.RIGHT, 50, r.width, width);
 				y += align(SWT.CENTER, 0, r.height, height);

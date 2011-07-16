@@ -1,3 +1,9 @@
+Version 0.3.1
+Bug fixes:
+- NPE while zone editor activation when the editor control was null.
+- Moving item back and forth did not work
+- Removed type safety warnings from snippets
+
 -------------------------------------------------------------------------------
 Version 0.3
 New features:
@@ -18,13 +24,13 @@ Bug fixes:
 - Altering of columns selection with Ctrl did not work
 
 API changes
-- Matrix class:
+- Matrix:
   - renamed all editing commands to have the CMD_EDIT_ prefix.
   - removed getZoneUnchecked() - now the zone returned by getZone() is not checking the parameters to speed up performance
   - Matrix.executeCommand(int commandId)
 - Zone
   - removed getSectionUnchecked() - now the section returned by getSection() is not checking the parameters to speed up performance
-- ZoneEditor class:
+- ZoneEditor:
   - renamed setEmulationPath(String) to setImagePath(String)
   - removed snapControlImages(String)
 
@@ -35,12 +41,12 @@ New features:
 - Embedded controls
 - Emulated check boxes with current system theme
 - Customizable copy and paste
-
-API changes
-- Painter class:
-  - added getText(N0 index0, N1 index1)
-  - added getImage(N0 index0, N1 index1) 
-  
+ 
 Bug fixes:
 - Single column/row selection did not highlight the header
+
+API changes
+- Painter:
+  - added getText(N0 index0, N1 index1)
+  - added getImage(N0 index0, N1 index1) 
 

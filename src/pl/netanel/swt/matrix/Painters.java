@@ -68,12 +68,22 @@ class Painters<N0 extends Number, N1 extends Number> implements Iterable<Painter
 	
 	public Painter<N0, N1> remove(int index) {
 	  Preconditions.checkPositionIndex(index, items.size());
-	  return items.remove(index);
+	  Painter<N0, N1> painter = items.remove(index);
+	  if (painter != null) { 
+	    painter.zone = null;
+	    painter.matrix = null;
+	  }
+    return painter;
 	}
 	
 	public boolean remove(Painter painter) {
 	  Preconditions.checkNotNullWithName(painter, "painter");
-	  return items.remove(painter);
+	  boolean removed = items.remove(painter);
+	  if (removed) {
+	    painter.zone = null;
+	    painter.matrix = null;
+	  }
+    return removed;
 	}
 	
 	public Painter<N0, N1> get(int index) {
@@ -97,7 +107,6 @@ class Painters<N0 extends Number, N1 extends Number> implements Iterable<Painter
           "A painter with '%s' name already exist in the collection", painter.name);
     }
   }
-
 }
 
 //	public void setMatrixAndZone(Matrix matrix, Zone zone) {

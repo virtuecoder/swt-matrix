@@ -225,7 +225,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	 *
 	 * @see Widget#getStyle
 	 */
-	public Matrix(Composite parent, int style, Axis<N0> axis0, Axis<N1> axis1, Zone<N0, N1> ...zones) {
+	public Matrix(Composite parent, int style, Axis<N0> axis0, Axis<N1> axis1, Zone ...zones) {
 		super(parent, style | SWT.DOUBLE_BUFFERED);
 		setBackground(Resources.getColor(SWT.COLOR_LIST_BACKGROUND));
 		setForeground(Resources.getColor(SWT.COLOR_LIST_FOREGROUND));
@@ -333,7 +333,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 				AxisItem<N0> item0 = axis0.getFocusItem();
 				AxisItem<N1> item1 = axis1.getFocusItem();
 				if (item0 == null || item1 == null) return;
-				Zone zone = getZone(item0.getSection(), item1.getSection());
+				Zone zone = Matrix.this.getZone(item0.getSection(), item1.getSection());
 				if (zone == null) return;
 				Rectangle r = zone.getCellBounds(item0.getIndex(), item1.getIndex());
 				if (r == null) return;
@@ -683,6 +683,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	 * @param painter the painter to be added
 	 */
 	public void addPainter(Painter<N0, N1> painter) {
+	  checkOwner(painter);
 		painters.add(painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -698,7 +699,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
    *         in the collection of painters. 
 	 */
   public void addPainter(int index, Painter<N0, N1> painter) {
-		// Check uniqueness of painters names
+    checkOwner(painter);
 		painters.add(index, painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -714,6 +715,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
    *         in the collection of painters. 
 	 */
 	public void setPainter(int index, Painter<N0, N1> painter) {
+	  checkOwner(painter);
 		painters.set(index, painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -726,6 +728,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	 * @throws IllegalArgumentException if the painter is null
 	 */
 	public void replacePainter(Painter<N0, N1> painter) {
+	  checkOwner(painter);
 		painters.replacePainter(painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -757,6 +760,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
    * @throws IllegalArgumentException if the painter is null
    */
   public boolean removePainter(Painter painter) {
+    checkOwner(painter);
     return painters.remove(painter);
   }
   
@@ -807,6 +811,17 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		Preconditions.checkPositionIndex(index, painters.size());
 		return painters.get(index);
 	}
+	
+	private void checkOwner(Painter<N0, N1> painter) {
+	  if (painter == null) return;
+	  
+	  Preconditions.checkArgument(painter.matrix == null || this.equals(painter.matrix), 
+	    "The painter belongs to a different matrix: %s", painter.matrix);
+
+	  Preconditions.checkArgument(painter.zone == null, 
+      "The painter belongs to a zone: %s", painter.zone);
+    
+  }
 
 	private void setPainterMatrixAndZone(Painter painter) {
 		if (painter.scope == Painter.SCOPE_CELLS_HORIZONTALLY ||
@@ -837,4 +852,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	    "Only cell focus navigation commands are permitted");
 		listener.executeCommand(new GestureBinding(commandId, 0, 0));
 	}
+	
+ 
+
 }

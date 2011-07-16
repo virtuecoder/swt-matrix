@@ -18,14 +18,16 @@ public class Snippet_0002 {
 		Shell shell = new Shell();
 		shell.setLayout(new FillLayout());
 		
-		Axis axis0 = new Axis(BigInteger.class, 2);
+		Axis<BigInteger> axis0 = new Axis<BigInteger>(BigInteger.class, 2);
 		
-		Matrix<BigInteger, Integer> matrix = new Matrix(shell, SWT.V_SCROLL | SWT.H_SCROLL, axis0, null);
+		Matrix<BigInteger, Integer> matrix = 
+		  new Matrix<BigInteger, Integer>(shell, SWT.V_SCROLL | SWT.H_SCROLL, axis0, null);
+		
 		matrix.getAxis1().getBody().setCount(2);
 		matrix.getAxis1().getBody().setDefaultCellWidth(200);
 		matrix.getAxis1().getHeader().setVisible(true);
-		matrix.getAxis1().freezeHead(1);
 		matrix.getAxis1().getHeader().setDefaultCellWidth(200);
+		matrix.getAxis1().freezeHead(1);
 		matrix.getAxis0().getBody().setCount(new BigInteger("123456789012345678901234567890"));
 		
 		shell.setBounds(400, 200, 500, 300);

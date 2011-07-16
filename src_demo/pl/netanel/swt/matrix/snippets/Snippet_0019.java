@@ -18,24 +18,24 @@ public class Snippet_0019 {
 		shell.setBounds(400, 200, 400, 300);
 		shell.setLayout(new FillLayout());
 		
-		Matrix matrix = new Matrix(shell, SWT.NONE);
+		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		matrix.getAxis1().getBody().setCount(4);
 		matrix.getAxis0().getBody().setCount(10);
 		matrix.getAxis0().getHeader().setVisible(true);
 		
 		matrix.getColumnHeader().replacePainter(
-			new Painter("cells", Painter.SCOPE_CELLS_VERTICALLY) {
+			new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_VERTICALLY) {
 				@Override
-				public String getText(Number index0, Number index1) {
+				public String getText(Integer index0, Integer index1) {
 					textAlignX = index1.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
 					return index1.toString();
 				}
 			});
 
 		matrix.getBody().replacePainter(
-			new Painter("cells", Painter.SCOPE_CELLS_VERTICALLY) {
+			new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_VERTICALLY) {
 				@Override
-				public String getText(Number index0, Number index1) {
+				public String getText(Integer index0, Integer index1) {
 					textAlignX = index1.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
 					return index0.toString() + ", " + index1;
 				}

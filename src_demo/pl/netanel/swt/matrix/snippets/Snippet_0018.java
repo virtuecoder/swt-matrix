@@ -42,16 +42,17 @@ public class Snippet_0018 {
 		images[2] = new Image[COLUMN_COUNT];
 		images[2][0] = image;
 		
-		Matrix matrix = new Matrix(shell, SWT.V_SCROLL);
-		Section body1 = matrix.getAxis1().getBody();
+		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
+		Section<Integer> body1 = matrix.getAxis1().getBody();
 		body1.setCount(COLUMN_COUNT);
 		body1.setDefaultCellWidth(50);
 		
 		matrix.getAxis0().getBody().setCount(ROW_COUNT);
 		
-		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		matrix.getBody().replacePainter(
+		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+			public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
 				text = index0.toString() + ", " + index1;
 				Image[] row = images[index0.intValue()];
 				image = row == null ? null : row[index1.intValue()];

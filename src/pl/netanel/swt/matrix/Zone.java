@@ -131,8 +131,7 @@ void setDefaultBodyStyle() {
 				return index0.toString() + ", " + index1.toString();
 			}
 		};
-		painter.setMatrix(matrix);
-		painter.zone = this;
+		painter.setZone(this);
 		replacePainter(painter);
 		Color color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 		replacePainter(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color ));
@@ -149,8 +148,7 @@ void setDefaultBodyStyle() {
 		setSelectionBackground(Resources.getColor(rgb));
 		
 		if (getPainterCount() == 0) {
-			cellsPainte.setMatrix(matrix);
-			cellsPainte.zone = this;
+			cellsPainte.setZone(this);
 			addPainter(cellsPainte);
 			final Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
 			addPainter(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color));
@@ -826,6 +824,7 @@ void setDefaultBodyStyle() {
 	 * @param painter the painter to be added
 	 */
 	public void addPainter(Painter<N0, N1> painter) {
+	  checkOwner(painter);
 		painters.add(painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -841,7 +840,7 @@ void setDefaultBodyStyle() {
    *         in the collection of painters. 
 	 */
   public void addPainter(int index, Painter<N0, N1> painter) {
-		// Check uniqueness of painters names
+    checkOwner(painter);
 		painters.add(index, painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -857,6 +856,7 @@ void setDefaultBodyStyle() {
    *         in the collection of painters. 
 	 */
 	public void setPainter(int index, Painter<N0, N1> painter) {
+	  checkOwner(painter);
 		painters.set(index, painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -869,6 +869,7 @@ void setDefaultBodyStyle() {
 	 * @throws IllegalArgumentException if the painter is null
 	 */
 	public void replacePainter(Painter<N0, N1> painter) {
+	  checkOwner(painter);
 		painters.replacePainter(painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -900,6 +901,7 @@ void setDefaultBodyStyle() {
    * @throws IllegalArgumentException if the painter is null
    */
   public boolean removePainter(Painter painter) {
+    checkOwner(painter);
     return painters.remove(painter);
   }
   
@@ -950,13 +952,23 @@ void setDefaultBodyStyle() {
 		Preconditions.checkPositionIndex(index, painters.size());
 		return painters.get(index);
 	}
-	private void setPainterMatrixAndZone(Painter painter) {
-		if (painter.scope == Painter.SCOPE_CELLS_HORIZONTALLY ||
-				painter.scope == Painter.SCOPE_CELLS_VERTICALLY) 
-		{
-			painter.zone = this;
+	
+  private void checkOwner(Painter<N0, N1> painter) {
+    if (painter == null) return;
+    
+    Preconditions.checkArgument(painter.zone == null || this.equals(painter.zone), 
+      "The painter belongs to a different zone: %s", painter.zone);
+    
+    Matrix<N0, N1> matrix2 = getMatrix();
+    if (matrix2 != null) {
+      Preconditions.checkArgument(painter.matrix == null || matrix2.equals(painter.matrix), 
+        "The painter belongs to a different matrix: %s", painter.matrix);
+    }
+  }
+
+	private void setPainterMatrixAndZone(Painter painter) {	
+			painter.setZone(this);
 			painter.setMatrix(matrix);
-		}
 	}
 	
 	private static class LinePainter extends Painter {
@@ -1016,7 +1028,7 @@ void setDefaultBodyStyle() {
 			if (painter.scope == Painter.SCOPE_CELLS_HORIZONTALLY ||
 					painter.scope == Painter.SCOPE_CELLS_VERTICALLY) 
 			{
-				painter.zone = this;
+				painter.setZone(this);
 				painter.setMatrix(matrix);
 			}
 		}
@@ -1040,5 +1052,6 @@ void setDefaultBodyStyle() {
     event.widget = matrix;
     listeners.add(event);
   }
+
 
 }

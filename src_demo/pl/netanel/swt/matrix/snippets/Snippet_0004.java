@@ -37,45 +37,49 @@ public class Snippet_0004 {
 		list.add(Integer.toString(6));
 		counter = 6;
 		
-		final Matrix matrix = new Matrix(shell, SWT.V_SCROLL);
+		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
 		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
-		Axis axis0 = matrix.getAxis0();
-		final Section body0 = axis0.getBody();
+		Axis<Integer> axis0 = matrix.getAxis0();
+		final Section<Integer> body0 = axis0.getBody();
 		body0.setCount(list.size());
 		body0.setDefaultResizable(true);
 		axis0.getHeader().setVisible(true);
 		
-		Axis axis1 = matrix.getAxis1();
+		Axis<Integer> axis1 = matrix.getAxis1();
 		axis1.getBody().setCount(2);
 		axis1.getHeader().setDefaultCellWidth(16);
 		axis1.getHeader().setVisible(true);
 		
-		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
-			@Override
-			public String getText(Number index0, Number index1) {
-				String value = list.get(index0.intValue());
-				return index1.intValue() == 0 
-					? value
-					: Integer.toString(value.length());
-			}
-		});
+		matrix.getBody().replacePainter(
+		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		    @Override
+		    public String getText(Integer index0, Integer index1) {
+		      String value = list.get(index0.intValue());
+		      return index1.intValue() == 0 
+		        ? value
+	          : Integer.toString(value.length());
+		    }
+		  }
+		);
 		
-		matrix.getColumnHeader().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
-			@Override
-			public String getText(Number index0, Number index1) {
-				return index1.intValue() == 0 ? "Value" : "Length";
-			}
-		});
+		matrix.getColumnHeader().replacePainter(
+		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		    @Override
+		    public String getText(Integer index0, Integer index1) {
+		      return index1.intValue() == 0 ? "Value" : "Length";
+		    }
+		  }
+	  );
 		
 		Button add = new Button(shell, SWT.PUSH);
 		add.setText("Insert");
 		add.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				AxisItem focusItem = matrix.getAxis0().getFocusItem();
-				Number focusIndex = focusItem == null ? 0 : focusItem.getIndex();
-				list.add(focusIndex.intValue(), Integer.toString(++counter));
+				AxisItem<Integer> focusItem = matrix.getAxis0().getFocusItem();
+				int focusIndex = focusItem == null ? 0 : focusItem.getIndex();
+				list.add(focusIndex, Integer.toString(++counter));
 				body0.insert(focusIndex, 1);
 				matrix.refresh();
 				matrix.setFocus();
@@ -91,7 +95,7 @@ public class Snippet_0004 {
 				Iterator<Number[]> it = matrix.getBody().getSelectedExtentIterator();
 				while (it.hasNext()) {
 					Number[] next = it.next();
-					body0.delete(next[0], next[1]);
+					body0.delete((Integer) next[0], (Integer) next[1]);
 					for (int i = next[0].intValue(); i >= next[1].intValue(); i--) {
 						list.remove(i);
 					}

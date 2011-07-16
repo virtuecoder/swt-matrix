@@ -29,13 +29,13 @@ public class Snippet_0403 {
 		shell.setLayout(new FillLayout());
 		
 		// Data model
-		final ArrayList<Object[]> data = new ArrayList();
+		final ArrayList<Object[]> data = new ArrayList<Object[]>();
 		data.add(new Object[] {"a", true, new Date()});
 		data.add(new Object[] {true, false, "Monday"});
 		data.add(new Object[] {new Date(), "Sunday", "b"});
 		
 		// Matrix
-		final Matrix matrix = new Matrix(shell, SWT.NONE);
+		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		
 		matrix.getAxis0().getBody().setCount(data.size());
 		matrix.getAxis0().getHeader().setVisible(true);
@@ -45,33 +45,34 @@ public class Snippet_0403 {
 		matrix.getAxis1().getBody().setDefaultResizable(true);
 
 		// Data painter
-		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		matrix.getBody().replacePainter(
+		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public String getText(Number index0, Number index1) {
+			public String getText(Integer index0, Integer index1) {
 				Object value = data.get(index0.intValue())[index1.intValue()];
 				return value == null || value instanceof Boolean ? "" : value.toString();
 			}
 		});
 		
 		// Body editor
-		new ZoneEditor(matrix.getBody()) {
+		new ZoneEditor<Integer, Integer>(matrix.getBody()) {
 			@Override
-			protected Object getModelValue(Number index0, Number index1) {
+			protected Object getModelValue(Integer index0, Integer index1) {
 				return data.get(index0.intValue())[index1.intValue()];
 			}
 			@Override
-			public void setModelValue(Number index0, Number index1, Object value) {
+			public void setModelValue(Integer index0, Integer index1, Object value) {
 				data.get(index0.intValue())[index1.intValue()] = value;
 			}
 			
 			@Override
-			public Object[] getCheckboxEmulation(Number index0, Number index1) {
+			public Object[] getCheckboxEmulation(Integer index0, Integer index1) {
 				Object value = data.get(index0.intValue())[index1.intValue()];
 				return value instanceof Boolean ? getDefaultCheckBoxImages() : null;
 			}
 			
 			@Override
-			protected Control createControl(Number index0, Number index1) {
+			protected Control createControl(Integer index0, Integer index1) {
 				Object value = data.get(index0.intValue())[index1.intValue()];
 				if (value instanceof Boolean) {
 					return new Button(matrix, SWT.CHECK);

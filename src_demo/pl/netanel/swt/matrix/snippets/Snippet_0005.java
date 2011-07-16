@@ -36,7 +36,7 @@ public class Snippet_0005 {
     Display display = shell.getDisplay();
 
     // Model
-    final ArrayList<String[]> list = new ArrayList();
+    final ArrayList<String[]> list = new ArrayList<String[]>();
     list.add(new String[] { "Task 1", "high" });
     list.add(new String[] { "Task 2", "medium" });
     list.add(new String[] { "Task 3", "low" });
@@ -44,7 +44,7 @@ public class Snippet_0005 {
     list.add(new String[] { "Task 5", "medium" });
     
     // Sorted list holder
-    final ArrayList<String[]> sorted = new ArrayList();
+    final ArrayList<String[]> sorted = new ArrayList<String[]>();
     sorted.addAll(list);
 
     // Sorting images and state
@@ -53,36 +53,38 @@ public class Snippet_0005 {
     final int[] direction = new int[] { 0, 0 };
 
     // Matrix
-    final Matrix matrix = new Matrix(shell, SWT.V_SCROLL);
+    final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
     matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
-    Axis axis0 = matrix.getAxis0();
-    final Section body0 = axis0.getBody();
+    Axis<Integer> axis0 = matrix.getAxis0();
+    final Section<Integer> body0 = axis0.getBody();
     body0.setCount(list.size());
     body0.setDefaultResizable(true);
+    body0.setDefaultMoveable(true);
     axis0.getHeader().setVisible(true);
 
-    Axis axis1 = matrix.getAxis1();
+    Axis<Integer> axis1 = matrix.getAxis1();
     axis1.getBody().setCount(2);
     axis1.getHeader().setDefaultCellWidth(16);
     axis1.getHeader().setVisible(true);
 
     // Paint data text in the body zone
     matrix.getBody().replacePainter(
-      new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
-        @Override public String getText(Number index0, Number index1) {
+      new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+        @Override public String getText(Integer index0, Integer index1) {
           return sorted.get(index0.intValue())[index1.intValue()].toString();
         }
       });
 
     // Paint text and sorting image in the column headers zone
-    Painter columnHeaderPainter = new Painter("cells",
-      Painter.SCOPE_CELLS_HORIZONTALLY) {
-      @Override public String getText(Number index0, Number index1) {
+    Painter<Integer, Integer> columnHeaderPainter = new Painter<Integer, Integer>(
+      "cells", Painter.SCOPE_CELLS_HORIZONTALLY) 
+    {
+      @Override public String getText(Integer index0, Integer index1) {
         return index1.toString();
       }
 
-      @Override public Image getImage(Number index0, Number index1) {
+      @Override public Image getImage(Integer index0, Integer index1) {
         int column = index1.intValue();
         return direction[column] == 0 ? null
           : direction[column] == 1 ? sortAsc : sortDesc;
@@ -98,7 +100,7 @@ public class Snippet_0005 {
     matrix.getColumnHeader().addListener(SWT.MouseDown, new Listener() {
       public void handleEvent(Event e) {
         // AxisItem<N0> item0 = matrix.getAxis0().getItemByDistance(e.y);
-        AxisItem item1 = matrix.getAxis1().getItemByDistance(e.x);
+        AxisItem<Integer> item1 = matrix.getAxis1().getItemByDistance(e.x);
         final int column = item1.getIndex().intValue();
 
         int previousDirection = direction[column];

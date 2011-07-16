@@ -18,36 +18,38 @@ public class Snippet_0012 {
 		shell.setLayout(new FillLayout());
 		final Display display = shell.getDisplay();
 		
-		Matrix matrix = new Matrix(shell, SWT.NONE);
+		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		matrix.getAxis1().getBody().setCount(4);
 		matrix.getAxis0().getBody().setCount(10);
 		
 		
-		matrix.getBody().replacePainter(new Painter("row lines", Painter.SCOPE_HORIZONTAL_LINES) {
-			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				switch (index0.intValue()) {
-				case 1:
-					gc.setBackground(display.getSystemColor(SWT.COLOR_BLUE));
-					gc.fillRectangle(x, y, width, height);
-					break;
-				case 2:
-					gc.setLineDash(new int[] {4, 2});
-					gc.drawLine(x, y, x + width - 1, y + height - 1);
-					gc.setLineDash(null);
-					break;
-				case 3:
-					gc.setLineWidth(5);
-					gc.setLineCap(SWT.CAP_ROUND);
-					gc.drawLine(x, y, x + width - 1, y + height - 1);
-					gc.setLineWidth(1);
-					break;
-				default:
-					gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
-					gc.fillRectangle(x, y, width, height);
-				}
-			}
-		});
+		matrix.getBody().replacePainter(
+		  new Painter<Integer, Integer>("row lines", Painter.SCOPE_HORIZONTAL_LINES) {
+		    @Override
+		    public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
+		      switch (index0.intValue()) {
+		      case 1:
+		        gc.setBackground(display.getSystemColor(SWT.COLOR_BLUE));
+		        gc.fillRectangle(x, y, width, height);
+		        break;
+		      case 2:
+		        gc.setLineDash(new int[] {4, 2});
+		        gc.drawLine(x, y, x + width - 1, y + height - 1);
+		        gc.setLineDash(null);
+		        break;
+		      case 3:
+		        gc.setLineWidth(5);
+		        gc.setLineCap(SWT.CAP_ROUND);
+		        gc.drawLine(x, y, x + width - 1, y + height - 1);
+		        gc.setLineWidth(1);
+		        break;
+		      default:
+		        gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+		        gc.fillRectangle(x, y, width, height);
+		      }
+		    }
+		  }
+		  );
 		
 		shell.open();
 		while (!shell.isDisposed()) {

@@ -302,6 +302,18 @@ public class Axis<N extends Number>  {
 		return layout.current;
 	}
 	
+//	/**
+//	 * Returns the item at which a SWT.MouseDown event happened. 
+//	 * Or <code>null</code> if no item has been clicked on.
+//	 * @return the item at which a SWT.MouseDown event happened
+//	 */
+//	public AxisItem<N> getMouseItem(int event) {
+//	  layout.computeIfRequired();
+//	  return (index == 0 ? matrix.listener.state0 : matrix.listener.state1).mouseDownItem;
+//	}
+	
+	
+	
 	/**
 	 * Sets the focus marker to the item at given index in the given section.
 	 * <p>

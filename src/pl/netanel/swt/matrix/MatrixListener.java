@@ -62,7 +62,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -85,8 +87,11 @@ class MatrixListener implements Listener {
 		SWT.FocusIn, SWT.FocusOut, SWT.Expand, SWT.Collapse, SWT.Iconify, SWT.Deiconify, SWT.Close, 
 		SWT.Show, SWT.Hide, SWT.Modify, SWT.Verify, */
 		SWT.Activate, SWT.Deactivate,  
-		/* SWT.Help, */
-		SWT.DragDetect, //listening to DragDetect causes the MouseMove to skip 4 pixels  
+		/* SWT.Help,
+		 
+    SWT.DragDetect, //listening to DragDetect causes the MouseDown to lag 
+       https://bugs.eclipse.org/bugs/show_bug.cgi?id=328396and MouseMove to skip 4 pixels  
+    
 		/* SWT.Arm, SWT.Traverse, SWT.MouseHover, SWT.HardKeyDown, SWT.HardKeyUp, SWT.MenuDetect, 
 		SWT.SetData, SWT.MouseWheel, SWT.Settings, SWT.EraseItem, SWT.MeasureItem, 
 		SWT.PaintItem, SWT.ImeComposition */
@@ -137,6 +142,7 @@ class MatrixListener implements Listener {
 	
 	@Override
 	public void handleEvent(Event e) {
+//	  System.out.println(SwtTestCase.getTypeName(e.type));
 		try {
 			state0.setItem(e);
 			state1.setItem(e);
@@ -205,7 +211,7 @@ class MatrixListener implements Listener {
 		private final int axisIndex;
 		Axis<N> axis;
 		Layout layout;
-		AxisItem<N> last, item, prev, resizeItem, lastFocus;
+		AxisItem<N> last, item, prev, resizeItem, lastFocus, mouseDownItem;
 		boolean moving, resizing, itemModified = true;
 		Event mouseMoveEvent;
 		Cursor resizeCursor;
@@ -270,10 +276,8 @@ class MatrixListener implements Listener {
 			case SWT.MouseDown:
 			  lastFocus = axis.getFocusItem();
 			  lastDistance = distance;
+			  mouseDownItem = item;
 			  prev = null;
-			  break;
-			  
-			case SWT.DragDetect:
 				boolean noModifiers = (e.stateMask & SWT.MOD1) == 0 && (e.stateMask & SWT.MOD2) == 0
 				  && (e.stateMask & SWT.MOD3) == 0;
 				if (mouseDown && isInHeader() && noModifiers) {
@@ -291,6 +295,7 @@ class MatrixListener implements Listener {
 				break;
 				
 			case SWT.MouseUp:
+			  mouseDownItem = null;
 				// Resize all selected except the current one
 				if (resizeEvent == SWT.MouseMove) {
 					int len = axis.sections.size();
@@ -457,34 +462,25 @@ class MatrixListener implements Listener {
 
 		void reorder() {
 			if (layout.reorder(last, item)) {
-//			AxisItem item2 = layout.reorder(item);
-//			if (item2 != null) {
-//				/* Move the cursor if it is outside of the moved column 
-//				 (happens when items have different widths) */
-//				int direction = axis.comparePosition(item2, item);
-//				int cellDistance = layout.getCellDistance(item2);
-//				Point p = null;
-//				if (direction > 0 && distance < cellDistance) {
-//					p = matrix.getLocation();
-//					p.x = axisIndex == 0 ? mouseMoveEvent.x : cellDistance;
-//					p.y = axisIndex == 0 ? cellDistance : mouseMoveEvent.y;
-//				} 
-//				else if (direction < 0) {
-//					int lineDistance = cellDistance + axis.getCellWidth(item2);
-//					if (distance > lineDistance) {
-//						p = matrix.getLocation();
-//						p.x = axisIndex == 0 ? mouseMoveEvent.x : lineDistance;
-//						p.y = axisIndex == 0 ? lineDistance : mouseMoveEvent.y;
-//					}
-//				}
-//				if (p != null) {
-//					Display display = matrix.getDisplay();
-//					p = display.map(matrix, null, p);
-//					display.setCursorLocation(p);
-//				}
+			  
+			  // Adjust cursor location if moving smaller to bigger
+			  Bound r1 = layout.getCellBound(last);
+			  Bound r2 = layout.getCellBound(item);
+			  if (r1.width < r2.width) {
+			    Display display = matrix.getDisplay();
+			    Point p = display.getCursorLocation();
+			    if (axisIndex == 0) {
+			      p.y = matrix.toDisplay(0, r1.distance + r1.width / 2).y;
+			    } else {
+			      p.x = matrix.toDisplay(r1.distance + r1.width / 2, 0).x;
+			    }
+			    display.setCursorLocation(p);
+			  }
+			  
 				addEvent(item.getSection(), SWT.Move, item);
 				axis.scroll();
 				matrix.redraw();
+				item = last;
 //				return true;
 			}
 		}

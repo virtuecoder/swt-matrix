@@ -21,20 +21,22 @@ public class Snippet_0017 {
 		shell.setLayout(new FillLayout());
 		Display display = shell.getDisplay();
 		
-		Matrix matrix = new Matrix(shell, SWT.V_SCROLL);
+		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
 		matrix.getAxis0().getBody().setCount(8);
-		Section body1 = matrix.getAxis1().getBody();
+		Section<Integer> body1 = matrix.getAxis1().getBody();
 		body1.setCount(8);
 		body1.setDefaultCellWidth(16);
 		
 		final Color color = display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
-		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
-			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				background = index0.intValue() % 2 + index1.intValue() % 2 == 1 ? color : null;
-				super.paint(index0, index1, x, y, width, height);
-			}
-		});
+		matrix.getBody().replacePainter(
+		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		    @Override
+		    public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
+		      background = index0.intValue() % 2 + index1.intValue() % 2 == 1 ? color : null;
+		      super.paint(index0, index1, x, y, width, height);
+		    }
+		  }
+	  );
 		
 		shell.open();
 		while (!shell.isDisposed()) {

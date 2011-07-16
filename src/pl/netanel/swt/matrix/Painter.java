@@ -140,8 +140,8 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	public int imageMarginY;
 
 	TextClipMethod textClipMethod;
-	Zone zone;
-	private Matrix<N0, N1> matrix;
+	Zone<N0, N1> zone;
+	Matrix<N0, N1> matrix;
 
 	private Color lastForeground, lastBackground, defaultBackground, defaultForeground,  
 		 selectionBackground, selectionForeground;
@@ -267,10 +267,10 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 *        <li>{@link #SCOPE_ROW_CELLS}, <li>{@link #SCOPE_HORIZONTAL_LINES}, <li>{@link #SCOPE_SINGLE}</ul>
 	 * @param index0 index of a section item in the row axis. 
 	 * @param index1 index of a section item in the column axis 
-	 * @param x the x coordinate of the boundaries
-	 * @param y the y coordinate of the boundaries
-	 * @param width the width of the boundaries
-	 * @param height the height of the boundaries
+   * @param x the x coordinate of the painting boundaries
+   * @param y the y coordinate of the painting boundaries
+   * @param width the width of the painting boundaries
+   * @param height the height of the painting boundaries
 	 */
 	public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
 		Color foreground2 = foreground == null ? defaultForeground : foreground; 
@@ -547,12 +547,30 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		return (ratio*v1 + (100-ratio)*v2)/100;
 	}
 
-	void setMatrix(Matrix matrix) {
+	void setMatrix(Matrix<N0, N1> matrix) {
 		this.matrix = matrix;
 	}
 
+	/**
+	 * Returns the matrix to which the painter belongs.
+	 * <p>
+	 * It returns <code>null</code> before the painter is added to the collection 
+	 * of the zone painters or matrix painters, which means it's always 
+	 * null in the painter's constructor.
+	 *  
+	 * @return the matrix to which the painter belongs
+	 */
 	Matrix<N0, N1> getMatrix() {
 		return matrix;
 	}
+
+  Zone<N0, N1> getZone() {
+    return zone;
+  }
+
+  void setZone(Zone<N0, N1> zone) {
+    this.zone = zone;
+    this.matrix = zone.getMatrix();
+  }
 
 }

@@ -132,8 +132,10 @@ class TestUtil {
   public static void log(Object ...o) {
     for (int i = 0; i < o.length; i++) {
       if (i > 0) System.out.print(", ");
-      System.out.print(o[i]);
+      System.out.print(o[i]); 
+      System.out.flush();
     }
     System.out.println();
+    System.out.flush();
   }
 }

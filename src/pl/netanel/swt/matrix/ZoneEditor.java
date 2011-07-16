@@ -342,7 +342,9 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 				  }
 				}
 			}
-			control.setFocus();
+			if (control != null) {
+			  control.setFocus();
+			}
 		}
 		return control;
 	}

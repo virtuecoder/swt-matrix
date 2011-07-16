@@ -15,7 +15,7 @@ public class Snippet_0001 {
 		Shell shell = new Shell();
 		shell.setLayout(new FillLayout());
 		
-		Matrix matrix = new Matrix(shell, SWT.NONE);
+		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		matrix.getAxis1().getBody().setCount(4);
 		matrix.getAxis0().getBody().setCount(10);
 		

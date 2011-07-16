@@ -19,7 +19,7 @@ public class Snippet_0903 {
 		Shell shell = new Shell();
 		shell.setLayout(new FillLayout());
 		
-		final Matrix<Integer, Integer> matrix = new Matrix(shell, SWT.NONE);
+		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		matrix.getAxis0().getHeader().setVisible(true);
 		matrix.getAxis1().getHeader().setVisible(true);
 		final Section<Integer> body0 = matrix.getAxis0().getBody();

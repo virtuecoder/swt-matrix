@@ -25,32 +25,34 @@ public class Snippet_0450 {
 		shell.setLayout(new FillLayout());
 		
 		// Data model
-		final ArrayList<Object[]> data = new ArrayList();
+		final ArrayList<Object[]> data = new ArrayList<Object[]>();
 		data.add(new Object[] {"a", true, new Date()});
 		data.add(new Object[] {true, false, "Monday"});
 		data.add(new Object[] {"c", "Sunday", "b"});
 		
 		// Matrix
-		final Matrix matrix = new Matrix(shell, SWT.NONE);
+		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		
 		matrix.getAxis0().getBody().setCount(data.size());
 		matrix.getAxis1().getBody().setCount(3);
 
-		Zone body = matrix.getBody();
+		Zone<Integer, Integer> body = matrix.getBody();
 		
 		// Data painter
-    body.replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
-			@Override
-			public String getText(Number index0, Number index1) {
-				Object value = data.get(index0.intValue())[index1.intValue()];
-				return value == null ? "" : value.toString();
-			}
-		});
+    body.replacePainter(
+      new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+        @Override
+        public String getText(Integer index0, Integer index1) {
+          Object value = data.get(index0.intValue())[index1.intValue()];
+          return value == null ? "" : value.toString();
+        }
+      }
+    );
 		
 		// Body editor
-		new ZoneEditor(body) {
+		new ZoneEditor<Integer, Integer>(body) {
 			@Override
-			public void setModelValue(Number index0, Number index1, Object value) {
+			public void setModelValue(Integer index0, Integer index1, Object value) {
 				data.get(index0.intValue())[index1.intValue()] = value;
 			}
 		};

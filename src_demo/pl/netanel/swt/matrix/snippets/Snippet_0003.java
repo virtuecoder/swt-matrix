@@ -33,58 +33,63 @@ public class Snippet_0003 {
 		shell.setLayout(new GridLayout(2, false));
 		Display display = shell.getDisplay();
 		
-		final ArrayList<Object[]> list = new ArrayList();
+		final ArrayList<Object[]> list = new ArrayList<Object[]>();
 		list.add(new Object[] {"Task 1", "high"});
 		list.add(new Object[] {"Task 2", "medium"});
 		list.add(new Object[] {"Task 3", "low"});
 		list.add(new Object[] {"Task 4", "medium"});
 		list.add(new Object[] {"Task 5", "high"});
-		final ArrayList<Object[]> filtered = new ArrayList();
+		final ArrayList<Object[]> filtered = new ArrayList<Object[]>();
 		filtered.addAll(list);
 		
-		Axis axis0 = new Axis(Integer.class, 3);
+		Axis<Integer> axis0 = new Axis<Integer>(Integer.class, 3);
 		axis0.setBody(2);
 		axis0.getSection(1).setCount(1);
 		axis0.getSection(1).setFocusItemEnabled(false);
-		final Section body0 = axis0.getBody();
+		final Section<Integer> body0 = axis0.getBody();
 		body0.setCount(list.size());
 		body0.setDefaultResizable(true);
 		
-		final Matrix matrix = new Matrix(shell, SWT.V_SCROLL, axis0, null);
+		final Matrix<Integer, Integer> matrix = 
+		  new Matrix<Integer, Integer>(shell, SWT.V_SCROLL, axis0, null);
 		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
 		axis0.getHeader().setVisible(true);
 		
-		Axis axis1 = matrix.getAxis1();
+		Axis<Integer> axis1 = matrix.getAxis1();
 		axis1.getBody().setCount(2);
 		axis1.getHeader().setDefaultCellWidth(16);
 		axis1.getHeader().setVisible(true);
 		
-		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
-			@Override
-			public String getText(Number index0, Number index1) {
-				return filtered.get(index0.intValue())[index1.intValue()].toString();
-			}
-		});
+		matrix.getBody().replacePainter(
+		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+  			@Override
+  			public String getText(Integer index0, Integer index1) {
+  				return filtered.get(index0.intValue())[index1.intValue()].toString();
+  			}
+  		}
+	  );
 		
 		FileInputStream stream = new FileInputStream("filter.png");
 		Image image = new Image(display, new ImageData(stream));
 		stream.close();
 		
-		matrix.getColumnHeader().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
-			@Override
-			public String getText(Number index0, Number index1) {
-				return index1.intValue() == 0 ? "Task" : "Priority";
-			}
-		});
+		matrix.getColumnHeader().replacePainter(
+		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		    @Override
+		    public String getText(Integer index0, Integer index1) {
+		      return index1.intValue() == 0 ? "Task" : "Priority";
+		    }
+		  }
+		);
 		
 		// Filter row header
 		matrix.getZone(axis0.getSection(1), axis1.getHeader()).getPainter("cells").image = image;
 		
 		// Filter columns
 		matrix.getZone(axis0.getSection(1), axis1.getBody()).replacePainter(
-			new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
-				public String getText(Number index0, Number index1) {
+			new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+				public String getText(Integer index0, Integer index1) {
 					return index1.intValue() == 1 ? filter : null;
 				};
 			}

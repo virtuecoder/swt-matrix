@@ -20,24 +20,25 @@ public class Snippet_0014 {
 		shell.setLayout(new FillLayout());
 		final Display display = shell.getDisplay();
 		
-		final Matrix matrix = new Matrix(shell, SWT.NONE);
+		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		
-		Section body1 = matrix.getAxis1().getBody();
+		Section<Integer> body1 = matrix.getAxis1().getBody();
 		body1.setDefaultLineWidth(0);
 		body1.setCount(4);
 		body1.setDefaultCellWidth(50);
 		
-		Section body0 = matrix.getAxis0().getBody();
+		Section<Integer> body0 = matrix.getAxis0().getBody();
 		body0.setDefaultLineWidth(0);
 		body0.setCount(10);
 		
 
-		final Zone body = matrix.getBody();
+		final Zone<Integer, Integer> body = matrix.getBody();
 		// To additionally hide the lines
 		body.getPainter("row lines").setEnabled(false);
 		body.getPainter("column lines").setEnabled(false);
 		
-		body.addPainter(0, new Painter("alter row background", Painter.SCOPE_ROW_CELLS) {
+		body.addPainter(0, 
+		  new Painter<Integer, Integer>("alter row background", Painter.SCOPE_ROW_CELLS) {
 			@Override
 			protected boolean init() {
 				super.init();
@@ -45,7 +46,7 @@ public class Snippet_0014 {
 				return true;
 			}
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+			public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
 				if (index0.intValue() % 2 == 1) {
 					gc.fillRectangle(x, y, width, height);
 				}

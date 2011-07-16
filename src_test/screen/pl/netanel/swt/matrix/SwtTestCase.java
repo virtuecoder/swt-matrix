@@ -385,7 +385,7 @@ public class SwtTestCase {
    * @param rect
    */
   public void click(Rectangle rect) {
-    postClick(middle(focusControl, rect), SWT.BUTTON1);
+    postClick(middle(display.getFocusControl(), rect), SWT.BUTTON1);
     processEvents();
   }
 
@@ -841,6 +841,23 @@ public class SwtTestCase {
     return display.map(control, null, rect.x + rect.width / 2, rect.y
       + rect.height / 2);
   }
+  
+  public Point middle(Rectangle rect) {
+    return display.getFocusControl().toDisplay(
+      rect.x + rect.width / 2, rect.y + rect.height / 2);
+  }
+  
+  public Point offset(Point p, int dx, int dy) {
+    return new Point(p.x + dx, p.y + dy);
+  }
+  
+  public Point toDisplay(Point p) {
+    return display.getFocusControl().toDisplay(p);
+  }
+  
+  public Point toDisplay(int x, int y) {
+    return display.getFocusControl().toDisplay(x, y);
+  }
 
   /**
    * Makes the current Thread to sleep delay milliseconds
@@ -1160,7 +1177,7 @@ public class SwtTestCase {
 
   }
   
-  static String getTypeName(int x) {
+  public static String getTypeName(int x) {
     return x == 1 ? "KeyDown" :
       x == 2 ? "KeyUp" :
       x == 3 ? "MouseDown" :

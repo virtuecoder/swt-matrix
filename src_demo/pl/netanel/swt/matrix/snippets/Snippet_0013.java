@@ -20,24 +20,25 @@ public class Snippet_0013 {
 		shell.setLayout(new FillLayout());
 		final Display display = shell.getDisplay();
 		
-		Matrix matrix = new Matrix(shell, SWT.NONE);
+		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		matrix.getAxis0().getHeader().setVisible(true);
 		
-		Section body0 = matrix.getAxis0().getBody();
+		Section<Integer> body0 = matrix.getAxis0().getBody();
 		body0.setDefaultLineWidth(3);
 		body0.setCount(10);
 		
-		Section body1 = matrix.getAxis1().getBody();
+		Section<Integer> body1 = matrix.getAxis1().getBody();
 		body1.setDefaultLineWidth(3);
 		body1.setCount(4);
 		
 		// Column header painting
-		Zone columnHeader = matrix.getColumnHeader();
+		Zone<Integer, Integer> columnHeader = matrix.getColumnHeader();
 		columnHeader.getPainter("row lines").setEnabled(false);
 		columnHeader.getPainter("column lines").setEnabled(false);
-		columnHeader.addPainter(new Painter("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		columnHeader.addPainter(
+		  new Painter<Integer, Integer>("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+			public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
 				gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
 				gc.drawRectangle(x - 1, y - 1, width + 1, height + 1);
 			}
@@ -45,16 +46,18 @@ public class Snippet_0013 {
 		columnHeader.setDefaultBackground(null);
 		
 		// Body painting
-		Zone body = matrix.getBody();
+		Zone<Integer, Integer> body = matrix.getBody();
 		body.getPainter("row lines").setEnabled(false);
 		body.getPainter("column lines").setEnabled(false);
-		body.addPainter(new Painter("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {
-			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
-				gc.drawRectangle(x - 1, y - 1, width + 1, height + 1);
-			}
-		});
+		body.addPainter(
+		  new Painter<Integer, Integer>("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		    @Override
+		    public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
+		      gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+		      gc.drawRectangle(x - 1, y - 1, width + 1, height + 1);
+		    }
+		  }
+	  );
 		
 		shell.open();
 		while (!shell.isDisposed()) {
