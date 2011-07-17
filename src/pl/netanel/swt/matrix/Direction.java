@@ -6,15 +6,15 @@ import java.util.List;
 
 
 abstract class Direction<N extends Number> {
-	protected final List<Section> sections;
+	protected final List<SectionCore> sections;
 	protected final Math math;
-	Section section;
+	SectionCore section;
 	DirectionIndexSequence seq;
 	int i, level, sign;
 	AxisItem freeze, min, start;
 	boolean pending, moved, hasMore, skipWithoutCurrent;
 	
-	public Direction(Math math, List<Section> sections, boolean skipWithoutCurrent2) {
+	public Direction(Math math, List<SectionCore> sections, boolean skipWithoutCurrent2) {
 		this.math = math;
 		this.sections = sections;
 		skipWithoutCurrent = skipWithoutCurrent2;
@@ -125,7 +125,7 @@ abstract class Direction<N extends Number> {
 
 	static class Forward<N extends Number> extends Direction {
 
-		public Forward(Math<N> math, ArrayList<Section<N>> sections, boolean skipWithoutCurrent) {
+		public Forward(Math<N> math, ArrayList<SectionCore<N>> sections, boolean skipWithoutCurrent) {
 			super(math, sections, skipWithoutCurrent);
 			sign = 1;
 		}
@@ -143,7 +143,7 @@ abstract class Direction<N extends Number> {
 	}
 	static class Backward<N extends Number> extends Direction {
 
-		public Backward(Math<N> math, ArrayList<Section<N>> sections, boolean skipWithoutCurrent) {
+		public Backward(Math<N> math, ArrayList<SectionCore<N>> sections, boolean skipWithoutCurrent) {
 			super(math, sections, skipWithoutCurrent);
 			sign = -1;
 		}

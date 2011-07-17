@@ -1,7 +1,12 @@
+API changes:
+- Removed Section() contructor
+- Section is interface
+- Added Section.getIndexClass
+-------------------------------------------------------------------------------
 Version 0.3.1
 Bug fixes:
 - NPE while zone editor activation when the editor control was null.
-- Moving item back and forth did not work
+- Moving item back and forth did not work correctly
 - Removed type safety warnings from snippets
 
 -------------------------------------------------------------------------------

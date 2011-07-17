@@ -26,7 +26,9 @@ public class AxisItem<N extends Number> {
 	AxisItem(Section<N> section, N index) {
 		Preconditions.checkNotNullWithName(section, "section");
 		Preconditions.checkNotNullWithName(index, "index");
-		section.checkIndex(index, section.math.increment(section.getCount()), "index");
+		section.checkCellIndex(index);
+		// TODO Why does this check the line limit
+		//section.checkIndex(index, section.math.increment(section.getCount()), "index");
 		this.section = section;
 		this.index = index;
 	}
@@ -42,7 +44,7 @@ public class AxisItem<N extends Number> {
 	
 	@Override
 	public String toString() {
-		return "" + section.index + " " + index;
+		return "" + section + " " + index;
 	}
 	
 	@Override

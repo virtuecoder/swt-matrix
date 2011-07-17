@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 class AxisExtentSequence<N extends Number> {
-	List<Section<N>> sections;
-	Section section;
+	List<SectionCore<N>> sections;
+	SectionCore section;
 	int sectionIndex;
 	Number start, end;
 	private int startItemIndex, endItemIndex, i, istart, iend;
@@ -13,14 +13,14 @@ class AxisExtentSequence<N extends Number> {
 	private AxisItem startItem, endItem;
 	private final Math math;
 	
-	public AxisExtentSequence(Math<N> math, List<Section<N>> sections) {
+	public AxisExtentSequence(Math<N> math, List<SectionCore<N>> sections) {
 		super();
 		this.math = math;
 		this.sections = sections;
 	}
 
 	void init() {
-		Section section2 = sections.get(sections.size() - 1);
+		SectionCore section2 = sections.get(sections.size() - 1);
 		init(
 			AxisItem.create(sections.get(0), math.ZERO_VALUE()), 
 			AxisItem.create(section2, math.decrement(section2.getCount())));
@@ -30,7 +30,7 @@ class AxisExtentSequence<N extends Number> {
     this.endItem = endItem;
     this.startItemIndex = sections.indexOf(startItem.getSection());
 		this.endItemIndex = sections.indexOf(endItem.getSection());
-		Section sl;
+		SectionCore sl;
 		sl = startItem.getSection();
 		istart = sl.order.items.isEmpty() ? 0 : sl.order
 				.getExtentIndex(startItem.getIndex());

@@ -300,7 +300,7 @@ class MatrixListener implements Listener {
 				if (resizeEvent == SWT.MouseMove) {
 					int len = axis.sections.size();
 					for (int i = 0; i < len; i++) {
-						Section<N> section = axis.sections.get(i);
+						SectionCore<N> section = axis.sections.get(i);
 						ExtentSequence<N> seq = section.getSelectedExtentResizableSequence();
 						for (seq.init(); seq.next();) {
 							
@@ -320,7 +320,7 @@ class MatrixListener implements Listener {
 				else if (resizeEvent == SWT.MouseDoubleClick) {
 					int len = axis.sections.size();
 					for (int i = 0; i < len; i++) {
-						Section<N> section = axis.sections.get(i);
+						SectionCore<N> section = axis.sections.get(i);
 						NumberSequence<N> seq = section.getSelected();
 						for (seq.init(); seq.next();) {
 							axis.pack(AxisItem.create(section, seq.index()));
@@ -451,7 +451,7 @@ class MatrixListener implements Listener {
 			prev = ctrlSelection ? item : null;
 		}
 		
-		private void addEvent(Section<N> section, int type, Object data) {
+		private void addEvent(SectionCore<N> section, int type, Object data) {
 			Event event = new Event();
 			event.type = type;
 			event.widget = matrix;
@@ -602,7 +602,7 @@ class MatrixListener implements Listener {
 		}
 
 		public void sendEvents() {
-			for (Section section: axis.sections) {
+			for (SectionCore section: axis.sections) {
 				section.listeners.sendEvents();
 			}
 		}

@@ -31,7 +31,7 @@ class Layout<N extends Number> {
 	public Direction forward, backward, forwardNavigator, backwardNavigator;
 	final Axis<N> axis;
 
-	private ArrayList<Section<N>> sections;
+	private ArrayList<SectionCore<N>> sections;
 	
 	public Layout(Axis<N> axis) {
 		Preconditions.checkArgument(axis.getSectionCount() > 0, "Layout must have at least one section");
@@ -39,7 +39,7 @@ class Layout<N extends Number> {
 		math = axis.math;
 		sections = new ArrayList();
 		for (int i = 0, imax = axis.sections.size(); i < imax; i++) {
-			Section<N> section2 = axis.sections.get(i);
+			SectionCore<N> section2 = axis.sections.get(i);
 			section2.index = i;
 			sections.add(section2);
 		}
@@ -58,7 +58,7 @@ class Layout<N extends Number> {
 		caches = new ArrayList<Cache>();
 		caches.add(head); caches.add(main); caches.add(tail);
 		
-		Section section = axis.sections.get(0);
+		SectionCore section = axis.sections.get(0);
 		start = AxisItem.create(section, math.ZERO_VALUE());
 		zeroItem = AxisItem.create(section, math.ZERO_VALUE());
 		forwardNavigator.init();
@@ -104,7 +104,7 @@ class Layout<N extends Number> {
 		
 		// Compute total and check if body exists
 		total.set(math.ZERO_VALUE()); 
-		for (Section section: sections) {
+		for (SectionCore section: sections) {
 			if (section.isVisible()) {
 				total.add(section.getVisibleCount());
 			}
@@ -182,7 +182,7 @@ class Layout<N extends Number> {
 	 */
 	public void ensureCurrentIsValid() {
 		if (current == null) return;
-		Section<N> currentSection = current.getSection();
+		SectionCore<N> currentSection = current.getSection();
 		
 		// Out of scope
 		N count = currentSection.getCount();
@@ -475,7 +475,7 @@ class Layout<N extends Number> {
 	abstract class Cache {
 		ArrayList<AxisItem> items;
 		ArrayList<Bound> cells, lines;
-		ArrayList<Section> sections;
+		ArrayList<SectionCore> sections;
 		int distance, innerWidth, outerWidth, freezeLineWidth, lastLineWidth;
 		Direction direction;
 
@@ -483,7 +483,7 @@ class Layout<N extends Number> {
 
 
 		public Cache() {
-			sections = new ArrayList<Section>();
+			sections = new ArrayList<SectionCore>();
 			items = new ArrayList<AxisItem>();
 			cells = new ArrayList<Bound>();
 			lines = new ArrayList<Bound>();
@@ -566,7 +566,7 @@ class Layout<N extends Number> {
 			} 
 		}
 
-		Bound lastLine(Section section, Number index) {
+		Bound lastLine(SectionCore section, Number index) {
 			Number index2 = section.math.increment(index);
 			Bound bound = new Bound(0, section.getLineWidth(index2));
 			lines.add(bound);
@@ -708,7 +708,7 @@ class Layout<N extends Number> {
 	MutableNumber getItemPosition(AxisItem<N> item) {
 		MutableNumber position = math.create(0);
 		for (int i = 0, size = sections.size(); i < size; i++) {
-			Section<N> section = sections.get(i);
+			SectionCore<N> section = sections.get(i);
 			if (item.getSection().equals(section)) {
 				N index = section.indexOfNotHidden(item.getIndex());
 				return index == null ? null : position.add(math.getValue(index));
@@ -725,7 +725,7 @@ class Layout<N extends Number> {
 		MutableNumber<N> pos2 = math.create(0);
 		
 		for (int i = 0, size = sections.size(); i < size; i++) {
-			Section<N> section = sections.get(i);
+			SectionCore<N> section = sections.get(i);
 			if (!section.isVisible()) continue;
 			pos1.set(pos2);
 			pos2.add(section.getVisibleCount());
@@ -851,7 +851,7 @@ class Layout<N extends Number> {
 	}
 
 	public boolean contains(Frozen frozen, Section section) {
-		List<Section> sections = getCache(frozen).sections;
+		List<SectionCore> sections = getCache(frozen).sections;
 		if (sections.contains(section)) {
 			return true;
 		}
@@ -997,7 +997,7 @@ class Layout<N extends Number> {
 	}
 
 	public boolean reorder(AxisItem<N> source, AxisItem<N> target) {
-		Section<N> section = source.getSection();
+		SectionCore<N> section = source.getSection();
 		if (!section.equals(target.getSection())) return false;
 		
 		int position = compare(target, start);

@@ -19,7 +19,7 @@ import pl.netanel.util.Preconditions;
  * </dl>
  * 
  * @param <N> defines the indexing class for this axis
- * @see Section
+ * @see SectionCore
  *
  * @author Jacek
  * @created 27-03-2011
@@ -28,7 +28,7 @@ public class Axis<N extends Number>  {
 	private static final String FREEZE_ITEM_COUNT_ERROR = "Freeze item count cannot be negative";
 	
 	final Math<N> math;
-	final ArrayList<Section<N>> sections;
+	final ArrayList<SectionCore<N>> sections;
 	
 	private Section<N> body, header;
 	private int autoScrollOffset, resizeOffset;
@@ -51,7 +51,7 @@ public class Axis<N extends Number>  {
 	 * The header section count is set to one and its visibility to false.
 	 * @param numberClass sub-type of {@link Number} class to index the sections
 	 * @param sectionCount number of sections to create
-	 * @see #Axis(Section...)
+	 * @see #Axis(SectionCore...)
 	 */
 	public Axis(Class<N> numberClass, int sectionCount) {
 		this(createSections(numberClass, sectionCount));
@@ -61,7 +61,7 @@ public class Axis<N extends Number>  {
 	private static Section[] createSections(Class numberClass, int sectionCount) {
 		Section[] sections = new Section[sectionCount];
 		for (int i = 0; i < sectionCount; i++) {
-			sections[i] = new Section(numberClass);
+			sections[i] = new SectionCore(numberClass);
 		}
 		return sections;
 	}
@@ -74,20 +74,21 @@ public class Axis<N extends Number>  {
 	 * <p>
 	 * If there is one section it becomes the body section. Otherwise the first section 
 	 * becomes the header and the second one becomes the body.
-	 * @see #Axis(Section...)
+	 * @see #Axis(SectionCore...)
 	 */
 	public Axis(Section<N> ...sections) {
-		Preconditions.checkArgument(sections.length > 0, "Model must have at least one section");
-		math = sections[0].math;
+		Preconditions.checkArgument(sections.length > 0, "Axis must have at least one section");
+		math = Math.getInstance(sections[0].getIndexClass());
 		this.sections = new ArrayList(sections.length);
 		for (int i = 0; i < sections.length; i++) {
 			Section<N> section = sections[i];
-      Preconditions.checkArgument(section.math.equals(math), 
-				"Section at {0} must be indexed by the same Number subclass as the first section {1}", 
-				section.math.getNumberClass(), math.getNumberClass());				
-			section.index = i;
-			section.axis = this;
-			this.sections.add(section);
+			// TODO remove this method?
+//      Preconditions.checkArgument(section.math.equals(math), 
+//				"Section at {0} must be indexed by the same Number subclass as the first section {1}", 
+//				section.math.getNumberClass(), math.getNumberClass());				
+//			section.index = i;
+//			section.axis = this;
+//			this.sections.add(section);
 		}
 		if (sections.length == 1) {
 			setBody(0);
@@ -225,13 +226,13 @@ public class Axis<N extends Number>  {
 	 * @throws IllegalArgumentException if item is <code>null</code> or item's section
 	 * 		does not belong to this axis.
 	 * @throws IndexOutOfBoundsException if item's index is out 
-	 * 		of 0 ... {@link Section#getCount()}-1 bounds
+	 * 		of 0 ... {@link SectionCore#getCount()}-1 bounds
 	 */
 	public int getViewportPosition(AxisItem<N> item) {
 		Preconditions.checkNotNullWithName(item, "item");
 		Section<N> section = item.getSection();
 		section = checkSection(section);
-		section.checkIndex(item.getIndex(), section.getCount(), "item index");
+		section.checkCellIndex(item.getIndex(), "item index");
 		
 		layout.computeIfRequired();
 		return layout.indexOf(item);
@@ -317,7 +318,7 @@ public class Axis<N extends Number>  {
 	/**
 	 * Sets the focus marker to the item at given index in the given section.
 	 * <p>
-	 * If section has the focus item disabled (see {@link Section#setFocusItemEnabled(boolean)}) 
+	 * If section has the focus item disabled (see {@link SectionCore#setFocusItemEnabled(boolean)}) 
 	 * then this method does nothing.
 	 *   
 	 * @param section section in which to set the focus
@@ -325,11 +326,11 @@ public class Axis<N extends Number>  {
 	 * @throws IllegalArgumentException if the section is <code>null</code> or 
 	 * 		does not belong to this axis.
 	 * @throws IndexOutOfBoundsException if index is out 
-	 * 		of 0 ... {@link Section#getCount()}-1 bounds
+	 * 		of 0 ... {@link SectionCore#getCount()}-1 bounds
 	 */
 	public void setFocusItem(Section<N> section, N index) {
 		section = checkSection(section);
-		section.checkIndex(index, section.getCount(), "index");
+		section.checkCellIndex(index, "index");
 		
 		layout.setFocusItem(AxisItem.create(section, index));
 		if (matrix != null) matrix.redraw();
@@ -616,7 +617,7 @@ public class Axis<N extends Number>  {
 //    }
     
 		for (int i = 0, imax = sections.size(); i < imax; i++) {
-			Section section = sections.get(i);
+			SectionCore section = sections.get(i);
 			section.setSelectedAll(selectState, notify, notifyInZones);
 			
 			if (notify) {
@@ -633,7 +634,7 @@ public class Axis<N extends Number>  {
 	
 	AxisItem getLastItem() {
 		for (int i = sections.size(); i-- > 0;) {
-			Section section = sections.get(i);
+			SectionCore section = sections.get(i);
 			if (section.isEmpty()) continue;
 			return AxisItem.create(section, math.decrement(section.getCount()));
 		}
@@ -645,7 +646,7 @@ public class Axis<N extends Number>  {
 	}
 
 	int comparePosition(AxisItem<N> item1, AxisItem<N> item2) {
-		int diff = item1.getSection().index - item2.getSection().index;
+		int diff = item1.getSection().getCo.index - item2.getSection().index;
 		if (diff != 0) return diff; 
 		return math.compare(
 				item1.getSection().indexOf(item1.getIndex()), 
@@ -671,7 +672,7 @@ public class Axis<N extends Number>  {
 	 * @author Jacek Kolodziejczyk created 11-03-2011
 	 */
 	class ExtentSequence {
-		Section<N> section;
+		SectionCore<N> section;
 		MutableNumber<N> start, end, startItemIndex, endItemIndex;
 		private int i, istart, iend, sectionIndex, lastSectionIndex;
 		private ArrayList<Extent<N>> items;
@@ -715,13 +716,13 @@ public class Axis<N extends Number>  {
 		}
 	}
 
-	Bound getCellBound(Section<N> section, N index) {
+	Bound getCellBound(SectionCore<N> section, N index) {
 		if (section == null || index == null) return null;
 		Bound bound = layout.getCellBound(AxisItem.create(section, index));
 		return bound == null ? null : bound.copy();
 	}
 
-	Bound getLineBound(Section<N> section, N index) {
+	Bound getLineBound(SectionCore<N> section, N index) {
 		if (section == null || index == null) return null;
 		Bound bound = layout.getLineBound(AxisItem.create(section, index));
 		return bound == null ? null : bound.copy();
@@ -751,7 +752,7 @@ public class Axis<N extends Number>  {
 		}
 	}
 	
-	void insertInZones(Section section, N target, N count) {
+	void insertInZones(SectionCore section, N target, N count) {
 		matrix.model.insertInZones(index, section, target, count);
 		layout.show(AxisItem.create(section, target));
 	}

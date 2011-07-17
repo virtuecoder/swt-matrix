@@ -7,40 +7,18 @@ import org.eclipse.swt.events.SelectionListener;
 
 import pl.netanel.util.Preconditions;
 
-/**
- * Section represents a continuous segment of a matrix axis, for example a
- * header, body, footer. It contains a number of items indexed by the
- * <code>&lt;N extends {@link Number}&gt;</code> type parameter.<br>
- * <p>
- * <img src="../../../../../javadoc/images/Section.png"/>
- * <p>
- * Index item width consists of the line width and the cell width - the line
- * precedes the cell. The last line index equals to section.core.count. If the
- * item is moved then both the cell and the preceding line are moved.
- * <p>
- * Item attributes include cell width, line width, moveable, resizable,
- * hideable, hidden, selected. To optimize data storage of those attributes one
- * value can be set for a range of items enclosed between the start and end
- * items, for example setCellWidth(start, end, width). Also default values can
- * be defined to save memory. If 1000000 items have the same width, then its a
- * waste to store 1000000 ints with the same values. An example of such
- * function: setDefaultCellWidth(width).
- * <p>
- * Section has boolean flags for visibility and navigation enablement. On the
- * diagram above the current item is 0 in body section of column axis and 2 in
- * the body section of row axis. Only one item on the axis can the be the
- * current one, as opposed to each section having its own current item.
- * 
- * 
- * @author Jacek Kolodziejczyk
- * @created 02-03-2011
- */
-class SectionClient<N extends Number> extends Section<N> {
-	Section<N> core;
 
-	public SectionClient(Section<N> section) {
-		core = section;
-	}
+class SectionClient<N extends Number> implements Section<N> {
+	SectionCore<N> core;
+
+  /**
+   * Constructs a section indexed by the given sub-class of {@link Number}.
+   * 
+   * @param numberClass defines the class used for indexing
+   */
+  public SectionClient(Class<N> numberClass) {
+    core = new SectionCore<N>(numberClass);
+  }
 
 	/**
 	 * Indicates whether some other object is "equal to" this one.
@@ -62,6 +40,11 @@ class SectionClient<N extends Number> extends Section<N> {
 		return core.toString();
 	}
 
+
+  public Class getIndexClass() {
+    return core.getIndexClass();
+  };
+	
 	/**
 	 * Specifies the number of section items.
 	 * 
@@ -324,7 +307,7 @@ class SectionClient<N extends Number> extends Section<N> {
 	 *             if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	public int getLineWidth(N index) {
-		checkIndex(index, core.math.increment(core.count), "index");
+		checkLineIndex(index,  "index");
 		return core.getLineWidth(index);
 	}
 
@@ -367,7 +350,7 @@ class SectionClient<N extends Number> extends Section<N> {
 	 *             if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	public int getCellWidth(N index) {
-		checkIndex(index, core.count, "index");
+		checkCellIndex(index, "index");
 		return core.getCellWidth(index);
 	}
 
@@ -420,7 +403,7 @@ class SectionClient<N extends Number> extends Section<N> {
 	 *             if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	public boolean isMoveable(N index) {
-		checkIndex(index, core.count, "index");
+		checkCellIndex(index, "index");
 		return core.isMoveable(index);
 	}
 
@@ -471,7 +454,7 @@ class SectionClient<N extends Number> extends Section<N> {
 	 *             if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	public boolean isResizable(N index) {
-		checkIndex(index, core.count, "index");
+		checkCellIndex(index, "index");
 		return core.isResizable(index);
 	}
 
@@ -526,7 +509,7 @@ class SectionClient<N extends Number> extends Section<N> {
 	 *             if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	public boolean isHideable(N index) {
-		checkIndex(index, core.count, "index");
+		checkCellIndex(index, "index");
 		return core.isHideable(index);
 	}
 
@@ -576,7 +559,7 @@ class SectionClient<N extends Number> extends Section<N> {
 	 *             if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	public boolean isHidden(N index) {
-		checkIndex(index, core.count, "index");
+		checkCellIndex(index, "index");
 		return core.isHidden(index);
 	}
 
@@ -655,7 +638,7 @@ class SectionClient<N extends Number> extends Section<N> {
 	 *             if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
 	public boolean isSelected(N index) {
-		checkIndex(index, core.count, "index");
+		checkCellIndex(index, "index");
 		return core.isSelected(index);
 	}
 
@@ -736,7 +719,7 @@ class SectionClient<N extends Number> extends Section<N> {
 	 */
 	public void move(N start, N end, N target) {
 		checkRange(start, end, core.count);
-		checkIndex(target, core.math.increment(core.count), "target");
+		checkLineIndex(target, "target");
 		core.move(start, end, target);
 	}
 
@@ -779,7 +762,7 @@ class SectionClient<N extends Number> extends Section<N> {
 	 */
 	public void insert(N target, N count) {
 		Preconditions.checkNotNullWithName(count, "count");
-		checkIndex(target, core.math.increment(core.count), "target");
+		checkLineIndex(target, "target");
 		core.insert(target, count);
 	}
 
@@ -843,54 +826,16 @@ class SectionClient<N extends Number> extends Section<N> {
 	 * Non public methods 
 	 */
 
-	protected void checkIndex(N index, N limit, String name) {
-		core.checkIndex(index, limit, name);
-	};
+	public void checkCellIndex(N index, String name) {
+    core.checkCellIndex(index, name);
+  }
+
+  public void checkLineIndex(N index, String name) {
+    core.checkLineIndex(index, name);
+  }
 
 	protected void checkRange(N start, N end, N limit) {
 		core.checkRange(start, end, limit);
 	};
-
-	@Override
-	void backupSelection() {
-		core.backupSelection();
-	}
-	
-	@Override
-	void restoreSelection() {
-		core.restoreSelection();
-	}
-	
-	N getCellSpan(N index) {
-		return core.getCellSpan(index);
-	};
-	
-	@Override
-	NumberSequence<N> getSelected() {
-		return core.getSelected();
-	}
-	
-	@Override
-	ExtentSequence<N> getSelectedExtentResizableSequence() {
-		return core.getSelectedExtentResizableSequence();
-	}
-	
-	@Override
-	ExtentSequence<N> getSelectedExtentSequence() {
-		return core.getSelectedExtentSequence();
-	}
-	
-	@Override
-	N getVisibleCount() {
-		return core.getVisibleCount();
-	}
-	
-	boolean moveSelected(N source, N target) {
-		return core.moveSelected(source, target);
-	};
-	
-	N nextNotHiddenIndex(N index, int direction) {
-		return core.nextNotHiddenIndex(index, direction);
-	};	
 	
 }

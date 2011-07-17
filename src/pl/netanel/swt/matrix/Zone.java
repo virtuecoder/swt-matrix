@@ -32,7 +32,7 @@ import pl.netanel.util.Preconditions;
  * 
  * @param <N0> defines indexing type for rows
  * @param <N1> defines indexing type for columns
- * @see Section
+ * @see SectionCore
  * 
  * @author Jacek
  * @created 13-10-2010
@@ -40,8 +40,8 @@ import pl.netanel.util.Preconditions;
 public class Zone<N0 extends Number, N1 extends Number> {
 	
 	final Painters<N0, N1> painters;
-	Section<N0> section0;
-	Section<N1> section1;
+	SectionCore<N0> section0;
+	SectionCore<N1> section1;
 	CellSet cellSelection;
 	CellSet lastSelection; // For adding selection
 	ZoneEditor<N0, N1> editor;
@@ -67,7 +67,7 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 * @param section0 section of the row axis
 	 * @param section1 section of the column axis
 	 */
-	public Zone(Section<N0> section0, Section<N1> section1) {
+	public Zone(SectionCore<N0> section0, SectionCore<N1> section1) {
 		this();
 		this.section0 = section0;
 		this.section1 = section1;

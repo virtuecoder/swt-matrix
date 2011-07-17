@@ -28,8 +28,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		Section body0  = axis0.getBody(), body1 = axis1.getBody();
 		Section header0 = axis0.getHeader(), header1 = axis1.getHeader();
 		
-		for (Section<N0> section0: axis0.sections) {
-			for (Section<N1> section1: axis1.sections) {
+		for (SectionCore<N0> section0: axis0.sections) {
+			for (SectionCore<N1> section1: axis1.sections) {
 				Zone zone = getZone(section0, section1);
 				if (zone == null) {
 					zone = new Zone(section0, section1);
