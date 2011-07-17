@@ -67,7 +67,7 @@ public class Section<N extends Number> {
 	/**
 	 * Constructs a section indexed by int.class, which is equivalent to Integer.class.
 	 */
-	public Section() {
+	Section() {
 		this(Math.getInstance(int.class));
 	}
 
@@ -76,7 +76,7 @@ public class Section<N extends Number> {
 	 * 
 	 * @param numberClass defines the class used for indexing
 	 */
-	public Section(Class<N> numberClass) {
+	Section(Class<N> numberClass) {
 		this(Math.getInstance(numberClass));
 	}
 	

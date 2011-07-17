@@ -3,8 +3,11 @@ package pl.netanel.swt.matrix;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class AxisNavigationTest {
+
+@RunWith(JUnit4.class) public class  AxisNavigationTest {
 	@Test
 	public void moveFocusPageFullScreen() throws Exception {
 		Axis axis = new Axis();

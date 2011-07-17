@@ -9,8 +9,10 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class SelectTest extends SwtTestCase {
+@RunWith(JUnit4.class) public class  SelectTest extends SwtTestCase {
   
   @Test public void initialSelection() throws Exception {
     Matrix matrix = createMatrix(); 

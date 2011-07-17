@@ -1,11 +1,15 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class PaintersTest {
+@RunWith(JUnit4.class) public class  PaintersTest {
   
   @Test 
   public void addNullPainter() throws Exception {

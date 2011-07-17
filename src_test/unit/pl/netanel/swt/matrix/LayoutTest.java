@@ -1,16 +1,17 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.*;
-import static pl.netanel.swt.matrix.TestUtil.*;
+import static org.junit.Assert.assertEquals;
+import static pl.netanel.swt.matrix.TestUtil.distances;
+import static pl.netanel.swt.matrix.TestUtil.indexes;
+import static pl.netanel.swt.matrix.TestUtil.item;
+import static pl.netanel.swt.matrix.TestUtil.widths;
 
 import org.junit.Test;
-
-import pl.netanel.swt.matrix.Frozen;
-import pl.netanel.swt.matrix.Layout;
-import pl.netanel.swt.matrix.Section;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 
-public class LayoutTest {
+@RunWith(JUnit4.class) public class  LayoutTest {
 	
 	@Test(expected = NullPointerException.class)
 	public void constructorNull() throws Exception {

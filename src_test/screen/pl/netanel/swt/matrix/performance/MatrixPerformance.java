@@ -10,11 +10,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 
-public class MatrixPerformance {
+@RunWith(JUnit4.class) public class  MatrixPerformance {
 	ArrayList<Long> time = new ArrayList<Long>();
 	protected long t;
 	

@@ -1,14 +1,13 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import pl.netanel.swt.matrix.IntMath;
-import pl.netanel.swt.matrix.NumberOrder;
 
-
-public class NumberOrderTest  {
+@RunWith(JUnit4.class) public class  NumberOrderTest  {
 
 //	@Test
 //	public void getInnerIndexes() throws Exception {

@@ -38,7 +38,7 @@ import pl.netanel.util.Preconditions;
 class SectionClient<N extends Number> extends Section<N> {
 	Section<N> core;
 
-	public SectionClient(Section<N> section) {
+	SectionClient(Section<N> section) {
 		core = section;
 	}
 
@@ -892,5 +892,6 @@ class SectionClient<N extends Number> extends Section<N> {
 	N nextNotHiddenIndex(N index, int direction) {
 		return core.nextNotHiddenIndex(index, direction);
 	};	
+
 	
 }
