@@ -1,14 +1,17 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.*;
-import static pl.netanel.swt.matrix.TestUtil.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static pl.netanel.swt.matrix.TestUtil.extent;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import pl.netanel.swt.matrix.IntMath;
-import pl.netanel.swt.matrix.NumberQueueSet;
-
-public class NumberQueueSetTest {
+@RunWith(JUnit4.class) public class  NumberQueueSetTest {
 	private NumberQueueSet list;
 
 	@Before

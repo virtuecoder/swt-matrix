@@ -3,9 +3,12 @@ package pl.netanel.swt.matrix;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class DragTest extends SwtTestCase {
+@RunWith(JUnit4.class) public class  DragTest extends SwtTestCase {
   @Test public void moveForthAndBack() throws Exception {
     final Matrix matrix = new Matrix(shell, 0);
 //    listenToAll(matrix);

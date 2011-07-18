@@ -26,6 +26,7 @@ public class Snippet_0456 {
 	public static void main(String[] args) throws IOException {
 		Display display = Display.getDefault();
 		Shell shell = new Shell(display);
+		shell.setText("Traverse cells (Shift+) Tab and Enter. Traverse Matrix with (Shift+) Ctrl+Tab");
 		shell.setLayout(new GridLayout(2, false));
 		
 		// Data model
@@ -121,7 +122,7 @@ public class Snippet_0456 {
 		body.unbind(Matrix.CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1);
 		body.bind(Matrix.CMD_EDIT_ACTIVATE, SWT.MouseDown, 1);
 		
-		shell.setBounds(400, 200, 400, 300);
+		shell.setBounds(400, 200, 800, 400);
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

@@ -3,8 +3,10 @@ package pl.netanel.swt.matrix;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class FocusTest extends SwtTestCase {
+@RunWith(JUnit4.class) public class  FocusTest extends SwtTestCase {
   
   @Test public void focusInitiated() throws Exception {
     Matrix matrix = createMatrix();

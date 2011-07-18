@@ -29,7 +29,8 @@ public class Snippet_0003 {
 	static String filter;
 	
 	public static void main(String[] args) throws Exception {
-		Shell shell = new Shell();
+		Shell shell = (new Shell());
+		shell.setText("Filter section between header and body");
 		shell.setLayout(new GridLayout(2, false));
 		Display display = shell.getDisplay();
 		
@@ -123,7 +124,7 @@ public class Snippet_0003 {
 			}
 		});
 		
-		shell.setBounds(400, 200, 400, 300);
+		shell.setBounds(400, 200, 800, 400);
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

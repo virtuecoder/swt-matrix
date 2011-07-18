@@ -16,10 +16,10 @@ import pl.netanel.swt.matrix.Painter;
  */
 public class Snippet_0010 {
 	public static void main(String[] args) {
-		Shell shell = new Shell();
-		shell.setBounds(400, 200, 400, 300);
+		Shell shell = (new Shell());
+    shell.setText("Draw custom background for the whole matrix, resize the window!");
+		shell.setBounds(400, 200, 800, 400);
 		shell.setLayout(new FillLayout());
-		shell.setText("Resize me !");
 		Display display = shell.getDisplay();
 		
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);

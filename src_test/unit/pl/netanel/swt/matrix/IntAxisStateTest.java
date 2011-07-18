@@ -1,12 +1,14 @@
 package pl.netanel.swt.matrix;
 
 import static org.junit.Assert.assertEquals;
-import static pl.netanel.swt.matrix.TestUtil.*;
+import static pl.netanel.swt.matrix.TestUtil.extent;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 
-public class IntAxisStateTest {
+@RunWith(JUnit4.class) public class  IntAxisStateTest {
 
 	@Test
 	public void name() throws Exception {

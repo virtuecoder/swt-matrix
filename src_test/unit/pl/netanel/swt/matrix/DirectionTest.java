@@ -1,17 +1,17 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.*;
-import static pl.netanel.swt.matrix.TestUtil.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static pl.netanel.swt.matrix.TestUtil.item;
+import static pl.netanel.swt.matrix.TestUtil.layout;
+import static pl.netanel.swt.matrix.TestUtil.number;
 
 import org.junit.Test;
-
-import pl.netanel.swt.matrix.Direction;
-import pl.netanel.swt.matrix.Layout;
-import pl.netanel.swt.matrix.Section;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 
-public class DirectionTest {
+@RunWith(JUnit4.class) public class  DirectionTest {
 	
 	@Test
 	public void init() throws Exception {

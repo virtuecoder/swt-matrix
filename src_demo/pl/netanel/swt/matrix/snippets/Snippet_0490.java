@@ -35,6 +35,7 @@ public class Snippet_0490 {
 	public static void main(String[] args) {
 		final Display display = Display.getDefault();
 		Shell shell = new Shell(display);
+		shell.setText("Custom copy / paste");
 		shell.setLayout(new GridLayout(2, false));
 		
 		// Data model
@@ -142,7 +143,7 @@ public class Snippet_0490 {
 		});
 		
 		
-		shell.setBounds(400, 200, 400, 300);
+		shell.setBounds(400, 200, 800, 400);
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

@@ -6,11 +6,13 @@ import static org.junit.Assert.assertTrue;
 import static pl.netanel.swt.matrix.TestUtil.number;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import pl.netanel.swt.matrix.DirectionIndexSequence.Backward;
 import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 
-public class DirectionIndexSequenceTest {
+@RunWith(JUnit4.class) public class  DirectionIndexSequenceTest {
 	@Test
 	public void sequence() throws Exception {
 		SectionCore section = new SectionCore(int.class);

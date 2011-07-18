@@ -9,8 +9,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class EditorTest extends SwtTestCase {
+@RunWith(JUnit4.class) public class  EditorTest extends SwtTestCase {
   @Test public void activateEmbeddedCheckBoxBySpace() throws Exception {
     final Matrix matrix = new Matrix(shell, 0);
 //    listenToAll(matrix);

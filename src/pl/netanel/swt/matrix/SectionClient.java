@@ -664,7 +664,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	// }
 
 	@Override
-	public Iterator<N[]> getSelectedExtentIterator() {
+	public Iterator<Number[]> getSelectedExtentIterator() {
 		return core.getSelectedExtentIterator();
 	}
 
@@ -840,5 +840,4 @@ class SectionClient<N extends Number> implements Section<N> {
 	protected void checkRange(N start, N end, N limit) {
 		core.checkRange(start, end, limit);
 	};
-	
 }

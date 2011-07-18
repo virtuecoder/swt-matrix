@@ -1,12 +1,16 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import pl.netanel.util.Arrays;
 
@@ -16,7 +20,7 @@ import pl.netanel.util.Arrays;
  * 
  * @author Jacek created 15-02-2011
  */
-public class CellSetTest {
+@RunWith(JUnit4.class) public class  CellSetTest {
 	private CellSet set;
 
 	@Before

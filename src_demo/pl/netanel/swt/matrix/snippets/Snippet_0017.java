@@ -16,8 +16,9 @@ import pl.netanel.swt.matrix.Section;
 public class Snippet_0017 {
 	
 	public static void main(String[] args) {
-		Shell shell = new Shell();
-		shell.setBounds(400, 200, 400, 300);
+		Shell shell = (new Shell());
+    shell.setText("Cell background calculated");
+		shell.setBounds(400, 200, 800, 400);
 		shell.setLayout(new FillLayout());
 		Display display = shell.getDisplay();
 		

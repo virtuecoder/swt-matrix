@@ -5,8 +5,10 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class ExtentTest {
+@RunWith(JUnit4.class) public class  ExtentTest {
 	@Test
 	public void delete() throws Exception {
 		// arguments: 0 2

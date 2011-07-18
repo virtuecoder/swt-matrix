@@ -21,6 +21,7 @@ public class Snippet_0401 {
 	public static void main(String[] args) throws IOException {
 		Display display = Display.getDefault();
 		Shell shell = new Shell(display);
+		shell.setText("Simplest zone editor");
 		shell.setLayout(new FillLayout());
 		
 		// Data model
@@ -53,7 +54,7 @@ public class Snippet_0401 {
 			}
 		};
 		
-		shell.setBounds(400, 200, 400, 300);
+		shell.setBounds(400, 200, 800, 400);
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

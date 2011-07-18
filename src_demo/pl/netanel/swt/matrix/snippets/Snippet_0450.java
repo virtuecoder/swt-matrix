@@ -22,6 +22,7 @@ public class Snippet_0450 {
 	public static void main(String[] args) throws IOException {
 		Display display = Display.getDefault();
 		Shell shell = new Shell(display);
+		shell.setText("Activate editor with single click instead of double click");
 		shell.setLayout(new FillLayout());
 		
 		// Data model
@@ -60,7 +61,7 @@ public class Snippet_0450 {
 		body.unbind(Matrix.CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1);
 		body.bind(Matrix.CMD_EDIT_ACTIVATE, SWT.MouseDown, 1);
 		
-		shell.setBounds(400, 200, 400, 300);
+		shell.setBounds(400, 200, 800, 400);
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

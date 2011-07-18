@@ -35,7 +35,7 @@ import pl.netanel.util.Util;
  * @author jacek.p.kolodziejczyk@gmail.com
  * @created Apr 29, 2008
  */
-public class SwtTestCase {
+public class  SwtTestCase {
   public static boolean breakFlag = false;
   public static boolean runManual = false;
 

@@ -31,11 +31,12 @@ public class Snippet_0410 {
 	public static void main(String[] args) throws IOException {
 		Display display = Display.getDefault();
 		Shell shell = new Shell(display);
+		shell.setText("Separate zone to insert new items");
 		shell.setLayout(new FillLayout());
 		
 		new Snippet_0410(shell);
 		
-	  shell.setBounds(400, 200, 400, 300);
+	  shell.setBounds(400, 200, 800, 400);
     shell.open();
     while (!shell.isDisposed()) {
       if (!display.readAndDispatch()) {

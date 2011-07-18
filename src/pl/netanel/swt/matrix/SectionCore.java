@@ -592,8 +592,8 @@ class SectionCore<N extends Number> implements Section<N> {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.ISection#getSelectedExtentIterator()
    */
-	public Iterator<N[]> getSelectedExtentIterator() {
-		return new ImmutableIterator<N[]>() {
+	public Iterator<Number[]> getSelectedExtentIterator() {
+		return new ImmutableIterator<Number[]>() {
 			NumberSequence<N> seq = new NumberSequence<N>(selection.copy());
 			private boolean next;
 			{
@@ -606,8 +606,8 @@ class SectionCore<N extends Number> implements Section<N> {
 			}
 			
 			@Override
-			public N[] next() {
-				return (N[]) (next ? new Number[] {seq.start(), seq.end()} : null);
+			public Number[] next() {
+				return next ? new Number[] {seq.start(), seq.end()} : null;
 			}
 		};
 	}

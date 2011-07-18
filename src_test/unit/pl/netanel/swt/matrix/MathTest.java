@@ -1,14 +1,21 @@
 package pl.netanel.swt.matrix;
 
 import static org.junit.Assert.assertEquals;
-import static pl.netanel.swt.matrix.Math.*;
+import static pl.netanel.swt.matrix.Math.ADJACENT_AFTER;
+import static pl.netanel.swt.matrix.Math.ADJACENT_BEFORE;
+import static pl.netanel.swt.matrix.Math.AFTER;
+import static pl.netanel.swt.matrix.Math.BEFORE;
+import static pl.netanel.swt.matrix.Math.CROSS_AFTER;
+import static pl.netanel.swt.matrix.Math.CROSS_BEFORE;
+import static pl.netanel.swt.matrix.Math.EQUAL;
+import static pl.netanel.swt.matrix.Math.INSIDE;
+import static pl.netanel.swt.matrix.Math.OVERLAP;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import pl.netanel.swt.matrix.IntMath;
-import pl.netanel.swt.matrix.Math;
-
-public class MathTest {
+@RunWith(JUnit4.class) public class  MathTest {
 	@Test
 	public void compare() throws Exception {
 		Math math = new IntMath();

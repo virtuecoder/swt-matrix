@@ -11,12 +11,13 @@ import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 
 /**
- * Gap between cells like HTML table cellspacing attribute. Hide lines.
+ * Gap between cells like HTML table cell spacing attribute. Hide lines.
  */
 public class Snippet_0013 {
 	public static void main(String[] args) {
-		Shell shell = new Shell();
-		shell.setBounds(400, 200, 400, 300);
+		Shell shell = (new Shell());
+    shell.setText("Gap between cells like HTML table cellspacing attribute. Hide lines");
+		shell.setBounds(400, 200, 800, 400);
 		shell.setLayout(new FillLayout());
 		final Display display = shell.getDisplay();
 		

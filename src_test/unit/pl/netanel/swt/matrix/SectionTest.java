@@ -1,13 +1,16 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 
-public class SectionTest {
+@RunWith(JUnit4.class) public class  SectionTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void createIllegalNumber() throws Exception {

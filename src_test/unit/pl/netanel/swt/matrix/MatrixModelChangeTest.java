@@ -3,8 +3,10 @@ package pl.netanel.swt.matrix;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class MatrixModelChangeTest {
+@RunWith(JUnit4.class) public class  MatrixModelChangeTest {
 
 	@Test
 	public void insert() throws Exception {

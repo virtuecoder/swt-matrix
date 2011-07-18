@@ -1,10 +1,14 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class AxisViewportTest {
+@RunWith(JUnit4.class) public class  AxisViewportTest {
 	@Test
 	public void isViewportTrimmed_0() throws Exception {
 		Axis axis = new Axis();

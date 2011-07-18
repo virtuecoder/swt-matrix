@@ -397,6 +397,7 @@ public interface Section<N extends Number> {
    */
   void setHideable(N index, boolean enabled);
 
+
   /**
    * Sets the hide ability for the range of items.
    * An item that is hideable can be hidden by the user gesture bound to the hide command. 
@@ -410,6 +411,7 @@ public interface Section<N extends Number> {
    * @param enabled the new hide ability state
    */
   void setHideable(N start, N end, boolean enabled);
+
 
   /**
    * Returns <code>true</code> if the item at given index can be hidden by end user.
@@ -575,7 +577,7 @@ public interface Section<N extends Number> {
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations.   
    */
-  Iterator<N[]> getSelectedExtentIterator();
+  Iterator<Number[]> getSelectedExtentIterator();
 
   /**
    * Moves a range of items before the target index thus changing their visible order.

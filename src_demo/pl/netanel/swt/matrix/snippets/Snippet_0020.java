@@ -19,7 +19,8 @@ import pl.netanel.swt.matrix.Section;
 public class Snippet_0020 {
 	
 	public static void main(String[] args) {
-		Shell shell = new Shell();
+		Shell shell = (new Shell());
+    shell.setText("Custom column packing");
 		shell.setLayout(new GridLayout(2, false));
 		shell.setText("Double click on the right edge of a column header in order to resize it");
 		final ArrayList<Object[]> data = new ArrayList<Object[]>();
@@ -63,7 +64,7 @@ public class Snippet_0020 {
 		  }
 	  );
 		
-		shell.setBounds(400, 200, 600, 300);
+		shell.setBounds(400, 200, 800, 400);
 		shell.open();
 		Display display = shell.getDisplay();
 		while (!shell.isDisposed()) {
