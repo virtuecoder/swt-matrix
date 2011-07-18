@@ -13,8 +13,9 @@ import pl.netanel.swt.matrix.Painter;
  */
 public class Snippet_0012 {
 	public static void main(String[] args) {
-		Shell shell = new Shell();
-		shell.setBounds(400, 200, 400, 300);
+		Shell shell = (new Shell());
+		shell.setText("Change the line style");
+		shell.setBounds(400, 200, 800, 400);
 		shell.setLayout(new FillLayout());
 		final Display display = shell.getDisplay();
 		

@@ -31,7 +31,8 @@ import pl.netanel.swt.matrix.Section;
 public class Snippet_0005 {
 
   public static void main(String[] args) throws Exception {
-    Shell shell = new Shell();
+    Shell shell = (new Shell());
+    shell.setText("Sorting by columns");
     shell.setLayout(new GridLayout(2, false));
     Display display = shell.getDisplay();
 
@@ -122,7 +123,7 @@ public class Snippet_0005 {
     matrix.getColumnHeader().unbind(Matrix.CMD_SELECT_COLUMN, SWT.MouseDown, 1);
     matrix.getColumnHeader().unbind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
 
-    shell.setBounds(400, 200, 400, 300);
+    shell.setBounds(400, 200, 800, 400);
     shell.open();
     while (!shell.isDisposed()) {
       if (!display.readAndDispatch()) {

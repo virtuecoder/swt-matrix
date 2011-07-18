@@ -23,6 +23,7 @@ public class Snippet_0402 {
 	public static void main(String[] args) throws IOException {
 		Display display = Display.getDefault();
 		Shell shell = new Shell(display);
+		shell.setText(" Embedded check buttons");
 		shell.setLayout(new FillLayout());
 		
 		// Data model
@@ -82,7 +83,7 @@ public class Snippet_0402 {
 			}
 		};
 		
-		shell.setBounds(400, 200, 400, 300);
+		shell.setBounds(400, 200, 800, 400);
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

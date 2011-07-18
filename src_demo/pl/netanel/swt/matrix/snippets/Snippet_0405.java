@@ -22,6 +22,7 @@ public class Snippet_0405 {
 	public static void main(String[] args) throws IOException {
 		Display display = Display.getDefault();
 		Shell shell = new Shell(display);
+		shell.setText(" List as a custom editor control");
 		shell.setLayout(new FillLayout());
 		
 		// Data model
@@ -92,7 +93,7 @@ public class Snippet_0405 {
 			}
 		};
 		
-		shell.setBounds(400, 200, 400, 300);
+		shell.setBounds(400, 200, 800, 400);
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

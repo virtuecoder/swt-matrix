@@ -31,6 +31,7 @@ public class Snippet_0404 {
 	public static void main(String[] args) throws IOException {
 		Display display = Display.getDefault();
 		Shell shell = new Shell(display);
+		shell.setText("Edit controls Text, DateTime, Boolean, Combo depending on the cell value");
 		shell.setLayout(new FillLayout());
 		
 		final DateFormat dateFormat = SimpleDateFormat.getDateInstance();
@@ -135,7 +136,7 @@ public class Snippet_0404 {
 			}
 		});
 		
-		shell.setBounds(400, 200, 400, 300);
+		shell.setBounds(400, 200, 800, 400);
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

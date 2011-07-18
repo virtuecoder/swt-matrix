@@ -24,8 +24,9 @@ public class Snippet_0201 {
 	static int head0, head1, tail0, tail1;
 	
 	public static void main(String[] args) {
-		Shell shell = new Shell();
-		shell.setBounds(400, 200, 400, 300);
+		Shell shell = (new Shell());
+    shell.setText("Freeze head and tail with different color for the dividing line");
+		shell.setBounds(400, 200, 800, 400);
 		shell.setLayout(new GridLayout(2, false));
 		final Display display = shell.getDisplay();
 		

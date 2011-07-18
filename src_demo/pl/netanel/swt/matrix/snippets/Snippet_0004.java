@@ -1,7 +1,6 @@
 package pl.netanel.swt.matrix.snippets;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -25,7 +24,8 @@ public class Snippet_0004 {
 	static int counter;
 	
 	public static void main(String[] args) {
-		Shell shell = new Shell();
+		Shell shell = (new Shell());
+		shell.setText("Add / remove model items");
 		shell.setLayout(new GridLayout(2, false));
 		
 		final ArrayList<String> list = new ArrayList<String>();
@@ -92,20 +92,18 @@ public class Snippet_0004 {
 		remove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Iterator<Number[]> it = matrix.getBody().getSelectedExtentIterator();
-				while (it.hasNext()) {
-					Number[] next = it.next();
-					body0.delete((Integer) next[0], (Integer) next[1]);
-					for (int i = next[0].intValue(); i >= next[1].intValue(); i--) {
-						list.remove(i);
-					}
-				}
+			  AxisItem<Integer> focusItem = matrix.getAxis0().getFocusItem();
+			  if (focusItem != null) {
+			    Integer index = focusItem.getIndex();
+          body0.delete(index, index);
+			    list.remove(index);
+			  }
 				matrix.refresh();
 				matrix.setFocus();
 			}
 		});
 		
-		shell.setBounds(400, 200, 400, 300);
+		shell.setBounds(400, 200, 800, 400);
 		shell.open();
 		Display display = shell.getDisplay();
 		while (!shell.isDisposed()) {

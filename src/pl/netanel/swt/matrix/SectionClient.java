@@ -678,7 +678,7 @@ class SectionClient<N extends Number> extends Section<N> {
 	// }
 
 	@Override
-	public Iterator<N[]> getSelectedExtentIterator() {
+	public Iterator<Number[]> getSelectedExtentIterator() {
 		return core.getSelectedExtentIterator();
 	}
 

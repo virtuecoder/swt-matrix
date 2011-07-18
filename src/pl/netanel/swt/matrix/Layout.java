@@ -744,7 +744,8 @@ class Layout<N extends Number> {
 	 */
 	AxisItem getItemByDistance(int distance) {
 		Cache cache = getCache(distance);
-		if (cache.cells.isEmpty() || distance < cache.cells.get(0).distance) return null;
+		if (cache.cells.isEmpty()) return null;
+		if (distance < cache.cells.get(0).distance) return cache.items.get(0);
 		
 		AxisItem item = null;
 		for (int i = 0; i < cache.cells.size(); i++) {

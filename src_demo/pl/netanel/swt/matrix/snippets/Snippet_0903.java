@@ -16,7 +16,8 @@ import pl.netanel.swt.matrix.Section;
  */
 public class Snippet_0903 {
 	public static void main(String[] args) {
-		Shell shell = new Shell();
+		Shell shell = (new Shell());
+    shell.setText("Identifying items by distance");
 		shell.setLayout(new FillLayout());
 		
 		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
@@ -35,7 +36,7 @@ public class Snippet_0903 {
 			}
 		});
 		
-		shell.setBounds(400, 200, 400, 300);
+		shell.setBounds(400, 200, 800, 400);
 		shell.open();
 		Display display = shell.getDisplay();
 		while (!shell.isDisposed()) {

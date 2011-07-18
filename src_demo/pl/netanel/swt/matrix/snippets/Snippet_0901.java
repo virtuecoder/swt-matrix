@@ -12,7 +12,8 @@ import pl.netanel.swt.matrix.Matrix;
  */
 public class Snippet_0901 {
 	public static void main(String[] args) {
-		Shell shell = new Shell();
+		Shell shell = (new Shell());
+    shell.setText("Change gesture binding");
 		shell.setLayout(new FillLayout());
 		
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
@@ -23,7 +24,7 @@ public class Snippet_0901 {
 		matrix.unbind(Matrix.CMD_FOCUS_MOST_LEFT, SWT.KeyDown, SWT.HOME);
 		matrix.bind(Matrix.CMD_FOCUS_MOST_LEFT, SWT.KeyDown, SWT.MOD1 | SWT.ARROW_LEFT);
 		
-		shell.setBounds(400, 200, 400, 300);
+		shell.setBounds(400, 200, 800, 400);
 		shell.open();
 		Display display = shell.getDisplay();
 		while (!shell.isDisposed()) {

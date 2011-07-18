@@ -16,8 +16,9 @@ import pl.netanel.swt.matrix.Zone;
  */
 public class Snippet_0011 {
 	public static void main(String[] args) {
-		Shell shell = new Shell();
-		shell.setBounds(400, 200, 400, 300);
+		Shell shell = (new Shell());
+		shell.setText("Draw custom focus cell marker");
+		shell.setBounds(400, 200, 800, 400);
 		shell.setLayout(new FillLayout());
 		final Display display = shell.getDisplay();
 		

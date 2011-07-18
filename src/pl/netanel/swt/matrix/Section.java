@@ -917,8 +917,8 @@ public class Section<N extends Number> {
 	 * not the visual position of the item on the screen
 	 * which can be altered by move and hide operations.   
 	 */
-	public Iterator<N[]> getSelectedExtentIterator() {
-		return new ImmutableIterator<N[]>() {
+	public Iterator<Number[]> getSelectedExtentIterator() {
+		return new ImmutableIterator<Number[]>() {
 			NumberSequence<N> seq = new NumberSequence<N>(selection.copy());
 			private boolean next;
 			{
@@ -931,8 +931,8 @@ public class Section<N extends Number> {
 			}
 			
 			@Override
-			public N[] next() {
-				return (N[]) (next ? new Number[] {seq.start(), seq.end()} : null);
+			public Number[] next() {
+				return (next ? new Number[] {seq.start(), seq.end()} : null);
 			}
 		};
 	}

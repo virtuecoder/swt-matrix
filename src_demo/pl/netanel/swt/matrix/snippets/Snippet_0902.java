@@ -21,7 +21,8 @@ import pl.netanel.swt.matrix.Zone;
  */
 public class Snippet_0902 {
 	public static void main(String[] args) {
-		Shell shell = new Shell();
+		Shell shell = (new Shell());
+    shell.setText("Selection and control event handling");
 		shell.setLayout(new FillLayout());
 		
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
@@ -89,7 +90,7 @@ public class Snippet_0902 {
 			}
 		});
 		
-		shell.setBounds(400, 200, 400, 300);
+		shell.setBounds(400, 200, 800, 400);
 		shell.open();
 		Display display = shell.getDisplay();
 		while (!shell.isDisposed()) {
@@ -99,11 +100,11 @@ public class Snippet_0902 {
 		}
 	}
 	
-	static void selectedItems(String caption, Iterator<Integer[]> it) {
+	static void selectedItems(String caption, Iterator<Number[]> it) {
 		StringBuilder sb = new StringBuilder();
 		while (it.hasNext()) {
 			if (sb.length() > 0) sb.append(", ");
-			Integer[] n = it.next();
+			Number[] n = it.next();
 			sb.append(n[0]).append("-").append(n[1]);
 		}
 		sb.insert(0, caption);
