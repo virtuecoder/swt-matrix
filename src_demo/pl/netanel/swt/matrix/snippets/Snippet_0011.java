@@ -6,7 +6,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.AxisItem;
+import pl.netanel.swt.matrix.AxisPointer;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Zone;
@@ -18,7 +18,7 @@ public class Snippet_0011 {
 	public static void main(String[] args) {
 		Shell shell = (new Shell());
 		shell.setText("Draw custom focus cell marker");
-		shell.setBounds(400, 200, 800, 400);
+		shell.setBounds(400, 200, 600, 400);
 		shell.setLayout(new FillLayout());
 		final Display display = shell.getDisplay();
 		
@@ -31,8 +31,8 @@ public class Snippet_0011 {
 			@Override
 			public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
 				// Get bounds of the focus cell 
-				AxisItem<Integer> item0 = matrix.getAxis0().getFocusItem();
-				AxisItem<Integer> item1 = matrix.getAxis1().getFocusItem();
+				AxisPointer<Integer> item0 = matrix.getAxis0().getFocusItem();
+				AxisPointer<Integer> item1 = matrix.getAxis1().getFocusItem();
 				Zone<Integer, Integer> zone = matrix.getZone(item0.getSection(), item1.getSection());
 				if (zone == null) return;
 				Rectangle r = zone.getCellBounds(item0.getIndex(), item1.getIndex());

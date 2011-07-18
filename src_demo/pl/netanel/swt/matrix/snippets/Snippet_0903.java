@@ -7,7 +7,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.AxisItem;
+import pl.netanel.swt.matrix.AxisPointer;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Section;
 
@@ -30,13 +30,13 @@ public class Snippet_0903 {
 		
 		matrix.addMouseMoveListener(new MouseMoveListener() {
 			public void mouseMove(MouseEvent e) {
-				AxisItem<Integer> item0 = matrix.getAxis0().getItemByDistance(e.y);
-				AxisItem<Integer> item1 = matrix.getAxis1().getItemByDistance(e.x);
+				AxisPointer<Integer> item0 = matrix.getAxis0().getItemByDistance(e.y);
+				AxisPointer<Integer> item1 = matrix.getAxis1().getItemByDistance(e.x);
 				System.out.println(item0.toString() + ":" + item1.toString());
 			}
 		});
 		
-		shell.setBounds(400, 200, 800, 400);
+		shell.setBounds(400, 200, 600, 400);
 		shell.open();
 		Display display = shell.getDisplay();
 		while (!shell.isDisposed()) {

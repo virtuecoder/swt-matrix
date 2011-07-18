@@ -1,7 +1,20 @@
+-------------------------------------------------------------------------------
+Version 0.3.3
+
+New Features
+- Arithmetics on Long indexes implemented so that <code>new Axis(Long.class, 2)</code> will work
+- Improved methods parameter checking
+- Javadoc is avaialble for download to provide instant help while working with swt matrix in the IDE 
+
 API changes:
+- Renamed AxisItem to AxisPointer
 - Removed Section() contructor
 - Section is interface
 - Added Section.getIndexClass
+
+
+-------------------------------------------------------------------------------
+Version 0.3.2
 
 -------------------------------------------------------------------------------
 Version 0.3.1

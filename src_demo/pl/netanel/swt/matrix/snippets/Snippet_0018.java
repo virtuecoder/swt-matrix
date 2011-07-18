@@ -22,7 +22,7 @@ public class Snippet_0018 {
 	public static void main(String[] args) {
 		Shell shell = (new Shell());
     shell.setText("Image painting");
-		shell.setBounds(400, 200, 800, 400);
+		shell.setBounds(400, 200, 600, 400);
 		shell.setLayout(new FillLayout());
 		Display display = shell.getDisplay();
 		
@@ -62,7 +62,7 @@ public class Snippet_0018 {
 			}
 		});
 		
-		shell.setBounds(400, 200, 800, 400);
+		shell.setBounds(400, 200, 600, 400);
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

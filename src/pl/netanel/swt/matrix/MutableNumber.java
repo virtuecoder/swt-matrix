@@ -28,4 +28,5 @@ abstract class MutableNumber<N extends Number> {
 	abstract MutableNumber<N> min(MutableNumber<N> n);
 
 	abstract int intValue();
+	abstract long longValue();
 }

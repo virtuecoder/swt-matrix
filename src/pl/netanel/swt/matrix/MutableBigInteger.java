@@ -132,4 +132,8 @@ class MutableBigInteger extends MutableNumber<BigInteger> {
 		return value.compareTo(n);
 	}
 
+  @Override long longValue() {
+    return value.longValue();
+  }
+
 }

@@ -11,7 +11,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.AxisItem;
+import pl.netanel.swt.matrix.AxisPointer;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
@@ -70,7 +70,7 @@ public class Snippet_0902 {
 		body1.addControlListener(new ControlAdapter() {
 			@Override
 			public void controlResized(ControlEvent e) {
-				@SuppressWarnings("unchecked") AxisItem<Integer> item = (AxisItem<Integer>) e.data;
+				@SuppressWarnings("unchecked") AxisPointer<Integer> item = (AxisPointer<Integer>) e.data;
 				Section<Integer> section = item.getSection();
         if (section.getSelectedCount() > 0) {
 					selectedItems("Columns resized: ", section.getSelectedExtentIterator());
@@ -85,12 +85,12 @@ public class Snippet_0902 {
 			public void controlMoved(ControlEvent e) {
 				selectedItems("Columns moved: ", body1.getSelectedExtentIterator());
 				
-				@SuppressWarnings("unchecked") AxisItem<Integer> item = (AxisItem<Integer>) e.data;
+				@SuppressWarnings("unchecked") AxisPointer<Integer> item = (AxisPointer<Integer>) e.data;
 				System.out.println("Target: section " + item.getSection() + ", index " + item.getIndex());
 			}
 		});
 		
-		shell.setBounds(400, 200, 800, 400);
+		shell.setBounds(400, 200, 600, 400);
 		shell.open();
 		Display display = shell.getDisplay();
 		while (!shell.isDisposed()) {

@@ -20,12 +20,15 @@ class TestUtil {
 		return new Extent(number(n), number(n));
 	}
 	
-	public static AxisItem item(Section section, int index) {
-		return new AxisItem(section, index);
+	public static AxisPointer item(Section section, int index) {
+	  if (section instanceof SectionCore) {
+	    section = new SectionClient((SectionCore) section);
+	  }
+		return new AxisPointer((SectionClient) section, index);
 	}
 	
-	public static AxisItem item(Axis axis, int section, int index) {
-		return new AxisItem((Section) axis.sections.get(section), index);
+	public static AxisPointer item(Axis axis, int section, int index) {
+		return new AxisPointer((SectionClient) axis.sections.get(section), index);
 	}
 	
 	static NumberSet numberSet() {
@@ -73,14 +76,14 @@ class TestUtil {
 	}
 	
 	public static Layout layout(int ...count) {
-		Section[] sections = new Section[count.length];
+		SectionCore[] sections = new SectionCore[count.length];
 		for (int i = 0; i < count.length; i++) {
-			Section section = new SectionCore(Integer.class);
+			SectionCore section = new SectionCore(Integer.class);
 			sections[i] = section;
 			if (i != 1) section.setFocusItemEnabled(false);
 			section.setCount(count[i]);
 		}
-		Layout layout = new Layout(new Axis(sections));
+		Layout layout = new Axis(sections).layout;
 		for (int i = 0; i < count.length; i++) {
 			Section section = layout.getSection(i);
 			section.setVisible(true);

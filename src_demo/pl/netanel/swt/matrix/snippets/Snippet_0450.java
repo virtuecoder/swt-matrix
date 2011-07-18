@@ -61,7 +61,7 @@ public class Snippet_0450 {
 		body.unbind(Matrix.CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1);
 		body.bind(Matrix.CMD_EDIT_ACTIVATE, SWT.MouseDown, 1);
 		
-		shell.setBounds(400, 200, 800, 400);
+		shell.setBounds(400, 200, 600, 400);
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

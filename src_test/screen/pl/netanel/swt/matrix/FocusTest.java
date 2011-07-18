@@ -10,8 +10,8 @@ import org.junit.runners.JUnit4;
   
   @Test public void focusInitiated() throws Exception {
     Matrix matrix = createMatrix();
-    AxisItem focusItem0 = matrix.getAxis0().getFocusItem();
-    AxisItem focusItem1 = matrix.getAxis1().getFocusItem();
+    AxisPointer focusItem0 = matrix.getAxis0().getFocusItem();
+    AxisPointer focusItem1 = matrix.getAxis1().getFocusItem();
     assertEquals(0, focusItem0.getIndex());
     assertEquals(0, focusItem1.getIndex());
   }

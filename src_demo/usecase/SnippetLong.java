@@ -1,5 +1,7 @@
 package usecase;
 
+import java.math.BigInteger;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
@@ -8,18 +10,18 @@ import org.eclipse.swt.widgets.Shell;
 import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.Matrix;
 
-public class Snippet {
+public class SnippetLong {
 	public static void main(String[] args) {
 		Shell shell = new Shell();
 		shell.setLayout(new FillLayout());
 		
-		Axis model0 = new Axis(Long.class, 2);
-		Axis model1 = new Axis(Long.class, 2);
+		Axis model0 = new Axis(BigInteger.class, 2);
+		Axis model1 = new Axis(BigInteger.class, 2);
 		
 		new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL , model0, model1);
 
-		model1.getBody().setCount(1000000000000000L);
-		model0.getBody().setCount(1000000000000000L);
+		model1.getBody().setCount(new BigInteger("1000000000000000"));
+		model0.getBody().setCount(new BigInteger("1000000000000000"));
 		model1.getHeader().setDefaultCellWidth(40);
 		model1.getBody().setDefaultCellWidth(50);
 		model1.getHeader().setVisible(true);

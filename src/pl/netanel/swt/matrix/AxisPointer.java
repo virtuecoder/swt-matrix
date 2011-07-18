@@ -3,16 +3,13 @@ package pl.netanel.swt.matrix;
 import pl.netanel.util.Preconditions;
 
 /**
- * Represents an immutable item of an axis and is characterized by a section and
- * an {@link MutableNumber} describing the position of the item the section.
- * <p> 
- * Only visible items are cached in the memory. They are created on demand 
- * when the axis layout is computed.
- * @param <N> defines the indexing class for this axis
+ * Represents an immutable position at axis characterized by a section and
+ * an index within that section.
+ * @param <N> specifies the indexing class for this axis
  * @author Jacek Kolodziejczyk created 21-04-2011
  */
-public class AxisItem<N extends Number> {
-	private Section<N> section;
+public class AxisPointer<N extends Number> {
+	SectionClient<N> section;
 	private N index;
 	
 	/**
@@ -23,23 +20,26 @@ public class AxisItem<N extends Number> {
 	 * or index is <code>null</code>
 	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
-	AxisItem(Section<N> section, N index) {
+	AxisPointer(SectionClient<N> section, N index) {
 		Preconditions.checkNotNullWithName(section, "section");
 		Preconditions.checkNotNullWithName(index, "index");
-		section.checkCellIndex(index, "index");
-		// TODO Why does this check the line limit
-		//section.checkIndex(index, section.math.increment(section.getCount()), "index");
+		section.checkLineIndex(index, "index");
 		this.section = section;
 		this.index = index;
 	}
 	
-	private AxisItem() {}
 	
-	static AxisItem create(Section section, Number index) {
-		AxisItem axisItem = new AxisItem();
+	private AxisPointer() {}
+	
+	static AxisPointer create(SectionClient section, Number index) {
+		AxisPointer axisItem = new AxisPointer();
 		axisItem.section = section;
 		axisItem.index = index;
 		return axisItem;
+	}
+	
+	static AxisPointer create(SectionCore section, Number index) {
+	  return create(new SectionClient(section), index);
 	}
 	
 	@Override
@@ -50,8 +50,8 @@ public class AxisItem<N extends Number> {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof AxisItem)) return false;
-		AxisItem item = (AxisItem) o;
+		if (!(o instanceof AxisPointer)) return false;
+		AxisPointer item = (AxisPointer) o;
 		return item.section.equals(section) && item.index.equals(index);
 	}
 	@Override

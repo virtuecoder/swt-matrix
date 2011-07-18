@@ -705,7 +705,26 @@ public interface Section<N extends Number> {
    */
   void removeSelectionListener(SelectionListener listener);
 
+  /**
+   * Checks the validity of the given cell index using the name to indicate
+   * which parameter is wrong.
+   * 
+   * @param index index to validate
+   * @param name indicates the parameter
+   * @throws IllegalArgumentException if the index is lower the 0 or greater
+   *           then the number of cells in this section
+   */
   void checkCellIndex(N index, String name);
+  
+  /**
+   * Checks the validity of the given line index using the name to indicate
+   * which parameter is wrong.
+   * 
+   * @param index index to validate
+   * @param name indicates the parameter
+   * @throws IllegalArgumentException if the index is lower the 0 or greater
+   *           then the number of lines in this section
+   */
   void checkLineIndex(N index, String name);
 
 }

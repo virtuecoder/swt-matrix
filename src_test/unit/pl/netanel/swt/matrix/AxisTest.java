@@ -1,17 +1,72 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class) public class  AxisTest {
-	@Ignore
-	@Test(expected = IllegalArgumentException.class)
-	public void zeroSections() throws Exception {
-		new Axis(int.class, 2);
+  
+	@Test
+	public void construct_primitiveClass() throws Exception {
+	  new Axis(int.class, 2);
+	}
+	
+	@Test
+	public void construct_IllegalClass() throws Exception {
+	  try {
+	    new Axis(Float.class, 2);
+	    fail("Expected IllegalArgumentException");
+	  }
+	  catch (Exception e) {
+	    assertEquals("Cannot do arithmetics on java.lang.Float class", e.getMessage());
+	  }
+	}
+	
+	@Test
+	public void construct_NullClass() throws Exception {
+	  try {
+	    new Axis(null, 2);
+	    fail("Expected IllegalArgumentException");
+	  }
+	  catch (Exception e) {
+	    assertEquals("numberClass cannot be null", e.getMessage());
+	  }
+	}
+	
+	@Test
+	public void construct_zeroSectionCount() throws Exception {
+	  try {
+	    new Axis(int.class, 0);
+	    fail("Expected IllegalArgumentException");
+	  }
+	  catch (Exception e) {
+	    assertEquals("sectionCount must be greater then 1", e.getMessage());
+	  }
+	}
+	
+	@Test
+	public void construct_negativeSectionCount() throws Exception {
+	  try {
+	    new Axis(int.class, -2);
+	    fail("Expected IllegalArgumentException");
+	  }
+	  catch (Exception e) {
+	    assertEquals("sectionCount must be greater then 1", e.getMessage());
+	  }
+	}
+	
+	@Test(expected=IndexOutOfBoundsException.class)
+  public void setBody_MoreThenSize() throws Exception {
+	  Axis axis = new Axis();
+	  axis.setBody(3);
+	}
+	
+	@Test
+	public void getSection_IsSectionClient() throws Exception {
+	  Axis axis = new Axis();
+	  assertTrue(axis.getSection(0) instanceof SectionClient);
 	}
 	
 	@Test

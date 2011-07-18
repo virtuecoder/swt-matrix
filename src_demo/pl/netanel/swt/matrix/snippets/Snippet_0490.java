@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.AxisItem;
+import pl.netanel.swt.matrix.AxisPointer;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Zone;
@@ -101,8 +101,8 @@ public class Snippet_0490 {
   				
   				if (contents == null) return;
   				
-  				AxisItem<Integer> focusItem0 = matrix.getAxis0().getFocusItem();
-  				AxisItem<Integer> focusItem1 = matrix.getAxis1().getFocusItem();
+  				AxisPointer<Integer> focusItem0 = matrix.getAxis0().getFocusItem();
+  				AxisPointer<Integer> focusItem1 = matrix.getAxis1().getFocusItem();
   				if (focusItem0 == null || focusItem1 == null) return;
   				
   				int start0 = focusItem0.getIndex().intValue();
@@ -143,7 +143,7 @@ public class Snippet_0490 {
 		});
 		
 		
-		shell.setBounds(400, 200, 800, 400);
+		shell.setBounds(400, 200, 600, 400);
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

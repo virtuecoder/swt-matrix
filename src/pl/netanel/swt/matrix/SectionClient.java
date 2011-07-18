@@ -20,7 +20,11 @@ class SectionClient<N extends Number> implements Section<N> {
     core = new SectionCore<N>(numberClass);
   }
 
-	/**
+	public SectionClient(SectionCore<N> section) {
+	  core = section;
+	}
+
+  /**
 	 * Indicates whether some other object is "equal to" this one.
 	 */
 	@Override
@@ -840,4 +844,10 @@ class SectionClient<N extends Number> implements Section<N> {
 	protected void checkRange(N start, N end, N limit) {
 		core.checkRange(start, end, limit);
 	};
+	
+	static SectionClient from(Section section) {
+	  return section instanceof SectionClient 
+	    ? (SectionClient) section : 
+      new SectionClient((SectionCore) section);
+	}
 }

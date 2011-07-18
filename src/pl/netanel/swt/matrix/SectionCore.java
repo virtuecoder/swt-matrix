@@ -68,8 +68,8 @@ class SectionCore<N extends Number> implements Section<N> {
 	 * @param numberClass defines the class used for indexing
 	 */
 	public SectionCore(Class<N> numberClass) {
-	  indexClass = numberClass;
 	  math = Math.getInstance(numberClass);
+	  indexClass = math.getNumberClass();
 		count = math.ZERO_VALUE();
 		
 		order = new NumberOrder<N>(math);
@@ -95,16 +95,6 @@ class SectionCore<N extends Number> implements Section<N> {
 		return Integer.toString(index);
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
-	}
-	
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
 	@Override public Section getCore() {
 	  return this;
 	}
@@ -907,7 +897,7 @@ class SectionCore<N extends Number> implements Section<N> {
     listeners.add(event);
   }
 	
-	static SectionCore from(AxisItem item) {
+	static SectionCore from(AxisPointer item) {
 	  return (SectionCore) item.getSection().getCore();
 	}
 	

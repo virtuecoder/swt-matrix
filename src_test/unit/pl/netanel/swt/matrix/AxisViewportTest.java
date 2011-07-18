@@ -13,26 +13,30 @@ import org.junit.runners.JUnit4;
 	public void isViewportTrimmed_0() throws Exception {
 		Axis axis = new Axis();
 		axis.layout.setViewportSize(1000);
-		assertFalse(axis.isLastCellTrimmed());
+		assertFalse(axis.layout.isTrimmed);
 	}
 	
 	@Test
 	public void isViewportTrimmed_1() throws Exception {
 		Axis axis = new Axis();
 		axis.layout.setViewportSize(1000);
-		assertFalse(axis.isLastCellTrimmed());
+		assertFalse(axis.layout.isTrimmed);
 	}
 	
 	@Test
 	public void isViewportTrimmed_5() throws Exception {
 		Axis axis = new Axis();
 		axis.getBody().setCount(10);
-		axis.layout.setViewportSize(85);
-		assertTrue(axis.isLastCellTrimmed());
-		axis.layout.setViewportSize(86);
-		assertFalse(axis.isLastCellTrimmed());
-		axis.layout.setViewportSize(87);
-		assertTrue(axis.isLastCellTrimmed());
+		Layout layout = axis.layout;
+    layout.setViewportSize(85);
+    layout.compute();
+		assertTrue(layout.isTrimmed);
+		layout.setViewportSize(86);
+		layout.compute();
+		assertFalse(layout.isTrimmed);
+		layout.setViewportSize(87);
+		layout.compute();
+		assertTrue(layout.isTrimmed);
 	}
 	
 	@Test
@@ -53,19 +57,23 @@ import org.junit.runners.JUnit4;
 	@Test
 	public void getViewportItemCount_Trim() throws Exception {
 		Axis axis = new Axis();
-		axis.layout.setViewportSize(100);
 		axis.getBody().setCount(10);
-		assertTrue(axis.isLastCellTrimmed());
+		Layout layout = axis.layout;
+    layout.setViewportSize(100);
+		layout.compute();
+		assertTrue(layout.isTrimmed);
 		assertEquals(6, axis.getViewportItemCount());
 	}
 	
 	@Test
 	public void getViewportItemCount_freeze() throws Exception {
 		Axis axis = new Axis();
-		axis.layout.setViewportSize(100);
 		axis.getBody().setCount(10);
 		axis.freezeHead(1);
-		assertTrue(axis.isLastCellTrimmed());
+		Layout layout = axis.layout;
+    layout.setViewportSize(100);
+    layout.compute();
+		assertTrue(layout.isTrimmed);
 		assertEquals(6, axis.getViewportItemCount());
 	}
 	
@@ -73,9 +81,11 @@ import org.junit.runners.JUnit4;
 	@Test
 	public void getViewportIndexOf_freeze() throws Exception {
 		Axis axis = new Axis();
-		axis.layout.setViewportSize(100);
 		axis.getBody().setCount(10);
 		axis.freezeHead(1);
-		assertEquals(2, axis.getViewportPosition(new AxisItem(axis.getBody(), 2)));
+		Layout layout = axis.layout;
+    layout.setViewportSize(100);
+		layout.compute();
+		assertEquals(2, axis.getViewportPosition(new AxisPointer((SectionClient) axis.getBody(), 2)));
 	}
 }

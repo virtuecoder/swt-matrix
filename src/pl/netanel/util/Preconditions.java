@@ -56,7 +56,7 @@ import java.util.NoSuchElementException;
  * @author Kevin Bourrillion
  */
 public final class Preconditions {
-  private final static String NOT_NULL_MESSAGE = "%s cannot be null"; 
+  public final static String NOT_NULL_MESSAGE = "%s cannot be null"; 
   
   private Preconditions() {}
 
@@ -359,7 +359,7 @@ public final class Preconditions {
    *     template. Arguments are converted to strings using
    *     {@link String#valueOf(Object)}. Arguments can be null.
    */
-  static String format(String template, Object... args) {
+  public static String format(String template, Object... args) {
     // start substituting the arguments into the '%s' placeholders
     StringBuilder builder = new StringBuilder(
         template.length() + 16 * args.length);

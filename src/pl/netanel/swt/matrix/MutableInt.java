@@ -136,4 +136,8 @@ class MutableInt extends MutableNumber<Integer> {
 		return value == x ? 0 : value > x ? 1 : -1;
 	}
 
+  @Override long longValue() {
+    return (long) value;
+  }
+
 }

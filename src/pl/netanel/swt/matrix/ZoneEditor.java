@@ -455,8 +455,8 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	
 	void edit(GestureBinding b) {
 		Matrix<N0, N1> matrix = getMatrix();
-		final AxisItem<N0> focusItem0 = matrix.axis0.getFocusItem();
-		final AxisItem<N1> focusItem1 = matrix.axis1.getFocusItem();
+		final AxisPointer<N0> focusItem0 = matrix.axis0.getFocusItem();
+		final AxisPointer<N1> focusItem1 = matrix.axis1.getFocusItem();
 		if (focusItem0 == null || focusItem1 == null) return;
 
 		activate(focusItem0.getIndex(), focusItem1.getIndex(), b);
@@ -528,8 +528,8 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 		Axis<N1> axis1 = getMatrix().getAxis1();
 
 		// Get the focus cell to start the pasting from
-		AxisItem<N0> focusItem0 = axis0.getFocusItem();
-		AxisItem<N1> focusItem1 = axis1.getFocusItem();
+		AxisPointer<N0> focusItem0 = axis0.getFocusItem();
+		AxisPointer<N1> focusItem1 = axis1.getFocusItem();
 		if (focusItem0 == null || focusItem1 == null) return;
 		Math<N0> math0 = axis0.math;
 		Math<N1> math1 = axis1.math;

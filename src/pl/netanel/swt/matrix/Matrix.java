@@ -330,8 +330,8 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		painters.add(new Painter("focus cell") {
 			@Override
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				AxisItem<N0> item0 = axis0.getFocusItem();
-				AxisItem<N1> item1 = axis1.getFocusItem();
+				AxisPointer<N0> item0 = axis0.getFocusItem();
+				AxisPointer<N1> item1 = axis1.getFocusItem();
 				if (item0 == null || item1 == null) return;
 				Zone zone = Matrix.this.getZone(item0.getSection(), item1.getSection());
 				if (zone == null) return;
@@ -583,7 +583,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		if (axisIndex == 0) {
 			for (Zone zone: model.zones) {
 				if (zone.section0.equals(section)) {
-					Math math1 = zone.section1.math;
+					Math math1 = zone.section1.core.math;
 					zone.setSelected(
 							(N0) start, (N0) end, 
 							math1.ZERO_VALUE(), math1.decrement(zone.section1.getCount()), 
@@ -598,7 +598,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		else { // assert index == 1
 			for (Zone zone: model.zones) {
 				if (zone.section1.equals(section)) {
-					Math math0 = zone.section0.math;
+					Math math0 = zone.section0.core.math;
 					zone.setSelected( 
 							math0.ZERO_VALUE(), math0.decrement(zone.section0.getCount()),
 							start, end,

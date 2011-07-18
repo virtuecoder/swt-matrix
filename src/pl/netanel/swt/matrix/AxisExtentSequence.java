@@ -10,7 +10,7 @@ class AxisExtentSequence<N extends Number> {
 	Number start, end;
 	private int startItemIndex, endItemIndex, i, istart, iend;
 	private ArrayList<Extent<N>> items;
-	private AxisItem startItem, endItem;
+	private AxisPointer startItem, endItem;
 	private final Math math;
 	
 	public AxisExtentSequence(Math<N> math, List<SectionCore<N>> sections) {
@@ -22,10 +22,10 @@ class AxisExtentSequence<N extends Number> {
 	void init() {
 		SectionCore section2 = sections.get(sections.size() - 1);
 		init(
-			AxisItem.create(sections.get(0), math.ZERO_VALUE()), 
-			AxisItem.create(section2, math.decrement(section2.getCount())));
+			AxisPointer.create(sections.get(0), math.ZERO_VALUE()), 
+			AxisPointer.create(section2, math.decrement(section2.getCount())));
 	}
-	void init(AxisItem startItem, AxisItem endItem) {
+	void init(AxisPointer startItem, AxisPointer endItem) {
 		this.startItem = startItem;
     this.endItem = endItem;
     this.startItemIndex = sections.indexOf(startItem.getSection());
@@ -52,7 +52,7 @@ class AxisExtentSequence<N extends Number> {
 			sectionIndex++;
 			if (sectionIndex > endItemIndex)
 				return false;
-			section = sections.get(sectionIndex);
+			section = SectionCore.from(sections.get(sectionIndex));
       items = section.order.items;
 			i = 0;
 		}

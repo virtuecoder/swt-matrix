@@ -24,7 +24,7 @@ public class Snippet_0001 {
 		matrix.getAxis0().getHeader().setVisible(true);
 		matrix.getAxis1().getHeader().setVisible(true);
 		
-		shell.setBounds(400, 200, 800, 400);
+		shell.setBounds(400, 200, 600, 400);
 		shell.open();
 		Display display = shell.getDisplay();
 		while (!shell.isDisposed()) {

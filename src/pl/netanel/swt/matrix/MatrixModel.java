@@ -28,8 +28,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		Section body0  = axis0.getBody(), body1 = axis1.getBody();
 		Section header0 = axis0.getHeader(), header1 = axis1.getHeader();
 		
-		for (SectionCore<N0> section0: axis0.layout.sections) {
-			for (SectionCore<N1> section1: axis1.layout.sections) {
+		for (SectionClient<N0> section0: axis0.sections) {
+			for (SectionClient<N1> section1: axis1.sections) {
 				Zone zone = getZone(section0, section1);
 				if (zone == null) {
 					zone = new Zone(section0, section1);
@@ -134,7 +134,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	
 	public Zone getZone(Section section0, Section section1) {
 		for (Zone zone: zones) {
-			if (zone.section0.equals(section0) && zone.section1.equals(section1)) {
+			if (zone.section0.getCore().equals(section0.getCore()) && 
+			    zone.section1.getCore().equals(section1.getCore())) {
 				return zone;
 			}
 		}
@@ -143,7 +144,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	
 	public Zone getZoneUnchecked(Section section0, Section section1) {
 		for (Zone zone: zones) {
-			if (zone.section0.equals(section0) && zone.section1.equals(section1)) {
+		  if (zone.section0.getCore().equals(section0.getCore()) && 
+		      zone.section1.getCore().equals(section1.getCore())) {
 				return zone;
 			}
 		}
@@ -233,11 +235,11 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	 * @param selected
 	 */
 	void setSelected (
-			AxisItem start0, AxisItem end0, 
-			AxisItem start1, AxisItem end1, boolean selected) {
+			AxisPointer start0, AxisPointer end0, 
+			AxisPointer start1, AxisPointer end1, boolean selected) {
 		
 		// Make sure start < end 
-		AxisItem tmp;
+		AxisPointer tmp;
 		if (axis0.comparePosition(start0, end0) > 0) {
 			tmp = start0; start0 = end0; end0 = tmp;
 		}
@@ -267,19 +269,19 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	 * @author Jacek created 21-02-2011
 	 */
 	class ExtentPairSequence {
-		Section section0, section1;
+		SectionCore section0, section1;
 		MutableNumber start0, end0, start1, end1;
 		ExtentSequence seq0, seq1;
 		boolean empty;
-		private AxisItem startItem1;
-		private AxisItem endItem1;
+		private AxisPointer startItem1;
+		private AxisPointer endItem1;
 		
 		public ExtentPairSequence() {
 			seq0 = axis0.new ExtentSequence();
 			seq1 = axis1.new ExtentSequence();
 		}
 
-		public void init(AxisItem start0, AxisItem end0, AxisItem start1, AxisItem end1) {
+		public void init(AxisPointer start0, AxisPointer end0, AxisPointer start1, AxisPointer end1) {
 			
 			startItem1 = start1;
 			endItem1 = end1;

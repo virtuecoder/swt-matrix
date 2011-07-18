@@ -103,14 +103,14 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 	boolean instantMoving, ctrlSelectionMoving, mouseDown;
 	Zone<? extends Number, ? extends Number> zone;
 	Cursor cursor;
-	AxisItem[] lastRange;
+	AxisPointer[] lastRange;
 	Zone body, columnHeader, rowHeader, topLeft;
 
 	private Move m0, m1;
 	
 	public MatrixListener(Matrix matrix) {
 		this.matrix = matrix;
-		lastRange = new AxisItem[4]; 
+		lastRange = new AxisPointer[4]; 
 		body = matrix.getBody();
 		rowHeader = matrix.model.getZoneUnchecked(matrix.axis0.getBody(), matrix.axis1.getHeader());
 		columnHeader = matrix.model.getZoneUnchecked(matrix.axis0.getHeader(), matrix.axis1.getBody());
@@ -152,8 +152,8 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 				zone = (Zone) e.data;
 			}
 			else if (keyEvent) {
-			  AxisItem<? extends Number> focusItem0 = matrix.getAxis0().getFocusItem();
-			  AxisItem<? extends Number> focusItem1 = matrix.getAxis1().getFocusItem();
+			  AxisPointer<? extends Number> focusItem0 = matrix.getAxis0().getFocusItem();
+			  AxisPointer<? extends Number> focusItem1 = matrix.getAxis1().getFocusItem();
 			  if (focusItem0 != null && focusItem1 != null) {
 			    zone = matrix.model.getZoneUnchecked(focusItem0.getSection(), focusItem1.getSection());
 			  }
@@ -211,7 +211,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 		private final int axisIndex;
 		Axis<N> axis;
 		Layout<N> layout;
-		AxisItem<N> last, item, prev, resizeItem, lastFocus, mouseDownItem;
+		AxisPointer<N> last, item, prev, resizeItem, lastFocus, mouseDownItem;
 		boolean moving, resizing, itemModified = true;
 		Event mouseMoveEvent;
 		Cursor resizeCursor;
@@ -238,7 +238,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 		  }
 		  else if (e.type == SWT.MouseMove) {
 				distance = axisIndex == 0 ? e.y : e.x;
-				AxisItem item2 = autoScroll.future != null && autoScroll.item != null  
+				AxisPointer item2 = autoScroll.future != null && autoScroll.item != null  
 					? autoScroll.item  
 					: layout.getItemByDistance(distance);
 				
@@ -323,7 +323,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 						SectionCore<N> section = layout.sections.get(i);
 						NumberSequence<N> seq = section.getSelected();
 						for (seq.init(); seq.next();) {
-							axis.pack(AxisItem.create(section, seq.index()));
+							axis.pack(AxisPointer.create(section, seq.index()));
 						}
 						addEvent(section, SWT.Resize, resizeItem);
 						layout.compute();
@@ -361,7 +361,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 			}
 			else {
 				// Auto-scroll
-				if (!(e.data instanceof AxisItem[])) {
+				if (!(e.data instanceof AxisPointer[])) {
 					autoScroll.handle();
 				}
 
@@ -400,13 +400,13 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 			}
 		}
 		
-		private boolean isSelected(AxisItem item) {
+		private boolean isSelected(AxisPointer item) {
 			return item.getSection().isSelected(item.getIndex());
 		}
 		
 		public void setSelected(int commandId) {
 			if (last == null || item == null) return;
-			if (last.getSection() != item.getSection()) return;
+			if (!last.getSection().equals(item.getSection())) return;
 			
 
       boolean ctrlSelection = 
@@ -421,8 +421,8 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
       
       // Make sure start < end
       boolean forward = axis.comparePosition(last, item) <= 0;
-      AxisItem start = forward ? last : item; 
-      AxisItem end = forward ? item : last; 
+      AxisPointer start = forward ? last : item; 
+      AxisPointer end = forward ? item : last; 
       
 			if (commandId == CMD_SELECT_COLUMN || commandId == CMD_SELECT_COLUMN_ALTER ||
 				commandId == CMD_SELECT_ROW || commandId == CMD_SELECT_ROW_ALTER) {
@@ -508,7 +508,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 		class AutoScroll implements Runnable {
 			ScheduledFuture<?> future;
 			volatile int offset, nextCycleCount, cycleCount, itemCount;
-			AxisItem item;
+			AxisPointer item;
 			MutableNumber itemCountIndex;
 			
 			public AutoScroll() {
@@ -576,7 +576,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 						
 						/* In order for the mouse move commands to execute during auto scroll, 
 					       like drag selection for example */
-						AxisItem[] data = new AxisItem[2];
+						AxisPointer[] data = new AxisPointer[2];
 						data[axisIndex] = item;
 						mouseMoveEvent.data = data;
 						matrix.notifyListeners(SWT.MouseMove, mouseMoveEvent);
@@ -597,7 +597,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 			N count = item.getSection().getCount();
 			if (axis.math.compare(item.getIndex(), count) >= 0) {
 				item = axis.math.compare(count, axis.math.ZERO_VALUE()) == 0 ? null : 
-					AxisItem.create(item.getSection(), axis.math.decrement(count));
+					AxisPointer.create(item.section, axis.math.decrement(count));
 			}
 		}
 
@@ -876,7 +876,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 		}
 	}
 	
-	private boolean isSelected(AxisItem last0, AxisItem last1) {
+	private boolean isSelected(AxisPointer last0, AxisPointer last1) {
 		return matrix.model.getZoneUnchecked(last0.getSection(), last1.getSection()).
 			isSelected(last0.getIndex(), last1.getIndex());
 	}

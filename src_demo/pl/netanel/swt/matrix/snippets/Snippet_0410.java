@@ -36,7 +36,7 @@ public class Snippet_0410 {
 		
 		new Snippet_0410(shell);
 		
-	  shell.setBounds(400, 200, 800, 400);
+	  shell.setBounds(400, 200, 600, 400);
     shell.open();
     while (!shell.isDisposed()) {
       if (!display.readAndDispatch()) {

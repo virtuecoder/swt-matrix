@@ -25,11 +25,13 @@ abstract class Math<N extends Number> {
 
 
 	public static Math getInstance(Class numberClass) {
-		if (numberClass == int.class) 				return IntMath.getInstance(); 
-		if (numberClass == Integer.class) 			return IntMath.getInstance(); 
-//		else if (numberClass == long.class) 		return LongMath.getInstance(); 
+		if (numberClass == Integer.class) 			    return IntMath.getInstance(); 
+		else if (numberClass == int.class) 	        return IntMath.getInstance(); 
+		else if (numberClass == Long.class) 		    return LongMath.getInstance(); 
+		else if (numberClass == long.class) 		    return LongMath.getInstance(); 
 		else if	(numberClass == BigInteger.class) 	return BigIntegerMath.getInstance();
-		else throw new IllegalArgumentException("Cannot do arithmetics on " + numberClass);
+		else throw new IllegalArgumentException(
+		  "Cannot do arithmetics on " + numberClass.getName() + " class");
 	}
 
 	public abstract MutableNumber<N> create(int value);

@@ -31,7 +31,7 @@ public class Snippet_0002 {
     matrix.getAxis1().freezeHead(1);
     matrix.getAxis0().getBody() .setCount(new BigInteger("123456789012345678901234567890"));
 
-    shell.setBounds(400, 200, 800, 400);
+    shell.setBounds(400, 200, 600, 400);
     shell.open();
     Display display = shell.getDisplay();
     while (!shell.isDisposed()) {

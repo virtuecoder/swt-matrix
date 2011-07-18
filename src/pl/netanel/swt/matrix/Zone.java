@@ -40,8 +40,8 @@ import pl.netanel.util.Preconditions;
 public class Zone<N0 extends Number, N1 extends Number> {
 	
 	final Painters<N0, N1> painters;
-	SectionCore<N0> section0;
-	SectionCore<N1> section1;
+	SectionClient<N0> section0;
+	SectionClient<N1> section1;
 	CellSet cellSelection;
 	CellSet lastSelection; // For adding selection
 	ZoneEditor<N0, N1> editor;
@@ -67,20 +67,22 @@ public class Zone<N0 extends Number, N1 extends Number> {
 	 * @param section0 section of the row axis
 	 * @param section1 section of the column axis
 	 */
-	public Zone(SectionCore<N0> section0, SectionCore<N1> section1) {
+	public Zone(SectionClient<N0> section0, SectionClient<N1> section1) {
 		this();
 		this.section0 = section0;
 		this.section1 = section1;
-		cellSelection = new CellSet(section0.math, section1.math);
-		lastSelection = new CellSet(section0.math, section1.math);
+		Math math0 = SectionCore.from(section0).math;
+		Math math1 = SectionCore.from(section0).math;
+		cellSelection = new CellSet(math0, math1);
+		lastSelection = new CellSet(math0, math1);
 		
 		RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
 		RGB whiteColor = Resources.getColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
 		RGB color = Painter.blend(selectionColor, whiteColor, 40);
 		selectionBackground = Resources.getColor(color);
 		
-		background = new MapValueToCellSet(this.section0.math, this.section1.math);
-		foreground = new MapValueToCellSet(this.section0.math, this.section1.math);
+		background = new MapValueToCellSet(math0, math1);
+		foreground = new MapValueToCellSet(math0, math1);
 //		text = new MapValueToCellSet(this.section0.math, this.section1.math);
 //		image = new MapValueToCellSet(this.section0.math, this.section1.math);
 	}
@@ -166,8 +168,8 @@ void setDefaultBodyStyle() {
 	 */
 	public Rectangle getCellBounds(N0 index0, N1 index1) {
 		if (index0 == null || index1 == null) return null;
-		Bound b0 = section0.axis.getCellBound(section0, index0);
-		Bound b1 = section1.axis.getCellBound(section1, index1);
+		Bound b0 = section0.core.axis.getCellBound(section0.core, index0);
+		Bound b1 = section1.core.axis.getCellBound(section1.core, index1);
 		if (b0 != null && b1 != null) {
 			return new Rectangle(b1.distance, b0.distance, b1.width, b0.width);
 		}
@@ -359,9 +361,11 @@ void setDefaultBodyStyle() {
 	public void setSelectedAll(boolean state) {
 		if (!selectionEnabled) return;
 		if (state) {
-			cellSelection.add(
-					section0.math.ZERO_VALUE(), section0.math.decrement(section0.getCount()), 
-					section1.math.ZERO_VALUE(), section1.math.decrement(section1.getCount()));
+			Math<N0> math0 = section0.core.math;
+      Math<N1> math1 = section1.core.math;
+      cellSelection.add(
+					math0.ZERO_VALUE(), math0.decrement(section0.getCount()), 
+					math1.ZERO_VALUE(), math1.decrement(section1.getCount()));
 		} else {
 			cellSelection.clear();
 			lastSelection.clear();
@@ -495,7 +499,7 @@ void setDefaultBodyStyle() {
 			NumberPairSequence seq;
 			{
 				Number[] e = cellSelection.getExtent();
-				CellSet set = new CellSet(section0.math, section1.math);
+				CellSet set = new CellSet(section0.core.math, section1.core.math);
 				set.add(e[0], e[1], e[2], e[3]);
 				seq = new NumberPairSequence(set);
 			}
@@ -696,8 +700,8 @@ void setDefaultBodyStyle() {
 		matrix.addListener(eventType, new Listener() {
 			
 			public void handleEvent(Event e) {
-				AxisItem<N0> item0 = matrix.getAxis0().getItemByDistance(e.y);
-				AxisItem<N1> item1 = matrix.getAxis1().getItemByDistance(e.x);
+				AxisPointer<N0> item0 = matrix.getAxis0().getItemByDistance(e.y);
+				AxisPointer<N1> item1 = matrix.getAxis1().getItemByDistance(e.x);
 				if (item0 != null && item1 != null && Zone.this == 
 						matrix.getZone(
 								item0.getSection(), 

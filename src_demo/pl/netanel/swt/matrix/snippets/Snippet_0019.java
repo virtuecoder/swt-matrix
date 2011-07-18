@@ -16,7 +16,7 @@ public class Snippet_0019 {
 	public static void main(String[] args) {
 		Shell shell = (new Shell());
     shell.setText("Align column to the right");
-		shell.setBounds(400, 200, 800, 400);
+		shell.setBounds(400, 200, 600, 400);
 		shell.setLayout(new FillLayout());
 		
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);

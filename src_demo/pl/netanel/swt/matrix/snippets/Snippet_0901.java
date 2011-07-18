@@ -24,7 +24,7 @@ public class Snippet_0901 {
 		matrix.unbind(Matrix.CMD_FOCUS_MOST_LEFT, SWT.KeyDown, SWT.HOME);
 		matrix.bind(Matrix.CMD_FOCUS_MOST_LEFT, SWT.KeyDown, SWT.MOD1 | SWT.ARROW_LEFT);
 		
-		shell.setBounds(400, 200, 800, 400);
+		shell.setBounds(400, 200, 600, 400);
 		shell.open();
 		Display display = shell.getDisplay();
 		while (!shell.isDisposed()) {

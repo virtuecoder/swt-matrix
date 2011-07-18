@@ -16,7 +16,7 @@ public class Snippet_0016 {
 	public static void main(String[] args) {
 		Shell shell = (new Shell());
     shell.setText("Mark selection with SWT.COLOR_LIST... colors");
-		shell.setBounds(400, 200, 800, 400);
+		shell.setBounds(400, 200, 600, 400);
 		shell.setLayout(new FillLayout());
 		final Display display = shell.getDisplay();
 		
