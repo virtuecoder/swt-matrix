@@ -75,7 +75,7 @@ class TestUtil {
 	public static Layout layout(int ...count) {
 		Section[] sections = new Section[count.length];
 		for (int i = 0; i < count.length; i++) {
-			Section section = new Section(int.class);
+			Section section = new SectionCore(Integer.class);
 			sections[i] = section;
 			if (i != 1) section.setFocusItemEnabled(false);
 			section.setCount(count[i]);

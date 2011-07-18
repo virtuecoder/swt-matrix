@@ -11,12 +11,12 @@ public class SectionTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void createIllegalNumber() throws Exception {
-		new Section(float.class);
+		new SectionCore(float.class);
 	}
 
 	@Test
 	public void setCount() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(2);
 		assertEquals(2, section.getCount().intValue());
 		
@@ -26,20 +26,20 @@ public class SectionTest {
 	
 	@Test(expected = NullPointerException.class)
 	public void setCountNull() throws Exception {
-	  Section section = new Section(int.class);
+	  SectionCore section = new SectionCore(int.class);
 	  section.setCount(null);
 	}
 	
 	@Test
 	public void getIndexOutOfBounds() throws Exception {
-	  Section section = new Section(int.class);
+	  SectionCore section = new SectionCore(int.class);
 	  assertNull(section.get(-1));
 	}
 	
 	@Ignore
 	@Test
 	public void getSelectedExtentResizableSequence() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(3);
 		section.setSelected(0, 2, true);
 		section.setDefaultResizable(true);
@@ -53,7 +53,7 @@ public class SectionTest {
 	
 	@Test
 	public void moveSelectedOne1() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
 		section.setSelected(1, 1, true);
 		section.moveSelected(1, 1);
@@ -62,7 +62,7 @@ public class SectionTest {
 	
 	@Test
 	public void moveSelectedOne2() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
 		section.setSelected(1, 1, true);
 		section.moveSelected(1, 0);
@@ -71,7 +71,7 @@ public class SectionTest {
 	
 	@Test
 	public void moveSelectedOne3() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
 		section.setSelected(1, 1, true);
 		section.moveSelected(1, 2);
@@ -80,7 +80,7 @@ public class SectionTest {
 	
 	@Test
 	public void moveSelectedOne4() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
 		section.setSelected(1, 1, true);
 		section.moveSelected(1, 4);
@@ -89,7 +89,7 @@ public class SectionTest {
 	
 	@Test
 	public void moveSelectedBlockInPlace1() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
 		section.setSelected(1, 3, true);
 		section.moveSelected(1, 1);
@@ -98,7 +98,7 @@ public class SectionTest {
 	
 	@Test
 	public void moveSelectedBlockInPlace2() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
 		section.setSelected(1, 3, true);
 		section.moveSelected(1, 2);
@@ -107,7 +107,7 @@ public class SectionTest {
 	
 	@Test
 	public void moveSelectedBlockInPlace3() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
 		section.setSelected(1, 3, true);
 		section.moveSelected(1, 3);
@@ -116,7 +116,7 @@ public class SectionTest {
 	
 	@Test
 	public void moveSelectedBlock1() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
 		section.setSelected(1, 3, true);
 		section.moveSelected(1, 0);
@@ -125,7 +125,7 @@ public class SectionTest {
 	
 	@Test
 	public void moveSelectedBlock2() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
 		section.setSelected(1, 3, true);
 		section.moveSelected(3, 4);
@@ -134,7 +134,7 @@ public class SectionTest {
 
 	@Test
 	public void moveSelectedBlock3() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
 		section.setSelected(1, 3, true);
 		section.moveSelected(3, 0);
@@ -143,7 +143,7 @@ public class SectionTest {
 	
 	@Test
 	public void moveSelectedScattered1() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
 		section.setSelected(1, 1, true);
 		section.setSelected(3, 3, true);
@@ -153,7 +153,7 @@ public class SectionTest {
 	
 	@Test
 	public void moveSelectedScattered2() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
 		section.setSelected(1, 1, true);
 		section.setSelected(3, 3, true);
@@ -163,7 +163,7 @@ public class SectionTest {
 	
 	@Test
 	public void moveSelectedScattered3() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
 		section.setSelected(1, 1, true);
 		section.setSelected(3, 3, true);
@@ -173,7 +173,7 @@ public class SectionTest {
 	
 	@Test
 	public void moveSelectedScattered4() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
 		section.setSelected(1, 1, true);
 		section.setSelected(3, 3, true);
@@ -183,7 +183,7 @@ public class SectionTest {
 	
 	@Test
 	public void moveSelectedScattered5() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
 		section.setSelected(1, 1, true);
 		section.setSelected(3, 3, true);
@@ -192,7 +192,7 @@ public class SectionTest {
 	}
 	
 	public void delete() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
 		section.setCellWidth(4, 4, 33);
 		assertEquals(33, section.getCellWidth(4));
@@ -203,7 +203,7 @@ public class SectionTest {
 	
 	@Test
 	public void insertEmpty() throws Exception {
-		Section section = new Section(int.class);
+		SectionCore section = new SectionCore(int.class);
 		section.insert(0, 1);
 		assertEquals(1, section.getCount());
 //		section.insert(0, 1);
@@ -221,7 +221,7 @@ public class SectionTest {
 //		return section;
 //	}
 	
-	static String toString(Section section) {
+	static String toString(SectionCore section) {
 		StringBuilder sb = new StringBuilder();
 		Forward seq = new DirectionIndexSequence.Forward(section);
 		for (seq.init(); seq.next();) {

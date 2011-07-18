@@ -2,7 +2,6 @@ package pl.netanel.swt.matrix;
 
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,7 +12,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
@@ -1052,9 +1050,9 @@ public class SwtTestCase {
     Point p = shell.toDisplay(new Point(bounds.x, bounds.y));
     gc.copyArea(image, p.x, p.y);
     ImageData data = image.getImageData();
-    ImageLoader loader = new ImageLoader();
-    loader.data = new ImageData[] { data };
-    loader.save(new File("image.png").getAbsolutePath(), SWT.IMAGE_PNG);
+//    ImageLoader loader = new ImageLoader();
+//    loader.data = new ImageData[] { data };
+//    loader.save(new File("image.png").getAbsolutePath(), SWT.IMAGE_PNG);
     
     RGB rgb = data.palette.getRGB(data.getPixel(x, y));
     gc.dispose();

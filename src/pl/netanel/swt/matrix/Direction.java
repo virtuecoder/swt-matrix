@@ -32,7 +32,7 @@ abstract class Direction<N extends Number> {
 
 	public boolean set(AxisItem item) {
 		i = sections.indexOf(item.getSection());
-		section = item.getSection();
+		section = SectionCore.from(item);
 		seq = getSequence(section, sign);
 		seq.init();
 		if (!seq.set(item.getIndex())) return false;

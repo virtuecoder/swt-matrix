@@ -31,14 +31,17 @@ class AxisExtentSequence<N extends Number> {
     this.startItemIndex = sections.indexOf(startItem.getSection());
 		this.endItemIndex = sections.indexOf(endItem.getSection());
 		SectionCore sl;
-		sl = startItem.getSection();
+    SectionCore startSection = (SectionCore) startItem.getSection().getCore();
+    SectionCore endSection = (SectionCore) endItem.getSection().getCore();
+
+		sl = startSection;
 		istart = sl.order.items.isEmpty() ? 0 : sl.order
 				.getExtentIndex(startItem.getIndex());
-		sl = endItem.getSection();
+		sl = endSection;
 		iend = sl.order.items.isEmpty() ? 0 : sl.order
 				.getExtentIndex(endItem.getIndex());
 
-		section = startItem.getSection();
+		section = startSection;
 		sectionIndex = sections.indexOf(section);
 		items = section.order.items;
 		i = istart;

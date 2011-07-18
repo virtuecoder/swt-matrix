@@ -95,10 +95,10 @@ public final class Preconditions {
    * @param expression a boolean expression
    * @param errorMessageTemplate a template for the exception message should the
    *     check fail. The message is formed by replacing each {@code %s}
-   *     placeholder in the template with an argument. These are matched by
+   *     place holder in the template with an argument. These are matched by
    *     position - the first {@code %s} gets {@code errorMessageArgs[0]}, etc.
    *     Unmatched arguments will be appended to the formatted message in square
-   *     braces. Unmatched placeholders will be left as-is.
+   *     braces. Unmatched place holders will be left as-is.
    * @param errorMessageArgs the arguments to be substituted into the message
    *     template. Arguments are converted to strings using
    *     {@link String#valueOf(Object)}.

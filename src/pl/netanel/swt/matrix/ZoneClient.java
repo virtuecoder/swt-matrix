@@ -14,8 +14,8 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone {
 
 	public ZoneClient(Zone<N0, N1> zone) {
 		core = zone;
-		section0 = new SectionClient(zone.section0);
-		section1 = new SectionClient(zone.section1);
+		section0 = zone.section0;
+		section1 = zone.section1;
 	}
 
 	@Override
@@ -55,8 +55,8 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone {
 	public Rectangle getCellBounds(Number index0, Number index1) {
 		if (index0 == null || index1 == null)
 			return null;
-		section0.checkIndex(index0, section0.getCount(), "index0");
-		section1.checkIndex(index1, section1.getCount(), "index1");
+		section0.checkCellIndex(index0, "index0");
+		section1.checkCellIndex(index1, "index1");
 		return core.getCellBounds(index0, index1);
 	}
 
@@ -134,8 +134,8 @@ class ZoneClient<N0 extends Number, N1 extends Number> extends Zone {
 	}
 
 	public boolean isSelected(Number index0, Number index1) {
-		section0.checkIndex(index0, section0.getCount(), "index0");
-		section1.checkIndex(index1, section1.getCount(), "index1");
+		section0.checkCellIndex(index0, "index0");
+		section1.checkCellIndex(index1, "index1");
 		return core.isSelected(index0, index1);
 	}
 

@@ -11,6 +11,7 @@ import org.eclipse.swt.events.SelectionListener;
 public interface Section<N extends Number> {
 
   Class getIndexClass();
+  Section getCore();
   
   /**
    * Specifies the number of section items.

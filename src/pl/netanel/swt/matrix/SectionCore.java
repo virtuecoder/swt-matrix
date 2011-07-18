@@ -34,7 +34,7 @@ import pl.netanel.util.Preconditions;
  * 
  * @author Jacek Kolodziejczyk created 02-03-2011
  */
-public class SectionCore<N extends Number> implements Section<N> {
+class SectionCore<N extends Number> implements Section<N> {
 
 	static final int DEFAULT_CELL_WIDTH = 16;
 	static final int DEFAULT_LINE_WIDTH = 1;
@@ -105,6 +105,10 @@ public class SectionCore<N extends Number> implements Section<N> {
 		return super.hashCode();
 	}
 
+	@Override public Section getCore() {
+	  return this;
+	}
+	
 	@Override public Class getIndexClass() {
 	  return indexClass;
 	}
@@ -903,4 +907,12 @@ public class SectionCore<N extends Number> implements Section<N> {
     listeners.add(event);
   }
 	
+	static SectionCore from(AxisItem item) {
+	  return (SectionCore) item.getSection().getCore();
+	}
+	
+	static SectionCore from(Section section) {
+	  return (SectionCore) section.getCore();
+	}
+
 }

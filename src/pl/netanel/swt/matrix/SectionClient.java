@@ -40,6 +40,9 @@ class SectionClient<N extends Number> implements Section<N> {
 		return core.toString();
 	}
 
+	@Override public Section getCore() {
+	  return core;
+	}
 
   public Class getIndexClass() {
     return core.getIndexClass();

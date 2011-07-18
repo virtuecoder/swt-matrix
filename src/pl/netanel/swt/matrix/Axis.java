@@ -28,7 +28,7 @@ public class Axis<N extends Number>  {
 	private static final String FREEZE_ITEM_COUNT_ERROR = "Freeze item count cannot be negative";
 	
 	final Math<N> math;
-	final ArrayList<SectionCore<N>> sections;
+	final ArrayList<Section<N>> sections;
 	
 	private Section<N> body, header;
 	private int autoScrollOffset, resizeOffset;
@@ -76,19 +76,19 @@ public class Axis<N extends Number>  {
 	 * becomes the header and the second one becomes the body.
 	 * @see #Axis(SectionCore...)
 	 */
-	public Axis(Section<N> ...sections) {
+	Axis(Section<N> ...sections) {
 		Preconditions.checkArgument(sections.length > 0, "Axis must have at least one section");
 		math = Math.getInstance(sections[0].getIndexClass());
 		this.sections = new ArrayList(sections.length);
 		for (int i = 0; i < sections.length; i++) {
 			Section<N> section = sections[i];
-			// TODO remove this method?
-//      Preconditions.checkArgument(section.math.equals(math), 
-//				"Section at {0} must be indexed by the same Number subclass as the first section {1}", 
-//				section.math.getNumberClass(), math.getNumberClass());				
-//			section.index = i;
-//			section.axis = this;
-//			this.sections.add(section);
+      Preconditions.checkArgument(section.getIndexClass().equals(math.getNumberClass()), 
+				"Section at %s is index by a different Number subclass then the first section: %s != %s", 
+				i, section.getIndexClass(), math.getNumberClass());				
+			SectionCore coreSection = SectionCore.from(section);
+			coreSection.index = i;
+			coreSection.axis = this;
+			this.sections.add(section);
 		}
 		if (sections.length == 1) {
 			setBody(0);
@@ -617,7 +617,7 @@ public class Axis<N extends Number>  {
 //    }
     
 		for (int i = 0, imax = sections.size(); i < imax; i++) {
-			SectionCore section = sections.get(i);
+			SectionCore section = SectionCore.from(sections.get(i));
 			section.setSelectedAll(selectState, notify, notifyInZones);
 			
 			if (notify) {
@@ -634,7 +634,7 @@ public class Axis<N extends Number>  {
 	
 	AxisItem getLastItem() {
 		for (int i = sections.size(); i-- > 0;) {
-			SectionCore section = sections.get(i);
+			Section section = sections.get(i);
 			if (section.isEmpty()) continue;
 			return AxisItem.create(section, math.decrement(section.getCount()));
 		}
@@ -646,7 +646,9 @@ public class Axis<N extends Number>  {
 	}
 
 	int comparePosition(AxisItem<N> item1, AxisItem<N> item2) {
-		int diff = item1.getSection().getCo.index - item2.getSection().index;
+	  int i1 = ((SectionCore) item1.getSection().getCore()).index;
+	  int i2 = ((SectionCore) item2.getSection().getCore()).index;
+		int diff = i1 - i2;
 		if (diff != 0) return diff; 
 		return math.compare(
 				item1.getSection().indexOf(item1.getIndex()), 
@@ -681,17 +683,19 @@ public class Axis<N extends Number>  {
 		void init(AxisItem<N> startItem, AxisItem<N> endItem) {
 			this.startItem = startItem;
 			this.endItem = endItem;
-			istart = startItem.getSection().order.items.isEmpty() ? 0 : 
-				startItem.getSection().order.getExtentIndex(startItem.getIndex());
-			iend = endItem.getSection().order.items.isEmpty() ? 0 : 
-				endItem.getSection().order.getExtentIndex(endItem.getIndex());
+			SectionCore startSection = (SectionCore) startItem.getSection().getCore();
+	    SectionCore endSection = (SectionCore) endItem.getSection().getCore();
+			istart = startSection.order.items.isEmpty() ? 0 : 
+				startSection.order.getExtentIndex(startItem.getIndex());
+			iend = endSection.order.items.isEmpty() ? 0 : 
+				endSection.order.getExtentIndex(endItem.getIndex());
 			startItemIndex = math.create(startItem.getIndex());
 			endItemIndex = math.create(endItem.getIndex());
 			
-			section = startItem.getSection();
+			section = startSection;
 			sectionIndex = section.index; 
+			items = section.order.items;
 			lastSectionIndex = sections.indexOf(endItem.getSection()); 
-			items = sections.get(sectionIndex).order.items;
 			i = istart;
 		}
 		
@@ -699,7 +703,7 @@ public class Axis<N extends Number>  {
 			while (i >= items.size()) {
 				sectionIndex++;
 				if (sectionIndex > lastSectionIndex) return false;
-				section = sections.get(sectionIndex);
+				section = SectionCore.from(sections.get(sectionIndex));
 				items = section.order.items;
 				i = 0;
 			}

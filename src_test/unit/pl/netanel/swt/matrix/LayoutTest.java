@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import pl.netanel.swt.matrix.Frozen;
 import pl.netanel.swt.matrix.Layout;
-import pl.netanel.swt.matrix.Section;
+import pl.netanel.swt.matrix.SectionCore;
 
 
 public class LayoutTest {
@@ -53,9 +53,9 @@ public class LayoutTest {
 	
 	@Test
 	public void cellSequenceIndexManySections() throws Exception {
-		Section section0 = new Section(int.class);
-		Section section1 = new Section(int.class);
-		Section section2 = new Section(int.class);
+		SectionCore section0 = new SectionCore(Integer.class);
+		SectionCore section1 = new SectionCore(Integer.class);
+		SectionCore section2 = new SectionCore(Integer.class);
 		Axis model = new Axis(section0, section1, section2);
 		section0.setCount(1); // header
 		section1.setCount(5); // body
@@ -74,7 +74,7 @@ public class LayoutTest {
 	
 	@Test
 	public void freezeIndexes() throws Exception {
-		Layout layout = new Layout(new Axis(new Section(int.class)));
+		Layout layout = new Layout(new Axis(new SectionCore(Integer.class)));
 		Section body = layout.axis.getBody();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
@@ -132,7 +132,7 @@ public class LayoutTest {
 	
 	@Test
 	public void freezeDistances() throws Exception {
-		Layout layout = new Layout(new Axis(new Section(int.class)));
+		Layout layout = new Layout(new Axis(new SectionCore(Integer.class)));
 		Section body = layout.axis.getBody();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
@@ -169,7 +169,7 @@ public class LayoutTest {
 	
 	@Test
 	public void freezeLineWidth() throws Exception {
-		Layout layout = new Layout(new Axis(new Section(int.class)));
+		Layout layout = new Layout(new Axis(new SectionCore(Integer.class)));
 		Section body = layout.axis.getBody();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
@@ -235,7 +235,7 @@ public class LayoutTest {
 	
 	@Test
 	public void reorderBeforeStart() throws Exception {
-		Layout layout = new Layout(new Axis(new Section(int.class)));
+		Layout layout = new Layout(new Axis(new SectionCore(Integer.class)));
 		layout.setViewportSize(1000);
 		
 		Section body = layout.axis.getBody();
@@ -259,7 +259,7 @@ public class LayoutTest {
 	
 	@Test
 	public void reorderScattered() throws Exception {
-		Layout layout = new Layout(new Axis(new Section(int.class)));
+		Layout layout = new Layout(new Axis(new SectionCore(Integer.class)));
 		layout.setViewportSize(1000);
 		
 		Section body = layout.axis.getBody();

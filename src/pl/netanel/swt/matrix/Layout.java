@@ -31,7 +31,7 @@ class Layout<N extends Number> {
 	public Direction forward, backward, forwardNavigator, backwardNavigator;
 	final Axis<N> axis;
 
-	private ArrayList<SectionCore<N>> sections;
+	ArrayList<SectionCore<N>> sections;
 	
 	public Layout(Axis<N> axis) {
 		Preconditions.checkArgument(axis.getSectionCount() > 0, "Layout must have at least one section");
@@ -39,7 +39,7 @@ class Layout<N extends Number> {
 		math = axis.math;
 		sections = new ArrayList();
 		for (int i = 0, imax = axis.sections.size(); i < imax; i++) {
-			SectionCore<N> section2 = axis.sections.get(i);
+			SectionCore<N> section2 = SectionCore.from(axis.sections.get(i));
 			section2.index = i;
 			sections.add(section2);
 		}
@@ -58,7 +58,7 @@ class Layout<N extends Number> {
 		caches = new ArrayList<Cache>();
 		caches.add(head); caches.add(main); caches.add(tail);
 		
-		SectionCore section = axis.sections.get(0);
+		SectionCore section = sections.get(0);
 		start = AxisItem.create(section, math.ZERO_VALUE());
 		zeroItem = AxisItem.create(section, math.ZERO_VALUE());
 		forwardNavigator.init();
@@ -182,7 +182,7 @@ class Layout<N extends Number> {
 	 */
 	public void ensureCurrentIsValid() {
 		if (current == null) return;
-		SectionCore<N> currentSection = current.getSection();
+		SectionCore<N> currentSection = SectionCore.from(current);
 		
 		// Out of scope
 		N count = currentSection.getCount();
@@ -206,11 +206,13 @@ class Layout<N extends Number> {
 	}
 	
 	int compare(AxisItem<N> item1, AxisItem<N> item2) {
-		int diff = item1.getSection().index - item2.getSection().index;
+	  SectionCore section1 = SectionCore.from(item1);
+	  SectionCore section2 = SectionCore.from(item2);
+		int diff = section1.index - section2.index;
 		if (diff != 0) return diff;
 		return math.compare(
-				item1.getSection().indexOf(item1.getIndex()), 
-				item2.getSection().indexOf(item2.getIndex()));
+				section1.indexOf(item1.getIndex()), 
+				section2.indexOf(item2.getIndex()));
 	}
 	
 	
@@ -550,7 +552,7 @@ class Layout<N extends Number> {
 			if (!isEmpty()) {
 				if (dir instanceof Forward) { 
 					AxisItem item2 = items.get(items.size() - 1);
-					lastLine = lastLine(item2.getSection(), item2.getIndex());
+					lastLine = lastLine(SectionCore.from(item2), item2.getIndex());
 				} else {
 					lastLine = lines.get(0);
 				}
@@ -997,7 +999,7 @@ class Layout<N extends Number> {
 	}
 
 	public boolean reorder(AxisItem<N> source, AxisItem<N> target) {
-		SectionCore<N> section = source.getSection();
+		SectionCore<N> section = SectionCore.from(source);
 		if (!section.equals(target.getSection())) return false;
 		
 		int position = compare(target, start);

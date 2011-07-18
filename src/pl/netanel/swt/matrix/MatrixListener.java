@@ -76,7 +76,7 @@ import org.eclipse.swt.widgets.Listener;
  * @author Jacek
  * @created 16-11-2010
  */
-class MatrixListener implements Listener {
+class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 
 	// TODO Limit the events that are redirected to zones
 	private static final int[] EVENTS = { SWT.KeyDown, SWT.KeyUp, 
@@ -210,7 +210,7 @@ class MatrixListener implements Listener {
 	class AxisListener<N extends Number> {
 		private final int axisIndex;
 		Axis<N> axis;
-		Layout layout;
+		Layout<N> layout;
 		AxisItem<N> last, item, prev, resizeItem, lastFocus, mouseDownItem;
 		boolean moving, resizing, itemModified = true;
 		Event mouseMoveEvent;
@@ -300,7 +300,7 @@ class MatrixListener implements Listener {
 				if (resizeEvent == SWT.MouseMove) {
 					int len = axis.sections.size();
 					for (int i = 0; i < len; i++) {
-						SectionCore<N> section = axis.sections.get(i);
+						SectionCore<N> section = layout.sections.get(i);
 						ExtentSequence<N> seq = section.getSelectedExtentResizableSequence();
 						for (seq.init(); seq.next();) {
 							
@@ -320,7 +320,7 @@ class MatrixListener implements Listener {
 				else if (resizeEvent == SWT.MouseDoubleClick) {
 					int len = axis.sections.size();
 					for (int i = 0; i < len; i++) {
-						SectionCore<N> section = axis.sections.get(i);
+						SectionCore<N> section = layout.sections.get(i);
 						NumberSequence<N> seq = section.getSelected();
 						for (seq.init(); seq.next();) {
 							axis.pack(AxisItem.create(section, seq.index()));
@@ -356,7 +356,7 @@ class MatrixListener implements Listener {
 				layout.compute();
 				matrix.redraw();
 				resizeEvent = SWT.MouseMove;
-				addEvent(resizeItem.getSection(), SWT.Resize, resizeItem);
+				addEvent(SectionCore.from(resizeItem), SWT.Resize, resizeItem);
 				//event.data = matrix.getZone(axisIndex == 0 ? Zone.ROW_HEADER : Zone.COLUMN_HEADER);
 			}
 			else {
@@ -429,14 +429,14 @@ class MatrixListener implements Listener {
 				
 				// Backup all sections cell selection
 				for (int i = 0, imax = axis.getSectionCount(); i < imax; i++) {
-					axis.sections.get(i).backupSelection();
+					layout.sections.get(i).backupSelection();
 				}
 				
 			} 
 			else if (commandId == CMD_SELECT_TO_COLUMN_ALTER || commandId == CMD_SELECT_TO_ROW_ALTER) {
 				// Restore previous selection from the backup
 				for (int i = 0, imax = axis.getSectionCount(); i < imax; i++) {
-					axis.sections.get(i).restoreSelection();
+					layout.sections.get(i).restoreSelection();
 				}
 			}
 			
@@ -477,7 +477,7 @@ class MatrixListener implements Listener {
 			    display.setCursorLocation(p);
 			  }
 			  
-				addEvent(item.getSection(), SWT.Move, item);
+				addEvent(SectionCore.from(item), SWT.Move, item);
 				axis.scroll();
 				matrix.redraw();
 				item = last;
@@ -489,7 +489,7 @@ class MatrixListener implements Listener {
 			if (resizeItem == null) return;
 			axis.pack(resizeItem);
 			resizeEvent = SWT.MouseDoubleClick;
-			addEvent(resizeItem.getSection(), SWT.Resize, resizeItem);
+			addEvent(SectionCore.from(resizeItem), SWT.Resize, resizeItem);
 			if ((resizeItem = layout.getResizeItem(distance)) == null) {
 				matrix.setCursor(cursor = null);
 			}
@@ -602,7 +602,7 @@ class MatrixListener implements Listener {
 		}
 
 		public void sendEvents() {
-			for (SectionCore section: axis.sections) {
+			for (SectionCore section: layout.sections) {
 				section.listeners.sendEvents();
 			}
 		}
