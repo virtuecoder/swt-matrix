@@ -165,9 +165,12 @@
 	<!-- zip the whole project directory including .git-->
 	<zip destfile="matrix-project.zip"
       basedir=".."
-      includes="**"
-      excludes="build\matrix-project.zip"
-    />
+      includes="**" 
+      defaultexcludes="no"
+      excludes="build\matrix-project.zip">
+	 
+	  <fileset dir="." includes="examples*.zip"/>
+	</zip>
 
 	<!-- ftp to backup  file to server -->
 	<ftp 

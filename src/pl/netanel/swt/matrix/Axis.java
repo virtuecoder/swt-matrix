@@ -416,7 +416,7 @@ public class Axis<N extends Number>  {
 		GC gc = new GC(matrix);
 		try {
 			int w = 0;
-			for (Zone<? extends Number, ? extends Number> zone: matrix.model.zones) {
+			for (ZoneCore<? extends Number, ? extends Number> zone: matrix.model.zones) {
 				if (this.index == 0 && zone.section0.equals(item.getSection())) {
 					CellSet set = new CellSet(zone.section0.core.math, zone.section1.core.math);
 					set.add(item.getIndex(), item.getIndex(),

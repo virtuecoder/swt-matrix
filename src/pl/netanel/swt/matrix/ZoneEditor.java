@@ -55,7 +55,7 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	private static final Calendar CALENDAR = Calendar.getInstance();
 	private static final String NEW_LINE = System.getProperty("line.separator");
  
-	final Zone<N0, N1> zone;
+	final ZoneCore<N0, N1> zone;
 	final CommandListener controlListener;
 	
 	EmbeddedControlsPainter embedded;
@@ -72,8 +72,8 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	 */
 	public ZoneEditor(Zone<N0, N1> zone) {
 		super();
-		this.zone = zone;
-		zone.setEditor(this);
+		this.zone = ZoneCore.from(zone);
+		this.zone.setEditor(this);
 		
 		trueLabel = DEFAULT_TRUE_TEXT;
 		setImagePath(null);
@@ -130,7 +130,7 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 //		});
 		
 		// Clicking on the image emulation
-		zone.bind(new GestureBinding(CMD_EDIT_ACTIVATE, SWT.MouseDown, 1) {
+		this.zone.bind(new GestureBinding(CMD_EDIT_ACTIVATE, SWT.MouseDown, 1) {
 			
 			public boolean isMatching(Event e) {
 				if (!super.isMatching(e)) return false;

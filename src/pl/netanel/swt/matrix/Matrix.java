@@ -39,7 +39,7 @@ import pl.netanel.util.Preconditions;
  * @created 27-03-2011
  */
 public class Matrix<N0 extends Number, N1 extends Number> extends Canvas 
-	implements Iterable<Zone<N0, N1>> 
+	implements Iterable<ZoneCore<N0, N1>> 
 {
 	static final int CELL_WIDTH = 16;			
 	static final int LINE_WIDTH = 1;
@@ -184,9 +184,9 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	private boolean focusCellEnabled = true;
 	
 	/**
-	 * Calls the {@link #Matrix(Composite, int, Axis, Axis, Zone...)} constructor 
+	 * Calls the {@link #Matrix(Composite, int, Axis, Axis, ZoneCore...)} constructor 
 	 * with <code>null</code> values for <code>axis0</code> and <code>axis1</code>. 
-	 * @see #Matrix(Composite, int, Axis, Axis, Zone...)
+	 * @see #Matrix(Composite, int, Axis, Axis, ZoneCore...)
 	 */
 	public Matrix(Composite parent, int style) {
 		this(parent, style, null, null);
@@ -225,7 +225,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	 *
 	 * @see Widget#getStyle
 	 */
-	public Matrix(Composite parent, int style, Axis<N0> axis0, Axis<N1> axis1, Zone ...zones) {
+	public Matrix(Composite parent, int style, Axis<N0> axis0, Axis<N1> axis1, ZoneCore ...zones) {
 		super(parent, style | SWT.DOUBLE_BUFFERED);
 		setBackground(Resources.getColor(SWT.COLOR_LIST_BACKGROUND));
 		setForeground(Resources.getColor(SWT.COLOR_LIST_FOREGROUND));
@@ -359,7 +359,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 			Bound bb0 = layout0.getBound(dock0);
 			Bound bb1 = layout1.getBound(dock1);
 			
-			for (Zone<N0, N1> zone: model) {
+			for (ZoneCore<N0, N1> zone: model) {
 				if (!layout0.contains(dock0, zone.section0) ||
 					!layout1.contains(dock1, zone.section1) ) continue;
 				
@@ -581,7 +581,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	    boolean state, boolean notify) 
 	{
 		if (axisIndex == 0) {
-			for (Zone zone: model.zones) {
+			for (ZoneCore zone: model.zones) {
 				if (zone.section0.equals(section)) {
 					Math math1 = zone.section1.core.math;
 					zone.setSelected(
@@ -596,7 +596,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 			}
 		}
 		else { // assert index == 1
-			for (Zone zone: model.zones) {
+			for (ZoneCore zone: model.zones) {
 				if (zone.section1.equals(section)) {
 					Math math0 = zone.section0.core.math;
 					zone.setSelected( 
@@ -832,16 +832,16 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	}
 
 	@Override
-	public Iterator<Zone<N0, N1>> iterator() {
-		final Iterator<Zone<N0, N1>> it = model.zones.iterator();
-		return new ImmutableIterator<Zone<N0, N1>>() {
+	public Iterator<ZoneCore<N0, N1>> iterator() {
+		final Iterator<ZoneCore<N0, N1>> it = model.zones.iterator();
+		return new ImmutableIterator<ZoneCore<N0, N1>>() {
 			@Override
 			public boolean hasNext() {
 				return it.hasNext();
 			}
 
 			@Override
-			public Zone<N0, N1> next() {
+			public ZoneCore<N0, N1> next() {
 				return it.next();
 			}
 		};

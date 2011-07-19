@@ -101,17 +101,17 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 //	ArrayList<GestureBinding> bindings;
 	AxisListener state0, state1;
 	boolean instantMoving, ctrlSelectionMoving, mouseDown;
-	Zone<? extends Number, ? extends Number> zone;
+	ZoneCore<N0, N1> zone;
 	Cursor cursor;
 	AxisPointer[] lastRange;
-	Zone body, columnHeader, rowHeader, topLeft;
+	ZoneCore body, columnHeader, rowHeader, topLeft;
 
 	private Move m0, m1;
 	
 	public MatrixListener(Matrix matrix) {
 		this.matrix = matrix;
 		lastRange = new AxisPointer[4]; 
-		body = matrix.getBody();
+		body = ZoneCore.from(matrix.getBody());
 		rowHeader = matrix.model.getZoneUnchecked(matrix.axis0.getBody(), matrix.axis1.getHeader());
 		columnHeader = matrix.model.getZoneUnchecked(matrix.axis0.getHeader(), matrix.axis1.getBody());
 		topLeft = matrix.model.getZoneUnchecked(matrix.axis0.getHeader(), matrix.axis1.getHeader());
@@ -149,7 +149,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 
 			boolean keyEvent = e.type == SWT.KeyDown || e.type == SWT.KeyUp;
 			if (e.data instanceof Zone) {
-				zone = (Zone) e.data;
+				zone = (ZoneCore) e.data;
 			}
 			else if (keyEvent) {
 			  AxisPointer<? extends Number> focusItem0 = matrix.getAxis0().getFocusItem();
@@ -818,7 +818,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 			commandId == CMD_SELECT_COLUMN_ALTER || commandId == CMD_SELECT_ROW_ALTER) 
 		{
 			// Backup the zones cell selection
-			for (Zone<? extends Number, ? extends Number> zone: matrix.model.zones) {
+			for (ZoneCore<? extends Number, ? extends Number> zone: matrix.model.zones) {
 				if (zone.isSelectionEnabled()) {
 					zone.backupSelection();
 				}
@@ -827,7 +827,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 		else if (commandId == CMD_SELECT_TO_LOCATION_ALTER ||  
 				 commandId == CMD_SELECT_TO_COLUMN_ALTER || commandId == CMD_SELECT_TO_ROW_ALTER) 
 		{
-			for (Zone zone: matrix.model.zones) {
+			for (ZoneCore zone: matrix.model.zones) {
 				if (zone.isSelectionEnabled()) {
 					zone.restoreSelection();
 				}
@@ -885,7 +885,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 	private void sendEvents() {
 		state0.sendEvents();
 		state1.sendEvents();
-		for (Zone zone: matrix.model.zones) {
+		for (ZoneCore zone: matrix.model.zones) {
 			zone.sendEvents();
 		}
 	}

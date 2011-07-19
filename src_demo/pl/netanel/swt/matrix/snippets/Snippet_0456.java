@@ -13,9 +13,9 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
-import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.ZoneEditor;
 
 /**

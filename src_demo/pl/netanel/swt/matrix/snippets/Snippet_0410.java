@@ -15,10 +15,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
+import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
-import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.ZoneEditor;
 
 /**

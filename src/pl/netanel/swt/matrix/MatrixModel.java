@@ -6,19 +6,19 @@ import java.util.Iterator;
 import pl.netanel.swt.matrix.Axis.ExtentSequence;
 import pl.netanel.util.ImmutableIterator;
 
-class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone<N0, N1>> {
+class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<ZoneCore<N0, N1>> {
 
 	final Axis<N0> axis0;
 	final Axis<N1> axis1;
-	final ArrayList<Zone<N0, N1>> zones;
+	final ArrayList<ZoneCore<N0, N1>> zones;
 	int[] paintOrder;
 	private ExtentPairSequence seq;
 
-	public MatrixModel(Axis<N0> axis0, Axis<N1> axis1, Zone<N0, N1> ...zones) {
+	public MatrixModel(Axis<N0> axis0, Axis<N1> axis1, ZoneCore<N0, N1> ...zones) {
 		this.axis0 = axis0;
 		this.axis1 = axis1;
 		
-		this.zones = new ArrayList<Zone<N0, N1>>(zones.length);
+		this.zones = new ArrayList<ZoneCore<N0, N1>>(zones.length);
 		for (int i = 0; i < zones.length; i++) {
 			this.zones.add(zones[i]);
 		}
@@ -30,9 +30,9 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		
 		for (SectionClient<N0> section0: axis0.sections) {
 			for (SectionClient<N1> section1: axis1.sections) {
-				Zone zone = getZone(section0, section1);
+				ZoneCore zone = getZone(section0, section1);
 				if (zone == null) {
-					zone = new Zone(section0, section1);
+					zone = new ZoneCore(section0, section1);
 					this.zones.add(zone);
 				}
 				zone.setMatrix(matrix);
@@ -132,8 +132,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	}
 	
 	
-	public Zone getZone(Section section0, Section section1) {
-		for (Zone zone: zones) {
+	public ZoneCore getZone(Section section0, Section section1) {
+		for (ZoneCore zone: zones) {
 			if (zone.section0.getCore().equals(section0.getCore()) && 
 			    zone.section1.getCore().equals(section1.getCore())) {
 				return zone;
@@ -142,8 +142,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		return null;
 	}
 	
-	public Zone getZoneUnchecked(Section section0, Section section1) {
-		for (Zone zone: zones) {
+	public ZoneCore getZoneUnchecked(Section section0, Section section1) {
+		for (ZoneCore zone: zones) {
 		  if (zone.section0.getCore().equals(section0.getCore()) && 
 		      zone.section1.getCore().equals(section1.getCore())) {
 				return zone;
@@ -156,8 +156,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	 * Zone iterator
 	 */
 	@Override
-	public Iterator<Zone<N0, N1>> iterator() {
-		return new ImmutableIterator<Zone<N0, N1>>() {
+	public Iterator<ZoneCore<N0, N1>> iterator() {
+		return new ImmutableIterator<ZoneCore<N0, N1>>() {
 			int i;
 			
 			@Override
@@ -166,7 +166,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 			}
 
 			@Override
-			public Zone next() {
+			public ZoneCore next() {
 				return zones.get(paintOrder[i++]);
 			}
 			
@@ -207,7 +207,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 //	  }
 	  
 	  // Set selection and notify
-		for (Zone zone: zones) {
+		for (ZoneCore zone: zones) {
 		  zone.setSelectedAll(selectState);
 
 			if (notify) {
@@ -250,7 +250,7 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 		Zone lastZone = null;
 		seq.init(start0, end0, start1, end1);
 		while (seq.next()) {
-			Zone zone = getZoneUnchecked(seq.section0, seq.section1);
+			ZoneCore zone = getZoneUnchecked(seq.section0, seq.section1);
 			if (zone.isSelectionEnabled()) {
 				zone.setSelected(seq.start0.getValue(), seq.end0.getValue(), seq.start1.getValue(), seq.end1.getValue(), selected);
 				
@@ -314,14 +314,14 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	}
 
 	void deleteInZones(int axisIndex, Section section, Number start, Number end) {
-		for (Zone zone: zones) {
+		for (ZoneCore zone: zones) {
 			zone.delete(axisIndex, section, start, end);
 		}
 		
 	}
 	
 	void insertInZones(int axisIndex, Section section, Number target, Number count) {
-		for (Zone zone: zones) {
+		for (ZoneCore zone: zones) {
 			zone.insert(axisIndex, section, target, count);
 		}
 	}

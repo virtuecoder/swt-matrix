@@ -9,10 +9,10 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
 
-class ZoneClient<N0 extends Number, N1 extends Number> extends Zone {
-	final Zone core;
+class ZoneClient<N0 extends Number, N1 extends Number> extends ZoneCore {
+	final ZoneCore core;
 
-	public ZoneClient(Zone<N0, N1> zone) {
+	public ZoneClient(ZoneCore<N0, N1> zone) {
 		core = zone;
 		section0 = zone.section0;
 		section1 = zone.section1;
