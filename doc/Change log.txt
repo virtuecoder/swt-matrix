@@ -1,15 +1,19 @@
 -------------------------------------------------------------------------------
-Version 0.4
+Version 0.3.3
 
 New Features
 - Arithmetics on Long indexes implemented so that <code>new Axis(Long.class, 2)</code> will work
 - Improved methods parameter checking
 - Javadoc is avaialble for download to provide instant help while working with swt matrix in the IDE 
+- Drag and drop image indicator while reordering axis items
+- Text wraping
+- pl.netanel.swt.matrix.custom package with ButtonCellPainter
 
 API changes:
 - Section became an interface
 - Zone became an interface
 - Added Section.getIndexClass
+- Painter.computeSize(Number, Number, int, int) instead of computeWidth(Number, Number) and computeHeight(Number, Number)
 
 Bug fixes:
 - Snipept_0402 removed double click on emulated checkbox

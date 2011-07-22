@@ -129,7 +129,9 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 	          GC gc = new GC(matrix);
 	          gc.drawImage(lastImage, lastImageLocation.x, lastImageLocation.y);
 	          gc.dispose();
+	          matrix.redraw();
 	          lastImage.dispose();
+	          lastImage = null;
 	        }
 	        if (image != null) image.dispose();
 			}
@@ -284,10 +286,9 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 	            imageOffset = new Point(e.x - x, e.y - y);
 //	            TestUtil.log("image offset", imageOffset);
 	            lastImageLocation = new Point(x, y);
-	            TestUtil.log("last image location", lastImageLocation);
 	            
 	            ImageData imageData = image.getImageData();
-	            imageData.alpha = 128;
+	            imageData.alpha = 160;
 	            image = new Image(display, imageData);
 	          }
 	          gc.dispose();
@@ -386,11 +387,12 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 				      lastImage = new Image(matrix.getDisplay(), imageSize.x, imageSize.y);
 				      gc.copyArea(lastImage, x, y);
 				      gc.dispose();
-				      TestUtil.log("last image location", lastImageLocation);
 				    }
 				    
             GC gc = new GC(matrix);
             gc.drawImage(lastImage, lastImageLocation.x, lastImageLocation.y);
+            matrix.redraw();
+            matrix.update();
             
             lastImage = new Image(matrix.getDisplay(), imageSize.x, imageSize.y);
             gc.copyArea(lastImage, x, y);
@@ -398,7 +400,6 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
             gc.dispose();
             lastImageLocation.x = x;
             lastImageLocation.y = y;
-            matrix.setRedraw(true);
 				  }
 				} 
 			}

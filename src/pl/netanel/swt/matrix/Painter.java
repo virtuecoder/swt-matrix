@@ -225,7 +225,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	/**
 	 * Word wrapping for text in cells. 
 	 */
-	public boolean wordWrap;
+	private boolean wordWrap;
 
 	TextClipMethod textClipMethod;
 	Zone<N0, N1> zone;
@@ -367,7 +367,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 */
 	public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
 	  setup(index0, index1);
-	  if (wordWrap) {
+	  if (isWordWrap()) {
 	    gc.setClipping(x, y, width, height);
 	  }
 	  
@@ -449,7 +449,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
         y3 += height - extent.y - textMarginY; break;
       }
       
-		  if (wordWrap) {
+		  if (isWordWrap()) {
 		    if (textLayout == null) {
 		      textLayout = new TextLayout(gc.getDevice());
 		      getMatrix().addDisposeListener(new DisposeListener() {
@@ -647,7 +647,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
     if (text != null) {
       p = gc.stringExtent(text);
       
-      if (wordWrap) {
+      if (isWordWrap()) {
         if (wHint == SWT.DEFAULT) {
           return new Point(
             zone.getSection1().getCellWidth(index1), 
@@ -760,6 +760,22 @@ public class Painter<N0 extends Number, N1 extends Number> {
   void setZone(Zone<N0, N1> zone) {
     this.zone = zone;
     this.matrix = zone.getMatrix();
+  }
+
+  /**
+   * Returns the word wrapping state.
+   * @return the word wrapping state
+   */
+  public boolean isWordWrap() {
+    return wordWrap;
+  }
+
+  /**
+   * Sets the word wrapping state. If true then the words will be wrapped to many lines. 
+   * @param state word wrapping state
+   */
+  public void setWordWrap(boolean state) {
+    this.wordWrap = state;
   }
 
 }

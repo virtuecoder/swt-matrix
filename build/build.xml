@@ -139,6 +139,19 @@
       includes="**"
     />
 	
+	<!-- zip the whole project directory including .git-->
+  <zip destfile="swt-matrix-${version}.zip">
+  	<zipfileset dir="../javadoc" prefix="javadoc"/>
+  	<zipfileset dir="../src_demo" includes="pl/netanel/swt/matrix/snippets/*.java" prefix="snippets"/>
+  	<zipfileset dir=".." includes="*.png" prefix="snippets"/>
+  	<zipfileset dir="../src" includes="pl/netanel/swt/matrix/custom/*.java" prefix="custom"/>
+  	<zipfileset dir="." includes="swt-matrix-${version}.jar"/>
+  	<zipfileset dir="." includes="swt-matrix-custom-${version}.jar"/>
+		<fileset dir="../doc" includes="EULA.txt"/>
+		<fileset dir="../doc" includes="EULA.txt"/>
+		<fileset dir="../doc" includes="Change log.txt"/>
+  </zip>
+	
 	<copy todir="${local_website}\swt-matrix">
 		<fileset dir="../doc" includes="EULA.txt"/>
 	</copy>

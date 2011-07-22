@@ -48,11 +48,18 @@ public class Snippet_0020 {
 		axis1.getHeader().setVisible(true);
 		
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_HORIZONTALLY) {
 		    @Override
 		    public String getText(Integer index0, Integer index1) {
 		      return data.get(index0.intValue())[index1.intValue()].toString();
 		    }
+		    
+		    // Set word wrap for the second column
+		    @Override public void setup(Integer index0, Integer index1) {
+		      if (index1 == 1) {
+		        setWordWrap(true);
+		      }
+		    };
 		  }
 	  );
 
