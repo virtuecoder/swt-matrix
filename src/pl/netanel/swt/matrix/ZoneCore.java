@@ -38,8 +38,8 @@ import pl.netanel.util.Preconditions;
 class ZoneCore<N0 extends Number, N1 extends Number> implements Zone<N0, N1> {
 	
 	final Painters<N0, N1> painters;
-	SectionClient<N0> section0;
-	SectionClient<N1> section1;
+	final SectionCore<N0> section0;
+	final SectionCore<N1> section1;
 	CellSet cellSelection;
 	CellSet lastSelection; // For adding selection
 	ZoneEditor<N0, N1> editor;
@@ -52,7 +52,7 @@ class ZoneCore<N0 extends Number, N1 extends Number> implements Zone<N0, N1> {
 	private Color selectionBackground, selectionForeground;
 	private final Rectangle bounds;
 	
-	private CellValues<N0, N1, Color> background, foreground;
+	private final CellValues<N0, N1, Color> background, foreground;
 	
 //	private CellValues<N0, N1, String> text;
 //	private CellValues<N0, N1, Image> image;
@@ -65,10 +65,15 @@ class ZoneCore<N0 extends Number, N1 extends Number> implements Zone<N0, N1> {
 	 * @param section0 section of the row axis
 	 * @param section1 section of the column axis
 	 */
-	public ZoneCore(SectionClient<N0> section0, SectionClient<N1> section1) {
-		this();
+	public ZoneCore(SectionCore<N0> section0, SectionCore<N1> section1) {
 		this.section0 = section0;
 		this.section1 = section1;
+		painters = new Painters();
+    listeners = new Listeners();
+    bindings = new ArrayList();
+    bounds = new Rectangle(0, 0, 0, 0);
+    selectionEnabled = true;
+    
 		Math math0 = SectionCore.from(section0).math;
 		Math math1 = SectionCore.from(section0).math;
 		cellSelection = new CellSet(math0, math1);
@@ -85,13 +90,6 @@ class ZoneCore<N0 extends Number, N1 extends Number> implements Zone<N0, N1> {
 //		image = new MapValueToCellSet(this.section0.math, this.section1.math);
 	}
 	
-	ZoneCore() {
-		painters = new Painters();
-		listeners = new Listeners();
-		bindings = new ArrayList();
-		bounds = new Rectangle(0, 0, 0, 0);
-		selectionEnabled = true;
-	}
 	
 	@Override public String toString() {
 		return section0.toString() + " " + section1.toString();
@@ -105,14 +103,14 @@ class ZoneCore<N0 extends Number, N1 extends Number> implements Zone<N0, N1> {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getSection0()
    */
-	public Section getSection0() {
+	@Override public Section getSection0() {
 	  return section0;
 	}
 	
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getSection1()
    */
-	public Section getSection1() {
+	@Override public Section getSection1() {
 	  return section1;
 	}
 
@@ -120,7 +118,7 @@ class ZoneCore<N0 extends Number, N1 extends Number> implements Zone<N0, N1> {
 void setDefaultBodyStyle() {
 //	  setDefaultBackground(matrix.getBackground());
 	  
-		Painter painter = new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		Painter painter = new Painter(Painter.NAME_CELLS, Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override public String getText(Number index0, Number index1) {
 				return index0.toString() + ", " + index1.toString();
 			}
@@ -128,8 +126,8 @@ void setDefaultBodyStyle() {
 		painter.setZone(this);
 		replacePainter(painter);
 		Color color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
-		replacePainter(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color ));
-		replacePainter(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
+		replacePainter(new LinePainter(Painter.NAME_ROW_LINES, Painter.SCOPE_HORIZONTAL_LINES, color ));
+		replacePainter(new LinePainter(Painter.NAME_COLUMN_LINES, Painter.SCOPE_VERTICAL_LINES, color));
 	}
 	
 	void setDefaultHeaderStyle(Painter cellsPainte) {
@@ -145,18 +143,17 @@ void setDefaultBodyStyle() {
 			cellsPainte.setZone(this);
 			addPainter(cellsPainte);
 			final Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
-			addPainter(new LinePainter("row lines", Painter.SCOPE_HORIZONTAL_LINES, color));
-			addPainter(new LinePainter("column lines", Painter.SCOPE_VERTICAL_LINES, color));
+			addPainter(new LinePainter(Painter.NAME_ROW_LINES, Painter.SCOPE_HORIZONTAL_LINES, color));
+			addPainter(new LinePainter(Painter.NAME_COLUMN_LINES, Painter.SCOPE_VERTICAL_LINES, color));
 		}
 	}
 	
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getCellBounds(N0, N1)
    */
-	public Rectangle getCellBounds(N0 index0, N1 index1) {
-		if (index0 == null || index1 == null) return null;
-		Bound b0 = section0.core.axis.getCellBound(section0.core, index0);
-		Bound b1 = section1.core.axis.getCellBound(section1.core, index1);
+	@Override public Rectangle getCellBounds(N0 index0, N1 index1) {
+		Bound b0 = section0.axis.getCellBound(section0, index0);
+		Bound b1 = section1.axis.getCellBound(section1, index1);
 		if (b0 != null && b1 != null) {
 			return new Rectangle(b1.distance, b0.distance, b1.width, b0.width);
 		}
@@ -167,14 +164,14 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#setDefaultBackground(org.eclipse.swt.graphics.Color)
    */
-	public void setDefaultBackground(Color color) {
+	@Override public void setDefaultBackground(Color color) {
 		background.setDefaultValue(color);
 	}
 	
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getDefaultBackground()
    */
-	public Color getDefaultBackground() {
+	@Override public Color getDefaultBackground() {
 		return background.getDefaultValue();
 	}	
 	
@@ -182,14 +179,14 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#setDefaultForeground(org.eclipse.swt.graphics.Color)
    */
-	public void setDefaultForeground(Color color) {
+	@Override public void setDefaultForeground(Color color) {
 		foreground.setDefaultValue(color);
 	}
 
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getDefaultForeground()
    */
-	public Color getDefaultForeground() {
+	@Override public Color getDefaultForeground() {
 		return foreground.getDefaultValue();
 	}	
 
@@ -197,7 +194,7 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getBounds()
    */
-	public Rectangle getBounds() {
+	@Override public Rectangle getBounds() {
 		return bounds;
 	}
 
@@ -223,28 +220,28 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#setSelectionForeground(org.eclipse.swt.graphics.Color)
    */
-	public void setSelectionForeground(Color color) {
+	@Override public void setSelectionForeground(Color color) {
 		selectionForeground = color;
 	}
 	
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getSelectionForeground()
    */
-	public Color getSelectionForeground() {
+	@Override public Color getSelectionForeground() {
 		return selectionForeground;
 	}
 	
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#setSelectionBackground(org.eclipse.swt.graphics.Color)
    */
-	public void setSelectionBackground(Color color) {
+	@Override public void setSelectionBackground(Color color) {
 		selectionBackground = color;
 	}
 	
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getSelectionBackground()
    */
-	public Color getSelectionBackground() {
+	@Override public Color getSelectionBackground() {
 		return selectionBackground;
 	}
 	
@@ -252,14 +249,14 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#isSelectionEnabled()
    */
-	public boolean isSelectionEnabled() {
+	@Override public boolean isSelectionEnabled() {
 		return selectionEnabled;
 	}
 
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#setSelectionEnabled(boolean)
    */
-	public void setSelectionEnabled(boolean enabled) {
+	@Override public void setSelectionEnabled(boolean enabled) {
 		if (enabled == false) {
 			cellSelection.clear();
 		}
@@ -270,14 +267,14 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#isSelected(N0, N1)
    */
-	public boolean isSelected(N0 index0, N1 index1) {
+	@Override public boolean isSelected(N0 index0, N1 index1) {
 		return cellSelection.contains(index0, index1);
 	}
 	
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#setSelected(N0, N0, N1, N1, boolean)
    */
-	public void setSelected( N0 start0, N0 end0, N1 start1, N1 end1, 
+	@Override public void setSelected( N0 start0, N0 end0, N1 start1, N1 end1, 
 			boolean state) {
 		
 		if (!selectionEnabled) return;
@@ -291,18 +288,18 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#setSelected(N0, N1, boolean)
    */
-	public void setSelected(N0 index0, N1 index1, boolean state) {
+	@Override public void setSelected(N0 index0, N1 index1, boolean state) {
 		setSelected(index0, index0, index1, index1, state);
 	}
 
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#setSelectedAll(boolean)
    */ 
-	public void setSelectedAll(boolean state) {
+	@Override public void setSelectedAll(boolean state) {
 		if (!selectionEnabled) return;
 		if (state) {
-			Math<N0> math0 = section0.core.math;
-      Math<N1> math1 = section1.core.math;
+			Math<N0> math0 = section0.math;
+      Math<N1> math1 = section1.math;
       cellSelection.add(
 					math0.ZERO_VALUE(), math0.decrement(section0.getCount()), 
 					math1.ZERO_VALUE(), math1.decrement(section1.getCount()));
@@ -317,7 +314,7 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getSelectedCount()
    */
-	public BigInteger getSelectedCount() {
+	@Override public BigInteger getSelectedCount() {
 		return cellSelection.getCount().getValue();
 	}
 
@@ -335,7 +332,7 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getSelectionCount()
    */
-	public BigInteger getSelectionCount() {
+	@Override public BigInteger getSelectionCount() {
 		if (!selectionEnabled) {
 			return BigInteger.ZERO;
 		}
@@ -346,7 +343,7 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getSelectedIterator()
    */
-	public Iterator<Number[]> getSelectedIterator() {
+	@Override public Iterator<Number[]> getSelectedIterator() {
 		return new ImmutableIterator<Number[]>() {
 			NumberPairSequence seq = new NumberPairSequence(cellSelection.copy());
 			private boolean next;
@@ -354,13 +351,13 @@ void setDefaultBodyStyle() {
 				seq.init();
 			}
 			
-			public boolean hasNext() {
+			@Override public boolean hasNext() {
 				next = seq.next();
 				return next;
 			}
 
 			
-			public Number[] next() {
+			@Override public Number[] next() {
 				return next ? new Number[] {seq.index0(), seq.index1()} : null;
 			}
 		};
@@ -380,7 +377,7 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getSelectedExtentIterator()
    */
-	public Iterator<Number[]> getSelectedExtentIterator() {
+	@Override public Iterator<Number[]> getSelectedExtentIterator() {
 		return new ImmutableIterator<Number[]>() {
 			NumberPairSequence seq = new NumberPairSequence(cellSelection.copy());
 			private boolean next;
@@ -388,13 +385,13 @@ void setDefaultBodyStyle() {
 				seq.init();
 			}
 			
-			public boolean hasNext() {
+			@Override public boolean hasNext() {
 				next = seq.nextExtent();
 				return next;
 			}
 
 			
-			public Number[] next() {
+			@Override public Number[] next() {
 				return next ? new Number[] {seq.start0(), seq.end0(), seq.start1(), seq.end1()} : null;
 			}
 		};
@@ -418,7 +415,7 @@ void setDefaultBodyStyle() {
 			NumberPairSequence seq;
 			{
 				Number[] e = cellSelection.getExtent();
-				CellSet set = new CellSet(section0.core.math, section1.core.math);
+				CellSet set = new CellSet(section0.math, section1.math);
 				set.add(e[0], e[1], e[2], e[3]);
 				seq = new NumberPairSequence(set);
 			}
@@ -428,13 +425,13 @@ void setDefaultBodyStyle() {
 				seq.init();
 			}
 			
-			public boolean hasNext() {
+			@Override public boolean hasNext() {
 				next = seq.next();
 				return next;
 			}
 
 			
-			public Number[] next() {
+			@Override public Number[] next() {
 				return next ? new Number[] {seq.index0(), seq.index1()} : null;
 			}
 		};
@@ -445,7 +442,7 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getSelectedExtent()
    */
-	public Number[] getSelectedExtent() {
+	@Override public Number[] getSelectedExtent() {
 		return cellSelection.getExtent();
 	}
 //	
@@ -487,7 +484,7 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#bind(int, int, int)
    */
-	public void bind(int commandId, int eventType, int code) {
+	@Override public void bind(int commandId, int eventType, int code) {
 		bind(new GestureBinding(commandId, eventType, code));
 	}
 	
@@ -505,7 +502,7 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#unbind(int, int, int)
    */
-	public void unbind(int commandId, int eventType, int code) {
+	@Override public void unbind(int commandId, int eventType, int code) {
 		if (editor != null && (
 				commandId == Matrix.CMD_EDIT_DEACTIVATE_APPLY || 
 				commandId == Matrix.CMD_EDIT_DEACTIVATE_CANCEL )) {
@@ -530,7 +527,7 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#addSelectionListener(org.eclipse.swt.events.SelectionListener)
    */
-	public void addSelectionListener (SelectionListener listener) {
+	@Override public void addSelectionListener (SelectionListener listener) {
 		Preconditions.checkNotNullWithName(listener, "listener");
 		TypedListener typedListener = new TypedListener(listener);
 		this.listeners.add(SWT.Selection, typedListener);
@@ -540,7 +537,7 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#removeSelectionListener(org.eclipse.swt.events.SelectionListener)
    */
-	public void removeSelectionListener(SelectionListener listener) {
+	@Override public void removeSelectionListener(SelectionListener listener) {
 		Preconditions.checkNotNullWithName(listener, "listener");
 		listeners.remove(SWT.Selection, listener);
 		listeners.remove(SWT.DefaultSelection, listener);
@@ -549,16 +546,14 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#addListener(int, org.eclipse.swt.widgets.Listener)
    */
-	public void addListener(int eventType, final Listener listener) {
+	@Override public void addListener(int eventType, final Listener listener) {
 		matrix.addListener(eventType, new Listener() {
 			
-			public void handleEvent(Event e) {
-				AxisPointer<N0> item0 = matrix.getAxis0().getItemByDistance(e.y);
-				AxisPointer<N1> item1 = matrix.getAxis1().getItemByDistance(e.x);
+			@Override public void handleEvent(Event e) {
+				AxisItem<N0> item0 = matrix.getAxis0().getItemByDistance(e.y);
+				AxisItem<N1> item1 = matrix.getAxis1().getItemByDistance(e.x);
 				if (item0 != null && item1 != null && ZoneCore.this == 
-						matrix.getZone(
-								item0.getSection(), 
-								item1.getSection())) 
+						matrix.model.getZone(item0.section.core, item1.section.core))
 				{
 					listener.handleEvent(e);
 				}
@@ -656,7 +651,7 @@ void setDefaultBodyStyle() {
 			final Painter p = embedded;
 			Display display = matrix.getDisplay();
 			display.asyncExec(new Runnable() {
-				public void run() {
+				@Override public void run() {
 					if (!p.isEnabled() || !p.init(gc)) return;
 					
 					LayoutSequence seq0 = layout0.cellSequence(dock0, section0);
@@ -679,8 +674,7 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#addPainter(pl.netanel.swt.matrix.Painter)
    */
-	public void addPainter(Painter<N0, N1> painter) {
-	  checkOwner(painter);
+	@Override public void addPainter(Painter<N0, N1> painter) {
 		painters.add(painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -688,8 +682,7 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#addPainter(int, pl.netanel.swt.matrix.Painter)
    */
-  public void addPainter(int index, Painter<N0, N1> painter) {
-    checkOwner(painter);
+  @Override public void addPainter(int index, Painter<N0, N1> painter) {
 		painters.add(index, painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -697,8 +690,7 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#setPainter(int, pl.netanel.swt.matrix.Painter)
    */
-	public void setPainter(int index, Painter<N0, N1> painter) {
-	  checkOwner(painter);
+	@Override public void setPainter(int index, Painter<N0, N1> painter) {
 		painters.set(index, painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -706,8 +698,7 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#replacePainter(pl.netanel.swt.matrix.Painter)
    */
-	public void replacePainter(Painter<N0, N1> painter) {
-	  checkOwner(painter);
+	@Override public void replacePainter(Painter<N0, N1> painter) {
 		painters.replacePainter(painter);
 		setPainterMatrixAndZone(painter);
 	}
@@ -715,7 +706,7 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#removePainter(int)
    */
-	public Painter<N0, N1> removePainter(int index) {
+	@Override public Painter<N0, N1> removePainter(int index) {
 		return painters.remove(index);
 	}
 	
@@ -723,53 +714,38 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#removePainter(pl.netanel.swt.matrix.Painter)
    */
-  public boolean removePainter(Painter painter) {
-    checkOwner(painter);
+  @Override public boolean removePainter(Painter painter) {
     return painters.remove(painter);
   }
   
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#indexOfPainter(java.lang.String)
    */
-	public int indexOfPainter(String name) {
+	@Override public int indexOfPainter(String name) {
 		return painters.indexOfPainter(name);
 	}
 	
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getPainter(java.lang.String)
    */
-	public Painter<N0, N1> getPainter(String name) {
-		Preconditions.checkNotNullWithName(name, "name");
+	@Override public Painter<N0, N1> getPainter(String name) {
 		return painters.get(indexOfPainter(name));
 	}
 	
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getPainterCount()
    */
-	public int getPainterCount() {
+	@Override public int getPainterCount() {
 		return painters.size();
 	}
 	
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getPainter(int)
    */
-	public Painter<N0, N1> getPainter(int index) {
-		Preconditions.checkPositionIndex(index, painters.size());
+	@Override public Painter<N0, N1> getPainter(int index) {
 		return painters.get(index);
 	}
 	
-  private void checkOwner(Painter<N0, N1> painter) {
-    if (painter == null) return;
-    
-    Preconditions.checkArgument(painter.zone == null || this.equals(painter.zone), 
-      "The painter belongs to a different zone: %s", painter.zone);
-    
-    Matrix<N0, N1> matrix2 = getMatrix();
-    if (matrix2 != null) {
-      Preconditions.checkArgument(painter.matrix == null || matrix2.equals(painter.matrix), 
-        "The painter belongs to a different matrix: %s", painter.matrix);
-    }
-  }
 
 	private void setPainterMatrixAndZone(Painter painter) {	
 			painter.setZone(this);
@@ -842,7 +818,7 @@ void setDefaultBodyStyle() {
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#getMatrix()
    */
-	public Matrix<N0, N1> getMatrix() {
+	@Override public Matrix<N0, N1> getMatrix() {
 		return matrix;
 	}
 	

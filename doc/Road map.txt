@@ -4,6 +4,8 @@ From nebula forum
 - Nebula CompositeTable, flexible row layout
 
 To do:
+- painter: bottom and top margin
+- add to Zone and Section @see #getListeners(int)   * @see #removeListener(int, Listener)   * @see #notifyListeners
 - single focus cell should not be considered selected (like in spreadsheets)
 - snippet with selection background and custom foreground
 - scroll to focus on resizing

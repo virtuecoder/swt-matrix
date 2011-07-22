@@ -10,7 +10,7 @@ class AxisExtentSequence<N extends Number> {
 	Number start, end;
 	private int startItemIndex, endItemIndex, i, istart, iend;
 	private ArrayList<Extent<N>> items;
-	private AxisPointer startItem, endItem;
+	private AxisItem startItem, endItem;
 	private final Math math;
 	
 	public AxisExtentSequence(Math<N> math, List<SectionCore<N>> sections) {
@@ -22,17 +22,17 @@ class AxisExtentSequence<N extends Number> {
 	void init() {
 		SectionCore section2 = sections.get(sections.size() - 1);
 		init(
-			AxisPointer.create(sections.get(0), math.ZERO_VALUE()), 
-			AxisPointer.create(section2, math.decrement(section2.getCount())));
+			AxisItem.create(sections.get(0), math.ZERO_VALUE()), 
+			AxisItem.create(section2, math.decrement(section2.getCount())));
 	}
-	void init(AxisPointer startItem, AxisPointer endItem) {
+	void init(AxisItem startItem, AxisItem endItem) {
 		this.startItem = startItem;
     this.endItem = endItem;
-    this.startItemIndex = sections.indexOf(startItem.getSection());
-		this.endItemIndex = sections.indexOf(endItem.getSection());
+    this.startItemIndex = sections.indexOf(startItem.section.core);
+		this.endItemIndex = sections.indexOf(endItem.section.core);
 		SectionCore sl;
-    SectionCore startSection = (SectionCore) startItem.getSection().getCore();
-    SectionCore endSection = (SectionCore) endItem.getSection().getCore();
+    SectionCore startSection = startItem.section.core;
+    SectionCore endSection = endItem.section.core;
 
 		sl = startSection;
 		istart = sl.order.items.isEmpty() ? 0 : sl.order

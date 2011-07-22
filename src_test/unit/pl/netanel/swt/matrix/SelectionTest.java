@@ -12,7 +12,7 @@ import org.junit.runners.JUnit4;
 	public void emptyAxis() throws Exception {
 		Matrix matrix = new Matrix(new Shell(), SWT.None);
 		Section body = matrix.getAxis0().getBody();
-		body.setSelectedAll(true, false, false);
+		body.setSelected(true);
 		assertEquals(0, body.getSelectedCount());
 	}
 	

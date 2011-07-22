@@ -1,6 +1,8 @@
 package pl.netanel.swt.matrix;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
@@ -8,6 +10,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.TextLayout;
 
 import pl.netanel.util.Arrays;
 import pl.netanel.util.Preconditions;
@@ -64,7 +67,87 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 * Individual cells in vertical order. Aids graphics performance in case of drawing homogenic columns. 
 	 */
 	public static final int SCOPE_CELLS_VERTICALLY = 6;
-
+	
+  /**
+   * Default name of a painter belonging to z zone and responsible to paint its
+   * cells
+   */
+  public static final String NAME_CELLS = "cells";
+  /**
+   * Default name of a painter belonging to z zone and responsible to paint its
+   * row lines
+   */
+  public static final String NAME_ROW_LINES = "row lines";
+  /**
+   * Default name of a painter belonging to z zone and responsible to paint its
+   * column lines
+   */
+  public static final String NAME_COLUMN_LINES = "column lines";
+  /**
+   * Default name of a painter belonging to matrix and responsible to paint the
+   * area not frozen
+   */
+  public static final String NAME_FROZEN_NONE_NONE = "frozen none none";
+  /**
+   * Default name of a painter belonging to matrix and responsible to paint the
+   * area that is frozen only at the horizontal end of the viewport.
+   */
+  public static final String NAME_FROZEN_NONE_TAIL = "frozen none tail";
+  /**
+   * Default name of a painter belonging to matrix and responsible to paint the
+   * area that is frozen only at the vertical end of the viewport.
+   */
+  public static final String NAME_FROZEN_TAIL_NONE = "frozen tail none";
+  /**
+   * Default name of a painter belonging to matrix and responsible to paint the
+   * area that is frozen only at the horizontal start of the viewport.
+   */
+  public static final String NAME_FROZEN_NONE_HEAD = "frozen none head";
+  /**
+   * Default name of a painter belonging to matrix and responsible to paint the
+   * area that is frozen only at the vertical start of the viewport.
+   */
+  public static final String NAME_FROZEN_HEAD_NONE = "frozen head none";
+  /**
+   * Default name of a painter belonging to matrix and responsible to paint the
+   * area that is frozen both at the vertical start and horizontal end of the
+   * viewport.
+   */
+  public static final String NAME_FROZEN_HEAD_TAIL = "frozen head tail";
+  /**
+   * Default name of a painter belonging to matrix and responsible to paint the
+   * area that is frozen both at the vertical end and horizontal start of the
+   * viewport.
+   */
+  public static final String NAME_FROZEN_TAIL_HEAD = "frozen tail head";
+  /**
+   * Default name of a painter belonging to matrix and responsible to paint the
+   * area that is frozen both at the vertical end and horizontal end of the
+   * viewport.
+   */
+  public static final String NAME_FROZEN_TAIL_TAIL = "frozen tail tail";
+  /**
+   * Default name of a painter belonging to matrix and responsible to paint the
+   * area that is frozen both at the vertical start and horizontal start of the
+   * viewport.
+   */
+  public static final String NAME_FROZEN_HEAD_HEAD = "frozen head head";
+  /**
+   * Default name of a painter belonging to a matrix and responsible to paint
+   * the focus cell.
+   */
+  public static final String NAME_FOCUS_CELL = "focus cell";
+  /**
+   * Default name of a painter belonging to a zone and responsible to paint the
+   * emulated controls.
+   */
+  public static final String NAME_EMULATED_CONTROLS = "emulated controls";
+  /**
+   * Default name of a painter belonging to a zone and responsible to
+   * create/dispose or show/hide the embedded controls.
+   */
+  public static final String NAME_EMBEDDED_CONTROLS = "embedded controls";
+	
 	private static int[] EXTENT_ALIGN = {SWT.RIGHT, SWT.END, SWT.BOTTOM, SWT.CENTER};
 	static enum TextClipMethod {DOTS_IN_THE_MIDDLE, DOTS_AT_THE_END, CUT, NONE};
 	
@@ -138,6 +221,11 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 * (which don't include dividing lines). 
 	 */
 	public int imageMarginY;
+	
+	/**
+	 * Word wrapping for text in cells. 
+	 */
+	public boolean wordWrap;
 
 	TextClipMethod textClipMethod;
 	Zone<N0, N1> zone;
@@ -151,6 +239,8 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	private Font lastFont;
 	private int[] extentCache;
 	private Point extent;
+  private TextLayout textLayout;
+  private Rectangle clipping;
 
 	
 	/**
@@ -243,6 +333,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		
 		extentCache = FontWidthCache.get(gc, gc.getFont());
 		extent = new Point(-1, gc.stringExtent("ty").y);
+		clipping = gc.getClipping();
 		return true; 
 	}
 	
@@ -252,7 +343,9 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 * or {@link #paint(Number, Number, int, int, int, int)}.
 	 * @see <code>init()</code>
 	 */
-	public void clean() {}
+	public void clean() {
+	  gc.setClipping(clipping);
+	}
 
 	/**
 	 * Draws on the canvas within the given boundaries according to the given indexes. 
@@ -273,6 +366,11 @@ public class Painter<N0 extends Number, N1 extends Number> {
    * @param height the height of the painting boundaries
 	 */
 	public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
+	  setup(index0, index1);
+	  if (wordWrap) {
+	    gc.setClipping(x, y, width, height);
+	  }
+	  
 		Color foreground2 = foreground == null ? defaultForeground : foreground; 
 		Color background2 = background == null ? defaultBackground : background;
 		if (zone != null && zone.isSelected(index0, index1)) {
@@ -332,41 +430,66 @@ public class Painter<N0 extends Number, N1 extends Number> {
 //		textAlignX = getTextAlignX(index0, index1);
 //		textAlignY = getTextAlignY(index0, index1);
 		if (text != null) {
-//			if (width < 4 || height < 4) return;
-			
-			if (textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
-				text = FontWidthCache.shortenTextMiddle(text, width - textMarginX * 2, extent, extentCache);			
-			} 
-			else if (textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
-				text = FontWidthCache.shortenTextEnd(text, width - textMarginX * 2, extent, extentCache);			
-			} 
-			// Compute extent only when font changes or text horizontal align is center or right  
-			else if (lastFont != null && lastFont != gc.getFont() || Arrays.contains(EXTENT_ALIGN, textAlignX)) {
-				extent = gc.stringExtent(text);
-			}
-			
-			switch (textAlignX) {
-			case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP: 
-				x3 += textMarginX; break;
-			case SWT.CENTER:
-				x3 += (width - extent.x) / 2; break; 
-			case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
-				x3 += width - extent.x - textMarginX; break;
-			}
-			switch (textAlignY) {
-			case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
-				y3 += textMarginY; break;
-			case SWT.CENTER:
-				y3 += (height - extent.y) / 2; break; 
-			case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
-				y3 += height - extent.y - textMarginY; break;
-			}
+		  
+		  
+		  switch (textAlignX) {
+      case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP: 
+        x3 += textMarginX; break;
+      case SWT.CENTER:
+        x3 += (width - extent.x) / 2; break; 
+      case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
+        x3 += width - extent.x - textMarginX; break;
+      }
+      switch (textAlignY) {
+      case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
+        y3 += textMarginY; break;
+      case SWT.CENTER:
+        y3 += (height - extent.y) / 2; break; 
+      case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
+        y3 += height - extent.y - textMarginY; break;
+      }
+      
+		  if (wordWrap) {
+		    if (textLayout == null) {
+		      textLayout = new TextLayout(gc.getDevice());
+		      getMatrix().addDisposeListener(new DisposeListener() {
+		        @Override public void widgetDisposed(DisposeEvent e) {
+		          textLayout.dispose();
+		        }
+		      });
+		    }
+		    textLayout.setFont(gc.getFont());
+		    textLayout.setText(text);
+		    textLayout.setAlignment(textAlignX);
+		    textLayout.setWidth(width < 1 ? 1 : width - textMarginX);
 
-			gc.drawString(text, x3, y3, true);
+//		    Rectangle clipping2 = gc.getClipping();
+		    textLayout.draw(gc, x3, y3);
+		  } 
+		  else {
+//			if (width < 4 || height < 4) return;
+		    
+		    if (textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
+		      text = FontWidthCache.shortenTextMiddle(text, width - textMarginX * 2, extent, extentCache);			
+		    } 
+		    else if (textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
+		      text = FontWidthCache.shortenTextEnd(text, width - textMarginX * 2, extent, extentCache);			
+		    } 
+		    // Compute extent only when font changes or text horizontal align is center or right  
+		    else if (lastFont != null && lastFont != gc.getFont() || Arrays.contains(EXTENT_ALIGN, textAlignX)) {
+		      extent = gc.stringExtent(text);
+		    }
+		    
+		    gc.drawString(text, x3, y3, true);
+		  }
 		}
 	}
 	
-	public int getTextAlignY(N0 index0, N1 index1) {
+	public void setup(N0 index0, N1 index1) {
+	  
+	}
+
+  public int getTextAlignY(N0 index0, N1 index1) {
 		return textAlignX;
 	}
 
@@ -436,62 +559,128 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	}
 
 
+//	/**
+//	 * Computes the optimal width to fit the content of the cell at specified indexes.
+//	 * <p>
+//	 * To be called only by the framework, since the {@link GC} instance must be
+//	 * injected to measure the text extent.
+//	 * <p>
+//	 * <code>index0</code> and <code>index1</code> refer to the model, 
+//	 * not the visual position of the item on the screen
+//	 * which can be altered by move and hide operations. 
+//	 * 
+//	 * @param index0 row index of the cell  
+//	 * @param index1 column index of the cell 
+//	 */
+//	public int computeWidth(N0 index0, N1 index1) {
+//		assert zone != null;
+//		setup(index0, index1);
+//		int x = 0;
+//		image = getImage(index0, index1);
+//		if (image != null) {
+//			Rectangle bounds = image.getBounds();
+//			x = bounds.width + 2 * imageMarginX;
+//		}
+//		text = getText(index0, index1);
+//		if (text != null) {
+//			Point p = gc.stringExtent(text);
+//			x += p.x + 2 * textMarginX;
+//		}
+//		return x;
+//	}
+//	
+//	 
+//  /**
+//   * Computes the optimal height to fit the content of the cell at specified indexes.
+//   * <p>
+//   * To be called only by the framework, since the {@link GC} instance must be
+//   * injected to measure the text extent.
+//   * <p>
+//   * <code>index0</code> and <code>index1</code> refer to the model, 
+//   * not the visual position of the item on the screen
+//   * which can be altered by move and hide operations. 
+//   * 
+//   * @param index0 row index of the cell  
+//   * @param index1 column index of the cell 
+//   */
+//  public int computeHeight(N0 index0, N1 index1) {
+//    assert zone != null;
+//    setup(index0, index1);
+//    int y = 0;
+//    image = getImage(index0, index1);
+//    if (image != null) {
+//      Rectangle bounds = image.getBounds();
+//      y = bounds.height + 2 * imageMarginY;
+//    }
+//    text = getText(index0, index1);
+//    if (text != null) {
+//      
+//      Point p = gc.stringExtent(text);
+//      y = java.lang.Math.max(p.y, y + 2 * textMarginY);
+//    }
+//    return y;
+//  }
+
 	/**
-	 * Computes the optimal width to fit the content of the cell at specified indexes.
-	 * <p>
-	 * To be called only by the framework, since the {@link GC} instance must be
-	 * injected to measure the text extent.
-	 * <p>
-	 * <code>index0</code> and <code>index1</code> refer to the model, 
-	 * not the visual position of the item on the screen
-	 * which can be altered by move and hide operations. 
-	 * 
-	 * @param index0 row index of the cell  
-	 * @param index1 column index of the cell 
+	 * hHint is taken with priority.
+	 * @param index0
+	 * @param index1
+	 * @param wHint
+	 * @param hHint
+	 * @return
 	 */
-	public int computeWidth(N0 index0, N1 index1) {
-		assert zone != null;
-		int x = 0;
-		image = getImage(index0, index1);
-		if (image != null) {
-			Rectangle bounds = image.getBounds();
-			x = bounds.width + 2 * imageMarginX;
-		}
-		text = getText(index0, index1);
-		if (text != null) {
-			Point p = gc.stringExtent(text);
-			x += p.x + 2 * textMarginX;
-		}
-		return x;
-	}
-	
-	/**
-	 * Computes the optimal height to fit the content of the cell at specified indexes.
-	 * <p>
-	 * To be called only by the framework, since the {@link GC} instance must be
-	 * injected to measure the text extent.
-	 * <p>
-	 * <code>index0</code> and <code>index1</code> refer to the model, 
-	 * not the visual position of the item on the screen
-	 * which can be altered by move and hide operations. 
-	 * 
-	 * @param index0 row index of the cell  
-	 * @param index1 column index of the cell 
-	 */
-	public int computeHeight(N0 index0, N1 index1) {
-		assert zone != null;
-		int y = 0;
-		image = getImage(index0, index1);
-		if (image != null) {
-			Rectangle bounds = image.getBounds();
-			y = bounds.height + 2 * imageMarginY;
-		}
-		text = getText(index0, index1);
-		if (text != null) {
-			Point p = gc.stringExtent(text);
-			y = java.lang.Math.max(p.y, y + 2 * textMarginY);
-		}
-		return y;
+	public Point computeSize(N0 index0, N1 index1, int wHint, int hHint) {
+	  assert zone != null;
+	  setup(index0, index1);
+	  
+	  int x = 0, y = 0;
+	  
+	  image = getImage(index0, index1);
+	  if (image != null) {
+	    Rectangle bounds = image.getBounds();
+	    x = bounds.width + 2 * imageMarginX;
+	    y = bounds.height + 2 * imageMarginY;
+	  }
+	  
+    text = getText(index0, index1);
+    Point p;
+    if (text != null) {
+      p = gc.stringExtent(text);
+      
+      if (wordWrap) {
+        if (wHint == SWT.DEFAULT) {
+          return new Point(
+            zone.getSection1().getCellWidth(index1), 
+            zone.getSection0().getCellWidth(index0));
+        }
+        int x2 = wHint == SWT.DEFAULT ?  zone.getSection1().getCellWidth(index1) : wHint;
+        int y2 = 0; // = wHint == SWT.DEFAULT ?  zone.getSection0().getCellWidth(index0) : wHint;
+        if (textLayout == null) {
+          textLayout = new TextLayout(gc.getDevice());
+          matrix.addDisposeListener(new DisposeListener() {
+            @Override public void widgetDisposed(DisposeEvent e) {
+              textLayout.dispose();
+            }
+          });
+        }
+        textLayout.setFont(gc.getFont());
+        textLayout.setText(text);
+        textLayout.setAlignment(textAlignX);
+        textLayout.setWidth(x2 < 1 ? 1 : x2 - 2 * textMarginX);
+        
+        for (int i = 0; i < textLayout.getLineCount(); i++)
+          y2 += textLayout.getLineBounds(i).height;
+        
+        x += wHint == SWT.DEFAULT ? textLayout.getBounds().width + 2 * textMarginX: x2;
+        y = java.lang.Math.max(y, y2 + 2 * textMarginY);
+      } 
+      else {
+        x += p.x + 2 * textMarginX;
+        y = java.lang.Math.max(y, y + 2 * textMarginY);
+      }
+    }
+    
+	  return new Point(x, y);
 	}
 
 	

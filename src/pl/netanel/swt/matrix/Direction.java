@@ -11,7 +11,7 @@ abstract class Direction<N extends Number> {
 	SectionCore section;
 	DirectionIndexSequence seq;
 	int i, level, sign;
-	AxisPointer freeze, min, start;
+	AxisItem freeze, min, start;
 	boolean pending, moved, hasMore, skipWithoutCurrent;
 	
 	public Direction(Math math, List<SectionCore> sections, boolean skipWithoutCurrent2) {
@@ -30,8 +30,8 @@ abstract class Direction<N extends Number> {
 	protected abstract boolean hasNextSection();
 
 
-	public boolean set(AxisPointer item) {
-		i = sections.indexOf(item.getSection());
+	public boolean set(AxisItem item) {
+		i = sections.indexOf(item.section.core);
 		section = SectionCore.from(item);
 		seq = getSequence(section, sign);
 		seq.init();
@@ -42,26 +42,26 @@ abstract class Direction<N extends Number> {
 		return hasMore = nextInternal(null);
 	}
 	
-	public AxisPointer getItem() {
+	public AxisItem getItem() {
 		pending = false;
-		return hasMore ? AxisPointer.create(section, seq.index().getValue()) : null;
+		return hasMore ? AxisItem.create(section, seq.index().getValue()) : null;
 	}
 	
-	public AxisPointer first() {
+	public AxisItem first() {
 		if (!init()) return null;
 		return next();
 	}
 	
-	public AxisPointer nextItem(AxisPointer item) {
+	public AxisItem nextItem(AxisItem item) {
 		if (!set(item)) return null;
 		return getItem();
 	}
 
-	public AxisPointer next() {
+	public AxisItem next() {
 		return next(null);
 	}
 	
-	public AxisPointer next(MutableNumber count) {
+	public AxisItem next(MutableNumber count) {
 //		Preconditions.checkState(initiated, "direction not initiated, call init() or set() before");
 		if (pending && count != null && math.compare(count, math.ONE()) > 0) {
 			count.decrement();

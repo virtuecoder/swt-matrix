@@ -1,4 +1,4 @@
-package pl.netanel.swt.matrix.snippets;
+package usecase;
 
 import java.util.ArrayList;
 
@@ -43,6 +43,7 @@ public class Snippet_0020 {
 		Axis<Integer> axis1 = matrix.getAxis1();
 		axis1.getBody().setCount(2);
 		axis1.getBody().setDefaultResizable(true);
+		axis1.getBody().setDefaultMoveable(true);
 		axis1.getHeader().setDefaultCellWidth(16);
 		axis1.getHeader().setVisible(true);
 		

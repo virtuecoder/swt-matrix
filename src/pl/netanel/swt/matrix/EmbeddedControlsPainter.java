@@ -21,11 +21,11 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 	private final ZoneEditor editor;
 	HashMap<Number, HashMap<Number, Control>> controls;
 	boolean needsPainting;
-	private Listener focusInListener;
-	private ControlListener controlListener;
+	private final Listener focusInListener;
+	private final ControlListener controlListener;
 
 	public EmbeddedControlsPainter(final ZoneEditor<N0, N1> editor) {
-		super("embedded controls", Painter.SCOPE_CELLS_HORIZONTALLY);
+		super(Painter.NAME_EMBEDDED_CONTROLS, Painter.SCOPE_CELLS_HORIZONTALLY);
 		this.editor = editor;
 		controls = new HashMap<Number, HashMap<Number, Control>>();
 		

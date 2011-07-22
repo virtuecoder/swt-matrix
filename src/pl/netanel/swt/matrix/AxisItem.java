@@ -8,7 +8,7 @@ import pl.netanel.util.Preconditions;
  * @param <N> specifies the indexing class for this axis
  * @author Jacek Kolodziejczyk created 21-04-2011
  */
-public class AxisPointer<N extends Number> {
+public class AxisItem<N extends Number> {
 	SectionClient<N> section;
 	private N index;
 	
@@ -20,7 +20,7 @@ public class AxisPointer<N extends Number> {
 	 * or index is <code>null</code>
 	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
-	AxisPointer(SectionClient<N> section, N index) {
+	AxisItem(SectionClient<N> section, N index) {
 		Preconditions.checkNotNullWithName(section, "section");
 		Preconditions.checkNotNullWithName(index, "index");
 		section.checkLineIndex(index, "index");
@@ -29,16 +29,16 @@ public class AxisPointer<N extends Number> {
 	}
 	
 	
-	private AxisPointer() {}
+	private AxisItem() {}
 	
-	static AxisPointer create(SectionClient section, Number index) {
-		AxisPointer axisItem = new AxisPointer();
+	static AxisItem create(SectionClient section, Number index) {
+		AxisItem axisItem = new AxisItem();
 		axisItem.section = section;
 		axisItem.index = index;
 		return axisItem;
 	}
 	
-	static AxisPointer create(SectionCore section, Number index) {
+	static AxisItem create(SectionCore section, Number index) {
 	  return create(new SectionClient(section), index);
 	}
 	
@@ -50,8 +50,8 @@ public class AxisPointer<N extends Number> {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof AxisPointer)) return false;
-		AxisPointer item = (AxisPointer) o;
+		if (!(o instanceof AxisItem)) return false;
+		AxisItem item = (AxisItem) o;
 		return item.section.equals(section) && item.index.equals(index);
 	}
 	@Override

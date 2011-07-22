@@ -360,7 +360,7 @@ public final class Preconditions {
    *     {@link String#valueOf(Object)}. Arguments can be null.
    */
   public static String format(String template, Object... args) {
-    // start substituting the arguments into the '%s' placeholders
+    // start substituting the arguments into the '%s' place holders
     StringBuilder builder = new StringBuilder(
         template.length() + 16 * args.length);
     int templateStart = 0;
@@ -388,5 +388,12 @@ public final class Preconditions {
     }
 
     return builder.toString();
+  }
+  
+  public static void checkEventType(int type) {
+    if (type < 1 || 50 < type) {
+      throw new IllegalArgumentException(
+        format("Event type %1 must be between 1 and 50", type));
+    }
   }
 }

@@ -1,5 +1,19 @@
 package pl.netanel.swt.matrix;
 
+/**
+ * Constitutes a region of a matrix where a section from the row axis 
+ * and a section from the column axis intersect with each other.  
+ * <p>
+ * Zone has painters to paint itself on the screen.
+ * </p><p>
+ * </p>
+ * 
+ * @param <N0> indexing type for rows
+ * @param <N1> indexing type for columns
+ * 
+ * @author Jacek
+ * @created 13-10-2010
+ */
 import java.math.BigInteger;
 import java.util.Iterator;
 
@@ -13,6 +27,14 @@ import org.eclipse.swt.widgets.Listener;
 
 public interface Zone<N0 extends Number, N1 extends Number> {
 
+  /**
+   * Returns a zone implementation that does not perform 
+   * validation of methods parameters. This is needed for 
+   * loop optimization, like for example inside of 
+   * {@link Painter#paint(Number, Number, int, int, int, int)} 
+   * method.
+   * @return
+   */
   Zone getCore();
   
   /**
@@ -21,13 +43,13 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * 
    * @see #getSectionUnchecked0()
    */
-  Section getSection0();
+  Section<N0> getSection0();
 
   /**
    * Returns the zone section column axis.
    * @return the zone section column axis
    */
-  Section getSection1();
+  Section<N1> getSection1();
 
   /**
    * Return rectangular bounds of the cell with the given coordinates.
@@ -36,12 +58,20 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * @param index0 cell index on <code>axis0</code> 
    * @param index1 cell index on <code>axis1</code> 
    * @return rectangular bounds of the cell with the given coordinates.
+   * @throws IllegalArgumentException if <code>index0</code> or 
+   *         <code>index1</code> is null.
+   * @throws IndexOutOfBoundsException if <code>index0</code> is out of 
+   *         0 ... this.getSection0().getCount() bounds
+   * @throws IndexOutOfBoundsException if <code>index1</code> is out of 
+   *         0 ... this.getSection1().getCount() bounds
    */
   Rectangle getCellBounds(N0 index0, N1 index1);
 
   /**
    * Sets the default background color for the receiver's cells. 
    * @param color color to set
+   * @throws IllegalArgumentException if <code>color</code> or 
+   *         <code>index1</code> is null.
    */
   void setDefaultBackground(Color color);
 
@@ -54,6 +84,8 @@ public interface Zone<N0 extends Number, N1 extends Number> {
   /**
    * Sets the default foreground color for the receiver's cells. 
    * @param color color to set
+   * @throws IllegalArgumentException if <code>color</code> or 
+   *         <code>index1</code> is null.
    */
   void setDefaultForeground(Color color);
 
@@ -72,6 +104,8 @@ public interface Zone<N0 extends Number, N1 extends Number> {
   /**
    * Sets selection foreground color for the receiver. 
    * @param color color to set
+   * @throws IllegalArgumentException if <code>color</code> or 
+   *         <code>index1</code> is null.
    */
   void setSelectionForeground(Color color);
 
@@ -84,6 +118,8 @@ public interface Zone<N0 extends Number, N1 extends Number> {
   /**
    * Sets selection background color for the receiver. 
    * @param color color to set
+   * @throws IllegalArgumentException if <code>color</code> or 
+   *         <code>index1</code> is null.
    */
   void setSelectionBackground(Color color);
 
@@ -118,6 +154,13 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * @param index0 row index of the cell  
    * @param index1 column index of the cell 
    * @return the selection state of the specified cell
+   * 
+   * @throws IllegalArgumentException if <code>index0</code> or 
+   *         <code>index1</code> is null.
+   * @throws IndexOutOfBoundsException if <code>index0</code> is out of 
+   *         0 ... this.getSection0().getCount() bounds
+   * @throws IndexOutOfBoundsException if <code>index1</code> is out of 
+   *         0 ... this.getSection1().getCount() bounds
    */
   boolean isSelected(N0 index0, N1 index1);
 
@@ -133,6 +176,13 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * @param start1 first index of the range of column items  
    * @param end1 last index of the range of column items  
    * @param state the new selection state
+   * 
+   * @throws IllegalArgumentException if <code>start0</code> or 
+   *         <code>end0</code> or <code>start1</code>  or <code>end1</code> is null.
+   * @throws IndexOutOfBoundsException if <code>start0</code> or <code>end0</code>
+   *         is out of 0 ... this.getSection0().getCount() bounds
+   * @throws IndexOutOfBoundsException if <code>start1</code> or <code>end1</code>
+   *         is out of 0 ... this.getSection1().getCount() bounds
    */
   void setSelected(N0 start0, N0 end0, N1 start1, N1 end1, boolean state);
 
@@ -150,7 +200,14 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * @param index0 row index of the cell  
    * @param index1 column index of the cell 
    * @return the selection state of the specified cell
-   * @see #setSelected(Number, Number, boolean)
+   *
+   * @throws IllegalArgumentException if <code>index0</code> or 
+   *         <code>index1</code> is null.
+   * @throws IndexOutOfBoundsException if <code>index0</code> is out of 
+   *         0 ... this.getSection0().getCount() bounds
+   * @throws IndexOutOfBoundsException if <code>index1</code> is out of 
+   *         0 ... this.getSection1().getCount() bounds
+   * 
    */
   void setSelected(N0 index0, N1 index1, boolean state);
 
@@ -209,38 +266,23 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    */
   Number[] getSelectedExtent();
 
-  //	
-  //	/**
-  //	 * Copies selected data to the clip board using tab for cells and new line for rows concatenation.
-  //	 */
-  //	void copy() {
-  //		StringBuilder sb = new StringBuilder();
-  //		Number[] e = cellSelection.getExtent();
-  //		NumberSet set0 = new NumberSet(section0.math);
-  //		NumberSet set1 = new NumberSet(section1.math);
-  //		set0.add(e[0], e[1]);
-  //		set1.add(e[2], e[3]);
-  //		NumberSequence seq0 = new NumberSequence(set0);
-  //		NumberSequence seq1 = new NumberSequence(set1);
-  //		for (seq0.init(); seq0.next();) {
-  //			int i = 0;
-  //			for (seq1.init(); seq1.next();) {
-  //				if (i++ > 0) sb.append("\t");
-  //				sb.append(NEW_LINE);
-  //			}
-  //			sb.append(NEW_LINE);
-  //		}
-  //	}
-
   /**
    * Binds the command to the user gesture specified by the event type and code.
    * Code is a logical <i>OR</i> of key, state mask and mouse button codes. 
+   * @param commandId identifier of a command from Matrix
+   * @param eventType event type from SWT class
+   * @param code || combination of keyCode, button and stateMask 
+   * @see #unbind(int, int, int)
    */
   void bind(int commandId, int eventType, int code);
   
   /**
    * Removes the binding the command to the user gesture specified by the event type and code.
    * Code is a logical <i>OR</i> of key, state mask and mouse button codes. 
+   * @param commandId identifier of a command from Matrix
+   * @param eventType event type from SWT class
+   * @param code || combination of keyCode, button and stateMask
+   * @see #bind(int, int, int) 
    */
   void unbind(int commandId, int eventType, int code);
 
@@ -271,8 +313,8 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * </ul>
    *
    * @see SelectionListener
-   * @see #removeSelectionListener
    * @see SelectionEvent
+   * @see #removeSelectionListener
    */
   void addSelectionListener(SelectionListener listener);
 
@@ -315,9 +357,7 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    *
    * @see Listener
    * @see SWT
-   * @see #getListeners(int)
    * @see #removeListener(int, Listener)
-   * @see #notifyListeners
    */
   void addListener(int eventType, final Listener listener);
 
@@ -423,6 +463,10 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    */
   Painter<N0, N1> getPainter(int index);
 
+  /**
+   * Returns the matrix to which the zone belongs.
+   * @return the matrix to which the zone belongs
+   */
   Matrix<N0, N1> getMatrix();
 
 

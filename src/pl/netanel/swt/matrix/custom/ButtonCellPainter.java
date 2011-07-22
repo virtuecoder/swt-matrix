@@ -1,4 +1,4 @@
-package pl.netanel.swt.matrix.painter;
+package pl.netanel.swt.matrix.custom;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -8,27 +8,44 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.AxisPointer;
+import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 
 /**
+ * Adds (or replaces) a painter named "button cells" that emulates a raised
+ * button shape.
+ * <p>
+ * When the cell is clicked the look of the cell becomes flat.
+ * <p>
+ * Only 2 pixel wide edge of cells is painted so the majority of the output 
+ * of the underlying Painter.NAME_CELLS painter remains visible. Colors used are
+ * SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW, SWT.COLOR_WIDGET_LIGHT_SHADOW and
+ * SWT.COLOR_WIDGET_NORMAL_SHADOW. 
+ * <p>
+ * Cells in the zone become not selectable.
+ * <p>
+ * Usage example:
+ * <pre>
+ * new ButtonCellPainter<Integer, Integer>(matrix.getColumnHeader());
+ * </pre>
  * 
+ * @param <N0> indexing type for rows
+ * @param <N1> indexing type for columns
  * @author Jacek Kolodziejczyk created 16-07-2011
- * @param <N0>
- * @param <N1>
+ * @created 13-10-2010
  */
 public class ButtonCellPainter<N0 extends Number, N1 extends Number> 
   extends Painter<N0, N1> implements Listener 
 {
-  private Color highlightShadow, lightShadow, normalShadow;
+  private final Color highlightShadow, lightShadow, normalShadow;
   private final Zone<N0, N1> zone;
-  private AxisPointer<N0> pushed0;
-  private AxisPointer<N1> pushed1;
+  private AxisItem<N0> pushed0;
+  private AxisItem<N1> pushed1;
   
   public ButtonCellPainter(Zone<N0, N1> zone) {
-    super("button", SCOPE_CELLS_HORIZONTALLY);
+    super("button cells", SCOPE_CELLS_HORIZONTALLY);
     this.zone = zone;
     zone.replacePainter(this);
 
@@ -67,7 +84,7 @@ public class ButtonCellPainter<N0 extends Number, N1 extends Number>
     return true;
   }
   
-  public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
+  @Override public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
     if (isPushed(index0, index1)) {
       paintPushed(index0, index1, x, y, width, height);
     } else {

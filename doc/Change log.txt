@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
-Version 0.3.3
+Version 0.4
 
 New Features
 - Arithmetics on Long indexes implemented so that <code>new Axis(Long.class, 2)</code> will work
@@ -7,11 +7,13 @@ New Features
 - Javadoc is avaialble for download to provide instant help while working with swt matrix in the IDE 
 
 API changes:
-- Renamed AxisItem to AxisPointer
-- Removed Section() contructor
-- Section is interface
+- Section became an interface
+- Zone became an interface
 - Added Section.getIndexClass
 
+Bug fixes:
+- Snipept_0402 removed double click on emulated checkbox
+- Snippet_0490 copy on a single cell threw exception
 
 -------------------------------------------------------------------------------
 Version 0.3.2

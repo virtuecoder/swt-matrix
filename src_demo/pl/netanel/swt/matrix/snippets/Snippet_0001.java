@@ -19,10 +19,6 @@ public class Snippet_0001 {
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		matrix.getAxis1().getBody().setCount(4);
 		matrix.getAxis0().getBody().setCount(10);
-		matrix.getAxis0().getBody().setDefaultResizable(true);
-		matrix.getAxis1().getBody().setDefaultResizable(true);
-		matrix.getAxis0().getHeader().setVisible(true);
-		matrix.getAxis1().getHeader().setVisible(true);
 		
 		shell.setBounds(400, 200, 600, 400);
 		shell.open();

@@ -5,297 +5,287 @@ import java.util.Iterator;
 
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
 
-class ZoneClient<N0 extends Number, N1 extends Number> extends ZoneCore {
-	final ZoneCore core;
+import pl.netanel.util.Preconditions;
 
-	public ZoneClient(ZoneCore<N0, N1> zone) {
-		core = zone;
-		section0 = zone.section0;
-		section1 = zone.section1;
-	}
+class ZoneClient<N0 extends Number, N1 extends Number> implements Zone<N0, N1> {
+  final ZoneCore core;
+  private final SectionClient<N0> section0;
+  private final SectionClient<N1> section1;
 
-	@Override
-	public boolean equals(Object obj) {
-		return core.equals(obj);
-	}
+  public ZoneClient(SectionClient<N0> section0, SectionClient<N1> section1) {
+    Preconditions.checkNotNullWithName(section0, "sectoin0");
+    Preconditions.checkNotNullWithName(section1, "section1");
+    this.section0 = section0;
+    this.section1 = section1;
+    this.core = new ZoneCore(section0.getCore(), section1.getCore());
+  }
+  
+//  public ZoneClient(ZoneCore<N0, N1> zone) {
+//    Preconditions.checkNotNullWithName(zone, "zone");
+//    core = zone;
+//  }
 
-	@Override
-	public int hashCode() {
-		return core.hashCode();
-	}
+  @Override
+  public boolean equals(Object obj) {
+    return core.equals(obj);
+  }
 
-	@Override
-	public String toString() {
-		return core.toString();
-	}
+  @Override
+  public int hashCode() {
+    return core.hashCode();
+  }
 
-	@Override
-	public Section getSection0() {
-		return core.section0;
-	}
+  @Override
+  public String toString() {
+    return core.toString();
+  }
 
-	@Override
-	public Section getSection1() {
-		return core.section1;
-	}
+  @Override
+  public ZoneCore getCore() {
+    return core;
+  }
 
-	public void setDefaultBodyStyle() {
-		core.setDefaultBodyStyle();
-	}
+  @Override
+  public Section getSection0() {
+    return section0;
+  }
 
-	void setDefaultHeaderStyle(Painter cellsPainter) {
-		core.setDefaultHeaderStyle(cellsPainter);
-	}
+  @Override
+  public Section getSection1() {
+    return section1;
+  }
+  
+  @Override
+  public Rectangle getBounds() {
+    return core.getBounds();
+  }
 
-	@Override
-	public Rectangle getCellBounds(Number index0, Number index1) {
-		if (index0 == null || index1 == null)
-			return null;
-		section0.checkCellIndex(index0, "index0");
-		section1.checkCellIndex(index1, "index1");
-		return core.getCellBounds(index0, index1);
-	}
+  @Override
+  public Rectangle getCellBounds(N0 index0, N1 index1) {
+    section0.checkCellIndex(index0, "index0");
+    section1.checkCellIndex(index1, "index1");
+    return core.getCellBounds(index0, index1);
+  }
 
-	// public void addListener(int type, Listener listener) {
-	// core.addListener(type, listener);
-	// }
-	//
-	// public void removeListener(int type, Listener listener) {
-	// core.removeListener(type, listener);
-	// }
+  @Override
+  public void setDefaultBackground(Color color) {
+    Preconditions.checkNotNullWithName(color, "color");
+    core.setDefaultBackground(color);
+  }
 
-	public void setDefaultBackground(Color color) {
-		core.setDefaultBackground(color);
-	}
+  @Override
+  public Color getDefaultBackground() {
+    return core.getDefaultBackground();
+  }
 
-	public Color getDefaultBackground() {
-		return core.getDefaultBackground();
-	}
+  @Override
+  public void setDefaultForeground(Color color) {
+    Preconditions.checkNotNullWithName(color, "color");
+    core.setDefaultForeground(color);
+  }
 
-	public void setDefaultForeground(Color color) {
-		core.setDefaultForeground(color);
-	}
+  @Override
+  public Color getDefaultForeground() {
+    return core.getDefaultForeground();
+  }
 
-	public Color getDefaultForeground() {
-		return core.getDefaultForeground();
-	}
+  @Override
+  public void setSelectionForeground(Color color) {
+    Preconditions.checkNotNullWithName(color, "color");
+    core.setSelectionForeground(color);
+  }
 
-	public Rectangle getBounds() {
-		return core.getBounds();
-	}
+  @Override
+  public Color getSelectionForeground() {
+    return core.getSelectionForeground();
+  }
 
-	// public boolean isVisible() {
-	// return core.isVisible();
-	// }
+  @Override
+  public void setSelectionBackground(Color color) {
+    Preconditions.checkNotNullWithName(color, "color");
+    core.setSelectionBackground(color);
+  }
 
-	public void setSelectionForeground(Color color) {
-		core.setSelectionForeground(color);
-	}
+  @Override
+  public Color getSelectionBackground() {
+    return core.getSelectionBackground();
+  }
 
-	public Color getSelectionForeground() {
-		return core.getSelectionForeground();
-	}
+  @Override
+  public boolean isSelectionEnabled() {
+    return core.isSelectionEnabled();
+  }
 
-	public void setSelectionBackground(Color color) {
-		core.setSelectionBackground(color);
-	}
+   @Override
+  public void setSelectionEnabled(boolean isSelectionEnabled) {
+    core.setSelectionEnabled(isSelectionEnabled);
+  }
 
-	public Color getSelectionBackground() {
-		return core.getSelectionBackground();
-	}
+  @Override
+  public boolean isSelected(N0 index0, N1 index1) {
+    section0.checkCellIndex(index0, "index0");
+    section1.checkCellIndex(index1, "index1");
+    return core.isSelected(index0, index1);
+  }
 
-	/*------------------------------------------------------------------------
-	 * Selection
-	 */
 
-	/**
-	 * Returns <code>true</code> if selection is enabled, false otherwise.
-	 * 
-	 * @return the selection enabled state
-	 */
-	public boolean isSelectionEnabled() {
-		return core.isSelectionEnabled();
-	}
+  @Override
+  public void setSelected(N0 index0, N1 index1, boolean state) {
+    section0.checkCellIndex(index0, "index0");
+    section1.checkCellIndex(index1, "index1");
+    core.setSelected(index0, index1, state);
+  }
+  
+  @Override
+  public void setSelected(N0 start0, N0 end0, N1 start1, N1 end1, boolean state) {
+    section0.checkRange(start0, end0, section0.getCount());
+    section1.checkRange(start1, end1, section1.getCount());
+    core.setSelected(start0, end0, start1, end1, state);
+  }
 
-	/**
-	 * Enables cell selection if the argument is <code>true</code>, or disables
-	 * it otherwise.
-	 * 
-	 * @param selectionEnabled
-	 *            the new selection ability state.
-	 */
+  @Override
+  public void setSelectedAll(boolean state) {
+    core.setSelectedAll(state);
+  }
 
-	public void setSelectionEnabled(boolean isSelectionEnabled) {
-		core.setSelectionEnabled(isSelectionEnabled);
-	}
+  @Override
+  public BigInteger getSelectionCount() {
+    return core.getSelectionCount();
+  }
 
-	public boolean isSelected(Number index0, Number index1) {
-		section0.checkCellIndex(index0, "index0");
-		section1.checkCellIndex(index1, "index1");
-		return core.isSelected(index0, index1);
-	}
+  @Override
+  public BigInteger getSelectedCount() {
+    return core.getSelectedCount();
+  }
 
-	public void setSelected(Number start0, Number end0, Number start1,
-			Number end1, boolean selected) {
-		section0.checkRange(start0, end0, section0.getCount());
-		section1.checkRange(start1, end1, section1.getCount());
-		core.setSelected(start0, end0, start1, end1, selected);
-	}
+  @Override
+  public Iterator getSelectedExtentIterator() {
+    return core.getSelectedExtentIterator();
+  }
 
-	public void setSelectedAll(boolean selected) {
-		core.setSelectedAll(selected);
-	}
+  @Override
+  public Iterator getSelectedIterator() {
+    return core.getSelectedIterator();
+  }
+  
+  @Override
+  public Number[] getSelectedExtent() {
+    return core.getSelectedExtent();
+  }
 
-	public BigInteger getSelectedCount() {
-		return core.getSelectedCount();
-	}
 
-	@Override
-	public Iterator getSelectedExtentIterator() {
-		return core.getSelectedExtentIterator();
-	}
+  @Override
+  public void addPainter(Painter painter) {
+    checkPainter(painter);
+    core.addPainter(painter);
+  }
 
-	@Override
-	public Iterator getSelectedIterator() {
-		return core.getSelectedIterator();
-	}
+  @Override
+  public void addPainter(int index, Painter painter) {
+    Preconditions.checkPositionIndex(index, core.getPainterCount() + 1);
+    checkPainter(painter);
+    core.addPainter(index, painter);
+  }
 
-//	@Override
-//	public Section getSectionUnchecked0() {
-//		return core.getSectionUnchecked0();
-//	}
-//
-//	@Override
-//	public Section getSectionUnchecked1() {
-//		return core.getSectionUnchecked1();
-//	}
+  @Override
+  public void setPainter(int index, Painter painter) {
+    Preconditions.checkPositionIndex(index, core.getPainterCount());
+    checkPainter(painter);
+    core.setPainter(index, painter);
+  }
 
-	public BigInteger getSelectionCount() {
-		return core.getSelectionCount();
-	}
+  @Override
+  public void replacePainter(Painter painter) {
+    checkPainter(painter);
+    core.replacePainter(painter);
+  }
 
-	@Override
-	public void addSelectionListener(SelectionListener listener) {
-		core.addSelectionListener(listener);
-	}
+  @Override
+  public Painter removePainter(int index) {
+    Preconditions.checkPositionIndex(index, core.getPainterCount());
+    return core.removePainter(index);
+  }
 
-	@Override
-	public void removeSelectionListener(SelectionListener listener) {
-		core.removeSelectionListener(listener);
-	}
+  @Override
+  public boolean removePainter(Painter painter) {
+    checkPainter(painter);
+    return core.removePainter(painter);
+  }
 
-	public void addPainter(Painter painter) {
-		core.addPainter(painter);
-	}
+  @Override
+  public int indexOfPainter(String name) {
+    Preconditions.checkNotNullWithName(name, "name");
+    return core.indexOfPainter(name);
+  }
 
-	public void addPainter(int index, Painter painter) {
-		core.addPainter(index, painter);
-	}
+  @Override
+  public Painter getPainter(String name) {
+    Preconditions.checkNotNullWithName(name, "name");
+    return core.getPainter(name);
+  }
+  
+  @Override
+  public Painter getPainter(int index) {
+    Preconditions.checkPositionIndex(index, core.getPainterCount());
+    return core.getPainter(index);
+  }
 
-	public void setPainter(int index, Painter painter) {
-		core.setPainter(index, painter);
-	}
+  @Override
+  public int getPainterCount() {
+    return core.getPainterCount();
+  }
 
-	public void replacePainter(Painter painter) {
-		core.replacePainter(painter);
-	}
+  
+  @Override
+  public void bind(int commandId, int eventType, int code) {
+    core.bind(commandId, eventType, code);
+  }
 
-	public Painter removePainter(int index) {
-		return core.removePainter(index);
-	}
+  @Override
+  public void unbind(int commandId, int eventType, int code) {
+    Preconditions.checkEventType(eventType);
+    core.unbind(commandId, eventType, code);
+  }
 
-	public int indexOfPainter(String name) {
-		return core.indexOfPainter(name);
-	}
+  @Override
+  public void addListener(int eventType, Listener listener) {
+    Preconditions.checkNotNullWithName(listener, "listener");
+    core.addListener(eventType, listener);
+  }
+  
+  @Override
+  public void addSelectionListener(SelectionListener listener) {
+    Preconditions.checkNotNullWithName(listener, "listener");
+    core.addSelectionListener(listener);
+  }
 
-	public Painter getPainter(String name) {
-		return core.getPainter(name);
-	}
+  @Override
+  public void removeSelectionListener(SelectionListener listener) {
+    Preconditions.checkNotNullWithName(listener, "listener");
+    core.removeSelectionListener(listener);
+  }
 
-	public int getPainterCount() {
-		return core.getPainterCount();
-	}
+  
+  @Override
+  public Matrix getMatrix() {
+    return core.getMatrix();
+  }
 
-	public Painter getPainter(int index) {
-		return core.getPainter(index);
-	}
+  
+  private void checkPainter(Painter<N0, N1> painter) {
+    Preconditions.checkNotNullWithName(painter, "painter");
+    
+    Preconditions.checkArgument(painter.zone == null || this.equals(painter.zone), 
+      "The painter belongs to a different zone: %s", painter.zone);
+    
+    Matrix<N0, N1> matrix2 = getMatrix();
+    if (matrix2 != null) {
+      Preconditions.checkArgument(painter.matrix == null || matrix2.equals(painter.matrix), 
+        "The painter belongs to a different matrix: %s", painter.matrix);
+    }
+  }
 
-	@Override
-	void setMatrix(Matrix matrix) {
-		core.setMatrix(matrix);
-	}
-
-	public void setSelected(Number index0, Number index1, boolean state) {
-		core.setSelected(index0, index1, state);
-	}
-
-	public void bind(int commandId, int eventType, int code) {
-		core.bind(commandId, eventType, code);
-	}
-
-	public void unbind(int commandId, int eventType, int code) {
-		core.unbind(commandId, eventType, code);
-	}
-
-	@Override
-	void backupSelection() {
-		core.backupSelection();
-	}
-
-	@Override
-	void delete(int axisIndex, Section section, Number start, Number end) {
-		core.delete(axisIndex, section, start, end);
-	}
-
-	@Override
-	void insert(int axisIndex, Section section, Number target, Number count) {
-		core.insert(axisIndex, section, target, count);
-	}
-
-	@Override
-	void paint(GC gc, Layout layout0, Layout layout1, Frozen dock0, Frozen dock1) {
-		core.paint(gc, layout0, layout1, dock0, dock1);
-	}
-
-	@Override
-	void restoreSelection() {
-		core.restoreSelection();
-	}
-
-	@Override
-	void setBounds(int x, int y, int width, int height) {
-		core.setBounds(x, y, width, height);
-	}
-
-	@Override
-	public void addListener(int eventType, Listener listener) {
-		core.addListener(eventType, listener);
-	}
-
-	public Number[] getSelectedExtent() {
-		return core.getSelectedExtent();
-	}
-
-	@Override
-	Iterator getSelectedBoundsIterator() {
-		return core.getSelectedBoundsIterator();
-	}
-
-	public Matrix getMatrix() {
-		return core.getMatrix();
-	}
-
-	@Override
-	void setEditor(ZoneEditor editor) {
-		core.setEditor(editor);
-	}
-
-	@Override
-	void bind(GestureBinding binding) {
-		core.bind(binding);
-	}
 }

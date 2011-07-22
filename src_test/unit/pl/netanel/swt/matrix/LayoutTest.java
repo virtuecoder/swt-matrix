@@ -33,7 +33,7 @@ import pl.netanel.swt.matrix.SectionCore;
 		Layout layout = new Layout(new Axis());
 		layout.setViewportSize(350);
 
-		Section body = layout.axis.getBody();
+		SectionCore body = (SectionCore) layout.axis.getBody().getCore();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		
@@ -79,7 +79,7 @@ import pl.netanel.swt.matrix.SectionCore;
 	@Test
 	public void freezeIndexes() throws Exception {
 		Layout layout = new Layout(new Axis(new SectionCore(Integer.class)));
-		Section body = layout.axis.getBody();
+		SectionCore body = (SectionCore) layout.axis.getBody().getCore();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		
@@ -137,7 +137,7 @@ import pl.netanel.swt.matrix.SectionCore;
 	@Test
 	public void freezeDistances() throws Exception {
 		Layout layout = new Layout(new Axis(new SectionCore(Integer.class)));
-		Section body = layout.axis.getBody();
+		SectionCore body = (SectionCore) layout.axis.getBody().getCore();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		
@@ -174,7 +174,7 @@ import pl.netanel.swt.matrix.SectionCore;
 	@Test
 	public void freezeLineWidth() throws Exception {
 		Layout layout = new Layout(new Axis(new SectionCore(Integer.class)));
-		Section body = layout.axis.getBody();
+		SectionCore body = (SectionCore) layout.axis.getBody().getCore();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		layout.head.freezeLineWidth = 10;
@@ -266,7 +266,7 @@ import pl.netanel.swt.matrix.SectionCore;
 		Layout layout = new Layout(new Axis(new SectionCore(Integer.class)));
 		layout.setViewportSize(1000);
 		
-		Section body = layout.axis.getBody();
+		SectionCore body = (SectionCore) layout.axis.getBody().getCore();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		body.setSelected(1, 1, true);

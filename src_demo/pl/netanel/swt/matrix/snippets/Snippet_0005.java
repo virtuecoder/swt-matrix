@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
-import pl.netanel.swt.matrix.AxisPointer;
+import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
@@ -99,9 +99,9 @@ public class Snippet_0005 {
 
     // Change sorting on mouse down in a column header 
     matrix.getColumnHeader().addListener(SWT.MouseDown, new Listener() {
-      public void handleEvent(Event e) {
+      @Override public void handleEvent(Event e) {
         // AxisItem<N0> item0 = matrix.getAxis0().getItemByDistance(e.y);
-        AxisPointer<Integer> item1 = matrix.getAxis1().getItemByDistance(e.x);
+        AxisItem<Integer> item1 = matrix.getAxis1().getItemByDistance(e.x);
         final int column = item1.getIndex().intValue();
 
         int previousDirection = direction[column];
@@ -111,7 +111,7 @@ public class Snippet_0005 {
         direction[column] = previousDirection <= 0 ? 1 : -1;
 
         Collections.sort(sorted, new Comparator<String[]>() {
-          public int compare(String[] o1, String[] o2) {
+          @Override public int compare(String[] o1, String[] o2) {
             return o1[column].compareTo(o2[column]) * direction[column];
           }
         });

@@ -1,11 +1,13 @@
 package pl.netanel.swt.matrix.snippets;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -15,7 +17,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.AxisPointer;
+import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
@@ -31,6 +33,32 @@ import pl.netanel.swt.matrix.ZoneEditor;
 public class Snippet_0490 {
 	static final String NEW_LINE = System.getProperty("line.separator");
 	static final int count0 = 10, count1 = 4;
+	static final Transfer transfer = new Transfer() {
+
+    @Override public TransferData[] getSupportedTypes() {
+      return null;
+    }
+
+    @Override public boolean isSupportedType(TransferData transferData) {
+      return false;
+    }
+
+    @Override protected int[] getTypeIds() {
+      return null;
+    }
+
+    @Override protected String[] getTypeNames() {
+      return null;
+    }
+
+    @Override protected void javaToNative(Object object,
+      TransferData transferData) {}
+
+    @Override protected Object nativeToJava(TransferData transferData) {
+      return null;
+    }
+	  
+	};
 	
 	public static void main(String[] args) {
 		final Display display = Display.getDefault();
@@ -74,18 +102,27 @@ public class Snippet_0490 {
   			@Override public void copy() {
   				StringBuilder sb = new StringBuilder();
   				Zone<Integer, Integer> body = matrix.getBody();
-  				Number[] n = body.getSelectedExtent();
-  				int max0 = n[1].intValue();
-  				int max1 = n[3].intValue();
-  				int min1 = n[2].intValue();
-  				for (int i = n[0].intValue(); i <= max0; i++) {
-  					for (int j = min1; j <= max1; j++) {
-  						if (j > min1) sb.append("\t");
-  						if (body.isSelected(i, j)) {
-  							sb.append(data.get(i).get(j).toString());
-  						}
-  					}
-  					if (i < max0) sb.append(NEW_LINE);
+  				if (body.getSelectedCount().compareTo(BigInteger.ZERO) == 0) {
+  				  AxisItem<Integer> focusItem0 = matrix.getAxis0().getFocusItem();
+  				  AxisItem<Integer> focusItem1 = matrix.getAxis1().getFocusItem();
+  				  if (focusItem0 != null && focusItem1 != null) {
+  				    sb.append(data.get(focusItem0.getIndex().intValue()).get(
+  				      focusItem1.getIndex().intValue()));
+  				  }
+  				} else {
+  				  Number[] n = body.getSelectedExtent();
+  				  int max0 = n[1].intValue();
+  				  int max1 = n[3].intValue();
+  				  int min1 = n[2].intValue();
+  				  for (int i = n[0].intValue(); i <= max0; i++) {
+  				    for (int j = min1; j <= max1; j++) {
+  				      if (j > min1) sb.append("\t");
+  				      if (body.isSelected(i, j)) {
+  				        sb.append(data.get(i).get(j).toString());
+  				      }
+  				    }
+  				    if (i < max0) sb.append(NEW_LINE);
+  				  }
   				}
   				Clipboard clipboard = new Clipboard(display);
   				clipboard.setContents(new Object[] {sb.toString()},
@@ -101,8 +138,8 @@ public class Snippet_0490 {
   				
   				if (contents == null) return;
   				
-  				AxisPointer<Integer> focusItem0 = matrix.getAxis0().getFocusItem();
-  				AxisPointer<Integer> focusItem1 = matrix.getAxis1().getFocusItem();
+  				AxisItem<Integer> focusItem0 = matrix.getAxis0().getFocusItem();
+  				AxisItem<Integer> focusItem1 = matrix.getAxis1().getFocusItem();
   				if (focusItem0 == null || focusItem1 == null) return;
   				
   				int start0 = focusItem0.getIndex().intValue();

@@ -79,8 +79,10 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 		setImagePath(null);
 		
 		// Painters
-		cellsPainter = zone.getPainter("cells");
-		zone.replacePainter(new Painter<N0, N1>("editor emulation", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		cellsPainter = zone.getPainter(Painter.NAME_CELLS);
+		zone.replacePainter(new Painter<N0, N1>(
+		  Painter.NAME_EMULATED_CONTROLS, Painter.SCOPE_CELLS_HORIZONTALLY) 
+	  {
 		  @Override protected boolean init() {
 		    return true;
 		  }
@@ -112,27 +114,10 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 		zone.bind(CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1);
 		zone.bind(CMD_EDIT_ACTIVATE, SWT.KeyDown, Matrix.PRINTABLE_CHARS);
 
-//		// Space bar for check boxes
-//		zone.bind(new GestureBinding(CMD_EDIT_ACTIVATE, SWT.KeyDown, ' ') {
-//			
-//			public boolean isMatching(Event e) {
-//				if (!super.isMatching(e)) return false;
-//				
-//				N0 index0 = getMatrix().getAxis0().getFocusItem().getIndex();
-//				N1 index1 = getMatrix().getAxis1().getFocusItem().getIndex();
-//				Control control2 = embedded.getControl(index0, index1);
-//				if (control2 instanceof Button && (control2.getStyle() & SWT.CHECK) != 0 ||
-//						  getCheckboxEmulation(index0, index1) != null ) {
-//					return true;
-//				}
-//				return false;
-//			}
-//		});
-		
 		// Clicking on the image emulation
 		this.zone.bind(new GestureBinding(CMD_EDIT_ACTIVATE, SWT.MouseDown, 1) {
 			
-			public boolean isMatching(Event e) {
+			@Override public boolean isMatching(Event e) {
 				if (!super.isMatching(e)) return false;
 				
 				// Change boolean value when clicked on the check box image
@@ -154,8 +139,33 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 			}
 		});
 		
+		// Avoid double click on the image
+		this.zone.bind(new GestureBinding(CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1) {
+		  
+		  @Override public boolean isMatching(Event e) {
+		    if (!super.isMatching(e)) return false;
+		    
+		    // Change boolean value when clicked on the check box image
+		    Matrix<N0, N1> matrix = getMatrix();
+		    N0 index0 = matrix.getAxis0().getFocusItem().getIndex();
+		    N1 index1 = matrix.getAxis1().getFocusItem().getIndex();
+		    Object[] emulation = getCheckboxEmulation(index0, index1);
+		    
+		    if (emulation != null && 
+		      (emulation[0] instanceof Image || emulation[1] instanceof Image)) {
+		      // Calculate the image bounds
+		      Rectangle cellBounds = matrix.getBody().getCellBounds(index0, index1);
+		      Rectangle imageBounds = trueImage.getBounds();
+		      imageBounds.x = cellBounds.x + (cellBounds.width - imageBounds.width) / 2;
+		      imageBounds.y = cellBounds.y + (cellBounds.height - imageBounds.height) / 2;
+		      return !imageBounds.contains(e.x, e.y);
+		    }
+		    return false;
+		  }
+		});
+		
 		controlListener = new CommandListener() {
-			protected void executeCommand(int commandId) {
+			@Override protected void executeCommand(int commandId) {
 				Control control = (Control) event.widget;
 				
 				switch (commandId) {
@@ -181,9 +191,9 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	 * <p>
 	 * This method is usually overridden, since the default implementation returns 
 	 * the result of the {@link Painter#getText(Number, Number)} method of the 
-	 * zone's "cells" painter, which is always {@link String}, while some edit 
+	 * zone's Painter.NAME_CELLS painter, which is always {@link String}, while some edit 
 	 * controls require other types, like {@link Boolean} or {@link Date}. 
-	 * If the "cells" painter does not exist in the zone it always returns null. 
+	 * If the Painter.NAME_CELLS painter does not exist in the zone it always returns null. 
 	 * 
 	 * @param index0 cell index on <code>axis0</code> 
 	 * @param index1 cell index on <code>axis1</code> 
@@ -298,7 +308,7 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	
 	private void apply(Control control) {
 		if (control == null) return;
-		ZoneEditorData data = (ZoneEditorData) getData(control);
+		ZoneEditorData data = getData(control);
 		if (data == null) return;
 		setModelValue(data.index0, data.index1, getEditorValue(control));
 		cancel(control);
@@ -317,7 +327,7 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	 * Shows a control to edit the value of the specified cell. 
 	 */
 	private Control activate(N0 index0, N1 index1, GestureBinding b) {
-		cellsPainter = zone.getPainter("cells");
+		cellsPainter = zone.getPainter(Painter.NAME_CELLS);
 		
 //		Control control = embedded.getControl(index0, index1);
 		Object[] emulation = getCheckboxEmulation(index0, index1);
@@ -455,8 +465,8 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	
 	void edit(GestureBinding b) {
 		Matrix<N0, N1> matrix = getMatrix();
-		final AxisPointer<N0> focusItem0 = matrix.axis0.getFocusItem();
-		final AxisPointer<N1> focusItem1 = matrix.axis1.getFocusItem();
+		final AxisItem<N0> focusItem0 = matrix.axis0.getFocusItem();
+		final AxisItem<N1> focusItem1 = matrix.axis1.getFocusItem();
 		if (focusItem0 == null || focusItem1 == null) return;
 
 		activate(focusItem0.getIndex(), focusItem1.getIndex(), b);
@@ -486,7 +496,7 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	public void copy() 
 	{
 		StringBuilder sb = new StringBuilder();
-		cellsPainter = zone.getPainter("cells");
+		cellsPainter = zone.getPainter(Painter.NAME_CELLS);
 
 		Number[] n = zone.getSelectedExtent();
 		N0 max0 = (N0) n[1];
@@ -528,8 +538,8 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 		Axis<N1> axis1 = getMatrix().getAxis1();
 
 		// Get the focus cell to start the pasting from
-		AxisPointer<N0> focusItem0 = axis0.getFocusItem();
-		AxisPointer<N1> focusItem1 = axis1.getFocusItem();
+		AxisItem<N0> focusItem0 = axis0.getFocusItem();
+		AxisItem<N1> focusItem1 = axis1.getFocusItem();
 		if (focusItem0 == null || focusItem1 == null) return;
 		Math<N0> math0 = axis0.math;
 		Math<N1> math1 = axis1.math;
@@ -676,7 +686,6 @@ public class ZoneEditor<N0 extends Number, N1 extends Number> {
 	 * @return default images to emulate check boxes.
 	 * @see #getCheckboxEmulation(Number, Number)
 	 * @see #setImagePath(String)
-	 * @see #snapControlImages(String)
 	 */
 	protected final Object[] getDefaultCheckBoxImages() {
 		if (trueImage == null && falseImage == null) {

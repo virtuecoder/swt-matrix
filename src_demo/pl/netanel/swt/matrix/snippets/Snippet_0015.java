@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
-import pl.netanel.swt.matrix.AxisPointer;
+import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
@@ -51,7 +51,7 @@ public class Snippet_0015 {
   		  @Override
   		  public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
   		    Axis<Integer> axis0 = matrix.getAxis0();
-  		    AxisPointer<Integer> focusItem = axis0.getFocusItem();
+  		    AxisItem<Integer> focusItem = axis0.getFocusItem();
   		    if (body.getSection0().equals(focusItem.getSection()) &&
   		      index0.equals(focusItem.getIndex())) 
   		    {

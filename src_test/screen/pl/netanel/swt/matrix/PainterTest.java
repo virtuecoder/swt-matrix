@@ -38,7 +38,7 @@ import org.junit.runners.JUnit4;
       @Override
       public void paint(Number index0, Number index1, int x, int y, int width, int height) {
         Axis axis0 = matrix.getAxis0();
-        AxisPointer focusItem = axis0.getFocusItem();
+        AxisItem focusItem = axis0.getFocusItem();
         if (body.getSection0().equals(focusItem.getSection()) &&
           index0.equals(focusItem.getIndex())) 
         {

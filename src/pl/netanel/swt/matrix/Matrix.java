@@ -1,5 +1,6 @@
 package pl.netanel.swt.matrix;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -10,6 +11,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
@@ -39,7 +41,7 @@ import pl.netanel.util.Preconditions;
  * @created 27-03-2011
  */
 public class Matrix<N0 extends Number, N1 extends Number> extends Canvas 
-	implements Iterable<ZoneCore<N0, N1>> 
+	implements Iterable<Zone<N0, N1>> 
 {
 	static final int CELL_WIDTH = 16;			
 	static final int LINE_WIDTH = 1;
@@ -170,6 +172,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	
 	
 	MatrixModel<N0, N1> model;
+	final ArrayList<ZoneClient<N0, N1>> zones;
 	Axis<N0> axis0;
 	Axis<N1> axis1;
 	Layout<N0> layout0;
@@ -225,7 +228,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	 *
 	 * @see Widget#getStyle
 	 */
-	public Matrix(Composite parent, int style, Axis<N0> axis0, Axis<N1> axis1, ZoneCore ...zones) {
+	public Matrix(Composite parent, int style, Axis<N0> axis0, Axis<N1> axis1) {
 		super(parent, style | SWT.DOUBLE_BUFFERED);
 		setBackground(Resources.getColor(SWT.COLOR_LIST_BACKGROUND));
 		setForeground(Resources.getColor(SWT.COLOR_LIST_FOREGROUND));
@@ -242,7 +245,18 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 			axis1.setAutoScrollOffset(Matrix.AUTOSCROLL_OFFSET_X);
 			axis1.setResizeOffset(Matrix.RESIZE_OFFSET_X);
 		}
-		model = new MatrixModel(axis0, axis1, zones);
+		
+		zones = new ArrayList<ZoneClient<N0, N1>>();
+		final ArrayList<ZoneCore<N0, N1>> coreZones = new ArrayList<ZoneCore<N0, N1>>();
+		for (SectionClient<N0> section0: axis0.sections) {
+      for (SectionClient<N1> section1: axis1.sections) {
+        ZoneClient zone = new ZoneClient(section0, section1);
+        zones.add(zone);
+        coreZones.add(zone.getCore());
+      }
+		}
+		model = new MatrixModel(axis0, axis1, coreZones);
+		
 		painters = new Painters();
 
 		setModel(model);
@@ -297,7 +311,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		axis0.setMatrix(this, 0);
 		axis1.setMatrix(this, 1);
 		
-		Zone<N0, N1> body = model.getBody();
+		Zone<N0, N1> body = getBody();
 //		if (body.getDefaultBackground() == null) {
 //			body.setDefaultBackground(getBackground());
 //		}
@@ -327,13 +341,13 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		painters.add(new DockPainter(Frozen.TAIL, Frozen.TAIL));
 		painters.add(new DockPainter(Frozen.HEAD, Frozen.HEAD));
 		
-		painters.add(new Painter("focus cell") {
+		painters.add(new Painter(Painter.NAME_FOCUS_CELL) {
 			@Override
 			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-				AxisPointer<N0> item0 = axis0.getFocusItem();
-				AxisPointer<N1> item1 = axis1.getFocusItem();
+				AxisItem<N0> item0 = axis0.getFocusItem();
+				AxisItem<N1> item1 = axis1.getFocusItem();
 				if (item0 == null || item1 == null) return;
-				Zone zone = Matrix.this.getZone(item0.getSection(), item1.getSection());
+				ZoneCore zone = model.getZone(item0.section.core, item1.section.core);
 				if (zone == null) return;
 				Rectangle r = zone.getCellBounds(item0.getIndex(), item1.getIndex());
 				if (r == null) return;
@@ -511,9 +525,17 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	public Zone<N0, N1> getZone(Section section0, Section section1) {
 	  Preconditions.checkNotNullWithName(section0, "section0");
 	  Preconditions.checkNotNullWithName(section1, "section1");
-	  axis0.checkSection(section0);
-	  axis1.checkSection(section1);
-	  return model.getZoneUnchecked(section0, section1);
+	  SectionClient sectionClient0 = axis0.sectionClient(section0);
+	  SectionClient sectionClient1 = axis1.sectionClient(section1);
+	  axis0.checkSection(sectionClient0);
+	  axis1.checkSection(sectionClient1);
+	  for (ZoneClient zone: zones) {
+	    if (zone.getSection0().equals(sectionClient0) && 
+	      zone.getSection1().equals(sectionClient1) ) {
+	      return zone;
+	    }
+	  }
+	  return null;
 	}
 	
 	/**
@@ -523,12 +545,12 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	 * If the focus cell is disabled the navigation events are ignored and the 
 	 * "focus cell" painter of the matrix is disabled. 
 	 *
-	 * @param enabled the new focus cell enablement state
+	 * @param state the new focus cell enablement state
 	 */
-	public void setFocusCellEnabled(boolean enabled) {
+	public void setFocusCellEnabled(boolean state) {
 		Painter<N0, N1> painter = getPainter("focus cell");
-		if (painter != null) painter.setEnabled(enabled);
-		focusCellEnabled = enabled;
+		if (painter != null) painter.setEnabled(state);
+		focusCellEnabled = state;
 	}
 
 	/**
@@ -583,9 +605,9 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		if (axisIndex == 0) {
 			for (ZoneCore zone: model.zones) {
 				if (zone.section0.equals(section)) {
-					Math math1 = zone.section1.core.math;
+					Math math1 = zone.section1.math;
 					zone.setSelected(
-							(N0) start, (N0) end, 
+							start, end, 
 							math1.ZERO_VALUE(), math1.decrement(zone.section1.getCount()), 
 							state);
 					
@@ -598,7 +620,7 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		else { // assert index == 1
 			for (ZoneCore zone: model.zones) {
 				if (zone.section1.equals(section)) {
-					Math math0 = zone.section0.core.math;
+					Math math0 = zone.section0.math;
 					zone.setSelected( 
 							math0.ZERO_VALUE(), math0.decrement(zone.section0.getCount()),
 							start, end,
@@ -832,16 +854,16 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	}
 
 	@Override
-	public Iterator<ZoneCore<N0, N1>> iterator() {
-		final Iterator<ZoneCore<N0, N1>> it = model.zones.iterator();
-		return new ImmutableIterator<ZoneCore<N0, N1>>() {
+	public Iterator<Zone<N0, N1>> iterator() {
+		final Iterator<ZoneClient<N0, N1>> it = zones.iterator();
+		return new ImmutableIterator<Zone<N0, N1>>() {
 			@Override
 			public boolean hasNext() {
 				return it.hasNext();
 			}
 
 			@Override
-			public ZoneCore<N0, N1> next() {
+			public Zone<N0, N1> next() {
 				return it.next();
 			}
 		};
@@ -853,6 +875,54 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 		listener.executeCommand(new GestureBinding(commandId, 0, 0));
 	}
 	
- 
+
+	void pack(int axisIndex, AxisItem item) {
+	  Cursor cursor = getCursor();
+	  GC gc = new GC(this);
+	  try {
+	    int w = 0;
+	    for (ZoneCore<N0, N1> zone: model.zones) {
+	      if (axisIndex == 0 && zone.section0.equals(item.section.core)) {
+	        CellSet set = new CellSet(zone.section0.math, zone.section1.math);
+	        set.add(item.getIndex(), item.getIndex(),
+	          zone.section1.math.ZERO_VALUE(), 
+	          zone.section1.math.decrement(zone.section1.getCount()));
+	        NumberPairSequence<N0, N1> seq = new NumberPairSequence(set);
+	        for (Painter painter: zone.painters) {
+	          painter.init(gc);
+	          for (seq.init(); seq.next();) {
+	            w = java.lang.Math.max(w, painter.computeSize(
+	              seq.index0(), seq.index1(), 
+	              zone.section1.getCellWidth(seq.index1.getValue()), SWT.DEFAULT).y);
+	          }
+	        }
+	      }
+	      else if (axisIndex == 1 && zone.section1.equals(item.section.core)) {
+	        CellSet set = new CellSet(zone.section0.math, zone.section1.math);
+	        set.add(zone.section0.math.ZERO_VALUE(), 
+	          zone.section0.math.decrement(zone.section0.getCount()), 
+	          item.getIndex(), item.getIndex());
+	        NumberPairSequence<N0, N1> seq = new NumberPairSequence(set);
+	        for (Painter painter: zone.painters) {
+	          painter.init(gc);
+	          for (seq.init(); seq.next();) {
+	            w = java.lang.Math.max(w, painter.computeSize(
+	              seq.index0(), seq.index1(),
+	              SWT.DEFAULT, zone.section0.getCellWidth(seq.index0.getValue())).x);
+	          }
+	        }
+	      }
+	    }
+
+	    if (w != 0) item.section.core.setCellWidth(item.getIndex(), w);
+	  } 
+	  finally {
+	    gc.dispose();
+	    setCursor(cursor);
+	  }
+	  (axisIndex == 0 ? axis0 : axis1).layout.compute();
+	  redraw();
+	}
+
 
 }

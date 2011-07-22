@@ -40,6 +40,19 @@
 				<attribute name="Class-Path" value="." />
 			</manifest>
 		</jar>
+		
+		<!-- swt-matrix-custom.jar-->
+		<jar jarfile="${ant.project.name}-custom-${version}.jar">
+			<fileset dir="../bin">
+				<include name="pl/netanel/swt/matrix/custom/*.class" />
+				<exclude name="**/*Test*.class" />
+			</fileset>
+			<!--fileset dir="${lib}" includes="**/*" /-->
+			<manifest>
+				<!--attribute name="Main-Class" value="app.DataMate" /-->
+				<attribute name="Class-Path" value="." />
+			</manifest>
+		</jar>
 
 		<!-- obfuscate and optimize by ProGuard -->
 		<taskdef resource="proguard/ant/task.properties" 
@@ -133,6 +146,7 @@
 	 
 
 	<copy todir="${local_website}\swt-matrix" file="swt-matrix-${version}.jar" />
+	<copy todir="${local_website}\swt-matrix" file="swt-matrix-custom-${version}.jar" />
 	<copy todir="${local_website}\swt-matrix" file="swt-matrix-snippets-${version}.zip" />
 	<copy todir="${local_website}\swt-matrix" file="swt-matrix-javadoc-${version}.zip" />
 
