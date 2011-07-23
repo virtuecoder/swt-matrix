@@ -1,12 +1,9 @@
 package pl.netanel.swt.matrix;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEffect;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Display;
 
 
 /**
@@ -70,9 +67,9 @@ public class MatrixDragSourceEffect extends DragSourceEffect {
 	Image getDragSourceImage(DragSourceEvent event) {
 		if (dragSourceImage != null) dragSourceImage.dispose();
 		dragSourceImage = null;		
-		Matrix matrix = (Matrix) getControl();
-		Display display = matrix.getDisplay();
-		Rectangle empty = new Rectangle(0,0,0,0);
+//		Matrix matrix = (Matrix) getControl();
+//		Display display = matrix.getDisplay();
+//		Rectangle empty = new Rectangle(0,0,0,0);
 		
 //		// Collect the currently selected items. 
 //		Point[] selection;
@@ -109,7 +106,7 @@ public class MatrixDragSourceEffect extends DragSourceEffect {
 //		}
 //		if(bounds==null) return null;
 		
-		dragSourceImage = matrix.getDisplay().getSystemImage(SWT.ICON_WARNING);
+//		dragSourceImage = matrix.getDisplay().getSystemImage(SWT.ICON_WARNING);
 //		dragSourceImage = new Image(display,bounds.width,bounds.height);
 //		GC gc = new GC(dragSourceImage);
 //		for (int i = 0; i < selection.length; i++) {

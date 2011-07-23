@@ -148,8 +148,7 @@
   	<zipfileset dir="." includes="swt-matrix-${version}.jar"/>
   	<zipfileset dir="." includes="swt-matrix-custom-${version}.jar"/>
 		<fileset dir="../doc" includes="EULA.txt"/>
-		<fileset dir="../doc" includes="EULA.txt"/>
-		<fileset dir="../doc" includes="Change log.txt"/>
+		<fileset dir="../doc" includes="Change-log.txt"/>
   </zip>
 	
 	<copy todir="${local_website}\swt-matrix">

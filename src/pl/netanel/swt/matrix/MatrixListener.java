@@ -270,14 +270,14 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 	            Bound b = layout.getCellBound(item);
 	            if (axisIndex == 0) {
 	              x = 0;
-	              y = b.distance;
+	              y = b.distance - 1;
 	              w = matrix.getClientArea().width;
-	              h = b.width; 
+	              h = b.width + 2; 
 	            }
 	            else {
-	              x = b.distance;
+	              x = b.distance - 1;
 	              y = 0;
-	              w = b.width;
+	              w = b.width + 2;
 	              h = matrix.getClientArea().height; 
 	            }
               lastImage = image = new Image(display, w, h);
@@ -385,16 +385,18 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 				      
 				      GC gc = new GC(matrix);
 				      lastImage = new Image(matrix.getDisplay(), imageSize.x, imageSize.y);
+				      matrix.redraw();
+				      matrix.update();
 				      gc.copyArea(lastImage, x, y);
 				      gc.dispose();
 				    }
 				    
             GC gc = new GC(matrix);
             gc.drawImage(lastImage, lastImageLocation.x, lastImageLocation.y);
-            matrix.redraw();
-            matrix.update();
             
             lastImage = new Image(matrix.getDisplay(), imageSize.x, imageSize.y);
+            matrix.redraw();
+            matrix.update();
             gc.copyArea(lastImage, x, y);
             gc.drawImage(image, x, y);
             gc.dispose();

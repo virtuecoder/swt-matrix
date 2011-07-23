@@ -182,11 +182,6 @@ public class JoomlaMysqlUpdate {
 	}
 
 	
-	
-	
-	
-	
-	
 	/**
 	 * Reads the content of the text file into the string.
 	 * @param file to read
