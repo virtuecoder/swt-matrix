@@ -47,9 +47,9 @@ public class Snippet_0003 {
 		axisY.setBody(2);
 		axisY.getSection(1).setCount(1);
 		axisY.getSection(1).setFocusItemEnabled(false);
-		final Section<Integer> body0 = axisY.getBody();
-		body0.setCount(list.size());
-		body0.setDefaultResizable(true);
+		final Section<Integer> bodyY = axisY.getBody();
+		bodyY.setCount(list.size());
+		bodyY.setDefaultResizable(true);
 		
 		final Matrix<Integer, Integer> matrix = 
 		  new Matrix<Integer, Integer>(shell, SWT.V_SCROLL, null, axisY);
@@ -63,7 +63,7 @@ public class Snippet_0003 {
 		axisX.getHeader().setVisible(true);
 		
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
   			@Override
   			public String getText(Integer indexX, Integer indexY) {
   				return filtered.get(indexY.intValue())[indexX.intValue()].toString();
@@ -76,7 +76,7 @@ public class Snippet_0003 {
 		stream.close();
 		
 		matrix.getColumnHeader().replacePainter(
-		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
 		    @Override
 		    public String getText(Integer indexX, Integer indexY) {
 		      return indexX.intValue() == 0 ? "Task" : "Priority";
@@ -89,7 +89,7 @@ public class Snippet_0003 {
 		
 		// Filter columns
 		matrix.getZone(axisX.getBody(), axisY.getSection(1)).replacePainter(
-			new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+			new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
 				public String getText(Integer indexX, Integer indexY) {
 					return indexX.intValue() == 1 ? filter : null;
 				};
@@ -119,7 +119,7 @@ public class Snippet_0003 {
 						}
 					}
 				}
-				body0.setCount(filtered.size());
+				bodyY.setCount(filtered.size());
 				matrix.refresh();
 			}
 		});

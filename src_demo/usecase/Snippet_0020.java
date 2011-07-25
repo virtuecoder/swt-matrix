@@ -48,7 +48,7 @@ public class Snippet_0020 {
 		axisX.getHeader().setVisible(true);
 		
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_HORIZONTALLY) {
+		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 		    @Override
 		    public String getText(Integer indexX, Integer indexY) {
 		      return data.get(indexY.intValue())[indexX.intValue()].toString();
@@ -64,7 +64,7 @@ public class Snippet_0020 {
 	  );
 
 		matrix.getColumnHeader().replacePainter(
-		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
 		    @Override
 		    public String getText(Integer indexX, Integer indexY) {
 		      return indexX.intValue() == 0 ? "Task" : "Completion date";

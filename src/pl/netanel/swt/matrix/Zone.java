@@ -16,7 +16,8 @@ import org.eclipse.swt.widgets.Listener;
  * Constitutes a region of a matrix where a section from the row axis 
  * and a section from the column axis intersect with each other.  
  * <p>
- * Zone has painters to paint itself on the screen.
+ * Zone has painters to paint itself on the screen and listeners to respond 
+ * to user gestures towards it. 
  * </p><p>
  * </p>
  * 
@@ -58,11 +59,11 @@ public interface Zone<X extends Number, Y extends Number> {
    * @param indexY cell index on the vertical axis 
    * 
    * @return rectangular bounds of the cell with the given coordinates.
-   * @throws IllegalArgumentException if <code>indexY</code> or 
-   *         <code>indexX</code> is null.
-   * @throws IndexOutOfBoundsException if <code>indexX</code> is out of 
-   *         0 ... this.getSectionX().getCount() bounds
+   * @throws IllegalArgumentException if <code>indexX</code> or 
+   *         <code>indexY</code> is null.
    * @throws IndexOutOfBoundsException if <code>indexY</code> is out of 
+   *         0 ... this.getSectionX().getCount() bounds
+   * @throws IndexOutOfBoundsException if <code>indexX</code> is out of 
    *         0 ... this.getSectionY().getCount() bounds
    */
   Rectangle getCellBounds(X indexX, Y indexY);
@@ -71,7 +72,7 @@ public interface Zone<X extends Number, Y extends Number> {
    * Sets the default background color for the receiver's cells. 
    * @param color color to set
    * @throws IllegalArgumentException if <code>color</code> or 
-   *         <code>indexX</code> is null.
+   *         <code>indexY</code> is null.
    */
   void setDefaultBackground(Color color);
 
@@ -85,7 +86,7 @@ public interface Zone<X extends Number, Y extends Number> {
    * Sets the default foreground color for the receiver's cells. 
    * @param color color to set
    * @throws IllegalArgumentException if <code>color</code> or 
-   *         <code>indexX</code> is null.
+   *         <code>indexY</code> is null.
    */
   void setDefaultForeground(Color color);
 
@@ -105,7 +106,7 @@ public interface Zone<X extends Number, Y extends Number> {
    * Sets selection foreground color for the receiver. 
    * @param color color to set
    * @throws IllegalArgumentException if <code>color</code> or 
-   *         <code>indexX</code> is null.
+   *         <code>indexY</code> is null.
    */
   void setSelectionForeground(Color color);
 
@@ -119,7 +120,7 @@ public interface Zone<X extends Number, Y extends Number> {
    * Sets selection background color for the receiver. 
    * @param color color to set
    * @throws IllegalArgumentException if <code>color</code> or 
-   *         <code>indexX</code> is null.
+   *         <code>indexY</code> is null.
    */
   void setSelectionBackground(Color color);
 
@@ -147,7 +148,7 @@ public interface Zone<X extends Number, Y extends Number> {
    * Returns <code>true</code> if the cell at given indexes is selected.
    * Otherwise, <code>false</code> is returned.
    * <p>
-   * <code>indexY</code> and <code>indexX</code> refer to the model, 
+   * <code>indexX</code> and <code>indexY</code> refer to the model, 
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations. 
    * @param indexX cell index on the horizontal axis 
@@ -155,11 +156,11 @@ public interface Zone<X extends Number, Y extends Number> {
    * 
    * @return the selection state of the specified cell
    * 
-   * @throws IllegalArgumentException if <code>indexY</code> or 
-   *         <code>indexX</code> is null.
-   * @throws IndexOutOfBoundsException if <code>indexY</code> is out of 
-   *         0 ... this.getSectionY().getCount() bounds
+   * @throws IllegalArgumentException if <code>indexX</code> or 
+   *         <code>indexY</code> is null.
    * @throws IndexOutOfBoundsException if <code>indexX</code> is out of 
+   *         0 ... this.getSectionY().getCount() bounds
+   * @throws IndexOutOfBoundsException if <code>indexY</code> is out of 
    *         0 ... this.getSectionX().getCount() bounds
    */
   boolean isSelected(X indexX, Y indexY);
@@ -188,7 +189,7 @@ public interface Zone<X extends Number, Y extends Number> {
   /**
    * Sets the selection state for the specified cell.
    * <p>
-   * <code>indexY</code> and <code>indexX</code> refer to the model, 
+   * <code>indexX</code> and <code>indexY</code> refer to the model, 
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations. 
    * <p>
@@ -200,11 +201,11 @@ public interface Zone<X extends Number, Y extends Number> {
    * 
    * @return the selection state of the specified cell
    *
-   * @throws IllegalArgumentException if <code>indexY</code> or 
-   *         <code>indexX</code> is null.
-   * @throws IndexOutOfBoundsException if <code>indexY</code> is out of 
-   *         0 ... this.getSectionY().getCount() bounds
+   * @throws IllegalArgumentException if <code>indexX</code> or 
+   *         <code>indexY</code> is null.
    * @throws IndexOutOfBoundsException if <code>indexX</code> is out of 
+   *         0 ... this.getSectionY().getCount() bounds
+   * @throws IndexOutOfBoundsException if <code>indexY</code> is out of 
    *         0 ... this.getSectionX().getCount() bounds
    * 
    */
@@ -238,7 +239,7 @@ public interface Zone<X extends Number, Y extends Number> {
    * returned by the {@link Iterator#next()} method is a
    * row axis index, the second one is a column axis index.
    * <p>
-   * <code>indexY</code> and <code>indexX</code> refer to the model, 
+   * <code>indexX</code> and <code>indexY</code> refer to the model, 
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations.  
    * <p>
@@ -252,7 +253,7 @@ public interface Zone<X extends Number, Y extends Number> {
    * returned by the {@link Iterator#next()} method define start and end of a
    * row axis extent, the second two the start and end of a column axis extent.
    * <p>
-   * <code>indexY</code> and <code>indexX</code> refer to the model, 
+   * <code>indexX</code> and <code>indexY</code> refer to the model, 
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations. 
    */
@@ -263,7 +264,7 @@ public interface Zone<X extends Number, Y extends Number> {
    * minimal axisY index, maximal axisY index, minimal axisX index, maximal axisX index. 
    * @return selection index bounds
    */
-  Number[] getSelectedExtent();
+  CellExtent getSelectedExtent();
 
   /**
    * Binds the command to the user gesture specified by the event type and code.

@@ -121,9 +121,9 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 		SectionCore bodyX = SectionCore.from(matrix.axisX.getBody());
 		SectionCore headerY = SectionCore.from(matrix.axisY.getHeader());
 		SectionCore headerX = SectionCore.from(matrix.axisX.getHeader());
-    rowHeader = matrix.model.getZone(bodyY, headerX);
-		columnHeader = matrix.model.getZone(headerY, bodyX);
-		topLeft = matrix.model.getZone(headerY, headerX);
+    rowHeader = matrix.model.getZone(headerX, bodyY);
+		columnHeader = matrix.model.getZone(bodyX, headerY);
+		topLeft = matrix.model.getZone(headerX, headerY);
 		
 		// Initialize fields
 		stateY = new AxisListener(matrix.axisY);
@@ -149,7 +149,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 	}
 
 	Painter<X, Y> getDragItemPainter() {
-	  return new Painter<X, Y>(Painter.NAME_DRAG_ITEM, Painter.SCOPE_SINGLE) {
+	  return new Painter<X, Y>(Painter.NAME_DRAG_ITEM, Painter.SCOPE_ENTIRE) {
       Painter<X, Y> painter;
       Rectangle bounds;
       private boolean highlight;
@@ -234,14 +234,14 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 				zone = (ZoneCore) e.data;
 			}
 			else if (keyEvent) {
-			  AxisItem<? extends Number> focusItem0 = matrix.getAxisY().getFocusItem();
-			  AxisItem<? extends Number> focusItem1 = matrix.getAxisX().getFocusItem();
-			  if (focusItem0 != null && focusItem1 != null) {
-			    zone = matrix.model.getZone(focusItem0.section.core, focusItem1.section.core);
+			  AxisItem<? extends Number> focusItemX = matrix.getAxisX().getFocusItem();
+			  AxisItem<? extends Number> focusItemY = matrix.getAxisY().getFocusItem();
+			  if (focusItemX != null && focusItemY != null) {
+			    zone = matrix.model.getZone(focusItemX.section.core, focusItemY.section.core);
 			  }
 			}
 			else if (stateY.item != null && stateX.item != null) {
-				zone = matrix.model.getZone(stateY.item.section.core, stateX.item.section.core);
+				zone = matrix.model.getZone(stateX.item.section.core, stateY.item.section.core);
 			}
 
 			if (e.type == SWT.MouseDown && e.button == 1) {
@@ -956,7 +956,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 			if (ctrlSelection) {
 			  if (stateY.lastFocus != null && stateX.lastFocus != null) {
 			    ZoneCore zone = matrix.model.getZone(
-			      stateY.lastFocus.section.core, stateX.lastFocus.section.core);
+			      stateX.lastFocus.section.core, stateY.lastFocus.section.core);
 			    if (BigInteger.ZERO.equals(zone.getSelectionCount())) {
 			      Number indexY = stateY.lastFocus.getIndex();
 			      Number indexX = stateX.lastFocus.getIndex();
@@ -984,7 +984,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 	}
 	
 	private boolean isSelected(AxisItem lastY, AxisItem lastX) {
-		return matrix.model.getZone(lastY.section.core, lastX.section.core).
+		return matrix.model.getZone(lastX.section.core, lastY.section.core).
 			isSelected(lastX.getIndex(), lastY.getIndex());
 	}
 

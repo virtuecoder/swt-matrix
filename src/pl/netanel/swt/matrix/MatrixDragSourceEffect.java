@@ -23,7 +23,7 @@ import org.eclipse.swt.graphics.Image;
  * @since 3.3
  * @author mark-oliver.reiser
  */
-public class MatrixDragSourceEffect extends DragSourceEffect {
+class MatrixDragSourceEffect extends DragSourceEffect {
 
 	Image dragSourceImage = null;
 

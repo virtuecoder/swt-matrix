@@ -58,10 +58,10 @@ public class Snippet_0005 {
     matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
     Axis<Integer> axisY = matrix.getAxisY();
-    final Section<Integer> body0 = axisY.getBody();
-    body0.setCount(list.size());
-    body0.setDefaultResizable(true);
-    body0.setDefaultMoveable(true);
+    final Section<Integer> bodyY = axisY.getBody();
+    bodyY.setCount(list.size());
+    bodyY.setDefaultResizable(true);
+    bodyY.setDefaultMoveable(true);
     axisY.getHeader().setVisible(true);
 
     Axis<Integer> axisX = matrix.getAxisX();
@@ -71,7 +71,7 @@ public class Snippet_0005 {
 
     // Paint data text in the body zone
     matrix.getBody().replacePainter(
-      new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+      new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
         @Override public String getText(Integer indexX, Integer indexY) {
           return sorted.get(indexY.intValue())[indexX.intValue()].toString();
         }
@@ -79,7 +79,7 @@ public class Snippet_0005 {
 
     // Paint text and sorting image in the column headers zone
     Painter<Integer, Integer> columnHeaderPainter = new Painter<Integer, Integer>(
-      "cells", Painter.SCOPE_CELLS_HORIZONTALLY) 
+      "cells", Painter.SCOPE_CELLS) 
     {
       @Override public String getText(Integer indexX, Integer indexY) {
         return indexX.toString();
@@ -101,8 +101,8 @@ public class Snippet_0005 {
     matrix.getColumnHeader().addListener(SWT.MouseDown, new Listener() {
       @Override public void handleEvent(Event e) {
         // AxisItem<Y> item0 = matrix.getAxisY().getItemByDistance(e.y);
-        AxisItem<Integer> item1 = matrix.getAxisX().getItemByDistance(e.x);
-        final int column = item1.getIndex().intValue();
+        AxisItem<Integer> itemX = matrix.getAxisX().getItemByDistance(e.x);
+        final int column = itemX.getIndex().intValue();
 
         int previousDirection = direction[column];
         for (int i = 0; i < direction.length; i++) {

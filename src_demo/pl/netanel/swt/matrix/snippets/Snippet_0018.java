@@ -44,14 +44,14 @@ public class Snippet_0018 {
 		images[2][0] = image;
 		
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
-		Section<Integer> body1 = matrix.getAxisX().getBody();
-		body1.setCount(COLUMN_COUNT);
-		body1.setDefaultCellWidth(50);
+		Section<Integer> bodyX = matrix.getAxisX().getBody();
+		bodyX.setCount(COLUMN_COUNT);
+		bodyX.setDefaultCellWidth(50);
 		
 		matrix.getAxisY().getBody().setCount(ROW_COUNT);
 		
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
 			@Override
 			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 				text = indexY.toString() + ", " + indexX;

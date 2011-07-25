@@ -41,11 +41,11 @@ public class ButtonCellPainter<X extends Number, Y extends Number>
 {
   private final Color highlightShadow, lightShadow, normalShadow;
   private final Zone<X, Y> zone;
-  private AxisItem<Y> pushed0;
-  private AxisItem<X> pushed1;
+  private AxisItem<X> pushedX;
+  private AxisItem<Y> pushedY;
   
   public ButtonCellPainter(Zone<X, Y> zone) {
-    super("button cells", SCOPE_CELLS_HORIZONTALLY);
+    super("button cells", SCOPE_CELLS);
     this.zone = zone;
     zone.replacePainter(this);
 
@@ -65,13 +65,13 @@ public class ButtonCellPainter<X extends Number, Y extends Number>
     switch (e.type) {
     
     case SWT.MouseDown:
-      pushed0 = zone.getMatrix().getAxisY().getItemByDistance(e.y);
-      pushed1 = zone.getMatrix().getAxisX().getItemByDistance(e.x);
+      pushedX = zone.getMatrix().getAxisX().getItemByDistance(e.x);
+      pushedY = zone.getMatrix().getAxisY().getItemByDistance(e.y);
       break;
       
     case SWT.MouseUp:
-      pushed0 = null;
-      pushed1 = null;
+      pushedY = null;
+      pushedX = null;
       break;
     }
     
@@ -85,50 +85,50 @@ public class ButtonCellPainter<X extends Number, Y extends Number>
   }
   
   @Override public void paint(X indexX, Y indexY, int x, int y, int width, int height) {
-    if (isPushed(indexY, indexX)) {
-      paintPushed(indexY, indexX, x, y, width, height);
+    if (isPushed(indexX, indexY)) {
+      paintPushed(indexX, indexY, x, y, width, height);
     } else {
-      paintIdle(indexY, indexX, x, y, width, height);
+      paintIdle(indexX, indexY, x, y, width, height);
     }
   };
   
   /**
    * Returns <tt>true</tt> if the cell at the specified location is in pushed state, 
    * or <tt>false</tt> otherwise. 
-   * @param indexY index of a section item in the row axis. 
    * @param indexX index of a section item in the column axis 
+   * @param indexY index of a section item in the row axis. 
    * @return <tt>true</tt> if the cell at the specified location is in pushed state
    */
-  protected boolean isPushed(Y indexY, X indexX) {
-    return pushed0 != null && pushed1 != null && 
-      pushed0.getIndex().equals(indexY) &&
-      pushed1.getIndex().equals(indexX);
+  protected boolean isPushed(X indexX, Y indexY) {
+    return pushedY != null && pushedX != null && 
+      pushedY.getIndex().equals(indexY) &&
+      pushedX.getIndex().equals(indexX);
   }
   
 
   /**
    * Paints the cell when it is in the pushed state.  
-   * @param indexY index of a section item in the row axis. 
    * @param indexX index of a section item in the column axis 
+   * @param indexY index of a section item in the row axis. 
    * @param x the x coordinate of the painting boundaries
    * @param y the y coordinate of the painting boundaries
    * @param width the width of the painting boundaries
    * @param height the height of the painting boundaries
    */
-  protected void paintPushed(Y indexY, X indexX, int x, int y, int width, int height) {
+  protected void paintPushed(X indexX, Y indexY, int x, int y, int width, int height) {
     super.paint(indexX, indexY, x, y, width, height);
   }
 
   /**
    * Paints the cell when it is in the idle (not pushed) state.
-   * @param indexY index of a section item in the row axis. 
    * @param indexX index of a section item in the column axis 
+   * @param indexY index of a section item in the row axis. 
    * @param x the x coordinate of the painting boundaries
    * @param y the y coordinate of the painting boundaries
    * @param width the width of the painting boundaries
    * @param height the height of the painting boundaries
    */
-  protected void paintIdle(Y indexY, X indexX, int x, int y, int width, int height) {
+  protected void paintIdle(X indexX, Y indexY, int x, int y, int width, int height) {
     gc.setForeground(highlightShadow);
     gc.drawLine(x, y - 1, x + width - 1, y - 1);
     gc.drawLine(x, y - 1, x, y + height - 1);

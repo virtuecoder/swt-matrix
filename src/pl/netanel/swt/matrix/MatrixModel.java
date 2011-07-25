@@ -21,18 +21,20 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 	}
 
 	void setMatrix(Matrix matrix) {
-		Section body0  = axisY.getBody(), body1 = axisX.getBody();
-		Section header0 = axisY.getHeader(), header1 = axisX.getHeader();
+	  Section<X> bodyX = axisX.getBody();
+		Section<Y> bodyY  = axisY.getBody();
+		Section<X> headerX = axisX.getHeader();
+		Section<Y> headerY = axisY.getHeader();
 		
 		for (SectionClient<Y> sectionY: axisY.sections) {
 			for (SectionClient<X> sectionX: axisX.sections) {
-				ZoneCore zone = getZone(sectionY.getCore(), sectionX.getCore());
+				ZoneCore<X, Y> zone = getZone(sectionX.getCore(), sectionY.getCore());
 				zone.setMatrix(matrix);
 				if (zone.getPainterCount() == 0) {
-					if (sectionY.equals(body0) && sectionX.equals(body1)) {
+					if (sectionY.equals(bodyY) && sectionX.equals(bodyX)) {
 						zone.setDefaultBodyStyle();
 					}
-					else if (sectionY.equals(header0) && sectionX.equals(body1)) {
+					else if (sectionY.equals(headerY) && sectionX.equals(bodyX)) {
 					  zone.setDefaultHeaderStyle(
 					    new Painter(Painter.NAME_CELLS, Painter.SCOPE_CELLS_VERTICALLY) {
 					      @Override
@@ -42,9 +44,9 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 					    }
 					  );
 					}
-					else if (sectionX.equals(header1) && sectionY.equals(body0)) {
+					else if (sectionX.equals(headerX) && sectionY.equals(bodyY)) {
 						zone.setDefaultHeaderStyle(
-						  new Painter(Painter.NAME_CELLS, Painter.SCOPE_CELLS_HORIZONTALLY) {
+						  new Painter(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 						    @Override
 						    public String getText(Number indexY, Number indexX) {
 						      return indexY.toString();
@@ -53,7 +55,7 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 						);						
 					} else {
 						zone.setDefaultHeaderStyle(
-						  new Painter(Painter.NAME_CELLS, Painter.SCOPE_CELLS_HORIZONTALLY));
+						  new Painter(Painter.NAME_CELLS, Painter.SCOPE_CELLS));
 					}
 				}
 			}
@@ -65,19 +67,19 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 	
 	private void calculatePaintOrder() {
 		paintOrder = new int[zones.size()];
-		int[] order0 = axisY.getZOrder();
-		int[] order1 = axisX.getZOrder();
+		int[] orderY = axisY.getZOrder();
+		int[] orderX = axisX.getZOrder();
 		int k = 0;
-		for (int i = 0, imax = order0.length; i < imax; i++) {
-			for (int j = 0, jmax = order1.length; j < jmax; j++) {
+		for (int i = 0, imax = orderY.length; i < imax; i++) {
+			for (int j = 0, jmax = orderX.length; j < jmax; j++) {
 				paintOrder[k++] = zones.indexOf(getZone(
-				  axisY.sections.get(order0[i]).getCore(), 
-				  axisX.sections.get(order1[j]).getCore()));
+				  axisX.sections.get(orderX[j]).getCore(), 
+				  axisY.sections.get(orderY[i]).getCore()));
 			}			
 		}
 	}
 	
-	public ZoneCore getZone(SectionCore sectionY, SectionCore sectionX) {
+	public ZoneCore getZone(SectionCore sectionX, SectionCore sectionY) {
 		for (ZoneCore zone: zones) {
 			if (zone.getSectionY().equals(sectionY) && 
 			    zone.getSectionX().equals(sectionX) ) {
@@ -185,7 +187,7 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 		Zone lastZone = null;
 		seq.init(startY, endY, startX, endX);
 		while (seq.next()) {
-			ZoneCore zone = getZone(seq.sectionY, seq.sectionX);
+			ZoneCore zone = getZone(seq.sectionX, seq.sectionY);
 			if (zone.isSelectionEnabled()) {
 				zone.setSelected(seq.startX.getValue(), seq.endX.getValue(), seq.startY.getValue(), seq.endY.getValue(), selected);
 				

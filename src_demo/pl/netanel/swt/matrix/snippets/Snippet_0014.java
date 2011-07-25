@@ -23,14 +23,14 @@ public class Snippet_0014 {
 		
 		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		
-		Section<Integer> body1 = matrix.getAxisX().getBody();
-		body1.setDefaultLineWidth(0);
-		body1.setCount(4);
-		body1.setDefaultCellWidth(50);
+		Section<Integer> bodyX = matrix.getAxisX().getBody();
+		bodyX.setDefaultLineWidth(0);
+		bodyX.setCount(4);
+		bodyX.setDefaultCellWidth(50);
 		
-		Section<Integer> body0 = matrix.getAxisY().getBody();
-		body0.setDefaultLineWidth(0);
-		body0.setCount(10);
+		Section<Integer> bodyY = matrix.getAxisY().getBody();
+		bodyY.setDefaultLineWidth(0);
+		bodyY.setCount(10);
 		
 
 		final Zone<Integer, Integer> body = matrix.getBody();

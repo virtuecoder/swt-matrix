@@ -39,34 +39,41 @@ import pl.netanel.util.Preconditions;
  */
 
 public class Painter<X extends Number, Y extends Number> {
-	/** 
-	 * Single scope of the whole container
-	 */
-	public static final int SCOPE_SINGLE = 0;
-	/**
-	 * Horizontal lines stretching from the left to the right edge of the container
-	 */
-	public static final int SCOPE_HORIZONTAL_LINES = 1;
-	/**
-	 * Vertical lines stretching from the top to the bottom edge of the container
-	 */
-	public static final int SCOPE_VERTICAL_LINES = 2;
-	/**
-	 * Compound cells each including all cells of a single row 
-	 */
-	public static final int SCOPE_ROW_CELLS = 3;
-	/**
-	 * Compound cells each including all cells of a single column 
-	 */
-	public static final int SCOPE_COLUMN_CELLS = 4;
-	/**
-	 * Individual cells in horizontal order. Aids graphics performance in case of drawing homogenic rows.
-	 */
-	public static final int SCOPE_CELLS_HORIZONTALLY = 5;
-	/**
-	 * Individual cells in vertical order. Aids graphics performance in case of drawing homogenic columns. 
-	 */
-	public static final int SCOPE_CELLS_VERTICALLY = 6;
+  /**
+   * Single scope of the whole container
+   */
+  public static final int SCOPE_ENTIRE = 0;
+  /**
+   * Horizontal lines stretching from the left to the right edge of the
+   * container
+   */
+  public static final int SCOPE_HORIZONTAL_LINES = 1;
+  /**
+   * Vertical lines stretching from the top to the bottom edge of the container
+   */
+  public static final int SCOPE_VERTICAL_LINES = 2;
+  /**
+   * Compound cells each including all cells of a single row
+   */
+  public static final int SCOPE_ROW_CELLS = 3;
+  /**
+   * Compound cells each including all cells of a single column
+   */
+  public static final int SCOPE_COLUMN_CELLS = 4;
+  /**
+   * Individual cells in horizontal order first. Aids graphics performance in case of
+   * drawing homogenic rows.
+   */
+  public static final int SCOPE_CELLS_HORIZONTALLY = 5;
+  /**
+   * Individual cells in vertical order first. Aids graphics performance in case of
+   * drawing homogenic columns.
+   */
+  public static final int SCOPE_CELLS_VERTICALLY = 6;
+  /**
+   * Shortcut for {@link #SCOPE_CELLS_HORIZONTALLY}
+   */
+  public static final int SCOPE_CELLS = SCOPE_CELLS_HORIZONTALLY;
 	
   /**
    * Default name of a painter belonging to a zone and responsible to paint its
@@ -255,11 +262,11 @@ public class Painter<X extends Number, Y extends Number> {
 
 	
 	/**
-	 * Constructor with the scope defaulted to {@link #SCOPE_SINGLE}. 
+	 * Constructor with the scope defaulted to {@link #SCOPE_ENTIRE}. 
 	 * @param name the name of the painter, must be unique in the collection to which it is added
 	 */
 	public Painter(String name) {
-		this(name, SCOPE_SINGLE);
+		this(name, SCOPE_ENTIRE);
 	}
 
 	/**
@@ -288,8 +295,17 @@ public class Painter<X extends Number, Y extends Number> {
 	public String getName() {
 		return name;
 	}
-
+		
 	/**
+	 * Returns the painter scope.
+	 * 
+	 * @return the painter scope
+	 */
+	public int getScope() {
+    return scope;
+  }
+
+  /**
 	 * Initializes the GC property of the receiver to be used by its other methods.
 	 * To change the painter initialization behavior override its protected {@link #init()} method. 
 	 * @param gc
@@ -312,7 +328,7 @@ public class Painter<X extends Number, Y extends Number> {
    * @see <code>clean()</code>
    */
 	protected boolean init() {
-		if (scope < SCOPE_CELLS_HORIZONTALLY) return true;
+		if (scope < SCOPE_CELLS) return true;
 		lastForeground = defaultForeground = 
 		  foreground == null ? zone.getDefaultForeground() : foreground;
 		lastBackground = defaultBackground = 
@@ -363,14 +379,14 @@ public class Painter<X extends Number, Y extends Number> {
 	/**
 	 * Draws on the canvas within the given boundaries according to the given indexes. 
 	 * <p>
-	 * The types of the <code>indexY</code>, <code>indexX</code> arguments are not checked 
+	 * The types of the <code>indexX</code>, <code>indexY</code> arguments are not checked 
 	 * in the runtime for performance reasons. Thus the use of generics is recommended to
 	 * check against wrong type in compile time; 
 	 * <p>
-	 * <code>indexY</code> is always null when the receiver's scope is one of the following:<ul>
-	 *        <li>{@link #SCOPE_COLUMN_CELLS}, <li>{@link #SCOPE_VERTICAL_LINES}, <li>{@link #SCOPE_SINGLE}</ul>
 	 * <code>indexX</code> is always null when the receiver's scope is one of the following:<ul>
-	 *        <li>{@link #SCOPE_ROW_CELLS}, <li>{@link #SCOPE_HORIZONTAL_LINES}, <li>{@link #SCOPE_SINGLE}</ul>
+	 *        <li>{@link #SCOPE_COLUMN_CELLS}, <li>{@link #SCOPE_VERTICAL_LINES}, <li>{@link #SCOPE_ENTIRE}</ul>
+	 * <code>indexY</code> is always null when the receiver's scope is one of the following:<ul>
+	 *        <li>{@link #SCOPE_ROW_CELLS}, <li>{@link #SCOPE_HORIZONTAL_LINES}, <li>{@link #SCOPE_ENTIRE}</ul>
 	 * @param indexX index of a section item in the column axis 
 	 * @param indexY index of a section item in the row axis. 
 	 * @param x the x coordinate of the painting boundaries
@@ -552,7 +568,7 @@ public class Painter<X extends Number, Y extends Number> {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-	
+
 	/**
 	 * Returns true if the painter is enabled, or false otherwise.
 	 * <p>

@@ -39,7 +39,7 @@ public class Snippet_0405 {
 		matrix.getAxisX().getBody().setDefaultCellWidth(80);
 
 		// Paint text from the model in the body
-    matrix.getBody().replacePainter(new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+    matrix.getBody().replacePainter(new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
       @Override
       public String getText(Integer indexX, Integer indexY) {
         return (String) data.get(indexY.intValue())[indexX.intValue()];

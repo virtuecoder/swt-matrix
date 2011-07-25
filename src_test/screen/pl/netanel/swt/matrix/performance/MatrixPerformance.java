@@ -44,7 +44,7 @@ import pl.netanel.swt.matrix.Painter;
 		matrix.getAxisY().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
 		matrix.getAxisX().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
 		
-		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS) {
 			@Override
 			public String getText(Number indexY, Number indexX) {
 				return indexY.toString() + ", " + indexX;

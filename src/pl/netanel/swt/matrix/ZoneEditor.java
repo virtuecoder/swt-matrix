@@ -81,7 +81,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		// Painters
 		cellsPainter = zone.getPainter(Painter.NAME_CELLS);
 		zone.replacePainter(new Painter<X, Y>(
-		  Painter.NAME_EMULATED_CONTROLS, Painter.SCOPE_CELLS_HORIZONTALLY) 
+		  Painter.NAME_EMULATED_CONTROLS, Painter.SCOPE_CELLS) 
 	  {
 		  @Override protected boolean init() {
 		    return true;
@@ -462,11 +462,11 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	
 	void edit(GestureBinding b) {
 		Matrix<X, Y> matrix = getMatrix();
-		final AxisItem<Y> focusItem0 = matrix.axisY.getFocusItem();
-		final AxisItem<X> focusItem1 = matrix.axisX.getFocusItem();
-		if (focusItem0 == null || focusItem1 == null) return;
+		final AxisItem<X> focusItem1X = matrix.axisX.getFocusItem();
+		final AxisItem<Y> focusItemY = matrix.axisY.getFocusItem();
+		if (focusItem1X == null || focusItemY == null) return;
 
-		activate(focusItem1.getIndex(), focusItem0.getIndex(), b);
+		activate(focusItem1X.getIndex(), focusItemY.getIndex(), b);
 	}
 
 	/**
@@ -495,18 +495,18 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		StringBuilder sb = new StringBuilder();
 		cellsPainter = zone.getPainter(Painter.NAME_CELLS);
 
-		Number[] n = zone.getSelectedExtent();
-		X max1 = (X) n[3];
-		Y max0 = (Y) n[1];
-		Iterator<Number[]> it = zone.getSelectedBoundsIterator();
+		CellExtent<X, Y> n = zone.getSelectedExtent();
+		Y maxY = n.getEndY();
+		X maxX = n.getEndX();
+		Iterator<Cell<X, Y>> it = zone.getSelectedBoundsIterator();
 		
 		while (it.hasNext()) {
-			Number[] next = it.next();
-			X indexX = (X) next[1];
-			Y indexY = (Y) next[0];
+			Cell<X, Y> next = it.next();
+			X indexX = next.getIndexX();
+			Y indexY = next.getIndexY();
 			sb.append(zone.isSelected(indexX, indexY) ? format(indexX, indexY) : "");
-			if (getMatrix().axisX.math.compare(indexX, max1) < 0) sb.append("\t");
-			else if (getMatrix().axisY.math.compare(indexY, max0) < 0) {
+			if (getMatrix().axisX.math.compare(indexX, maxX) < 0) sb.append("\t");
+			else if (getMatrix().axisY.math.compare(indexY, maxY) < 0) {
 				sb.append(NEW_LINE);
 			}
 		}
@@ -531,25 +531,25 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		
 		if (contents == null) return;
 		
-		Axis<Y> axisY = getMatrix().getAxisY();
 		Axis<X> axisX = getMatrix().getAxisX();
+		Axis<Y> axisY = getMatrix().getAxisY();
 
 		// Get the focus cell to start the pasting from
-		AxisItem<Y> focusItem0 = axisY.getFocusItem();
-		AxisItem<X> focusItem1 = axisX.getFocusItem();
-		if (focusItem0 == null || focusItem1 == null) return;
+		AxisItem<X> focusItemX = axisX.getFocusItem();
+		AxisItem<Y> focusItemY = axisY.getFocusItem();
+		if (focusItemX == null || focusItemY == null) return;
 		Math<Y> mathY = axisY.math;
 		Math<X> mathX = axisX.math;
-		Y startY = focusItem0.getIndex(), indexY = startY;
-		X startX = focusItem1.getIndex(), indexX = startX;
-		Y count0 = axisY.getBody().getCount();
-		X count1 = axisX.getBody().getCount();
+		X startX = focusItemX.getIndex(), indexX = startX;
+		Y startY = focusItemY.getIndex(), indexY = startY;
+		X countX = axisX.getBody().getCount();
+		Y countY = axisY.getBody().getCount();
 		
 		String[] rows = contents.toString().split(NEW_LINE);
-		for (int i = 0; i < rows.length && mathY.compare(indexY, count0) < 0; i++) {
+		for (int i = 0; i < rows.length && mathY.compare(indexY, countY) < 0; i++) {
 			String[] cells = split(rows[i], "\t");
 			indexX = startX;
-			for (int j = 0; j < cells.length && mathX.compare(indexX, count1) < 0; j++) {
+			for (int j = 0; j < cells.length && mathX.compare(indexX, countX) < 0; j++) {
 				Object value = parse(indexX, indexY, cells[j]);
 				if (value != null) {
 					setModelValue(indexX, indexY, value);
@@ -575,11 +575,11 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		copy();
 
 		// Set null value in the selected cells
-		Iterator<Number[]> it = zone.getSelectedBoundsIterator();
+		Iterator<Cell<X, Y>> it = zone.getSelectedBoundsIterator();
 		while (it.hasNext()) {
-			Number[] next = it.next();
-			Y indexY = (Y) next[0];
-			X indexX = (X) next[1];
+			Cell<X, Y> next = it.next();
+			X indexX = next.getIndexX();
+			Y indexY = next.getIndexY();
 			if (zone.isSelected(indexX, indexY) ) {
 				setModelValue(indexX, indexY, null);
 			}
@@ -825,12 +825,12 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	}
 
 	class ZoneEditorData {
+	  public X indexX;
 		public Y indexY;
-		public X indexX;
 		public boolean isEmbedded;
 		public ZoneEditorData(X indexX2, Y indexY2, boolean embedded) {
-			indexX = indexX2;
 			indexY = indexY2;
+			indexX = indexX2;
 			isEmbedded = embedded;
 		}
 	}

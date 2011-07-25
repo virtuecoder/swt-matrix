@@ -25,9 +25,9 @@ public class Snippet_0016 {
 		
 		matrix.getAxisY().getBody().setCount(10);
 
-		Section<Integer> body1 = matrix.getAxisX().getBody();
-		body1.setCount(4);
-		body1.setDefaultCellWidth(50);
+		Section<Integer> body1X = matrix.getAxisX().getBody();
+		body1X.setCount(4);
+		body1X.setDefaultCellWidth(50);
 
 		final Zone<Integer, Integer> body = matrix.getBody();
 		body.setSelectionBackground(display.getSystemColor(SWT.COLOR_LIST_SELECTION));

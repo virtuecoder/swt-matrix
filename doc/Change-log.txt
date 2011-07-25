@@ -1,4 +1,13 @@
 
+Version 0.4
+
+API changes:
+- Signature change for methods and parameters with 0 and 1 suffixes to have Y and X suffixes and inversed order.
+- Renamed Painter.SCOPE_SINGLE to Painter.SCOPE_ENTIRE
+- Added class CellExtent returned by Zone.getSelectedExtent()
+- Added Painter.getScope()
+- Added Painter.SCOPE_CELLS as a shortcut for SCOPE_CELLS_HORIZONTALLY
+
 -------------------------------------------------------------------------------
 Version 0.3.5
 
@@ -6,9 +15,9 @@ New fetures:
 - Configurable painter for item dragging.
 
 API changes:
-- Painter.NAME_DRAG_ITEM
-- Painter.selectionHighlight
-- Zone.remove Painter
+- Added Painter.NAME_DRAG_ITEM
+- Addad Painter.selectionHighlight 
+- Zone.removePainter(String)
 
 -------------------------------------------------------------------------------
 Version 0.3.4

@@ -23,16 +23,16 @@ public class Snippet_0903 {
 		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		matrix.getAxisY().getHeader().setVisible(true);
 		matrix.getAxisX().getHeader().setVisible(true);
-		final Section<Integer> body0 = matrix.getAxisY().getBody();
-		final Section<Integer> body1 = matrix.getAxisX().getBody();
-		body0.setCount(10);
-		body1.setCount(4);
+		final Section<Integer> bodyX = matrix.getAxisX().getBody();
+		final Section<Integer> bodyY = matrix.getAxisY().getBody();
+		bodyX.setCount(4);
+		bodyY.setCount(10);
 		
 		matrix.addMouseMoveListener(new MouseMoveListener() {
 			public void mouseMove(MouseEvent e) {
-				AxisItem<Integer> item0 = matrix.getAxisY().getItemByDistance(e.y);
-				AxisItem<Integer> item1 = matrix.getAxisX().getItemByDistance(e.x);
-				System.out.println(item0.toString() + ":" + item1.toString());
+			  AxisItem<Integer> itemX = matrix.getAxisX().getItemByDistance(e.x);
+				AxisItem<Integer> itemY = matrix.getAxisY().getItemByDistance(e.y);
+				System.out.println(itemX.toString() + ":" +  itemY.toString());
 			}
 		});
 		

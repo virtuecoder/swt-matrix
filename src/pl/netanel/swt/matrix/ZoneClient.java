@@ -172,7 +172,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   }
   
   @Override
-  public Number[] getSelectedExtent() {
+  public CellExtent getSelectedExtent() {
     return core.getSelectedExtent();
   }
 

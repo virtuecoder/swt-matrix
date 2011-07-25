@@ -764,95 +764,37 @@ class Layout<N extends Number> {
 	}
 
 	
-	public LayoutSequence cellSequence(Frozen frozen, SectionCore section) {
+	public LayoutSequence<N> cellSequence(Frozen frozen, SectionCore section) {
 		if (isComputingRequired) compute();
 		Cache cache = getCache(frozen);
-		return new LayoutSequence(cache.items, cache.cells, section);
+		return new LayoutSequence<N>(cache.items, cache.cells, section);
 	}
 	
-	public LayoutSequence lineSequence(Frozen frozen, SectionCore section) {
+	public LayoutSequence<N> lineSequence(Frozen frozen, SectionCore section) {
 		if (isComputingRequired) compute();
 		Cache cache = getCache(frozen);
-		return new LayoutSequence(cache.items, cache.lines, section);
+		return new LayoutSequence<N>(cache.items, cache.lines, section);
 	}
 	
-	public LayoutSequence singleSequence(int distance, int width) {
-		LayoutSequence seq = new LayoutSequence(null, null, null) {
-			private boolean started;
-
-			@Override public void init() {
-				started = false;
-			}
-			@Override
-			public boolean next() {
-				if (started) return false;
-				return started = true;
-			}
-		};
-		seq.bound = new Bound(distance, width);
-		return seq;
-	}
+//	public LayoutSequence<N> singleSequence(int distance, int width) {
+//		LayoutSequence<N> seq = new LayoutSequence<N>(null, null, null) {
+//			private boolean started;
+//
+//			@Override public void init() {
+//				started = false;
+//			}
+//			@Override
+//			public boolean next() {
+//				if (started) return false;
+//				return started = true;
+//			}
+//		};
+//		seq.bound = new Bound(distance, width);
+//		return seq;
+//	}
 
 	
 	
-	class LayoutSequence {
-
-		private final List<AxisItem> items;
-		private final List<Bound> bounds;
-		private final SectionCore section;
-		private int i;
-		Bound bound;
-		AxisItem<N> item;
-
-		public LayoutSequence(List<AxisItem> items, List<Bound> bounds, SectionCore section) { 
-			this.items = items;
-			this.bounds = bounds;
-			this.section = section;
-		}
-
-		public void init() {
-			for (i = 0; i < items.size(); i++) {
-				if (items.get(i).section.core.equals(section)) break;
-			}
-		}
-		
-		public boolean next() {
-			if (i >= bounds.size()) return false;
-			Section section2 = items.get(i).section.getCore();
-			if (section2 != section) {
-				// Make sure last line is included between sections  
-				if (items.size() == bounds.size() /*&& 
-					axis.getZIndex(section2) < axis.getZIndex(item.section)*/) 
-				{
-					item = AxisItem.create((SectionClient) item.getSection(), math.increment(item.getIndex()));
-					bound = bounds.get(i);
-					i = bounds.size();
-					return true;
-				}
-				return false;
-			}
-			bound = bounds.get(i);
-			item = items.get(i++);
-			return true;
-		}
-		
-		public AxisItem getItem() {
-			return item;
-		}
-		
-		public int getDistance() {
-			return bound.distance;
-		}
-		
-		public int getWidth() {
-			return bound.width;
-		}
-
-		public N getIndex() {
-			return item == null ? null : item.getIndex();
-		}
-	}
-
 	public boolean contains(Frozen frozen, Section section) {
 		List<SectionCore> sections = getCache(frozen).sections;
 		if (sections.contains(section)) {

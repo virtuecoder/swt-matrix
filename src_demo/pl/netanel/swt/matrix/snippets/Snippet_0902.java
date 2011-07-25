@@ -28,12 +28,12 @@ public class Snippet_0902 {
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		matrix.getAxisY().getHeader().setVisible(true);
 		matrix.getAxisX().getHeader().setVisible(true);
-		final Section<Integer> body0 = matrix.getAxisY().getBody();
-		final Section<Integer> body1 = matrix.getAxisX().getBody();
-		body0.setCount(10);
-		body1.setCount(4);
-		body1.setDefaultResizable(true);
-		body1.setDefaultMoveable(true);
+		final Section<Integer> bodyX = matrix.getAxisX().getBody();
+		final Section<Integer> bodyY = matrix.getAxisY().getBody();
+		bodyX.setCount(4);
+		bodyX.setDefaultResizable(true);
+		bodyX.setDefaultMoveable(true);
+		bodyY.setCount(10);
 		
 		// Cell selection
 		final Zone<Integer, Integer> body = matrix.getBody();
@@ -53,21 +53,21 @@ public class Snippet_0902 {
 			}
 		});
 		
-		body0.addSelectionListener(new SelectionAdapter() {
+		bodyY.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				selectedItems("Rows selected: ", body0.getSelectedExtentIterator());
+				selectedItems("Rows selected: ", bodyY.getSelectedExtentIterator());
 			}
 		});
 		
-		body1.addSelectionListener(new SelectionAdapter() {
+		bodyX.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				selectedItems("Columns selected: ", body1.getSelectedExtentIterator());
+				selectedItems("Columns selected: ", bodyX.getSelectedExtentIterator());
 			}
 		});
 		
-		body1.addControlListener(new ControlAdapter() {
+		bodyX.addControlListener(new ControlAdapter() {
 			@Override
 			public void controlResized(ControlEvent e) {
 				@SuppressWarnings("unchecked") AxisItem<Integer> item = (AxisItem<Integer>) e.data;
@@ -83,7 +83,7 @@ public class Snippet_0902 {
 			}
 			@Override
 			public void controlMoved(ControlEvent e) {
-				selectedItems("Columns moved: ", body1.getSelectedExtentIterator());
+				selectedItems("Columns moved: ", bodyX.getSelectedExtentIterator());
 				
 				@SuppressWarnings("unchecked") AxisItem<Integer> item = (AxisItem<Integer>) e.data;
 				System.out.println("Target: section " + item.getSection() + ", index " + item.getIndex());

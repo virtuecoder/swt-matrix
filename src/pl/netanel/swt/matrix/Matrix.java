@@ -344,12 +344,12 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		painters.add(new Painter(Painter.NAME_FOCUS_CELL) {
 			@Override
 			public void paint(Number indexY, Number indexX, int x, int y, int width, int height) {
-				AxisItem<Y> item0 = axisY.getFocusItem();
-				AxisItem<X> item1 = axisX.getFocusItem();
-				if (item0 == null || item1 == null) return;
-				ZoneCore zone = model.getZone(item0.section.core, item1.section.core);
+			  AxisItem<X> itemX = axisX.getFocusItem();
+				AxisItem<Y> itemY = axisY.getFocusItem();
+				if (itemX == null || itemY == null) return;
+				ZoneCore zone = model.getZone(itemX.section.core, itemY.section.core);
 				if (zone == null) return;
-				Rectangle r = zone.getCellBounds(item1.getIndex(), item0.getIndex());
+				Rectangle r = zone.getCellBounds(itemX.getIndex(), itemY.getIndex());
 				if (r == null) return;
 				gc.setLineWidth(2);
 				gc.setForeground(Resources.getColor(SWT.COLOR_BLACK));
@@ -363,26 +363,26 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	}
 	
 	class DockPainter extends Painter {
-		private final Frozen dockY;
 		private final Frozen dockX;
+		private final Frozen dockY;
 
-		public DockPainter(Frozen dockY, Frozen dockX) {
-			super("frozen " + dockY.name().toLowerCase() + " " + dockX.name().toLowerCase());
-			this.dockY = dockY;
+		public DockPainter(Frozen dockX, Frozen dockY) {
+			super("frozen " + dockX.name().toLowerCase() + " " + dockY.name().toLowerCase());
 			this.dockX = dockX;
+			this.dockY = dockY;
 		}
 		
 		@Override
 		public void paint(Number indexY, Number indexX, int x, int y, int width, int height) {
-			Bound bb0 = layoutY.getBound(dockY);
-			Bound bb1 = layoutX.getBound(dockX);
+		  Bound bbX = layoutX.getBound(dockX);
+			Bound bbY = layoutY.getBound(dockY);
 			
 			for (ZoneCore<X, Y> zone: model) {
 				if (!layoutY.contains(dockY, zone.sectionY) ||
 					!layoutX.contains(dockX, zone.sectionX) ) continue;
 				
 //				if (zone == null || !zone.isVisible()) continue;
-				gc.setClipping(bb1.distance, bb0.distance, bb1.width, bb0.width);
+				gc.setClipping(bbX.distance, bbY.distance, bbX.width, bbY.width);
 				
 				Bound b0 = layoutY.getBound(dockY, zone.sectionY);
 				Bound b1 = layoutX.getBound(dockX, zone.sectionX);
@@ -404,8 +404,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	void onPaint(Event event) {
 //		long t = System.nanoTime();
 		final GC gc = event.gc;
-		layoutY.computeIfRequired();
 		layoutX.computeIfRequired();
+		layoutY.computeIfRequired();
 		
 		for (Painter<X, Y> p: painters) {
 			if (!p.isEnabled() || !p.init(gc)) continue;
@@ -475,19 +475,19 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	}
 
 	/**
+	 * Returns the column (horizontal) axis.
+	 * @return the column (horizontal) axis
+	 */
+	public Axis<X> getAxisX() {
+	  return axisX;
+	}
+
+	/**
 	 * Returns the row (vertical) axis.
 	 * @return the row (vertical) axis
 	 */
 	public Axis<Y> getAxisY() {
 		return axisY;
-	}
-	
-	/**
-	 * Returns the column (horizontal) axis.
-	 * @return the column (horizontal) axis
-	 */
-	public Axis<X> getAxisX() {
-		return axisX;
 	}
 	
 	/**
@@ -531,13 +531,13 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	public Zone<X, Y> getZone(Section<X> sectionX, Section<Y> sectionY) {
 	  Preconditions.checkNotNullWithName(sectionY, "sectionY");
 	  Preconditions.checkNotNullWithName(sectionX, "sectionX");
-	  SectionClient sectionClient0 = axisY.sectionClient(sectionY);
-	  SectionClient sectionClient1 = axisX.sectionClient(sectionX);
-	  axisY.checkSection(sectionClient0);
-	  axisX.checkSection(sectionClient1);
+	  SectionClient sectionClientX = axisX.sectionClient(sectionX);
+	  SectionClient sectionClientY = axisY.sectionClient(sectionY);
+	  axisY.checkSection(sectionClientY);
+	  axisX.checkSection(sectionClientX);
 	  for (ZoneClient zone: zones) {
-	    if (zone.getSectionY().equals(sectionClient0) && 
-	      zone.getSectionX().equals(sectionClient1) ) {
+	    if (zone.getSectionX().equals(sectionClientX) && 
+	        zone.getSectionY().equals(sectionClientY) ) {
 	      return zone;
 	    }
 	  }
@@ -852,7 +852,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
   }
 
 	private void setPainterMatrixAndZone(Painter painter) {
-		if (painter.scope == Painter.SCOPE_CELLS_HORIZONTALLY ||
+		if (painter.scope == Painter.SCOPE_CELLS ||
 				painter.scope == Painter.SCOPE_CELLS_VERTICALLY) 
 		{
 			painter.setMatrix(this);
@@ -889,10 +889,10 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    int w = 0;
 	    for (ZoneCore<X, Y> zone: model.zones) {
 	      if (symbol == 'X' && zone.sectionX.equals(item.section.core)) {
-	        CellSet set = new CellSet(zone.sectionY.math, zone.sectionX.math);
-	        set.add(zone.sectionY.math.ZERO_VALUE(), 
-	          zone.sectionY.math.decrement(zone.sectionY.getCount()), 
-	          item.getIndex(), item.getIndex());
+	        CellSet set = new CellSet(zone.sectionX.math, zone.sectionY.math);
+	        set.add(item.getIndex(), 
+	          item.getIndex(), 
+	          zone.sectionY.math.ZERO_VALUE(), zone.sectionY.math.decrement(zone.sectionY.getCount()));
 	        NumberPairSequence<X, Y> seq = new NumberPairSequence(set);
 	        for (Painter painter: zone.painters) {
 	          painter.init(gc);
@@ -904,10 +904,10 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	        }
 	      }
 	      else if (symbol == 'Y' && zone.sectionY.equals(item.section.core)) {
-	        CellSet set = new CellSet(zone.sectionY.math, zone.sectionX.math);
-	        set.add(item.getIndex(), item.getIndex(),
-	          zone.sectionX.math.ZERO_VALUE(), 
-	          zone.sectionX.math.decrement(zone.sectionX.getCount()));
+	        CellSet set = new CellSet(zone.sectionX.math, zone.sectionY.math);
+	        set.add(zone.sectionX.math.ZERO_VALUE(), zone.sectionX.math.decrement(zone.sectionX.getCount()),
+	          item.getIndex(), 
+	          item.getIndex());
 	        NumberPairSequence<X, Y> seq = new NumberPairSequence(set);
 	        for (Painter painter: zone.painters) {
 	          painter.init(gc);

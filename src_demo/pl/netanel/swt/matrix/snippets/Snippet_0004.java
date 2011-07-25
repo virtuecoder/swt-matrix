@@ -41,9 +41,9 @@ public class Snippet_0004 {
 		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
 		Axis<Integer> axisY = matrix.getAxisY();
-		final Section<Integer> body0 = axisY.getBody();
-		body0.setCount(list.size());
-		body0.setDefaultResizable(true);
+		final Section<Integer> bodyY = axisY.getBody();
+		bodyY.setCount(list.size());
+		bodyY.setDefaultResizable(true);
 		axisY.getHeader().setVisible(true);
 		
 		Axis<Integer> axisX = matrix.getAxisX();
@@ -52,7 +52,7 @@ public class Snippet_0004 {
 		axisX.getHeader().setVisible(true);
 		
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
 		    @Override
 		    public String getText(Integer indexX, Integer indexY) {
 		      String value = list.get(indexY.intValue());
@@ -64,7 +64,7 @@ public class Snippet_0004 {
 		);
 		
 		matrix.getColumnHeader().replacePainter(
-		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
 		    @Override
 		    public String getText(Integer indexX, Integer indexY) {
 		      return indexX.intValue() == 0 ? "Value" : "Length";
@@ -80,7 +80,7 @@ public class Snippet_0004 {
 				AxisItem<Integer> focusItem = matrix.getAxisY().getFocusItem();
 				int focusIndex = focusItem == null ? 0 : focusItem.getIndex();
 				list.add(focusIndex, Integer.toString(++counter));
-				body0.insert(focusIndex, 1);
+				bodyY.insert(focusIndex, 1);
 				matrix.refresh();
 				matrix.setFocus();
 			
@@ -95,7 +95,7 @@ public class Snippet_0004 {
 			  AxisItem<Integer> focusItem = matrix.getAxisY().getFocusItem();
 			  if (focusItem != null) {
 			    Integer index = focusItem.getIndex();
-          body0.delete(index, index);
+          bodyY.delete(index, index);
 			    list.remove(index);
 			  }
 				matrix.refresh();

@@ -8,6 +8,28 @@ import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 
+/**
+ * Section represents a continuous segment of a matrix axis, for example a
+ * header, body, footer. It contains a number of items indexed by the 
+ * <code>&lt;N extends {@link Number}&gt;</code> type parameter.<br>
+ * 
+ * Index item width consists of the line width and the cell width - 
+ * the line precedes the cell. The last line index equals to getCount().
+ * If the item is moved then both the cell and the preceding line are moved.  
+ * <p>
+ * Item attributes include cell width, line width, moveable, resizable,
+ * hideable, hidden, selected. To optimize data storage of those attributes one
+ * value can be set for a range of items enclosed between the start and end
+ * items, for example setCellWidth(start, end, width).
+ * Also default values can be defined to save memory. If 1000000 items
+ * have the same width, then its a waste to store 1000000 ints with the same
+ * values. An example of such function: setDefaultCellWidth(width).
+ * <p>
+ * Section has boolean flags for visibility and navigation enablement. 
+ * 
+ * 
+ * @author Jacek Kolodziejczyk created 02-03-2011
+ */
 public interface Section<N extends Number> {
 
   /**

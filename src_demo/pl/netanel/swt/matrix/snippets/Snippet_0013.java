@@ -24,20 +24,20 @@ public class Snippet_0013 {
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		matrix.getAxisY().getHeader().setVisible(true);
 		
-		Section<Integer> body0 = matrix.getAxisY().getBody();
-		body0.setDefaultLineWidth(3);
-		body0.setCount(10);
+		Section<Integer> bodyY = matrix.getAxisY().getBody();
+		bodyY.setDefaultLineWidth(3);
+		bodyY.setCount(10);
 		
-		Section<Integer> body1 = matrix.getAxisX().getBody();
-		body1.setDefaultLineWidth(3);
-		body1.setCount(4);
+		Section<Integer> bodyX = matrix.getAxisX().getBody();
+		bodyX.setDefaultLineWidth(3);
+		bodyX.setCount(4);
 		
 		// Column header painting
 		Zone<Integer, Integer> columnHeader = matrix.getColumnHeader();
 		columnHeader.getPainter("row lines").setEnabled(false);
 		columnHeader.getPainter("column lines").setEnabled(false);
 		columnHeader.addPainter(
-		  new Painter<Integer, Integer>("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		  new Painter<Integer, Integer>("cell border", Painter.SCOPE_CELLS) {
 			@Override
 			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 				gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
@@ -51,7 +51,7 @@ public class Snippet_0013 {
 		body.getPainter("row lines").setEnabled(false);
 		body.getPainter("column lines").setEnabled(false);
 		body.addPainter(
-		  new Painter<Integer, Integer>("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		  new Painter<Integer, Integer>("cell border", Painter.SCOPE_CELLS) {
 		    @Override
 		    public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 		      gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));

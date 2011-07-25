@@ -40,8 +40,8 @@ class NumberPairSequence<X extends Number, Y extends Number> implements Sequence
 		i = 0;
 		size = set.size();
 		if (size == 0) return;
-		e0 = set.items0.get(i);
-		e1 = set.items1.get(i);
+		e0 = set.itemsY.get(i);
+		e1 = set.itemsX.get(i);
 		indexY = set.mathY.create(e0.start);
 		indexX = set.mathX.create(e1.start);
 		indexX.decrement();
@@ -57,8 +57,8 @@ class NumberPairSequence<X extends Number, Y extends Number> implements Sequence
 		if (set.mathX.compare(indexX.increment().getValue(), e1.end()) > 0) {
 			if (set.mathY.compare(indexY.increment().getValue(), e0.end()) > 0) {
 				if (++i >= size) return false;
-				e0 = set.items0.get(i);
-				e1 = set.items1.get(i);
+				e0 = set.itemsY.get(i);
+				e1 = set.itemsX.get(i);
 				indexY.set(e0.start);
 			}
 			indexX.set(e1.start);
@@ -87,8 +87,8 @@ class NumberPairSequence<X extends Number, Y extends Number> implements Sequence
 	
 	public boolean nextExtent() {
 		if (i++ >= size) return false;
-		e0 = set.items0.get(i-1);
-		e1 = set.items1.get(i-1);
+		e0 = set.itemsY.get(i-1);
+		e1 = set.itemsX.get(i-1);
 		indexY = set.mathY.create(e0.start);
 		indexX = set.mathX.create(e1.start);
 		indexX.decrement();

@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.AxisItem;
+import pl.netanel.swt.matrix.CellExtent;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
@@ -32,7 +33,7 @@ import pl.netanel.swt.matrix.ZoneEditor;
  */
 public class Snippet_0490 {
 	static final String NEW_LINE = System.getProperty("line.separator");
-	static final int count0 = 10, count1 = 4;
+	static final int countY = 10, countX = 4;
 	static final Transfer transfer = new Transfer() {
 
     @Override public TransferData[] getSupportedTypes() {
@@ -68,9 +69,9 @@ public class Snippet_0490 {
 		
 		// Data model
 		final ArrayList<ArrayList<String>> data = new ArrayList<ArrayList<String>>();
-		for (int i = 0; i < count0; i++) {
+		for (int i = 0; i < countY; i++) {
 			ArrayList<String> row = new ArrayList<String>();
-			for (int j = 0; j < count1; j++) {
+			for (int j = 0; j < countX; j++) {
 				row.add("" + i + ", " + j);
 			}	
 			data.add(row);
@@ -82,9 +83,9 @@ public class Snippet_0490 {
 		
 		// Configure the matrix
 		matrix.getAxisY().getHeader().setVisible(true);
-		matrix.getAxisY().getBody().setCount(count0);
-		matrix.getAxisX().getBody().setCount(count1);
-		matrix.getBody().replacePainter(new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		matrix.getAxisY().getBody().setCount(countY);
+		matrix.getAxisX().getBody().setCount(countX);
+		matrix.getBody().replacePainter(new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
 			@Override
 			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 				text = data.get(indexY.intValue()).get(indexX.intValue()).toString();
@@ -103,25 +104,25 @@ public class Snippet_0490 {
   				StringBuilder sb = new StringBuilder();
   				Zone<Integer, Integer> body = matrix.getBody();
   				if (body.getSelectedCount().compareTo(BigInteger.ZERO) == 0) {
-  				  AxisItem<Integer> focusItem0 = matrix.getAxisY().getFocusItem();
-  				  AxisItem<Integer> focusItem1 = matrix.getAxisX().getFocusItem();
-  				  if (focusItem0 != null && focusItem1 != null) {
-  				    sb.append(data.get(focusItem0.getIndex().intValue()).get(
-  				      focusItem1.getIndex().intValue()));
+  				  AxisItem<Integer> focusItemX = matrix.getAxisX().getFocusItem();
+  				  AxisItem<Integer> focusItemY = matrix.getAxisY().getFocusItem();
+  				  if (focusItemX != null && focusItemY != null) {
+  				    sb.append(data.get(focusItemY.getIndex().intValue()).get(
+  				      focusItemX.getIndex().intValue()));
   				  }
   				} else {
-  				  Number[] n = body.getSelectedExtent();
-  				  int max0 = n[1].intValue();
-  				  int max1 = n[3].intValue();
-  				  int min1 = n[2].intValue();
-  				  for (int i = n[0].intValue(); i <= max0; i++) {
-  				    for (int j = min1; j <= max1; j++) {
-  				      if (j > min1) sb.append("\t");
+  				  CellExtent n = body.getSelectedExtent();
+  				  int maxX = n.getEndX().intValue();
+  				  int maxY = n.getEndY().intValue();
+  				  int minX = n.getStartX().intValue();
+  				  for (int i = n.getStartY().intValue(); i <= maxY; i++) {
+  				    for (int j = minX; j <= maxX; j++) {
+  				      if (j > minX) sb.append("\t");
   				      if (body.isSelected(j, i)) {
   				        sb.append(data.get(i).get(j).toString());
   				      }
   				    }
-  				    if (i < max0) sb.append(NEW_LINE);
+  				    if (i < maxY) sb.append(NEW_LINE);
   				  }
   				}
   				Clipboard clipboard = new Clipboard(display);
@@ -138,16 +139,16 @@ public class Snippet_0490 {
   				
   				if (contents == null) return;
   				
-  				AxisItem<Integer> focusItem0 = matrix.getAxisY().getFocusItem();
-  				AxisItem<Integer> focusItem1 = matrix.getAxisX().getFocusItem();
-  				if (focusItem0 == null || focusItem1 == null) return;
+  				AxisItem<Integer> focusItemX = matrix.getAxisX().getFocusItem();
+  				AxisItem<Integer> focusItemY = matrix.getAxisY().getFocusItem();
+  				if (focusItemX == null || focusItemY == null) return;
   				
-  				int startY = focusItem0.getIndex().intValue();
-  				int startX = focusItem1.getIndex().intValue();
+  				int startY = focusItemY.getIndex().intValue();
+  				int startX = focusItemX.getIndex().intValue();
   				String[] rows = contents.toString().split(NEW_LINE);
-  				for (int i = 0; i < rows.length && startY + i < count0; i++) {
+  				for (int i = 0; i < rows.length && startY + i < countY; i++) {
   					String[] cells = split(rows[i], "\t");
-  					for (int j = 0; j < cells.length && startX + j < count1; j++) {
+  					for (int j = 0; j < cells.length && startX + j < countX; j++) {
   						String value = cells[j];
   						if (value != null) {
   							data.get(startY + i).set(startX + j, value);

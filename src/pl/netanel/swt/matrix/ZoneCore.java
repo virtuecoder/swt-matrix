@@ -15,7 +15,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TypedListener;
 
-import pl.netanel.swt.matrix.Layout.LayoutSequence;
 import pl.netanel.util.ImmutableIterator;
 import pl.netanel.util.Preconditions;
 
@@ -71,8 +70,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
     
 		Math mathY = SectionCore.from(sectionY).math;
 		Math mathX = SectionCore.from(sectionX).math;
-		cellSelection = new CellSet(mathY, mathX);
-		lastSelection = new CellSet(mathY, mathX);
+		cellSelection = new CellSet(mathX, mathY);
+		lastSelection = new CellSet(mathX, mathY);
 		
 		RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
 		RGB whiteColor = Resources.getColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
@@ -113,7 +112,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 void setDefaultBodyStyle() {
 //	  setDefaultBackground(matrix.getBackground());
 	  
-		Painter painter = new Painter(Painter.NAME_CELLS, Painter.SCOPE_CELLS_HORIZONTALLY) {
+		Painter painter = new Painter(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 			@Override public String getText(Number indexY, Number indexX) {
 				return indexY.toString() + ", " + indexX.toString();
 			}
@@ -263,7 +262,7 @@ void setDefaultBodyStyle() {
    * @see pl.netanel.swt.matrix.IZone#isSelected(Y, X)
    */
 	@Override public boolean isSelected(X indexX, Y indexY) {
-		return cellSelection.contains(indexY, indexX);
+		return cellSelection.contains(indexX, indexY);
 	}
 	
 	/* (non-Javadoc)
@@ -274,9 +273,9 @@ void setDefaultBodyStyle() {
 		
 		if (!selectionEnabled) return;
 		if (state) {
-			cellSelection.add(startY, endY, startX, endX);
+			cellSelection.add(startX, endX, startY, endY);
 		} else {
-			cellSelection.remove(startY, endY, startX, endX);			
+			cellSelection.remove(startX, endX, startY, endY);			
 		}
 	}
 	
@@ -297,8 +296,8 @@ void setDefaultBodyStyle() {
 			Math<Y> mathY = sectionY.math;
       Math<X> mathX = sectionX.math;
       cellSelection.add(
-					mathY.ZERO_VALUE(), mathY.decrement(sectionY.getCount()), 
-					mathX.ZERO_VALUE(), mathX.decrement(sectionX.getCount()));
+					mathX.ZERO_VALUE(), mathX.decrement(sectionX.getCount()), 
+					mathY.ZERO_VALUE(), mathY.decrement(sectionY.getCount()));
 		} else {
 			cellSelection.clear();
 			lastSelection.clear();
@@ -399,20 +398,20 @@ void setDefaultBodyStyle() {
 	 * First number in the array returned by the {@link Iterator#next()} method 
 	 * is a row axis index, the second one is a column axis index.
 	 * <p>
-	 * <code>indexY</code> and <code>indexX</code> refer to the model, 
+	 * <code>indexX</code> and <code>indexY</code> refer to the model, 
 	 * not the visual position of the item on the screen
 	 * which can be altered by move and hide operations.  
 	 * <p>
 	 * <strong>Warning</strong> iterating index by index over large extents 
 	 * may cause a performance problem.
 	 */
-	Iterator<Number[]> getSelectedBoundsIterator() {
-		return new ImmutableIterator<Number[]>() {
+	ImmutableIterator<Cell<X, Y>> getSelectedBoundsIterator() {
+		return new ImmutableIterator<Cell<X, Y>>() {
 			NumberPairSequence seq;
 			{
-				Number[] e = cellSelection.getExtent();
-				CellSet set = new CellSet(sectionY.math, sectionX.math);
-				set.add(e[0], e[1], e[2], e[3]);
+				CellExtent e = cellSelection.getExtent();
+				CellSet set = new CellSet(sectionX.math, sectionY.math);
+				set.add(e.startX, e.endX, e.startY, e.endY);
 				seq = new NumberPairSequence(set);
 			}
 			
@@ -427,42 +426,17 @@ void setDefaultBodyStyle() {
 			}
 
 			
-			@Override public Number[] next() {
-				return next ? new Number[] {seq.indexY(), seq.indexX()} : null;
+			@Override public Cell<X, Y> next() {
+				return next ? new Cell(seq.indexX(), seq.indexY()) : null;
 			}
 		};
 	}
 	
 	
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.IZone#getSelectedExtent()
-   */
-	@Override public Number[] getSelectedExtent() {
+	@Override public CellExtent getSelectedExtent() {
 		return cellSelection.getExtent();
 	}
-//	
-//	/**
-//	 * Copies selected data to the clip board using tab for cells and new line for rows concatenation.
-//	 */
-//	void copy() {
-//		StringBuilder sb = new StringBuilder();
-//		Number[] e = cellSelection.getExtent();
-//		NumberSet set0 = new NumberSet(sectionY.math);
-//		NumberSet set1 = new NumberSet(sectionX.math);
-//		set0.add(e[0], e[1]);
-//		set1.add(e[2], e[3]);
-//		NumberSequence seq0 = new NumberSequence(set0);
-//		NumberSequence seq1 = new NumberSequence(set1);
-//		for (seq0.init(); seq0.next();) {
-//			int i = 0;
-//			for (seq1.init(); seq1.next();) {
-//				if (i++ > 0) sb.append("\t");
-//				sb.append(NEW_LINE);
-//			}
-//			sb.append(NEW_LINE);
-//		}
-//	}
 	
 	void backupSelection() {
 		lastSelection = cellSelection.copy();
@@ -477,9 +451,6 @@ void setDefaultBodyStyle() {
 	 * Gesture 
 	 */
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.IZone#bind(int, int, int)
-   */
 	@Override public void bind(int commandId, int eventType, int code) {
 		bind(new GestureBinding(commandId, eventType, code));
 	}
@@ -494,10 +465,6 @@ void setDefaultBodyStyle() {
 		}
 	}
 	
-	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.IZone#unbind(int, int, int)
-   */
 	@Override public void unbind(int commandId, int eventType, int code) {
 		if (editor != null && (
 				commandId == Matrix.CMD_EDIT_DEACTIVATE_APPLY || 
@@ -546,10 +513,10 @@ void setDefaultBodyStyle() {
 		matrix.addListener(eventType, new Listener() {
 			
 			@Override public void handleEvent(Event e) {
-				AxisItem<Y> item0 = matrix.getAxisY().getItemByDistance(e.y);
-				AxisItem<X> item1 = matrix.getAxisX().getItemByDistance(e.x);
-				if (item0 != null && item1 != null && ZoneCore.this == 
-						matrix.model.getZone(item0.section.core, item1.section.core))
+			  AxisItem<X> itemX = matrix.getAxisX().getItemByDistance(e.x);
+				AxisItem<Y> itemY = matrix.getAxisY().getItemByDistance(e.y);
+				if (itemX != null && itemY != null && ZoneCore.this == 
+						matrix.model.getZone(itemX.section.core, itemY.section.core))
 				{
 					listener.handleEvent(e);
 				}
@@ -576,66 +543,66 @@ void setDefaultBodyStyle() {
 			switch (p.scope) {
 			
 			case Painter.SCOPE_CELLS_HORIZONTALLY:
-				LayoutSequence seq0 = layoutY.cellSequence(dockY, sectionY);
-				LayoutSequence seq1 = layoutX.cellSequence(dockX, sectionX);
-				for (seq0.init(); seq0.next();) {
-					distance = seq0.getDistance();
-					width = seq0.getWidth();
-					index = seq0.item.getIndex();
-					for (seq1.init(); seq1.next();) {
-						p.paint(seq1.item.getIndex(), index, 
-							seq1.getDistance(), distance, seq1.getWidth(), width);
+				LayoutSequence seqY = layoutY.cellSequence(dockY, sectionY);
+				LayoutSequence seqX = layoutX.cellSequence(dockX, sectionX);
+				for (seqY.init(); seqY.next();) {
+					distance = seqY.getDistance();
+					width = seqY.getWidth();
+					index = seqY.item.getIndex();
+					for (seqX.init(); seqX.next();) {
+						p.paint(seqX.item.getIndex(), index, 
+							seqX.getDistance(), distance, seqX.getWidth(), width);
 					}
 				}
 				break;
 				
 			case Painter.SCOPE_CELLS_VERTICALLY:
-				seq0 = layoutY.cellSequence(dockY, sectionY);
-				seq1 = layoutX.cellSequence(dockX, sectionX);
-				for (seq1.init(); seq1.next();) {
-					distance = seq1.getDistance();
-					width = seq1.getWidth();
-					index = seq1.item.getIndex();
-					for (seq0.init(); seq0.next();) {
-						p.paint(index, seq0.item.getIndex(),
-							distance, seq0.getDistance(), width, seq0.getWidth());
+				seqY = layoutY.cellSequence(dockY, sectionY);
+				seqX = layoutX.cellSequence(dockX, sectionX);
+				for (seqX.init(); seqX.next();) {
+					distance = seqX.getDistance();
+					width = seqX.getWidth();
+					index = seqX.item.getIndex();
+					for (seqY.init(); seqY.next();) {
+						p.paint(index, seqY.item.getIndex(),
+							distance, seqY.getDistance(), width, seqY.getWidth());
 					}
 				}
 				break;
 			
 			case Painter.SCOPE_ROW_CELLS:
-				seq0 = layoutY.cellSequence(dockY, sectionY);
+				seqY = layoutY.cellSequence(dockY, sectionY);
 				distance = bounds.x;
 				width = bounds.width;
-				for (seq0.init(); seq0.next();) {
-					p.paint(null, seq0.item.getIndex(), distance, seq0.getDistance(), width, seq0.getWidth());
+				for (seqY.init(); seqY.next();) {
+					p.paint(null, seqY.item.getIndex(), distance, seqY.getDistance(), width, seqY.getWidth());
 				}
 				break;
 				
 			case Painter.SCOPE_COLUMN_CELLS:
-				seq1 = layoutX.cellSequence(dockX, sectionX);
+				seqX = layoutX.cellSequence(dockX, sectionX);
 				distance = bounds.y;
 				width = bounds.height;
-				for (seq1.init(); seq1.next();) {
-					p.paint(seq1.item.getIndex(), null, seq1.getDistance(), distance, seq1.getWidth(), width);
+				for (seqX.init(); seqX.next();) {
+					p.paint(seqX.item.getIndex(), null, seqX.getDistance(), distance, seqX.getWidth(), width);
 				}
 				break;
 				
 			case Painter.SCOPE_HORIZONTAL_LINES:
-				seq0 = layoutY.lineSequence(dockY, sectionY);
+				seqY = layoutY.lineSequence(dockY, sectionY);
 				distance = bounds.x;
 				width = bounds.width;
-				for (seq0.init(); seq0.next();) {
-					p.paint(null, seq0.item.getIndex(), distance, seq0.getDistance(), width, seq0.getWidth());
+				for (seqY.init(); seqY.next();) {
+					p.paint(null, seqY.item.getIndex(), distance, seqY.getDistance(), width, seqY.getWidth());
 				}
 				break;
 			
 			case Painter.SCOPE_VERTICAL_LINES:
-				seq1 = layoutX.lineSequence(dockX, sectionX);
+				seqX = layoutX.lineSequence(dockX, sectionX);
 				distance = bounds.y;
 				width = bounds.height;
-				for (seq1.init(); seq1.next();) {
-					p.paint(seq1.item.getIndex(), null, seq1.getDistance(), distance, seq1.getWidth(), width);
+				for (seqX.init(); seqX.next();) {
+					p.paint(seqX.item.getIndex(), null, seqX.getDistance(), distance, seqX.getWidth(), width);
 				}
 				break;
 				
@@ -650,15 +617,15 @@ void setDefaultBodyStyle() {
 				@Override public void run() {
 					if (!p.isEnabled() || !p.init(gc)) return;
 					
-					LayoutSequence seq0 = layoutY.cellSequence(dockY, sectionY);
-					LayoutSequence seq1 = layoutX.cellSequence(dockX, sectionX);
-					for (seq0.init(); seq0.next();) {
-						int distance = seq0.getDistance();
-						int width = seq0.getWidth();
-						Number index = seq0.item.getIndex();
-						for (seq1.init(); seq1.next();) {
-							p.paint(seq1.item.getIndex(), index, 
-									seq1.getDistance(), distance, seq1.getWidth(), width);
+					LayoutSequence<Y> seqY = layoutY.cellSequence(dockY, sectionY);
+					LayoutSequence<X> seqX = layoutX.cellSequence(dockX, sectionX);
+					for (seqY.init(); seqY.next();) {
+						int distance = seqY.getDistance();
+						int width = seqY.getWidth();
+						Y index = seqY.item.getIndex();
+						for (seqX.init(); seqX.next();) {
+							p.paint(seqX.item.getIndex(), index, 
+									seqX.getDistance(), distance, seqX.getWidth(), width);
 						}
 					}
 					p.clean();
@@ -778,7 +745,7 @@ void setDefaultBodyStyle() {
 	void setMatrix(Matrix<X, Y> matrix) {
 		this.matrix = matrix;
 		for (Painter painter: painters) {
-			if (painter.scope == Painter.SCOPE_CELLS_HORIZONTALLY ||
+			if (painter.scope == Painter.SCOPE_CELLS ||
 					painter.scope == Painter.SCOPE_CELLS_VERTICALLY) 
 			{
 				painter.setZone(this);

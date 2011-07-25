@@ -36,12 +36,12 @@ public class Snippet_0201 {
 		final Axis<Integer> axisY = matrix.getAxisY();
 		final Axis<Integer> axisX = matrix.getAxisX();
 		
-		final Section<Integer> body1 = axisX.getBody();
-		body1.setCount(40);
-		body1.setDefaultCellWidth(50);
+		final Section<Integer> bodyX = axisX.getBody();
+		bodyX.setCount(40);
+		bodyX.setDefaultCellWidth(50);
 		
-		Section<Integer> body0 = axisY.getBody();
-		body0.setCount(100);
+		Section<Integer> bodyY = axisY.getBody();
+		bodyY.setCount(100);
 
 		matrix.addPainter(new Painter<Integer, Integer>("freeze lines") {
 			@Override

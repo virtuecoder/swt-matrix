@@ -19,7 +19,7 @@
 	    <uptodate property="proguard.uptodate" targetfile="${ant.project.name}-${version}.jar">
 	        <srcfiles dir="../src" includes="**/*"/>
 	        <srcfiles dir="." includes="proguard.cfg"/>
-	        <mapper type="merge" to="${ant.project.name}-${version}.jar"/>
+	        <!--mapper type="merge" to="${ant.project.name}-${version}.jar"/-->
 	    </uptodate>
 	    <echo message="${proguard.uptodate}"/>
 	</target>
@@ -85,7 +85,7 @@
 	      access="protected" 
 	      author="false" 
 	      sourcepath="../src"
-	      excludepackagenames="pl.netanel.swt, pl.netanel.util"
+	      excludepackagenames="pl.netanel.swt, pl.netanel.util, pl.netanel.swt.matrix.painter, pl.netanel.swt.matrix.custom"
 	      destdir="../javadoc"
 	      splitindex="true" 
 	      use="true" 

@@ -19,20 +19,20 @@ class MapValueToCellSet<X extends Number, Y extends Number, T> implements CellVa
 	 * @see pl.netanel.swt.matrix.CellValues#setValue(Y, Y, X, X, T)
 	 */
 	@Override
-	public void setValue(Y startY, Y endY, X startX, X endX, T value) {
+	public void setValue(X startX, X endX, Y startY, Y endY, T value) {
 		// Remove from other
 		for (Entry<T, CellSet<X, Y>> entry: values.entrySet()) {
 			if (!entry.getKey().equals(value)) {
-				entry.getValue().remove(startY, endY, startX, endX);
+				entry.getValue().remove(startX, endX, startY, endY);
 			}
 		}
 		if (value != null) {
 			CellSet<X, Y> set = values.get(value);
 			if (set == null) {
-				set = new CellSet(mathY, mathX);
+				set = new CellSet(mathX, mathY);
 				values.put(value, set);
 			}
-			set.add(startY, endY, startX, endX);
+			set.add(startX, endX, startY, endY);
 		}
 	}
 	
@@ -40,9 +40,9 @@ class MapValueToCellSet<X extends Number, Y extends Number, T> implements CellVa
 	 * @see pl.netanel.swt.matrix.CellValues#getValue(Y, X)
 	 */
 	@Override
-	public T getValue(Y indexY, X indexX) {
+	public T getValue(X indexX, Y indexY) {
 		for (Entry<T, CellSet<X, Y>> entry: values.entrySet()) {
-			if (entry.getValue().contains(indexY, indexX)) {
+			if (entry.getValue().contains(indexX, indexY)) {
 				return entry.getKey();
 			}
 		}
@@ -69,7 +69,7 @@ class MapValueToCellSet<X extends Number, Y extends Number, T> implements CellVa
 	 * @see pl.netanel.swt.matrix.CellValues#deleteY(Y, Y)
 	 */
 	@Override
-	public void deleteY(Y start, Y end) {
+	public void deleteY(Y end, Y start) {
 		for (Entry<T, CellSet<X, Y>> entry: values.entrySet()) {
 			entry.getValue().deleteY(start, end);
 		}
@@ -78,7 +78,7 @@ class MapValueToCellSet<X extends Number, Y extends Number, T> implements CellVa
 	 * @see pl.netanel.swt.matrix.CellValues#deleteX(X, X)
 	 */
 	@Override
-	public void deleteX(X start, X end) {
+	public void deleteX(X end, X start) {
 		for (Entry<T, CellSet<X, Y>> entry: values.entrySet()) {
 			entry.getValue().deleteX(start, end);
 		}

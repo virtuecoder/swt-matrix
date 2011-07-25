@@ -53,11 +53,11 @@ public class ScrollTest extends SwtTestCase {
       SWT.H_SCROLL | SWT.V_SCROLL);
 
     matrix.getAxisY().getBody().setCount(10);
-    Section<Integer> body0 = matrix.getAxisX().getBody();
-    body0.setCount(4);
-    body0.setCellWidth(0, 300);
-    body0.setCellWidth(1, 200);
-    body0.setDefaultResizable(true);
+    Section<Integer> bodyY = matrix.getAxisX().getBody();
+    bodyY.setCount(4);
+    bodyY.setCellWidth(0, 300);
+    bodyY.setCellWidth(1, 200);
+    bodyY.setDefaultResizable(true);
     matrix.getAxisY().getHeader().setVisible(true);
     
     ScrollBar scroll = matrix.getHorizontalBar();

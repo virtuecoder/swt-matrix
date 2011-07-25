@@ -30,11 +30,11 @@ public class Snippet_0011 {
 			@Override
 			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 				// Get bounds of the focus cell 
-				AxisItem<Integer> item0 = matrix.getAxisY().getFocusItem();
-				AxisItem<Integer> item1 = matrix.getAxisX().getFocusItem();
-				Zone<Integer, Integer> zone = matrix.getZone(item1.getSection(), item0.getSection());
+			  AxisItem<Integer> itemX = matrix.getAxisX().getFocusItem();
+				AxisItem<Integer> itemY = matrix.getAxisY().getFocusItem();
+				Zone<Integer, Integer> zone = matrix.getZone(itemX.getSection(), itemY.getSection());
 				if (zone == null) return;
-				Rectangle r = zone.getCellBounds(item1.getIndex(), item0.getIndex());
+				Rectangle r = zone.getCellBounds(itemX.getIndex(), itemY.getIndex());
 				
 				// Draw rounded rectangle with a changed color
 				gc.setForeground(display.getSystemColor(SWT.COLOR_LIST_SELECTION));

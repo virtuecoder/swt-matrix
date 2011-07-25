@@ -459,8 +459,8 @@ import pl.netanel.util.Arrays;
 	
 	@Test
 	public void removeCorner2() throws Exception {
-		set.add(0, 2, 2, 3);
-		set.remove(2, 4, 0, 2);
+		set.add(2, 3, 0, 2);
+		set.remove(0, 2, 2, 4);
 		result( "∟∟■■"	,
 				"∟∟■■"	,
 				"∟∟∟■" 	);
@@ -547,9 +547,9 @@ import pl.netanel.util.Arrays;
 	}
 	
 	private void assertExtent(int startY, int endY, int startX, int endX) {
-		Number[] e = set.getExtent();
+		CellExtent e = set.getExtent();
 		assertEquals(startY + " " + endY + " " + startX + " " + endX, 
-				e[0] + " " + e[1] + " " + e[2] + " " + e[3]);
+				e.startY + " " + e.endY + " " + e.startX + " " + e.endX);
 	}
 	
 	private void assertInSequence(String expected) {
@@ -604,7 +604,7 @@ import pl.netanel.util.Arrays;
 	}
 
 	void add(int startY, int endY, int startX, int endX) {
-		set.add(startY, endY, startX, endX);
+		set.add(startX, endX, startY, endY);
 	}
 	
 	private void insert(String ...lines) {
@@ -645,9 +645,9 @@ import pl.netanel.util.Arrays;
 	private void doOperation(boolean insert, int startY, int endY, int startX,
 			int endX) {
 		if (insert)
-			set.add(startY, endY, startX, endX);
+			set.add(startX, endX, startY, endY);
 		else 
-			set.remove(startY, endY, startX, endX);
+			set.remove(startX, endX, startY, endY);
 	}
 	
 	private void result(String ...expected) {
@@ -655,27 +655,27 @@ import pl.netanel.util.Arrays;
 	}
 	private void result(CellSet set, String ...expected) {
 		ArrayList<ArrayList<Boolean>> data = new ArrayList<ArrayList<Boolean>>();
-		int size = set.items0.size();
+		int size = set.itemsY.size();
 		int max = 0;
 		
 		for (int i = 0; i < size; i++) {
-			Extent item0 = (Extent) set.items0.get(i);
-			Extent item1 = (Extent) set.items1.get(i);
-			for (int j = 0; j <= item0.end.intValue(); j++) {
+		  Extent itemX = (Extent) set.itemsX.get(i);
+			Extent itemY = (Extent) set.itemsY.get(i);
+			for (int j = 0; j <= itemY.end.intValue(); j++) {
 				ArrayList<Boolean> line;
 				if (j >= data.size()) {
 					data.add(line = new ArrayList<Boolean>());
 				}	
-				if (j < item0.start.intValue()) {
+				if (j < itemY.start.intValue()) {
 					continue;
 				} else {
 					line = data.get(j);
 				}
-				if (max < item1.end.intValue() + 1) {
-					max = item1.end.intValue() + 1;
+				if (max < itemX.end.intValue() + 1) {
+					max = itemX.end.intValue() + 1;
 				}
-				for (int k = 0; k <= item1.end.intValue(); k++) {
-					if (k < item1.start.intValue()) {
+				for (int k = 0; k <= itemX.end.intValue(); k++) {
+					if (k < itemX.start.intValue()) {
 						if (k >= line.size()) {
 							line.add(false);
 						}

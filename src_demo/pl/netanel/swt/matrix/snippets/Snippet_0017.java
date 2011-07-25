@@ -24,13 +24,13 @@ public class Snippet_0017 {
 		
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
 		matrix.getAxisY().getBody().setCount(8);
-		Section<Integer> body1 = matrix.getAxisX().getBody();
-		body1.setCount(8);
-		body1.setDefaultCellWidth(16);
+		Section<Integer> bodyX = matrix.getAxisX().getBody();
+		bodyX.setCount(8);
+		bodyX.setDefaultCellWidth(16);
 		
 		final Color color = display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
 		    @Override
 		    public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 		      background = indexY.intValue() % 2 + indexX.intValue() % 2 == 1 ? color : null;

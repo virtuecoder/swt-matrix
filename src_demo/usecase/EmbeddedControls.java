@@ -47,7 +47,7 @@ public class EmbeddedControls {
 		matrix.getAxisX().getBody().setDefaultResizable(true);
 
 		// Data painter
-		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS) {
 			@Override
 			public String getText(Number indexY, Number indexX) {
 				Object value = data.get(indexY.intValue())[indexX.intValue()];

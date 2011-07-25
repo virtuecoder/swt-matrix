@@ -67,7 +67,7 @@ public class Snippet_0410 {
 
 		// Paint text from the model in the body
     matrix.getBody().replacePainter(
-      new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+      new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
         @Override
         public String getText(Integer indexX, Integer indexY) {
           return (String) data.get(indexY.intValue())[indexX.intValue()];
@@ -82,7 +82,7 @@ public class Snippet_0410 {
     // Insert body painter
     Zone<Integer, Integer> insertBody = matrix.getZone(matrix.getAxisX().getBody(), insertSection);
     Painter<Integer, Integer> insertPainter = new Painter<Integer, Integer>(
-      "cells", Painter.SCOPE_CELLS_HORIZONTALLY) 
+      "cells", Painter.SCOPE_CELLS) 
     {
       @Override public String getText(Integer indexX, Integer indexY) {
         return (String) insertEditor.item[indexX.intValue()];
@@ -94,7 +94,7 @@ public class Snippet_0410 {
 		// Paint text in the row header of the insert section
     final Zone<Integer, Integer> insertHeader = matrix.getZone(axisX.getHeader(), insertSection);
     insertHeader.replacePainter(
-      new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+      new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
         @Override public String getText(Integer indexX, Integer indexY) {
           textAlignX = textAlignY = SWT.CENTER;
           return "add:";

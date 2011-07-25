@@ -38,7 +38,7 @@ public class Snippet_0401 {
 
 		// Data painter
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
+		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
 			@Override
 			public String getText(Integer indexX, Integer indexY) {
 				Object value = data.get(indexY.intValue())[indexX.intValue()];
