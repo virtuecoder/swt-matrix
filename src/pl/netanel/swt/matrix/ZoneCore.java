@@ -714,6 +714,12 @@ void setDefaultBodyStyle() {
     return painters.remove(painter);
   }
   
+  @Override public boolean removePainter(String name) {
+    int i = indexOfPainter(name);
+    if (i == -1) return false;
+    return painters.remove(painters.get(i));
+  }
+  
 	/* (non-Javadoc)
    * @see pl.netanel.swt.matrix.IZone#indexOfPainter(java.lang.String)
    */
@@ -725,7 +731,9 @@ void setDefaultBodyStyle() {
    * @see pl.netanel.swt.matrix.IZone#getPainter(java.lang.String)
    */
 	@Override public Painter<N0, N1> getPainter(String name) {
-		return painters.get(indexOfPainter(name));
+		int i = indexOfPainter(name);
+		if (i == -1) return null;
+    return painters.get(i);
 	}
 	
 	/* (non-Javadoc)
@@ -748,17 +756,16 @@ void setDefaultBodyStyle() {
 			painter.setMatrix(matrix);
 	}
 	
-	private static class LinePainter extends Painter {
-		private final Color color;
+	static class LinePainter extends Painter {
 
 		public LinePainter(String name, int scope, Color color) {
 			super(name, scope);
-			this.color = color;
+			this.background = color;
 		}
 		
 		
 		@Override public void paint(Number index0, Number index1, int x, int y, int width, int height) {
-			gc.setBackground(color);
+			gc.setBackground(background);
 			gc.fillRectangle(x, y, width, height);
 		}
 	}

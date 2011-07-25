@@ -69,65 +69,66 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	public static final int SCOPE_CELLS_VERTICALLY = 6;
 	
   /**
-   * Default name of a painter belonging to z zone and responsible to paint its
-   * cells
+   * Default name of a painter belonging to a zone and responsible to paint its
+   * cells. Painter with that name should not be removed, because 
+   * {@link ZoneEditor} and {@link #NAME_DRAG_ITEM} use it to perform their functions.
    */
   public static final String NAME_CELLS = "cells";
   /**
-   * Default name of a painter belonging to z zone and responsible to paint its
+   * Default name of a painter belonging to a zone and responsible to paint its
    * row lines
    */
   public static final String NAME_ROW_LINES = "row lines";
   /**
-   * Default name of a painter belonging to z zone and responsible to paint its
+   * Default name of a painter belonging to a zone and responsible to paint its
    * column lines
    */
   public static final String NAME_COLUMN_LINES = "column lines";
   /**
-   * Default name of a painter belonging to matrix and responsible to paint the
+   * Default name of a painter belonging to a matrix and responsible to paint the
    * area not frozen
    */
   public static final String NAME_FROZEN_NONE_NONE = "frozen none none";
   /**
-   * Default name of a painter belonging to matrix and responsible to paint the
+   * Default name of a painter belonging to a matrix and responsible to paint the
    * area that is frozen only at the horizontal end of the viewport.
    */
   public static final String NAME_FROZEN_NONE_TAIL = "frozen none tail";
   /**
-   * Default name of a painter belonging to matrix and responsible to paint the
+   * Default name of a painter belonging to a matrix and responsible to paint the
    * area that is frozen only at the vertical end of the viewport.
    */
   public static final String NAME_FROZEN_TAIL_NONE = "frozen tail none";
   /**
-   * Default name of a painter belonging to matrix and responsible to paint the
+   * Default name of a painter belonging to a matrix and responsible to paint the
    * area that is frozen only at the horizontal start of the viewport.
    */
   public static final String NAME_FROZEN_NONE_HEAD = "frozen none head";
   /**
-   * Default name of a painter belonging to matrix and responsible to paint the
+   * Default name of a painter belonging to a matrix and responsible to paint the
    * area that is frozen only at the vertical start of the viewport.
    */
   public static final String NAME_FROZEN_HEAD_NONE = "frozen head none";
   /**
-   * Default name of a painter belonging to matrix and responsible to paint the
+   * Default name of a painter belonging to a matrix and responsible to paint the
    * area that is frozen both at the vertical start and horizontal end of the
    * viewport.
    */
   public static final String NAME_FROZEN_HEAD_TAIL = "frozen head tail";
   /**
-   * Default name of a painter belonging to matrix and responsible to paint the
+   * Default name of a painter belonging to a matrix and responsible to paint the
    * area that is frozen both at the vertical end and horizontal start of the
    * viewport.
    */
   public static final String NAME_FROZEN_TAIL_HEAD = "frozen tail head";
   /**
-   * Default name of a painter belonging to matrix and responsible to paint the
+   * Default name of a painter belonging to a matrix and responsible to paint the
    * area that is frozen both at the vertical end and horizontal end of the
    * viewport.
    */
   public static final String NAME_FROZEN_TAIL_TAIL = "frozen tail tail";
   /**
-   * Default name of a painter belonging to matrix and responsible to paint the
+   * Default name of a painter belonging to a matrix and responsible to paint the
    * area that is frozen both at the vertical start and horizontal start of the
    * viewport.
    */
@@ -147,6 +148,11 @@ public class Painter<N0 extends Number, N1 extends Number> {
    * create/dispose or show/hide the embedded controls.
    */
   public static final String NAME_EMBEDDED_CONTROLS = "embedded controls";
+  /**
+   * Default name of the painter belonging to a matrix responsible to paint the 
+   * items being dragged.
+   */
+  public static final String NAME_DRAG_ITEM = "drag item";
 	
 	private static int[] EXTENT_ALIGN = {SWT.RIGHT, SWT.END, SWT.BOTTOM, SWT.CENTER};
 	static enum TextClipMethod {DOTS_IN_THE_MIDDLE, DOTS_AT_THE_END, CUT, NONE};
@@ -221,6 +227,11 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 * (which don't include dividing lines). 
 	 */
 	public int imageMarginY;
+	/**
+	 * Selected cells will be highlighted if <tt>true</tt>. Otherwise cell selection
+	 * will be ignored. Ddefault value is <tt>true</true>.
+	 */
+	public boolean selectionHighlight = true;
 	
 	/**
 	 * Word wrapping for text in cells. 
@@ -240,7 +251,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	private int[] extentCache;
 	private Point extent;
   private TextLayout textLayout;
-  private Rectangle clipping;
+  Rectangle clipping;
 
 	
 	/**
@@ -302,8 +313,10 @@ public class Painter<N0 extends Number, N1 extends Number> {
    */
 	protected boolean init() {
 		if (scope < SCOPE_CELLS_HORIZONTALLY) return true;
-		lastForeground = defaultForeground = zone.getDefaultForeground();
-		lastBackground = defaultBackground = zone.getDefaultBackground();
+		lastForeground = defaultForeground = 
+		  foreground == null ? zone.getDefaultForeground() : foreground;
+		lastBackground = defaultBackground = 
+  		background == null ? zone.getDefaultBackground() : background;
 		selectionBackground = zone.getSelectionBackground();
 		selectionForeground = zone.getSelectionForeground();
 		if (lastForeground != null) {
@@ -373,7 +386,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	  
 		Color foreground2 = foreground == null ? defaultForeground : foreground; 
 		Color background2 = background == null ? defaultBackground : background;
-		if (zone != null && zone.isSelected(index0, index1)) {
+		if (selectionHighlight && zone != null && zone.isSelected(index0, index1)) {
 			// TODO Revise and maybe optimize the background / foreground color setting algorithm
 			foreground2 = selectionForeground;  
 			background2 = selectionBackground;

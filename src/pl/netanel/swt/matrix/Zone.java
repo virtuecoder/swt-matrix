@@ -410,11 +410,12 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * @return the painter previously at the specified position
    * @throws IndexOutOfBoundsException if the index is out of range
    *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
+   * @see Painter#NAME_CELLS
    */
   Painter<N0, N1> removePainter(int index);
 
   /**
-   * Removes the first occurrence of the specified element from this list,
+   * Removes the specified element from this list,
    * if it is present (optional operation). If this list does not contain
    * the element, it is unchanged.
    * @param painter element to be removed from this list, if present
@@ -422,8 +423,22 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * @throws ClassCastException if the type of the specified element
    *         is incompatible with this list (optional)
    * @throws IllegalArgumentException if the painter is null
+   * @see Painter#NAME_CELLS
    */
   boolean removePainter(Painter painter);
+  
+  /**
+   * Removes a painter with the specified name from this list,
+   * if it is present (optional operation). If this list does not contain
+   * the element, it is unchanged.
+   * @param painter element to be removed from this list, if present
+   * @return <tt>true</tt> if this list contained the specified element
+   * @throws ClassCastException if the type of the specified element
+   *         is incompatible with this list (optional)
+   * @throws IllegalArgumentException if the painter is null
+   * @see Painter#NAME_CELLS
+   */
+  boolean removePainter(String name);
 
   /**
    * Returns the index of a painter with the specified name

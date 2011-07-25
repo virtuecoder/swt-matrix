@@ -75,7 +75,6 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 	public static final int CMD_FOCUS_LOCATION_ALTER = 16; 			// binding = SWT.MOD1 + SWT.MouseDown
 //	public static final int WORD_PREVIOUS = 17039363;		// binding = SWT.MOD1 + SWT.ARROW_LEFT
 //	public static final int WORD_NEXT = 17039364; 			// binding = SWT.MOD1 + SWT.ARROW_RIGHT
-  public static GC gc;
 	
 	
 	static boolean isCursorMove(int id) {
@@ -357,6 +356,10 @@ public class Matrix<N0 extends Number, N1 extends Number> extends Canvas
 				gc.drawRectangle(r);
 			}
 		});
+		
+		Painter dragItemPainter = listener.getDragItemPainter();
+		dragItemPainter.setMatrix(this);
+    painters.add(dragItemPainter);
 	}
 	
 	class DockPainter extends Painter {

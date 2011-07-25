@@ -2,18 +2,69 @@ package pl.netanel.swt.matrix;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
-import static pl.netanel.swt.matrix.Matrix.*;
+import static pl.netanel.swt.matrix.Matrix.CMD_COPY;
+import static pl.netanel.swt.matrix.Matrix.CMD_CUT;
+import static pl.netanel.swt.matrix.Matrix.CMD_DELETE;
+import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_ACTIVATE;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_DOWN_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_UP_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_ITEM_HIDE;
+import static pl.netanel.swt.matrix.Matrix.CMD_ITEM_SHOW;
+import static pl.netanel.swt.matrix.Matrix.CMD_PASTE;
+import static pl.netanel.swt.matrix.Matrix.CMD_RESIZE_PACK;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ALL;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_COLUMN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_COLUMN_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_DOWN_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_UP_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ROW;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ROW_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_COLUMN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_COLUMN_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_TRAVERSE_TAB_NEXT;
+import static pl.netanel.swt.matrix.Matrix.CMD_TRAVERSE_TAB_PREVIOUS;
+import static pl.netanel.swt.matrix.Matrix.isBodySelect;
+import static pl.netanel.swt.matrix.Matrix.isExtendingSelect;
 
 import java.math.BigInteger;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -48,20 +99,21 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 		SWT.PaintItem, SWT.ImeComposition */
 	};
 
-	Matrix<? extends Number, ? extends Number> matrix;
+	Matrix<N0, N1> matrix;
 //	ArrayList<GestureBinding> bindings;
-	AxisListener state0, state1;
+	AxisListener<N0> state0;
+	AxisListener<N1> state1;
 	boolean instantMoving, ctrlSelectionMoving, mouseDown;
 	ZoneCore<N0, N1> zone;
 	Cursor cursor;
 	AxisItem[] lastRange;
 	ZoneCore body, columnHeader, rowHeader, topLeft;
 	
-  private Image image, lastImage;
-  private Point imageOffset, lastImageLocation, imageSize;
+	Event mouseMoveEvent;	
+  Point imageOffset, lastImageLocation, imageSize;
 	private Move m0, m1;
 	
-	public MatrixListener(Matrix matrix) {
+	public MatrixListener(final Matrix matrix) {
 		this.matrix = matrix;
 		lastRange = new AxisItem[4]; 
 		body = ZoneCore.from(matrix.getBody());
@@ -94,9 +146,81 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 		matrix.listener = this; 
 
 		instantMoving = true;
-		
 	}
 
+	Painter<N0, N1> getDragItemPainter() {
+	  return new Painter<N0, N1>(Painter.NAME_DRAG_ITEM, Painter.SCOPE_SINGLE) {
+      Painter<N0, N1> painter;
+      Rectangle bounds;
+      private boolean highlight;
+      private ZoneClient<N0, N1> zone;
+
+      @Override protected boolean init() {
+        clipping = gc.getClipping();
+        if (state0.moving ) {
+          zone = (ZoneClient<N0, N1>) matrix.getRowHeader();
+          if (zone == null) return false;
+          painter = zone.getPainter(Painter.NAME_CELLS);
+          if (painter != null) {
+            highlight = painter.selectionHighlight;
+            painter.selectionHighlight = false;
+          }
+          bounds = zone.core.getCellBounds(state0.item.getIndex(), state1.axis.math.ZERO_VALUE());
+          return true;
+        }
+        if (state1.moving) {
+          zone = (ZoneClient<N0, N1>) matrix.getColumnHeader();
+          if (zone == null) return false;
+          painter = zone.getPainter(Painter.NAME_CELLS);
+          if (painter != null) {
+            highlight = painter.selectionHighlight;
+            painter.selectionHighlight = false;
+          }
+          bounds = zone.core.getCellBounds(state0.axis.math.ZERO_VALUE(), state1.item.getIndex());
+          return true;
+        }
+        return false;
+      }
+      
+      @Override public void clean() {
+        super.clean();
+        if (painter != null) {
+          painter.selectionHighlight = highlight;
+        }
+      }
+      
+      @Override public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
+        int x2 = state0.moving ? 1 : mouseMoveEvent.x - imageOffset.x;
+        int y2 = state1.moving ? 1 : mouseMoveEvent.y - imageOffset.y;
+        
+        // Background
+        gc.setBackground(zone.getDefaultBackground());
+        gc.fillRectangle(x2, y2, bounds.width, bounds.height);
+        
+        // Text
+        if (painter == null) {
+          gc.drawText((state0.moving ? state0 : state1).item.getIndex().toString(),
+            x2 + 1, y2 + 1);
+        } 
+        else {
+          painter.paint(state0.item.getIndex(), state1.item.getIndex(),
+            x2, y2, bounds.width, bounds.height);
+        }
+        
+        // Border
+        Painter linePainter = zone.getPainter(Painter.NAME_ROW_LINES);
+        if (linePainter == null) {
+          linePainter = zone.getPainter(Painter.NAME_COLUMN_LINES);
+        }
+        Color color = linePainter == null 
+          ? matrix.getDisplay().getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW)
+          : linePainter.background;
+        gc.setForeground(color);
+        gc.setLineWidth(1);
+        gc.drawRectangle(x2 - 1, y2 - 1, bounds.width + 1, bounds.height + 1);
+      }
+    };
+	}
 	
 	@Override
 	public void handleEvent(Event e) {
@@ -123,17 +247,6 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 			if (e.type == SWT.MouseDown && e.button == 1) {
 			  mouseDown = true;
 			  matrix.forceFocus();
-			}
-			else if (e.type == SWT.MouseUp) {
-	       if (lastImage != null && !lastImage.isDisposed()) {
-	          GC gc = new GC(matrix);
-	          gc.drawImage(lastImage, lastImageLocation.x, lastImageLocation.y);
-	          gc.dispose();
-	          matrix.redraw();
-	          lastImage.dispose();
-	          lastImage = null;
-	        }
-	        if (image != null) image.dispose();
 			}
 			state0.update(e, e.y);
 			state1.update(e, e.x);
@@ -182,7 +295,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 		Layout<N> layout;
 		AxisItem<N> last, item, prev, resizeItem, lastFocus, mouseDownItem;
 		boolean moving, resizing, itemModified = true;
-		Event mouseMoveEvent;
+		
 		Cursor resizeCursor;
 		int resizeStartDistance, resizeCellWidth, newCellWidth, distance, lastDistance;
 		AutoScroll autoScroll;
@@ -255,43 +368,25 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 						resizeStartDistance = distance;
 						resizeCellWidth = resizeItem.section.core.getCellWidth(resizeItem.getIndex());
 					}
-					else if (item.section.core.isSelected(item.getIndex()) && 
-					         item.section.core.isMoveable(item.getIndex())) {
-						// Start moving
-						moving = true;
-						matrix.setCursor(cursor = Resources.getCursor(SWT.CURSOR_HAND));
-						
-						// snap item picture
-						Display display = matrix.getDisplay();
-						GC gc = new GC(matrix);
-						gc.setAdvanced(true);
-	          if (gc.getAdvanced()) {
-	            int x, y, w, h;
-	            Bound b = layout.getCellBound(item);
-	            if (axisIndex == 0) {
-	              x = 0;
-	              y = b.distance - 1;
-	              w = matrix.getClientArea().width;
-	              h = b.width + 2; 
-	            }
-	            else {
-	              x = b.distance - 1;
-	              y = 0;
-	              w = b.width + 2;
-	              h = matrix.getClientArea().height; 
-	            }
-              lastImage = image = new Image(display, w, h);
-	            imageSize = new Point(w, h);
-	            gc.copyArea(image, x, y);
-	            imageOffset = new Point(e.x - x, e.y - y);
-//	            TestUtil.log("image offset", imageOffset);
-	            lastImageLocation = new Point(x, y);
-	            
-	            ImageData imageData = image.getImageData();
-	            imageData.alpha = 160;
-	            image = new Image(display, imageData);
-	          }
-	          gc.dispose();
+					else if (item.section.core.isMoveable(item.getIndex())) {
+					  if (item.section.core.isSelected(item.getIndex())) {
+					    // Start moving
+					    moving = true;
+					    matrix.setCursor(cursor = Resources.getCursor(SWT.CURSOR_HAND));
+
+					    // Remember image offset for dragging
+				      int x, y; //, w, h;
+				      Bound b = layout.getCellBound(item);
+				      if (axisIndex == 0) {
+				        x = 0;
+				        y = b.distance - 1;
+				      }
+				      else {
+				        x = b.distance - 1;
+				        y = 0;
+				      }
+				      imageOffset = new Point(e.x - x, e.y - y);
+					  }
 					}
 				}
 				break;
@@ -333,10 +428,15 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 					}
 					
 				}
-				else if (moving && !instantMoving) {
-					reorder();
+				else if (moving) {
+				  if (!instantMoving) {
+				    reorder();
+				  }
+				  moving = false;
+				  matrix.redraw();
+				  matrix.update();
 				}
-				moving = resizing = mouseDown = false;
+				resizing = mouseDown = false;
 				lastRange = null;
 				if (cursor == Resources.getCursor(SWT.CURSOR_HAND)) {
 					matrix.setCursor(cursor = null);
@@ -370,69 +470,15 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 
 				// Move item
 				if (moving) {
-				  if (image != null) {
-				    int x, y;
-				    if (axisIndex == 0) {
-				      x = 0;
-				      y = e.y - imageOffset.y;
-				    }
-				    else {
-				      x = e.x - imageOffset.x;
-				      y = 0;
-				    }
-				    
-				    if (instantMoving && itemModified) {
-				      reorder();
-				      
-				      GC gc = new GC(matrix);
-				      lastImage = new Image(matrix.getDisplay(), imageSize.x, imageSize.y);
-				      matrix.redraw();
-				      matrix.update();
-				      gc.copyArea(lastImage, x, y);
-				      gc.dispose();
-				    }
-				    
-            GC gc = new GC(matrix);
-            gc.drawImage(lastImage, lastImageLocation.x, lastImageLocation.y);
-            
-            lastImage = new Image(matrix.getDisplay(), imageSize.x, imageSize.y);
-            matrix.redraw();
-            matrix.update();
-            gc.copyArea(lastImage, x, y);
-            gc.drawImage(image, x, y);
-            gc.dispose();
-            lastImageLocation.x = x;
-            lastImageLocation.y = y;
+				  if (instantMoving && itemModified) {
+				    reorder();
 				  }
+				  matrix.redraw();
+				  matrix.update();
 				} 
 			}
 		}
 		
-//		void restorLastImage(Event e) {
-//		  GC gc = new GC(matrix);
-//      gc.drawImage(lastImage, lastImageLocation.x, lastImageLocation.y);
-//      
-//      int x, y;
-//      if (axisIndex == 0) {
-//        x = 0;
-//        y = e.y - imageOffset.y;
-//      }
-//      else {
-//        x = e.x - imageOffset.x;
-//        y = 0;
-//      }
-//      TestUtil.log(x, y);
-//      lastImage = new Image(matrix.getDisplay(), imageSize.x, imageSize.y);
-//      gc.copyArea(lastImage, x, y);
-//      gc.drawImage(image, x, y);
-//      gc.dispose();
-//      lastImageLocation.x = x;
-//      lastImageLocation.y = y;
-//      TestUtil.log("last image location", lastImageLocation);
-//      gc.dispose();
-//		}
-		
-
 		public boolean isSelectable() {
 			return !moving && !resizing; //resizeItem == null;
 		}
@@ -540,8 +586,6 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 			  
 				addEvent(SectionCore.from(item), SWT.Move, item);
 				axis.scroll();
-				matrix.redraw();
-				matrix.update();
 				item = last;
 //				return true;
 			}

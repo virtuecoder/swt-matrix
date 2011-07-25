@@ -214,6 +214,12 @@ class ZoneClient<N0 extends Number, N1 extends Number> implements Zone<N0, N1> {
     checkPainter(painter);
     return core.removePainter(painter);
   }
+  
+  @Override
+  public boolean removePainter(String name) {
+    Preconditions.checkNotNullWithName(name, "name");
+    return core.removePainter(name);
+  }
 
   @Override
   public int indexOfPainter(String name) {

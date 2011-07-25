@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.Matrix;
+import pl.netanel.swt.matrix.Painter;
 
 public class SnippetA {
 	public static void main(String[] args) {
@@ -23,20 +24,22 @@ public class SnippetA {
 //		matrix.getAxis1().getBody().setDefaultCellWidth(100);
 		axis0.getHeader().setVisible(true);
 		axis1.getHeader().setVisible(true);
-		axis0.freezeHead(1);
-		axis1.freezeHead(2);
+//		axis0.freezeHead(1);
+//		axis1.freezeHead(2);
 		axis1.getHeader().setDefaultResizable(true);
 		axis1.getBody().setDefaultResizable(true);
 		axis1.getBody().setResizable(4, 4, false);
 		axis1.getBody().setDefaultMoveable(true);
+		axis0.getBody().setDefaultMoveable(true);
 		
 //		matrix.getBody().setSelectionEnabled(false);
 //		matrix.getBody().setBackground(1, 1, Resources.getColor(SWT.COLOR_YELLOW));
 //		matrix.getBody().setBackground(3, 3, Resources.getColor(SWT.COLOR_YELLOW));
 //		matrix.getBody().setBackground(1, 1, null);
 		
+		matrix.getColumnHeader().removePainter(matrix.getColumnHeader().getPainter(Painter.NAME_CELLS));
 		
-		shell.setBounds(200, 20, 1024, 568);
+		shell.setBounds(400, 200, 600, 400);
 		shell.open();
 		
 //		matrix.setBounds(5, 5, 600, 300);
