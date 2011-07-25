@@ -85,7 +85,7 @@ public class Snippet_0490 {
 		matrix.getAxisY().getHeader().setVisible(true);
 		matrix.getAxisY().getBody().setCount(countY);
 		matrix.getAxisX().getBody().setCount(countX);
-		matrix.getBody().replacePainter(new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
+		matrix.getBody().replacePainter(new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 			@Override
 			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 				text = data.get(indexY.intValue()).get(indexX.intValue()).toString();

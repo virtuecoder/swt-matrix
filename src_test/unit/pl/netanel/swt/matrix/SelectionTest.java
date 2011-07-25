@@ -46,7 +46,7 @@ import org.junit.runners.JUnit4;
 	
 	// Ticket #9
 	@Test public void bug9() throws Exception {
-	  Axis<BigInteger> axisY = new Axis<BigInteger>(BigInteger.class, 2);
+	  Axis<BigInteger> axisY = new Axis<BigInteger>(BigInteger.class, 2, 0, 1);
 
     Matrix<Integer, BigInteger> matrix = new Matrix<Integer, BigInteger>(
       new Shell(), SWT.V_SCROLL | SWT.H_SCROLL, null, axisY);

@@ -75,8 +75,7 @@ import org.junit.runners.JUnit4;
 	
 	@Test
 	public void threeSections() throws Exception {
-		Axis axis = new Axis(Integer.class, 3);
-		axis.setBody(2);
+		Axis axis = new Axis(Integer.class, 3, 0, 2);
 		axis.getHeader().setVisible(true);
 		axis.getSection(1).setFocusItemEnabled(false);
 		axis.getBody().setCount(10);

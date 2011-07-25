@@ -19,7 +19,7 @@ public class Snippet_0002 {
     shell.setText("Unlimited number of items");
     shell.setLayout(new FillLayout());
 
-    Axis<BigInteger> axisY = new Axis<BigInteger>(BigInteger.class, 2);
+    Axis<BigInteger> axisY = new Axis<BigInteger>(BigInteger.class, 2, 0, 1);
 
     Matrix<Integer, BigInteger> matrix = new Matrix<Integer, BigInteger>(
       shell, SWT.V_SCROLL | SWT.H_SCROLL, null, axisY);

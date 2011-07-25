@@ -57,28 +57,28 @@ import pl.netanel.swt.matrix.SectionCore;
 	
 	@Test
 	public void cellSequenceIndexManySections() throws Exception {
-		SectionCore sectionY = new SectionCore(Integer.class);
-		SectionCore sectionX = new SectionCore(Integer.class);
-		SectionCore section2 = new SectionCore(Integer.class);
-		Axis model = new Axis(sectionY, sectionX, section2);
-		sectionY.setCount(1); // header
-		sectionX.setCount(5); // body
+		Axis model = new Axis(Integer.class, 3, 0, 1);
+		SectionCore section0 = model.layout.getSection(0);
+		SectionCore section1 = model.layout.getSection(1);
+		SectionCore section2 = model.layout.getSection(2);
+		section0.setCount(1); // header
+		section1.setCount(5); // body
 		section2.setCount(1); // footer
 		
-		sectionX.setDefaultCellWidth(100);
+		section1.setDefaultCellWidth(100);
 		
 		Layout layout = new Layout(model);
 		layout.setViewportSize(1000);
 		
 		layout.compute();
-		assertEquals("", indexes(layout.cellSequence(Frozen.HEAD, sectionX)));
-		assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Frozen.NONE, sectionX)));
+		assertEquals("", indexes(layout.cellSequence(Frozen.HEAD, section1)));
+		assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Frozen.NONE, section1)));
 		assertEquals("0", indexes(layout.cellSequence(Frozen.NONE, section2)));
 	}
 	
 	@Test
 	public void freezeIndexes() throws Exception {
-		Layout layout = new Layout(new Axis(new SectionCore(Integer.class)));
+		Layout layout = new Layout(new Axis());
 		SectionCore body = (SectionCore) layout.axis.getBody().getCore();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
@@ -136,7 +136,7 @@ import pl.netanel.swt.matrix.SectionCore;
 	
 	@Test
 	public void freezeDistances() throws Exception {
-		Layout layout = new Layout(new Axis(new SectionCore(Integer.class)));
+		Layout layout = new Layout(new Axis());
 		SectionCore body = (SectionCore) layout.axis.getBody().getCore();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
@@ -173,7 +173,7 @@ import pl.netanel.swt.matrix.SectionCore;
 	
 	@Test
 	public void freezeLineWidth() throws Exception {
-		Layout layout = new Layout(new Axis(new SectionCore(Integer.class)));
+		Layout layout = new Layout(new Axis());
 		SectionCore body = (SectionCore) layout.axis.getBody().getCore();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
@@ -239,7 +239,7 @@ import pl.netanel.swt.matrix.SectionCore;
 	
 	@Test
 	public void reorderBeforeStart() throws Exception {
-		Layout layout = new Layout(new Axis(new SectionCore(Integer.class)));
+		Layout layout = new Layout(new Axis());
 		layout.setViewportSize(1000);
 		
 		Section body = layout.axis.getBody();
@@ -263,7 +263,7 @@ import pl.netanel.swt.matrix.SectionCore;
 	
 	@Test
 	public void reorderScattered() throws Exception {
-		Layout layout = new Layout(new Axis(new SectionCore(Integer.class)));
+		Layout layout = new Layout(new Axis());
 		layout.setViewportSize(1000);
 		
 		SectionCore body = (SectionCore) layout.axis.getBody().getCore();

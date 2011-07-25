@@ -75,14 +75,15 @@ class TestUtil {
 	}
 	
 	public static Layout layout(int ...count) {
-		SectionCore[] sections = new SectionCore[count.length];
+		Axis axis = new Axis(Integer.class, count.length);
+		Layout layout = axis.layout;
 		for (int i = 0; i < count.length; i++) {
-			SectionCore section = new SectionCore(Integer.class);
-			sections[i] = section;
-			if (i != 1) section.setFocusItemEnabled(false);
-			section.setCount(count[i]);
+		  SectionCore section = layout.getSection(i);
+		  if (i != 1) {
+		    section.setFocusItemEnabled(false);
+		  }
+		  section.setCount(count[i]);
 		}
-		Layout layout = new Axis(sections).layout;
 		for (int i = 0; i < count.length; i++) {
 			Section section = layout.getSection(i);
 			section.setVisible(true);

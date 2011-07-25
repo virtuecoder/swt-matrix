@@ -51,7 +51,7 @@ public class Snippet_0018 {
 		matrix.getAxisY().getBody().setCount(ROW_COUNT);
 		
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
+		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 			@Override
 			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 				text = indexY.toString() + ", " + indexX;

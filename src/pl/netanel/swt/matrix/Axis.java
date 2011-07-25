@@ -26,89 +26,93 @@ import pl.netanel.util.Preconditions;
 public class Axis<N extends Number>  {
 	private static final String FREEZE_ITEM_COUNT_ERROR = "Freeze item count cannot be negative";
 	
-	final Math<N> math;
-	final ArrayList<SectionClient<N>> sections;
+	Math<N> math;
+	ArrayList<SectionClient<N>> sections;
 	
 	private Section<N> body, header;
 	private int autoScrollOffset, resizeOffset;
-	final Layout<N> layout;
+	Layout<N> layout;
 	
 	char symbol;
 	Matrix<? extends Number, ? extends Number> matrix;
 	private ScrollBar scrollBar;
 
 	/**
-	 * Creates axis indexed by Integer class with two sections.
+	 * Constructs axis indexed by Integer class with two sections.
 	 * @see #Axis(Class, int)
 	 */
 	public Axis() {
-		this((Class<N>) Integer.class, 2);
+		this((Class<N>) Integer.class, 2, 0, 1);
 	}
 	
   /**
    * Constructs axis indexed by the specified Number subclass containing the
-   * specified number of sections. The header section count is set to one and
-   * its visibility to false.
+   * specified number of sections. The header section count is set to one,
+   * its visibility to false and focus item enabled to false.
    * 
    * @param numberClass sub-type of {@link Number} class to index the sections
    * @param sectionCount number of sections to create
    * @throws IllegalArgumentException if <code>numberClass</code> is other then
    *  int.class, Integer.class, long.class, Long.class, BigInteger.class
+   * @throws IllegalArgumentException if the sectionCount is lower then 2 
+   * @throws IndexOutOfBoundsException if the headerIndex or bodyIndex is out of range
+   *         (<tt>index &lt; 0 || index &gt;= sectionCount</tt>)
+   * @throws IllegalArgumentException if the headerIndex equals bodyIndex 
    */
-	public Axis(Class<N> numberClass, int sectionCount) {
-		this(createSections(numberClass, sectionCount));
-		if (sectionCount > 1) {
-		  sections.get(0).setCount(math.ONE_VALUE());
-		}
+	public Axis(Class<N> numberClass, int sectionCount, int headerIndex, int bodyIndex) {
+	  Preconditions.checkNotNullWithName(numberClass, "numberClass");
+	  Preconditions.checkArgument(sectionCount > 1, "sectionCount must be greater then 1");
+	  Preconditions.checkPositionIndex(headerIndex, sectionCount, "headerIndex");
+	  Preconditions.checkPositionIndex(bodyIndex, sectionCount, "bodyIndex");
+	  Preconditions.checkArgument(bodyIndex != headerIndex, "headerIndex cannot equal bodyIndex");
+	  
+	  init(numberClass, sectionCount, headerIndex, bodyIndex);
 	}
 
-	private static SectionCore[] createSections(Class numberClass, int sectionCount) {
-	  Preconditions.checkNotNullWithName(numberClass, "numberClass");
-	  Preconditions.checkArgument(sectionCount > 0, "sectionCount must be greater then 1");
-		SectionCore[] sections = new SectionCore[sectionCount];
-		for (int i = 0; i < sectionCount; i++) {
-		  sections[i] = new SectionCore(numberClass);
-      Preconditions.checkArgument( 
-        sections[i].getIndexClass().equals(sections[0].getIndexClass()),
-        "Section at %s position is indexed by a different Number subclass " +
-        "then the first section: %s != %s",
-        i, sections[0].getIndexClass(), sections[0].getIndexClass());
-		}
-		return sections;
+	/**
+	 * Needed only for test! 
+	 * TODO: refactor DirectionTests
+	 * @param numberClass
+	 * @param sectionCount
+	 */
+	Axis(Class<N> numberClass, int sectionCount) {
+	  init(numberClass, sectionCount, 0, 1);
 	}
 	
-	/**
-	 * Creates axis with the specified sections. 
-	 * <p>
-	 * At least one section must be provided.
-	 * All the sections must be indexed by the same Number subclass.
-	 * <p>
-	 * If there is one section it becomes the body section. Otherwise the first section 
-	 * becomes the header and the second one becomes the body.
-	 * @see #Axis(SectionCore...)
-	 */
-	Axis(SectionCore<N> ...sections) {
-		math = Math.getInstance(sections[0].getIndexClass());
-		this.sections = new ArrayList<SectionClient<N>>(sections.length);
-		for (int i = 0; i < sections.length; i++) {
-		  SectionCore<N> section = sections[i];
-			section.index = i;
-			section.axis = this;
-			this.sections.add(new SectionClient(section));
-		}
-		if (sections.length == 1) {
-			setBody(0);
-		} else {
-			setHeader(0);
-			setBody(1);
-			header.setFocusItemEnabled(false);
-			header.setVisible(false);
-		}
-		
-		autoScrollOffset = Matrix.AUTOSCROLL_OFFSET_Y;
-		resizeOffset = Matrix.RESIZE_OFFSET_Y;
-		layout = new Layout(this);
-	}
+  private void init(Class<N> numberClass, int sectionCount,
+    int headerIndex, int bodyIndex) {
+    math = Math.getInstance(numberClass);
+	  sections = new ArrayList<SectionClient<N>>(sectionCount);
+	  for (int i = 0; i < sectionCount; i++) {
+	    SectionCore section = new SectionCore(numberClass);
+//	    Preconditions.checkArgument( 
+//	      section.getIndexClass().equals(numberClass),
+//	      "Section at %s position is indexed by a different Number subclass " +
+//	        "then the first section: %s != %s",
+//	        i, section.getIndexClass(), numberClass);
+	    
+	    section.index = i;
+      section.axis = this;
+      sections.add(new SectionClient(section));
+	  }
+	  
+	  if (headerIndex < sectionCount) {
+	    header = sections.get(headerIndex);
+	    header.setCount(math.ONE_VALUE());
+	    header.setFocusItemEnabled(false);
+	    header.setVisible(false);
+	  }
+	  
+	  if (bodyIndex < sectionCount) {
+	    body = sections.get(bodyIndex);
+	  }
+	  
+	  autoScrollOffset = Matrix.AUTOSCROLL_OFFSET_Y;
+	  resizeOffset = Matrix.RESIZE_OFFSET_Y;
+	  layout = new Layout(this);
+  }
+
+	
 
 	@Override public String toString() {
 	  return Character.toString(symbol);
@@ -130,25 +134,6 @@ public class Axis<N extends Number>  {
 		return header;
 	}
 	
-	/**
-	 * Specifies which section is the body section.
-	 * @param sectionIndex
-	 */
-	public void setBody(int sectionIndex) {
-		Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
-		this.body = sections.get(sectionIndex);
-	}
-
-	/**
-	 * Specifies which section is the header section.
-	 * @param sectionIndex
-	 * @throws IndexOutOfBoundsException if sectionIndex is out 
-	 * 		of 0 ... {@link #getSectionCount()}-1 bounds
-	 */
-	public void setHeader(int sectionIndex) {
-		Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
-		this.header = sections.get(sectionIndex);
-	}
 	
 	/**
 	 * Returns the number of sections in the receiver. 

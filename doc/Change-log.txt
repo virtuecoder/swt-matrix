@@ -1,6 +1,9 @@
 
 Version 0.4
 
+New features:
+- Items a resizeable by default
+
 API changes:
 - Signature change for methods and parameters with 0 and 1 suffixes to have Y and X suffixes and inversed order.
 - Renamed Painter.SCOPE_SINGLE to Painter.SCOPE_ENTIRE

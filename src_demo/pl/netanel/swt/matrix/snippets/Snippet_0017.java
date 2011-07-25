@@ -30,7 +30,7 @@ public class Snippet_0017 {
 		
 		final Color color = display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
+		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 		    @Override
 		    public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 		      background = indexY.intValue() % 2 + indexX.intValue() % 2 == 1 ? color : null;

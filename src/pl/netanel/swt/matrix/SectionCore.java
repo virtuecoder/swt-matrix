@@ -85,6 +85,7 @@ class SectionCore<N extends Number> implements Section<N> {
 		selection = new NumberQueueSet(math);
 		lastSelection = new NumberQueueSet(math);
 		
+		defaultResizable = true;
 		isNavigationEnabled = isVisible = true;
 		listeners = new Listeners();
 	}

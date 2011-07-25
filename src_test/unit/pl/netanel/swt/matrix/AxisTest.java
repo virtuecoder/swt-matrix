@@ -10,13 +10,13 @@ import org.junit.runners.JUnit4;
   
 	@Test
 	public void construct_primitiveClass() throws Exception {
-	  new Axis(int.class, 2);
+	  new Axis(int.class, 2, 0, 1);
 	}
 	
 	@Test
 	public void construct_IllegalClass() throws Exception {
 	  try {
-	    new Axis(Float.class, 2);
+	    new Axis(Float.class, 2, 0, 1);
 	    fail("Expected IllegalArgumentException");
 	  }
 	  catch (Exception e) {
@@ -27,7 +27,7 @@ import org.junit.runners.JUnit4;
 	@Test
 	public void construct_NullClass() throws Exception {
 	  try {
-	    new Axis(null, 2);
+	    new Axis(null, 2, 0, 1);
 	    fail("Expected IllegalArgumentException");
 	  }
 	  catch (Exception e) {
@@ -38,7 +38,7 @@ import org.junit.runners.JUnit4;
 	@Test
 	public void construct_zeroSectionCount() throws Exception {
 	  try {
-	    new Axis(int.class, 0);
+	    new Axis(int.class, 0, 0, 1);
 	    fail("Expected IllegalArgumentException");
 	  }
 	  catch (Exception e) {
@@ -49,7 +49,7 @@ import org.junit.runners.JUnit4;
 	@Test
 	public void construct_negativeSectionCount() throws Exception {
 	  try {
-	    new Axis(int.class, -2);
+	    new Axis(int.class, -2, 0, 1);
 	    fail("Expected IllegalArgumentException");
 	  }
 	  catch (Exception e) {
@@ -57,11 +57,6 @@ import org.junit.runners.JUnit4;
 	  }
 	}
 	
-	@Test(expected=IndexOutOfBoundsException.class)
-  public void setBody_MoreThenSize() throws Exception {
-	  Axis axis = new Axis();
-	  axis.setBody(3);
-	}
 	
 	@Test
 	public void getSection_IsSectionClient() throws Exception {

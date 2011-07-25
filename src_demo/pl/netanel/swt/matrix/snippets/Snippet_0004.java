@@ -52,7 +52,7 @@ public class Snippet_0004 {
 		axisX.getHeader().setVisible(true);
 		
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
+		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 		    @Override
 		    public String getText(Integer indexX, Integer indexY) {
 		      String value = list.get(indexY.intValue());
@@ -64,7 +64,7 @@ public class Snippet_0004 {
 		);
 		
 		matrix.getColumnHeader().replacePainter(
-		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
+		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 		    @Override
 		    public String getText(Integer indexX, Integer indexY) {
 		      return indexX.intValue() == 0 ? "Value" : "Length";

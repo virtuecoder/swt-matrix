@@ -71,7 +71,7 @@ public class Snippet_0005 {
 
     // Paint data text in the body zone
     matrix.getBody().replacePainter(
-      new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
+      new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
         @Override public String getText(Integer indexX, Integer indexY) {
           return sorted.get(indexY.intValue())[indexX.intValue()].toString();
         }
@@ -79,7 +79,7 @@ public class Snippet_0005 {
 
     // Paint text and sorting image in the column headers zone
     Painter<Integer, Integer> columnHeaderPainter = new Painter<Integer, Integer>(
-      "cells", Painter.SCOPE_CELLS) 
+      Painter.NAME_CELLS, Painter.SCOPE_CELLS) 
     {
       @Override public String getText(Integer indexX, Integer indexY) {
         return indexX.toString();

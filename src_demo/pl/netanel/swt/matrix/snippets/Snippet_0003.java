@@ -43,8 +43,7 @@ public class Snippet_0003 {
 		final ArrayList<Object[]> filtered = new ArrayList<Object[]>();
 		filtered.addAll(list);
 		
-		Axis<Integer> axisY = new Axis<Integer>(Integer.class, 3);
-		axisY.setBody(2);
+		Axis<Integer> axisY = new Axis<Integer>(Integer.class, 3, 0, 2);
 		axisY.getSection(1).setCount(1);
 		axisY.getSection(1).setFocusItemEnabled(false);
 		final Section<Integer> bodyY = axisY.getBody();
@@ -63,7 +62,7 @@ public class Snippet_0003 {
 		axisX.getHeader().setVisible(true);
 		
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
+		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
   			@Override
   			public String getText(Integer indexX, Integer indexY) {
   				return filtered.get(indexY.intValue())[indexX.intValue()].toString();
@@ -76,7 +75,7 @@ public class Snippet_0003 {
 		stream.close();
 		
 		matrix.getColumnHeader().replacePainter(
-		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
+		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 		    @Override
 		    public String getText(Integer indexX, Integer indexY) {
 		      return indexX.intValue() == 0 ? "Task" : "Priority";
@@ -85,11 +84,11 @@ public class Snippet_0003 {
 		);
 		
 		// Filter row header
-		matrix.getZone(axisX.getHeader(), axisY.getSection(1)).getPainter("cells").image = image;
+		matrix.getZone(axisX.getHeader(), axisY.getSection(1)).getPainter(Painter.NAME_CELLS).image = image;
 		
 		// Filter columns
 		matrix.getZone(axisX.getBody(), axisY.getSection(1)).replacePainter(
-			new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
+			new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 				public String getText(Integer indexX, Integer indexY) {
 					return indexX.intValue() == 1 ? filter : null;
 				};

@@ -120,7 +120,7 @@ public class Snippet_0404 {
 
 		
 		// Paint text from the model in the body
-		matrix.getBody().replacePainter(new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
+		matrix.getBody().replacePainter(new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 			@Override
 			public String getText(Integer indexX, Integer indexY) {
 				Object value = data.get(indexY.intValue())[indexX.intValue()];
