@@ -20,7 +20,7 @@ class CellSet<N0 extends Number, N1 extends Number> {
 	final Math<N1> math1;
 	private boolean insertNew;
 	
-	public CellSet(Math math0, Math math1) {
+	public CellSet(Math<N0> math0, Math<N1> math1) {
 		this.math0 = math0;
 		this.math1 = math1;
 		items0 = new ArrayList<Extent<N0>>();
@@ -115,8 +115,8 @@ class CellSet<N0 extends Number, N1 extends Number> {
 			} 
 		}
 		if (insertNew) {
-			items0.add(new Extent(math0.create(start0), math0.create(end0)));
-			items1.add(new Extent(math1.create(start1), math1.create(end1)));
+			items0.add(new Extent<N0>(math0.create(start0), math0.create(end0)));
+			items1.add(new Extent<N1>(math1.create(start1), math1.create(end1)));
 		}
 	}
 	
@@ -186,8 +186,8 @@ class CellSet<N0 extends Number, N1 extends Number> {
 	}
 	
 	private void insert(N0 start0, N0 end0, N1 start1, N1 end1) {
-		items0.add(new Extent(math0.create(start0), math0.create(end0)));
-		items1.add(new Extent(math1.create(start1), math1.create(end1)));
+		items0.add(new Extent<N0>(math0.create(start0), math0.create(end0)));
+		items1.add(new Extent<N1>(math1.create(start1), math1.create(end1)));
 	}
 	
 //	public void change(MutableNumber start0, MutableNumber end0, 

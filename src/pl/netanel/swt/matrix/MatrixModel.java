@@ -247,18 +247,4 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 			return true;
 		}
 	}
-
-	void deleteInZones(int axisIndex, Section section, Number start, Number end) {
-		for (ZoneCore zone: zones) {
-			zone.delete(axisIndex, section, start, end);
-		}
-		
-	}
-	
-	void insertInZones(int axisIndex, Section section, Number target, Number count) {
-		for (ZoneCore zone: zones) {
-			zone.insert(axisIndex, section, target, count);
-		}
-	}
-
 }

@@ -1,12 +1,22 @@
+0, 1 -> X, Y
+  
+  axis.index == 0 -> axis.symbol == 'Y'
+  public boolean isSelected(X indexX, Y indexY) {
+	return cellSelection.contains(indexX, indexY);
+  }
+
+
 From nebula forum
 - different colors for the fore- and background of cells. If i select one colored cell, the selection "overwrites" the color setting, so that every selected cell looks the same. Is there a way to change the color of selected cells, so that i can still see the differences?
 - I wanted to support the MS Excel features in my RCP app. Features like 'Auto Filter'.
 - Nebula CompositeTable, flexible row layout
 
 To do:
-- painter: bottom and top margin
+- rename snippets
+- partial redraw/paint cell, zone, row column
+- type safe compiler checks
+- painter top, bottom, left, right margins for text and image instead of x, y margins
 - add to Zone and Section @see #getListeners(int)   * @see #removeListener(int, Listener)   * @see #notifyListeners
-- single focus cell should not be considered selected (like in spreadsheets)
 - snippet with selection background and custom foreground
 - scroll to focus on resizing
 - Replace refresh() with layout() and redraw()

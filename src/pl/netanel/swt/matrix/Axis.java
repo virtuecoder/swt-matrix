@@ -462,7 +462,7 @@ public class Axis<N extends Number>  {
 	 * @param size
 	 * @return true if the visibility has changed/
 	 */
-	boolean updateScrollBarVisibility(int size) {
+	boolean updateScrollBarVisibility() {
 		if (scrollBar == null) return false;
 		boolean b = scrollBar.getVisible();
 		scrollBar.setVisible(layout.isScrollRequired());
@@ -489,7 +489,7 @@ public class Axis<N extends Number>  {
 		// Extend the maximum to show the last trimmed element
 		if (thumb <= 1) { 
 			thumb = 1;
-			max++;
+			max += layout.trim;
 		}
 		scrollBar.setValues(layout.getScrollPosition(), min, max, thumb, 1, thumb);
 	}
@@ -681,8 +681,20 @@ public class Axis<N extends Number>  {
 		return order;
 	}
 
-	void deleteInZones(SectionCore section, N start, N end) {
-		matrix.model.deleteInZones(index, section, start, end);
+	void deleteInZones(SectionCore<N> section, N start, N end) {
+	  for (ZoneCore zone: matrix.model.zones) {
+      if (index == 0) {
+        if (zone.section0.equals(this)) {
+          zone.cellSelection.delete0(start, end);
+          zone.lastSelection.delete0(start, end);
+        }
+      } else {
+        if (zone.section1.equals(this)) {
+          zone.cellSelection.delete1(start, end);
+          zone.lastSelection.delete1(start, end);
+        }
+      }
+    }
 		if (layout.current.section.core.equals(section) && 
 				layout.math.contains(start, end, layout.current.getIndex())) {
 			layout.ensureCurrentIsValid();
@@ -690,7 +702,19 @@ public class Axis<N extends Number>  {
 	}
 	
 	void insertInZones(SectionCore section, N target, N count) {
-		matrix.model.insertInZones(index, section, target, count);
+	  for (ZoneCore zone: matrix.model.zones) {
+      if (index == 0) {
+        if (zone.section0.equals(this)) {
+          zone.cellSelection.insert0(target, count);
+          zone.lastSelection.insert0(target, count);
+        }
+      } else {
+        if (zone.section1.equals(this)) {
+          zone.cellSelection.insert1(target, count);
+          zone.lastSelection.delete1(target, count);
+        }
+      }
+	  }
 		layout.show(AxisItem.create(section, target));
 	}
 

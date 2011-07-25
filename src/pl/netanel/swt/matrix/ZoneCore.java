@@ -40,8 +40,8 @@ class ZoneCore<N0 extends Number, N1 extends Number> implements Zone<N0, N1> {
 	final Painters<N0, N1> painters;
 	final SectionCore<N0> section0;
 	final SectionCore<N1> section1;
-	CellSet cellSelection;
-	CellSet lastSelection; // For adding selection
+	CellSet<N0, N1> cellSelection;
+	CellSet<N0, N1> lastSelection; // For adding selection
 	ZoneEditor<N0, N1> editor;
 	
 	private final Listeners listeners;
@@ -53,10 +53,6 @@ class ZoneCore<N0 extends Number, N1 extends Number> implements Zone<N0, N1> {
 	private final Rectangle bounds;
 	
 	private final CellValues<N0, N1, Color> background, foreground;
-	
-//	private CellValues<N0, N1, String> text;
-//	private CellValues<N0, N1, Image> image;
-//	private boolean backgroundEnabled, foregroundEnabled;
 	
 
   /**
@@ -75,7 +71,7 @@ class ZoneCore<N0 extends Number, N1 extends Number> implements Zone<N0, N1> {
     selectionEnabled = true;
     
 		Math math0 = SectionCore.from(section0).math;
-		Math math1 = SectionCore.from(section0).math;
+		Math math1 = SectionCore.from(section1).math;
 		cellSelection = new CellSet(math0, math1);
 		lastSelection = new CellSet(math0, math1);
 		
@@ -764,37 +760,6 @@ void setDefaultBodyStyle() {
 		@Override public void paint(Number index0, Number index1, int x, int y, int width, int height) {
 			gc.setBackground(color);
 			gc.fillRectangle(x, y, width, height);
-		}
-	}
-
-	
-	void insert(int axisIndex, Section section, Number target, Number count) {
-		if (axisIndex == 0) {
-			if (section0.equals(section)) {
-				cellSelection.insert0(target, count);
-				lastSelection.insert0(target, count);
-			}
-		}
-		else {
-			if (section1.equals(section1)) {
-				cellSelection.insert1(target, count);
-				lastSelection.insert1(target, count);
-			}
-		}
-	}
-
-	void delete(int axisIndex, Section section, Number start, Number end) {
-		if (axisIndex == 0) {
-			if (section0.equals(section)) {
-				cellSelection.delete0(start, end);
-				lastSelection.delete0(start, end);
-			}
-		}
-		else {
-			if (section1.equals(section1)) {
-				cellSelection.delete1(start, end);
-				lastSelection.delete1(start, end);
-			}
 		}
 	}
 	

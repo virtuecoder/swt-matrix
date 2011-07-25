@@ -19,8 +19,10 @@ public class Snippet_0019 {
 		shell.setBounds(400, 200, 600, 400);
 		shell.setLayout(new FillLayout());
 		
-		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
+		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(
+		  shell, SWT.H_SCROLL | SWT.V_SCROLL);
 		matrix.getAxis1().getBody().setCount(4);
+		matrix.getAxis1().getBody().setDefaultResizable(true);
 		matrix.getAxis0().getBody().setCount(10);
 		matrix.getAxis0().getHeader().setVisible(true);
 		

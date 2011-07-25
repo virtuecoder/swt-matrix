@@ -1,6 +1,8 @@
 package pl.netanel.swt.matrix;
 import static org.junit.Assert.assertEquals;
 
+import java.math.BigInteger;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
@@ -42,4 +44,16 @@ import org.junit.runners.JUnit4;
 		assertEquals(10, matrix.getBody().getSelectedCount().intValue());
 	}
 	
+	// Ticket #9
+	@Test public void bug9() throws Exception {
+	  Axis<BigInteger> axis0 = new Axis<BigInteger>(BigInteger.class, 2);
+
+    Matrix<BigInteger, Integer> matrix = new Matrix<BigInteger, Integer>(
+      new Shell(), SWT.V_SCROLL | SWT.H_SCROLL, axis0, null);
+    
+    matrix.getAxis1().getBody().setCount(2);
+    matrix.getAxis0().getBody().setCount(new BigInteger("123456789012345678901234567890"));
+    
+    matrix.getBody().setSelected(BigInteger.ZERO, 0, true);
+  }
 }

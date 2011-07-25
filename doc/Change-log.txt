@@ -1,4 +1,16 @@
 -------------------------------------------------------------------------------
+Version 0.3.4
+
+New Features
+- Column draggaed does not use gc.alpha
+
+Bug fixes:
+- #8 scrollbars did not appear while column resing
+- #9 class cast exception when different indexing types for row and column
+- #10 text align was calculated incorectly
+- Scroll bar selection was incorrect when items differed in width
+
+-------------------------------------------------------------------------------
 Version 0.3.3
 
 New Features

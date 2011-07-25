@@ -1,17 +1,23 @@
 package pl.netanel.swt.matrix;
 
+import static java.lang.Math.abs;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
@@ -25,6 +31,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 
 import pl.netanel.util.Util;
@@ -853,6 +860,11 @@ public class  SwtTestCase {
     return display.getFocusControl().toDisplay(p);
   }
   
+  public Rectangle toDisplay(Rectangle r) {
+    Point p = display.getFocusControl().toDisplay(r.x, r.y);
+    return new Rectangle(p.x, p.y, r.width, r.height);
+  }
+  
   public Point toDisplay(int x, int y) {
     return display.getFocusControl().toDisplay(x, y);
   }
@@ -1285,5 +1297,53 @@ public class  SwtTestCase {
       sb.append(s[i]);
     }
     System.out.println(sb);
+  }
+
+  void saveImage(Image image) {
+    ImageLoader loader = new ImageLoader();
+    loader.data = new ImageData[] { image.getImageData() };
+    loader.save("image.png", SWT.IMAGE_PNG);
+  }
+  void saveImage(Image image, String name) {
+    ImageLoader loader = new ImageLoader();
+    loader.data = new ImageData[] { image.getImageData() };
+    loader.save(name, name.endsWith(".png") ? SWT.IMAGE_PNG : -1);
+  }
+
+  Image getImage(Rectangle r) {
+    GC gc = new GC(display);
+    final Image image = new Image(display, r.width, r.height);
+    gc.copyArea(image, r.x, r.y);
+    gc.dispose();
+    shell.addDisposeListener(new DisposeListener() {
+      @Override public void widgetDisposed(DisposeEvent e) {
+        image.dispose();
+      }
+    });
+    return image;
+  }
+  
+  void assertEqualImage(Image expected, Image actual) {
+    GC gc = new GC(display);
+    ImageData data1 = expected.getImageData();
+    ImageData data2 = actual.getImageData();
+    assertEquals("Images have different width", data1.width, data2.width);
+    assertEquals("Images have different height", data1.height, data2.height);
+    for (int x = 0; x < data1.width; x++) {
+      for (int y = 0; y < data1.height; y++) {
+        Assert.assertTrue(MessageFormat.format("Wrong pixel at {0}, {1}", x, y),
+//          data1.getPixel(x, y), data2.getPixel(x, y));
+          compareRGB(
+            data1.palette.getRGB(data1.getPixel(x, y)), 
+            data2.palette.getRGB(data2.getPixel(x, y)))); 
+      }
+    }
+    gc.dispose();
+  }
+  
+  boolean compareRGB(RGB rgb1, RGB rgb2) {
+    return abs(rgb1.red - rgb2.red) +
+      abs(rgb1.green - rgb2.green) +
+      abs(rgb1.blue - rgb2.blue) < 100;
   }
 }

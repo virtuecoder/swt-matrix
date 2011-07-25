@@ -431,6 +431,18 @@ public class Painter<N0 extends Number, N1 extends Number> {
 //		textAlignY = getTextAlignY(index0, index1);
 		if (text != null) {
 		  
+		  if (textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
+        text = FontWidthCache.shortenTextMiddle(text, width - textMarginX * 2, extent, extentCache);      
+      } 
+      else if (textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
+        text = FontWidthCache.shortenTextEnd(text, width - textMarginX * 2, extent, extentCache);     
+      } 
+      // Compute extent only when font changes or text horizontal align is center or right  
+      else if (lastFont != null && lastFont != gc.getFont() || 
+        Arrays.contains(EXTENT_ALIGN, textAlignX)) {
+        extent = gc.stringExtent(text);
+      }
+      
 		  
 		  switch (textAlignX) {
       case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP: 
@@ -469,16 +481,6 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		  else {
 //			if (width < 4 || height < 4) return;
 		    
-		    if (textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
-		      text = FontWidthCache.shortenTextMiddle(text, width - textMarginX * 2, extent, extentCache);			
-		    } 
-		    else if (textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
-		      text = FontWidthCache.shortenTextEnd(text, width - textMarginX * 2, extent, extentCache);			
-		    } 
-		    // Compute extent only when font changes or text horizontal align is center or right  
-		    else if (lastFont != null && lastFont != gc.getFont() || Arrays.contains(EXTENT_ALIGN, textAlignX)) {
-		      extent = gc.stringExtent(text);
-		    }
 		    
 		    gc.drawString(text, x3, y3, true);
 		  }
@@ -778,4 +780,21 @@ public class Painter<N0 extends Number, N1 extends Number> {
     this.wordWrap = state;
   }
 
+  void printGC(GC gc) {
+//    System.out.println("getForeground() " +  gc.getForeground());
+//    System.out.println("getBackground() " +  gc.getBackground());
+//    System.out.println("getForegroundPattern() " +  gc.getForegroundPattern());
+//    System.out.println("getBackgroundPattern() " +  gc.getBackgroundPattern());
+//    System.out.println("isClipped() " +  gc.isClipped());
+//    System.out.println("getLineWidth() " +  gc.getLineWidth());
+//    System.out.println("getXORMode() " +  gc.getXORMode());
+    
+//    System.out.println("getAdvanced() " +  gc.getAdvanced());
+//    System.out.println("getAlpha() " +  gc.getAlpha());
+//    System.out.println("getAntialias() " +  gc.getAntialias());
+//    System.out.println("getFillRule() " +  gc.getFillRule());
+//    System.out.println("getInterpolation() " +  gc.getInterpolation());
+//    System.out.println("getStyle() " +  gc.getStyle());
+//    System.out.println("getTextAntialias() " +  gc.getTextAntialias());
+  }
 }

@@ -356,6 +356,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 				resizeItem.section.core.setCellWidth(
 						resizeItem.getIndex(), resizeItem.getIndex(), newCellWidth);
 				layout.compute();
+				matrix.updateScrollBars();
 				matrix.redraw();
 				resizeEvent = SWT.MouseMove;
 				addEvent(SectionCore.from(resizeItem), SWT.Resize, resizeItem);

@@ -665,7 +665,7 @@ class SectionCore<N extends Number> implements Section<N> {
 		this.count = math.create(this.count).add(count).getValue();
 		
 		if (axis != null) {
-			axis.insertInZones(this, target, count);
+		  axis.insertInZones(this, target, count);
 		}
 	}
 	

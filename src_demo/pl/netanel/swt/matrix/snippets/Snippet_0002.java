@@ -29,7 +29,7 @@ public class Snippet_0002 {
     matrix.getAxis1().getHeader().setVisible(true);
     matrix.getAxis1().getHeader().setDefaultCellWidth(200);
     matrix.getAxis1().freezeHead(1);
-    matrix.getAxis0().getBody() .setCount(new BigInteger("123456789012345678901234567890"));
+    matrix.getAxis0().getBody().setCount(new BigInteger("123456789012345678901234567890"));
 
     shell.setBounds(400, 200, 600, 400);
     shell.open();
