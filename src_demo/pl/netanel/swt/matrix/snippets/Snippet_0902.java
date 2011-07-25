@@ -26,10 +26,10 @@ public class Snippet_0902 {
 		shell.setLayout(new FillLayout());
 		
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
-		matrix.getAxis0().getHeader().setVisible(true);
-		matrix.getAxis1().getHeader().setVisible(true);
-		final Section<Integer> body0 = matrix.getAxis0().getBody();
-		final Section<Integer> body1 = matrix.getAxis1().getBody();
+		matrix.getAxisY().getHeader().setVisible(true);
+		matrix.getAxisX().getHeader().setVisible(true);
+		final Section<Integer> body0 = matrix.getAxisY().getBody();
+		final Section<Integer> body1 = matrix.getAxisX().getBody();
 		body0.setCount(10);
 		body1.setCount(4);
 		body1.setDefaultResizable(true);

@@ -40,23 +40,23 @@ public class Snippet_0004 {
 		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
 		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
-		Axis<Integer> axis0 = matrix.getAxis0();
-		final Section<Integer> body0 = axis0.getBody();
+		Axis<Integer> axisY = matrix.getAxisY();
+		final Section<Integer> body0 = axisY.getBody();
 		body0.setCount(list.size());
 		body0.setDefaultResizable(true);
-		axis0.getHeader().setVisible(true);
+		axisY.getHeader().setVisible(true);
 		
-		Axis<Integer> axis1 = matrix.getAxis1();
-		axis1.getBody().setCount(2);
-		axis1.getHeader().setDefaultCellWidth(16);
-		axis1.getHeader().setVisible(true);
+		Axis<Integer> axisX = matrix.getAxisX();
+		axisX.getBody().setCount(2);
+		axisX.getHeader().setDefaultCellWidth(16);
+		axisX.getHeader().setVisible(true);
 		
 		matrix.getBody().replacePainter(
 		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 		    @Override
-		    public String getText(Integer index0, Integer index1) {
-		      String value = list.get(index0.intValue());
-		      return index1.intValue() == 0 
+		    public String getText(Integer indexX, Integer indexY) {
+		      String value = list.get(indexY.intValue());
+		      return indexX.intValue() == 0 
 		        ? value
 	          : Integer.toString(value.length());
 		    }
@@ -66,8 +66,8 @@ public class Snippet_0004 {
 		matrix.getColumnHeader().replacePainter(
 		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 		    @Override
-		    public String getText(Integer index0, Integer index1) {
-		      return index1.intValue() == 0 ? "Value" : "Length";
+		    public String getText(Integer indexX, Integer indexY) {
+		      return indexX.intValue() == 0 ? "Value" : "Length";
 		    }
 		  }
 	  );
@@ -77,7 +77,7 @@ public class Snippet_0004 {
 		add.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				AxisItem<Integer> focusItem = matrix.getAxis0().getFocusItem();
+				AxisItem<Integer> focusItem = matrix.getAxisY().getFocusItem();
 				int focusIndex = focusItem == null ? 0 : focusItem.getIndex();
 				list.add(focusIndex, Integer.toString(++counter));
 				body0.insert(focusIndex, 1);
@@ -92,7 +92,7 @@ public class Snippet_0004 {
 		remove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-			  AxisItem<Integer> focusItem = matrix.getAxis0().getFocusItem();
+			  AxisItem<Integer> focusItem = matrix.getAxisY().getFocusItem();
 			  if (focusItem != null) {
 			    Integer index = focusItem.getIndex();
           body0.delete(index, index);

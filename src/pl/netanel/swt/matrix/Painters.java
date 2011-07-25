@@ -5,30 +5,30 @@ import java.util.Iterator;
 
 import pl.netanel.util.Preconditions;
 
-class Painters<N0 extends Number, N1 extends Number> implements Iterable<Painter<N0, N1>> {
+class Painters<X extends Number, Y extends Number> implements Iterable<Painter<X, Y>> {
   
-  private ArrayList<Painter<N0, N1>> items;
+  private ArrayList<Painter<X, Y>> items;
 
 //	private Zone zone;
 //	private Matrix matrix;
 
 	public Painters() {
-	  items = new ArrayList<Painter<N0, N1>>();
+	  items = new ArrayList<Painter<X, Y>>();
 	}
 
-	public boolean add(Painter<N0, N1> painter) {
+	public boolean add(Painter<X, Y> painter) {
 	  Preconditions.checkNotNullWithName(painter, "painter");
 		checkUniqueness(painter);
 		return items.add(painter);
 	}
 	
-	public void add(int index, Painter<N0, N1> painter) {
+	public void add(int index, Painter<X, Y> painter) {
 	  Preconditions.checkNotNullWithName(painter, "painter");
 		checkUniqueness(painter);
 		items.add(index, painter);
 	}
 	
-	public Painter<N0, N1> set(int index, Painter<N0, N1> painter) {
+	public Painter<X, Y> set(int index, Painter<X, Y> painter) {
 	  Preconditions.checkPositionIndex(index, items.size());
 	  Preconditions.checkNotNullWithName(painter, "painter");
 	  
@@ -45,7 +45,7 @@ class Painters<N0 extends Number, N1 extends Number> implements Iterable<Painter
 	  
 	}
 	
-	public void replacePainter(Painter<N0, N1> painter) {
+	public void replacePainter(Painter<X, Y> painter) {
 	  Preconditions.checkNotNullWithName(painter, "painter");
 		int indexOfPainter = indexOfPainter(painter.name);
 		if (indexOfPainter == -1) {
@@ -66,9 +66,9 @@ class Painters<N0 extends Number, N1 extends Number> implements Iterable<Painter
 	}
 	
 	
-	public Painter<N0, N1> remove(int index) {
+	public Painter<X, Y> remove(int index) {
 	  Preconditions.checkPositionIndex(index, items.size());
-	  Painter<N0, N1> painter = items.remove(index);
+	  Painter<X, Y> painter = items.remove(index);
 	  if (painter != null) { 
 	    painter.zone = null;
 	    painter.matrix = null;
@@ -86,7 +86,7 @@ class Painters<N0 extends Number, N1 extends Number> implements Iterable<Painter
     return removed;
 	}
 	
-	public Painter<N0, N1> get(int index) {
+	public Painter<X, Y> get(int index) {
 	  Preconditions.checkPositionIndex(index, items.size());
 	  return items.get(index);
 	}
@@ -95,12 +95,12 @@ class Painters<N0 extends Number, N1 extends Number> implements Iterable<Painter
 	  return items.size();
 	}
 	
-	@Override public Iterator<Painter<N0, N1>> iterator() {
+	@Override public Iterator<Painter<X, Y>> iterator() {
 	  return items.iterator();
 	}
 
 	
-  private void checkUniqueness(Painter<N0, N1> painter) {
+  private void checkUniqueness(Painter<X, Y> painter) {
     for (int i = 0, imax = items.size(); i < imax; i++) {
       Painter painter2 = items.get(i);
       Preconditions.checkArgument(!painter2.name.equals(painter.name), 

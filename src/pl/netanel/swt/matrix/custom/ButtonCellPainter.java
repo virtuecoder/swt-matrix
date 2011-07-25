@@ -31,20 +31,20 @@ import pl.netanel.swt.matrix.Painter;
  * new ButtonCellPainter<Integer, Integer>(matrix.getColumnHeader());
  * </pre>
  * 
- * @param <N0> indexing type for rows
- * @param <N1> indexing type for columns
+ * @param <Y> indexing type for vertical axis
+ * @param <X> indexing type for horizontal axis
  * @author Jacek Kolodziejczyk created 16-07-2011
  * @created 13-10-2010
  */
-public class ButtonCellPainter<N0 extends Number, N1 extends Number> 
-  extends Painter<N0, N1> implements Listener 
+public class ButtonCellPainter<X extends Number, Y extends Number> 
+  extends Painter<X, Y> implements Listener 
 {
   private final Color highlightShadow, lightShadow, normalShadow;
-  private final Zone<N0, N1> zone;
-  private AxisItem<N0> pushed0;
-  private AxisItem<N1> pushed1;
+  private final Zone<X, Y> zone;
+  private AxisItem<Y> pushed0;
+  private AxisItem<X> pushed1;
   
-  public ButtonCellPainter(Zone<N0, N1> zone) {
+  public ButtonCellPainter(Zone<X, Y> zone) {
     super("button cells", SCOPE_CELLS_HORIZONTALLY);
     this.zone = zone;
     zone.replacePainter(this);
@@ -60,13 +60,13 @@ public class ButtonCellPainter<N0 extends Number, N1 extends Number>
   }
 
   @Override public void handleEvent(Event e) {
-    Matrix<N0, N1> matrix = zone.getMatrix();
+    Matrix<X, Y> matrix = zone.getMatrix();
 
     switch (e.type) {
     
     case SWT.MouseDown:
-      pushed0 = zone.getMatrix().getAxis0().getItemByDistance(e.y);
-      pushed1 = zone.getMatrix().getAxis1().getItemByDistance(e.x);
+      pushed0 = zone.getMatrix().getAxisY().getItemByDistance(e.y);
+      pushed1 = zone.getMatrix().getAxisX().getItemByDistance(e.x);
       break;
       
     case SWT.MouseUp:
@@ -84,51 +84,51 @@ public class ButtonCellPainter<N0 extends Number, N1 extends Number>
     return true;
   }
   
-  @Override public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
-    if (isPushed(index0, index1)) {
-      paintPushed(index0, index1, x, y, width, height);
+  @Override public void paint(X indexX, Y indexY, int x, int y, int width, int height) {
+    if (isPushed(indexY, indexX)) {
+      paintPushed(indexY, indexX, x, y, width, height);
     } else {
-      paintIdle(index0, index1, x, y, width, height);
+      paintIdle(indexY, indexX, x, y, width, height);
     }
   };
   
   /**
    * Returns <tt>true</tt> if the cell at the specified location is in pushed state, 
    * or <tt>false</tt> otherwise. 
-   * @param index0 index of a section item in the row axis. 
-   * @param index1 index of a section item in the column axis 
+   * @param indexY index of a section item in the row axis. 
+   * @param indexX index of a section item in the column axis 
    * @return <tt>true</tt> if the cell at the specified location is in pushed state
    */
-  protected boolean isPushed(N0 index0, N1 index1) {
+  protected boolean isPushed(Y indexY, X indexX) {
     return pushed0 != null && pushed1 != null && 
-      pushed0.getIndex().equals(index0) &&
-      pushed1.getIndex().equals(index1);
+      pushed0.getIndex().equals(indexY) &&
+      pushed1.getIndex().equals(indexX);
   }
   
 
   /**
    * Paints the cell when it is in the pushed state.  
-   * @param index0 index of a section item in the row axis. 
-   * @param index1 index of a section item in the column axis 
+   * @param indexY index of a section item in the row axis. 
+   * @param indexX index of a section item in the column axis 
    * @param x the x coordinate of the painting boundaries
    * @param y the y coordinate of the painting boundaries
    * @param width the width of the painting boundaries
    * @param height the height of the painting boundaries
    */
-  protected void paintPushed(N0 index0, N1 index1, int x, int y, int width, int height) {
-    super.paint(index0, index1, x, y, width, height);
+  protected void paintPushed(Y indexY, X indexX, int x, int y, int width, int height) {
+    super.paint(indexX, indexY, x, y, width, height);
   }
 
   /**
    * Paints the cell when it is in the idle (not pushed) state.
-   * @param index0 index of a section item in the row axis. 
-   * @param index1 index of a section item in the column axis 
+   * @param indexY index of a section item in the row axis. 
+   * @param indexX index of a section item in the column axis 
    * @param x the x coordinate of the painting boundaries
    * @param y the y coordinate of the painting boundaries
    * @param width the width of the painting boundaries
    * @param height the height of the painting boundaries
    */
-  protected void paintIdle(N0 index0, N1 index1, int x, int y, int width, int height) {
+  protected void paintIdle(Y indexY, X indexX, int x, int y, int width, int height) {
     gc.setForeground(highlightShadow);
     gc.drawLine(x, y - 1, x + width - 1, y - 1);
     gc.drawLine(x, y - 1, x, y + height - 1);
@@ -155,9 +155,9 @@ public class ButtonCellPainter<N0 extends Number, N1 extends Number>
 
     
     final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
-    matrix.getAxis1().getBody().setCount(4);
-    matrix.getAxis0().getBody().setCount(10);
-    matrix.getAxis0().getHeader().setVisible(true);
+    matrix.getAxisX().getBody().setCount(4);
+    matrix.getAxisY().getBody().setCount(10);
+    matrix.getAxisY().getHeader().setVisible(true);
 
     new ButtonCellPainter<Integer, Integer>(matrix.getColumnHeader());
     

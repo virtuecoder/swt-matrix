@@ -546,9 +546,9 @@ import pl.netanel.util.Arrays;
 		assertExtent(0, 2, 0, 2);
 	}
 	
-	private void assertExtent(int start0, int end0, int start1, int end1) {
+	private void assertExtent(int startY, int endY, int startX, int endX) {
 		Number[] e = set.getExtent();
-		assertEquals(start0 + " " + end0 + " " + start1 + " " + end1, 
+		assertEquals(startY + " " + endY + " " + startX + " " + endX, 
 				e[0] + " " + e[1] + " " + e[2] + " " + e[3]);
 	}
 	
@@ -558,7 +558,7 @@ import pl.netanel.util.Arrays;
 		NumberPairSequence seq = new NumberPairSequence(set);
 		int count = 0;
 		for (seq.init(); seq.next(); count++) {
-			String cell = seq.index0.toString() + ":" + seq.index1.toString();
+			String cell = seq.indexY.toString() + ":" + seq.indexX.toString();
 			assertTrue("Unexpected " + cell, Arrays.contains(cells, cell));
 		}
 		assertEquals("Wrong count, ", cells.length, count);
@@ -575,27 +575,27 @@ import pl.netanel.util.Arrays;
 //		
 //		int len = data.length;
 //		for (int i = 0; i < len; i++) {
-////			Index start0 = number(random.nextInt(5));
-////			Index end0 = number(random.nextInt(5));
-////			Index start1 = number(random.nextInt(5));
-////			Index end1 = number(random.nextInt(5));
-////			Strings.println(start0, end0, start1, end1);
-//			Index start0 = number(data[i][0]);
-//			Index end0 = number(data[i][1]);
-//			Index start1 = number(data[i][2]);
-//			Index end1 = number(data[i][3]);
+////			Index startY = number(random.nextInt(5));
+////			Index endY = number(random.nextInt(5));
+////			Index startX = number(random.nextInt(5));
+////			Index endX = number(random.nextInt(5));
+////			Strings.println(startY, endY, startX, endX);
+//			Index startY = number(data[i][0]);
+//			Index endY = number(data[i][1]);
+//			Index startX = number(data[i][2]);
+//			Index endX = number(data[i][3]);
 //			CellSet subset = new CellSet(IntIndexFactory.instance, IntIndexFactory.instance);
-//			subset.add(start0, end0, start1, end1);
-//			set.remove(start0, end0, start1, end1);
+//			subset.add(startY, endY, startX, endX);
+//			set.remove(startY, endY, startX, endX);
 //			set.apply(subset);
 //			assertTrue("Number of items should not be more then 25", set.size() <= 25);
 //		}
 //	}
 	
-//	private void subset(int start0, int end0, int start1, int end1, String ...expected) {
+//	private void subset(int startY, int endY, int startX, int endX, String ...expected) {
 //		Math f = IntMath.getInstance();
 //		CellSet subset = new CellSet(f, f);
-//		set.subset(start0, end0, start1, end1, subset);
+//		set.subset(startY, endY, startX, endX, subset);
 //		result(subset, expected);
 //	}
 	
@@ -603,8 +603,8 @@ import pl.netanel.util.Arrays;
 		assertEquals("Wrong count for: "+set, i, set.getCount().intValue());
 	}
 
-	void add(int start0, int end0, int start1, int end1) {
-		set.add(start0, end0, start1, end1);
+	void add(int startY, int endY, int startX, int endX) {
+		set.add(startY, endY, startX, endX);
 	}
 	
 	private void insert(String ...lines) {
@@ -618,36 +618,36 @@ import pl.netanel.util.Arrays;
 	private void operation(boolean insert, String ...lines) {
 		for (int i = 0; i < lines.length; i++) {
 			String s = lines[i];
-			int start1 = -1, end1 = -1, x1 = -1, x2 = -1;
+			int startX = -1, endX = -1, x1 = -1, x2 = -1;
 			
 			// Find the block on x axis
-			while (end1 < s.length() - 1) {
-				start1 = s.indexOf('■', end1 + 1);
-				if (start1 == -1) break;
-				end1 = s.indexOf('∟', start1) - 1; 
-				if (end1 < 0) end1 = s.length() - 1;
+			while (endX < s.length() - 1) {
+				startX = s.indexOf('■', endX + 1);
+				if (startX == -1) break;
+				endX = s.indexOf('∟', startX) - 1; 
+				if (endX < 0) endX = s.length() - 1;
 
 				int j = i+1;
 				for (; j < lines.length; j++) {
 					String s2 = lines[j];
 					x1 = s2.indexOf('■', x1);
-					if (x1 != start1) break;
+					if (x1 != startX) break;
 					x2 = s2.indexOf('∟', x1) - 1; 
 					if (x2 < 0) x2 = s2.length() - 1;
-					if (x2 != end1) break;
+					if (x2 != endX) break;
 				}
-				doOperation(insert, i, j-1, start1, end1);
+				doOperation(insert, i, j-1, startX, endX);
 				i = j - 1;
 			}
 		}
 	}
 
-	private void doOperation(boolean insert, int start0, int end0, int start1,
-			int end1) {
+	private void doOperation(boolean insert, int startY, int endY, int startX,
+			int endX) {
 		if (insert)
-			set.add(start0, end0, start1, end1);
+			set.add(startY, endY, startX, endX);
 		else 
-			set.remove(start0, end0, start1, end1);
+			set.remove(startY, endY, startX, endX);
 	}
 	
 	private void result(String ...expected) {

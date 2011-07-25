@@ -23,8 +23,8 @@ public class Snippet_0017 {
 		Display display = shell.getDisplay();
 		
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
-		matrix.getAxis0().getBody().setCount(8);
-		Section<Integer> body1 = matrix.getAxis1().getBody();
+		matrix.getAxisY().getBody().setCount(8);
+		Section<Integer> body1 = matrix.getAxisX().getBody();
 		body1.setCount(8);
 		body1.setDefaultCellWidth(16);
 		
@@ -32,9 +32,9 @@ public class Snippet_0017 {
 		matrix.getBody().replacePainter(
 		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 		    @Override
-		    public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
-		      background = index0.intValue() % 2 + index1.intValue() % 2 == 1 ? color : null;
-		      super.paint(index0, index1, x, y, width, height);
+		    public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
+		      background = indexY.intValue() % 2 + indexX.intValue() % 2 == 1 ? color : null;
+		      super.paint(indexX, indexY, x, y, width, height);
 		    }
 		  }
 	  );

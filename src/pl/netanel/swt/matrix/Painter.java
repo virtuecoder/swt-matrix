@@ -38,7 +38,7 @@ import pl.netanel.util.Preconditions;
  * @created 2010-06-13
  */
 
-public class Painter<N0 extends Number, N1 extends Number> {
+public class Painter<X extends Number, Y extends Number> {
 	/** 
 	 * Single scope of the whole container
 	 */
@@ -239,8 +239,8 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	private boolean wordWrap;
 
 	TextClipMethod textClipMethod;
-	Zone<N0, N1> zone;
-	Matrix<N0, N1> matrix;
+	Zone<X, Y> zone;
+	Matrix<X, Y> matrix;
 
 	private Color lastForeground, lastBackground, defaultBackground, defaultForeground,  
 		 selectionBackground, selectionForeground;
@@ -336,8 +336,8 @@ public class Painter<N0 extends Number, N1 extends Number> {
 //		}
 //		
 //		shouldHighlight = 
-//		  !zone.section0.isFocusItemEnabled() ||
-//		  !zone.section1.isFocusItemEnabled() ||
+//		  !zone.sectionY.isFocusItemEnabled() ||
+//		  !zone.sectionX.isFocusItemEnabled() ||
 //		  selectionCount.compareTo(BigInteger.ONE) > 0;
 		  
 //		shouldHighlight = zone.isSingleCellSelectionHighlight() || 
@@ -363,30 +363,30 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	/**
 	 * Draws on the canvas within the given boundaries according to the given indexes. 
 	 * <p>
-	 * The types of the <code>index0</code>, <code>index1</code> arguments are not checked 
+	 * The types of the <code>indexY</code>, <code>indexX</code> arguments are not checked 
 	 * in the runtime for performance reasons. Thus the use of generics is recommended to
 	 * check against wrong type in compile time; 
 	 * <p>
-	 * <code>index0</code> is always null when the receiver's scope is one of the following:<ul>
+	 * <code>indexY</code> is always null when the receiver's scope is one of the following:<ul>
 	 *        <li>{@link #SCOPE_COLUMN_CELLS}, <li>{@link #SCOPE_VERTICAL_LINES}, <li>{@link #SCOPE_SINGLE}</ul>
-	 * <code>index1</code> is always null when the receiver's scope is one of the following:<ul>
+	 * <code>indexX</code> is always null when the receiver's scope is one of the following:<ul>
 	 *        <li>{@link #SCOPE_ROW_CELLS}, <li>{@link #SCOPE_HORIZONTAL_LINES}, <li>{@link #SCOPE_SINGLE}</ul>
-	 * @param index0 index of a section item in the row axis. 
-	 * @param index1 index of a section item in the column axis 
-   * @param x the x coordinate of the painting boundaries
-   * @param y the y coordinate of the painting boundaries
-   * @param width the width of the painting boundaries
-   * @param height the height of the painting boundaries
+	 * @param indexX index of a section item in the column axis 
+	 * @param indexY index of a section item in the row axis. 
+	 * @param x the x coordinate of the painting boundaries
+	 * @param y the y coordinate of the painting boundaries
+	 * @param width the width of the painting boundaries
+	 * @param height the height of the painting boundaries
 	 */
-	public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
-	  setup(index0, index1);
+	public void paint(X indexX, Y indexY, int x, int y, int width, int height) {
+	  setup(indexX, indexY);
 	  if (isWordWrap()) {
 	    gc.setClipping(x, y, width, height);
 	  }
 	  
 		Color foreground2 = foreground == null ? defaultForeground : foreground; 
 		Color background2 = background == null ? defaultBackground : background;
-		if (selectionHighlight && zone != null && zone.isSelected(index0, index1)) {
+		if (selectionHighlight && zone != null && zone.isSelected(indexX, indexY)) {
 			// TODO Revise and maybe optimize the background / foreground color setting algorithm
 			foreground2 = selectionForeground;  
 			background2 = selectionBackground;
@@ -405,15 +405,15 @@ public class Painter<N0 extends Number, N1 extends Number> {
 			}
 		}
 		
-//		lineWidth0 = zone.section0.getLineWidth(index0);
-//		lineWidth1 = zone.section1.getLineWidth(index1);
+//		lineWidth0 = zone.sectionY.getLineWidth(indexY);
+//		lineWidth1 = zone.sectionX.getLineWidth(indexX);
 //		lineColor = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 		int x2 = x, y2 = y;
 		int x3 = x, y3 = y;
 		
-		image = getImage(index0, index1);
-//		imageAlignX = getImageAlignX(index0, index1);
-//		imageAlignY = getImageAlignY(index0, index1);
+		
+//		imageAlignX = getImageAlignX(indexY, indexX);
+//		imageAlignY = getImageAlignY(indexY, indexX);
 		if (image != null) {
 			Rectangle bounds = image.getBounds();
 			switch (imageAlignX) {
@@ -439,9 +439,9 @@ public class Painter<N0 extends Number, N1 extends Number> {
 			width -= bounds.width;
 		}
 		
-		text = getText(index0, index1);
-//		textAlignX = getTextAlignX(index0, index1);
-//		textAlignY = getTextAlignY(index0, index1);
+		text = getText(indexX, indexY);
+//		textAlignX = getTextAlignX(indexY, indexX);
+//		textAlignY = getTextAlignY(indexY, indexX);
 		if (text != null) {
 		  
 		  if (textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
@@ -500,24 +500,16 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		}
 	}
 	
-	public void setup(N0 index0, N1 index1) {
-	  
-	}
-
-  public int getTextAlignY(N0 index0, N1 index1) {
-		return textAlignX;
-	}
-
-	public int getTextAlignX(N0 index0, N1 index1) {
-		return textAlignY;
-	}
-	
-	public int getImageAlignY(N0 index0, N1 index1) {
-		return imageAlignX;
-	}
-	
-	public int getImageAlignX(N0 index0, N1 index1) {
-		return imageAlignY;
+	/**
+	 * Calls {@link #getText(Number, Number)} and {@link #getImage(Number, Number)}
+	 * by default, but can be overridden to setup any of the painter's 
+	 * properties.
+   * @param indexX cell index on the horizontal axis 
+   * @param indexY cell index on the vertical axis  
+	 */
+	public void setup(X indexX, Y indexY) {
+	  image = getImage(indexX, indexY);
+    text = getText(indexX, indexY);
 	}
 
 	/**
@@ -525,12 +517,12 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 * <p>
 	 * This method is used both by {@link #paint(Number, Number, int, int, int, int)} 
 	 * and by {@link #computeHeight(Number, Number)} and {@link #computeWidth(Number, Number)}
+	 * @param indexX cell index on the horizontal axis 
+	 * @param indexY cell index on the vertical axis  
 	 *  
-	 * @param index0 row index of the cell  
-	 * @param index1 column index of the cell 
 	 * @return the text to be drawn by the painter
 	 */
-	public String getText(N0 index0, N1 index1) {
+	public String getText(X indexX, Y indexY) {
 		return text;
 	}
 	
@@ -539,12 +531,12 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 * <p>
 	 * This method is used both by {@link #paint(Number, Number, int, int, int, int)} 
 	 * and by {@link #computeHeight(Number, Number)} and {@link #computeWidth(Number, Number)}
+	 * @param indexX cell index on the horizontal axis 
+	 * @param indexY cell index on the vertical axis  
 	 *  
-	 * @param index0 row index of the cell  
-	 * @param index1 column index of the cell 
 	 * @return the image to be drawn by the painter
 	 */
-	public Image getImage(N0 index0, N1 index1) {
+	public Image getImage(X indexX, Y indexY) {
 		return image;
 	}
 	
@@ -573,91 +565,27 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		return enabled;
 	}
 
-
-//	/**
-//	 * Computes the optimal width to fit the content of the cell at specified indexes.
-//	 * <p>
-//	 * To be called only by the framework, since the {@link GC} instance must be
-//	 * injected to measure the text extent.
-//	 * <p>
-//	 * <code>index0</code> and <code>index1</code> refer to the model, 
-//	 * not the visual position of the item on the screen
-//	 * which can be altered by move and hide operations. 
-//	 * 
-//	 * @param index0 row index of the cell  
-//	 * @param index1 column index of the cell 
-//	 */
-//	public int computeWidth(N0 index0, N1 index1) {
-//		assert zone != null;
-//		setup(index0, index1);
-//		int x = 0;
-//		image = getImage(index0, index1);
-//		if (image != null) {
-//			Rectangle bounds = image.getBounds();
-//			x = bounds.width + 2 * imageMarginX;
-//		}
-//		text = getText(index0, index1);
-//		if (text != null) {
-//			Point p = gc.stringExtent(text);
-//			x += p.x + 2 * textMarginX;
-//		}
-//		return x;
-//	}
-//	
-//	 
-//  /**
-//   * Computes the optimal height to fit the content of the cell at specified indexes.
-//   * <p>
-//   * To be called only by the framework, since the {@link GC} instance must be
-//   * injected to measure the text extent.
-//   * <p>
-//   * <code>index0</code> and <code>index1</code> refer to the model, 
-//   * not the visual position of the item on the screen
-//   * which can be altered by move and hide operations. 
-//   * 
-//   * @param index0 row index of the cell  
-//   * @param index1 column index of the cell 
-//   */
-//  public int computeHeight(N0 index0, N1 index1) {
-//    assert zone != null;
-//    setup(index0, index1);
-//    int y = 0;
-//    image = getImage(index0, index1);
-//    if (image != null) {
-//      Rectangle bounds = image.getBounds();
-//      y = bounds.height + 2 * imageMarginY;
-//    }
-//    text = getText(index0, index1);
-//    if (text != null) {
-//      
-//      Point p = gc.stringExtent(text);
-//      y = java.lang.Math.max(p.y, y + 2 * textMarginY);
-//    }
-//    return y;
-//  }
-
 	/**
-	 * hHint is taken with priority.
-	 * @param index0
-	 * @param index1
-	 * @param wHint
-	 * @param hHint
-	 * @return
+	 * Returns the preferred size of the receiver.
+   * @param indexX cell index on the horizontal axis 
+   * @param indexY cell index on the vertical axis  
+	 * @param wHint the width hint (can be <code>SWT.DEFAULT</code>)
+	 * @param hHint the height hint (can be <code>SWT.DEFAULT</code>)
+	 * @return the preferred size of the control
 	 */
-	public Point computeSize(N0 index0, N1 index1, int wHint, int hHint) {
+	public Point computeSize(X indexX, Y indexY, int wHint, int hHint) {
 	  assert zone != null;
-	  setup(index0, index1);
+	  setup(indexX, indexY);
 	  
 	  int x = 0, y = 0;
 	  
-	  image = getImage(index0, index1);
+	  image = getImage(indexX, indexY);
 	  if (image != null) {
 	    Rectangle bounds = image.getBounds();
 	    x = bounds.width + 2 * imageMarginX;
 	    y = bounds.height + 2 * imageMarginY;
 	  }
 	  
-    text = getText(index0, index1);
     Point p;
     if (text != null) {
       p = gc.stringExtent(text);
@@ -665,11 +593,11 @@ public class Painter<N0 extends Number, N1 extends Number> {
       if (isWordWrap()) {
         if (wHint == SWT.DEFAULT) {
           return new Point(
-            zone.getSection1().getCellWidth(index1), 
-            zone.getSection0().getCellWidth(index0));
+            zone.getSectionX().getCellWidth(indexX), 
+            zone.getSectionY().getCellWidth(indexY));
         }
-        int x2 = wHint == SWT.DEFAULT ?  zone.getSection1().getCellWidth(index1) : wHint;
-        int y2 = 0; // = wHint == SWT.DEFAULT ?  zone.getSection0().getCellWidth(index0) : wHint;
+        int x2 = wHint == SWT.DEFAULT ?  zone.getSectionX().getCellWidth(indexX) : wHint;
+        int y2 = 0; // = wHint == SWT.DEFAULT ?  zone.getSectionY().getCellWidth(indexY) : wHint;
         if (textLayout == null) {
           textLayout = new TextLayout(gc.getDevice());
           matrix.addDisposeListener(new DisposeListener() {
@@ -751,7 +679,7 @@ public class Painter<N0 extends Number, N1 extends Number> {
 		return (ratio*v1 + (100-ratio)*v2)/100;
 	}
 
-	void setMatrix(Matrix<N0, N1> matrix) {
+	void setMatrix(Matrix<X, Y> matrix) {
 		this.matrix = matrix;
 	}
 
@@ -764,15 +692,15 @@ public class Painter<N0 extends Number, N1 extends Number> {
 	 *  
 	 * @return the matrix to which the painter belongs
 	 */
-	Matrix<N0, N1> getMatrix() {
+	Matrix<X, Y> getMatrix() {
 		return matrix;
 	}
 
-  Zone<N0, N1> getZone() {
+  Zone<X, Y> getZone() {
     return zone;
   }
 
-  void setZone(Zone<N0, N1> zone) {
+  void setZone(Zone<X, Y> zone) {
     this.zone = zone;
     this.matrix = zone.getMatrix();
   }

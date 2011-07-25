@@ -22,13 +22,13 @@ public class Snippet_0013 {
 		final Display display = shell.getDisplay();
 		
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
-		matrix.getAxis0().getHeader().setVisible(true);
+		matrix.getAxisY().getHeader().setVisible(true);
 		
-		Section<Integer> body0 = matrix.getAxis0().getBody();
+		Section<Integer> body0 = matrix.getAxisY().getBody();
 		body0.setDefaultLineWidth(3);
 		body0.setCount(10);
 		
-		Section<Integer> body1 = matrix.getAxis1().getBody();
+		Section<Integer> body1 = matrix.getAxisX().getBody();
 		body1.setDefaultLineWidth(3);
 		body1.setCount(4);
 		
@@ -39,7 +39,7 @@ public class Snippet_0013 {
 		columnHeader.addPainter(
 		  new Painter<Integer, Integer>("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
+			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 				gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
 				gc.drawRectangle(x - 1, y - 1, width + 1, height + 1);
 			}
@@ -53,7 +53,7 @@ public class Snippet_0013 {
 		body.addPainter(
 		  new Painter<Integer, Integer>("cell border", Painter.SCOPE_CELLS_HORIZONTALLY) {
 		    @Override
-		    public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
+		    public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 		      gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
 		      gc.drawRectangle(x - 1, y - 1, width + 1, height + 1);
 		    }

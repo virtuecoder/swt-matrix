@@ -14,8 +14,8 @@ public class ScrollTest extends SwtTestCase {
   @Test public void scrollBarvisibleAfterOpen() throws Exception {
     Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell,
       SWT.H_SCROLL | SWT.V_SCROLL);
-    matrix.getAxis1().getBody().setCount(10);
-    matrix.getAxis0().getBody().setCount(10);
+    matrix.getAxisX().getBody().setCount(10);
+    matrix.getAxisY().getBody().setCount(10);
     shell.setBounds(100, 100, 200, 200);
     
     shell.open();
@@ -29,10 +29,10 @@ public class ScrollTest extends SwtTestCase {
   @Test public void showScrollBarWhenResizedOutside() throws Exception {
     Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(
       shell, SWT.H_SCROLL | SWT.V_SCROLL);
-    matrix.getAxis1().getBody().setCount(4);
-    matrix.getAxis1().getBody().setDefaultResizable(true);
-    matrix.getAxis0().getBody().setCount(10);
-    matrix.getAxis0().getHeader().setVisible(true);
+    matrix.getAxisX().getBody().setCount(4);
+    matrix.getAxisX().getBody().setDefaultResizable(true);
+    matrix.getAxisY().getBody().setCount(10);
+    matrix.getAxisY().getHeader().setVisible(true);
     
     shell.open();
     processEvents();
@@ -52,13 +52,13 @@ public class ScrollTest extends SwtTestCase {
     Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell,
       SWT.H_SCROLL | SWT.V_SCROLL);
 
-    matrix.getAxis0().getBody().setCount(10);
-    Section<Integer> body0 = matrix.getAxis1().getBody();
+    matrix.getAxisY().getBody().setCount(10);
+    Section<Integer> body0 = matrix.getAxisX().getBody();
     body0.setCount(4);
     body0.setCellWidth(0, 300);
     body0.setCellWidth(1, 200);
     body0.setDefaultResizable(true);
-    matrix.getAxis0().getHeader().setVisible(true);
+    matrix.getAxisY().getHeader().setVisible(true);
     
     ScrollBar scroll = matrix.getHorizontalBar();
     shell.setBounds(600, 400, 300, 200);

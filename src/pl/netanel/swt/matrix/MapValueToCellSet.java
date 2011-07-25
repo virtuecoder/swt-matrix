@@ -3,46 +3,46 @@ package pl.netanel.swt.matrix;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-class MapValueToCellSet<N0 extends Number, N1 extends Number, T> implements CellValues<N0, N1, T> {
-	final HashMap<T, CellSet<N0, N1>> values;
-	private final Math<N0> math0;
-	private final Math<N1> math1;
+class MapValueToCellSet<X extends Number, Y extends Number, T> implements CellValues<X, Y, T> {
+	final HashMap<T, CellSet<X, Y>> values;
+	private final Math<Y> mathY;
+	private final Math<X> mathX;
 	private T defaultValue;
 	
-	public MapValueToCellSet(Math math0, Math math1) {
-		this.math0 = math0;
-		this.math1 = math1;
+	public MapValueToCellSet(Math mathY, Math mathX) {
+		this.mathY = mathY;
+		this.mathX = mathX;
 		values = new HashMap();
 	}
 
 	/* (non-Javadoc)
-	 * @see pl.netanel.swt.matrix.CellValues#setValue(N0, N0, N1, N1, T)
+	 * @see pl.netanel.swt.matrix.CellValues#setValue(Y, Y, X, X, T)
 	 */
 	@Override
-	public void setValue(N0 start0, N0 end0, N1 start1, N1 end1, T value) {
+	public void setValue(Y startY, Y endY, X startX, X endX, T value) {
 		// Remove from other
-		for (Entry<T, CellSet<N0, N1>> entry: values.entrySet()) {
+		for (Entry<T, CellSet<X, Y>> entry: values.entrySet()) {
 			if (!entry.getKey().equals(value)) {
-				entry.getValue().remove(start0, end0, start1, end1);
+				entry.getValue().remove(startY, endY, startX, endX);
 			}
 		}
 		if (value != null) {
-			CellSet<N0, N1> set = values.get(value);
+			CellSet<X, Y> set = values.get(value);
 			if (set == null) {
-				set = new CellSet(math0, math1);
+				set = new CellSet(mathY, mathX);
 				values.put(value, set);
 			}
-			set.add(start0, end0, start1, end1);
+			set.add(startY, endY, startX, endX);
 		}
 	}
 	
 	/* (non-Javadoc)
-	 * @see pl.netanel.swt.matrix.CellValues#getValue(N0, N1)
+	 * @see pl.netanel.swt.matrix.CellValues#getValue(Y, X)
 	 */
 	@Override
-	public T getValue(N0 index0, N1 index1) {
-		for (Entry<T, CellSet<N0, N1>> entry: values.entrySet()) {
-			if (entry.getValue().contains(index0, index1)) {
+	public T getValue(Y indexY, X indexX) {
+		for (Entry<T, CellSet<X, Y>> entry: values.entrySet()) {
+			if (entry.getValue().contains(indexY, indexX)) {
 				return entry.getKey();
 			}
 		}
@@ -66,40 +66,40 @@ class MapValueToCellSet<N0 extends Number, N1 extends Number, T> implements Cell
 	}
 
 	/* (non-Javadoc)
-	 * @see pl.netanel.swt.matrix.CellValues#delete0(N0, N0)
+	 * @see pl.netanel.swt.matrix.CellValues#deleteY(Y, Y)
 	 */
 	@Override
-	public void delete0(N0 start, N0 end) {
-		for (Entry<T, CellSet<N0, N1>> entry: values.entrySet()) {
-			entry.getValue().delete0(start, end);
+	public void deleteY(Y start, Y end) {
+		for (Entry<T, CellSet<X, Y>> entry: values.entrySet()) {
+			entry.getValue().deleteY(start, end);
 		}
 	}
 	/* (non-Javadoc)
-	 * @see pl.netanel.swt.matrix.CellValues#delete1(N1, N1)
+	 * @see pl.netanel.swt.matrix.CellValues#deleteX(X, X)
 	 */
 	@Override
-	public void delete1(N1 start, N1 end) {
-		for (Entry<T, CellSet<N0, N1>> entry: values.entrySet()) {
-			entry.getValue().delete1(start, end);
+	public void deleteX(X start, X end) {
+		for (Entry<T, CellSet<X, Y>> entry: values.entrySet()) {
+			entry.getValue().deleteX(start, end);
 		}
 	}
 	
 	/* (non-Javadoc)
-	 * @see pl.netanel.swt.matrix.CellValues#insert0(N0, N0)
+	 * @see pl.netanel.swt.matrix.CellValues#insertY(Y, Y)
 	 */
 	@Override
-	public void insert0(N0 target, N0 count) {
-		for (Entry<T, CellSet<N0, N1>> entry: values.entrySet()) {
-			entry.getValue().insert0(target, count);
+	public void insertY(Y target, Y count) {
+		for (Entry<T, CellSet<X, Y>> entry: values.entrySet()) {
+			entry.getValue().insertY(target, count);
 		}
 	}
 	/* (non-Javadoc)
-	 * @see pl.netanel.swt.matrix.CellValues#insert1(N1, N1)
+	 * @see pl.netanel.swt.matrix.CellValues#insertX(X, X)
 	 */
 	@Override
-	public void insert1(N1 target, N1 count) {
-		for (Entry<T, CellSet<N0, N1>> entry: values.entrySet()) {
-			entry.getValue().insert1(target, count);
+	public void insertX(X target, X count) {
+		for (Entry<T, CellSet<X, Y>> entry: values.entrySet()) {
+			entry.getValue().insertX(target, count);
 		}
 	}
 }

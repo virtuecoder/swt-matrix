@@ -29,25 +29,25 @@ import pl.netanel.swt.matrix.Painter;
 		Matrix matrix = new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		matrix.addPainter(0, new Painter("start timer") {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+			public void paint(Number indexY, Number indexX, int x, int y, int width, int height) {
 				t = System.currentTimeMillis();
 			}
 		});
 		matrix.addPainter(new Painter("stop timer") {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+			public void paint(Number indexY, Number indexX, int x, int y, int width, int height) {
 				t = System.currentTimeMillis() - t;
 				time.add(t);
 			}
 		});
 				//, new MatrixModel(new AxisModel(BigInteger.class), new AxisModel(BigInteger.class)));
-		matrix.getAxis0().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
-		matrix.getAxis1().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
+		matrix.getAxisY().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
+		matrix.getAxisX().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
 		
 		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public String getText(Number index0, Number index1) {
-				return index0.toString() + ", " + index1;
+			public String getText(Number indexY, Number indexX) {
+				return indexY.toString() + ", " + indexX;
 			}
 		});
 		
@@ -82,20 +82,20 @@ import pl.netanel.swt.matrix.Painter;
 		Matrix matrix = new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		matrix.addPainter(0, new Painter("start timer") {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+			public void paint(Number indexY, Number indexX, int x, int y, int width, int height) {
 				t = System.currentTimeMillis();
 			}
 		});
 		matrix.addPainter(new Painter("stop timer") {
 			@Override
-			public void paint(Number index0, Number index1, int x, int y, int width, int height) {
+			public void paint(Number indexY, Number indexX, int x, int y, int width, int height) {
 				t = System.currentTimeMillis() - t;
 				time.add(t);
 			}
 		});
 		//, new MatrixModel(new AxisModel(BigInteger.class), new AxisModel(BigInteger.class)));
-		matrix.getAxis0().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
-		matrix.getAxis1().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
+		matrix.getAxisY().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
+		matrix.getAxisX().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
 		
 		shell.setBounds(display.getBounds());
 		shell.open();

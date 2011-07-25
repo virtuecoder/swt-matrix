@@ -81,21 +81,21 @@ public class Snippet_0490 {
 		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
 		// Configure the matrix
-		matrix.getAxis0().getHeader().setVisible(true);
-		matrix.getAxis0().getBody().setCount(count0);
-		matrix.getAxis1().getBody().setCount(count1);
+		matrix.getAxisY().getHeader().setVisible(true);
+		matrix.getAxisY().getBody().setCount(count0);
+		matrix.getAxisX().getBody().setCount(count1);
 		matrix.getBody().replacePainter(new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
-				text = data.get(index0.intValue()).get(index1.intValue()).toString();
-				super.paint(index0, index1, x, y, width, height);
+			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
+				text = data.get(indexY.intValue()).get(indexX.intValue()).toString();
+				super.paint(indexX, indexY, x, y, width, height);
 			}
 		});
 		
 		final ZoneEditor<Integer, Integer> zoneEditor = 
 		  new ZoneEditor<Integer, Integer>(matrix.getBody()) {
   			@Override
-  			protected Control createControl(Integer index0, Integer index1) {
+  			protected Control createControl(Integer indexX, Integer indexY) {
   				return null;
   			}
   			
@@ -103,8 +103,8 @@ public class Snippet_0490 {
   				StringBuilder sb = new StringBuilder();
   				Zone<Integer, Integer> body = matrix.getBody();
   				if (body.getSelectedCount().compareTo(BigInteger.ZERO) == 0) {
-  				  AxisItem<Integer> focusItem0 = matrix.getAxis0().getFocusItem();
-  				  AxisItem<Integer> focusItem1 = matrix.getAxis1().getFocusItem();
+  				  AxisItem<Integer> focusItem0 = matrix.getAxisY().getFocusItem();
+  				  AxisItem<Integer> focusItem1 = matrix.getAxisX().getFocusItem();
   				  if (focusItem0 != null && focusItem1 != null) {
   				    sb.append(data.get(focusItem0.getIndex().intValue()).get(
   				      focusItem1.getIndex().intValue()));
@@ -117,7 +117,7 @@ public class Snippet_0490 {
   				  for (int i = n[0].intValue(); i <= max0; i++) {
   				    for (int j = min1; j <= max1; j++) {
   				      if (j > min1) sb.append("\t");
-  				      if (body.isSelected(i, j)) {
+  				      if (body.isSelected(j, i)) {
   				        sb.append(data.get(i).get(j).toString());
   				      }
   				    }
@@ -138,19 +138,19 @@ public class Snippet_0490 {
   				
   				if (contents == null) return;
   				
-  				AxisItem<Integer> focusItem0 = matrix.getAxis0().getFocusItem();
-  				AxisItem<Integer> focusItem1 = matrix.getAxis1().getFocusItem();
+  				AxisItem<Integer> focusItem0 = matrix.getAxisY().getFocusItem();
+  				AxisItem<Integer> focusItem1 = matrix.getAxisX().getFocusItem();
   				if (focusItem0 == null || focusItem1 == null) return;
   				
-  				int start0 = focusItem0.getIndex().intValue();
-  				int start1 = focusItem1.getIndex().intValue();
+  				int startY = focusItem0.getIndex().intValue();
+  				int startX = focusItem1.getIndex().intValue();
   				String[] rows = contents.toString().split(NEW_LINE);
-  				for (int i = 0; i < rows.length && start0 + i < count0; i++) {
+  				for (int i = 0; i < rows.length && startY + i < count0; i++) {
   					String[] cells = split(rows[i], "\t");
-  					for (int j = 0; j < cells.length && start1 + j < count1; j++) {
+  					for (int j = 0; j < cells.length && startX + j < count1; j++) {
   						String value = cells[j];
   						if (value != null) {
-  							data.get(start0 + i).set(start1 + j, value);
+  							data.get(startY + i).set(startX + j, value);
   						}
   					}
   				}

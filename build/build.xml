@@ -1,5 +1,5 @@
 <project name="swt-matrix" default="local website" basedir=".">
-	<property name="version" value="0.3.4" />
+	<property name="version" value="0.4" />
 	<property name="local_website" value="c:\dev\wamp\www\netanel15" />
 
 	<property name="db.username" value="root"/>
@@ -85,7 +85,7 @@
 	      access="protected" 
 	      author="false" 
 	      sourcepath="../src"
-	      excludepackagenames="pl.netanel.swt, pl.netanel.util, pl.netanel.swt.matrix.painter"
+	      excludepackagenames="pl.netanel.swt, pl.netanel.util"
 	      destdir="../javadoc"
 	      splitindex="true" 
 	      use="true" 
@@ -144,9 +144,9 @@
   	<zipfileset dir="../javadoc" prefix="javadoc"/>
   	<zipfileset dir="../src_demo" includes="pl/netanel/swt/matrix/snippets/*.java" prefix="snippets"/>
   	<zipfileset dir=".." includes="*.png" prefix="snippets"/>
-  	<zipfileset dir="../src" includes="pl/netanel/swt/matrix/custom/*.java" prefix="custom"/>
+  	<!--zipfileset dir="../src" includes="pl/netanel/swt/matrix/custom/*.java" prefix="custom"/-->
   	<zipfileset dir="." includes="swt-matrix-${version}.jar"/>
-  	<zipfileset dir="." includes="swt-matrix-custom-${version}.jar"/>
+  	<!--zipfileset dir="." includes="swt-matrix-custom-${version}.jar"/-->
 		<fileset dir="../doc" includes="EULA.txt"/>
 		<fileset dir="../doc" includes="Change-log.txt"/>
   </zip>
@@ -158,7 +158,7 @@
 	 
 
 	<copy todir="${local_website}\swt-matrix" file="swt-matrix-${version}.jar" />
-	<copy todir="${local_website}\swt-matrix" file="swt-matrix-custom-${version}.jar" />
+	<!--copy todir="${local_website}\swt-matrix" file="swt-matrix-custom-${version}.jar" /-->
 	<copy todir="${local_website}\swt-matrix" file="swt-matrix-snippets-${version}.zip" />
 	<copy todir="${local_website}\swt-matrix" file="swt-matrix-javadoc-${version}.zip" />
 

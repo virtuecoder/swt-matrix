@@ -33,30 +33,30 @@ public class Snippet_0020 {
 		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
 		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
-		Axis<Integer> axis0 = matrix.getAxis0();
-		final Section<Integer> body0 = axis0.getBody();
+		Axis<Integer> axisY = matrix.getAxisY();
+		final Section<Integer> body0 = axisY.getBody();
 		body0.setCount(data.size());
 		body0.setDefaultResizable(true);
 		
-		axis0.getHeader().setVisible(true);
+		axisY.getHeader().setVisible(true);
 		
-		Axis<Integer> axis1 = matrix.getAxis1();
-		axis1.getBody().setCount(2);
-		axis1.getBody().setDefaultResizable(true);
-		axis1.getBody().setDefaultMoveable(true);
-		axis1.getHeader().setDefaultCellWidth(16);
-		axis1.getHeader().setVisible(true);
+		Axis<Integer> axisX = matrix.getAxisX();
+		axisX.getBody().setCount(2);
+		axisX.getBody().setDefaultResizable(true);
+		axisX.getBody().setDefaultMoveable(true);
+		axisX.getHeader().setDefaultCellWidth(16);
+		axisX.getHeader().setVisible(true);
 		
 		matrix.getBody().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_HORIZONTALLY) {
 		    @Override
-		    public String getText(Integer index0, Integer index1) {
-		      return data.get(index0.intValue())[index1.intValue()].toString();
+		    public String getText(Integer indexX, Integer indexY) {
+		      return data.get(indexY.intValue())[indexX.intValue()].toString();
 		    }
 		    
 		    // Set word wrap for the second column
-		    @Override public void setup(Integer index0, Integer index1) {
-		      if (index1 == 1) {
+		    @Override public void setup(Integer indexX, Integer indexY) {
+		      if (indexX == 1) {
 		        setWordWrap(true);
 		      }
 		    };
@@ -66,8 +66,8 @@ public class Snippet_0020 {
 		matrix.getColumnHeader().replacePainter(
 		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 		    @Override
-		    public String getText(Integer index0, Integer index1) {
-		      return index1.intValue() == 0 ? "Task" : "Completion date";
+		    public String getText(Integer indexX, Integer indexY) {
+		      return indexX.intValue() == 0 ? "Task" : "Completion date";
 		    }
 		  }
 	  );

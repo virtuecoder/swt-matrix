@@ -10,20 +10,20 @@ import org.eclipse.swt.widgets.Listener;
 
 import pl.netanel.util.Preconditions;
 
-class ZoneClient<N0 extends Number, N1 extends Number> implements Zone<N0, N1> {
+class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   final ZoneCore core;
-  private final SectionClient<N0> section0;
-  private final SectionClient<N1> section1;
+  private final SectionClient<X> sectionX;
+  private final SectionClient<Y> sectionY;
 
-  public ZoneClient(SectionClient<N0> section0, SectionClient<N1> section1) {
-    Preconditions.checkNotNullWithName(section0, "sectoin0");
-    Preconditions.checkNotNullWithName(section1, "section1");
-    this.section0 = section0;
-    this.section1 = section1;
-    this.core = new ZoneCore(section0.getCore(), section1.getCore());
+  public ZoneClient(SectionClient<X> sectionX, SectionClient<Y> sectionY) {
+    Preconditions.checkNotNullWithName(sectionX, "sectionX");
+    Preconditions.checkNotNullWithName(sectionY, "sectionY");
+    this.sectionX = sectionX;
+    this.sectionY = sectionY;
+    this.core = new ZoneCore(sectionX.getCore(), sectionY.getCore());
   }
   
-//  public ZoneClient(ZoneCore<N0, N1> zone) {
+//  public ZoneClient(ZoneCore<X, Y> zone) {
 //    Preconditions.checkNotNullWithName(zone, "zone");
 //    core = zone;
 //  }
@@ -49,13 +49,13 @@ class ZoneClient<N0 extends Number, N1 extends Number> implements Zone<N0, N1> {
   }
 
   @Override
-  public Section getSection0() {
-    return section0;
+  public Section getSectionY() {
+    return sectionY;
   }
 
   @Override
-  public Section getSection1() {
-    return section1;
+  public Section getSectionX() {
+    return sectionX;
   }
   
   @Override
@@ -64,10 +64,10 @@ class ZoneClient<N0 extends Number, N1 extends Number> implements Zone<N0, N1> {
   }
 
   @Override
-  public Rectangle getCellBounds(N0 index0, N1 index1) {
-    section0.checkCellIndex(index0, "index0");
-    section1.checkCellIndex(index1, "index1");
-    return core.getCellBounds(index0, index1);
+  public Rectangle getCellBounds(X indexX, Y indexY) {
+    sectionY.checkCellIndex(indexY, "indexY");
+    sectionX.checkCellIndex(indexX, "indexX");
+    return core.getCellBounds(indexX, indexY);
   }
 
   @Override
@@ -125,25 +125,25 @@ class ZoneClient<N0 extends Number, N1 extends Number> implements Zone<N0, N1> {
   }
 
   @Override
-  public boolean isSelected(N0 index0, N1 index1) {
-    section0.checkCellIndex(index0, "index0");
-    section1.checkCellIndex(index1, "index1");
-    return core.isSelected(index0, index1);
+  public boolean isSelected(X indexX, Y indexY) {
+    sectionY.checkCellIndex(indexY, "indexY");
+    sectionX.checkCellIndex(indexX, "indexX");
+    return core.isSelected(indexX, indexY);
   }
 
 
   @Override
-  public void setSelected(N0 index0, N1 index1, boolean state) {
-    section0.checkCellIndex(index0, "index0");
-    section1.checkCellIndex(index1, "index1");
-    core.setSelected(index0, index1, state);
+  public void setSelected(X indexX, Y indexY, boolean state) {
+    sectionY.checkCellIndex(indexY, "indexY");
+    sectionX.checkCellIndex(indexX, "indexX");
+    core.setSelected(indexX, indexY, state);
   }
   
   @Override
-  public void setSelected(N0 start0, N0 end0, N1 start1, N1 end1, boolean state) {
-    section0.checkRange(start0, end0, section0.getCount());
-    section1.checkRange(start1, end1, section1.getCount());
-    core.setSelected(start0, end0, start1, end1, state);
+  public void setSelected(X startX, X endX, Y startY, Y endY, boolean state) {
+    sectionY.checkRange(startY, endY, sectionY.getCount());
+    sectionX.checkRange(startX, endX, sectionX.getCount());
+    core.setSelected(startX, endX, startY, endY, state);
   }
 
   @Override
@@ -281,13 +281,13 @@ class ZoneClient<N0 extends Number, N1 extends Number> implements Zone<N0, N1> {
   }
 
   
-  private void checkPainter(Painter<N0, N1> painter) {
+  private void checkPainter(Painter<X, Y> painter) {
     Preconditions.checkNotNullWithName(painter, "painter");
     
     Preconditions.checkArgument(painter.zone == null || this.equals(painter.zone), 
       "The painter belongs to a different zone: %s", painter.zone);
     
-    Matrix<N0, N1> matrix2 = getMatrix();
+    Matrix<X, Y> matrix2 = getMatrix();
     if (matrix2 != null) {
       Preconditions.checkArgument(painter.matrix == null || matrix2.equals(painter.matrix), 
         "The painter belongs to a different matrix: %s", painter.matrix);

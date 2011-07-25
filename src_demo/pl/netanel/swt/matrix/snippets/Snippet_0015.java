@@ -24,8 +24,8 @@ public class Snippet_0015 {
 		
 		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		
-		matrix.getAxis0().getBody().setCount(10);
-		matrix.getAxis1().getBody().setCount(4);
+		matrix.getAxisY().getBody().setCount(10);
+		matrix.getAxisX().getBody().setCount(4);
 		
 		final Zone<Integer, Integer> body = matrix.getBody();
 		body.getPainter("row lines").setEnabled(false);
@@ -49,11 +49,11 @@ public class Snippet_0015 {
   		  }
   
   		  @Override
-  		  public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
-  		    Axis<Integer> axis0 = matrix.getAxis0();
-  		    AxisItem<Integer> focusItem = axis0.getFocusItem();
-  		    if (body.getSection0().equals(focusItem.getSection()) &&
-  		      index0.equals(focusItem.getIndex())) 
+  		  public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
+  		    Axis<Integer> axisY = matrix.getAxisY();
+  		    AxisItem<Integer> focusItem = axisY.getFocusItem();
+  		    if (body.getSectionY().equals(focusItem.getSection()) &&
+  		      indexY.equals(focusItem.getIndex())) 
   		    {
   		      gc.fillGradientRectangle(0, y - 1, matrixWidth, height + 2, false);
   		    }

@@ -78,7 +78,7 @@ import org.eclipse.swt.widgets.Listener;
  * @author Jacek
  * @created 16-11-2010
  */
-class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
+class MatrixListener<X extends Number, Y extends Number> implements Listener {
 
 	// TODO Limit the events that are redirected to zones
 	private static final int[] EVENTS = { SWT.KeyDown, SWT.KeyUp, 
@@ -99,35 +99,35 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 		SWT.PaintItem, SWT.ImeComposition */
 	};
 
-	Matrix<N0, N1> matrix;
+	Matrix<X, Y> matrix;
 //	ArrayList<GestureBinding> bindings;
-	AxisListener<N0> state0;
-	AxisListener<N1> state1;
+	AxisListener<Y> stateY;
+	AxisListener<X> stateX;
 	boolean instantMoving, ctrlSelectionMoving, mouseDown;
-	ZoneCore<N0, N1> zone;
+	ZoneCore<X, Y> zone;
 	Cursor cursor;
 	AxisItem[] lastRange;
 	ZoneCore body, columnHeader, rowHeader, topLeft;
 	
 	Event mouseMoveEvent;	
   Point imageOffset, lastImageLocation, imageSize;
-	private Move m0, m1;
+	private Move mY, mX;
 	
 	public MatrixListener(final Matrix matrix) {
 		this.matrix = matrix;
 		lastRange = new AxisItem[4]; 
 		body = ZoneCore.from(matrix.getBody());
-		SectionCore body0 = SectionCore.from(matrix.axis0.getBody());
-		SectionCore body1 = SectionCore.from(matrix.axis1.getBody());
-		SectionCore header0 = SectionCore.from(matrix.axis0.getHeader());
-		SectionCore header1 = SectionCore.from(matrix.axis1.getHeader());
-    rowHeader = matrix.model.getZone(body0, header1);
-		columnHeader = matrix.model.getZone(header0, body1);
-		topLeft = matrix.model.getZone(header0, header1);
+		SectionCore bodyY = SectionCore.from(matrix.axisY.getBody());
+		SectionCore bodyX = SectionCore.from(matrix.axisX.getBody());
+		SectionCore headerY = SectionCore.from(matrix.axisY.getHeader());
+		SectionCore headerX = SectionCore.from(matrix.axisX.getHeader());
+    rowHeader = matrix.model.getZone(bodyY, headerX);
+		columnHeader = matrix.model.getZone(headerY, bodyX);
+		topLeft = matrix.model.getZone(headerY, headerX);
 		
 		// Initialize fields
-		state0 = new AxisListener(matrix.axis0);
-		state1 = new AxisListener(matrix.axis1);
+		stateY = new AxisListener(matrix.axisY);
+		stateX = new AxisListener(matrix.axisX);
 		
 //		bindings = new ArrayList<GestureBinding>();
   	bindCommands();
@@ -148,35 +148,35 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 		instantMoving = true;
 	}
 
-	Painter<N0, N1> getDragItemPainter() {
-	  return new Painter<N0, N1>(Painter.NAME_DRAG_ITEM, Painter.SCOPE_SINGLE) {
-      Painter<N0, N1> painter;
+	Painter<X, Y> getDragItemPainter() {
+	  return new Painter<X, Y>(Painter.NAME_DRAG_ITEM, Painter.SCOPE_SINGLE) {
+      Painter<X, Y> painter;
       Rectangle bounds;
       private boolean highlight;
-      private ZoneClient<N0, N1> zone;
+      private ZoneClient<X, Y> zone;
 
       @Override protected boolean init() {
         clipping = gc.getClipping();
-        if (state0.moving ) {
-          zone = (ZoneClient<N0, N1>) matrix.getRowHeader();
+        if (stateY.moving ) {
+          zone = (ZoneClient<X, Y>) matrix.getRowHeader();
           if (zone == null) return false;
           painter = zone.getPainter(Painter.NAME_CELLS);
           if (painter != null) {
             highlight = painter.selectionHighlight;
             painter.selectionHighlight = false;
           }
-          bounds = zone.core.getCellBounds(state0.item.getIndex(), state1.axis.math.ZERO_VALUE());
+          bounds = zone.core.getCellBounds(stateX.axis.math.ZERO_VALUE(), stateY.item.getIndex());
           return true;
         }
-        if (state1.moving) {
-          zone = (ZoneClient<N0, N1>) matrix.getColumnHeader();
+        if (stateX.moving) {
+          zone = (ZoneClient<X, Y>) matrix.getColumnHeader();
           if (zone == null) return false;
           painter = zone.getPainter(Painter.NAME_CELLS);
           if (painter != null) {
             highlight = painter.selectionHighlight;
             painter.selectionHighlight = false;
           }
-          bounds = zone.core.getCellBounds(state0.axis.math.ZERO_VALUE(), state1.item.getIndex());
+          bounds = zone.core.getCellBounds(stateX.item.getIndex(), stateY.axis.math.ZERO_VALUE());
           return true;
         }
         return false;
@@ -189,9 +189,9 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
         }
       }
       
-      @Override public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
-        int x2 = state0.moving ? 1 : mouseMoveEvent.x - imageOffset.x;
-        int y2 = state1.moving ? 1 : mouseMoveEvent.y - imageOffset.y;
+      @Override public void paint(X indexX, Y indexY, int x, int y, int width, int height) {
+        int x2 = stateY.moving ? 1 : mouseMoveEvent.x - imageOffset.x;
+        int y2 = stateX.moving ? 1 : mouseMoveEvent.y - imageOffset.y;
         
         // Background
         gc.setBackground(zone.getDefaultBackground());
@@ -199,11 +199,11 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
         
         // Text
         if (painter == null) {
-          gc.drawText((state0.moving ? state0 : state1).item.getIndex().toString(),
+          gc.drawText((stateY.moving ? stateY : stateX).item.getIndex().toString(),
             x2 + 1, y2 + 1);
         } 
         else {
-          painter.paint(state0.item.getIndex(), state1.item.getIndex(),
+          painter.paint(stateX.item.getIndex(), stateY.item.getIndex(),
             x2, y2, bounds.width, bounds.height);
         }
         
@@ -226,30 +226,30 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 	public void handleEvent(Event e) {
 //	  System.out.println(SwtTestCase.getTypeName(e.type));
 		try {
-			state0.setItem(e);
-			state1.setItem(e);
+			stateY.setItem(e);
+			stateX.setItem(e);
 
 			boolean keyEvent = e.type == SWT.KeyDown || e.type == SWT.KeyUp;
 			if (e.data instanceof Zone) {
 				zone = (ZoneCore) e.data;
 			}
 			else if (keyEvent) {
-			  AxisItem<? extends Number> focusItem0 = matrix.getAxis0().getFocusItem();
-			  AxisItem<? extends Number> focusItem1 = matrix.getAxis1().getFocusItem();
+			  AxisItem<? extends Number> focusItem0 = matrix.getAxisY().getFocusItem();
+			  AxisItem<? extends Number> focusItem1 = matrix.getAxisX().getFocusItem();
 			  if (focusItem0 != null && focusItem1 != null) {
 			    zone = matrix.model.getZone(focusItem0.section.core, focusItem1.section.core);
 			  }
 			}
-			else if (state0.item != null && state1.item != null) {
-				zone = matrix.model.getZone(state0.item.section.core, state1.item.section.core);
+			else if (stateY.item != null && stateX.item != null) {
+				zone = matrix.model.getZone(stateY.item.section.core, stateX.item.section.core);
 			}
 
 			if (e.type == SWT.MouseDown && e.button == 1) {
 			  mouseDown = true;
 			  matrix.forceFocus();
 			}
-			state0.update(e, e.y);
-			state1.update(e, e.x);
+			stateY.update(e, e.y);
+			stateX.update(e, e.x);
 			
 			// Execute zone listeners
 			/* TODO Make zone detection only for x,y events (mouse and maybe something else),
@@ -264,7 +264,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 			
 			if (zone != null) {
 			  boolean mouseEvent = SWT.MouseDown <= e.type && e.type <= SWT.MouseDoubleClick;
-			  if (e.type == SWT.MouseMove && !(state0.itemModified || state1.itemModified)) {
+			  if (e.type == SWT.MouseMove && !(stateY.itemModified || stateX.itemModified)) {
 			    mouseEvent = false;
 			  }
 			  if (e.doit && (mouseEvent || keyEvent)) {
@@ -290,7 +290,6 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 	}
 	
 	class AxisListener<N extends Number> {
-		private final int axisIndex;
 		Axis<N> axis;
 		Layout<N> layout;
 		AxisItem<N> last, item, prev, resizeItem, lastFocus, mouseDownItem;
@@ -305,13 +304,13 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 
 		public AxisListener(Axis<N> axis) {
 			this.axis = axis; 
-			this.axisIndex = axis.index;
-			if (axisIndex == 0) {
-				resizeCursor = Resources.getCursor(SWT.CURSOR_SIZENS);
-			} else {
+			if (axis.symbol == 'X') {
 				resizeCursor = Resources.getCursor(SWT.CURSOR_SIZEWE);
 			}
 //			item = last = axis.getFocusItem();
+      else {
+				resizeCursor = Resources.getCursor(SWT.CURSOR_SIZENS);
+			}
 		}
 		
 		public void setItem(Event e) {
@@ -319,7 +318,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 		    item = last = axis.getFocusItem();
 		  }
 		  else if (e.type == SWT.MouseMove) {
-				distance = axisIndex == 0 ? e.y : e.x;
+				distance = axis.symbol == 'X' ? e.x : e.y;
 				AxisItem item2 = autoScroll.future != null && autoScroll.item != null  
 					? autoScroll.item  
 					: layout.getItemByDistance(distance);
@@ -377,13 +376,13 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 					    // Remember image offset for dragging
 				      int x, y; //, w, h;
 				      Bound b = layout.getCellBound(item);
-				      if (axisIndex == 0) {
-				        x = 0;
-				        y = b.distance - 1;
-				      }
-				      else {
+				      if (axis.symbol == 'X') {
 				        x = b.distance - 1;
 				        y = 0;
+				      }
+              else {
+				        x = 0;
+				        y = b.distance - 1;
 				      }
 				      imageOffset = new Point(e.x - x, e.y - y);
 					  }
@@ -485,10 +484,10 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 		
 		private boolean isInHeader() {
 			if (zone == null) return false;
-			Axis axis2 = axis.index == 0 ? matrix.axis1 : matrix.axis0;
+			Axis axis2 = axis.symbol == 'Y' ? matrix.axisX : matrix.axisY;
 			Section header = axis2.getHeader();
 			return header != null && header.equals(
-					axis.index == 1 ? zone.section0 : zone.section1);
+					axis.symbol == 'X' ? zone.sectionY : zone.sectionX);
 		}
 
 		public void setCurrentItem() {
@@ -576,10 +575,11 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 			  if (r1.width < r2.width) {
 			    Display display = matrix.getDisplay();
 			    Point p = display.getCursorLocation();
-			    if (axisIndex == 0) {
-			      p.y = matrix.toDisplay(0, r1.distance + r1.width / 2).y;
-			    } else {
+			    if (axis.symbol == 'X') {
 			      p.x = matrix.toDisplay(r1.distance + r1.width / 2, 0).x;
+			    }
+          else {
+			      p.y = matrix.toDisplay(0, r1.distance + r1.width / 2).y;
 			    }
 			    display.setCursorLocation(p);
 			  }
@@ -683,7 +683,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 						/* In order for the mouse move commands to execute during auto scroll, 
 					       like drag selection for example */
 						AxisItem[] data = new AxisItem[2];
-						data[axisIndex] = item;
+						data[axis.symbol == 'X' ? 0 : 1] = item;
 						mouseMoveEvent.data = data;
 						matrix.notifyListeners(SWT.MouseMove, mouseMoveEvent);
 					}
@@ -819,7 +819,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 	}
 	
 	private boolean isSelectable() {
-		return state0.isSelectable() && state1.isSelectable();
+		return stateY.isSelectable() && stateX.isSelectable();
 	}
 	
 	protected void executeCommand(GestureBinding b) {
@@ -827,7 +827,7 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 	  
 //		System.out.println("execute " + commandId);
 		switch (commandId) {
-		case CMD_RESIZE_PACK:		state0.pack(); state1.pack(); break;
+		case CMD_RESIZE_PACK:		stateY.pack(); stateX.pack(); break;
 		
 		case CMD_EDIT_ACTIVATE:				if (zone.editor != null) zone.editor.edit(b); return;
 		case CMD_CUT:				if (zone.editor != null) zone.editor.cut(); return;
@@ -842,8 +842,8 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 		
 		if (!moveCursor(commandId)) return;
 		if (!isExtendingSelect(commandId)) {
-			state0.last = state0.item;
-			state1.last = state1.item;
+			stateY.last = stateY.item;
+			stateX.last = stateX.item;
 //			matrix.selectFocusCell();
 		}
 		
@@ -852,15 +852,15 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 		switch (commandId) {
 		case CMD_SELECT_ALL:		    matrix.model.setSelected(true, true); matrix.redraw(); return;
 		// Header Selection
-		case CMD_SELECT_ROW:		    case CMD_SELECT_ROW_ALTER:		    state0.setSelected(commandId); break;	
-		case CMD_SELECT_COLUMN: 	  case CMD_SELECT_COLUMN_ALTER: 	  state1.setSelected(commandId); break;
-		case CMD_SELECT_TO_ROW:		  case CMD_SELECT_TO_ROW_ALTER:	    state0.setSelected(commandId); break;	
-		case CMD_SELECT_TO_COLUMN:	case CMD_SELECT_TO_COLUMN_ALTER:	state1.setSelected(commandId); break;
+		case CMD_SELECT_ROW:		    case CMD_SELECT_ROW_ALTER:		    stateY.setSelected(commandId); break;	
+		case CMD_SELECT_COLUMN: 	  case CMD_SELECT_COLUMN_ALTER: 	  stateX.setSelected(commandId); break;
+		case CMD_SELECT_TO_ROW:		  case CMD_SELECT_TO_ROW_ALTER:	    stateY.setSelected(commandId); break;	
+		case CMD_SELECT_TO_COLUMN:	case CMD_SELECT_TO_COLUMN_ALTER:	stateX.setSelected(commandId); break;
 			
 		// Hiding
-		case CMD_ITEM_HIDE:			state0.hide(true);  state1.hide(true);  break; 
-		case CMD_ITEM_SHOW:			state0.hide(false); state1.hide(false); break;
-		case CMD_RESIZE_PACK:		state0.pack(); break;
+		case CMD_ITEM_HIDE:			stateY.hide(true);  stateX.hide(true);  break; 
+		case CMD_ITEM_SHOW:			stateY.hide(false); stateX.hide(false); break;
+		case CMD_RESIZE_PACK:		stateY.pack(); break;
 		}
 
 		if (isBodySelect(commandId)) { // || state0.focusMoved || state1.focusMoved) {
@@ -872,31 +872,31 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 	
 	protected boolean moveCursor(int commandId) {
 		if (!matrix.isFocusCellEnabled()) return true;
-		state0.focusMoved = true;
-		state1.focusMoved = true;
-		m0 = null; m1 = null;
+		stateY.focusMoved = true;
+		stateX.focusMoved = true;
+		mY = null; mX = null;
 		switch (commandId) {
 		
-		case CMD_FOCUS_DOWN: 		case CMD_SELECT_DOWN: 		m0 = Move.NEXT; break;
-		case CMD_FOCUS_UP:   		case CMD_SELECT_UP:			m0 = Move.PREVIOUS; break;
-		case CMD_FOCUS_RIGHT: 		case CMD_SELECT_RIGHT:		m1 = Move.NEXT; break;
-		case CMD_FOCUS_LEFT: 		case CMD_SELECT_LEFT:		m1 = Move.PREVIOUS; break;
+		case CMD_FOCUS_DOWN: 		case CMD_SELECT_DOWN: 		mY = Move.NEXT; break;
+		case CMD_FOCUS_UP:   		case CMD_SELECT_UP:			mY = Move.PREVIOUS; break;
+		case CMD_FOCUS_RIGHT: 		case CMD_SELECT_RIGHT:		mX = Move.NEXT; break;
+		case CMD_FOCUS_LEFT: 		case CMD_SELECT_LEFT:		mX = Move.PREVIOUS; break;
 		
-		case CMD_FOCUS_PAGE_DOWN:	case CMD_SELECT_PAGE_DOWN:	m0 = Move.NEXT_PAGE; break;
-		case CMD_FOCUS_PAGE_UP:		case CMD_SELECT_PAGE_UP: 	m0 = Move.PREVIOUS_PAGE; break;
-		case CMD_FOCUS_PAGE_RIGHT:	case CMD_SELECT_PAGE_RIGHT:	m1 = Move.NEXT_PAGE; break;
-		case CMD_FOCUS_PAGE_LEFT:	case CMD_SELECT_PAGE_LEFT:	m1 = Move.PREVIOUS_PAGE; break;
+		case CMD_FOCUS_PAGE_DOWN:	case CMD_SELECT_PAGE_DOWN:	mY = Move.NEXT_PAGE; break;
+		case CMD_FOCUS_PAGE_UP:		case CMD_SELECT_PAGE_UP: 	mY = Move.PREVIOUS_PAGE; break;
+		case CMD_FOCUS_PAGE_RIGHT:	case CMD_SELECT_PAGE_RIGHT:	mX = Move.NEXT_PAGE; break;
+		case CMD_FOCUS_PAGE_LEFT:	case CMD_SELECT_PAGE_LEFT:	mX = Move.PREVIOUS_PAGE; break;
 
-		case CMD_FOCUS_MOST_DOWN:	case CMD_SELECT_FULL_DOWN:	m0 = Move.END; break;
-		case CMD_FOCUS_MOST_UP:		case CMD_SELECT_FULL_UP:	m0 = Move.HOME; break;
-		case CMD_FOCUS_MOST_RIGHT:	case CMD_SELECT_FULL_RIGHT:	m1 = Move.END; break;
-		case CMD_FOCUS_MOST_LEFT:	case CMD_SELECT_FULL_LEFT:	m1 = Move.HOME; break;
+		case CMD_FOCUS_MOST_DOWN:	case CMD_SELECT_FULL_DOWN:	mY = Move.END; break;
+		case CMD_FOCUS_MOST_UP:		case CMD_SELECT_FULL_UP:	mY = Move.HOME; break;
+		case CMD_FOCUS_MOST_RIGHT:	case CMD_SELECT_FULL_RIGHT:	mX = Move.END; break;
+		case CMD_FOCUS_MOST_LEFT:	case CMD_SELECT_FULL_LEFT:	mX = Move.HOME; break;
 		
-		case CMD_FOCUS_MOST_UP_LEFT:	case CMD_SELECT_FULL_UP_LEFT:	 m1 = Move.HOME;
-					 													 m0 = Move.HOME; break;
+		case CMD_FOCUS_MOST_UP_LEFT:	case CMD_SELECT_FULL_UP_LEFT:	 mX = Move.HOME;
+					 													 mY = Move.HOME; break;
 						
-		case CMD_FOCUS_MOST_DOWN_RIGHT:	case CMD_SELECT_FULL_DOWN_RIGHT: m1 = Move.END;
-																		 m0 = Move.END; break;
+		case CMD_FOCUS_MOST_DOWN_RIGHT:	case CMD_SELECT_FULL_DOWN_RIGHT: mX = Move.END;
+																		 mY = Move.END; break;
 		
 		case CMD_FOCUS_LOCATION: 		case CMD_FOCUS_LOCATION_ALTER:
 		case CMD_SELECT_TO_LOCATION:	case CMD_SELECT_TO_LOCATION_ALTER:
@@ -904,18 +904,18 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 		case CMD_SELECT_COLUMN:			case CMD_SELECT_COLUMN_ALTER:
 		case CMD_SELECT_TO_ROW: 		case CMD_SELECT_TO_ROW_ALTER:
 		case CMD_SELECT_ROW:			case CMD_SELECT_ROW_ALTER:
-			state0.setCurrentItem();
-			state1.setCurrentItem();
+			stateY.setCurrentItem();
+			stateX.setCurrentItem();
 			break;														
 		}
 		
-		if (m0 != null) state0.moveFocusItem(m0);
-		if (m1 != null) state1.moveFocusItem(m1);
-		if (m0 != null || m1 != null) {
-			state0.item = state0.layout.current;
-			state1.item = state1.layout.current;
+		if (mY != null) stateY.moveFocusItem(mY);
+		if (mX != null) stateX.moveFocusItem(mX);
+		if (mY != null || mX != null) {
+			stateY.item = stateY.layout.current;
+			stateX.item = stateX.layout.current;
 		}
-		return state0.focusMoved && state1.focusMoved;
+		return stateY.focusMoved && stateX.focusMoved;
 	}
 
 	
@@ -942,25 +942,25 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 	}
 	
 	private void selectCells(int commandId) {
-		if (state0.item == null || state1.item == null) return;
-		if (state0.last == null) state0.last = state0.item;
-		if (state1.last == null) state1.last = state1.item;
+		if (stateY.item == null || stateX.item == null) return;
+		if (stateY.last == null) stateY.last = stateY.item;
+		if (stateX.last == null) stateX.last = stateX.item;
 		
 		boolean ctrlSelection = commandId == CMD_FOCUS_LOCATION_ALTER || 
 		  commandId == CMD_SELECT_TO_LOCATION_ALTER;
 		
-		if (ctrlSelection && isSelected(state0.last, state1.last)) {
-			matrix.model.setSelected(state0.last, state0.item, state1.last, state1.item, false);
+		if (ctrlSelection && isSelected(stateY.last, stateX.last)) {
+			matrix.model.setSelected(stateY.last, stateY.item, stateX.last, stateX.item, false);
 		}
 		else {
 			if (ctrlSelection) {
-			  if (state0.lastFocus != null && state1.lastFocus != null) {
+			  if (stateY.lastFocus != null && stateX.lastFocus != null) {
 			    ZoneCore zone = matrix.model.getZone(
-			      state0.lastFocus.section.core, state1.lastFocus.section.core);
+			      stateY.lastFocus.section.core, stateX.lastFocus.section.core);
 			    if (BigInteger.ZERO.equals(zone.getSelectionCount())) {
-			      Number index0 = state0.lastFocus.getIndex();
-			      Number index1 = state1.lastFocus.getIndex();
-			      zone.setSelected(index0, index0, index1, index1, true);
+			      Number indexY = stateY.lastFocus.getIndex();
+			      Number indexX = stateX.lastFocus.getIndex();
+			      zone.setSelected(indexX, indexX, indexY, indexY, true);
 			    }
 			  }
 			}
@@ -978,32 +978,32 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 				matrix.model.setSelected(false, notify);
 			}
 			if (commandId > CMD_FOCUS_LOCATION) {
-			  matrix.model.setSelected(state0.last, state0.item, state1.last, state1.item, true);
+			  matrix.model.setSelected(stateY.last, stateY.item, stateX.last, stateX.item, true);
 			}
 		}
 	}
 	
-	private boolean isSelected(AxisItem last0, AxisItem last1) {
-		return matrix.model.getZone(last0.section.core, last1.section.core).
-			isSelected(last0.getIndex(), last1.getIndex());
+	private boolean isSelected(AxisItem lastY, AxisItem lastX) {
+		return matrix.model.getZone(lastY.section.core, lastX.section.core).
+			isSelected(lastX.getIndex(), lastY.getIndex());
 	}
 
 
 	private void sendEvents() {
-		state0.sendEvents();
-		state1.sendEvents();
+		stateY.sendEvents();
+		stateX.sendEvents();
 		for (ZoneCore zone: matrix.model.zones) {
 			zone.sendEvents();
 		}
 	}
 	
-	void setLayout(Layout layout0, Layout layout1) {
-		state0.layout = layout0;
-		state0.axis = layout0.axis;
-		state1.layout = layout1;
-		state1.axis = layout1.axis;
-		state0.autoScroll = state0.new AutoScroll();
-		state1.autoScroll = state1.new AutoScroll();
+	void setLayout(Layout layoutX, Layout layoutY) {
+		stateY.layout = layoutY;
+		stateY.axis = layoutY.axis;
+		stateX.layout = layoutX;
+		stateX.axis = layoutX.axis;
+		stateY.autoScroll = stateY.new AutoScroll();
+		stateX.autoScroll = stateX.new AutoScroll();
 	}
 
 
@@ -1011,8 +1011,8 @@ class MatrixListener<N0 extends Number, N1 extends Number> implements Listener {
 	 * Make sure the state does not contain indexes out of scope after deleting model items.
 	 */
 	public void refresh() {
-		state0.refresh();
-		state1.refresh();
+		stateY.refresh();
+		stateX.refresh();
 	}
 	
 	static void listenToAll(Control control, Listener listener) {

@@ -13,10 +13,10 @@ public class LayoutScrollTest {
     shell.setLayout(new FillLayout());
     
     Matrix matrix = new Matrix(shell, SWT.H_SCROLL);
-    matrix.axis0.getBody().setCount(10);
-    matrix.axis1.getBody().setCount(4);
-    matrix.axis1.getBody().setCellWidth(0, 300);
-    Layout layout = matrix.layout1;
+    matrix.axisY.getBody().setCount(10);
+    matrix.axisX.getBody().setCount(4);
+    matrix.axisX.getBody().setCellWidth(0, 300);
+    Layout layout = matrix.layoutX;
     layout.setViewportSize(300);
     layout.compute();
     assertEquals(0, layout.getScrollMin());
@@ -30,10 +30,10 @@ public class LayoutScrollTest {
     shell.setLayout(new FillLayout());
     
     Matrix matrix = new Matrix(shell, SWT.H_SCROLL);
-    matrix.axis0.getBody().setCount(10);
-    matrix.axis1.getBody().setCount(4);
-    matrix.axis1.getBody().setCellWidth(0, 300);
-    Layout layout = matrix.layout1;
+    matrix.axisY.getBody().setCount(10);
+    matrix.axisX.getBody().setCount(4);
+    matrix.axisX.getBody().setCellWidth(0, 300);
+    Layout layout = matrix.layoutX;
     layout.setViewportSize(300);
     layout.compute();
     

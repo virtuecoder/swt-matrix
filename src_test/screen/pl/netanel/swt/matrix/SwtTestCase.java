@@ -1280,10 +1280,10 @@ public class  SwtTestCase {
   public Matrix createMatrix() {
     Matrix matrix = new Matrix(shell, 0);
 //    listenToAll(matrix);
-    matrix.getAxis0().getHeader().setVisible(true);
-    matrix.getAxis1().getHeader().setVisible(true);
-    matrix.getAxis0().getBody().setCount(5);
-    matrix.getAxis1().getBody().setCount(5);
+    matrix.getAxisY().getHeader().setVisible(true);
+    matrix.getAxisX().getHeader().setVisible(true);
+    matrix.getAxisY().getBody().setCount(5);
+    matrix.getAxisX().getBody().setCount(5);
     focusControl = matrix;
     shell.open();
     processEvents();

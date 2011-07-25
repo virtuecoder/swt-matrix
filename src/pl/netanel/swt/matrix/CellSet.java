@@ -13,18 +13,18 @@ import pl.netanel.util.IntArray;
  * @author Jacek
  * @created 15-11-2010
  */
-class CellSet<N0 extends Number, N1 extends Number> {
-	final ArrayList<Extent<N0>> items0;
-	final ArrayList<Extent<N1>> items1;
-	final Math<N0> math0;
-	final Math<N1> math1;
+class CellSet<X extends Number, Y extends Number> {
+	final ArrayList<Extent<Y>> items0;
+	final ArrayList<Extent<X>> items1;
+	final Math<Y> mathY;
+	final Math<X> mathX;
 	private boolean insertNew;
 	
-	public CellSet(Math<N0> math0, Math<N1> math1) {
-		this.math0 = math0;
-		this.math1 = math1;
-		items0 = new ArrayList<Extent<N0>>();
-		items1 = new ArrayList<Extent<N1>>();
+	public CellSet(Math<Y> mathY, Math<X> mathX) {
+		this.mathY = mathY;
+		this.mathX = mathX;
+		items0 = new ArrayList<Extent<Y>>();
+		items1 = new ArrayList<Extent<X>>();
 	}
 
 	@Override
@@ -42,13 +42,13 @@ class CellSet<N0 extends Number, N1 extends Number> {
 		return sb.toString();
 	}
 
-	public boolean contains(N0 index0, N1 index1) {
+	public boolean contains(Y indexY, X indexX) {
 		int size = items0.size();
 		for (int i = 0; i < size; i++) {
-			Extent<N0> e1 = items0.get(i);
-			Extent<N1> e2 = items1.get(i);
-			if (math0.contains(e1.start(), e1.end(), index0) &&
-				math1.contains(e2.start(), e2.end(), index1)) 
+			Extent<Y> e1 = items0.get(i);
+			Extent<X> e2 = items1.get(i);
+			if (mathY.contains(e1.start(), e1.end(), indexY) &&
+				mathX.contains(e2.start(), e2.end(), indexX)) 
 			{
 				return true;
 			}
@@ -57,37 +57,37 @@ class CellSet<N0 extends Number, N1 extends Number> {
 	}
 	
 
-	public void add(N0 start0, N0 end0, N1 start1, N1 end1) {
+	public void add(Y startY, Y endY, X startX, X endX) {
 		insertNew = true;
 		int i = 0;
 		
 		int size = items0.size();
 		for (;i < size; i++) {
-			Extent<N0> item0 = items0.get(i);
-			Extent<N1> item1 = items1.get(i);
+			Extent<Y> item0 = items0.get(i);
+			Extent<X> item1 = items1.get(i);
 			
-			N0 start0b = item0.start.getValue(), 	end0b = item0.end.getValue(); 
-			N1 start1b = item1.start.getValue(), 	end1b = item1.end.getValue();
+			Y startYb = item0.start.getValue(), 	endYb = item0.end.getValue(); 
+			X startXb = item1.start.getValue(), 	endXb = item1.end.getValue();
 			
-			int es0 = math0.compare(end0, start0b);
-			int se0 = math0.compare(start0, end0b);
-			int es1 = math1.compare(end1, start1b);
-			int se1 = math1.compare(start1, end1b);
+			int es0 = mathY.compare(endY, startYb);
+			int se0 = mathY.compare(startY, endYb);
+			int es1 = mathX.compare(endX, startXb);
+			int se1 = mathX.compare(startX, endXb);
 			// Intersect
 			if (es0 >= 0 && se0 <= 0 && es1 >= 0 && se1 <= 0) {
-				int ss0 = math0.compare(start0, start0b);
-				int ee0 = math0.compare(end0, end0b);
-				int ss1 = math1.compare(start1, start1b);
-				int ee1 = math1.compare(end1, end1b);
+				int ss0 = mathY.compare(startY, startYb);
+				int ee0 = mathY.compare(endY, endYb);
+				int ss1 = mathX.compare(startX, startXb);
+				int ee1 = mathX.compare(endX, endXb);
 				
 				// Overlaps
 				boolean overlaps0 = ss0 <= 0 && ee0 >= 0; 
 				boolean overlaps1 = ss1 <= 0 && ee1 >= 0; 
 				if (overlaps0 && overlaps1) {
-					item0.start.set(start0 = math0.min(start0, start0b));
-					item0.end.set(end0 = math0.max(end0, end0b));
-					item1.start.set(start1 = math1.min(start1, start1b));
-					item1.end.set(end1 = math1.max(end1, end1b));
+					item0.start.set(startY = mathY.min(startY, startYb));
+					item0.end.set(endY = mathY.max(endY, endYb));
+					item1.start.set(startX = mathX.min(startX, startXb));
+					item1.end.set(endX = mathX.max(endX, endXb));
 					insertNew = false;
 				} 
 				// Inside
@@ -97,54 +97,54 @@ class CellSet<N0 extends Number, N1 extends Number> {
 				// Crossing
 				else {
 					if (ss0 < 0) {
-						insert(start0, math0.decrement(start0b), start1, end1);
-						start0 = start0b;
+						insert(startY, mathY.decrement(startYb), startX, endX);
+						startY = startYb;
 					}
 					if (ee0 > 0) {
-						insert(math0.increment(end0b), end0, start1, end1);
-						end0 = end0b;
+						insert(mathY.increment(endYb), endY, startX, endX);
+						endY = endYb;
 					}
 					if (ss1 < 0) {
-						insert(start0, end0, start1, math1.decrement(start1b));
+						insert(startY, endY, startX, mathX.decrement(startXb));
 					}
 					if (ee1 > 0) {
-						insert(start0, end0, math1.increment(end1b), end1);
+						insert(startY, endY, mathX.increment(endXb), endX);
 					}
 					insertNew = false;
 				}
 			} 
 		}
 		if (insertNew) {
-			items0.add(new Extent<N0>(math0.create(start0), math0.create(end0)));
-			items1.add(new Extent<N1>(math1.create(start1), math1.create(end1)));
+			items0.add(new Extent<Y>(mathY.create(startY), mathY.create(endY)));
+			items1.add(new Extent<X>(mathX.create(startX), mathX.create(endX)));
 		}
 	}
 	
-	public void remove(N0 start0, N0 end0, N1 start1, N1 end1) {
+	public void remove(Y startY, Y endY, X startX, X endX) {
 		IntArray toRemove = new IntArray();
 		int i = 0;
 
 		int size = items0.size();
 		for (;i < size; i++) {
-			Extent<N0> item0 = items0.get(i);
-			Extent<N1> item1 = items1.get(i);
+			Extent<Y> item0 = items0.get(i);
+			Extent<X> item1 = items1.get(i);
 			
-			N0 start0b = item0.start.getValue(), end0b = item0.end.getValue(); 
-			N1 start1b = item1.start.getValue(), end1b = item1.end.getValue();
+			Y startYb = item0.start.getValue(), endYb = item0.end.getValue(); 
+			X startXb = item1.start.getValue(), endXb = item1.end.getValue();
 			
 			
-			int es0 = math0.compare(end0, start0b);
-			int se0 = math0.compare(start0, end0b);
-			int es1 = math1.compare(end1, start1b);
-			int se1 = math1.compare(start1, end1b);
+			int es0 = mathY.compare(endY, startYb);
+			int se0 = mathY.compare(startY, endYb);
+			int es1 = mathX.compare(endX, startXb);
+			int se1 = mathX.compare(startX, endXb);
 			
 			// Separate
 			if (es0 < 0 || se0 > 0 || es1 < 0 || se1 > 0) continue;
 			
-			int ss0 = math0.compare(start0, start0b);
-			int ee0 = math0.compare(end0, end0b);
-			int ss1 = math1.compare(start1, start1b);
-			int ee1 = math1.compare(end1, end1b);
+			int ss0 = mathY.compare(startY, startYb);
+			int ee0 = mathY.compare(endY, endYb);
+			int ss1 = mathX.compare(startX, startXb);
+			int ee1 = mathX.compare(endX, endXb);
 			
 			// Overlap
 			if (ss0 <= 0 && ee0 >= 0 && ss1 <= 0 && ee1 >= 0) {
@@ -156,25 +156,25 @@ class CellSet<N0 extends Number, N1 extends Number> {
 
 			if (ss0 > 0) {
 				// Add lines before the removal start
-				insert(start0b, math0.decrement(start0), start1b, end1b);
-				start0b = start0;
+				insert(startYb, mathY.decrement(startY), startXb, endXb);
+				startYb = startY;
 				remove = true;
 			}
 			if (ee0 < 0) {
 				// Add lines after the removal start
-				insert(math0.increment(end0), end0b, start1b, end1b);
-				end0b = end0;
+				insert(mathY.increment(endY), endYb, startXb, endXb);
+				endYb = endY;
 				remove = true;
 			}
 			
 			if (ss1 > 0) {
 				// Add lines before the removal start
-				insert(start0b, end0b, start1b, math1.decrement(start1));
+				insert(startYb, endYb, startXb, mathX.decrement(startX));
 				remove = true;
 			}
 			if (ee1 < 0) {
 				// Add lines after the removal start
-				insert(start0b, end0b, math1.increment(end1), end1b);
+				insert(startYb, endYb, mathX.increment(endX), endXb);
 				remove = true;
 			}
 			if (remove) toRemove.add(i);
@@ -185,18 +185,18 @@ class CellSet<N0 extends Number, N1 extends Number> {
 		}
 	}
 	
-	private void insert(N0 start0, N0 end0, N1 start1, N1 end1) {
-		items0.add(new Extent<N0>(math0.create(start0), math0.create(end0)));
-		items1.add(new Extent<N1>(math1.create(start1), math1.create(end1)));
+	private void insert(Y startY, Y endY, X startX, X endX) {
+		items0.add(new Extent<Y>(mathY.create(startY), mathY.create(endY)));
+		items1.add(new Extent<X>(mathX.create(startX), mathX.create(endX)));
 	}
 	
-//	public void change(MutableNumber start0, MutableNumber end0, 
-//			MutableNumber start1, MutableNumber end1, boolean add) 
+//	public void change(MutableNumber startY, MutableNumber endY, 
+//			MutableNumber startX, MutableNumber endX, boolean add) 
 //	{
 //		if (add) {
-//			add(start0, end0, start1, end1);
+//			add(startY, endY, startX, endX);
 //		} else {
-//			remove(start0, end0, start1, end1);
+//			remove(startY, endY, startX, endX);
 //		}
 //	}
 
@@ -226,23 +226,23 @@ class CellSet<N0 extends Number, N1 extends Number> {
 		int size = items0.size();
 		if (size == 0) {
 			return new Number[] {
-				math0.ZERO_VALUE(), math0.ZERO_VALUE(),
-				math1.ZERO_VALUE(), math1.ZERO_VALUE()};
+				mathY.ZERO_VALUE(), mathY.ZERO_VALUE(),
+				mathX.ZERO_VALUE(), mathX.ZERO_VALUE()};
 		} else {
 			Number[] e = new Number[4];
 			for (int i = 0; i < size; i++) {
-				Extent<N0> extent0 = items0.get(i);
-				Extent<N1> extent1 = items1.get(i);
-				if (e[0] == null || math0.compare(extent0.start, (N0) e[0]) < 0) {
+				Extent<Y> extent0 = items0.get(i);
+				Extent<X> extent1 = items1.get(i);
+				if (e[0] == null || mathY.compare(extent0.start, (Y) e[0]) < 0) {
 					e[0] = extent0.start.getValue();
 				}
-				if (e[1] == null || math0.compare(extent0.end, (N0) e[1]) > 0) {
+				if (e[1] == null || mathY.compare(extent0.end, (Y) e[1]) > 0) {
 					e[1] = extent0.end.getValue();
 				}
-				if (e[2] == null || math1.compare(extent1.start, (N1) e[2]) < 0) {
+				if (e[2] == null || mathX.compare(extent1.start, (X) e[2]) < 0) {
 					e[2] = extent1.start.getValue();
 				}
-				if (e[3] == null || math1.compare(extent1.end, (N1) e[3]) > 0) {
+				if (e[3] == null || mathX.compare(extent1.end, (X) e[3]) > 0) {
 					e[3] = extent1.end.getValue();
 				}
 			}
@@ -254,8 +254,8 @@ class CellSet<N0 extends Number, N1 extends Number> {
 	boolean hasOne() {
 		int size = items0.size();
 		return size == 1 && 
-				math0.compare(math0.getCount(items0.get(0)), math0.ONE_VALUE()) == 0 &&
-				math1.compare(math1.getCount(items1.get(0)), math1.ONE_VALUE()) == 0;
+				mathY.compare(mathY.getCount(items0.get(0)), mathY.ONE_VALUE()) == 0 &&
+				mathX.compare(mathX.getCount(items1.get(0)), mathX.ONE_VALUE()) == 0;
 	}
 	
 	private BigInteger count(Extent e) {
@@ -267,53 +267,53 @@ class CellSet<N0 extends Number, N1 extends Number> {
 	}
 	
 	public CellSet copy() {
-		CellSet copy = new CellSet(math0, math1);
+		CellSet copy = new CellSet(mathY, mathX);
 		int size = size();
 		for (int i = 0; i < size; i++) {
 			Extent e0 = items0.get(i);
 			Extent e1 = items1.get(i);
-			copy.items0.add(new Extent(math0.create(e0.start), math0.create(e0.end)));
-			copy.items1.add(new Extent(math1.create(e1.start), math1.create(e1.end)));
+			copy.items0.add(new Extent(mathY.create(e0.start), mathY.create(e0.end)));
+			copy.items1.add(new Extent(mathX.create(e1.start), mathX.create(e1.end)));
 		}
 		return copy;
 	}
 
 
-	public void delete0(N0 start, N0 end) {
+	public void deleteY(Y start, Y end) {
 		for (int i = 0, imax = items0.size(); i < imax; i++) {
-			Extent.delete(math0, items0, start, end);
+			Extent.delete(mathY, items0, start, end);
 		}
 	}
 	
-	public void delete1(N1 start, N1 end) {
+	public void deleteX(X start, X end) {
 		for (int i = 0, imax = items0.size(); i < imax; i++) {
-			Extent.delete(math1, items1, start, end);
+			Extent.delete(mathX, items1, start, end);
 		}
 	}
 	
-	public void insert0(N0 target, N0 count) {
+	public void insertY(Y target, Y count) {
 		for (int i = 0, imax = items0.size(); i < imax; i++) {
-			Extent.insert(math0, items0, target, count);
+			Extent.insert(mathY, items0, target, count);
 		}
 	}
 	
-	public void insert1(N1 target, N1 count) {
+	public void insertX(X target, X count) {
 		for (int i = 0, imax = items0.size(); i < imax; i++) {
-			Extent.insert(math1, items1, target, count);
+			Extent.insert(mathX, items1, target, count);
 		}
 	}
 
 			
 	
 	
-//	int intersect(MutableNumber start0, MutableNumber end0, MutableNumber start1, MutableNumber end1, 
-//			MutableNumber start0b, MutableNumber end0b, MutableNumber start1b, MutableNumber end1b) 
+//	int intersect(MutableNumber startY, MutableNumber endY, MutableNumber startX, MutableNumber endX, 
+//			MutableNumber startYb, MutableNumber endYb, MutableNumber startXb, MutableNumber endXb) 
 //	{
-//		int es0 = math.compare(end0, start0b);
-//		int es1 = math.compare(end1, start1b);
-//		MutableNumber start0c, end0c, start1c, end1c; // intersection index
-//		if (math.compare(end0, start0b) >= 0 && math.compare(start0, end0b) <= 0 &&
-//			math.compare(end1, start1b) >= 0 && math.compare(start1, end1b) <= 0) 
+//		int es0 = math.compare(endY, startYb);
+//		int es1 = math.compare(endX, startXb);
+//		MutableNumber startYc, endYc, startXc, endXc; // intersection index
+//		if (math.compare(endY, startYb) >= 0 && math.compare(startY, endYb) <= 0 &&
+//			math.compare(endX, startXb) >= 0 && math.compare(startX, endXb) <= 0) 
 //		{
 //			return 
 //		}

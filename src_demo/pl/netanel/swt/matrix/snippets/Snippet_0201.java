@@ -19,9 +19,9 @@ import pl.netanel.swt.matrix.Section;
  * Freeze head and tail with different color for the dividing line 
  */
 public class Snippet_0201 {
-	static Section<Integer> freezeHeadSection0, freezeHeadSection1, freezeTailSection0, freezeTailSection1;
-	static Number freezeHeadIndex0, freezeHeadIndex1, freezeTailIndex0, freezeTailIndex1;
-	static int head0, head1, tail0, tail1;
+	static Section<Integer> freezeHeadSectionY, freezeHeadSectionX, freezeTailSectionY, freezeTailSectionX;
+	static Number freezeHeadIndexY, freezeHeadIndexX, freezeTailIndexY, freezeTailIndexX;
+	static int headY, headX, tailY, tailX;
 	
 	public static void main(String[] args) {
 		Shell shell = (new Shell());
@@ -33,38 +33,38 @@ public class Snippet_0201 {
 		
 		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.H_SCROLL | SWT.V_SCROLL);
 		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		final Axis<Integer> axis0 = matrix.getAxis0();
-		final Axis<Integer> axis1 = matrix.getAxis1();
+		final Axis<Integer> axisY = matrix.getAxisY();
+		final Axis<Integer> axisX = matrix.getAxisX();
 		
-		final Section<Integer> body1 = axis1.getBody();
+		final Section<Integer> body1 = axisX.getBody();
 		body1.setCount(40);
 		body1.setDefaultCellWidth(50);
 		
-		Section<Integer> body0 = axis0.getBody();
+		Section<Integer> body0 = axisY.getBody();
 		body0.setCount(100);
 
 		matrix.addPainter(new Painter<Integer, Integer>("freeze lines") {
 			@Override
-			public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
+			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 				Color background = gc.getBackground();
 				gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
-				if (head0 > 0) {
-					int[] bound = axis0.getLineBound(head0);
-					gc.fillRectangle(x, bound[0], width, bound[1]);
+				if (headX > 0) {
+					int[] bound = axisX.getLineBound(headX);
+					gc.fillRectangle(bound[0], y, bound[1], height);
 				} 
-				int viewportItemCount = axis0.getViewportItemCount();
-				if (tail0 > 0 ) {
-					int[] bound = axis0.getLineBound(viewportItemCount - tail0);
-					gc.fillRectangle(x, bound[0], width, bound[1]);
+				int viewportItemCount = axisX.getViewportItemCount();
+				if (tailX > 0 ) {
+					int[] bound = axisX.getLineBound(viewportItemCount - tailX);
+					gc.fillRectangle(bound[0], y, bound[1], height);
 				}
-				if (head1 > 0) {
-					int[] bound = axis1.getLineBound(head1);
-					gc.fillRectangle(bound[0], y, bound[1], height);
+				if (headY > 0) {
+				  int[] bound = axisY.getLineBound(headY);
+				  gc.fillRectangle(x, bound[0], width, bound[1]);
 				} 
-				viewportItemCount = axis1.getViewportItemCount();
-				if (tail1 > 0 ) {
-					int[] bound = axis1.getLineBound(viewportItemCount - tail1);
-					gc.fillRectangle(bound[0], y, bound[1], height);
+				viewportItemCount = axisY.getViewportItemCount();
+				if (tailY > 0 ) {
+				  int[] bound = axisY.getLineBound(viewportItemCount - tailY);
+				  gc.fillRectangle(x, bound[0], width, bound[1]);
 				}
 				gc.setBackground(background);
 			}
@@ -75,10 +75,10 @@ public class Snippet_0201 {
 		add.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				head0 = axis0.getViewportPosition(axis0.getFocusItem());
-				head1 = axis1.getViewportPosition(axis1.getFocusItem());
-				axis0.freezeHead(head0);
-				axis1.freezeHead(head1);
+				headY = axisY.getViewportPosition(axisY.getFocusItem());
+				headX = axisX.getViewportPosition(axisX.getFocusItem());
+				axisY.freezeHead(headY);
+				axisX.freezeHead(headX);
 				matrix.refresh();
 				matrix.setFocus();
 			}
@@ -89,12 +89,12 @@ public class Snippet_0201 {
 		remove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				tail0 = axis0.getViewportItemCount() - 
-					axis0.getViewportPosition(axis0.getFocusItem()) - 1;
-				tail1 = axis1.getViewportItemCount() - 
-					axis1.getViewportPosition(axis1.getFocusItem()) - 1;
-				axis0.freezeTail(tail0);
-				axis1.freezeTail(tail1);
+				tailY = axisY.getViewportItemCount() - 
+					axisY.getViewportPosition(axisY.getFocusItem()) - 1;
+				tailX = axisX.getViewportItemCount() - 
+					axisX.getViewportPosition(axisX.getFocusItem()) - 1;
+				axisY.freezeTail(tailY);
+				axisX.freezeTail(tailX);
 				matrix.refresh();
 				matrix.setFocus();
 			}

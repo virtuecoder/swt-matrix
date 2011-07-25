@@ -23,18 +23,18 @@ public class Snippet_0011 {
 		final Display display = shell.getDisplay();
 		
 		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
-		matrix.getAxis1().getBody().setCount(40);
-		matrix.getAxis0().getBody().setCount(1000);
+		matrix.getAxisX().getBody().setCount(40);
+		matrix.getAxisY().getBody().setCount(1000);
 		
 		matrix.replacePainter(new Painter<Integer, Integer>(Painter.NAME_FOCUS_CELL) {
 			@Override
-			public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
+			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 				// Get bounds of the focus cell 
-				AxisItem<Integer> item0 = matrix.getAxis0().getFocusItem();
-				AxisItem<Integer> item1 = matrix.getAxis1().getFocusItem();
-				Zone<Integer, Integer> zone = matrix.getZone(item0.getSection(), item1.getSection());
+				AxisItem<Integer> item0 = matrix.getAxisY().getFocusItem();
+				AxisItem<Integer> item1 = matrix.getAxisX().getFocusItem();
+				Zone<Integer, Integer> zone = matrix.getZone(item1.getSection(), item0.getSection());
 				if (zone == null) return;
-				Rectangle r = zone.getCellBounds(item0.getIndex(), item1.getIndex());
+				Rectangle r = zone.getCellBounds(item1.getIndex(), item0.getIndex());
 				
 				// Draw rounded rectangle with a changed color
 				gc.setForeground(display.getSystemColor(SWT.COLOR_LIST_SELECTION));

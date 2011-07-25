@@ -17,8 +17,8 @@ public class Snippet_0901 {
 		shell.setLayout(new FillLayout());
 		
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
-		matrix.getAxis1().getBody().setCount(4);
-		matrix.getAxis0().getBody().setCount(10);
+		matrix.getAxisX().getBody().setCount(4);
+		matrix.getAxisY().getBody().setCount(10);
 		
 		// Replace HOME with CTRL+ARROW_LEFT
 		matrix.unbind(Matrix.CMD_FOCUS_MOST_LEFT, SWT.KeyDown, SWT.HOME);

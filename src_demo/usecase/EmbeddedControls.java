@@ -39,18 +39,18 @@ public class EmbeddedControls {
 		// Matrix
 		final Matrix matrix = new Matrix(shell, SWT.NONE);
 		
-		matrix.getAxis0().getBody().setCount(data.size());
-		matrix.getAxis0().getHeader().setVisible(true);
-		matrix.getAxis1().getBody().setCount(3);
-		matrix.getAxis1().getBody().setDefaultCellWidth(80);
+		matrix.getAxisY().getBody().setCount(data.size());
+		matrix.getAxisY().getHeader().setVisible(true);
+		matrix.getAxisX().getBody().setCount(3);
+		matrix.getAxisX().getBody().setDefaultCellWidth(80);
 		// To test positioning of the embedded controls while resizing columns
-		matrix.getAxis1().getBody().setDefaultResizable(true);
+		matrix.getAxisX().getBody().setDefaultResizable(true);
 
 		// Data painter
 		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public String getText(Number index0, Number index1) {
-				Object value = data.get(index0.intValue())[index1.intValue()];
+			public String getText(Number indexY, Number indexX) {
+				Object value = data.get(indexY.intValue())[indexX.intValue()];
 				return value == null || value instanceof Boolean ? "" : value.toString();
 			}
 		});
@@ -58,24 +58,24 @@ public class EmbeddedControls {
 		// Body editor
 		new ZoneEditor(matrix.getBody()) {
 			@Override
-			protected Object getModelValue(Number index0, Number index1) {
-				return data.get(index0.intValue())[index1.intValue()];
+			protected Object getModelValue(Number indexY, Number indexX) {
+				return data.get(indexY.intValue())[indexX.intValue()];
 			}
 			@Override
-			public void setModelValue(Number index0, Number index1, Object value) {
-				data.get(index0.intValue())[index1.intValue()] = value;
+			public void setModelValue(Number indexY, Number indexX, Object value) {
+				data.get(indexY.intValue())[indexX.intValue()] = value;
 			}
 			
 			@Override
-			public boolean hasEmbeddedControl(Number index0, Number index1) {
-//				Object value = data.get(index0.intValue())[index1.intValue()];
+			public boolean hasEmbeddedControl(Number indexY, Number indexX) {
+//				Object value = data.get(indexY.intValue())[indexX.intValue()];
 //				return value instanceof Boolean;
 				return true;
 			}
 			
 			@Override
-			protected Control createControl(Number index0, Number index1) {
-				Object value = data.get(index0.intValue())[index1.intValue()];
+			protected Control createControl(Number indexY, Number indexX) {
+				Object value = data.get(indexY.intValue())[indexX.intValue()];
 				if (value instanceof Boolean) {
 					return new Button(matrix, SWT.CHECK);
 				}
@@ -83,12 +83,12 @@ public class EmbeddedControls {
 			}
 			
 			@Override
-			protected void setBounds(Number index0, Number index1, Control control) {
+			protected void setBounds(Number indexY, Number indexX, Control control) {
 				if (control instanceof Text) {
-					Rectangle bounds = matrix.getBody().getCellBounds(index0, index1);
+					Rectangle bounds = matrix.getBody().getCellBounds(indexX, indexY);
 					control.setBounds(bounds);
 				} else {
-					super.setBounds(index0, index1, control);
+					super.setBounds(indexX, indexY, control);
 				}
 			}
 		};

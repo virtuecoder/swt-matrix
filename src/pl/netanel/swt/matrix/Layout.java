@@ -206,12 +206,12 @@ class Layout<N extends Number> {
 	}
 	
 	int compare(AxisItem<N> item1, AxisItem<N> item2) {
-	  SectionCore section1 = SectionCore.from(item1);
+	  SectionCore sectionX = SectionCore.from(item1);
 	  SectionCore section2 = SectionCore.from(item2);
-		int diff = section1.index - section2.index;
+		int diff = sectionX.index - section2.index;
 		if (diff != 0) return diff;
 		return math.compare(
-				section1.indexOf(item1.getIndex()), 
+				sectionX.indexOf(item1.getIndex()), 
 				section2.indexOf(item2.getIndex()));
 	}
 	

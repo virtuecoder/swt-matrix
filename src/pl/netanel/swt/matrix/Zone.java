@@ -1,19 +1,5 @@
 package pl.netanel.swt.matrix;
 
-/**
- * Constitutes a region of a matrix where a section from the row axis 
- * and a section from the column axis intersect with each other.  
- * <p>
- * Zone has painters to paint itself on the screen.
- * </p><p>
- * </p>
- * 
- * @param <N0> indexing type for rows
- * @param <N1> indexing type for columns
- * 
- * @author Jacek
- * @created 13-10-2010
- */
 import java.math.BigInteger;
 import java.util.Iterator;
 
@@ -25,7 +11,23 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
 
-public interface Zone<N0 extends Number, N1 extends Number> {
+
+/**
+ * Constitutes a region of a matrix where a section from the row axis 
+ * and a section from the column axis intersect with each other.  
+ * <p>
+ * Zone has painters to paint itself on the screen.
+ * </p><p>
+ * </p>
+ * 
+ * @param <X> indexing type for horizontal axis
+ * @param <Y> indexing type for vertical axis
+ * @see Section
+ * 
+ * @author Jacek
+ * @created 13-10-2010
+ */
+public interface Zone<X extends Number, Y extends Number> {
 
   /**
    * Returns a zone implementation that does not perform 
@@ -40,38 +42,36 @@ public interface Zone<N0 extends Number, N1 extends Number> {
   /**
    * Returns the zone section at row axis.
    * @return the zone section at row axis
-   * 
-   * @see #getSectionUnchecked0()
    */
-  Section<N0> getSection0();
+  Section<Y> getSectionY();
 
   /**
    * Returns the zone section column axis.
    * @return the zone section column axis
    */
-  Section<N1> getSection1();
+  Section<X> getSectionX();
 
   /**
    * Return rectangular bounds of the cell with the given coordinates.
    * If one of the indexes is null it return null.
+   * @param indexX cell index on the horizontal axis 
+   * @param indexY cell index on the vertical axis 
    * 
-   * @param index0 cell index on <code>axis0</code> 
-   * @param index1 cell index on <code>axis1</code> 
    * @return rectangular bounds of the cell with the given coordinates.
-   * @throws IllegalArgumentException if <code>index0</code> or 
-   *         <code>index1</code> is null.
-   * @throws IndexOutOfBoundsException if <code>index0</code> is out of 
-   *         0 ... this.getSection0().getCount() bounds
-   * @throws IndexOutOfBoundsException if <code>index1</code> is out of 
-   *         0 ... this.getSection1().getCount() bounds
+   * @throws IllegalArgumentException if <code>indexY</code> or 
+   *         <code>indexX</code> is null.
+   * @throws IndexOutOfBoundsException if <code>indexX</code> is out of 
+   *         0 ... this.getSectionX().getCount() bounds
+   * @throws IndexOutOfBoundsException if <code>indexY</code> is out of 
+   *         0 ... this.getSectionY().getCount() bounds
    */
-  Rectangle getCellBounds(N0 index0, N1 index1);
+  Rectangle getCellBounds(X indexX, Y indexY);
 
   /**
    * Sets the default background color for the receiver's cells. 
    * @param color color to set
    * @throws IllegalArgumentException if <code>color</code> or 
-   *         <code>index1</code> is null.
+   *         <code>indexX</code> is null.
    */
   void setDefaultBackground(Color color);
 
@@ -85,7 +85,7 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * Sets the default foreground color for the receiver's cells. 
    * @param color color to set
    * @throws IllegalArgumentException if <code>color</code> or 
-   *         <code>index1</code> is null.
+   *         <code>indexX</code> is null.
    */
   void setDefaultForeground(Color color);
 
@@ -105,7 +105,7 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * Sets selection foreground color for the receiver. 
    * @param color color to set
    * @throws IllegalArgumentException if <code>color</code> or 
-   *         <code>index1</code> is null.
+   *         <code>indexX</code> is null.
    */
   void setSelectionForeground(Color color);
 
@@ -119,7 +119,7 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * Sets selection background color for the receiver. 
    * @param color color to set
    * @throws IllegalArgumentException if <code>color</code> or 
-   *         <code>index1</code> is null.
+   *         <code>indexX</code> is null.
    */
   void setSelectionBackground(Color color);
 
@@ -147,69 +147,68 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * Returns <code>true</code> if the cell at given indexes is selected.
    * Otherwise, <code>false</code> is returned.
    * <p>
-   * <code>index0</code> and <code>index1</code> refer to the model, 
+   * <code>indexY</code> and <code>indexX</code> refer to the model, 
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations. 
+   * @param indexX cell index on the horizontal axis 
+   * @param indexY cell index on the vertical axis  
    * 
-   * @param index0 row index of the cell  
-   * @param index1 column index of the cell 
    * @return the selection state of the specified cell
    * 
-   * @throws IllegalArgumentException if <code>index0</code> or 
-   *         <code>index1</code> is null.
-   * @throws IndexOutOfBoundsException if <code>index0</code> is out of 
-   *         0 ... this.getSection0().getCount() bounds
-   * @throws IndexOutOfBoundsException if <code>index1</code> is out of 
-   *         0 ... this.getSection1().getCount() bounds
+   * @throws IllegalArgumentException if <code>indexY</code> or 
+   *         <code>indexX</code> is null.
+   * @throws IndexOutOfBoundsException if <code>indexY</code> is out of 
+   *         0 ... this.getSectionY().getCount() bounds
+   * @throws IndexOutOfBoundsException if <code>indexX</code> is out of 
+   *         0 ... this.getSectionX().getCount() bounds
    */
-  boolean isSelected(N0 index0, N1 index1);
+  boolean isSelected(X indexX, Y indexY);
 
   /**
    * Sets the selection state for the range of cells.
    * <p>
-   * <code>start0</code>,<code>end0</code>, <code>start1</code> and <code>end1</code> 
+   * <code>startY</code>,<code>endY</code>, <code>startX</code> and <code>endX</code> 
    * indexes refer to the model, not the visual position of the item on the screen
    * which can be altered by move and hide operations.
-   *
-   * @param start0 first index of the range of row items  
-   * @param end0 last index of the range of row items  
-   * @param start1 first index of the range of column items  
-   * @param end1 last index of the range of column items  
+   * @param startX first index of the range of column items  
+   * @param endX last index of the range of column items  
+   * @param startY first index of the range of row items  
+   * @param endY last index of the range of row items  
    * @param state the new selection state
-   * 
-   * @throws IllegalArgumentException if <code>start0</code> or 
-   *         <code>end0</code> or <code>start1</code>  or <code>end1</code> is null.
-   * @throws IndexOutOfBoundsException if <code>start0</code> or <code>end0</code>
-   *         is out of 0 ... this.getSection0().getCount() bounds
-   * @throws IndexOutOfBoundsException if <code>start1</code> or <code>end1</code>
-   *         is out of 0 ... this.getSection1().getCount() bounds
+   *
+   * @throws IllegalArgumentException if <code>startY</code> or 
+   *         <code>endY</code> or <code>startX</code>  or <code>endX</code> is null.
+   * @throws IndexOutOfBoundsException if <code>startY</code> or <code>endY</code>
+   *         is out of 0 ... this.getSectionY().getCount() bounds
+   * @throws IndexOutOfBoundsException if <code>startX</code> or <code>endX</code>
+   *         is out of 0 ... this.getSectionX().getCount() bounds
    */
-  void setSelected(N0 start0, N0 end0, N1 start1, N1 end1, boolean state);
+  void setSelected(X startX, X endX, Y startY, Y endY, boolean state);
 
   /**
    * Sets the selection state for the specified cell.
    * <p>
-   * <code>index0</code> and <code>index1</code> refer to the model, 
+   * <code>indexY</code> and <code>indexX</code> refer to the model, 
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations. 
    * <p>
    * Ranges of cells should be set selected by 
    * {@link #setSelected(Number, Number, Number, Number, boolean)} 
    * to achieve the best efficiency.
+   * @param indexX cell index on the horizontal axis 
+   * @param indexY cell index on the vertical axis  
    * 
-   * @param index0 row index of the cell  
-   * @param index1 column index of the cell 
    * @return the selection state of the specified cell
    *
-   * @throws IllegalArgumentException if <code>index0</code> or 
-   *         <code>index1</code> is null.
-   * @throws IndexOutOfBoundsException if <code>index0</code> is out of 
-   *         0 ... this.getSection0().getCount() bounds
-   * @throws IndexOutOfBoundsException if <code>index1</code> is out of 
-   *         0 ... this.getSection1().getCount() bounds
+   * @throws IllegalArgumentException if <code>indexY</code> or 
+   *         <code>indexX</code> is null.
+   * @throws IndexOutOfBoundsException if <code>indexY</code> is out of 
+   *         0 ... this.getSectionY().getCount() bounds
+   * @throws IndexOutOfBoundsException if <code>indexX</code> is out of 
+   *         0 ... this.getSectionX().getCount() bounds
    * 
    */
-  void setSelected(N0 index0, N1 index1, boolean state);
+  void setSelected(X indexX, Y indexY, boolean state);
 
   /**
    * Sets the selection state for all the cells in this zone.
@@ -239,7 +238,7 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * returned by the {@link Iterator#next()} method is a
    * row axis index, the second one is a column axis index.
    * <p>
-   * <code>index0</code> and <code>index1</code> refer to the model, 
+   * <code>indexY</code> and <code>indexX</code> refer to the model, 
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations.  
    * <p>
@@ -253,7 +252,7 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * returned by the {@link Iterator#next()} method define start and end of a
    * row axis extent, the second two the start and end of a column axis extent.
    * <p>
-   * <code>index0</code> and <code>index1</code> refer to the model, 
+   * <code>indexY</code> and <code>indexX</code> refer to the model, 
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations. 
    */
@@ -261,7 +260,7 @@ public interface Zone<N0 extends Number, N1 extends Number> {
 
   /**
    * Returns selection index bounds. The numbers in the returning array are 
-   * minimal axis0 index, maximal axis0 index, minimal axis1 index, maximal axis1 index. 
+   * minimal axisY index, maximal axisY index, minimal axisX index, maximal axisX index. 
    * @return selection index bounds
    */
   Number[] getSelectedExtent();
@@ -365,7 +364,7 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * Adds the painter at the end of the receiver's painters list.
    * @param painter the painter to be added
    */
-  void addPainter(Painter<N0, N1> painter);
+  void addPainter(Painter<X, Y> painter);
 
   /**
    * Inserts the painter at the given index of the receiver's painters list.
@@ -377,7 +376,7 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * @throws IllegalArgumentException if the painter's name already exists 
    *         in the collection of painters. 
    */
-  void addPainter(int index, Painter<N0, N1> painter);
+  void addPainter(int index, Painter<X, Y> painter);
 
   /**
    * Replaces the painter at the given index of the receiver's painters list. 
@@ -389,7 +388,7 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * @throws IllegalArgumentException if the painter's name already exists 
    *         in the collection of painters. 
    */
-  void setPainter(int index, Painter<N0, N1> painter);
+  void setPainter(int index, Painter<X, Y> painter);
 
   /**
    * Replaces the painter at the index of painter with the same name.
@@ -398,7 +397,7 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * @param painter painter to replace a painter with the same name
    * @throws IllegalArgumentException if the painter is null
    */
-  void replacePainter(Painter<N0, N1> painter);
+  void replacePainter(Painter<X, Y> painter);
 
   /**
    * Removes the element at the specified position in the list of painters. 
@@ -412,7 +411,7 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
    * @see Painter#NAME_CELLS
    */
-  Painter<N0, N1> removePainter(int index);
+  Painter<X, Y> removePainter(int index);
 
   /**
    * Removes the specified element from this list,
@@ -459,7 +458,7 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * @return the index of a painter with the specified name
    * @throws IllegalArgumentException if the name is null
    */
-  Painter<N0, N1> getPainter(String name);
+  Painter<X, Y> getPainter(String name);
 
   /**
    * Returns the number of the receiver's painters. 
@@ -476,13 +475,13 @@ public interface Zone<N0 extends Number, N1 extends Number> {
    * @throws IndexOutOfBoundsException if the index is out of range
    *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
    */
-  Painter<N0, N1> getPainter(int index);
+  Painter<X, Y> getPainter(int index);
 
   /**
    * Returns the matrix to which the zone belongs.
    * @return the matrix to which the zone belongs
    */
-  Matrix<N0, N1> getMatrix();
+  Matrix<X, Y> getMatrix();
 
 
 

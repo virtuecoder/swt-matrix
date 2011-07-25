@@ -44,21 +44,21 @@ public class Snippet_0018 {
 		images[2][0] = image;
 		
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
-		Section<Integer> body1 = matrix.getAxis1().getBody();
+		Section<Integer> body1 = matrix.getAxisX().getBody();
 		body1.setCount(COLUMN_COUNT);
 		body1.setDefaultCellWidth(50);
 		
-		matrix.getAxis0().getBody().setCount(ROW_COUNT);
+		matrix.getAxisY().getBody().setCount(ROW_COUNT);
 		
 		matrix.getBody().replacePainter(
 		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
-				text = index0.toString() + ", " + index1;
-				Image[] row = images[index0.intValue()];
-				image = row == null ? null : row[index1.intValue()];
-				imageAlignX = index1.intValue() == 1 ? SWT.RIGHT : SWT.LEFT;
-				super.paint(index0, index1, x, y, width, height);
+			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
+				text = indexY.toString() + ", " + indexX;
+				Image[] row = images[indexY.intValue()];
+				image = row == null ? null : row[indexX.intValue()];
+				imageAlignX = indexX.intValue() == 1 ? SWT.RIGHT : SWT.LEFT;
+				super.paint(indexX, indexY, x, y, width, height);
 			}
 		});
 		

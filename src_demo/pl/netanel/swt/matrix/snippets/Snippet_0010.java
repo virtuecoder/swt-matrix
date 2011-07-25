@@ -23,8 +23,8 @@ public class Snippet_0010 {
 		Display display = shell.getDisplay();
 		
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
-		matrix.getAxis1().getBody().setCount(40);
-		matrix.getAxis0().getBody().setCount(1000);
+		matrix.getAxisX().getBody().setCount(40);
+		matrix.getAxisY().getBody().setCount(1000);
 		
 		matrix.getBody().setDefaultForeground(matrix.getBackground());
 		matrix.getBody().setDefaultBackground(null);
@@ -38,7 +38,7 @@ public class Snippet_0010 {
 		gc.dispose();
 		
 		matrix.addPainter(0, new Painter<Integer, Integer>("background") {
-			public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
+			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 				Rectangle r = image2.getBounds();
 				x += align(SWT.RIGHT, 50, r.width, width);
 				y += align(SWT.CENTER, 0, r.height, height);

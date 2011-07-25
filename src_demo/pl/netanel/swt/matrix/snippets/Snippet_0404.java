@@ -45,19 +45,19 @@ public class Snippet_0404 {
 		// Matrix
 		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		
-		matrix.getAxis0().getBody().setCount(data.size());
-		matrix.getAxis1().getBody().setCount(3);
-		matrix.getAxis1().getBody().setDefaultCellWidth(80);
+		matrix.getAxisY().getBody().setCount(data.size());
+		matrix.getAxisX().getBody().setCount(3);
+		matrix.getAxisX().getBody().setDefaultCellWidth(80);
 		
 		// Body editor
 		new ZoneEditor<Integer, Integer>(matrix.getBody()) {
 			@Override
-			public Object getModelValue(Integer index0, Integer index1) {
-				return data.get(index0.intValue())[index1.intValue()];
+			public Object getModelValue(Integer indexX, Integer indexY) {
+				return data.get(indexY.intValue())[indexX.intValue()];
 			}
 			
 			@Override
-			public void setModelValue(Integer index0, Integer index1, Object value) {
+			public void setModelValue(Integer indexX, Integer indexY, Object value) {
 				if (value instanceof String) {
 					try {
 						value = dateFormat.parse((String) value);
@@ -68,11 +68,11 @@ public class Snippet_0404 {
 						}
 					}
 				}
-				data.get(index0.intValue())[index1.intValue()] = value;
+				data.get(indexY.intValue())[indexX.intValue()] = value;
 			}
 			
 			@Override
-			protected Object parse(Integer index0, Integer index1, String s) {
+			protected Object parse(Integer indexX, Integer indexY, String s) {
 				Object o = s;
 				try {
 					o = dateFormat.parse(s);
@@ -82,8 +82,8 @@ public class Snippet_0404 {
 			}
 			
 			@Override
-			public Control createControl(Integer index0, Integer index1) {
-				Object value = data.get(index0.intValue())[index1.intValue()];
+			public Control createControl(Integer indexX, Integer indexY) {
+				Object value = data.get(indexY.intValue())[indexX.intValue()];
 				
 				// Date
 				if (value instanceof Date) {
@@ -112,8 +112,8 @@ public class Snippet_0404 {
 			}
 			
 			@Override
-			public Object[] getCheckboxEmulation(Integer index0, Integer index1) {
-				Object value = data.get(index0.intValue())[index1.intValue()];
+			public Object[] getCheckboxEmulation(Integer indexX, Integer indexY) {
+				Object value = data.get(indexY.intValue())[indexX.intValue()];
 				return value instanceof Boolean ? getDefaultCheckBoxImages() : null;
 			}
 		};
@@ -122,8 +122,8 @@ public class Snippet_0404 {
 		// Paint text from the model in the body
 		matrix.getBody().replacePainter(new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public String getText(Integer index0, Integer index1) {
-				Object value = data.get(index0.intValue())[index1.intValue()];
+			public String getText(Integer indexX, Integer indexY) {
+				Object value = data.get(indexY.intValue())[indexX.intValue()];
 				if (value instanceof String) {
 					return (String) value;
 				}

@@ -19,17 +19,17 @@ public class Snippet_0002 {
     shell.setText("Unlimited number of items");
     shell.setLayout(new FillLayout());
 
-    Axis<BigInteger> axis0 = new Axis<BigInteger>(BigInteger.class, 2);
+    Axis<BigInteger> axisY = new Axis<BigInteger>(BigInteger.class, 2);
 
-    Matrix<BigInteger, Integer> matrix = new Matrix<BigInteger, Integer>(
-      shell, SWT.V_SCROLL | SWT.H_SCROLL, axis0, null);
+    Matrix<Integer, BigInteger> matrix = new Matrix<Integer, BigInteger>(
+      shell, SWT.V_SCROLL | SWT.H_SCROLL, null, axisY);
 
-    matrix.getAxis1().getBody().setCount(2);
-    matrix.getAxis1().getBody().setDefaultCellWidth(200);
-    matrix.getAxis1().getHeader().setVisible(true);
-    matrix.getAxis1().getHeader().setDefaultCellWidth(200);
-    matrix.getAxis1().freezeHead(1);
-    matrix.getAxis0().getBody().setCount(new BigInteger("123456789012345678901234567890"));
+    matrix.getAxisX().getBody().setCount(2);
+    matrix.getAxisX().getBody().setDefaultCellWidth(200);
+    matrix.getAxisX().getHeader().setVisible(true);
+    matrix.getAxisX().getHeader().setDefaultCellWidth(200);
+    matrix.getAxisX().freezeHead(1);
+    matrix.getAxisY().getBody().setCount(new BigInteger("123456789012345678901234567890"));
 
     shell.setBounds(400, 200, 600, 400);
     shell.open();

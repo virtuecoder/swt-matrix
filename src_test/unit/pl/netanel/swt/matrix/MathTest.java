@@ -38,8 +38,8 @@ import org.junit.runners.JUnit4;
 	}
 	
 	
-	public int compare(Math math, Number start1, Number end1, Number start2, Number end2) {
-		return math.compare(start1, end1, start2, end2);
+	public int compare(Math math, Number startX, Number endX, Number start2, Number end2) {
+		return math.compare(startX, endX, start2, end2);
 	}
 
 }

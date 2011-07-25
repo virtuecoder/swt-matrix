@@ -40,16 +40,16 @@ public class Snippet_0456 {
 		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		new Text(shell, SWT.BORDER);
 		
-		matrix.getAxis0().getBody().setCount(data.size());
-		matrix.getAxis1().getBody().setCount(2);
+		matrix.getAxisY().getBody().setCount(data.size());
+		matrix.getAxisX().getBody().setCount(2);
 
 		Zone<Integer, Integer> body = matrix.getBody();
 		
 		// Data painter
     body.replacePainter(new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
 			@Override
-			public String getText(Integer index0, Integer index1) {
-				Object value = data.get(index0.intValue())[index1.intValue()];
+			public String getText(Integer indexX, Integer indexY) {
+				Object value = data.get(indexY.intValue())[indexX.intValue()];
 				return value == null ? "" : value.toString();
 			}
 		});
@@ -86,11 +86,11 @@ public class Snippet_0456 {
 		// Body editor
 		new ZoneEditor<Integer, Integer>(body) {
 			@Override
-			public void setModelValue(Integer index0, Integer index1, Object value) {
-				data.get(index0.intValue())[index1.intValue()] = value;
+			public void setModelValue(Integer indexX, Integer indexY, Object value) {
+				data.get(indexY.intValue())[indexX.intValue()] = value;
 			}
-			@Override protected Control createControl(final Integer index0, final Integer index1) {
-			  Control control = super.createControl(index0, index1);
+			@Override protected Control createControl(final Integer indexX, final Integer indexY) {
+			  Control control = super.createControl(indexX, indexY);
 			  // (Shift+) Tab traverses the cells from editor control as well
         control.addListener(SWT.Traverse, new Listener() {
           @Override public void handleEvent(Event e) {

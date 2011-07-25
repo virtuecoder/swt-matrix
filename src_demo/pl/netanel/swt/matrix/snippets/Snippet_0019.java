@@ -21,26 +21,26 @@ public class Snippet_0019 {
 		
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(
 		  shell, SWT.H_SCROLL | SWT.V_SCROLL);
-		matrix.getAxis1().getBody().setCount(4);
-		matrix.getAxis1().getBody().setDefaultResizable(true);
-		matrix.getAxis0().getBody().setCount(10);
-		matrix.getAxis0().getHeader().setVisible(true);
+		matrix.getAxisX().getBody().setCount(4);
+		matrix.getAxisX().getBody().setDefaultResizable(true);
+		matrix.getAxisY().getBody().setCount(10);
+		matrix.getAxisY().getHeader().setVisible(true);
 		
 		matrix.getColumnHeader().replacePainter(
 			new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_VERTICALLY) {
 				@Override
-				public String getText(Integer index0, Integer index1) {
-					textAlignX = index1.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
-					return index1.toString();
+				public String getText(Integer indexX, Integer indexY) {
+					textAlignX = indexX.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
+					return indexX.toString();
 				}
 			});
 
 		matrix.getBody().replacePainter(
 			new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_VERTICALLY) {
 				@Override
-				public String getText(Integer index0, Integer index1) {
-					textAlignX = index1.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
-					return index0.toString() + ", " + index1;
+				public String getText(Integer indexX, Integer indexY) {
+					textAlignX = indexX.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
+					return indexY.toString() + ", " + indexX;
 				}
 		});
 		

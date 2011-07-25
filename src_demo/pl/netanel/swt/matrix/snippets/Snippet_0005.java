@@ -57,23 +57,23 @@ public class Snippet_0005 {
     final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
     matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
-    Axis<Integer> axis0 = matrix.getAxis0();
-    final Section<Integer> body0 = axis0.getBody();
+    Axis<Integer> axisY = matrix.getAxisY();
+    final Section<Integer> body0 = axisY.getBody();
     body0.setCount(list.size());
     body0.setDefaultResizable(true);
     body0.setDefaultMoveable(true);
-    axis0.getHeader().setVisible(true);
+    axisY.getHeader().setVisible(true);
 
-    Axis<Integer> axis1 = matrix.getAxis1();
-    axis1.getBody().setCount(2);
-    axis1.getHeader().setDefaultCellWidth(16);
-    axis1.getHeader().setVisible(true);
+    Axis<Integer> axisX = matrix.getAxisX();
+    axisX.getBody().setCount(2);
+    axisX.getHeader().setDefaultCellWidth(16);
+    axisX.getHeader().setVisible(true);
 
     // Paint data text in the body zone
     matrix.getBody().replacePainter(
       new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
-        @Override public String getText(Integer index0, Integer index1) {
-          return sorted.get(index0.intValue())[index1.intValue()].toString();
+        @Override public String getText(Integer indexX, Integer indexY) {
+          return sorted.get(indexY.intValue())[indexX.intValue()].toString();
         }
       });
 
@@ -81,12 +81,12 @@ public class Snippet_0005 {
     Painter<Integer, Integer> columnHeaderPainter = new Painter<Integer, Integer>(
       "cells", Painter.SCOPE_CELLS_HORIZONTALLY) 
     {
-      @Override public String getText(Integer index0, Integer index1) {
-        return index1.toString();
+      @Override public String getText(Integer indexX, Integer indexY) {
+        return indexX.toString();
       }
 
-      @Override public Image getImage(Integer index0, Integer index1) {
-        int column = index1.intValue();
+      @Override public Image getImage(Integer indexX, Integer indexY) {
+        int column = indexX.intValue();
         return direction[column] == 0 ? null
           : direction[column] == 1 ? sortAsc : sortDesc;
       }
@@ -100,8 +100,8 @@ public class Snippet_0005 {
     // Change sorting on mouse down in a column header 
     matrix.getColumnHeader().addListener(SWT.MouseDown, new Listener() {
       @Override public void handleEvent(Event e) {
-        // AxisItem<N0> item0 = matrix.getAxis0().getItemByDistance(e.y);
-        AxisItem<Integer> item1 = matrix.getAxis1().getItemByDistance(e.x);
+        // AxisItem<Y> item0 = matrix.getAxisY().getItemByDistance(e.y);
+        AxisItem<Integer> item1 = matrix.getAxisX().getItemByDistance(e.x);
         final int column = item1.getIndex().intValue();
 
         int previousDirection = direction[column];

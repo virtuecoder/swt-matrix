@@ -57,22 +57,22 @@ import pl.netanel.swt.matrix.SectionCore;
 	
 	@Test
 	public void cellSequenceIndexManySections() throws Exception {
-		SectionCore section0 = new SectionCore(Integer.class);
-		SectionCore section1 = new SectionCore(Integer.class);
+		SectionCore sectionY = new SectionCore(Integer.class);
+		SectionCore sectionX = new SectionCore(Integer.class);
 		SectionCore section2 = new SectionCore(Integer.class);
-		Axis model = new Axis(section0, section1, section2);
-		section0.setCount(1); // header
-		section1.setCount(5); // body
+		Axis model = new Axis(sectionY, sectionX, section2);
+		sectionY.setCount(1); // header
+		sectionX.setCount(5); // body
 		section2.setCount(1); // footer
 		
-		section1.setDefaultCellWidth(100);
+		sectionX.setDefaultCellWidth(100);
 		
 		Layout layout = new Layout(model);
 		layout.setViewportSize(1000);
 		
 		layout.compute();
-		assertEquals("", indexes(layout.cellSequence(Frozen.HEAD, section1)));
-		assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Frozen.NONE, section1)));
+		assertEquals("", indexes(layout.cellSequence(Frozen.HEAD, sectionX)));
+		assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Frozen.NONE, sectionX)));
 		assertEquals("0", indexes(layout.cellSequence(Frozen.NONE, section2)));
 	}
 	

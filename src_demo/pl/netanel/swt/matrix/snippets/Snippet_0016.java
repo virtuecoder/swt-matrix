@@ -23,9 +23,9 @@ public class Snippet_0016 {
 		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		matrix.setFocusCellEnabled(false);
 		
-		matrix.getAxis0().getBody().setCount(10);
+		matrix.getAxisY().getBody().setCount(10);
 
-		Section<Integer> body1 = matrix.getAxis1().getBody();
+		Section<Integer> body1 = matrix.getAxisX().getBody();
 		body1.setCount(4);
 		body1.setDefaultCellWidth(50);
 

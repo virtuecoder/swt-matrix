@@ -20,15 +20,15 @@ public class Snippet_0012 {
 		final Display display = shell.getDisplay();
 		
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
-		matrix.getAxis1().getBody().setCount(4);
-		matrix.getAxis0().getBody().setCount(10);
+		matrix.getAxisX().getBody().setCount(4);
+		matrix.getAxisY().getBody().setCount(10);
 		
 		
 		matrix.getBody().replacePainter(
 		  new Painter<Integer, Integer>("row lines", Painter.SCOPE_HORIZONTAL_LINES) {
 		    @Override
-		    public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
-		      switch (index0.intValue()) {
+		    public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
+		      switch (indexY.intValue()) {
 		      case 1:
 		        gc.setBackground(display.getSystemColor(SWT.COLOR_BLUE));
 		        gc.fillRectangle(x, y, width, height);

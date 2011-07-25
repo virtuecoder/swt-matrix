@@ -16,23 +16,23 @@ import org.junit.runners.JUnit4;
   @Test public void activateEmbeddedCheckBoxBySpace() throws Exception {
     final Matrix matrix = new Matrix(shell, 0);
 //    listenToAll(matrix);
-    matrix.getAxis0().getBody().setCount(1);
-    matrix.getAxis1().getBody().setCount(1);
+    matrix.getAxisY().getBody().setCount(1);
+    matrix.getAxisX().getBody().setCount(1);
     
     final Button button = new Button(matrix, SWT.CHECK);
     final boolean[] data = new boolean[] {false};
     
     ZoneEditor editor = new ZoneEditor(matrix.getBody()) {
-      @Override protected boolean hasEmbeddedControl(Number index0, Number index1) {
+      @Override protected boolean hasEmbeddedControl(Number indexY, Number indexX) {
         return true;
       }
-      @Override protected Control createControl(Number index0, Number index1) {
+      @Override protected Control createControl(Number indexY, Number indexX) {
         return button;
       }
-      @Override protected Object getModelValue(Number index0, Number index1) {
+      @Override protected Object getModelValue(Number indexY, Number indexX) {
         return data[0];
       }
-      @Override protected void setModelValue(Number index0, Number index1, Object value) {
+      @Override protected void setModelValue(Number indexY, Number indexX, Object value) {
         data[0] = (Boolean) value;
       }
     };
@@ -48,23 +48,23 @@ import org.junit.runners.JUnit4;
   @Test public void embeddedCheckBoxLoosesFocusAfterSelection() throws Exception {
     final Matrix matrix = new Matrix(shell, 0);
 //    listenToAll(matrix);
-    matrix.getAxis0().getBody().setCount(1);
-    matrix.getAxis1().getBody().setCount(1);
+    matrix.getAxisY().getBody().setCount(1);
+    matrix.getAxisX().getBody().setCount(1);
     
     final Button button = new Button(matrix, SWT.CHECK);
     final boolean[] data = new boolean[] {false};
     
     ZoneEditor editor = new ZoneEditor(matrix.getBody()) {
-      @Override protected boolean hasEmbeddedControl(Number index0, Number index1) {
+      @Override protected boolean hasEmbeddedControl(Number indexY, Number indexX) {
         return true;
       }
-      @Override protected Control createControl(Number index0, Number index1) {
+      @Override protected Control createControl(Number indexY, Number indexX) {
         return button;
       }
-      @Override protected Object getModelValue(Number index0, Number index1) {
+      @Override protected Object getModelValue(Number indexY, Number indexX) {
         return data[0];
       }
-      @Override protected void setModelValue(Number index0, Number index1, Object value) {
+      @Override protected void setModelValue(Number indexY, Number indexX, Object value) {
         data[0] = (Boolean) value;
       }
     };
@@ -81,8 +81,8 @@ import org.junit.runners.JUnit4;
   @Test public void activateBySingleClick() throws Exception {
     final Matrix matrix = new Matrix(shell, 0);
 //    listenToAll(matrix);
-    matrix.getAxis0().getBody().setCount(1);
-    matrix.getAxis1().getBody().setCount(1);
+    matrix.getAxisY().getBody().setCount(1);
+    matrix.getAxisX().getBody().setCount(1);
     
     Zone body = matrix.getBody();
     new ZoneEditor(body);
@@ -105,12 +105,12 @@ import org.junit.runners.JUnit4;
   
   @Test public void applyEditorValueOnClickOutside() throws Exception {
     final Matrix matrix = new Matrix(shell, 0);
-    matrix.getAxis0().getBody().setCount(1);
-    matrix.getAxis1().getBody().setCount(1);
+    matrix.getAxisY().getBody().setCount(1);
+    matrix.getAxisX().getBody().setCount(1);
     Zone body = matrix.getBody();
     final Object[] data = new Object[1];
     new ZoneEditor(body) {
-      @Override protected void setModelValue(Number index0, Number index1, Object value) {
+      @Override protected void setModelValue(Number indexY, Number indexX, Object value) {
         data[0] = value;
       }
     };
@@ -145,10 +145,10 @@ import org.junit.runners.JUnit4;
   
   private Matrix createMatrixAndEditor() {
     Matrix matrix = new Matrix(shell, 0);
-    matrix.getAxis0().getHeader().setVisible(true);
-    matrix.getAxis1().getHeader().setVisible(true);
-    matrix.getAxis0().getBody().setCount(5);
-    matrix.getAxis1().getBody().setCount(5);
+    matrix.getAxisY().getHeader().setVisible(true);
+    matrix.getAxisX().getHeader().setVisible(true);
+    matrix.getAxisY().getBody().setCount(5);
+    matrix.getAxisX().getBody().setCount(5);
     matrix.setSize(1000, 1000);
     new ZoneEditor(matrix.getBody());
     shell.open();

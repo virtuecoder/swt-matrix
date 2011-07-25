@@ -63,18 +63,18 @@ abstract class Math<N extends Number> {
 		return x.compareTo(y);
 	}
 	
-	public int compare(N start1, N end1, N start2, N end2) {
-		if (compare(end1, start2) < 0) {
-			if (compare(increment(end1), start2) == 0)	return ADJACENT_BEFORE;
+	public int compare(N startX, N endX, N start2, N end2) {
+		if (compare(endX, start2) < 0) {
+			if (compare(increment(endX), start2) == 0)	return ADJACENT_BEFORE;
 			else 										return BEFORE;
 		}
-		if (compare(start1, end2) > 0) {
-			if (compare(decrement(start1), end2) == 0) 	return ADJACENT_AFTER;
+		if (compare(startX, end2) > 0) {
+			if (compare(decrement(startX), end2) == 0) 	return ADJACENT_AFTER;
 			else 										return AFTER;
 		}
 		
-		int ss = compare(start1, start2);
-		int ee = compare(end1, end2);
+		int ss = compare(startX, start2);
+		int ee = compare(endX, end2);
 		if (ss == 0 && ee == 0)							return EQUAL;
 		if (ss <= 0) {
 			if (ee >= 0) 								return OVERLAP;

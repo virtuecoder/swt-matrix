@@ -33,7 +33,7 @@ public class Axis<N extends Number>  {
 	private int autoScrollOffset, resizeOffset;
 	final Layout<N> layout;
 	
-	int index;
+	char symbol;
 	Matrix<? extends Number, ? extends Number> matrix;
 	private ScrollBar scrollBar;
 
@@ -110,6 +110,10 @@ public class Axis<N extends Number>  {
 		layout = new Layout(this);
 	}
 
+	@Override public String toString() {
+	  return Character.toString(symbol);
+	}
+	
 	/**
 	 * Returns the body section wrapped in validation checker.
 	 * @return the body section wrapped in validation checker
@@ -282,7 +286,7 @@ public class Axis<N extends Number>  {
 //	 */
 //	public AxisItem<N> getMouseItem(int event) {
 //	  layout.computeIfRequired();
-//	  return (index == 0 ? matrix.listener.state0 : matrix.listener.state1).mouseDownItem;
+//	  return (symbol == 'Y' ? matrix.listener.state0 : matrix.listener.state1).mouseDownItem;
 //	}
 	
 	
@@ -410,7 +414,7 @@ public class Axis<N extends Number>  {
 	
 	
 	public void pack(AxisItem<N> item) {
-		matrix.pack(index, item);
+		matrix.pack(symbol, item);
 	}
 
 	
@@ -418,11 +422,11 @@ public class Axis<N extends Number>  {
 	 * Non public 
 	 */
 
-	void setMatrix(final Matrix matrix, int axisIndex) {
-		this.index = axisIndex;
+	void setMatrix(final Matrix matrix, char symbol) {
+	  this.symbol = symbol;
 		this.matrix = matrix;
 		
-		scrollBar = axisIndex == 0 ? matrix.getVerticalBar() : matrix.getHorizontalBar();
+		scrollBar = isVertical() ? matrix.getVerticalBar() : matrix.getHorizontalBar();
 		if (scrollBar != null) {
 			scrollBar.addListener(SWT.Selection, new Listener() {
 				private int selection = -1;
@@ -445,6 +449,14 @@ public class Axis<N extends Number>  {
 				}
 			});
 		}
+	}
+	
+	public boolean isHorizontal() {
+	  return symbol == 'X';
+	}
+	
+	public boolean isVertical() {
+	  return symbol == 'Y';
 	}
 	
 	/**
@@ -561,7 +573,7 @@ public class Axis<N extends Number>  {
 
 	void selectInZones(Section<N> section, N start, N end, boolean state, boolean notify) {
 		if (matrix != null) {
-			matrix.selectInZones(index, section, start, end, state, notify);
+			matrix.selectInZones(symbol, section, start, end, state, notify);
 		}
 	}
 	
@@ -683,15 +695,16 @@ public class Axis<N extends Number>  {
 
 	void deleteInZones(SectionCore<N> section, N start, N end) {
 	  for (ZoneCore zone: matrix.model.zones) {
-      if (index == 0) {
-        if (zone.section0.equals(this)) {
-          zone.cellSelection.delete0(start, end);
-          zone.lastSelection.delete0(start, end);
+      if (symbol == 'X') {
+        if (zone.sectionX.equals(this)) {
+          zone.cellSelection.deleteX(start, end);
+          zone.lastSelection.deleteX(start, end);
         }
-      } else {
-        if (zone.section1.equals(this)) {
-          zone.cellSelection.delete1(start, end);
-          zone.lastSelection.delete1(start, end);
+      }
+      else {
+        if (zone.sectionY.equals(this)) {
+          zone.cellSelection.deleteY(start, end);
+          zone.lastSelection.deleteY(start, end);
         }
       }
     }
@@ -703,15 +716,16 @@ public class Axis<N extends Number>  {
 	
 	void insertInZones(SectionCore section, N target, N count) {
 	  for (ZoneCore zone: matrix.model.zones) {
-      if (index == 0) {
-        if (zone.section0.equals(this)) {
-          zone.cellSelection.insert0(target, count);
-          zone.lastSelection.insert0(target, count);
+      if (symbol == 'X') {
+        if (zone.sectionX.equals(this)) {
+          zone.cellSelection.insertX(target, count);
+          zone.lastSelection.deleteX(target, count);
         }
-      } else {
-        if (zone.section1.equals(this)) {
-          zone.cellSelection.insert1(target, count);
-          zone.lastSelection.delete1(target, count);
+      }
+      else {
+        if (zone.sectionY.equals(this)) {
+          zone.cellSelection.insertY(target, count);
+          zone.lastSelection.insertY(target, count);
         }
       }
 	  }
@@ -727,7 +741,7 @@ public class Axis<N extends Number>  {
 				}
 			}
 			Preconditions.checkArgument(false,
-					"Section {0} does not belong to axis {1}", section, index);
+					"Section {0} does not belong to axis {1}", section, symbol);
 		}
 		return section;
 	}

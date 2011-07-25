@@ -6,48 +6,48 @@ import java.util.Iterator;
 import pl.netanel.swt.matrix.Axis.ExtentSequence;
 import pl.netanel.util.ImmutableIterator;
 
-class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<ZoneCore<N0, N1>> {
+class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCore<X, Y>> {
 
-	final Axis<N0> axis0;
-	final Axis<N1> axis1;
-	final ArrayList<ZoneCore<N0, N1>> zones;
+	final Axis<Y> axisY;
+	final Axis<X> axisX;
+	final ArrayList<ZoneCore<X, Y>> zones;
 	int[] paintOrder;
 	private ExtentPairSequence seq;
 
-	public MatrixModel(Axis<N0> axis0, Axis<N1> axis1, ArrayList<ZoneCore<N0, N1>> zones) {
-		this.axis0 = axis0;
-		this.axis1 = axis1;
+	public MatrixModel(Axis<Y> axisY, Axis<X> axisX, ArrayList<ZoneCore<X, Y>> zones) {
+		this.axisY = axisY;
+		this.axisX = axisX;
 		this.zones = zones;
 	}
 
 	void setMatrix(Matrix matrix) {
-		Section body0  = axis0.getBody(), body1 = axis1.getBody();
-		Section header0 = axis0.getHeader(), header1 = axis1.getHeader();
+		Section body0  = axisY.getBody(), body1 = axisX.getBody();
+		Section header0 = axisY.getHeader(), header1 = axisX.getHeader();
 		
-		for (SectionClient<N0> section0: axis0.sections) {
-			for (SectionClient<N1> section1: axis1.sections) {
-				ZoneCore zone = getZone(section0.getCore(), section1.getCore());
+		for (SectionClient<Y> sectionY: axisY.sections) {
+			for (SectionClient<X> sectionX: axisX.sections) {
+				ZoneCore zone = getZone(sectionY.getCore(), sectionX.getCore());
 				zone.setMatrix(matrix);
 				if (zone.getPainterCount() == 0) {
-					if (section0.equals(body0) && section1.equals(body1)) {
+					if (sectionY.equals(body0) && sectionX.equals(body1)) {
 						zone.setDefaultBodyStyle();
 					}
-					else if (section0.equals(header0) && section1.equals(body1)) {
+					else if (sectionY.equals(header0) && sectionX.equals(body1)) {
 					  zone.setDefaultHeaderStyle(
 					    new Painter(Painter.NAME_CELLS, Painter.SCOPE_CELLS_VERTICALLY) {
 					      @Override
-					      public String getText(Number index0, Number index1) {
-					        return index1.toString();
+					      public String getText(Number indexY, Number indexX) {
+					        return indexX.toString();
 					      }
 					    }
 					  );
 					}
-					else if (section1.equals(header1) && section0.equals(body0)) {
+					else if (sectionX.equals(header1) && sectionY.equals(body0)) {
 						zone.setDefaultHeaderStyle(
 						  new Painter(Painter.NAME_CELLS, Painter.SCOPE_CELLS_HORIZONTALLY) {
 						    @Override
-						    public String getText(Number index0, Number index1) {
-						      return index0.toString();
+						    public String getText(Number indexY, Number indexX) {
+						      return indexY.toString();
 						    }
 						  }
 						);						
@@ -65,22 +65,22 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	
 	private void calculatePaintOrder() {
 		paintOrder = new int[zones.size()];
-		int[] order0 = axis0.getZOrder();
-		int[] order1 = axis1.getZOrder();
+		int[] order0 = axisY.getZOrder();
+		int[] order1 = axisX.getZOrder();
 		int k = 0;
 		for (int i = 0, imax = order0.length; i < imax; i++) {
 			for (int j = 0, jmax = order1.length; j < jmax; j++) {
 				paintOrder[k++] = zones.indexOf(getZone(
-				  axis0.sections.get(order0[i]).getCore(), 
-				  axis1.sections.get(order1[j]).getCore()));
+				  axisY.sections.get(order0[i]).getCore(), 
+				  axisX.sections.get(order1[j]).getCore()));
 			}			
 		}
 	}
 	
-	public ZoneCore getZone(SectionCore section0, SectionCore section1) {
+	public ZoneCore getZone(SectionCore sectionY, SectionCore sectionX) {
 		for (ZoneCore zone: zones) {
-			if (zone.getSection0().equals(section0) && 
-			    zone.getSection1().equals(section1) ) {
+			if (zone.getSectionY().equals(sectionY) && 
+			    zone.getSectionX().equals(sectionX) ) {
 				return zone;
 			}
 		}
@@ -91,8 +91,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	 * Zone iterator
 	 */
 	@Override
-	public Iterator<ZoneCore<N0, N1>> iterator() {
-		return new ImmutableIterator<ZoneCore<N0, N1>>() {
+	public Iterator<ZoneCore<X, Y>> iterator() {
+		return new ImmutableIterator<ZoneCore<X, Y>>() {
 			int i;
 			
 			@Override
@@ -111,10 +111,10 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	
 	/**
 	 * Attention: it is to be called only by a UI handler, since it emits Selection event.
-	 * @param start0
-	 * @param end0
-	 * @param start1
-	 * @param end1
+	 * @param startY
+	 * @param endY
+	 * @param startX
+	 * @param endX
 	 * @param selectState
 	 */
 	public void setSelected(boolean selectState, boolean notify) {
@@ -124,8 +124,8 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 //	    for (Zone zone: zones) {
 //	      if (selectState) {
 //	        boolean allSelected = zone.getSelectedCount().equals(
-//	          new BigInteger(zone.getSection0().getCount().toString()).multiply(
-//            new BigInteger(zone.getSection1().getCount().toString())));
+//	          new BigInteger(zone.getSectionY().getCount().toString()).multiply(
+//            new BigInteger(zone.getSectionX().getCount().toString())));
 //	        if (!allSelected) {
 //	          modified = true;
 //	          break;
@@ -149,13 +149,13 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 			  zone.addSelectionEvent();
 			}
 		}
-		axis0.setSelected(selectState, notify, false);
-		axis1.setSelected(selectState, notify, false);
+		axisY.setSelected(selectState, notify, false);
+		axisX.setSelected(selectState, notify, false);
 //		if (notify && modified) {
-//			for (Section section: axis0.sections) {
+//			for (Section section: axisY.sections) {
 //				section.addSelectionEvent();
 //			}
-//			for (Section section: axis1.sections) {
+//			for (Section section: axisX.sections) {
 //				section.addSelectionEvent();
 //			}
 //		}
@@ -163,31 +163,31 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	
 	/**
 	 * Attention: it is to be called only by a UI handler, since it emits Selection event.
-	 * @param start0
-	 * @param end0
-	 * @param start1
-	 * @param end1
+	 * @param startY
+	 * @param endY
+	 * @param startX
+	 * @param endX
 	 * @param selected
 	 */
 	void setSelected (
-			AxisItem start0, AxisItem end0, 
-			AxisItem start1, AxisItem end1, boolean selected) {
+			AxisItem startY, AxisItem endY, 
+			AxisItem startX, AxisItem endX, boolean selected) {
 		
 		// Make sure start < end 
 		AxisItem tmp;
-		if (axis0.comparePosition(start0, end0) > 0) {
-			tmp = start0; start0 = end0; end0 = tmp;
+		if (axisY.comparePosition(startY, endY) > 0) {
+			tmp = startY; startY = endY; endY = tmp;
 		}
-		if (axis1.comparePosition(start1, end1) > 0) {
-			tmp = start1; start1 = end1; end1 = tmp;
+		if (axisX.comparePosition(startX, endX) > 0) {
+			tmp = startX; startX = endX; endX = tmp;
 		}
 	
 		Zone lastZone = null;
-		seq.init(start0, end0, start1, end1);
+		seq.init(startY, endY, startX, endX);
 		while (seq.next()) {
-			ZoneCore zone = getZone(seq.section0, seq.section1);
+			ZoneCore zone = getZone(seq.sectionY, seq.sectionX);
 			if (zone.isSelectionEnabled()) {
-				zone.setSelected(seq.start0.getValue(), seq.end0.getValue(), seq.start1.getValue(), seq.end1.getValue(), selected);
+				zone.setSelected(seq.startX.getValue(), seq.endX.getValue(), seq.startY.getValue(), seq.endY.getValue(), selected);
 				
 				if (!zone.equals(lastZone)) {
 					zone.addSelectionEvent();
@@ -204,46 +204,46 @@ class MatrixModel<N0 extends Number, N1 extends Number> implements Iterable<Zone
 	 * @author Jacek created 21-02-2011
 	 */
 	class ExtentPairSequence {
-		SectionCore section0, section1;
-		MutableNumber start0, end0, start1, end1;
-		ExtentSequence seq0, seq1;
+		SectionCore sectionY, sectionX;
+		MutableNumber startY, endY, startX, endX;
+		ExtentSequence seqY, seqX;
 		boolean empty;
 		private AxisItem startItem1;
 		private AxisItem endItem1;
 		
 		public ExtentPairSequence() {
-			seq0 = axis0.new ExtentSequence();
-			seq1 = axis1.new ExtentSequence();
+			seqY = axisY.new ExtentSequence();
+			seqX = axisX.new ExtentSequence();
 		}
 
-		public void init(AxisItem start0, AxisItem end0, AxisItem start1, AxisItem end1) {
+		public void init(AxisItem startY, AxisItem endY, AxisItem startX, AxisItem endX) {
 			
-			startItem1 = start1;
-			endItem1 = end1;
-			seq0.init(start0, end0);
-			seq1.init(start1, end1);
-			empty = !seq0.next();
-			this.section0 = seq0.section;
-			this.start0 = seq0.start;
-			this.end0 = seq0.end;
+			startItem1 = startX;
+			endItem1 = endX;
+			seqY.init(startY, endY);
+			seqX.init(startX, endX);
+			empty = !seqY.next();
+			this.sectionY = seqY.section;
+			this.startY = seqY.start;
+			this.endY = seqY.end;
 		}
 		
 		public boolean next() {
 			if (empty) return false; 
 			
-			if (!seq1.next()) {
-				if (!seq0.next()) {
+			if (!seqX.next()) {
+				if (!seqY.next()) {
 					return false;
 				}
-				this.section0 = seq0.section;
-				this.start0 = seq0.start;
-				this.end0 = seq0.end;
-				seq1.init(startItem1, endItem1);
-				seq1.next();
+				this.sectionY = seqY.section;
+				this.startY = seqY.start;
+				this.endY = seqY.end;
+				seqX.init(startItem1, endItem1);
+				seqX.next();
 			}
-			section1 = seq1.section;
-			start1 = seq1.start;
-			end1 = seq1.end;
+			sectionX = seqX.section;
+			startX = seqX.start;
+			endX = seqX.end;
 			return true;
 		}
 	}

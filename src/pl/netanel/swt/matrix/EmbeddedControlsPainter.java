@@ -17,14 +17,14 @@ import pl.netanel.swt.matrix.ZoneEditor.ZoneEditorData;
  * 
  * @author Jacek Kolodziejczyk created 14-06-2011
  */
-class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Painter<N0, N1> {
+class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painter<X, Y> {
 	private final ZoneEditor editor;
 	HashMap<Number, HashMap<Number, Control>> controls;
 	boolean needsPainting;
 	private final Listener focusInListener;
 	private final ControlListener controlListener;
 
-	public EmbeddedControlsPainter(final ZoneEditor<N0, N1> editor) {
+	public EmbeddedControlsPainter(final ZoneEditor<X, Y> editor) {
 		super(Painter.NAME_EMBEDDED_CONTROLS, Painter.SCOPE_CELLS_HORIZONTALLY);
 		this.editor = editor;
 		controls = new HashMap<Number, HashMap<Number, Control>>();
@@ -33,11 +33,11 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 		focusInListener = new Listener() {
 			@Override
 			public void handleEvent(Event e) {
-				Matrix<N0, N1> matrix = getMatrix();
+				Matrix<X, Y> matrix = getMatrix();
 				ZoneEditorData data = editor.getData(e.widget);
 				matrix.model.setSelected(false, true); 
-				matrix.axis0.setFocusItem(editor.zone.getSection0(), (N0) data.index0);
-				matrix.axis1.setFocusItem(editor.zone.getSection1(), (N1) data.index1);
+				matrix.axisY.setFocusItem(editor.zone.getSectionY(), (Y) data.indexY);
+				matrix.axisX.setFocusItem(editor.zone.getSectionX(), (X) data.indexX);
 				matrix.redraw();
 			}
 		};
@@ -53,8 +53,8 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 				needsPainting = true;
 			}
 		};
-		editor.zone.getSection0().addControlListener(controlListener);
-		editor.zone.getSection1().addControlListener(controlListener);
+		editor.zone.getSectionY().addControlListener(controlListener);
+		editor.zone.getSectionX().addControlListener(controlListener);
 	}
 	
 	
@@ -76,9 +76,9 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
   }
 	
 	@Override
-	public void paint(N0 index0, N1 index1, int x, int y, int width, int height) {
-		if (editor.hasEmbeddedControl(index0, index1)) {
-			Control control = editor.addControl(index0, index1);
+	public void paint(X indexX, Y indexY, int x, int y, int width, int height) {
+		if (editor.hasEmbeddedControl(indexX, indexY)) {
+			Control control = editor.addControl(indexX, indexY);
 			control.addListener(SWT.FocusIn, focusInListener );
 			control.addListener(SWT.Selection, new Listener() {
         @Override public void handleEvent(Event event) {
@@ -87,11 +87,11 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
       });
 			
 //			control.addListener(SWT.Selection, listener );
-			HashMap<Number, Control> row = controls.get(index0);
+			HashMap<Number, Control> row = controls.get(indexY);
 			if (row == null) {
-				controls.put(index0, row = new HashMap<Number, Control>());
+				controls.put(indexY, row = new HashMap<Number, Control>());
 			}
-			row.put(index1, control);
+			row.put(indexX, control);
 		}
 	}
 	
@@ -103,13 +103,13 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 		}
 	}
 	
-	public Control getControl(N0 index0, N1 index1) {
-		HashMap<Number, Control> row = controls.get(index0);
+	public Control getControl(Y indexY, X indexX) {
+		HashMap<Number, Control> row = controls.get(indexY);
 		if (row == null) {
 			return null;
 		}
 		else {
-			return row.get(index1);
+			return row.get(indexX);
 		}
 	}
 	
@@ -121,8 +121,8 @@ class EmbeddedControlsPainter<N0 extends Number, N1 extends Number> extends Pain
 				needsPainting = true;
 			}
 		};
-		matrix.layout0.callbacks.add(r);
-		matrix.layout1.callbacks.add(r);
+		matrix.layoutY.callbacks.add(r);
+		matrix.layoutX.callbacks.add(r);
 		
 		super.setMatrix(matrix);
 	}

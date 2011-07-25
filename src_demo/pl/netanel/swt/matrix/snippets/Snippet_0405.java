@@ -33,33 +33,33 @@ public class Snippet_0405 {
 		// Matrix
 		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		
-		matrix.getAxis0().getBody().setCount(data.size());
-		matrix.getAxis0().getBody().setDefaultCellWidth(80);
-		matrix.getAxis1().getBody().setCount(2);
-		matrix.getAxis1().getBody().setDefaultCellWidth(80);
+		matrix.getAxisY().getBody().setCount(data.size());
+		matrix.getAxisY().getBody().setDefaultCellWidth(80);
+		matrix.getAxisX().getBody().setCount(2);
+		matrix.getAxisX().getBody().setDefaultCellWidth(80);
 
 		// Paint text from the model in the body
     matrix.getBody().replacePainter(new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
       @Override
-      public String getText(Integer index0, Integer index1) {
-        return (String) data.get(index0.intValue())[index1.intValue()];
+      public String getText(Integer indexX, Integer indexY) {
+        return (String) data.get(indexY.intValue())[indexX.intValue()];
       }
     });
     
 		// Body editor
 		new ZoneEditor<Integer, Integer>(matrix.getBody()) {
 			@Override
-			public Object getModelValue(Integer index0, Integer index1) {
-				return data.get(index0.intValue())[index1.intValue()];
+			public Object getModelValue(Integer indexX, Integer indexY) {
+				return data.get(indexY.intValue())[indexX.intValue()];
 			}
 			
 			@Override
-			public void setModelValue(Integer index0, Integer index1, Object value) {
-				data.get(index0.intValue())[index1.intValue()] = value;
+			public void setModelValue(Integer indexX, Integer indexY, Object value) {
+				data.get(indexY.intValue())[indexX.intValue()] = value;
 			}
 			
 			@Override
-			public Control createControl(Integer index0, Integer index1) {
+			public Control createControl(Integer indexX, Integer indexY) {
 		    List list = new List(matrix, SWT.BORDER);
 		    list.setItems(new String[] {"a", "b", "c"});
 		    return list;

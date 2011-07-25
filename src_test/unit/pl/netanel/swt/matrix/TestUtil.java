@@ -98,8 +98,8 @@ class TestUtil {
 		// Make the columns variable width
 //		Matrix matrix = new Matrix(shell, SWT.NONE);
 		Shell shell = new Shell();
-		Matrix matrix = new Matrix(shell, SWT.V_SCROLL | SWT.H_SCROLL, rowModel, layout.axis);
-		matrix.layout1 = layout;
+		Matrix matrix = new Matrix(shell, SWT.V_SCROLL | SWT.H_SCROLL, layout.axis, rowModel);
+		matrix.layoutX = layout;
 //		matrix.rows.setHeaderVisible(true);
 		
 		//matrix.getZone(Zone.BODY).cellPainters.add(new DefaultBodyTextPainter());

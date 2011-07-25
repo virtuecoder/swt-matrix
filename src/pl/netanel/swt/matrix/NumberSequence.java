@@ -10,7 +10,7 @@ package pl.netanel.swt.matrix;
  * NumberSequence seq = section.getSelected();
  * // single number iteration
  * for (seq.init(); seq.next();) {
- *     System.out.println(seq.index0());
+ *     System.out.println(seq.indexY());
  * }
  * // number extents iteration
  * for (seq.init(); seq.nextExtent();) {

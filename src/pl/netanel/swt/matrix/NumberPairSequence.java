@@ -11,25 +11,25 @@ package pl.netanel.swt.matrix;
  * // single pair iteration
  * for (seq.init(); seq.next();) {
  *     System.out.println(
- *         seq.index0() + " : " + seq.index1());
+ *         seq.indexY() + " : " + seq.indexX());
  * }
  * // pair extents iteration
  * for (seq.init(); seq.nextExtent();) {
  *     System.out.println(
- *         seq.start0() + "-" + seq.end0() + " : " +
- *         seq.start1() + "-" + seq.end1());
+ *         seq.startY() + "-" + seq.endY() + " : " +
+ *         seq.startX() + "-" + seq.endX());
  * }
  * </pre>
  * 
  * @author Jacek created 21-02-2011
  */
-class NumberPairSequence<N0 extends Number, N1 extends Number> implements Sequence {
-	CellSet<N0, N1> set;
+class NumberPairSequence<X extends Number, Y extends Number> implements Sequence {
+	CellSet<X, Y> set;
 	int i, size;
-	Extent<N0> e0;
-	Extent<N1> e1;
-	MutableNumber<N0> index0;
-	MutableNumber<N1> index1;
+	Extent<Y> e0;
+	Extent<X> e1;
+	MutableNumber<Y> indexY;
+	MutableNumber<X> indexX;
 	
 	
 	NumberPairSequence(CellSet set) {
@@ -42,9 +42,9 @@ class NumberPairSequence<N0 extends Number, N1 extends Number> implements Sequen
 		if (size == 0) return;
 		e0 = set.items0.get(i);
 		e1 = set.items1.get(i);
-		index0 = set.math0.create(e0.start);
-		index1 = set.math1.create(e1.start);
-		index1.decrement();
+		indexY = set.mathY.create(e0.start);
+		indexX = set.mathX.create(e1.start);
+		indexX.decrement();
 	}
 	
 	/**
@@ -54,14 +54,14 @@ class NumberPairSequence<N0 extends Number, N1 extends Number> implements Sequen
 	 */
 	public boolean next() {
 		if (size == 0) return false;
-		if (set.math1.compare(index1.increment().getValue(), e1.end()) > 0) {
-			if (set.math0.compare(index0.increment().getValue(), e0.end()) > 0) {
+		if (set.mathX.compare(indexX.increment().getValue(), e1.end()) > 0) {
+			if (set.mathY.compare(indexY.increment().getValue(), e0.end()) > 0) {
 				if (++i >= size) return false;
 				e0 = set.items0.get(i);
 				e1 = set.items1.get(i);
-				index0.set(e0.start);
+				indexY.set(e0.start);
 			}
-			index1.set(e1.start);
+			indexX.set(e1.start);
 		}
 		return true;
 	}
@@ -71,8 +71,8 @@ class NumberPairSequence<N0 extends Number, N1 extends Number> implements Sequen
 	 * 
 	 * @return row axis index
 	 */
-	public N0 index0() {
-		return index0.getValue();
+	public Y indexY() {
+		return indexY.getValue();
 	}
 
 	/**
@@ -80,8 +80,8 @@ class NumberPairSequence<N0 extends Number, N1 extends Number> implements Sequen
 	 * 
 	 * @return column axis index 
 	 */
-	public N1 index1() {
-		return index1.getValue();
+	public X indexX() {
+		return indexX.getValue();
 	}
 	
 	
@@ -89,22 +89,22 @@ class NumberPairSequence<N0 extends Number, N1 extends Number> implements Sequen
 		if (i++ >= size) return false;
 		e0 = set.items0.get(i-1);
 		e1 = set.items1.get(i-1);
-		index0 = set.math0.create(e0.start);
-		index1 = set.math1.create(e1.start);
-		index1.decrement();
+		indexY = set.mathY.create(e0.start);
+		indexX = set.mathX.create(e1.start);
+		indexX.decrement();
 		return true;
 	}
 	
-	public N0 start0() {
+	public Y startY() {
 		return e0.start();
 	}
-	public N0 end0() {
+	public Y endY() {
 		return e0.end();
 	}
-	public N1 start1() {
+	public X startX() {
 		return e1.start();
 	}
-	public N1 end1() {
+	public X endX() {
 		return e1.end();
 	}
 }

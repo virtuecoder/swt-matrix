@@ -21,17 +21,17 @@ public class Snippet_0903 {
 		shell.setLayout(new FillLayout());
 		
 		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
-		matrix.getAxis0().getHeader().setVisible(true);
-		matrix.getAxis1().getHeader().setVisible(true);
-		final Section<Integer> body0 = matrix.getAxis0().getBody();
-		final Section<Integer> body1 = matrix.getAxis1().getBody();
+		matrix.getAxisY().getHeader().setVisible(true);
+		matrix.getAxisX().getHeader().setVisible(true);
+		final Section<Integer> body0 = matrix.getAxisY().getBody();
+		final Section<Integer> body1 = matrix.getAxisX().getBody();
 		body0.setCount(10);
 		body1.setCount(4);
 		
 		matrix.addMouseMoveListener(new MouseMoveListener() {
 			public void mouseMove(MouseEvent e) {
-				AxisItem<Integer> item0 = matrix.getAxis0().getItemByDistance(e.y);
-				AxisItem<Integer> item1 = matrix.getAxis1().getItemByDistance(e.x);
+				AxisItem<Integer> item0 = matrix.getAxisY().getItemByDistance(e.y);
+				AxisItem<Integer> item1 = matrix.getAxisX().getItemByDistance(e.x);
 				System.out.println(item0.toString() + ":" + item1.toString());
 			}
 		});

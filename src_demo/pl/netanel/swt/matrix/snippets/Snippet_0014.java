@@ -23,12 +23,12 @@ public class Snippet_0014 {
 		
 		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		
-		Section<Integer> body1 = matrix.getAxis1().getBody();
+		Section<Integer> body1 = matrix.getAxisX().getBody();
 		body1.setDefaultLineWidth(0);
 		body1.setCount(4);
 		body1.setDefaultCellWidth(50);
 		
-		Section<Integer> body0 = matrix.getAxis0().getBody();
+		Section<Integer> body0 = matrix.getAxisY().getBody();
 		body0.setDefaultLineWidth(0);
 		body0.setCount(10);
 		
@@ -47,8 +47,8 @@ public class Snippet_0014 {
 				return true;
 			}
 			@Override
-			public void paint(Integer index0, Integer index1, int x, int y, int width, int height) {
-				if (index0.intValue() % 2 == 1) {
+			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
+				if (indexY.intValue() % 2 == 1) {
 					gc.fillRectangle(x, y, width, height);
 				}
 			}

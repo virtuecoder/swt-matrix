@@ -34,8 +34,8 @@ public class Snippet_0450 {
 		// Matrix
 		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
 		
-		matrix.getAxis0().getBody().setCount(data.size());
-		matrix.getAxis1().getBody().setCount(3);
+		matrix.getAxisY().getBody().setCount(data.size());
+		matrix.getAxisX().getBody().setCount(3);
 
 		Zone<Integer, Integer> body = matrix.getBody();
 		
@@ -43,8 +43,8 @@ public class Snippet_0450 {
     body.replacePainter(
       new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS_HORIZONTALLY) {
         @Override
-        public String getText(Integer index0, Integer index1) {
-          Object value = data.get(index0.intValue())[index1.intValue()];
+        public String getText(Integer indexX, Integer indexY) {
+          Object value = data.get(indexY.intValue())[indexX.intValue()];
           return value == null ? "" : value.toString();
         }
       }
@@ -53,8 +53,8 @@ public class Snippet_0450 {
 		// Body editor
 		new ZoneEditor<Integer, Integer>(body) {
 			@Override
-			public void setModelValue(Integer index0, Integer index1, Object value) {
-				data.get(index0.intValue())[index1.intValue()] = value;
+			public void setModelValue(Integer indexX, Integer indexY, Object value) {
+				data.get(indexY.intValue())[indexX.intValue()] = value;
 			}
 		};
 		
