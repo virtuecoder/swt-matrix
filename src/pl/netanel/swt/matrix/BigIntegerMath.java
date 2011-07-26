@@ -23,7 +23,7 @@ class BigIntegerMath extends Math<BigInteger> {
 	}
 	
 	@Override
-	public MutableBigInteger create(MutableNumber mn) {
+	public MutableBigInteger create(MutableNumber<BigInteger> mn) {
 		return new MutableBigInteger(mn.toBigInteger());
 	}
 

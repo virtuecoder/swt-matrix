@@ -25,7 +25,7 @@ class LongMath extends Math<Long> {
 	}
 	
 	@Override
-	public MutableLong create(MutableNumber mn) {
+	public MutableLong create(MutableNumber<Long> mn) {
 		return new MutableLong(mn instanceof MutableLong ? ((MutableLong) mn).value : mn.getValue().longValue());
 	}
 	

@@ -25,7 +25,7 @@ class IntMath extends Math<Integer> {
 	}
 	
 	@Override
-	public MutableInt create(MutableNumber mn) {
+	public MutableInt create(MutableNumber<Integer> mn) {
 		return new MutableInt(mn instanceof MutableInt ? ((MutableInt) mn).value : mn.getValue().intValue());
 	}
 	

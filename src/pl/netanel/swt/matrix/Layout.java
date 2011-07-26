@@ -11,15 +11,15 @@ import pl.netanel.util.Util;
 
 
 class Layout<N extends Number> {
-	Math math;
+	Math<N> math;
 
 	private int viewportSize;
 	final CountCache head, tail;
 	final DistanceCache main;
 	final ArrayList<Cache> caches;
 	
-	final MutableNumber total, maxInteger, maxScroll, scrollTotal;
-	final MutableNumber scrollPosition; // for head and tail it stores min and max scroll position
+	final MutableNumber<N> total, maxInteger, maxScroll, scrollTotal;
+	final MutableNumber<N> scrollPosition; // for head and tail it stores min and max scroll position
 	AxisItem<N> start, end, endNoTrim, current, zeroItem;
 	boolean isTrimmed;
 	int trim;
@@ -104,7 +104,7 @@ class Layout<N extends Number> {
 		
 		// Compute total and check if body exists
 		total.set(math.ZERO_VALUE()); 
-		for (SectionCore section: sections) {
+		for (SectionCore<N> section: sections) {
 			if (section.isVisible()) {
 				total.add(section.getVisibleCount());
 			}
@@ -206,12 +206,12 @@ class Layout<N extends Number> {
 	}
 	
 	int compare(AxisItem<N> item1, AxisItem<N> item2) {
-	  SectionCore sectionX = SectionCore.from(item1);
-	  SectionCore section2 = SectionCore.from(item2);
-		int diff = sectionX.index - section2.index;
+	  SectionCore<N> section1 = SectionCore.from(item1);
+	  SectionCore<N> section2 = SectionCore.from(item2);
+		int diff = section1.index - section2.index;
 		if (diff != 0) return diff;
 		return math.compare(
-				sectionX.indexOf(item1.getIndex()), 
+				section1.indexOf(item1.getIndex()), 
 				section2.indexOf(item2.getIndex()));
 	}
 	
@@ -236,7 +236,7 @@ class Layout<N extends Number> {
 	 */
 	// TODO Performance: prevent computation if current does not change
 	public boolean moveFocusItem(Move move) {
-  	AxisItem current2 = null;
+  	AxisItem<N> current2 = null;
 		switch (move) {
 		case HOME: 				current2 = forwardNavigator.first(); break;
 		case END: 				current2 = backwardNavigator.first(); break;
@@ -694,7 +694,7 @@ class Layout<N extends Number> {
 			   distance > tail.distance && !tail.isEmpty() ? tail : main;
 	}
 	
-	private Cache getCache(Section section, Number index) {
+	private Cache getCache(Section<N> section, N index) {
 		for (Cache cache: caches) {
 			int len = cache.cells.size();
 			for (int i = 0; i < len; i++) {
@@ -834,7 +834,7 @@ class Layout<N extends Number> {
 		}
 	}
 	
-	public Bound getCellBound(AxisItem item) {
+	public Bound getCellBound(AxisItem<N> item) {
 		Cache cache = getCache(item.section.core, item.getIndex());
 		if (cache == null) return null;
 		for (int i = 0, size = cache.cells.size(); i < size; i++) {
@@ -845,7 +845,7 @@ class Layout<N extends Number> {
 		return null;
 	}
 	
-	public Bound getLineBound(AxisItem item) {
+	public Bound getLineBound(AxisItem<N> item) {
 		Cache cache = getCache(item.section.core, item.getIndex());
 		if (cache == null) return null;
 		for (int i = 0, size = cache.lines.size(); i < size; i++) {
@@ -875,7 +875,7 @@ class Layout<N extends Number> {
 		int count = 0;
 		for (Cache cache: caches) {
 			for (int i = 0, imax = cache.cells.size(); i < imax; i++, count++) {
-				AxisItem item2 = cache.items.get(i);
+				AxisItem<N> item2 = cache.items.get(i);
 				if (item2.section.core.equals(item.section.core) && 
 						math.compare(item2.getIndex(), item.getIndex()) == 0) {
 					freezeHead(count);
@@ -891,7 +891,7 @@ class Layout<N extends Number> {
 		Collections.reverse(list);
 		for (Cache cache: list) {
 			for (int i = cache.cells.size(); i-- > 0; count++) {
-				AxisItem item2 = cache.items.get(i);
+				AxisItem<N> item2 = cache.items.get(i);
 				if (item2.section.core.equals(item.section.core) && 
 						math.compare(item2.getIndex(), item.getIndex()) == 0) {
 					freezeTail(count);
@@ -905,7 +905,7 @@ class Layout<N extends Number> {
 		int count = 0;
 		for (Cache cache: caches) {
 			for (int i = 0, imax = cache.cells.size(); i < imax; i++, count++) {
-				AxisItem item2 = cache.items.get(i);
+				AxisItem<N> item2 = cache.items.get(i);
 				if (item2.section.core.equals(item.section.core) && 
 						math.compare(item2.getIndex(), item.getIndex()) == 0) {
 					return count;

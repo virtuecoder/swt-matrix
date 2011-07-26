@@ -199,6 +199,25 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 		}
 	}
 	
+	void insertInZonesX(SectionCore<X> section, X target, X count) {
+	   for (ZoneCore<X, Y> zone: zones) {
+        if (zone.sectionX.equals(this)) {
+          zone.cellSelection.insertX(target, count);
+          zone.lastSelection.deleteX(target, count);
+        }
+     }
+	}
+	
+  void insertInZonesY(SectionCore<Y> section, Y target, Y count) {
+    for (ZoneCore<X, Y> zone: zones) {
+      if (zone.sectionY.equals(this)) {
+        zone.cellSelection.insertY(target, count);
+        zone.lastSelection.insertY(target, count);
+      }
+    }
+  }
+
+	
 	/**
 	 * Iterates over all extents within the boundaries defined 
 	 * by items passed to the init() method. 

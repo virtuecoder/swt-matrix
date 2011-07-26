@@ -24,12 +24,13 @@ abstract class Math<N extends Number> {
 	public static final int CROSS = 11;
 
 
-	public static Math getInstance(Class numberClass) {
-		if (numberClass == Integer.class) 			    return IntMath.getInstance(); 
-		else if (numberClass == int.class) 	        return IntMath.getInstance(); 
-		else if (numberClass == Long.class) 		    return LongMath.getInstance(); 
-		else if (numberClass == long.class) 		    return LongMath.getInstance(); 
-		else if	(numberClass == BigInteger.class) 	return BigIntegerMath.getInstance();
+	@SuppressWarnings("unchecked") 
+	public static <N2 extends Number> Math<N2> getInstance(Class<N2> numberClass) {
+		if (numberClass == Integer.class) 			    return (Math<N2>) IntMath.getInstance(); 
+		else if (numberClass == int.class) 	        return (Math<N2>) IntMath.getInstance(); 
+		else if (numberClass == Long.class) 		    return (Math<N2>) LongMath.getInstance(); 
+		else if (numberClass == long.class) 		    return (Math<N2>) LongMath.getInstance(); 
+		else if	(numberClass == BigInteger.class) 	return (Math<N2>) BigIntegerMath.getInstance();
 		else throw new IllegalArgumentException(
 		  "Cannot do arithmetics on " + numberClass.getName() + " class");
 	}
@@ -89,11 +90,11 @@ abstract class Math<N extends Number> {
 		return compare(start, n) <= 0 && compare(n, end) <= 0;
 	}
 	
-	public boolean contains(Extent e, MutableNumber<N> mn) {
+	public boolean contains(Extent<N> e, MutableNumber<N> mn) {
 		return contains((N) e.start(), (N) e.end(), (N) mn.getValue());
 	}
 	
-	public boolean contains(Extent e, N n) {
+	public boolean contains(Extent<N> e, N n) {
 		return contains((N) e.start(), (N) e.end(), (N) n);
 	}
 	
@@ -131,7 +132,7 @@ abstract class Math<N extends Number> {
 	}
 
 
-	public MutableNumber min(MutableNumber x, MutableNumber y) {
+	public MutableNumber<N> min(MutableNumber<N> x, MutableNumber<N> y) {
 		return x.min(y);
 	}
 	

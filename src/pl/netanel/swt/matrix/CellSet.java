@@ -222,10 +222,10 @@ class CellSet<X extends Number, Y extends Number> {
 	}
 	
 
-	public CellExtent getExtent() {
+	public CellExtent<X, Y> getExtent() {
 		int size = itemsY.size();
 		if (size == 0) {
-			return new CellExtent(
+			return new CellExtent<X, Y>(
 			  mathX.ZERO_VALUE(), mathX.ZERO_VALUE(),
 				mathY.ZERO_VALUE(), mathY.ZERO_VALUE());
 		} else {
@@ -247,7 +247,7 @@ class CellSet<X extends Number, Y extends Number> {
 					endY = extentY.end.getValue();
 				}
 			}
-			return new CellExtent(startX, endX, startY, endY);
+			return new CellExtent<X, Y>(startX, endX, startY, endY);
 		}
 	}
 	
@@ -259,7 +259,7 @@ class CellSet<X extends Number, Y extends Number> {
 				mathX.compare(mathX.getCount(itemsX.get(0)), mathX.ONE_VALUE()) == 0;
 	}
 	
-	private BigInteger count(Extent e) {
+	private BigInteger count(Extent<? extends Number> e) {
 		return e.end.toBigInteger().subtract(e.start.toBigInteger()).add(BigInteger.ONE);
 	}
 
@@ -267,14 +267,14 @@ class CellSet<X extends Number, Y extends Number> {
 		return itemsY.size();
 	}
 	
-	public CellSet copy() {
-		CellSet copy = new CellSet(mathX, mathY);
+	public CellSet<X, Y> copy() {
+		CellSet<X, Y> copy = new CellSet<X, Y>(mathX, mathY);
 		int size = size();
 		for (int i = 0; i < size; i++) {
-			Extent e0 = itemsY.get(i);
-			Extent e1 = itemsX.get(i);
-			copy.itemsY.add(new Extent(mathY.create(e0.start), mathY.create(e0.end)));
-			copy.itemsX.add(new Extent(mathX.create(e1.start), mathX.create(e1.end)));
+		  Extent<X> e1 = itemsX.get(i);
+			Extent<Y> e0 = itemsY.get(i);
+			copy.itemsX.add(new Extent<X>(mathX.create(e1.start), mathX.create(e1.end)));
+			copy.itemsY.add(new Extent<Y>(mathY.create(e0.start), mathY.create(e0.end)));
 		}
 		return copy;
 	}

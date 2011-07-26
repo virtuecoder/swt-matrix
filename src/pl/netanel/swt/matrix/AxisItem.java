@@ -31,15 +31,15 @@ public class AxisItem<N extends Number> {
 	
 	private AxisItem() {}
 	
-	static AxisItem create(SectionClient section, Number index) {
-		AxisItem axisItem = new AxisItem();
+	static <N2 extends Number> AxisItem<N2> create(SectionClient<N2> section, N2 index) {
+		AxisItem<N2> axisItem = new AxisItem<N2>();
 		axisItem.section = section;
 		axisItem.index = index;
 		return axisItem;
 	}
 	
-	static AxisItem create(SectionCore section, Number index) {
-	  return create(new SectionClient(section), index);
+	static <N2 extends Number> AxisItem<N2> create(SectionCore<N2> section, N2 index) {
+	  return create(new SectionClient<N2>(section), index); 
 	}
 	
 	@Override
@@ -51,7 +51,7 @@ public class AxisItem<N extends Number> {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (!(o instanceof AxisItem)) return false;
-		AxisItem item = (AxisItem) o;
+		@SuppressWarnings("unchecked") AxisItem<N> item = (AxisItem<N>) o;
 		return item.section.equals(section) && item.index.equals(index);
 	}
 	@Override

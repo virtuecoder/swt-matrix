@@ -41,6 +41,7 @@ public class Axis<N extends Number>  {
 	 * Constructs axis indexed by Integer class with two sections.
 	 * @see #Axis(Class, int)
 	 */
+	@SuppressWarnings("unchecked") 
 	public Axis() {
 		this((Class<N>) Integer.class, 2, 0, 1);
 	}
@@ -84,7 +85,7 @@ public class Axis<N extends Number>  {
     math = Math.getInstance(numberClass);
 	  sections = new ArrayList<SectionClient<N>>(sectionCount);
 	  for (int i = 0; i < sectionCount; i++) {
-	    SectionCore section = new SectionCore(numberClass);
+	    SectionCore<N> section = new SectionCore<N>(numberClass);
 //	    Preconditions.checkArgument( 
 //	      section.getIndexClass().equals(numberClass),
 //	      "Section at %s position is indexed by a different Number subclass " +
@@ -93,7 +94,7 @@ public class Axis<N extends Number>  {
 	    
 	    section.index = i;
       section.axis = this;
-      sections.add(new SectionClient(section));
+      sections.add(new SectionClient<N>(section));
 	  }
 	  
 	  if (headerIndex < sectionCount) {
@@ -109,7 +110,7 @@ public class Axis<N extends Number>  {
 	  
 	  autoScrollOffset = Matrix.AUTOSCROLL_OFFSET_Y;
 	  resizeOffset = Matrix.RESIZE_OFFSET_Y;
-	  layout = new Layout(this);
+	  layout = new Layout<N>(this);
   }
 
 	
@@ -699,7 +700,7 @@ public class Axis<N extends Number>  {
 		}
 	}
 	
-	void insertInZones(SectionCore section, N target, N count) {
+	void insertInZones(SectionCore<N> section, N target, N count) {
 	  for (ZoneCore zone: matrix.model.zones) {
       if (symbol == 'X') {
         if (zone.sectionX.equals(this)) {
@@ -717,10 +718,10 @@ public class Axis<N extends Number>  {
 		layout.show(AxisItem.create(section, target));
 	}
 
-	SectionClient checkSection(SectionClient section) {
+	SectionClient<N> checkSection(SectionClient<N> section) {
 		Preconditions.checkNotNullWithName(section, "section");
 		end: {
-			for (Section section2 : sections) {
+			for (SectionClient<N> section2 : sections) {
 				if (section2.equals(section)) {
 					break end;
 				}
@@ -731,9 +732,9 @@ public class Axis<N extends Number>  {
 		return section;
 	}
 	
-	SectionClient sectionClient(Section section) {
-	  if (section instanceof SectionClient) return (SectionClient) section;
-	  for (SectionClient section2: sections) {
+	SectionClient<N> sectionClient(Section<N> section) {
+	  if (section instanceof SectionClient) return (SectionClient<N>) section;
+	  for (SectionClient<N> section2: sections) {
 	    if (section2.core.equals(section)) {
 	      return section2;
 	    }

@@ -906,8 +906,8 @@ class SectionCore<N extends Number> implements Section<N> {
 	  return item.section.core;
 	}
 	
-	static SectionCore from(Section section) {
-	  return (SectionCore) section.getCore();
+	static <N2 extends Number> SectionCore<N2> from(Section<N2> section) {
+	  return (SectionCore<N2>) section.getCore();
 	}
 
 }

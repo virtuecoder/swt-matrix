@@ -5,13 +5,13 @@ import java.util.List;
 
 class AxisExtentSequence<N extends Number> {
 	List<SectionCore<N>> sections;
-	SectionCore section;
+	SectionCore<N> section;
 	int sectionIndex;
-	Number start, end;
+	N start, end;
 	private int startItemIndex, endItemIndex, i, istart, iend;
 	private ArrayList<Extent<N>> items;
-	private AxisItem startItem, endItem;
-	private final Math math;
+	private AxisItem<N> startItem, endItem;
+	private final Math<N> math;
 	
 	public AxisExtentSequence(Math<N> math, List<SectionCore<N>> sections) {
 		super();
@@ -20,19 +20,19 @@ class AxisExtentSequence<N extends Number> {
 	}
 
 	void init() {
-		SectionCore section2 = sections.get(sections.size() - 1);
+		SectionCore<N> section2 = sections.get(sections.size() - 1);
 		init(
 			AxisItem.create(sections.get(0), math.ZERO_VALUE()), 
 			AxisItem.create(section2, math.decrement(section2.getCount())));
 	}
-	void init(AxisItem startItem, AxisItem endItem) {
+	void init(AxisItem<N> startItem, AxisItem<N> endItem) {
 		this.startItem = startItem;
     this.endItem = endItem;
     this.startItemIndex = sections.indexOf(startItem.section.core);
 		this.endItemIndex = sections.indexOf(endItem.section.core);
-		SectionCore sl;
-    SectionCore startSection = startItem.section.core;
-    SectionCore endSection = endItem.section.core;
+		SectionCore<N> sl;
+    SectionCore<N> startSection = startItem.section.core;
+    SectionCore<N> endSection = endItem.section.core;
 
 		sl = startSection;
 		istart = sl.order.items.isEmpty() ? 0 : sl.order
@@ -56,7 +56,7 @@ class AxisExtentSequence<N extends Number> {
       items = section.order.items;
 			i = 0;
 		}
-		Extent e = items.get(i);
+		Extent<N> e = items.get(i);
 		start = sectionIndex == startItemIndex && i == istart ? startItem.getIndex()
 				: e.start();
 		end = sectionIndex == endItemIndex && i == iend ? endItem.getIndex() : e

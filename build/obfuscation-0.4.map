@@ -154,11 +154,11 @@ pl.netanel.swt.matrix.Bound -> pl.netanel.swt.matrix.n:
     int width -> b
     20:20:java.lang.String toString() -> toString
     24:24:pl.netanel.swt.matrix.Bound copy() -> a
-pl.netanel.swt.matrix.Cell -> pl.netanel.swt.matrix.Cell:
+pl.netanel.swt.matrix.Cell -> pl.netanel.swt.matrix.M:
     java.lang.Number indexX -> a
     java.lang.Number indexY -> b
-    25:25:java.lang.Number getIndexX() -> getIndexX
-    32:32:java.lang.Number getIndexY() -> getIndexY
+    25:25:java.lang.Number getIndexX() -> a
+    32:32:java.lang.Number getIndexY() -> b
 pl.netanel.swt.matrix.CellExtent -> pl.netanel.swt.matrix.CellExtent:
     java.lang.Number startX -> a
     java.lang.Number endX -> b
@@ -531,7 +531,7 @@ pl.netanel.swt.matrix.LayoutSequence -> pl.netanel.swt.matrix.y:
     51:51:int getDistance() -> d
     55:55:int getWidth() -> e
     59:59:java.lang.Number getIndex() -> f
-pl.netanel.swt.matrix.Listeners -> pl.netanel.swt.matrix.M:
+pl.netanel.swt.matrix.Listeners -> pl.netanel.swt.matrix.N:
     pl.netanel.util.HashMapArrayList listeners -> a
     java.util.ArrayList events -> b
     23:25:void add(int,org.eclipse.swt.widgets.Listener) -> a
@@ -539,7 +539,7 @@ pl.netanel.swt.matrix.Listeners -> pl.netanel.swt.matrix.M:
     43:44:void add(org.eclipse.swt.widgets.Event) -> a
     47:52:void sendEvents() -> a
     55:58:void sendEvent(org.eclipse.swt.widgets.Event) -> b
-pl.netanel.swt.matrix.LongMath -> pl.netanel.swt.matrix.O:
+pl.netanel.swt.matrix.LongMath -> pl.netanel.swt.matrix.P:
     pl.netanel.swt.matrix.MutableLong ZERO -> a
     pl.netanel.swt.matrix.MutableLong ONE -> b
     java.lang.Long ZERO_VALUE -> c
@@ -599,7 +599,7 @@ pl.netanel.swt.matrix.MapValueToCellSet -> pl.netanel.swt.matrix.C:
     82:85:void deleteX(java.lang.Number,java.lang.Number) -> b
     92:95:void insertY(java.lang.Number,java.lang.Number) -> e
     101:104:void insertX(java.lang.Number,java.lang.Number) -> d
-pl.netanel.swt.matrix.Math -> pl.netanel.swt.matrix.N:
+pl.netanel.swt.matrix.Math -> pl.netanel.swt.matrix.O:
     int BEFORE -> BEFORE
     int ADJACENT_BEFORE -> ADJACENT_BEFORE
     int ADJACENT_AFTER -> ADJACENT_AFTER
@@ -1082,7 +1082,7 @@ pl.netanel.swt.matrix.NumberOrder -> pl.netanel.swt.matrix.r:
     120:130:java.lang.Number indexOf(java.lang.Number) -> g
     135:154:void insert(java.lang.Number,java.lang.Number) -> e
     157:195:void insert2(java.lang.Number,java.lang.Number) -> f
-pl.netanel.swt.matrix.NumberPairSequence -> pl.netanel.swt.matrix.Q:
+pl.netanel.swt.matrix.NumberPairSequence -> pl.netanel.swt.matrix.R:
     pl.netanel.swt.matrix.CellSet set -> a
     int i -> b
     int size -> c
@@ -1277,7 +1277,7 @@ pl.netanel.swt.matrix.Painters -> pl.netanel.swt.matrix.H:
     95:95:int size() -> a
     99:99:java.util.Iterator iterator() -> iterator
     104:109:void checkUniqueness(pl.netanel.swt.matrix.Painter) -> d
-pl.netanel.swt.matrix.Resources -> pl.netanel.swt.matrix.P:
+pl.netanel.swt.matrix.Resources -> pl.netanel.swt.matrix.Q:
     java.util.Map m_colorMap -> b
     java.util.Map m_imageMap -> c
     int MISSING_IMAGE_SIZE -> d
