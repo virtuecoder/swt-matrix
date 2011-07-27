@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.AxisItem;
+import pl.netanel.swt.matrix.AxisPointer;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
@@ -41,8 +41,8 @@ public class ButtonCellPainter<X extends Number, Y extends Number>
 {
   private final Color highlightShadow, lightShadow, normalShadow;
   private final Zone<X, Y> zone;
-  private AxisItem<X> pushedX;
-  private AxisItem<Y> pushedY;
+  private AxisPointer<X> pushedX;
+  private AxisPointer<Y> pushedY;
   
   public ButtonCellPainter(Zone<X, Y> zone) {
     super("button cells", SCOPE_CELLS);

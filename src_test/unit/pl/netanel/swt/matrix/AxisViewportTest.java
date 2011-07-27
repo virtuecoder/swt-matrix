@@ -86,6 +86,6 @@ import org.junit.runners.JUnit4;
 		Layout layout = axis.layout;
     layout.setViewportSize(100);
 		layout.compute();
-		assertEquals(2, axis.getViewportPosition(new AxisItem((SectionClient) axis.getBody(), 2)));
+		assertEquals(2, axis.getViewportPosition(new AxisPointer((SectionClient) axis.getBody(), 2)));
 	}
 }

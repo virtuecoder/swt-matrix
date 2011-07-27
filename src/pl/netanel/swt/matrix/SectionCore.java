@@ -61,6 +61,7 @@ class SectionCore<N extends Number> implements Section<N> {
 	int index;
 	final Listeners listeners;
   private final Class<N> indexClass;
+  SectionClient<N> client;
 	
 	/**
 	 * Constructs a section indexed by the given sub-class of {@link Number}.
@@ -902,8 +903,8 @@ class SectionCore<N extends Number> implements Section<N> {
     listeners.add(event);
   }
 	
-	static SectionCore from(AxisItem item) {
-	  return item.section.core;
+	static SectionCore from(AxisPointer item) {
+	  return item.section;
 	}
 	
 	static <N2 extends Number> SectionCore<N2> from(Section<N2> section) {

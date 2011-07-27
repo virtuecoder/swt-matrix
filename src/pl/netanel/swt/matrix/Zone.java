@@ -38,7 +38,7 @@ public interface Zone<X extends Number, Y extends Number> {
    * method.
    * @return
    */
-  Zone getCore();
+  Zone<X, Y> getCore();
   
   /**
    * Returns the zone section at row axis.

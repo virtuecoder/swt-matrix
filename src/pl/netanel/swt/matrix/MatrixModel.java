@@ -172,11 +172,11 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 	 * @param selected
 	 */
 	void setSelected (
-			AxisItem startY, AxisItem endY, 
-			AxisItem startX, AxisItem endX, boolean selected) {
+			AxisPointer startY, AxisPointer endY, 
+			AxisPointer startX, AxisPointer endX, boolean selected) {
 		
 		// Make sure start < end 
-		AxisItem tmp;
+		AxisPointer tmp;
 		if (axisY.comparePosition(startY, endY) > 0) {
 			tmp = startY; startY = endY; endY = tmp;
 		}
@@ -229,15 +229,15 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 		MutableNumber startY, endY, startX, endX;
 		ExtentSequence seqY, seqX;
 		boolean empty;
-		private AxisItem startItem1;
-		private AxisItem endItem1;
+		private AxisPointer startItem1;
+		private AxisPointer endItem1;
 		
 		public ExtentPairSequence() {
 			seqY = axisY.new ExtentSequence();
 			seqX = axisX.new ExtentSequence();
 		}
 
-		public void init(AxisItem startY, AxisItem endY, AxisItem startX, AxisItem endX) {
+		public void init(AxisPointer startY, AxisPointer endY, AxisPointer startX, AxisPointer endX) {
 			
 			startItem1 = startX;
 			endItem1 = endX;

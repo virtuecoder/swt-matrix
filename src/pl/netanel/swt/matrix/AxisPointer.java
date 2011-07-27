@@ -8,8 +8,8 @@ import pl.netanel.util.Preconditions;
  * @param <N> specifies the indexing class for this axis
  * @author Jacek Kolodziejczyk created 21-04-2011
  */
-public class AxisItem<N extends Number> {
-	SectionClient<N> section;
+public class AxisPointer<N extends Number> {
+	SectionCore<N> section;
 	private N index;
 	
 	/**
@@ -20,27 +20,25 @@ public class AxisItem<N extends Number> {
 	 * or index is <code>null</code>
 	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getCount()}-1 bounds
 	 */
-	AxisItem(SectionClient<N> section, N index) {
+	public AxisPointer(Section<N> section, N index) {
 		Preconditions.checkNotNullWithName(section, "section");
 		Preconditions.checkNotNullWithName(index, "index");
-		section.checkLineIndex(index, "index");
-		this.section = section;
+		SectionCore<N> section2 = SectionCore.from(section);
+		section2.checkLineIndex(index, "index");
+		this.section = section2;
 		this.index = index;
 	}
 	
 	
-	private AxisItem() {}
+	private AxisPointer() {}
 	
-	static <N2 extends Number> AxisItem<N2> create(SectionClient<N2> section, N2 index) {
-		AxisItem<N2> axisItem = new AxisItem<N2>();
+	static <N2 extends Number> AxisPointer<N2> create(SectionCore<N2> section, N2 index) {
+		AxisPointer<N2> axisItem = new AxisPointer<N2>();
 		axisItem.section = section;
 		axisItem.index = index;
 		return axisItem;
 	}
 	
-	static <N2 extends Number> AxisItem<N2> create(SectionCore<N2> section, N2 index) {
-	  return create(new SectionClient<N2>(section), index); 
-	}
 	
 	@Override
 	public String toString() {
@@ -50,10 +48,11 @@ public class AxisItem<N extends Number> {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof AxisItem)) return false;
-		@SuppressWarnings("unchecked") AxisItem<N> item = (AxisItem<N>) o;
+		if (!(o instanceof AxisPointer)) return false;
+		@SuppressWarnings("unchecked") AxisPointer<N> item = (AxisPointer<N>) o;
 		return item.section.equals(section) && item.index.equals(index);
 	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -68,7 +67,7 @@ public class AxisItem<N extends Number> {
 	 * @return section of this axis item
 	 */
 	public Section<N> getSection() {
-	  return section;
+	  return section.client;
 	}
 
 	/**

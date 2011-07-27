@@ -12,8 +12,8 @@ import pl.netanel.util.Preconditions;
 
 class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   final ZoneCore core;
-  private final SectionClient<X> sectionX;
-  private final SectionClient<Y> sectionY;
+  final SectionClient<X> sectionX;
+  final SectionClient<Y> sectionY;
 
   public ZoneClient(SectionClient<X> sectionX, SectionClient<Y> sectionY) {
     Preconditions.checkNotNullWithName(sectionX, "sectionX");

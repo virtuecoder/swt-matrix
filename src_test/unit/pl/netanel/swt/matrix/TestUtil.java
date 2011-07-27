@@ -19,15 +19,15 @@ class TestUtil {
 		return new Extent(number(n), number(n));
 	}
 	
-	public static AxisItem item(Section section, int index) {
+	public static AxisPointer item(Section section, int index) {
 	  if (section instanceof SectionCore) {
 	    section = new SectionClient((SectionCore) section);
 	  }
-		return new AxisItem((SectionClient) section, index);
+		return new AxisPointer((SectionClient) section, index);
 	}
 	
-	public static AxisItem item(Axis axis, int section, int index) {
-		return new AxisItem((SectionClient) axis.sections.get(section), index);
+	public static AxisPointer item(Axis axis, int section, int index) {
+		return new AxisPointer((SectionClient) axis.sections.get(section), index);
 	}
 	
 	static NumberSet numberSet() {

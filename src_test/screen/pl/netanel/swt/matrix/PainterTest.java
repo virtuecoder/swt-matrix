@@ -15,16 +15,18 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class) public class  PainterTest extends SwtTestCase {
   @Test public void gradientCurrentRowBackground() throws Exception {
-    final Matrix matrix = new Matrix(shell, 0);
+    final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, 0);
     // listenToAll(matrix);
     matrix.getAxisY().getBody().setCount(5);
     matrix.getAxisX().getBody().setCount(5);
     
-    final Zone body = matrix.getBody();
+    final Zone<Integer, Integer> body = matrix.getBody();
     body.getPainter("row lines").setEnabled(false);
     body.getPainter("column lines").setEnabled(false);
     
-    body.addPainter(0, new Painter("gradient row background", Painter.SCOPE_ROW_CELLS) {
+    body.addPainter(0, new Painter<Integer, Integer>(
+      "gradient row background", Painter.SCOPE_ROW_CELLS) 
+    {
       int matrixWidth;
       @Override
       protected boolean init() {
@@ -41,9 +43,9 @@ import org.junit.runners.JUnit4;
       }
       
       @Override
-      public void paint(Number indexX, Number indexY, int x, int y, int width, int height) {
+      public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
         Axis axisY = matrix.getAxisY();
-        AxisItem focusItem = axisY.getFocusItem();
+        AxisPointer focusItem = axisY.getFocusItem();
         if (body.getSectionY().equals(focusItem.getSection()) &&
           indexY.equals(focusItem.getIndex())) 
         {

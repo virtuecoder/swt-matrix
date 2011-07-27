@@ -6,15 +6,15 @@ import java.util.List;
 
 
 abstract class Direction<N extends Number> {
-	protected final List<SectionCore> sections;
-	protected final Math math;
-	SectionCore section;
-	DirectionIndexSequence seq;
+	protected final List<SectionCore<N>> sections;
+	protected final Math<N> math;
+	SectionCore<N> section;
+	DirectionIndexSequence<N> seq;
 	int i, level, sign;
-	AxisItem freeze, min, start;
+	AxisPointer<N> freeze, min, start;
 	boolean pending, moved, hasMore, skipWithoutCurrent;
 	
-	public Direction(Math math, List<SectionCore> sections, boolean skipWithoutCurrent2) {
+	public Direction(Math<N> math, List<SectionCore<N>> sections, boolean skipWithoutCurrent2) {
 		this.math = math;
 		this.sections = sections;
 		skipWithoutCurrent = skipWithoutCurrent2;
@@ -30,9 +30,9 @@ abstract class Direction<N extends Number> {
 	protected abstract boolean hasNextSection();
 
 
-	public boolean set(AxisItem item) {
-		i = sections.indexOf(item.section.core);
-		section = SectionCore.from(item);
+	public boolean set(AxisPointer<N> item) {
+		i = sections.indexOf(item.section);
+		section = item.section;
 		seq = getSequence(section, sign);
 		seq.init();
 		if (!seq.set(item.getIndex())) return false;
@@ -42,26 +42,26 @@ abstract class Direction<N extends Number> {
 		return hasMore = nextInternal(null);
 	}
 	
-	public AxisItem getItem() {
+	public AxisPointer getItem() {
 		pending = false;
-		return hasMore ? AxisItem.create(section, seq.index().getValue()) : null;
+		return hasMore ? AxisPointer.create(section, seq.index().getValue()) : null;
 	}
 	
-	public AxisItem first() {
+	public AxisPointer first() {
 		if (!init()) return null;
 		return next();
 	}
 	
-	public AxisItem nextItem(AxisItem item) {
+	public AxisPointer nextItem(AxisPointer item) {
 		if (!set(item)) return null;
 		return getItem();
 	}
 
-	public AxisItem next() {
+	public AxisPointer next() {
 		return next(null);
 	}
 	
-	public AxisItem next(MutableNumber count) {
+	public AxisPointer next(MutableNumber count) {
 //		Preconditions.checkState(initiated, "direction not initiated, call init() or set() before");
 		if (pending && count != null && math.compare(count, math.ONE()) > 0) {
 			count.decrement();

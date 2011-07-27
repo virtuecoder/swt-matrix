@@ -62,16 +62,16 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	public ZoneCore(SectionCore<X> sectionX, SectionCore<Y> sectionY) {
 		this.sectionY = sectionY;
 		this.sectionX = sectionX;
-		painters = new Painters();
+		painters = new Painters<X, Y>();
     listeners = new Listeners();
-    bindings = new ArrayList();
+    bindings = new ArrayList<GestureBinding>();
     bounds = new Rectangle(0, 0, 0, 0);
     selectionEnabled = true;
     
-		Math mathY = SectionCore.from(sectionY).math;
-		Math mathX = SectionCore.from(sectionX).math;
-		cellSelection = new CellSet(mathX, mathY);
-		lastSelection = new CellSet(mathX, mathY);
+    Math<X> mathX = SectionCore.from(sectionX).math;
+		Math<Y> mathY = SectionCore.from(sectionY).math;
+		cellSelection = new CellSet<X, Y>(mathX, mathY);
+		lastSelection = new CellSet<X, Y>(mathX, mathY);
 		
 		RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
 		RGB whiteColor = Resources.getColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
@@ -513,10 +513,10 @@ void setDefaultBodyStyle() {
 		matrix.addListener(eventType, new Listener() {
 			
 			@Override public void handleEvent(Event e) {
-			  AxisItem<X> itemX = matrix.getAxisX().getItemByDistance(e.x);
-				AxisItem<Y> itemY = matrix.getAxisY().getItemByDistance(e.y);
+			  AxisPointer<X> itemX = matrix.getAxisX().getItemByDistance(e.x);
+				AxisPointer<Y> itemY = matrix.getAxisY().getItemByDistance(e.y);
 				if (itemX != null && itemY != null && ZoneCore.this == 
-						matrix.model.getZone(itemX.section.core, itemY.section.core))
+						matrix.model.getZone(itemX.section, itemY.section))
 				{
 					listener.handleEvent(e);
 				}
@@ -744,7 +744,7 @@ void setDefaultBodyStyle() {
 	
 	void setMatrix(Matrix<X, Y> matrix) {
 		this.matrix = matrix;
-		for (Painter painter: painters) {
+		for (Painter<X, Y> painter: painters) {
 			if (painter.scope == Painter.SCOPE_CELLS ||
 					painter.scope == Painter.SCOPE_CELLS_VERTICALLY) 
 			{
@@ -754,14 +754,11 @@ void setDefaultBodyStyle() {
 		}
 	}
 
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.IZone#getMatrix()
-   */
 	@Override public Matrix<X, Y> getMatrix() {
 		return matrix;
 	}
 	
-	void setEditor(ZoneEditor editor) {
+	void setEditor(ZoneEditor<X, Y> editor) {
 		this.editor = editor;
 	}
 
@@ -776,8 +773,8 @@ void setDefaultBodyStyle() {
     listeners.add(event);
   }
 
-  public static ZoneCore from(Zone zone) {
-    return (ZoneCore) zone.getCore();
+  public static <X2 extends Number, Y2 extends Number> ZoneCore<X2, Y2> from(Zone<X2, Y2> zone) {
+    return (ZoneCore<X2, Y2>) zone.getCore();
   }
 
 

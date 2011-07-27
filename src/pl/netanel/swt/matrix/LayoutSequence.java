@@ -4,14 +4,14 @@ import java.util.List;
 
 class LayoutSequence<N extends Number> {
 
-  private final List<AxisItem> items;
+  private final List<AxisPointer<N>> items;
 	private final List<Bound> bounds;
-	private final SectionCore section;
+	private final SectionCore<N>section;
 	private int i;
 	Bound bound;
-	AxisItem<N> item;
+	AxisPointer<N> item;
 
-	public LayoutSequence(List<AxisItem> items, List<Bound> bounds, SectionCore section) { 
+	public LayoutSequence(List<AxisPointer<N>> items, List<Bound> bounds, SectionCore<N> section) { 
     this.items = items;
 		this.bounds = bounds;
 		this.section = section;
@@ -19,19 +19,19 @@ class LayoutSequence<N extends Number> {
 
 	public void init() {
 		for (i = 0; i < items.size(); i++) {
-			if (items.get(i).section.core.equals(section)) break;
+			if (items.get(i).section.equals(section)) break;
 		}
 	}
 	
 	public boolean next() {
 		if (i >= bounds.size()) return false;
-		Section section2 = items.get(i).section.getCore();
+		Section<N> section2 = items.get(i).section;
 		if (section2 != section) {
 			// Make sure last line is included between sections  
 			if (items.size() == bounds.size() /*&& 
 				axis.getZIndex(section2) < axis.getZIndex(item.section)*/) 
 			{
-				item = AxisItem.create((SectionClient) item.getSection(), section.math.increment(item.getIndex()));
+				item = AxisPointer.create(item.section, section.math.increment(item.getIndex()));
 				bound = bounds.get(i);
 				i = bounds.size();
 				return true;
@@ -43,7 +43,7 @@ class LayoutSequence<N extends Number> {
 		return true;
 	}
 	
-	public AxisItem getItem() {
+	public AxisPointer<N> getItem() {
 		return item;
 	}
 	

@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
-import pl.netanel.swt.matrix.AxisItem;
+import pl.netanel.swt.matrix.AxisPointer;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
@@ -101,7 +101,7 @@ public class Snippet_0005 {
     matrix.getColumnHeader().addListener(SWT.MouseDown, new Listener() {
       @Override public void handleEvent(Event e) {
         // AxisItem<Y> item0 = matrix.getAxisY().getItemByDistance(e.y);
-        AxisItem<Integer> itemX = matrix.getAxisX().getItemByDistance(e.x);
+        AxisPointer<Integer> itemX = matrix.getAxisX().getItemByDistance(e.x);
         final int column = itemX.getIndex().intValue();
 
         int previousDirection = direction[column];

@@ -18,10 +18,12 @@ class SectionClient<N extends Number> implements Section<N> {
    */
   public SectionClient(Class<N> numberClass) {
     core = new SectionCore<N>(numberClass);
+    core.client = this;
   }
 
 	public SectionClient(SectionCore<N> section) {
 	  core = section;
+	  core.client = this;
 	}
 
   /**

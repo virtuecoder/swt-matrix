@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
-import pl.netanel.swt.matrix.AxisItem;
+import pl.netanel.swt.matrix.AxisPointer;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
@@ -77,7 +77,7 @@ public class Snippet_0004 {
 		add.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				AxisItem<Integer> focusItem = matrix.getAxisY().getFocusItem();
+				AxisPointer<Integer> focusItem = matrix.getAxisY().getFocusItem();
 				int focusIndex = focusItem == null ? 0 : focusItem.getIndex();
 				list.add(focusIndex, Integer.toString(++counter));
 				bodyY.insert(focusIndex, 1);
@@ -92,7 +92,7 @@ public class Snippet_0004 {
 		remove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-			  AxisItem<Integer> focusItem = matrix.getAxisY().getFocusItem();
+			  AxisPointer<Integer> focusItem = matrix.getAxisY().getFocusItem();
 			  if (focusItem != null) {
 			    Integer index = focusItem.getIndex();
           bodyY.delete(index, index);

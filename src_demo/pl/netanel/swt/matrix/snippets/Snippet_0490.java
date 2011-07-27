@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.AxisItem;
+import pl.netanel.swt.matrix.AxisPointer;
 import pl.netanel.swt.matrix.CellExtent;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.Matrix;
@@ -104,8 +104,8 @@ public class Snippet_0490 {
   				StringBuilder sb = new StringBuilder();
   				Zone<Integer, Integer> body = matrix.getBody();
   				if (body.getSelectedCount().compareTo(BigInteger.ZERO) == 0) {
-  				  AxisItem<Integer> focusItemX = matrix.getAxisX().getFocusItem();
-  				  AxisItem<Integer> focusItemY = matrix.getAxisY().getFocusItem();
+  				  AxisPointer<Integer> focusItemX = matrix.getAxisX().getFocusItem();
+  				  AxisPointer<Integer> focusItemY = matrix.getAxisY().getFocusItem();
   				  if (focusItemX != null && focusItemY != null) {
   				    sb.append(data.get(focusItemY.getIndex().intValue()).get(
   				      focusItemX.getIndex().intValue()));
@@ -139,8 +139,8 @@ public class Snippet_0490 {
   				
   				if (contents == null) return;
   				
-  				AxisItem<Integer> focusItemX = matrix.getAxisX().getFocusItem();
-  				AxisItem<Integer> focusItemY = matrix.getAxisY().getFocusItem();
+  				AxisPointer<Integer> focusItemX = matrix.getAxisX().getFocusItem();
+  				AxisPointer<Integer> focusItemY = matrix.getAxisY().getFocusItem();
   				if (focusItemX == null || focusItemY == null) return;
   				
   				int startY = focusItemY.getIndex().intValue();

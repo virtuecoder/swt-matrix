@@ -106,7 +106,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 	boolean instantMoving, ctrlSelectionMoving, mouseDown;
 	ZoneCore<X, Y> zone;
 	Cursor cursor;
-	AxisItem[] lastRange;
+	AxisPointer[] lastRange;
 	ZoneCore body, columnHeader, rowHeader, topLeft;
 	
 	Event mouseMoveEvent;	
@@ -115,7 +115,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 	
 	public MatrixListener(final Matrix matrix) {
 		this.matrix = matrix;
-		lastRange = new AxisItem[4]; 
+		lastRange = new AxisPointer[4]; 
 		body = ZoneCore.from(matrix.getBody());
 		SectionCore bodyY = SectionCore.from(matrix.axisY.getBody());
 		SectionCore bodyX = SectionCore.from(matrix.axisX.getBody());
@@ -234,14 +234,14 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 				zone = (ZoneCore) e.data;
 			}
 			else if (keyEvent) {
-			  AxisItem<? extends Number> focusItemX = matrix.getAxisX().getFocusItem();
-			  AxisItem<? extends Number> focusItemY = matrix.getAxisY().getFocusItem();
+			  AxisPointer<? extends Number> focusItemX = matrix.getAxisX().getFocusItem();
+			  AxisPointer<? extends Number> focusItemY = matrix.getAxisY().getFocusItem();
 			  if (focusItemX != null && focusItemY != null) {
-			    zone = matrix.model.getZone(focusItemX.section.core, focusItemY.section.core);
+			    zone = matrix.model.getZone(focusItemX.section, focusItemY.section);
 			  }
 			}
 			else if (stateY.item != null && stateX.item != null) {
-				zone = matrix.model.getZone(stateX.item.section.core, stateY.item.section.core);
+				zone = matrix.model.getZone(stateX.item.section, stateY.item.section);
 			}
 
 			if (e.type == SWT.MouseDown && e.button == 1) {
@@ -292,7 +292,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 	class AxisListener<N extends Number> {
 		Axis<N> axis;
 		Layout<N> layout;
-		AxisItem<N> last, item, prev, resizeItem, lastFocus, mouseDownItem;
+		AxisPointer<N> last, item, prev, resizeItem, lastFocus, mouseDownItem;
 		boolean moving, resizing, itemModified = true;
 		
 		Cursor resizeCursor;
@@ -319,7 +319,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 		  }
 		  else if (e.type == SWT.MouseMove) {
 				distance = axis.symbol == 'X' ? e.x : e.y;
-				AxisItem item2 = autoScroll.future != null && autoScroll.item != null  
+				AxisPointer item2 = autoScroll.future != null && autoScroll.item != null  
 					? autoScroll.item  
 					: layout.getItemByDistance(distance);
 				
@@ -365,10 +365,10 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 					if (resizeItem != null) {
 						resizing = true;
 						resizeStartDistance = distance;
-						resizeCellWidth = resizeItem.section.core.getCellWidth(resizeItem.getIndex());
+						resizeCellWidth = resizeItem.section.getCellWidth(resizeItem.getIndex());
 					}
-					else if (item.section.core.isMoveable(item.getIndex())) {
-					  if (item.section.core.isSelected(item.getIndex())) {
+					else if (item.section.isMoveable(item.getIndex())) {
+					  if (item.section.isSelected(item.getIndex())) {
 					    // Start moving
 					    moving = true;
 					    matrix.setCursor(cursor = Resources.getCursor(SWT.CURSOR_HAND));
@@ -400,7 +400,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 						ExtentSequence<N> seq = section.getSelectedExtentResizableSequence();
 						for (seq.init(); seq.next();) {
 							
-							if (item.section.core.equals(section) && 
+							if (item.section.equals(section) && 
 									layout.math.compare(seq.start, item.getIndex()) == 0 &&
 									layout.math.compare(seq.end, item.getIndex()) == 0) {
 								continue;
@@ -419,7 +419,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 						SectionCore<N> section = layout.sections.get(i);
 						NumberSequence<N> seq = section.getSelected();
 						for (seq.init(); seq.next();) {
-							axis.pack(AxisItem.create(section, seq.index()));
+							axis.pack(AxisPointer.create(section, seq.index()));
 						}
 						addEvent(section, SWT.Resize, resizeItem);
 						layout.compute();
@@ -452,7 +452,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 			if (resizing && resizeItem != null) {
 				newCellWidth = resizeCellWidth + distance - resizeStartDistance;
 				if (newCellWidth < 1) newCellWidth = 1;
-				resizeItem.section.core.setCellWidth(
+				resizeItem.section.setCellWidth(
 						resizeItem.getIndex(), resizeItem.getIndex(), newCellWidth);
 				layout.compute();
 				matrix.updateScrollBars();
@@ -463,7 +463,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 			}
 			else {
 				// Auto-scroll
-				if (!(e.data instanceof AxisItem[])) {
+				if (!(e.data instanceof AxisPointer[])) {
 					autoScroll.handle();
 				}
 
@@ -506,13 +506,13 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 			}
 		}
 		
-		private boolean isSelected(AxisItem item) {
-			return item.section.core.isSelected(item.getIndex());
+		private boolean isSelected(AxisPointer item) {
+			return item.section.isSelected(item.getIndex());
 		}
 		
 		public void setSelected(int commandId) {
 			if (last == null || item == null) return;
-			if (!last.section.core.equals(item.section.core)) return;
+			if (!last.section.equals(item.section)) return;
 			
 
       boolean ctrlSelection = 
@@ -527,8 +527,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       
       // Make sure start < end
       boolean forward = axis.comparePosition(last, item) <= 0;
-      AxisItem start = forward ? last : item; 
-      AxisItem end = forward ? item : last; 
+      AxisPointer start = forward ? last : item; 
+      AxisPointer end = forward ? item : last; 
       
 			if (commandId == CMD_SELECT_COLUMN || commandId == CMD_SELECT_COLUMN_ALTER ||
 				commandId == CMD_SELECT_ROW || commandId == CMD_SELECT_ROW_ALTER) {
@@ -614,7 +614,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 		class AutoScroll implements Runnable {
 			ScheduledFuture<?> future;
 			volatile int offset, nextCycleCount, cycleCount, itemCount;
-			AxisItem item;
+			AxisPointer item;
 			MutableNumber itemCountIndex;
 			
 			public AutoScroll() {
@@ -682,7 +682,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 						
 						/* In order for the mouse move commands to execute during auto scroll, 
 					       like drag selection for example */
-						AxisItem[] data = new AxisItem[2];
+						AxisPointer[] data = new AxisPointer[2];
 						data[axis.symbol == 'X' ? 0 : 1] = item;
 						mouseMoveEvent.data = data;
 						matrix.notifyListeners(SWT.MouseMove, mouseMoveEvent);
@@ -700,10 +700,10 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 
 		public void refresh() {
 			if (item == null) return;
-			N count = item.section.core.getCount();
+			N count = item.section.getCount();
 			if (axis.math.compare(item.getIndex(), count) >= 0) {
 				item = axis.math.compare(count, axis.math.ZERO_VALUE()) == 0 ? null : 
-					AxisItem.create(item.section, axis.math.decrement(count));
+					AxisPointer.create(item.section, axis.math.decrement(count));
 			}
 		}
 
@@ -956,7 +956,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 			if (ctrlSelection) {
 			  if (stateY.lastFocus != null && stateX.lastFocus != null) {
 			    ZoneCore zone = matrix.model.getZone(
-			      stateX.lastFocus.section.core, stateY.lastFocus.section.core);
+			      stateX.lastFocus.section, stateY.lastFocus.section);
 			    if (BigInteger.ZERO.equals(zone.getSelectionCount())) {
 			      Number indexY = stateY.lastFocus.getIndex();
 			      Number indexX = stateX.lastFocus.getIndex();
@@ -983,8 +983,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 		}
 	}
 	
-	private boolean isSelected(AxisItem lastY, AxisItem lastX) {
-		return matrix.model.getZone(lastX.section.core, lastY.section.core).
+	private boolean isSelected(AxisPointer lastY, AxisPointer lastX) {
+		return matrix.model.getZone(lastX.section, lastY.section).
 			isSelected(lastX.getIndex(), lastY.getIndex());
 	}
 

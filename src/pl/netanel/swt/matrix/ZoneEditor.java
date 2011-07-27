@@ -58,7 +58,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	final ZoneCore<X, Y> zone;
 	final CommandListener controlListener;
 	
-	EmbeddedControlsPainter embedded;
+	EmbeddedControlsPainter<X, Y> embedded;
 	private Painter<X, Y> cellsPainter;
 
 	private Image trueImage, falseImage;
@@ -103,7 +103,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 				super.paint(indexX, indexY, x, y, width, height);
 			};
 		});
-		zone.addPainter(embedded = new EmbeddedControlsPainter(this));
+		zone.addPainter(embedded = new EmbeddedControlsPainter<X, Y>(this));
 	
 		// Command binding
 		zone.bind(CMD_CUT, SWT.KeyDown, SWT.MOD1 | 'x');
@@ -462,8 +462,8 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	
 	void edit(GestureBinding b) {
 		Matrix<X, Y> matrix = getMatrix();
-		final AxisItem<X> focusItem1X = matrix.axisX.getFocusItem();
-		final AxisItem<Y> focusItemY = matrix.axisY.getFocusItem();
+		final AxisPointer<X> focusItem1X = matrix.axisX.getFocusItem();
+		final AxisPointer<Y> focusItemY = matrix.axisY.getFocusItem();
 		if (focusItem1X == null || focusItemY == null) return;
 
 		activate(focusItem1X.getIndex(), focusItemY.getIndex(), b);
@@ -535,8 +535,8 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		Axis<Y> axisY = getMatrix().getAxisY();
 
 		// Get the focus cell to start the pasting from
-		AxisItem<X> focusItemX = axisX.getFocusItem();
-		AxisItem<Y> focusItemY = axisY.getFocusItem();
+		AxisPointer<X> focusItemX = axisX.getFocusItem();
+		AxisPointer<Y> focusItemY = axisY.getFocusItem();
 		if (focusItemX == null || focusItemY == null) return;
 		Math<Y> mathY = axisY.math;
 		Math<X> mathX = axisX.math;
@@ -625,7 +625,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 * @return
 	 */
 	private String[] split(String s, String separator) {
-		ArrayList<String> list = new ArrayList();
+		ArrayList<String> list = new ArrayList<String>();
 		int pos1 = 0, pos2 = 0;
 		while (true) {
 			pos1 = pos2;

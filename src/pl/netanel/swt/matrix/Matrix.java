@@ -341,13 +341,13 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		painters.add(new DockPainter(Frozen.TAIL, Frozen.TAIL));
 		painters.add(new DockPainter(Frozen.HEAD, Frozen.HEAD));
 		
-		painters.add(new Painter(Painter.NAME_FOCUS_CELL) {
+		painters.add(new Painter<X, Y>(Painter.NAME_FOCUS_CELL) {
 			@Override
-			public void paint(Number indexY, Number indexX, int x, int y, int width, int height) {
-			  AxisItem<X> itemX = axisX.getFocusItem();
-				AxisItem<Y> itemY = axisY.getFocusItem();
+			public void paint(X indexY, Y indexX, int x, int y, int width, int height) {
+			  AxisPointer<X> itemX = axisX.getFocusItem();
+				AxisPointer<Y> itemY = axisY.getFocusItem();
 				if (itemX == null || itemY == null) return;
-				ZoneCore zone = model.getZone(itemX.section.core, itemY.section.core);
+				ZoneCore zone = model.getZone(itemX.section, itemY.section);
 				if (zone == null) return;
 				Rectangle r = zone.getCellBounds(itemX.getIndex(), itemY.getIndex());
 				if (r == null) return;
@@ -531,13 +531,13 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	public Zone<X, Y> getZone(Section<X> sectionX, Section<Y> sectionY) {
 	  Preconditions.checkNotNullWithName(sectionY, "sectionY");
 	  Preconditions.checkNotNullWithName(sectionX, "sectionX");
-	  SectionClient sectionClientX = axisX.sectionClient(sectionX);
-	  SectionClient sectionClientY = axisY.sectionClient(sectionY);
+	  SectionCore<X> sectionClientX = SectionCore.from(sectionX);
+	  SectionCore<Y> sectionClientY = SectionCore.from(sectionY);
 	  axisY.checkSection(sectionClientY);
 	  axisX.checkSection(sectionClientX);
 	  for (ZoneClient zone: zones) {
-	    if (zone.getSectionX().equals(sectionClientX) && 
-	        zone.getSectionY().equals(sectionClientY) ) {
+	    if (zone.sectionX.core.equals(sectionClientX) && 
+	        zone.sectionY.core.equals(sectionClientY) ) {
 	      return zone;
 	    }
 	  }
@@ -882,13 +882,13 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	}
 	
 
-	void pack(char symbol, AxisItem item) {
+	void pack(char symbol, AxisPointer item) {
 	  Cursor cursor = getCursor();
 	  GC gc = new GC(this);
 	  try {
 	    int w = 0;
 	    for (ZoneCore<X, Y> zone: model.zones) {
-	      if (symbol == 'X' && zone.sectionX.equals(item.section.core)) {
+	      if (symbol == 'X' && zone.sectionX.equals(item.section)) {
 	        CellSet set = new CellSet(zone.sectionX.math, zone.sectionY.math);
 	        set.add(item.getIndex(), 
 	          item.getIndex(), 
@@ -903,7 +903,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	          }
 	        }
 	      }
-	      else if (symbol == 'Y' && zone.sectionY.equals(item.section.core)) {
+	      else if (symbol == 'Y' && zone.sectionY.equals(item.section)) {
 	        CellSet set = new CellSet(zone.sectionX.math, zone.sectionY.math);
 	        set.add(zone.sectionX.math.ZERO_VALUE(), zone.sectionX.math.decrement(zone.sectionX.getCount()),
 	          item.getIndex(), 
@@ -920,7 +920,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	      }
 	    }
 
-	    if (w != 0) item.section.core.setCellWidth(item.getIndex(), w);
+	    if (w != 0) item.section.setCellWidth(item.getIndex(), w);
 	  } 
 	  finally {
 	    gc.dispose();

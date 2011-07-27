@@ -8,8 +8,8 @@ import java.util.List;
  */
 abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 	protected final SectionCore<N> section;
-	protected Math math;
-	public MutableNumber number, number2, lastInExtent, last, d;
+	protected Math<N> math;
+	public MutableNumber<N> number, number2, lastInExtent, last, d;
 	protected int i, h;
 	public int level;
 	protected int sign;
@@ -17,7 +17,7 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 	public boolean moved;
 	
 	
-	public DirectionIndexSequence(SectionCore section) {
+	public DirectionIndexSequence(SectionCore<N> section) {
 		super();
 		this.section = section;
 		this.math = section.math;
@@ -28,14 +28,11 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 		d = this.section.math.create(0);
 	}
 
-	/* (non-Javadoc)
-	 * @see pl.netanel.swt.matrix.IndexSequence#init()
-	 */
 	public void init() {
 		i = firstIndex(this.section.order.items);
 	}
 	
-	boolean next(MutableNumber index) {
+	boolean next(MutableNumber<N> index) {
 		moved = false;
 		while (true) {
 			switch(level) {
@@ -64,8 +61,8 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 	}
 	
 
-	private boolean nextNumber(MutableNumber count) {
-		MutableNumber limit = null;
+	private boolean nextNumber(MutableNumber<N> count) {
+		MutableNumber<N> limit = null;
 
 		number2.set(number).add(sign);
 		count.decrement();
@@ -96,10 +93,10 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 	}
 	
 
-	private void nextHidden(MutableNumber lastIndex) {
+	private void nextHidden(MutableNumber<N> lastIndex) {
 		while (true) {
 			if (he != null) {
-				MutableNumber start = start(he), end = end(he);
+				MutableNumber<N> start = start(he), end = end(he);
 				if (compare(start, number2) <= 0 && compare(number2, end) <= 0 || 
 					compare(start, number2) > 0 && compare(start, lastIndex) <= 0) break;
 			}
@@ -112,7 +109,7 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 		}
 	}
 	
-	private boolean skipHidden(MutableNumber count, MutableNumber lastIndex) {
+	private boolean skipHidden(MutableNumber<N> count, MutableNumber<N> lastIndex) {
 		number2.set(end(he)).add(sign);
 		if (compare(number2, lastIndex) > 0) {
 			moved = false;
@@ -127,17 +124,17 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 		return extent != null && compare(number, lastInExtent) < 0;// && compare(index, nullIndex) != 0; 
 	}
 
-	protected abstract int compare(MutableNumber x, MutableNumber y);
-	protected abstract void add(MutableNumber x, Number y);
-	protected abstract MutableNumber subtract(MutableNumber x, MutableNumber y);
+	protected abstract int compare(MutableNumber<N> x, MutableNumber<N> y);
+	protected abstract void add(MutableNumber<N> x, N y);
+	protected abstract MutableNumber<N> subtract(MutableNumber<N> x, MutableNumber<N> y);
 	protected abstract boolean hasNextExtent();
 	protected abstract boolean hasNextHidden();
 	protected abstract int firstIndex(List<Extent<N>> items);
-	protected abstract MutableNumber start(Extent<N> e);
-	protected abstract MutableNumber end(Extent<N> e);
+	protected abstract MutableNumber<N> start(Extent<N> e);
+	protected abstract MutableNumber<N> end(Extent<N> e);
 
 
-	public MutableNumber index() {
+	public MutableNumber<N> index() {
 		return number;
 	}
 
@@ -160,23 +157,23 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 	
 	static class Forward<N extends Number> extends DirectionIndexSequence<N> {
 		
-		public Forward(SectionCore section) {
+		public Forward(SectionCore<N> section) {
 			super(section);
 			sign = 1;
 		}
 
 		@Override
-		protected int compare(MutableNumber x, MutableNumber y) {
+		protected int compare(MutableNumber<N> x, MutableNumber<N> y) {
 			return math.compare(x, y);
 		}
 		
 		@Override
-		protected void add(MutableNumber x, Number y) {
+		protected void add(MutableNumber<N> x, N y) {
 			x.add(y);
 		}
 		
 		@Override
-		protected MutableNumber subtract(MutableNumber x, MutableNumber y) {
+		protected MutableNumber<N> subtract(MutableNumber<N> x, MutableNumber<N> y) {
 			return math.create(x).subtract(y);
 		}
 		
@@ -196,36 +193,36 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 		}
 		
 		@Override
-		protected MutableNumber start(Extent<N> e) {
+		protected MutableNumber<N> start(Extent<N> e) {
 			return e.start;
 		}
 
 		@Override
-		protected MutableNumber end(Extent<N> e) {
+		protected MutableNumber<N> end(Extent<N> e) {
 			return e.end;
 		}
 	}
 	
 	static class Backward<N extends Number> extends DirectionIndexSequence<N> {
 		
-		public Backward(SectionCore section) {
+		public Backward(SectionCore<N> section) {
 			super(section);
 			sign = -1;
 		}
 		
 		@Override
-		protected int compare(MutableNumber x, MutableNumber y) {
+		protected int compare(MutableNumber<N> x, MutableNumber<N> y) {
 			return math.compare(y, x);
 		}
 		
 		@Override
-		protected void add(MutableNumber x, Number y) {
+		protected void add(MutableNumber<N> x, N y) {
 			x.subtract(y);
 		}
 		
 
 		@Override
-		protected MutableNumber subtract(MutableNumber x, MutableNumber y) {
+		protected MutableNumber<N> subtract(MutableNumber<N> x, MutableNumber<N> y) {
 			return math.create(y).subtract(x);
 		}
 		
@@ -246,12 +243,12 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 		}
 		
 		@Override
-		protected MutableNumber start(Extent<N> e) {
+		protected MutableNumber<N> start(Extent<N> e) {
 			return e.end;
 		}
 		
 		@Override
-		protected MutableNumber end(Extent<N> e) {
+		protected MutableNumber<N> end(Extent<N> e) {
 			return e.start;
 		}
 	}
