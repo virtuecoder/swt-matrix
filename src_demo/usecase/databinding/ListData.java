@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import pl.netanel.swt.matrix.AxisPointer;
+import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
@@ -58,7 +58,7 @@ public class ListData<T> {
         }
     });
     
-    matrix.getColumnHeader().replacePainter(
+    matrix.getHeaderX().replacePainter(
       new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
         @Override public String getText(Integer indexX, Integer indexY) {
           ItemData itemX = itemsX.get(indexX);
@@ -183,25 +183,26 @@ public class ListData<T> {
       }
     };
     
-    // Columns
+    // Set data for columns
     data.itemsX.put(0, new ItemData("Name", SWT.LEFT, 150));
     data.itemsX.put(1, new ItemData("Date of Birth", SWT.LEFT));
     data.itemsX.put(2, new ItemData("Gender", SWT.CENTER));
     data.itemsX.put(3, new ItemData("Has a Dog?", SWT.CENTER));
-    
+
+    // Attach cell data to the third column
     CellData cellData = new CellData();
     cellData.values = new String[] { "Male", "Female"};
     data.putCellData(2, null, cellData);
     
-    // Other configuration
     
     // Render
     data.setOutput(matrix);
     
+    // Other configuration
     Section<Integer> bodyX = matrix.getAxisX().getBody();
-    matrix.getAxisX().pack(new AxisPointer(bodyX, 1));
-    matrix.getAxisX().pack(new AxisPointer(bodyX, 2));
-    matrix.getAxisX().pack(new AxisPointer(bodyX, 3));
+    bodyX.fitCellWidth(1);
+    bodyX.fitCellWidth(2);
+    bodyX.fitCellWidth(3);
     
     shell.open();
     Display display = shell.getDisplay();

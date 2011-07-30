@@ -25,7 +25,7 @@ public class Snippet_0012 {
 		
 		
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>("row lines", Painter.SCOPE_HORIZONTAL_LINES) {
+		  new Painter<Integer, Integer>(Painter.NAME_LINES_X, Painter.SCOPE_LINES_X) {
 		    @Override
 		    public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 		      switch (indexY.intValue()) {

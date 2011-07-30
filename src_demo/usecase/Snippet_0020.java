@@ -63,7 +63,7 @@ public class Snippet_0020 {
 		  }
 	  );
 
-		matrix.getColumnHeader().replacePainter(
+		matrix.getHeaderX().replacePainter(
 		  new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
 		    @Override
 		    public String getText(Integer indexX, Integer indexY) {

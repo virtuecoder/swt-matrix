@@ -29,7 +29,7 @@ public class Axis<N extends Number>  {
 	Math<N> math;
 	ArrayList<SectionClient<N>> sections;
 	
-	private Section<N> body, header;
+	SectionClient<N> body, header;
 	private int autoScrollOffset, resizeOffset;
 	Layout<N> layout;
 	
@@ -120,16 +120,22 @@ public class Axis<N extends Number>  {
 	}
 	
 	/**
-	 * Returns the body section wrapped in validation checker.
-	 * @return the body section wrapped in validation checker
+	 * Returns the body section, which is by default a second section of the axis.
+	 * Another section can be set as body by specifying <code>bodyIndex</code> argument
+	 * in the Axis constructor.
+	 * @return the body section
+	 * @see #getHeader()
 	 */
 	public Section<N> getBody() {
 		return body;
 	}
 	
 	/**
-	 * Returns the header section wrapped in validation checker.
-	 * @return the header section wrapped in validation checker
+	 * Returns the header section, which is by default the first section of the axis.
+	 * Another section can be set as header by specifying <code>headerIndex</code> argument
+	 * in the Axis constructor.
+	 * @return the header section.
+	 * @see #getBody()
 	 */
 	public Section<N> getHeader() {
 		return header;
@@ -190,10 +196,10 @@ public class Axis<N extends Number>  {
 	 * @throws IndexOutOfBoundsException if item's index is out 
 	 * 		of 0 ... {@link SectionCore#getCount()}-1 bounds
 	 */
-	public int getViewportPosition(AxisPointer<N> item) {
+	public int getViewportPosition(AxisItem<N> item) {
 		Preconditions.checkNotNullWithName(item, "item");
 		SectionCore<N> section = item.section;
-		section = checkSection(section);
+		section = checkSection(section, "item section");
 		section.checkCellIndex(item.getIndex(), "item index");
 		
 		layout.computeIfRequired();
@@ -207,8 +213,8 @@ public class Axis<N extends Number>  {
 	 * @param position the position the get the item for
 	 * @return item visible at the specified position in the viewport
 	 */
-	public AxisPointer<N> getItemAt(int position) {
-		AxisPointer<N> item = layout.getIndexAt(position);
+	public AxisItem<N> getItemAt(int position) {
+		AxisItem<N> item = layout.getIndexAt(position);
 		return item == null ? null : item;
 	}
 	
@@ -219,13 +225,13 @@ public class Axis<N extends Number>  {
 	 * @param position the position the get the item for
 	 * @return the position of the given item in the viewport
 	 */
-	public AxisPointer<N> getItemByDistance(int distance) {
-		AxisPointer<N> item = layout.getItemByDistance(distance);
+	public AxisItem<N> getItemByDistance(int distance) {
+		AxisItem<N> item = layout.getItemByDistance(distance);
 		return item == null ? null : item;
 	}
 	
 	/**
-	 * Returns the cell bound at the specified position in the viewport or <code>null</code>
+	 * Returns the cell bound of the specified item in the viewport or <code>null</code>
 	 * if the position is outside of the viewport scope. Cell bound is an array of integers, 
 	 * where the first one is the distance from the beginning of viewport and the second one
 	 * is the cell width. 
@@ -233,13 +239,13 @@ public class Axis<N extends Number>  {
 	 * @param position the position the line bound the item for
 	 * @return the cell bound at the specified position in the viewport
 	 */
-	public int[] getCellBound(int position) {
-		Bound bound = layout.getCellBound(position);
+	public int[] getCellBound(AxisItem<N> item) {
+		Bound bound = layout.getCellBound(item);
 		return bound == null ? null : new int[] {bound.distance, bound.width};
 	}
 	
 	/**
-	 * Returns the line bound at the specified position in the viewport or <code>null</code>
+	 * Returns the line bound of the specified item in the viewport or <code>null</code>
 	 * if the position is outside of the viewport scope. Line bound is an array of integers, 
 	 * where the first one is the distance from the beginning of viewport and the second one
 	 * is the line width. 
@@ -247,8 +253,8 @@ public class Axis<N extends Number>  {
 	 * @param position the position the line bound the item for
 	 * @return the line bound at the specified position in the viewport
 	 */
-	public int[] getLineBound(int position) {
-		Bound bound = layout.getLineBound(position);
+	public int[] getLineBound(AxisItem<N> item) {
+		Bound bound = layout.getLineBound(item);
 		return bound == null ? null : new int[] {bound.distance, bound.width};
 	}
 	
@@ -260,7 +266,7 @@ public class Axis<N extends Number>  {
 	 * Returns the focus item. Or <code>null</code> if no item has focus.
 	 * @return the focus item
 	 */
-	public AxisPointer<N> getFocusItem() {
+	public AxisItem<N> getFocusItem() {
 		layout.computeIfRequired();
 		return layout.current;
 	}
@@ -292,10 +298,10 @@ public class Axis<N extends Number>  {
 	 */
 	public void setFocusItem(Section<N> section, N index) {
 	  SectionCore<N> section2 = SectionCore.from(section);
-		section2 = checkSection(section2);
+		section2 = checkSection(section2, "section");
 		section2.checkCellIndex(index, "index");
 		
-		layout.setFocusItem(AxisPointer.create(section2, index));
+		layout.setFocusItem(AxisItem.create(section2, index));
 		if (matrix != null) matrix.redraw();
 	}
 
@@ -399,10 +405,6 @@ public class Axis<N extends Number>  {
 	}
 	
 	
-	public void pack(AxisPointer<N> item) {
-		matrix.pack(symbol, item);
-	}
-
 	
 	/*------------------------------------------------------------------------
 	 * Non public 
@@ -412,7 +414,7 @@ public class Axis<N extends Number>  {
 	  this.symbol = symbol;
 		this.matrix = matrix;
 		
-		scrollBar = isVertical() ? matrix.getVerticalBar() : matrix.getHorizontalBar();
+		scrollBar = symbol == 'Y' ? matrix.getVerticalBar() : matrix.getHorizontalBar();
 		if (scrollBar != null) {
 			scrollBar.addListener(SWT.Selection, new Listener() {
 				private int selection = -1;
@@ -437,13 +439,6 @@ public class Axis<N extends Number>  {
 		}
 	}
 	
-	public boolean isHorizontal() {
-	  return symbol == 'X';
-	}
-	
-	public boolean isVertical() {
-	  return symbol == 'Y';
-	}
 	
 	/**
 	 * Scrolls the bar according to the axis state.
@@ -493,10 +488,10 @@ public class Axis<N extends Number>  {
 	}
 
 	
-	void setSelected(AxisPointer start, AxisPointer end, boolean select) {
+	void setSelected(AxisItem<N> start, AxisItem end, boolean select) {
 		// Make sure start < end 
 		if (comparePosition(start, end) > 0) {
-			AxisPointer tmp = start; start = end; end = tmp;
+			AxisItem tmp = start; start = end; end = tmp;
 		}
 		
 		Section lastSection = null;
@@ -548,7 +543,7 @@ public class Axis<N extends Number>  {
 //    }
     
 		for (int i = 0, imax = sections.size(); i < imax; i++) {
-			SectionCore section = SectionCore.from(sections.get(i));
+			SectionCore<N> section = SectionCore.from(sections.get(i));
 			section.setSelectedAll(selectState, notify, notifyInZones);
 			
 			if (notify) {
@@ -563,24 +558,50 @@ public class Axis<N extends Number>  {
 		}
 	}
 	
-	AxisPointer<N> getLastItem() {
+	AxisItem<N> getLastItem() {
 		for (int i = sections.size(); i-- > 0;) {
 			SectionCore<N> section = layout.sections.get(i);
 			if (section.isEmpty()) continue;
-			return AxisPointer.create(section, math.decrement(section.getCount()));
+			return AxisItem.create(section, math.decrement(section.getCount()));
 		}
 		return getFirstItem();
 	}
 
-	AxisPointer<N> getFirstItem() {
-		return AxisPointer.create(layout.sections.get(0), math.ZERO_VALUE());
+	AxisItem<N> getFirstItem() {
+		return AxisItem.create(layout.sections.get(0), math.ZERO_VALUE());
 	}
 
-	int comparePosition(AxisPointer<N> item1, AxisPointer<N> item2) {
-	  int i1 = item1.section.index;
-	  int i2 = item2.section.index;
-		int diff = i1 - i2;
-		if (diff != 0) return diff; 
+  /**
+   * Compares section positions on this axis and returns value greater then 0 if
+   * section1 is behind section 2, value lower then zero if section1 is before
+   * section2 and 0 if sections are the same.
+   * 
+   * @param section1 a section to compare
+   * @param section2 another section section to compare
+   * @return comparison result
+   * 
+   * @throws IllegalArgumentException if section1 or section2 is <code>null</code> or 
+   *    does not belong to this axis.
+   */
+	public int compare(Section<N> section1, Section<N> section2) {
+	  return 
+	    checkSection(section1, "section 1").index -
+	    checkSection(section2, "section 2").index;
+	}
+	
+	int comparePosition(SectionCore<N> section1, SectionCore<N> section2) {
+	  return section1.index - section2.index;
+	}
+	
+	public int compare(AxisItem<N> item1, AxisItem<N> item2) {
+	  checkItem(item1, "item1");
+    checkItem(item2, "item2");
+    return comparePosition(item1, item2);
+	}
+	
+	int comparePosition(AxisItem<N> item1, AxisItem<N> item2) {
+	  int compareSections = comparePosition(item1.section, item2.section);
+    if (compareSections != 0) return compareSections;
 		return math.compare(
 				item1.section.indexOf(item1.getIndex()), 
 				item2.section.indexOf(item2.getIndex()));
@@ -592,7 +613,7 @@ public class Axis<N extends Number>  {
 	 */
 	void setHidden(boolean hidden) {
 		for (int i = 0, imax = sections.size(); i < imax; i++) {
-			Section section = sections.get(i);
+			Section<N> section = sections.get(i);
 			section.setHiddenSelected(hidden);
 		}
 	}
@@ -608,14 +629,14 @@ public class Axis<N extends Number>  {
 		SectionCore<N> section;
 		MutableNumber<N> start, end, startItemIndex, endItemIndex;
 		private int i, istart, iend, sectionIndex, lastSectionIndex;
-		private ArrayList<Extent<N>> items;
-		private AxisPointer startItem, endItem;
+		private ArrayList<MutableExtent<N>> items;
+		private AxisItem startItem, endItem;
 	
-		void init(AxisPointer<N> startItem, AxisPointer<N> endItem) {
+		void init(AxisItem<N> startItem, AxisItem<N> endItem) {
 			this.startItem = startItem;
 			this.endItem = endItem;
-			SectionCore startSection = startItem.section;
-	    SectionCore endSection = endItem.section;
+			SectionCore<N> startSection = startItem.section;
+	    SectionCore<N> endSection = endItem.section;
 			istart = startSection.order.items.isEmpty() ? 0 : 
 				startSection.order.getExtentIndex(startItem.getIndex());
 			iend = endSection.order.items.isEmpty() ? 0 : 
@@ -638,7 +659,7 @@ public class Axis<N extends Number>  {
 				items = section.order.items;
 				i = 0;
 			}
-			Extent e = items.get(i);	
+			MutableExtent<N> e = items.get(i);	
 			start = section == startItem.section && i == istart ? 
 					startItemIndex : e.start;
 			end = section == endItem.section && i == iend ? 
@@ -653,13 +674,13 @@ public class Axis<N extends Number>  {
 
 	Bound getCellBound(SectionCore<N> section, N index) {
 		if (section == null || index == null) return null;
-		Bound bound = layout.getCellBound(AxisPointer.create(section, index));
+		Bound bound = layout.getCellBound(AxisItem.create(section, index));
 		return bound == null ? null : bound.copy();
 	}
 
 	Bound getLineBound(SectionCore<N> section, N index) {
 		if (section == null || index == null) return null;
-		Bound bound = layout.getLineBound(AxisPointer.create(section, index));
+		Bound bound = layout.getLineBound(AxisItem.create(section, index));
 		return bound == null ? null : bound.copy();
 	}
 	
@@ -715,21 +736,27 @@ public class Axis<N extends Number>  {
         }
       }
 	  }
-		layout.show(AxisPointer.create(section, target));
+		layout.show(AxisItem.create(section, target));
 	}
 
-	SectionCore<N> checkSection(SectionCore<N> section) {
-		Preconditions.checkNotNullWithName(section, "section");
+	SectionCore<N> checkSection(Section<N> section, String name) {
+		Preconditions.checkNotNullWithName(section, name);
+		SectionCore<N> section1 = SectionCore.from(section);
 		end: {
-			for (SectionClient<N> section2 : sections) {
-				if (section2.equals(section)) {
+			for (SectionCore<N> section2 : layout.sections) {
+				if (section2.equals(section1)) {
 					break end;
 				}
 			}
 			Preconditions.checkArgument(false,
-					"Section {0} does not belong to axis {1}", section, symbol);
+					"Section {0} does not belong to axis {1}", name, symbol);
 		}
-		return section;
+		return section1;
+	}
+	
+	void checkItem(AxisItem<N> item, String name) {
+	  Preconditions.checkNotNullWithName(item, name);
+	  checkSection(item.section, "item section");
 	}
 	
 	SectionClient<N> sectionClient(Section<N> section) {

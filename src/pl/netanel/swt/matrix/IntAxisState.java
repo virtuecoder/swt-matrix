@@ -48,7 +48,7 @@ class IntAxisState<N extends Number> extends AxisState {
 		return i == -1 ? defaultValue : values.get(i);
 	}
 	
-	public void setValue(Extent<N> extent, int value) {
+	public void setValue(MutableExtent<N> extent, int value) {
 		setValue(extent.start(), extent.end(), value);
 	}
 	

@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.Listener;
 import pl.netanel.util.Preconditions;
 
 class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
-  final ZoneCore core;
+  final ZoneCore<X, Y> core;
   final SectionClient<X> sectionX;
   final SectionClient<Y> sectionY;
 
@@ -20,7 +20,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     Preconditions.checkNotNullWithName(sectionY, "sectionY");
     this.sectionX = sectionX;
     this.sectionY = sectionY;
-    this.core = new ZoneCore(sectionX.getCore(), sectionY.getCore());
+    this.core = new ZoneCore<X, Y>(sectionX.getCore(), sectionY.getCore());
   }
   
 //  public ZoneClient(ZoneCore<X, Y> zone) {
@@ -44,23 +44,23 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   }
 
   @Override
-  public ZoneCore getCore() {
+  public ZoneCore<X, Y> getCore() {
     return core;
   }
 
   @Override
-  public Section getSectionY() {
-    return sectionY;
-  }
-
-  @Override
-  public Section getSectionX() {
+  public Section<X> getSectionX() {
     return sectionX;
   }
   
   @Override
-  public Rectangle getBounds() {
-    return core.getBounds();
+  public Section<Y> getSectionY() {
+    return sectionY;
+  }
+  
+  @Override
+  public Rectangle getBounds(Frozen frozenX, Frozen frozenY) {
+    return core.getBounds(frozenX, frozenY);
   }
 
   @Override
@@ -162,55 +162,55 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   }
 
   @Override
-  public Iterator getSelectedExtentIterator() {
+  public Iterator<CellExtent<X, Y>> getSelectedExtentIterator() {
     return core.getSelectedExtentIterator();
   }
 
   @Override
-  public Iterator getSelectedIterator() {
+  public Iterator<Cell<X, Y>> getSelectedIterator() {
     return core.getSelectedIterator();
   }
   
   @Override
-  public CellExtent getSelectedExtent() {
+  public CellExtent<X, Y> getSelectedExtent() {
     return core.getSelectedExtent();
   }
 
 
   @Override
-  public void addPainter(Painter painter) {
+  public void addPainter(Painter<X, Y> painter) {
     checkPainter(painter);
     core.addPainter(painter);
   }
 
   @Override
-  public void addPainter(int index, Painter painter) {
+  public void addPainter(int index, Painter<X, Y> painter) {
     Preconditions.checkPositionIndex(index, core.getPainterCount() + 1);
     checkPainter(painter);
     core.addPainter(index, painter);
   }
 
   @Override
-  public void setPainter(int index, Painter painter) {
+  public void setPainter(int index, Painter<X, Y> painter) {
     Preconditions.checkPositionIndex(index, core.getPainterCount());
     checkPainter(painter);
     core.setPainter(index, painter);
   }
 
   @Override
-  public void replacePainter(Painter painter) {
+  public void replacePainter(Painter<X, Y> painter) {
     checkPainter(painter);
     core.replacePainter(painter);
   }
 
   @Override
-  public Painter removePainter(int index) {
+  public Painter<X, Y> removePainter(int index) {
     Preconditions.checkPositionIndex(index, core.getPainterCount());
     return core.removePainter(index);
   }
 
   @Override
-  public boolean removePainter(Painter painter) {
+  public boolean removePainter(Painter<X, Y> painter) {
     checkPainter(painter);
     return core.removePainter(painter);
   }
@@ -228,13 +228,13 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   }
 
   @Override
-  public Painter getPainter(String name) {
+  public Painter<X, Y> getPainter(String name) {
     Preconditions.checkNotNullWithName(name, "name");
     return core.getPainter(name);
   }
   
   @Override
-  public Painter getPainter(int index) {
+  public Painter<X, Y> getPainter(int index) {
     Preconditions.checkPositionIndex(index, core.getPainterCount());
     return core.getPainter(index);
   }
@@ -276,7 +276,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
 
   
   @Override
-  public Matrix getMatrix() {
+  public Matrix<X, Y> getMatrix() {
     return core.getMatrix();
   }
 

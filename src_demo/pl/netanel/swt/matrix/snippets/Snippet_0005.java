@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
-import pl.netanel.swt.matrix.AxisPointer;
+import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
@@ -95,13 +95,13 @@ public class Snippet_0005 {
     columnHeaderPainter.imageAlignX = SWT.RIGHT;
     columnHeaderPainter.imageAlignY = SWT.CENTER;
     columnHeaderPainter.imageMarginX = 5;
-    matrix.getColumnHeader().replacePainter(columnHeaderPainter);
+    matrix.getHeaderX().replacePainter(columnHeaderPainter);
 
     // Change sorting on mouse down in a column header 
-    matrix.getColumnHeader().addListener(SWT.MouseDown, new Listener() {
+    matrix.getHeaderX().addListener(SWT.MouseDown, new Listener() {
       @Override public void handleEvent(Event e) {
         // AxisItem<Y> item0 = matrix.getAxisY().getItemByDistance(e.y);
-        AxisPointer<Integer> itemX = matrix.getAxisX().getItemByDistance(e.x);
+        AxisItem<Integer> itemX = matrix.getAxisX().getItemByDistance(e.x);
         final int column = itemX.getIndex().intValue();
 
         int previousDirection = direction[column];
@@ -120,8 +120,8 @@ public class Snippet_0005 {
     });
     
     // Unbind column selection on click
-    matrix.getColumnHeader().unbind(Matrix.CMD_SELECT_COLUMN, SWT.MouseDown, 1);
-    matrix.getColumnHeader().unbind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
+    matrix.getHeaderX().unbind(Matrix.CMD_SELECT_COLUMN, SWT.MouseDown, 1);
+    matrix.getHeaderX().unbind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
 
     shell.setBounds(400, 200, 600, 400);
     shell.open();

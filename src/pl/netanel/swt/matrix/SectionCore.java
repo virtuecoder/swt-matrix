@@ -47,9 +47,9 @@ class SectionCore<N extends Number> implements Section<N> {
 	private final NumberSet<N> resizable;
 	private final NumberSet<N> moveable;
 	private final NumberSet<N> hideable;
-	private final IntAxisState cellWidth;
-	private final IntAxisState lineWidth;
-	private final ObjectAxisState<N> cellSpan;
+	private final IntAxisState<N> cellWidth;
+	private final IntAxisState<N> lineWidth;
+	private final ObjectAxisState<N, N> cellSpan;
 	
 	final NumberQueueSet<N> selection;
 	private final NumberQueueSet<N> lastSelection;
@@ -97,42 +97,30 @@ class SectionCore<N extends Number> implements Section<N> {
 		return Integer.toString(index);
 	}
 	
-	@Override public SectionCore getCore() {
+	@Override public SectionCore<N> getCore() {
 	  return this;
 	}
 	
-	@Override public Class getIndexClass() {
+	@Override public Class<N> getIndexClass() {
 	  return indexClass;
 	}
 	/*------------------------------------------------------------------------
 	 * Collection like  
 	 */
 
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setCount(N)
-   */
 	@Override public void setCount(N count) {
 		this.count = count;
 		order.setCount(count);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#getCount()
-   */
 	@Override public N getCount() {
 		return count;
 	}
 
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#isEmpty()
-   */
 	@Override public boolean isEmpty() {
 		return order.items.isEmpty();
 	}
 
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#get(N)
-   */
 	@Override public N get(N position) {
 		if (math.compare(position, getVisibleCount()) >= 0) return null;
 		
@@ -140,7 +128,7 @@ class SectionCore<N extends Number> implements Section<N> {
 		MutableNumber<N> pos2 = math.create(0);
 		
 		for (int i = 0, size = order.items.size(); i < size; i++) {
-			Extent<N> e = order.items.get(i);
+			MutableExtent<N> e = order.items.get(i);
 			pos2.add(e.end).subtract(e.start).subtract(hidden.getCount(e.start(), e.end()));
 			if (math.compare(pos2, position) >= 0) {
 				MutableNumber count = hidden.getCount(e.start(), pos1.getValue());
@@ -152,17 +140,11 @@ class SectionCore<N extends Number> implements Section<N> {
 		return null;
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#indexOf(N)
-   */
 	@Override public N indexOf(N item) {
 		return item == null ? null : order.indexOf(item);
 	}
 	
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#indexOfNotHidden(N)
-   */
 	@Override public N indexOfNotHidden(N index) {
 		if (index == null || hidden.contains(index)) return null;
 		MutableNumber<N> hiddenCount = math.create(0);
@@ -170,7 +152,7 @@ class SectionCore<N extends Number> implements Section<N> {
 		MutableNumber<N> pos2 = math.create(0);
 		
 		for (int i = 0, size = order.items.size(); i < size; i++) {
-			Extent<N> e = order.items.get(i);
+			MutableExtent<N> e = order.items.get(i);
 			boolean contains = math.contains(e, index);
 			hiddenCount.add(hidden.getCount(e.start(), contains ? index : e.end()));
 			if (contains) {
@@ -187,30 +169,18 @@ class SectionCore<N extends Number> implements Section<N> {
 	 * Section properties
 	 */
 
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setVisible(boolean)
-   */
- 	@Override public void setVisible(boolean visible) {
+	@Override public void setVisible(boolean visible) {
 		this.isVisible = visible;
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#isVisible()
-   */
 	@Override public boolean isVisible() {
 		return isVisible;
 	}
 
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setFocusItemEnabled(boolean)
-   */
 	@Override public void setFocusItemEnabled(boolean enabled) {
 		this.isNavigationEnabled = enabled;
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#isFocusItemEnabled()
-   */
 	@Override public boolean isFocusItemEnabled() {
 		return isNavigationEnabled;
 	}
@@ -221,76 +191,46 @@ class SectionCore<N extends Number> implements Section<N> {
 	 * Default values 
 	 */
 	
-	  /* (non-Javadoc)
-     * @see pl.netanel.swt.matrix.ISection#setDefaultCellWidth(int)
-     */
-	@Override public void setDefaultCellWidth(int width) {
+	  @Override public void setDefaultCellWidth(int width) {
 		if (width < 0) return;
 		cellWidth.setDefault(width);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#getDefaultCellWidth()
-   */
 	@Override public int getDefaultCellWidth() {
 		return cellWidth.getDefault();
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setDefaultLineWidth(int)
-   */
 	@Override public void setDefaultLineWidth(int width) {
 		if (width < 0) return;
 		lineWidth.setDefault(width);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#getDefaultLineWidth()
-   */
 	@Override public int getDefaultLineWidth() {
 		return lineWidth.getDefault();
 	}
 	
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#isDefaultResizable()
-   */
 	@Override public boolean isDefaultResizable() {
 		return defaultResizable;
 	}
 
-	  /* (non-Javadoc)
-     * @see pl.netanel.swt.matrix.ISection#setDefaultResizable(boolean)
-     */
-	@Override public void setDefaultResizable(boolean resizable) {
+	  @Override public void setDefaultResizable(boolean resizable) {
 		this.defaultResizable = resizable;
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#isDefaultMoveable()
-   */
 	@Override public boolean isDefaultMoveable() {
 		return defaultMoveable;
 	}
 
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setDefaultMoveable(boolean)
-   */
 	@Override public void setDefaultMoveable(boolean moveable) {
 		this.defaultMoveable = moveable;
 	}
 
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#isDefaultHideable()
-   */
 	@Override public boolean isDefaultHideable() {
 		return defaultHideable;
 	}
 
-	  /* (non-Javadoc)
-     * @see pl.netanel.swt.matrix.ISection#setDefaultHideable(boolean)
-     */
-	@Override public void setDefaultHideable(boolean hideable) {
+	  @Override public void setDefaultHideable(boolean hideable) {
 		this.defaultHideable = hideable;
 	}
 	
@@ -300,108 +240,67 @@ class SectionCore<N extends Number> implements Section<N> {
 	 * Item properties 
 	 */
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setLineWidth(N, int)
-   */ 
 	@Override public void setLineWidth(N index, int width) {
 		lineWidth.setValue(index, index, width);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setLineWidth(N, N, int)
-   */ 
 	@Override public void setLineWidth(N start, N end, int width) {
 		lineWidth.setValue(start, end, width);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#getLineWidth(N)
-   */
 	@Override public int getLineWidth(N index) {
 		return lineWidth.getValue(index);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setCellWidth(N, int)
-   */ 
 	@Override public void setCellWidth(N index, int width) {
 		cellWidth.setValue(index, index, width);
 	}
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setCellWidth(N, N, int)
-   */ 
 	@Override public void setCellWidth(N start, N end, int width) {
 		cellWidth.setValue(start, end, width);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#getCellWidth(N)
-   */
+	public void fitCellWidth(N index) {
+    axis.matrix.pack(axis.symbol, this, index);
+  }
+	
 	@Override public int getCellWidth(N index) {
 		return cellWidth.getValue(index);
 	}
 
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setMoveable(N, boolean)
-   */ 
 	@Override public void setMoveable(N index, boolean enabled) {
 		moveable.change(index, index, enabled != defaultMoveable);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setMoveable(N, N, boolean)
-   */ 
 	@Override public void setMoveable(N start, N end, boolean enabled) {
 		moveable.change(start, end, enabled != defaultMoveable);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#isMoveable(N)
-   */
 	@Override public boolean isMoveable(N index) {
 		return moveable.contains(index) != defaultMoveable;
 	}
 	
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setResizable(N, boolean)
-   */ 
 	@Override public void setResizable(N index, boolean enabled) {
 		resizable.change(index, index, enabled != defaultMoveable);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setResizable(N, N, boolean)
-   */ 
 	@Override public void setResizable(N start, N end, boolean enabled) {
 		resizable.change(start, end, enabled != defaultResizable);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#isResizable(N)
-   */
 	@Override public boolean isResizable(N index) {
 		return resizable.contains(index) != defaultResizable;
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setHideable(N, boolean)
-   */ 
 	@Override public void setHideable(N index, boolean enabled) {
 		hideable.change(index, index, enabled != defaultMoveable);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setHideable(N, N, boolean)
-   */ 
 	@Override public void setHideable(N start, N end, boolean enabled) {
 		hideable.change(start, end, enabled != defaultHideable);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#isHideable(N)
-   */
 	@Override public boolean isHideable(N index) {
 		return hideable.contains(index) != defaultHideable;
 	}
@@ -413,54 +312,33 @@ class SectionCore<N extends Number> implements Section<N> {
 	
 	
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setHidden(N, boolean)
-   */ 
 	@Override public void setHidden(N index, boolean state) {
 		hidden.change(index, index, state);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setHidden(N, N, boolean)
-   */ 
 	@Override public void setHidden(N start, N end, boolean state) {
 		hidden.change(start, end, state);
 	}
 
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setHiddenSelected(boolean)
-   */ 
 	@Override public void setHiddenSelected(boolean state) {
 		for (int i = 0, imax = selection.items.size(); i < imax; i++) {
-			Extent<N> e = selection.items.get(i);
+			MutableExtent<N> e = selection.items.get(i);
 			setHidden(e.start(), e.end(), state);
 		}
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#isHidden(N)
-   */
 	@Override public boolean isHidden(N index) {
 		return hidden.contains(index);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#getHiddenCount(N, N)
-   */
 	@Override public N getHiddenCount(N start, N end) {
 		return hidden.getCount(start, end).getValue();
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#getHiddenCount()
-   */
 	@Override public N getHiddenCount() {
 		return hidden.getCount().getValue();
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#getHidden()
-   */
 	@Override public Iterator<N> getHidden() {
 		return new IndexIterator(new NumberSequence(hidden));
 	}
@@ -475,17 +353,11 @@ class SectionCore<N extends Number> implements Section<N> {
     setSelectedAll(state, false, true);
   }
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setSelected(N, boolean)
-   */ 
 	@Override public void setSelected(N index, boolean state) {
 		hidden.change(index, index, state);
 	}
 	
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setSelected(N, N, boolean)
-   */ 
 	@Override public void setSelected(N start, N end, boolean state) {
 		selection.change(start, end, state);
 		
@@ -523,9 +395,6 @@ class SectionCore<N extends Number> implements Section<N> {
 	  }
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#setSelectedAll(boolean, boolean, boolean)
-   */ 
 	void setSelectedAll(boolean state, boolean notify, boolean notifyInZones) {
 	  N start = math.ZERO_VALUE();
 	  N end = math.decrement(count);
@@ -540,16 +409,10 @@ class SectionCore<N extends Number> implements Section<N> {
     }
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#isSelected(N)
-   */
 	@Override public boolean isSelected(N index) {
 		return selection.contains(index);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#getSelectedCount()
-   */
 	@Override public N getSelectedCount() {
 		return selection.getCount().getValue();
 	}
@@ -562,9 +425,6 @@ class SectionCore<N extends Number> implements Section<N> {
 		return new NumberSequence(selection);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#getSelectedIterator()
-   */
 	@Override public Iterator<N> getSelectedIterator() {
 		return new ImmutableIterator<N>() {
 			NumberSequence<N> seq = new NumberSequence<N>(selection.copy());
@@ -585,11 +445,8 @@ class SectionCore<N extends Number> implements Section<N> {
 		};
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#getSelectedExtentIterator()
-   */
-	@Override public Iterator<Number[]> getSelectedExtentIterator() {
-		return new ImmutableIterator<Number[]>() {
+	@Override public Iterator<Extent<N>> getSelectedExtentIterator() {
+		return new ImmutableIterator<Extent<N>>() {
 			NumberSequence<N> seq = new NumberSequence<N>(selection.copy());
 			private boolean next;
 			{
@@ -602,8 +459,8 @@ class SectionCore<N extends Number> implements Section<N> {
 			}
 			
 			@Override
-			public Number[] next() {
-				return next ? new Number[] {seq.start(), seq.end()} : null;
+			public Extent<N> next() {
+				return next ? new Extent<N> (seq.start(), seq.end()) : null;
 			}
 		};
 	}
@@ -622,16 +479,10 @@ class SectionCore<N extends Number> implements Section<N> {
 	 * Moving
 	 */
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#move(N, N, N)
-   */
 	@Override public void move(N start, N end, N target) {
 		order.move(start, end, target);
 	}
 	
-	 /* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#delete(N, N)
-   */
 	@Override public void delete(N start, N end) {
 		cellWidth.delete(start, end);
 		lineWidth.delete(start, end);
@@ -650,9 +501,6 @@ class SectionCore<N extends Number> implements Section<N> {
 		}
 	}
 
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#insert(N, N)
-   */
 	@Override public void insert(N target, N count) {
 		cellWidth.insert(target, count);
 		lineWidth.insert(target, count);
@@ -671,18 +519,12 @@ class SectionCore<N extends Number> implements Section<N> {
 		}
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#addControlListener(org.eclipse.swt.events.ControlListener)
-   */
 	@Override public void addControlListener(ControlListener listener) {
 		TypedListener typedListener = new TypedListener(listener);
 		listeners.add(SWT.Resize, typedListener);
 		listeners.add(SWT.Move, typedListener);
 	}
 	
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#addSelectionListener(org.eclipse.swt.events.SelectionListener)
-   */
 	@Override public void addSelectionListener (SelectionListener listener) {
 		Preconditions.checkNotNullWithName(listener, "listener");
 		TypedListener typedListener = new TypedListener(listener);
@@ -690,18 +532,12 @@ class SectionCore<N extends Number> implements Section<N> {
 		listeners.add(SWT.DefaultSelection, typedListener);
 	}
 
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#removeControlListener(org.eclipse.swt.events.ControlListener)
-   */
 	@Override public void removeControlListener (ControlListener listener) {
 		Preconditions.checkNotNullWithName(listener, "listener");
 		listeners.remove(SWT.Move, listener);
 		listeners.remove(SWT.Resize, listener);
 	}
 
-	/* (non-Javadoc)
-   * @see pl.netanel.swt.matrix.ISection#removeSelectionListener(org.eclipse.swt.events.SelectionListener)
-   */
 	@Override public void removeSelectionListener(SelectionListener listener) {
 		Preconditions.checkNotNullWithName(listener, "listener");
 		listeners.remove(SWT.Selection, listener);
@@ -722,7 +558,7 @@ class SectionCore<N extends Number> implements Section<N> {
 	}
 
 	N nextNotHiddenIndex(N index, int direction) {
-		for (Extent e: hidden.items) {
+		for (MutableExtent e: hidden.items) {
 			if (math.contains(e, index)) {
 				if (direction > 0) {
 					index = math.increment(e.end());
@@ -903,7 +739,7 @@ class SectionCore<N extends Number> implements Section<N> {
     listeners.add(event);
   }
 	
-	static SectionCore from(AxisPointer item) {
+	static <N2 extends Number> SectionCore<N2> from(AxisItem<N2> item) {
 	  return item.section;
 	}
 	

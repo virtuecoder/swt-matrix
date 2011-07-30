@@ -26,8 +26,8 @@ package pl.netanel.swt.matrix;
 class NumberPairSequence<X extends Number, Y extends Number> implements Sequence {
 	CellSet<X, Y> set;
 	int i, size;
-	Extent<Y> e0;
-	Extent<X> e1;
+	MutableExtent<Y> e0;
+	MutableExtent<X> e1;
 	MutableNumber<Y> indexY;
 	MutableNumber<X> indexX;
 	

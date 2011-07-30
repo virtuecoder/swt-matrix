@@ -46,11 +46,11 @@ class SectionClient<N extends Number> implements Section<N> {
 		return core.toString();
 	}
 
-	@Override public SectionCore getCore() {
+	@Override public SectionCore<N> getCore() {
 	  return core;
 	}
 
-  @Override public Class getIndexClass() {
+  @Override public Class<N> getIndexClass() {
     return core.getIndexClass();
   };
 	
@@ -67,7 +67,9 @@ class SectionClient<N extends Number> implements Section<N> {
 		core.setCount(count);
 	}
 
-	/**
+	
+
+  /**
 	 * Returns the number of sections items.
 	 * 
 	 * @return the number of sections items.
@@ -211,6 +213,10 @@ class SectionClient<N extends Number> implements Section<N> {
 		core.setCellWidth(start, end, width);
 	}
 
+	@Override public void fitCellWidth(N index) {
+    core.fitCellWidth(index);
+  }
+	
 	@Override public int getCellWidth(N index) {
 		checkCellIndex(index, "index");
 		return core.getCellWidth(index);
@@ -298,7 +304,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	}
 
 	@Override
-	public Iterator<Number[]> getSelectedExtentIterator() {
+	public Iterator<Extent<N>> getSelectedExtentIterator() {
 		return core.getSelectedExtentIterator();
 	}
 

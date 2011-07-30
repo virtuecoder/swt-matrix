@@ -35,11 +35,11 @@ public class Snippet_0014 {
 
 		final Zone<Integer, Integer> body = matrix.getBody();
 		// To additionally hide the lines
-		body.getPainter("row lines").setEnabled(false);
-		body.getPainter("column lines").setEnabled(false);
+		body.getPainter(Painter.NAME_LINES_X).setEnabled(false);
+		body.getPainter(Painter.NAME_LINES_Y).setEnabled(false);
 		
 		body.addPainter(0, 
-		  new Painter<Integer, Integer>("alter row background", Painter.SCOPE_ROW_CELLS) {
+		  new Painter<Integer, Integer>("alter row background", Painter.SCOPE_CELLS_ITEM_Y) {
 			@Override
 			protected boolean init() {
 				super.init();

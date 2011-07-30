@@ -8,19 +8,19 @@ import pl.netanel.util.IntArray;
 
 abstract class AxisState<N extends Number> {
 	private final Math<N> math;
-	private final ArrayList<Extent<N>>extents;
+	private final ArrayList<MutableExtent<N>>extents;
 	private final IntArray toRemove;
 
 	
 	public AxisState(Math math) {
 		this.math = math;
-		extents = new ArrayList<Extent<N>>();
+		extents = new ArrayList<MutableExtent<N>>();
 		toRemove = new IntArray();
 	}
 
 	protected int indexOf(N index) {
 		for (int i = 0; i < extents.size(); i++) {
-			Extent<N> e = extents.get(i);
+			MutableExtent<N> e = extents.get(i);
 			if (math.contains(e.start(), e.end(), index)) {
 				return i;
 			}
@@ -29,7 +29,7 @@ abstract class AxisState<N extends Number> {
 	}
 
 	protected void doSetValue(N start, N end) {
-		Extent<N> e, modified = null;
+		MutableExtent<N> e, modified = null;
 		toRemove.clear();
 		boolean quit = false;
 		int i = 0; 
@@ -47,12 +47,12 @@ abstract class AxisState<N extends Number> {
 				if (sameValue) return;
 				else {
 					if (ee > 0) {
-						extents.add(i+1, new Extent(math.create(end).increment(), e.end.copy()));
+						extents.add(i+1, new MutableExtent(math.create(end).increment(), e.end.copy()));
 						addValue(i, i+1);
 					}
 					if (ss < 0) {
 						e.end.set(start).decrement();
-						modified = new Extent(math.create(start), math.create(end));
+						modified = new MutableExtent(math.create(start), math.create(end));
 						extents.add(++i, modified);
 						addValue(i);
 						;
@@ -93,7 +93,7 @@ abstract class AxisState<N extends Number> {
 		}
 		
 		if (modified == null) {
-			extents.add(i, new Extent(math.create(start), math.create(end)));
+			extents.add(i, new MutableExtent(math.create(start), math.create(end)));
 			addValue(i);
 		}
 		
@@ -121,11 +121,11 @@ abstract class AxisState<N extends Number> {
 	 * @return 
 	 */
 	public IntArray delete(N start, N end) {
-		return Extent.delete(math, extents, start, end);
+		return MutableExtent.delete(math, extents, start, end);
 	}
 	
 	public void insert(N target, N count) {
-		Extent.insert(math, extents, target, count);
+		MutableExtent.insert(math, extents, target, count);
 	}
 	
 	

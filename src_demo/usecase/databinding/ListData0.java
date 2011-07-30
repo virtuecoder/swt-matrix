@@ -37,7 +37,7 @@ public class ListData0<T> {
         }
     });
     
-    matrix.getColumnHeader().replacePainter(
+    matrix.getHeaderX().replacePainter(
       new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
         @Override public String getText(Integer indexX, Integer indexY) {
           Column<?> column = columns.get(indexX);

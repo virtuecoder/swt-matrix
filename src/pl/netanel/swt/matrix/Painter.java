@@ -1,6 +1,7 @@
 package pl.netanel.swt.matrix;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
@@ -44,56 +45,55 @@ public class Painter<X extends Number, Y extends Number> {
    */
   public static final int SCOPE_ENTIRE = 0;
   /**
-   * Horizontal lines stretching from the left to the right edge of the
-   * container
+   * Horizontal lines stretching from the left to the right edge of the zone to which the painter belongs.
    */
-  public static final int SCOPE_HORIZONTAL_LINES = 1;
+  public static final int SCOPE_LINES_X = 1;
   /**
-   * Vertical lines stretching from the top to the bottom edge of the container
+   * Vertical lines stretching from the top to the bottom edge of the zone to which the painter belongs.
    */
-  public static final int SCOPE_VERTICAL_LINES = 2;
+  public static final int SCOPE_LINES_Y = 2;
   /**
-   * Compound cells each including all cells of a single row
+   * Compound boundaries including all cells of an axis X item (column)
    */
-  public static final int SCOPE_ROW_CELLS = 3;
+  public static final int SCOPE_CELLS_ITEM_X = 4;
   /**
-   * Compound cells each including all cells of a single column
+   * Compound boundaries including all cells of an axis Y item (row)
    */
-  public static final int SCOPE_COLUMN_CELLS = 4;
+  public static final int SCOPE_CELLS_ITEM_Y = 3;
   /**
    * Individual cells in horizontal order first. Aids graphics performance in case of
    * drawing homogenic rows.
    */
-  public static final int SCOPE_CELLS_HORIZONTALLY = 5;
+  public static final int SCOPE_CELLS_X = 5;
   /**
    * Individual cells in vertical order first. Aids graphics performance in case of
    * drawing homogenic columns.
    */
-  public static final int SCOPE_CELLS_VERTICALLY = 6;
+  public static final int SCOPE_CELLS_Y = 6;
   /**
-   * Shortcut for {@link #SCOPE_CELLS_HORIZONTALLY}
+   * Shortcut for {@link #SCOPE_CELLS_X}
    */
-  public static final int SCOPE_CELLS = SCOPE_CELLS_HORIZONTALLY;
+  public static final int SCOPE_CELLS = SCOPE_CELLS_X;
 	
   /**
    * Default name of a painter belonging to a zone and responsible to paint its
    * cells. Painter with that name should not be removed, because 
-   * {@link ZoneEditor} and {@link #NAME_DRAG_ITEM} use it to perform their functions.
+   * {@link ZoneEditor} and {@link #NAME_DRAG_ITEM_X} use it to perform their functions.
    */
   public static final String NAME_CELLS = "cells";
   /**
    * Default name of a painter belonging to a zone and responsible to paint its
-   * row lines
+   * lines along x axis.
    */
-  public static final String NAME_ROW_LINES = "row lines";
+  public static final String NAME_LINES_X = "lines x";
   /**
    * Default name of a painter belonging to a zone and responsible to paint its
-   * column lines
+   * lines along y axis.
    */
-  public static final String NAME_COLUMN_LINES = "column lines";
+  public static final String NAME_LINES_Y = "lines y";
   /**
    * Default name of a painter belonging to a matrix and responsible to paint the
-   * area not frozen
+   * area not frozen.
    */
   public static final String NAME_FROZEN_NONE_NONE = "frozen none none";
   /**
@@ -157,9 +157,14 @@ public class Painter<X extends Number, Y extends Number> {
   public static final String NAME_EMBEDDED_CONTROLS = "embedded controls";
   /**
    * Default name of the painter belonging to a matrix responsible to paint the 
-   * items being dragged.
+   * items being dragged on x axis.
    */
-  public static final String NAME_DRAG_ITEM = "drag item";
+  public static final String NAME_DRAG_ITEM_X = "drag item x";
+  /**
+   * Default name of the painter belonging to a matrix responsible to paint the 
+   * items being dragged on y axis.
+   */
+  public static final String NAME_DRAG_ITEM_Y = "drag item y";
 	
 	private static int[] EXTENT_ALIGN = {SWT.RIGHT, SWT.END, SWT.BOTTOM, SWT.CENTER};
 	static enum TextClipMethod {DOTS_IN_THE_MIDDLE, DOTS_AT_THE_END, CUT, NONE};
@@ -259,6 +264,7 @@ public class Painter<X extends Number, Y extends Number> {
 	private Point extent;
   private TextLayout textLayout;
   Rectangle clipping;
+  private Object data;
 
 	
 	/**
@@ -340,7 +346,7 @@ public class Painter<X extends Number, Y extends Number> {
 		}
 		if (lastBackground != null) {
 			gc.setBackground(lastBackground);
-			gc.fillRectangle(zone.getBounds());
+			gc.fillRectangle(zone.getBounds(Frozen.NONE, Frozen.NONE));
 		}
 //		backgroundEnabled = zone.isBackgroundEnabled();
 //		foregroundEnabled = zone.isForegroundEnabled();
@@ -384,9 +390,9 @@ public class Painter<X extends Number, Y extends Number> {
 	 * check against wrong type in compile time; 
 	 * <p>
 	 * <code>indexX</code> is always null when the receiver's scope is one of the following:<ul>
-	 *        <li>{@link #SCOPE_COLUMN_CELLS}, <li>{@link #SCOPE_VERTICAL_LINES}, <li>{@link #SCOPE_ENTIRE}</ul>
+	 *        <li>{@link #SCOPE_CELLS_ITEM_X}, <li>{@link #SCOPE_LINES_Y}, <li>{@link #SCOPE_ENTIRE}</ul>
 	 * <code>indexY</code> is always null when the receiver's scope is one of the following:<ul>
-	 *        <li>{@link #SCOPE_ROW_CELLS}, <li>{@link #SCOPE_HORIZONTAL_LINES}, <li>{@link #SCOPE_ENTIRE}</ul>
+	 *        <li>{@link #SCOPE_CELLS_ITEM_Y}, <li>{@link #SCOPE_LINES_X}, <li>{@link #SCOPE_ENTIRE}</ul>
 	 * @param indexX index of a section item in the column axis 
 	 * @param indexY index of a section item in the row axis. 
 	 * @param x the x coordinate of the painting boundaries
@@ -517,18 +523,50 @@ public class Painter<X extends Number, Y extends Number> {
 	}
 	
 	/**
-	 * Calls {@link #getText(Number, Number)} and {@link #getImage(Number, Number)}
-	 * by default, but can be overridden to setup any of the painter's 
-	 * properties.
-   * @param indexX cell index on the horizontal axis 
-   * @param indexY cell index on the vertical axis  
-	 */
+   * Defines painter configuration that is called both by
+   * {@link #paint(Number, Number, int, int, int, int)} and by
+   * {@link #computeSize(Number, Number, int, int)} methods.
+   * <p>
+   * Default implementation invokes {@link #getText(Number, Number)} and
+   * {@link #getImage(Number, Number)} , but can be overridden to setup any of
+   * the painter's properties which depend on the cell indexes.
+   * 
+   * @param indexX cell index on the horizontal axis
+   * @param indexY cell index on the vertical axis
+   */
 	public void setup(X indexX, Y indexY) {
 	  image = getImage(indexX, indexY);
     text = getText(indexX, indexY);
 	}
+	
+	/**
+   * Sets custom data for this painter.
+   * <p>
+   * Painters {@link #NAME_DRAG_ITEM_X} and {@link #NAME_DRAG_ITEM_Y} use it to
+   * get mouse coordinates and draw drag feedback indicator if supplied with
+   * {@link DropTargetEvent} object with this method. Example:
+   * <pre>dropTarget.addDropListener(new DropTargetAdapter() {
+   *   &#64;Override public void dragOver(DropTargetEvent event) {
+   *     dragPainterY.setData(event);
+   *   }
+   * });</pre>
+   * 
+   * @param data data to set
+   */
+	public void setData(Object data) {
+    this.data = data;
+	}
 
 	/**
+	 * Returns custom data of this painter.
+	 * @return custom data of this painter
+	 */
+	public Object getData() {
+    return data;
+  }
+	
+
+  /**
 	 * Returns the text to be drawn by the painter.
 	 * <p>
 	 * This method is used both by {@link #paint(Number, Number, int, int, int, int)} 

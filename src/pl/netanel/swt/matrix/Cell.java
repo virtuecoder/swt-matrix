@@ -9,7 +9,7 @@ package pl.netanel.swt.matrix;
  * 
  * @author Jacek Kolodziejczyk created 25-07-2011
  */
-class Cell<X extends Number, Y extends Number> {
+public class Cell<X extends Number, Y extends Number> {
   final X indexX;
   final Y indexY;
   public Cell(X indexX, Y indexY) {

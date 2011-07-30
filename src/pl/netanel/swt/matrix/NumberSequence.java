@@ -23,7 +23,7 @@ package pl.netanel.swt.matrix;
 class NumberSequence<N extends Number> implements Sequence {
 	NumberSet<N> set;
 	int i, size;
-	Extent<N> e;
+	MutableExtent<N> e;
 	MutableNumber<N> index;
 	
 	

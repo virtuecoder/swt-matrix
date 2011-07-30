@@ -15,10 +15,10 @@ import java.util.ArrayList;
 class NumberSet<N extends Number> {
 	protected Math<N> math;
 	protected boolean sorted;
-	ArrayList<Extent<N>> items;
-	protected ArrayList<Extent> toRemove;
+	ArrayList<MutableExtent<N>> items;
+	protected ArrayList<MutableExtent> toRemove;
 	
-	protected Extent<N> modified;
+	protected MutableExtent<N> modified;
 	protected transient int modCount;
 
 	
@@ -29,14 +29,14 @@ class NumberSet<N extends Number> {
 	public NumberSet(Math math, boolean sorted) {
 		this.sorted = sorted;
 		this.math = math;
-		items = new ArrayList<Extent<N>>();
-		toRemove = new ArrayList<Extent>();
+		items = new ArrayList<MutableExtent<N>>();
+		toRemove = new ArrayList<MutableExtent>();
 	};
 	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for (Extent<N> e: items) {
+		for (MutableExtent<N> e: items) {
 			if (sb.length() > 0) sb.append(", ");
 			if (math.compare(e.start(), e.end()) == 0) {
 				sb.append(e.start);
@@ -49,7 +49,7 @@ class NumberSet<N extends Number> {
 	
 	
 	public boolean contains(N n) {
-		for (Extent<N> e: items) {
+		for (MutableExtent<N> e: items) {
 			if (math.contains(e, n)) {
 				return true;
 			}
@@ -57,8 +57,8 @@ class NumberSet<N extends Number> {
 		return false;
 	}
 	
-	public boolean contains(Extent<N> o) {
-		for (Extent<N> e: items) {
+	public boolean contains(MutableExtent<N> o) {
+		for (MutableExtent<N> e: items) {
 			if (math.contains(e.start(), e.end(), o.start()) && math.contains(e.start(), e.end(), o.end())) {
 				return true;
 			}
@@ -80,7 +80,7 @@ class NumberSet<N extends Number> {
 		return add(n, n);
 	}
 	
-	public boolean add(Extent<N> e) {
+	public boolean add(MutableExtent<N> e) {
 		return add(e.start(), e.end());
 	}
 	
@@ -103,7 +103,7 @@ class NumberSet<N extends Number> {
 		int i = 0;
 		
 		for (;i < items.size(); i++) {
-			Extent<N> item = items.get(i);
+			MutableExtent<N> item = items.get(i);
 			int compare = math.compare(item.start(), item.end(), start, end);
 			
 			switch (compare) {
@@ -123,9 +123,9 @@ class NumberSet<N extends Number> {
 			if (quit) break;
 		}
 		if (modified == null) {
-			items.add(i, new Extent(math.create(start), math.create(end)));
+			items.add(i, new MutableExtent(math.create(start), math.create(end)));
 		}
-		for (Extent<N> e: toRemove) {
+		for (MutableExtent<N> e: toRemove) {
 			items.remove(e); 
 		}
 		toRemove.clear();
@@ -134,13 +134,13 @@ class NumberSet<N extends Number> {
 	}
 	
 	public void addAll(NumberSet<N> set) {
-		for (Extent<N> e: set.items) {
+		for (MutableExtent<N> e: set.items) {
 			add(e);
 		}
 	}
 
 
-	protected void extendItem(Extent<N> existing, N start, N end) {
+	protected void extendItem(MutableExtent<N> existing, N start, N end) {
 		if (modified == null) modified = existing;
 		else toRemove.add(0, existing);
 		modified.start.set(math.min(start, modified.start(), existing.start()));
@@ -162,7 +162,7 @@ class NumberSet<N extends Number> {
 		return remove(n, n);
 	}
 	
-	public boolean remove(Extent<N> e) {
+	public boolean remove(MutableExtent<N> e) {
 		return remove(e.start(), e.end());
 	}
 	
@@ -171,7 +171,7 @@ class NumberSet<N extends Number> {
 		int i = 0;
 		
 		for (;i < items.size(); i++) {
-			Extent<N> item = items.get(i);
+			MutableExtent<N> item = items.get(i);
 			
 			int location = math.compare(start, end, item.start(), item.end());
 			switch (location) {
@@ -196,11 +196,11 @@ class NumberSet<N extends Number> {
 			case INSIDE:
 				MutableNumber newEnd = item.end.copy();
 				item.end.set(math.max(math.decrement(start), item.start()));
-				items.add(i+1, new Extent(math.create(end).increment(), newEnd));
+				items.add(i+1, new MutableExtent(math.create(end).increment(), newEnd));
 			}
 			modified = location >= OVERLAP || modified; 
 		}
-		for (Extent<N> e: toRemove) {
+		for (MutableExtent<N> e: toRemove) {
 			items.remove(e); 
 		}
 		toRemove.clear();
@@ -215,7 +215,7 @@ class NumberSet<N extends Number> {
 			items.clear();
 			return removed;
 		}
-		for (Extent<N> e: set.items) {
+		for (MutableExtent<N> e: set.items) {
 			removed = remove(e) || removed;
 		}
 		if (removed) modCount++;
@@ -229,7 +229,7 @@ class NumberSet<N extends Number> {
 	 */
 	public MutableNumber<N> getCount() {
 		MutableNumber sum = math.create(0);
-		for (Extent<N> e: items) {
+		for (MutableExtent<N> e: items) {
 			sum.add(e.end).subtract(e.start).increment();
 		}
 		return sum;
@@ -243,7 +243,7 @@ class NumberSet<N extends Number> {
 	 */
 	public MutableNumber<N> getCount(N start, N end) {
 		MutableNumber sum = math.create(0);
-		for (Extent<N> e: items) {
+		for (MutableExtent<N> e: items) {
 			switch (math.compare(e.start(), e.end(), start, end)) {
 			case BEFORE:				
 			case ADJACENT_BEFORE:	continue;
@@ -271,8 +271,8 @@ class NumberSet<N extends Number> {
 	
 	public void replace(NumberSet<N> set) {
 		items.clear();
-		for (Extent<N> e: set.items) {
-			items.add(new Extent(math.create(e.start()), math.create(e.end())));
+		for (MutableExtent<N> e: set.items) {
+			items.add(new MutableExtent(math.create(e.start()), math.create(e.end())));
 		}
 	}
 
@@ -283,8 +283,8 @@ class NumberSet<N extends Number> {
 
 	public NumberSet copy() {
 		NumberSet copy = new NumberSet(math);
-		for (Extent<N> e: items) {
-			copy.items.add(new Extent(math.create(e.start()), math.create(e.end())));
+		for (MutableExtent<N> e: items) {
+			copy.items.add(new MutableExtent(math.create(e.start()), math.create(e.end())));
 		}
 		return copy;
 	}
@@ -299,7 +299,7 @@ class NumberSet<N extends Number> {
 
 	public int getExtentIndex(N n) {
 		for (int i = 0, size = items.size(); i < size; i++) {
-			Extent<N> e = items.get(i);
+			MutableExtent<N> e = items.get(i);
 			if (math.contains(e, n)) {
 				return i;
 			}
@@ -310,7 +310,7 @@ class NumberSet<N extends Number> {
 	N firstExcluded(N n) {
 		N n2 = n;
 		again: {
-		for (Extent<N> e: items) {
+		for (MutableExtent<N> e: items) {
 			if (math.contains(e, n2)) {
 				n2 = math.increment(e.end());
 				if (sorted) break; else break again;
@@ -320,10 +320,10 @@ class NumberSet<N extends Number> {
 	}
 	
 	public void delete(N start, N end) {
-		Extent.delete(math, items, start, end);
+		MutableExtent.delete(math, items, start, end);
 	}
 	
 	public void insert(N target, N count) {
-		Extent.insert(math, items, target, count);
+		MutableExtent.insert(math, items, target, count);
 	}
 }

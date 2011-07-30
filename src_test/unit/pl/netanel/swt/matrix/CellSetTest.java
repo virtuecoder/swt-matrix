@@ -659,8 +659,8 @@ import pl.netanel.util.Arrays;
 		int max = 0;
 		
 		for (int i = 0; i < size; i++) {
-		  Extent itemX = (Extent) set.itemsX.get(i);
-			Extent itemY = (Extent) set.itemsY.get(i);
+		  MutableExtent itemX = (MutableExtent) set.itemsX.get(i);
+			MutableExtent itemY = (MutableExtent) set.itemsY.get(i);
 			for (int j = 0; j <= itemY.end.intValue(); j++) {
 				ArrayList<Boolean> line;
 				if (j >= data.size()) {

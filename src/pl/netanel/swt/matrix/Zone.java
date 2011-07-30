@@ -31,12 +31,12 @@ import org.eclipse.swt.widgets.Listener;
 public interface Zone<X extends Number, Y extends Number> {
 
   /**
-   * Returns a zone implementation that does not perform 
-   * validation of methods parameters. This is needed for 
-   * loop optimization, like for example inside of 
+   * Returns a high-performance zone implementation that does not  
+   * validate methods parameters. It may be useful for 
+   * loop optimization, for example inside of 
    * {@link Painter#paint(Number, Number, int, int, int, int)} 
    * method.
-   * @return
+   * @return a high-performance zone implementation 
    */
   Zone<X, Y> getCore();
   
@@ -97,10 +97,12 @@ public interface Zone<X extends Number, Y extends Number> {
   Color getDefaultForeground();
 
   /**
-   * Returns the rectangular boundaries of this zone. 
+   * Returns the rectangular boundaries of this zone in the specified freezing area. 
+   * @param frozenX frozen area on horizontal axis 
+   * @param frozenY frozen area on vertical axis
    * @return the rectangular boundaries of this zone
    */
-  Rectangle getBounds();
+  Rectangle getBounds(Frozen frozenX, Frozen frozenY);
 
   /**
    * Sets selection foreground color for the receiver. 
@@ -246,7 +248,7 @@ public interface Zone<X extends Number, Y extends Number> {
    * <strong>Warning</strong> iterating index by index over large extents 
    * may cause a performance problem.
    */
-  Iterator<Number[]> getSelectedIterator();
+  Iterator<Cell<X, Y>> getSelectedIterator();
 
   /**
    * Returns iterator for selected cell extents. First two numbers in the array 
@@ -257,14 +259,14 @@ public interface Zone<X extends Number, Y extends Number> {
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations. 
    */
-  Iterator<Number[]> getSelectedExtentIterator();
+  Iterator<CellExtent<X, Y>> getSelectedExtentIterator();
 
   /**
    * Returns selection index bounds. The numbers in the returning array are 
    * minimal axisY index, maximal axisY index, minimal axisX index, maximal axisX index. 
    * @return selection index bounds
    */
-  CellExtent getSelectedExtent();
+  CellExtent<X, Y> getSelectedExtent();
 
   /**
    * Binds the command to the user gesture specified by the event type and code.
@@ -425,7 +427,7 @@ public interface Zone<X extends Number, Y extends Number> {
    * @throws IllegalArgumentException if the painter is null
    * @see Painter#NAME_CELLS
    */
-  boolean removePainter(Painter painter);
+  boolean removePainter(Painter<X, Y> painter);
   
   /**
    * Removes a painter with the specified name from this list,

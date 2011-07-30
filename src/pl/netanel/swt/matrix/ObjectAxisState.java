@@ -3,11 +3,11 @@ package pl.netanel.swt.matrix;
 import java.util.ArrayList;
 
 
-class ObjectAxisState<T> extends AxisState {
+class ObjectAxisState<N extends Number, T> extends AxisState<N> {
 	T defaultValue, value;
 	ArrayList<T> values;
 	
-	public ObjectAxisState(Math math, T defaultValue) {
+	public ObjectAxisState(Math<N> math, T defaultValue) {
 		super(math);
 		this.defaultValue = defaultValue;
 		values = new ArrayList<T>();
@@ -44,26 +44,26 @@ class ObjectAxisState<T> extends AxisState {
 	}
 
 	
-	public T getValue(Number index) {
+	public T getValue(N index) {
 		int i = indexOf(index);
 		return i == -1 ? defaultValue : values.get(i);
 	}
 	
-	public T getValueNUllable(Number index) {
+	public T getValueNUllable(N index) {
 		int i = indexOf(index);
 		return i == -1 ? null: values.get(i);
 	}
 	
-	public void setValue(Extent extent, T value) {
+	public void setValue(MutableExtent<N> extent, T value) {
 		setValue(extent.start(), extent.end(), value);
 	}
 	
-	public void setValue(Number from, Number to, T value) {
+	public void setValue(N from, N to, T value) {
 		this.value = value;
 		doSetValue(from, to);
 	}
 	
-	public void setValue(Number index, T value) {
+	public void setValue(N index, T value) {
 		setValue(index, index, value);
 	}
 

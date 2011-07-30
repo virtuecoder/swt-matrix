@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="pl/netanel/swt/matrix/custom/MatrixDropTargetEffect.java" kind="src" path="src"/>
 	<classpathentry kind="src" path="src_demo"/>
 	<classpathentry kind="src" path="src_test/unit"/>
 	<classpathentry kind="src" path="src_test/spec"/>

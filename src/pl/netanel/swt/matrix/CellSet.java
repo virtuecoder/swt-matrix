@@ -14,8 +14,8 @@ import pl.netanel.util.IntArray;
  * @created 15-11-2010
  */
 class CellSet<X extends Number, Y extends Number> {
-	final ArrayList<Extent<X>> itemsX;
-	final ArrayList<Extent<Y>> itemsY;
+	final ArrayList<MutableExtent<X>> itemsX;
+	final ArrayList<MutableExtent<Y>> itemsY;
 	final Math<X> mathX;
 	final Math<Y> mathY;
 	private boolean insertNew;
@@ -23,8 +23,8 @@ class CellSet<X extends Number, Y extends Number> {
 	public CellSet(Math<X> mathX, Math<Y> mathY) {
 		this.mathX = mathX;
 		this.mathY = mathY;
-		itemsX = new ArrayList<Extent<X>>();
-		itemsY = new ArrayList<Extent<Y>>();
+		itemsX = new ArrayList<MutableExtent<X>>();
+		itemsY = new ArrayList<MutableExtent<Y>>();
 	}
 
 	@Override
@@ -45,8 +45,8 @@ class CellSet<X extends Number, Y extends Number> {
 	public boolean contains(X indexX, Y indexY) {
 		int size = itemsY.size();
 		for (int i = 0; i < size; i++) {
-			Extent<Y> e1 = itemsY.get(i);
-			Extent<X> e2 = itemsX.get(i);
+			MutableExtent<Y> e1 = itemsY.get(i);
+			MutableExtent<X> e2 = itemsX.get(i);
 			if (mathY.contains(e1.start(), e1.end(), indexY) &&
 				mathX.contains(e2.start(), e2.end(), indexX)) 
 			{
@@ -63,8 +63,8 @@ class CellSet<X extends Number, Y extends Number> {
 		
 		int size = itemsY.size();
 		for (;i < size; i++) {
-			Extent<X> itemX = itemsX.get(i);
-			Extent<Y> itemY = itemsY.get(i);
+			MutableExtent<X> itemX = itemsX.get(i);
+			MutableExtent<Y> itemY = itemsY.get(i);
 			
 			X startXb = itemX.start.getValue(), 	endXb = itemX.end.getValue();
 			Y startYb = itemY.start.getValue(), 	endYb = itemY.end.getValue(); 
@@ -115,8 +115,8 @@ class CellSet<X extends Number, Y extends Number> {
 			} 
 		}
 		if (insertNew) {
-		  itemsX.add(new Extent<X>(mathX.create(startX), mathX.create(endX)));
-			itemsY.add(new Extent<Y>(mathY.create(startY), mathY.create(endY)));
+		  itemsX.add(new MutableExtent<X>(mathX.create(startX), mathX.create(endX)));
+			itemsY.add(new MutableExtent<Y>(mathY.create(startY), mathY.create(endY)));
 		}
 	}
 	
@@ -126,8 +126,8 @@ class CellSet<X extends Number, Y extends Number> {
 
 		int size = itemsY.size();
 		for (;i < size; i++) {
-		  Extent<X> itemX = itemsX.get(i);
-			Extent<Y> itemY = itemsY.get(i);
+		  MutableExtent<X> itemX = itemsX.get(i);
+			MutableExtent<Y> itemY = itemsY.get(i);
 			
 			X startXb = itemX.start.getValue(), endXb = itemX.end.getValue();
 			Y startYb = itemY.start.getValue(), endYb = itemY.end.getValue(); 
@@ -186,8 +186,8 @@ class CellSet<X extends Number, Y extends Number> {
 	}
 	
 	private void insert(X startX, X endX, Y startY, Y endY) {
-		itemsY.add(new Extent<Y>(mathY.create(startY), mathY.create(endY)));
-		itemsX.add(new Extent<X>(mathX.create(startX), mathX.create(endX)));
+		itemsY.add(new MutableExtent<Y>(mathY.create(startY), mathY.create(endY)));
+		itemsX.add(new MutableExtent<X>(mathX.create(startX), mathX.create(endX)));
 	}
 	
 //	public void change(MutableNumber startY, MutableNumber endY, 
@@ -232,8 +232,8 @@ class CellSet<X extends Number, Y extends Number> {
 		  Y startY = null, endY = null;
 		  X startX = null, endX = null;
 			for (int i = 0; i < size; i++) {
-				Extent<X> extentX = itemsX.get(i);
-				Extent<Y> extentY = itemsY.get(i);
+				MutableExtent<X> extentX = itemsX.get(i);
+				MutableExtent<Y> extentY = itemsY.get(i);
 				if (startX == null || mathX.compare(extentX.start, (X) startX) < 0) {
 				  startX = extentX.start.getValue();
 				}
@@ -259,7 +259,7 @@ class CellSet<X extends Number, Y extends Number> {
 				mathX.compare(mathX.getCount(itemsX.get(0)), mathX.ONE_VALUE()) == 0;
 	}
 	
-	private BigInteger count(Extent<? extends Number> e) {
+	private BigInteger count(MutableExtent<? extends Number> e) {
 		return e.end.toBigInteger().subtract(e.start.toBigInteger()).add(BigInteger.ONE);
 	}
 
@@ -271,10 +271,10 @@ class CellSet<X extends Number, Y extends Number> {
 		CellSet<X, Y> copy = new CellSet<X, Y>(mathX, mathY);
 		int size = size();
 		for (int i = 0; i < size; i++) {
-		  Extent<X> e1 = itemsX.get(i);
-			Extent<Y> e0 = itemsY.get(i);
-			copy.itemsX.add(new Extent<X>(mathX.create(e1.start), mathX.create(e1.end)));
-			copy.itemsY.add(new Extent<Y>(mathY.create(e0.start), mathY.create(e0.end)));
+		  MutableExtent<X> e1 = itemsX.get(i);
+			MutableExtent<Y> e0 = itemsY.get(i);
+			copy.itemsX.add(new MutableExtent<X>(mathX.create(e1.start), mathX.create(e1.end)));
+			copy.itemsY.add(new MutableExtent<Y>(mathY.create(e0.start), mathY.create(e0.end)));
 		}
 		return copy;
 	}
@@ -282,25 +282,25 @@ class CellSet<X extends Number, Y extends Number> {
 
 	public void deleteY(Y start, Y end) {
 		for (int i = 0, imax = itemsY.size(); i < imax; i++) {
-			Extent.delete(mathY, itemsY, start, end);
+			MutableExtent.delete(mathY, itemsY, start, end);
 		}
 	}
 	
 	public void deleteX(X start, X end) {
 		for (int i = 0, imax = itemsY.size(); i < imax; i++) {
-			Extent.delete(mathX, itemsX, start, end);
+			MutableExtent.delete(mathX, itemsX, start, end);
 		}
 	}
 	
 	public void insertY(Y target, Y count) {
 		for (int i = 0, imax = itemsY.size(); i < imax; i++) {
-			Extent.insert(mathY, itemsY, target, count);
+			MutableExtent.insert(mathY, itemsY, target, count);
 		}
 	}
 	
 	public void insertX(X target, X count) {
 		for (int i = 0, imax = itemsY.size(); i < imax; i++) {
-			Extent.insert(mathX, itemsX, target, count);
+			MutableExtent.insert(mathX, itemsX, target, count);
 		}
 	}
 

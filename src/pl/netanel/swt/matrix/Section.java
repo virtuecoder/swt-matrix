@@ -39,17 +39,17 @@ public interface Section<N extends Number> {
    * @return the <code>Class&lt;Number&gt;</code> instance 
    * that is used to index the section cells and lines
    */
-  Class getIndexClass();
+  Class<N> getIndexClass();
   
   /**
-   * Returns a section implementation that does not perform 
-   * validation of methods parameters. This is needed for
-   * loop optimization, like for example inside of 
+   * Returns a high-performance section implementation that does not
+   * validate methods parameters. It may be useful for
+   * loop optimization, for example inside of 
    * {@link Painter#paint(Number, Number, int, int, int, int)} 
    * method.
-   * @return
+   * @return a high-performance section implementation
    */
-  Section getCore();
+  Section<N> getCore();
   
   /**
    * Specifies the number of section items.
@@ -352,6 +352,8 @@ public interface Section<N extends Number> {
    */
   void setCellWidth(N start, N end, int width);
 
+  void fitCellWidth(N index);
+  
   /**
    * Returns the cell width at the given index in the receiver.  
    * If the width has not been set at this index by {@link #setCellWidth(Number)} 
@@ -369,6 +371,7 @@ public interface Section<N extends Number> {
    */
   int getCellWidth(N index);
 
+  
   /**
    * Sets the move ability for the item at the given index.
    * <p>
@@ -653,6 +656,7 @@ public interface Section<N extends Number> {
    */
   Iterator<N> getHidden();
 
+  
   /**
    * Sets the hiding state for the item at the given index.
    * <p>
@@ -741,7 +745,7 @@ public interface Section<N extends Number> {
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations.   
    */
-  Iterator<Number[]> getSelectedExtentIterator();
+  Iterator<Extent<N>> getSelectedExtentIterator();
 
   /**
    * Moves a range of items before the target index thus changing their visible order.

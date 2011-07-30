@@ -12,6 +12,7 @@ From nebula forum
 - Nebula CompositeTable, flexible row layout
 
 To do:
+- paint order for ButtonCellBehavior
 - rename snippets
 - partial redraw/paint cell, zone, row column
 - type safe compiler checks

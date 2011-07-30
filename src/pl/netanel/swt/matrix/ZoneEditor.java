@@ -462,8 +462,8 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	
 	void edit(GestureBinding b) {
 		Matrix<X, Y> matrix = getMatrix();
-		final AxisPointer<X> focusItem1X = matrix.axisX.getFocusItem();
-		final AxisPointer<Y> focusItemY = matrix.axisY.getFocusItem();
+		final AxisItem<X> focusItem1X = matrix.axisX.getFocusItem();
+		final AxisItem<Y> focusItemY = matrix.axisY.getFocusItem();
 		if (focusItem1X == null || focusItemY == null) return;
 
 		activate(focusItem1X.getIndex(), focusItemY.getIndex(), b);
@@ -473,13 +473,11 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 * Sets the <code>null</code> value to the selected cells.
 	 */
 	void delete() {
-		Iterator<Number[]> it = zone.getSelectedIterator();
+		Iterator<Cell<X, Y>> it = zone.getSelectedIterator();
 		
 		while (it.hasNext()) {
-			Number[] next = it.next();
-			X indexX = (X) next[1];
-			Y indexY = (Y) next[0];
-			setModelValue(indexX, indexY, null);
+		  Cell<X, Y> cell = it.next();
+			setModelValue(cell.getIndexX(), cell.getIndexY(), null);
 		}
 		embedded.needsPainting = true;
 		getMatrix().redraw();
@@ -535,8 +533,8 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		Axis<Y> axisY = getMatrix().getAxisY();
 
 		// Get the focus cell to start the pasting from
-		AxisPointer<X> focusItemX = axisX.getFocusItem();
-		AxisPointer<Y> focusItemY = axisY.getFocusItem();
+		AxisItem<X> focusItemX = axisX.getFocusItem();
+		AxisItem<Y> focusItemY = axisY.getFocusItem();
 		if (focusItemX == null || focusItemY == null) return;
 		Math<Y> mathY = axisY.math;
 		Math<X> mathX = axisX.math;
@@ -836,6 +834,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	}
 
 
+	@SuppressWarnings("unchecked") 
 	ZoneEditorData getData(Widget widget) {
 		return (ZoneEditorData) widget.getData(ZONE_EDITOR_DATA);
 	}

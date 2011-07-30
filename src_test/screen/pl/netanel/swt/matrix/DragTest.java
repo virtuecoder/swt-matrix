@@ -8,7 +8,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class) public class  DragTest extends SwtTestCase {
+@SuppressWarnings({"unchecked", "rawtypes"}) 
+@RunWith(JUnit4.class) 
+public class  DragTest extends SwtTestCase {
+  
   @Test public void moveForthAndBack() throws Exception {
     final Matrix matrix = new Matrix(shell, 0);
 //    listenToAll(matrix);
@@ -20,8 +23,8 @@ import org.junit.runners.JUnit4;
     shell.open();
     
     processEvents();
-    Rectangle bounds1 = matrix.getColumnHeader().getCellBounds(0, 0);
-    Rectangle bounds2 = matrix.getColumnHeader().getCellBounds(1, 0);
+    Rectangle bounds1 = matrix.getHeaderX().getCellBounds(0, 0);
+    Rectangle bounds2 = matrix.getHeaderX().getCellBounds(1, 0);
     Point p1 = middle(bounds1);
     Point p2 = middle(bounds2);
     click(bounds1);
@@ -41,8 +44,8 @@ import org.junit.runners.JUnit4;
     shell.open();
     
     processEvents();
-    Rectangle bounds1 = matrix.getColumnHeader().getCellBounds(0, 0);
-    Rectangle bounds2 = matrix.getColumnHeader().getCellBounds(1, 0);
+    Rectangle bounds1 = matrix.getHeaderX().getCellBounds(0, 0);
+    Rectangle bounds2 = matrix.getHeaderX().getCellBounds(1, 0);
     Point p1 = middle(bounds1);
     Point p2 = middle(bounds2);
     click(bounds1);
@@ -62,8 +65,8 @@ import org.junit.runners.JUnit4;
     shell.open();
     
     processEvents();
-    Rectangle r1 = matrix.getColumnHeader().getCellBounds(0, 0);
-    Rectangle r2 = matrix.getColumnHeader().getCellBounds(1, 0);
+    Rectangle r1 = matrix.getHeaderX().getCellBounds(0, 0);
+    Rectangle r2 = matrix.getHeaderX().getCellBounds(1, 0);
     Point p1 = middle(r1);
     Point p2 = middle(r2);
     click(r1);
@@ -88,7 +91,7 @@ import org.junit.runners.JUnit4;
     shell.open();
     
     processEvents();
-    Rectangle r = matrix.getColumnHeader().getCellBounds(0, 0);
+    Rectangle r = matrix.getHeaderX().getCellBounds(0, 0);
     Point p1 = middle(r);
     Point p2 = toDisplay(r.x-10, r.y + 5);
     click(r);

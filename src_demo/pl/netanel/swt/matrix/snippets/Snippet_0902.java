@@ -11,10 +11,12 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.AxisPointer;
-import pl.netanel.swt.matrix.Zone;
+import pl.netanel.swt.matrix.AxisItem;
+import pl.netanel.swt.matrix.CellExtent;
+import pl.netanel.swt.matrix.Extent;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Section;
+import pl.netanel.swt.matrix.Zone;
 
 /**
  * Selection and control event handling.
@@ -41,12 +43,12 @@ public class Snippet_0902 {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				StringBuilder sb = new StringBuilder();
-				Iterator<Number[]> it = body.getSelectedExtentIterator();
+				Iterator<CellExtent<Integer, Integer>> it = body.getSelectedExtentIterator();
 				while (it.hasNext()) {
 					if (sb.length() > 0) sb.append(", ");
-					Number[] n = it.next();
-					sb.append(n[0]).append("-").append(n[1]).append(":");
-					sb.append(n[2]).append("-").append(n[3]);
+					CellExtent<Integer, Integer> n = it.next();
+					sb.append(n.getStartX()).append("-").append(n.getEndX()).append(":");
+					sb.append(n.getStartY()).append("-").append(n.getEndY());
 				}
 				sb.insert(0, "Cells selected: ");
 				System.out.println(sb);
@@ -70,7 +72,7 @@ public class Snippet_0902 {
 		bodyX.addControlListener(new ControlAdapter() {
 			@Override
 			public void controlResized(ControlEvent e) {
-				@SuppressWarnings("unchecked") AxisPointer<Integer> item = (AxisPointer<Integer>) e.data;
+				@SuppressWarnings("unchecked") AxisItem<Integer> item = (AxisItem<Integer>) e.data;
 				Section<Integer> section = item.getSection();
         if (section.getSelectedCount() > 0) {
 					selectedItems("Columns resized: ", section.getSelectedExtentIterator());
@@ -85,7 +87,7 @@ public class Snippet_0902 {
 			public void controlMoved(ControlEvent e) {
 				selectedItems("Columns moved: ", bodyX.getSelectedExtentIterator());
 				
-				@SuppressWarnings("unchecked") AxisPointer<Integer> item = (AxisPointer<Integer>) e.data;
+				@SuppressWarnings("unchecked") AxisItem<Integer> item = (AxisItem<Integer>) e.data;
 				System.out.println("Target: section " + item.getSection() + ", index " + item.getIndex());
 			}
 		});
@@ -100,12 +102,12 @@ public class Snippet_0902 {
 		}
 	}
 	
-	static void selectedItems(String caption, Iterator<Number[]> it) {
+	static void selectedItems(String caption, Iterator<Extent<Integer>> it) {
 		StringBuilder sb = new StringBuilder();
 		while (it.hasNext()) {
 			if (sb.length() > 0) sb.append(", ");
-			Number[] n = it.next();
-			sb.append(n[0]).append("-").append(n[1]);
+			Extent<Integer> n = it.next();
+			sb.append(n.getStart()).append("-").append(n.getEnd());
 		}
 		sb.insert(0, caption);
 		System.out.println(sb.toString());

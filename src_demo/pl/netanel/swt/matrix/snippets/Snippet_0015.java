@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
-import pl.netanel.swt.matrix.AxisPointer;
+import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
@@ -28,11 +28,11 @@ public class Snippet_0015 {
 		matrix.getAxisX().getBody().setCount(4);
 		
 		final Zone<Integer, Integer> body = matrix.getBody();
-		body.getPainter("row lines").setEnabled(false);
-		body.getPainter("column lines").setEnabled(false);
+		body.getPainter(Painter.NAME_LINES_X).setEnabled(false);
+		body.getPainter(Painter.NAME_LINES_Y).setEnabled(false);
 		
 		body.addPainter(0, 
-		  new Painter<Integer, Integer>("gradient row background", Painter.SCOPE_ROW_CELLS) {
+		  new Painter<Integer, Integer>("gradient row background", Painter.SCOPE_CELLS_ITEM_Y) {
   		  int matrixWidth;
   		  @Override
   		  protected boolean init() {
@@ -51,7 +51,7 @@ public class Snippet_0015 {
   		  @Override
   		  public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
   		    Axis<Integer> axisY = matrix.getAxisY();
-  		    AxisPointer<Integer> focusItem = axisY.getFocusItem();
+  		    AxisItem<Integer> focusItem = axisY.getFocusItem();
   		    if (body.getSectionY().equals(focusItem.getSection()) &&
   		      indexY.equals(focusItem.getIndex())) 
   		    {

@@ -37,17 +37,17 @@ import org.junit.runners.JUnit4;
 	}
 	
 	private static String delete(int estart, int eend, int astart, int aend) {
-		ArrayList<Extent<Integer>> list = new ArrayList<Extent<Integer>>();
+		ArrayList<MutableExtent<Integer>> list = new ArrayList<MutableExtent<Integer>>();
 		Math<Integer> math = Math.getInstance(int.class);
-		list.add(new Extent(math.create(estart), math.create(eend)));
-		Extent.delete(math, list, astart, aend);
+		list.add(new MutableExtent(math.create(estart), math.create(eend)));
+		MutableExtent.delete(math, list, astart, aend);
 		
 		return toString(list);
 	}
 
-	private static String toString(ArrayList<Extent<Integer>> list) {
+	private static String toString(ArrayList<MutableExtent<Integer>> list) {
 		StringBuilder sb = new StringBuilder();
-		for (Extent e: list) {
+		for (MutableExtent e: list) {
 			if (sb.length() > 0) sb.append(", ");
 			sb.append(e);
 		}

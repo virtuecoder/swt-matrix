@@ -13,7 +13,7 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 	protected int i, h;
 	public int level;
 	protected int sign;
-	protected Extent<N> extent, he;
+	protected MutableExtent<N> extent, he;
 	public boolean moved;
 	
 	
@@ -129,9 +129,9 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 	protected abstract MutableNumber<N> subtract(MutableNumber<N> x, MutableNumber<N> y);
 	protected abstract boolean hasNextExtent();
 	protected abstract boolean hasNextHidden();
-	protected abstract int firstIndex(List<Extent<N>> items);
-	protected abstract MutableNumber<N> start(Extent<N> e);
-	protected abstract MutableNumber<N> end(Extent<N> e);
+	protected abstract int firstIndex(List<MutableExtent<N>> items);
+	protected abstract MutableNumber<N> start(MutableExtent<N> e);
+	protected abstract MutableNumber<N> end(MutableExtent<N> e);
 
 
 	public MutableNumber<N> index() {
@@ -188,17 +188,17 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 		}
 		
 		@Override
-		protected int firstIndex(List<Extent<N>> items) {
+		protected int firstIndex(List<MutableExtent<N>> items) {
 			return -1;
 		}
 		
 		@Override
-		protected MutableNumber<N> start(Extent<N> e) {
+		protected MutableNumber<N> start(MutableExtent<N> e) {
 			return e.start;
 		}
 
 		@Override
-		protected MutableNumber<N> end(Extent<N> e) {
+		protected MutableNumber<N> end(MutableExtent<N> e) {
 			return e.end;
 		}
 	}
@@ -238,17 +238,17 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 		}
 		
 		@Override
-		protected int firstIndex(List<Extent<N>> items) {
+		protected int firstIndex(List<MutableExtent<N>> items) {
 			return items.size();
 		}
 		
 		@Override
-		protected MutableNumber<N> start(Extent<N> e) {
+		protected MutableNumber<N> start(MutableExtent<N> e) {
 			return e.end;
 		}
 		
 		@Override
-		protected MutableNumber<N> end(Extent<N> e) {
+		protected MutableNumber<N> end(MutableExtent<N> e) {
 			return e.start;
 		}
 	}

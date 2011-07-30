@@ -9,8 +9,8 @@ class AxisExtentSequence<N extends Number> {
 	int sectionIndex;
 	N start, end;
 	private int startItemIndex, endItemIndex, i, istart, iend;
-	private ArrayList<Extent<N>> items;
-	private AxisPointer<N> startItem, endItem;
+	private ArrayList<MutableExtent<N>> items;
+	private AxisItem<N> startItem, endItem;
 	private final Math<N> math;
 	
 	public AxisExtentSequence(Math<N> math, List<SectionCore<N>> sections) {
@@ -22,10 +22,10 @@ class AxisExtentSequence<N extends Number> {
 	void init() {
 		SectionCore<N> section2 = sections.get(sections.size() - 1);
 		init(
-			AxisPointer.create(sections.get(0), math.ZERO_VALUE()), 
-			AxisPointer.create(section2, math.decrement(section2.getCount())));
+			AxisItem.create(sections.get(0), math.ZERO_VALUE()), 
+			AxisItem.create(section2, math.decrement(section2.getCount())));
 	}
-	void init(AxisPointer<N> startItem, AxisPointer<N> endItem) {
+	void init(AxisItem<N> startItem, AxisItem<N> endItem) {
 		this.startItem = startItem;
     this.endItem = endItem;
     this.startItemIndex = sections.indexOf(startItem.section);
@@ -56,7 +56,7 @@ class AxisExtentSequence<N extends Number> {
       items = section.order.items;
 			i = 0;
 		}
-		Extent<N> e = items.get(i);
+		MutableExtent<N> e = items.get(i);
 		start = sectionIndex == startItemIndex && i == istart ? startItem.getIndex()
 				: e.start();
 		end = sectionIndex == endItemIndex && i == iend ? endItem.getIndex() : e

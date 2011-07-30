@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.AxisPointer;
+import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
@@ -36,15 +36,15 @@ import pl.netanel.swt.matrix.Painter;
  * @author Jacek Kolodziejczyk created 16-07-2011
  * @created 13-10-2010
  */
-public class ButtonCellPainter<X extends Number, Y extends Number> 
+public class ButtonCellBehavior<X extends Number, Y extends Number> 
   extends Painter<X, Y> implements Listener 
 {
   private final Color highlightShadow, lightShadow, normalShadow;
   private final Zone<X, Y> zone;
-  private AxisPointer<X> pushedX;
-  private AxisPointer<Y> pushedY;
+  private AxisItem<X> pushedX;
+  private AxisItem<Y> pushedY;
   
-  public ButtonCellPainter(Zone<X, Y> zone) {
+  public ButtonCellBehavior(Zone<X, Y> zone) {
     super("button cells", SCOPE_CELLS);
     this.zone = zone;
     zone.replacePainter(this);
@@ -57,6 +57,7 @@ public class ButtonCellPainter<X extends Number, Y extends Number>
     zone.setSelectionEnabled(false);
     zone.addListener(SWT.MouseDown, this);
     zone.addListener(SWT.MouseUp, this);
+    //zone.getMatrix().setZonePaintOrder(new Zone<X, Y>[] );
   }
 
   @Override public void handleEvent(Event e) {
@@ -159,7 +160,7 @@ public class ButtonCellPainter<X extends Number, Y extends Number>
     matrix.getAxisY().getBody().setCount(10);
     matrix.getAxisY().getHeader().setVisible(true);
 
-    new ButtonCellPainter<Integer, Integer>(matrix.getColumnHeader());
+    new ButtonCellBehavior<Integer, Integer>(matrix.getHeaderX());
     
     shell.setBounds(400, 200, 400, 300);
     shell.open();

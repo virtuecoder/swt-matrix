@@ -26,8 +26,8 @@ public class Snippet_0019 {
 		matrix.getAxisY().getBody().setCount(10);
 		matrix.getAxisY().getHeader().setVisible(true);
 		
-		matrix.getColumnHeader().replacePainter(
-			new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_VERTICALLY) {
+		matrix.getHeaderX().replacePainter(
+			new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_Y) {
 				@Override
 				public String getText(Integer indexX, Integer indexY) {
 					textAlignX = indexX.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
@@ -36,7 +36,7 @@ public class Snippet_0019 {
 			});
 
 		matrix.getBody().replacePainter(
-			new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_VERTICALLY) {
+			new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_Y) {
 				@Override
 				public String getText(Integer indexX, Integer indexY) {
 					textAlignX = indexX.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;

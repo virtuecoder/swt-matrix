@@ -55,7 +55,7 @@ class NumberQueueSet<N extends Number> extends NumberSet<N> {
 		int i = 0;
 		
 		for (;i <= last; i++) {
-			Extent<N> item = items.get(i);
+			MutableExtent<N> item = items.get(i);
 			int location = math.compare(start, end, item.start(), item.end());
 			
 			switch (location) {
@@ -65,13 +65,13 @@ class NumberQueueSet<N extends Number> extends NumberSet<N> {
 			case CROSS_AFTER:		start = item.start.getValue(); items.remove(i); i--; last--; break;
 			case CROSS_BEFORE:		item.start.set(math.increment(end)); break;
 			case INSIDE:
-				items.add(++i, new Extent(math.create(end).increment(), item.end.copy()));
+				items.add(++i, new MutableExtent(math.create(end).increment(), item.end.copy()));
 				item.end.set(math.decrement(start));
 				last++;
 				break; 
 			}
 		}
-		items.add(new Extent(math.create(start), math.create(end)));
+		items.add(new MutableExtent(math.create(start), math.create(end)));
 		return true;
 	}
 
@@ -95,7 +95,7 @@ class NumberQueueSet<N extends Number> extends NumberSet<N> {
 		int i = 0;
 		
 		for (;i <= last; i++) {
-			Extent<N> item = items.get(i);
+			MutableExtent<N> item = items.get(i);
 			int location = math.compare(start, end, item.start(), item.end());
 			
 			switch (location) {
@@ -104,7 +104,7 @@ class NumberQueueSet<N extends Number> extends NumberSet<N> {
 			case CROSS_BEFORE:		item.start.set(math.increment(end)); break;
 			case CROSS_AFTER:		item.end.set(math.decrement(start)); break;
 			case INSIDE:
-				items.add(++i, new Extent(math.create(end).increment(), item.end.copy()));
+				items.add(++i, new MutableExtent(math.create(end).increment(), item.end.copy()));
 				item.end.set(math.decrement(start));
 				last++;
 				break; 
@@ -131,7 +131,7 @@ class NumberQueueSet<N extends Number> extends NumberSet<N> {
 	 * @return true if this list contains the specified element
 	 */
 	public boolean contains(N index) {
-		for (Extent<N> e: items) {
+		for (MutableExtent<N> e: items) {
 			if (math.contains(e.start(), e.end(), index)) {
 				return true;
 			}
@@ -155,8 +155,8 @@ class NumberQueueSet<N extends Number> extends NumberSet<N> {
 	 */
 	public NumberQueueSet copy() {
 		NumberQueueSet copy = new NumberQueueSet(math);
-		for (Extent<N> e: items) {
-			copy.items.add(new Extent(math.create(e.start), math.create(e.end)));
+		for (MutableExtent<N> e: items) {
+			copy.items.add(new MutableExtent(math.create(e.start), math.create(e.end)));
 		}
 		return copy;
 	}

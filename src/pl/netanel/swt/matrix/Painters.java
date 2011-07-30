@@ -36,7 +36,7 @@ class Painters<X extends Number, Y extends Number> implements Iterable<Painter<X
 	  if (!items.get(index).name.equals(painter.name)) {
 	    for (int i = 0, imax = items.size(); i < imax; i++) {
 	      if (i == index) continue;
-	      Painter painter2 = items.get(i);
+	      Painter<X, Y> painter2 = items.get(i);
 	      Preconditions.checkArgument(!painter2.name.equals(painter.name), 
 	        "A painter with '%s' name already exist in this collection", painter.name);
 	    }
@@ -76,7 +76,7 @@ class Painters<X extends Number, Y extends Number> implements Iterable<Painter<X
     return painter;
 	}
 	
-	public boolean remove(Painter painter) {
+	public boolean remove(Painter<X, Y> painter) {
 	  Preconditions.checkNotNullWithName(painter, "painter");
 	  boolean removed = items.remove(painter);
 	  if (removed) {
@@ -102,7 +102,7 @@ class Painters<X extends Number, Y extends Number> implements Iterable<Painter<X
 	
   private void checkUniqueness(Painter<X, Y> painter) {
     for (int i = 0, imax = items.size(); i < imax; i++) {
-      Painter painter2 = items.get(i);
+      Painter<X, Y> painter2 = items.get(i);
       Preconditions.checkArgument(!painter2.name.equals(painter.name), 
           "A painter with '%s' name already exist in the collection", painter.name);
     }
@@ -113,9 +113,9 @@ class Painters<X extends Number, Y extends Number> implements Iterable<Painter<X
 //		this.matrix = matrix;
 //		this.zone = zone;
 //	}
-//	private void setMatrixAndZone(Painter painter) {
+//	private void setMatrixAndZone(Painter<X, Y> painter) {
 //		if (painter.scope == Painter.SCOPE_CELLS_HORIZONTALLY ||
-//				painter.scope == Painter.SCOPE_CELLS_VERTICALLY) 
+//				painter.scope == Painter.SCOPE_CELLS_Y) 
 //		{
 //			painter.matrix = matrix;
 //			painter.zone = zone;

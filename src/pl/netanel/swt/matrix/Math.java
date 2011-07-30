@@ -90,11 +90,11 @@ abstract class Math<N extends Number> {
 		return compare(start, n) <= 0 && compare(n, end) <= 0;
 	}
 	
-	public boolean contains(Extent<N> e, MutableNumber<N> mn) {
+	public boolean contains(MutableExtent<N> e, MutableNumber<N> mn) {
 		return contains((N) e.start(), (N) e.end(), (N) mn.getValue());
 	}
 	
-	public boolean contains(Extent<N> e, N n) {
+	public boolean contains(MutableExtent<N> e, N n) {
 		return contains((N) e.start(), (N) e.end(), (N) n);
 	}
 	
@@ -136,7 +136,7 @@ abstract class Math<N extends Number> {
 		return x.min(y);
 	}
 	
-	N getCount(Extent<N> e) {
+	N getCount(MutableExtent<N> e) {
 		return create(e.end).subtract(e.start).increment().getValue();
 	}
 

@@ -11,23 +11,23 @@ class TestUtil {
 		return new MutableInt(n);
 	}
 	
-	static Extent extent(int start, int end) {
-		return new Extent(number(start), number(end));
+	static MutableExtent extent(int start, int end) {
+		return new MutableExtent(number(start), number(end));
 	}
 	
-	static Extent extent(int n) {
-		return new Extent(number(n), number(n));
+	static MutableExtent extent(int n) {
+		return new MutableExtent(number(n), number(n));
 	}
 	
-	public static AxisPointer item(Section section, int index) {
+	public static AxisItem item(Section section, int index) {
 	  if (section instanceof SectionCore) {
 	    section = new SectionClient((SectionCore) section);
 	  }
-		return new AxisPointer((SectionClient) section, index);
+		return new AxisItem((SectionClient) section, index);
 	}
 	
-	public static AxisPointer item(Axis axis, int section, int index) {
-		return new AxisPointer((SectionClient) axis.sections.get(section), index);
+	public static AxisItem item(Axis axis, int section, int index) {
+		return new AxisItem((SectionClient) axis.sections.get(section), index);
 	}
 	
 	static NumberSet numberSet() {

@@ -6,7 +6,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.AxisPointer;
+import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
@@ -30,8 +30,8 @@ public class Snippet_0011 {
 			@Override
 			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 				// Get bounds of the focus cell 
-			  AxisPointer<Integer> itemX = matrix.getAxisX().getFocusItem();
-				AxisPointer<Integer> itemY = matrix.getAxisY().getFocusItem();
+			  AxisItem<Integer> itemX = matrix.getAxisX().getFocusItem();
+				AxisItem<Integer> itemY = matrix.getAxisY().getFocusItem();
 				Zone<Integer, Integer> zone = matrix.getZone(itemX.getSection(), itemY.getSection());
 				if (zone == null) return;
 				Rectangle r = zone.getCellBounds(itemX.getIndex(), itemY.getIndex());

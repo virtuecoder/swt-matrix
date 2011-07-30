@@ -33,9 +33,9 @@ public class Snippet_0013 {
 		bodyX.setCount(4);
 		
 		// Column header painting
-		Zone<Integer, Integer> columnHeader = matrix.getColumnHeader();
-		columnHeader.getPainter("row lines").setEnabled(false);
-		columnHeader.getPainter("column lines").setEnabled(false);
+		Zone<Integer, Integer> columnHeader = matrix.getHeaderX();
+		columnHeader.getPainter(Painter.NAME_LINES_X).setEnabled(false);
+		columnHeader.getPainter(Painter.NAME_LINES_Y).setEnabled(false);
 		columnHeader.addPainter(
 		  new Painter<Integer, Integer>("cell border", Painter.SCOPE_CELLS) {
 			@Override
@@ -48,8 +48,8 @@ public class Snippet_0013 {
 		
 		// Body painting
 		Zone<Integer, Integer> body = matrix.getBody();
-		body.getPainter("row lines").setEnabled(false);
-		body.getPainter("column lines").setEnabled(false);
+		body.getPainter(Painter.NAME_LINES_X).setEnabled(false);
+		body.getPainter(Painter.NAME_LINES_Y).setEnabled(false);
 		body.addPainter(
 		  new Painter<Integer, Integer>("cell border", Painter.SCOPE_CELLS) {
 		    @Override

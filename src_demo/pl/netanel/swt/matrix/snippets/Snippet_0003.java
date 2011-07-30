@@ -74,7 +74,7 @@ public class Snippet_0003 {
 		Image image = new Image(display, new ImageData(stream));
 		stream.close();
 		
-		matrix.getColumnHeader().replacePainter(
+		matrix.getHeaderX().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 		    @Override
 		    public String getText(Integer indexX, Integer indexY) {

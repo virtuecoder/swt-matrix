@@ -15,10 +15,10 @@ abstract class MutableNumber<N extends Number> {
 	abstract MutableNumber<N> increment();
 	abstract MutableNumber<N> decrement();
 	abstract MutableNumber<N> negate();
-	abstract MutableNumber<N> add(MutableNumber n);
-	abstract MutableNumber<N> subtract(MutableNumber n);
-	abstract MutableNumber<N> multiply(MutableNumber n);
-	abstract MutableNumber<N> divide(MutableNumber n);
+	abstract MutableNumber<N> add(MutableNumber<N> n);
+	abstract MutableNumber<N> subtract(MutableNumber<N> n);
+	abstract MutableNumber<N> multiply(MutableNumber<N> n);
+	abstract MutableNumber<N> divide(MutableNumber<N> n);
 
 	abstract MutableNumber<N> add(int n);
 	abstract MutableNumber<N> add(N n);

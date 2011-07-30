@@ -49,21 +49,21 @@ public class Snippet_0201 {
 				Color background = gc.getBackground();
 				gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
 				if (headX > 0) {
-					int[] bound = axisX.getLineBound(headX);
+					int[] bound = axisX.getLineBound(axisX.getItemAt(headX));
 					gc.fillRectangle(bound[0], y, bound[1], height);
 				} 
 				int viewportItemCount = axisX.getViewportItemCount();
 				if (tailX > 0 ) {
-					int[] bound = axisX.getLineBound(viewportItemCount - tailX);
+					int[] bound = axisX.getLineBound(axisX.getItemAt(viewportItemCount - tailX));
 					gc.fillRectangle(bound[0], y, bound[1], height);
 				}
 				if (headY > 0) {
-				  int[] bound = axisY.getLineBound(headY);
+				  int[] bound = axisY.getLineBound(axisY.getItemAt(headY));
 				  gc.fillRectangle(x, bound[0], width, bound[1]);
 				} 
 				viewportItemCount = axisY.getViewportItemCount();
 				if (tailY > 0 ) {
-				  int[] bound = axisY.getLineBound(viewportItemCount - tailY);
+				  int[] bound = axisY.getLineBound(axisY.getItemAt(viewportItemCount - tailY));
 				  gc.fillRectangle(x, bound[0], width, bound[1]);
 				}
 				gc.setBackground(background);

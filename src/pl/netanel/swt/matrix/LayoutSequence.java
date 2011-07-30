@@ -4,14 +4,14 @@ import java.util.List;
 
 class LayoutSequence<N extends Number> {
 
-  private final List<AxisPointer<N>> items;
+  private final List<AxisItem<N>> items;
 	private final List<Bound> bounds;
 	private final SectionCore<N>section;
 	private int i;
 	Bound bound;
-	AxisPointer<N> item;
+	AxisItem<N> item;
 
-	public LayoutSequence(List<AxisPointer<N>> items, List<Bound> bounds, SectionCore<N> section) { 
+	public LayoutSequence(List<AxisItem<N>> items, List<Bound> bounds, SectionCore<N> section) { 
     this.items = items;
 		this.bounds = bounds;
 		this.section = section;
@@ -31,7 +31,7 @@ class LayoutSequence<N extends Number> {
 			if (items.size() == bounds.size() /*&& 
 				axis.getZIndex(section2) < axis.getZIndex(item.section)*/) 
 			{
-				item = AxisPointer.create(item.section, section.math.increment(item.getIndex()));
+				item = AxisItem.create(item.section, section.math.increment(item.getIndex()));
 				bound = bounds.get(i);
 				i = bounds.size();
 				return true;
@@ -43,7 +43,7 @@ class LayoutSequence<N extends Number> {
 		return true;
 	}
 	
-	public AxisPointer<N> getItem() {
+	public AxisItem<N> getItem() {
 		return item;
 	}
 	
