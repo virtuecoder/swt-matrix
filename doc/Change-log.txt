@@ -1,12 +1,18 @@
 -------------------------------------------------------------------------------
 Version 0.4.1
 Features:
-- Snippet_0910 after/before feedback while dragging from file explorer
+- Configurable minimal cell width when item resizing
+- Snippet 0910 after/before feedback while dragging from file explorer
+- Snippet 0010 works for mouse move instead of window resize.
+- Snippets have meaningful names
+
 
 API changes:
+- Added Axis.setMinimalCellWidth() and Axis.getMininalCellWidth()
 - Added AxisItem(Section, Number) constructor
 - Added classes Extent, Cell and CellExtent instead of Number[]
 - Renamed Painter name constants to contain X, Y syffixers instead of HORIZONTAL and VERTICAL.
+- Renamed ButtonCellPainter to ButtonCellBehavior.
 
 Bug fixes:
 - Headers numbering was incorrect

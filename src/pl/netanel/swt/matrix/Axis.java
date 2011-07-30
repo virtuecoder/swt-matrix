@@ -30,7 +30,7 @@ public class Axis<N extends Number>  {
 	ArrayList<SectionClient<N>> sections;
 	
 	SectionClient<N> body, header;
-	private int autoScrollOffset, resizeOffset;
+	private int autoScrollOffset, resizeOffset, minimalCellWidth = 5;
 	Layout<N> layout;
 	
 	char symbol;
@@ -404,13 +404,21 @@ public class Axis<N extends Number>  {
 		this.resizeOffset = offset;
 	}
 	
+	public int getMinimalCellWidth() {
+	  return minimalCellWidth;
+	}
+	
+	public void setMinimalCellWidth(int minimalCellWidth) {
+	  this.minimalCellWidth = minimalCellWidth;
+	}
 	
 	
 	/*------------------------------------------------------------------------
 	 * Non public 
 	 */
 
-	void setMatrix(final Matrix matrix, char symbol) {
+
+  void setMatrix(final Matrix matrix, char symbol) {
 	  this.symbol = symbol;
 		this.matrix = matrix;
 		

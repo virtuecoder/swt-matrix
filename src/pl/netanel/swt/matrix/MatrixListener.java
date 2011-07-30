@@ -386,7 +386,9 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 			// Resize item
 			if (resizing && resizeItem != null) {
 				newCellWidth = resizeCellWidth + distance - resizeStartDistance;
-				if (newCellWidth < 1) newCellWidth = 1;
+				if (newCellWidth < axis.getMinimalCellWidth()) {
+          newCellWidth = axis.getMinimalCellWidth();
+        }
 				resizeItem.section.setCellWidth(
 						resizeItem.getIndex(), resizeItem.getIndex(), newCellWidth);
 				layout.compute();
