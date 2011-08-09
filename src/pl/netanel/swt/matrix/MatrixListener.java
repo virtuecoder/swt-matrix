@@ -67,7 +67,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -108,7 +107,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 	boolean instantMoving, ctrlSelectionMoving, mouseDown;
 	ZoneCore<X, Y> zone;
 	Cursor cursor;
-	AxisItem[] lastRange;
+	@SuppressWarnings("rawtypes") AxisItem[] lastRange;
 	ZoneCore<X, Y> body, columnHeader, rowHeader, topLeft;
 	
 	Event mouseMoveEvent;	
@@ -159,10 +158,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 			stateX.setItem(e);
 
 			boolean keyEvent = e.type == SWT.KeyDown || e.type == SWT.KeyUp;
-			if (e.data instanceof ZoneCore) {
-				zone = (ZoneCore<X, Y>) e.data;
-			}
-			else if (keyEvent) {
+			if (keyEvent) {
 			  AxisItem<X> focusItemX = matrix.getAxisX().getFocusItem();
 			  AxisItem<Y> focusItemY = matrix.getAxisY().getFocusItem();
 			  if (focusItemX != null && focusItemY != null) {
@@ -350,7 +346,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 						SectionCore<N> section = layout.sections.get(i);
 						NumberSequence<N> seq = section.getSelected();
 						for (seq.init(); seq.next();) {
-							section.fitCellWidth(seq.index());
+							section.setCellWidth(seq.index());
 						}
 						addEvent(section, SWT.Resize, resizeItem);
 						layout.compute();
@@ -427,8 +423,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 		
 		private boolean isInHeader() {
 			if (zone == null) return false;
-			Axis axis2 = axis.symbol == 'Y' ? matrix.axisX : matrix.axisY;
-			Section header = axis2.getHeader();
+			Axis<? extends Number> axis2 = axis.symbol == 'Y' ? matrix.axisX : matrix.axisY;
+			Section<? extends Number> header = axis2.getHeader();
 			return header != null && header.equals(
 					axis.symbol == 'X' ? zone.sectionY : zone.sectionX);
 		}
@@ -536,7 +532,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 		
 		public void pack() {
 			if (resizeItem == null) return;
-			resizeItem.section.fitCellWidth(resizeItem.getIndex());
+			resizeItem.section.setCellWidth(resizeItem.getIndex());
 			resizeEvent = SWT.MouseDoubleClick;
 			addEvent(SectionCore.from(resizeItem), SWT.Resize, resizeItem);
 			if ((resizeItem = layout.getResizeItem(distance)) == null) {
@@ -625,7 +621,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 						
 						/* In order for the mouse move commands to execute during auto scroll, 
 					       like drag selection for example */
-						AxisItem[] data = new AxisItem[2];
+						@SuppressWarnings("unchecked")
+            AxisItem<N>[] data = new AxisItem[2];
 						data[axis.symbol == 'X' ? 0 : 1] = item;
 						mouseMoveEvent.data = data;
 						matrix.notifyListeners(SWT.MouseMove, mouseMoveEvent);
@@ -1042,7 +1039,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 
     public DragItemPainterX() {
       super(Painter.NAME_DRAG_ITEM_X);
-      header = (ZoneCore) MatrixListener.this.matrix.getHeaderX().getCore();
+      header = (ZoneCore<X, Y>) MatrixListener.this.matrix.getHeaderX().getCore();
     }
 	  
     @Override public void paint(X indexX, Y indexY, int x, int y, int width, int height) {
@@ -1088,7 +1085,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 	class DragItemPainterY extends DragItemPainter{
 	  public DragItemPainterY() {
 	    super(Painter.NAME_DRAG_ITEM_Y);
-	    header = (ZoneCore) MatrixListener.this.matrix.getHeaderY().getCore();
+	    header = (ZoneCore<X, Y>) MatrixListener.this.matrix.getHeaderY().getCore();
 	  }
 	  
 	  @Override public void paint(X indexX, Y indexY, int x, int y, int width, int height) {

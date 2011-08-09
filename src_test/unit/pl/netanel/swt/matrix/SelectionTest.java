@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class) public class  SelectionTest {
+@SuppressWarnings({"rawtypes", "unchecked"}) @RunWith(JUnit4.class) public class  SelectionTest {
 	@Test
 	public void emptyAxis() throws Exception {
 		Matrix matrix = new Matrix(new Shell(), SWT.None);

@@ -31,7 +31,7 @@ import pl.netanel.util.Preconditions;
 //TODO Complete with other collection methods like addAll, etc.
 class NumberQueueSet<N extends Number> extends NumberSet<N> {
 	
-	public NumberQueueSet(Math math) {
+	public NumberQueueSet(Math<N> math) {
 		super(math);
 	}
 
@@ -65,13 +65,13 @@ class NumberQueueSet<N extends Number> extends NumberSet<N> {
 			case CROSS_AFTER:		start = item.start.getValue(); items.remove(i); i--; last--; break;
 			case CROSS_BEFORE:		item.start.set(math.increment(end)); break;
 			case INSIDE:
-				items.add(++i, new MutableExtent(math.create(end).increment(), item.end.copy()));
+				items.add(++i, new MutableExtent<N>(math.create(end).increment(), item.end.copy()));
 				item.end.set(math.decrement(start));
 				last++;
 				break; 
 			}
 		}
-		items.add(new MutableExtent(math.create(start), math.create(end)));
+		items.add(new MutableExtent<N>(math.create(start), math.create(end)));
 		return true;
 	}
 
@@ -104,7 +104,7 @@ class NumberQueueSet<N extends Number> extends NumberSet<N> {
 			case CROSS_BEFORE:		item.start.set(math.increment(end)); break;
 			case CROSS_AFTER:		item.end.set(math.decrement(start)); break;
 			case INSIDE:
-				items.add(++i, new MutableExtent(math.create(end).increment(), item.end.copy()));
+				items.add(++i, new MutableExtent<N>(math.create(end).increment(), item.end.copy()));
 				item.end.set(math.decrement(start));
 				last++;
 				break; 
@@ -153,10 +153,10 @@ class NumberQueueSet<N extends Number> extends NumberSet<N> {
 	 * Returns a deep copy of the set.
 	 * @return deep copy of the set.
 	 */
-	public NumberQueueSet copy() {
-		NumberQueueSet copy = new NumberQueueSet(math);
+	public NumberQueueSet<N> copy() {
+		NumberQueueSet<N> copy = new NumberQueueSet<N>(math);
 		for (MutableExtent<N> e: items) {
-			copy.items.add(new MutableExtent(math.create(e.start), math.create(e.end)));
+			copy.items.add(new MutableExtent<N>(math.create(e.start), math.create(e.end)));
 		}
 		return copy;
 	}

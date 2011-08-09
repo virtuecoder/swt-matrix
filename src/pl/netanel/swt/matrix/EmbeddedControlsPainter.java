@@ -18,7 +18,7 @@ import pl.netanel.swt.matrix.ZoneEditor.ZoneEditorData;
  * @author Jacek Kolodziejczyk created 14-06-2011
  */
 class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painter<X, Y> {
-	private final ZoneEditor editor;
+	private final ZoneEditor<X, Y> editor;
 	HashMap<Number, HashMap<Number, Control>> controls;
 	boolean needsPainting;
 	private final Listener focusInListener;
@@ -34,10 +34,10 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 			@Override
 			public void handleEvent(Event e) {
 				Matrix<X, Y> matrix = getMatrix();
-				ZoneEditorData data = editor.getData(e.widget);
+				ZoneEditorData<X, Y> data = editor.getData(e.widget);
 				matrix.model.setSelected(false, true); 
-				matrix.axisY.setFocusItem(editor.zone.getSectionY(), (Y) data.indexY);
-				matrix.axisX.setFocusItem(editor.zone.getSectionX(), (X) data.indexX);
+				matrix.axisY.setFocusItem(editor.zone.getSectionY(), data.indexY);
+				matrix.axisX.setFocusItem(editor.zone.getSectionX(), data.indexX);
 				matrix.redraw();
 			}
 		};
@@ -114,7 +114,7 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 	}
 	
 	@Override
-	protected void setMatrix(final Matrix matrix) {
+	protected void setMatrix(final Matrix<X, Y> matrix) {
 		Runnable r = new Runnable() {
 			@Override
 			public void run() {

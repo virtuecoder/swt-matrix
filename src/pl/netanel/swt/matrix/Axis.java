@@ -17,7 +17,7 @@ import pl.netanel.util.Preconditions;
  * <dd>Selection, DefaultSelection</dd>
  * </dl>
  * 
- * @param <N> specifies the indexing class for this axis
+ * @param <N> specifies the indexing class for the receiver
  * @see Section
  *
  * @author Jacek
@@ -418,7 +418,7 @@ public class Axis<N extends Number>  {
 	 */
 
 
-  void setMatrix(final Matrix matrix, char symbol) {
+  void setMatrix(final Matrix<?, ?> matrix, char symbol) {
 	  this.symbol = symbol;
 		this.matrix = matrix;
 		
@@ -496,14 +496,14 @@ public class Axis<N extends Number>  {
 	}
 
 	
-	void setSelected(AxisItem<N> start, AxisItem end, boolean select) {
+	void setSelected(AxisItem<N> start, AxisItem<N> end, boolean select) {
 		// Make sure start < end 
 		if (comparePosition(start, end) > 0) {
-			AxisItem tmp = start; start = end; end = tmp;
+			AxisItem<N> tmp = start; start = end; end = tmp;
 		}
 		
-		Section lastSection = null;
-    AxisExtentSequence seq = new AxisExtentSequence(math, layout.sections);
+		Section<N> lastSection = null;
+    AxisExtentSequence<N> seq = new AxisExtentSequence<N>(math, layout.sections);
     for (seq.init(start, end); seq.next();) {
       boolean sameSection = seq.section.equals(lastSection);
       seq.section.setSelected(seq.start, seq.end, select, !sameSection);
@@ -638,7 +638,7 @@ public class Axis<N extends Number>  {
 		MutableNumber<N> start, end, startItemIndex, endItemIndex;
 		private int i, istart, iend, sectionIndex, lastSectionIndex;
 		private ArrayList<MutableExtent<N>> items;
-		private AxisItem startItem, endItem;
+		private AxisItem<N> startItem, endItem;
 	
 		void init(AxisItem<N> startItem, AxisItem<N> endItem) {
 			this.startItem = startItem;
@@ -708,44 +708,28 @@ public class Axis<N extends Number>  {
 		return order;
 	}
 
-	void deleteInZones(SectionCore<N> section, N start, N end) {
-	  for (ZoneCore zone: matrix.model.zones) {
-      if (symbol == 'X') {
-        if (zone.sectionX.equals(this)) {
-          zone.cellSelection.deleteX(start, end);
-          zone.lastSelection.deleteX(start, end);
-        }
-      }
-      else {
-        if (zone.sectionY.equals(this)) {
-          zone.cellSelection.deleteY(start, end);
-          zone.lastSelection.deleteY(start, end);
-        }
-      }
+  void deleteInZones(SectionCore<N> section, N start, N end) {
+    if (symbol == 'X') {
+      matrix.deleteInZonesX(section, start, end);
+    } else {
+      matrix.deleteInZonesY(section, start, end);
     }
-		if (layout.current.section.equals(section) && 
-				layout.math.contains(start, end, layout.current.getIndex())) {
-			layout.ensureCurrentIsValid();
-		}
+    if (layout.current.section.equals(section) && 
+      layout.math.contains(start, end, layout.current.getIndex())) {
+      layout.ensureCurrentIsValid();
+    }
 	}
+  
+  void insertInZones(SectionCore<N> section, N target, N count) {
+    if (symbol == 'X') {
+      matrix.insertInZonesX(section, target, count);
+    } else {
+      matrix.insertInZonesY(section, target, count);
+    }
+    layout.show(AxisItem.create(section, target));
+  }
 	
-	void insertInZones(SectionCore<N> section, N target, N count) {
-	  for (ZoneCore zone: matrix.model.zones) {
-      if (symbol == 'X') {
-        if (zone.sectionX.equals(this)) {
-          zone.cellSelection.insertX(target, count);
-          zone.lastSelection.deleteX(target, count);
-        }
-      }
-      else {
-        if (zone.sectionY.equals(this)) {
-          zone.cellSelection.insertY(target, count);
-          zone.lastSelection.insertY(target, count);
-        }
-      }
-	  }
-		layout.show(AxisItem.create(section, target));
-	}
+	
 
 	SectionCore<N> checkSection(Section<N> section, String name) {
 		Preconditions.checkNotNullWithName(section, name);

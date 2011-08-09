@@ -16,7 +16,7 @@ class Listeners {
 	
 	public Listeners() {
 		events = new ArrayList<Event>();
-		listeners = new HashMapArrayList();
+		listeners = new HashMapArrayList<Integer, Listener>();
 	}
 
 	public void add(int type, Listener listener) {
@@ -44,7 +44,8 @@ class Listeners {
 	}
 	
 	public void sendEvents() {
-		ArrayList<Event> copy = (ArrayList<Event>) events.clone();
+		@SuppressWarnings("unchecked")
+    ArrayList<Event> copy = (ArrayList<Event>) events.clone();
 		events.clear();
 		for (Event e: copy) {
 			sendEvent(e);

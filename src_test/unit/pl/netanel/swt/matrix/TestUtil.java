@@ -5,7 +5,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-
+@SuppressWarnings({"rawtypes", "unchecked"})
 class TestUtil {
 	static MutableNumber number(int n) {
 		return new MutableInt(n);

@@ -27,7 +27,7 @@ class NumberSequence<N extends Number> implements Sequence {
 	MutableNumber<N> index;
 	
 	
-	NumberSequence(NumberSet set) {
+	NumberSequence(NumberSet<N> set) {
 		this.set = set;
 	}
 	

@@ -1,5 +1,10 @@
 - Licence text
 
+Domains (https://manage.name.com/names)
+:(          vgui guito guiz guico guila guild guinto guit guip quip guity guino guinu guig guigo guiso guist guihome quixot quixt guigui
+.net:       guiv guicode guilib guivo guivy guivi guixu guint guins guitech guilab guicom guiland guiflex guiforge guibus quixor guint guick
+.com, .net: guixus guixor guijet vcgui guidruid guisuit guibuild guifluid fluidgui guicomp guiset guiguild guiplan guiplant guimill guifluids guifruit guitrix guistan guiguild guixet guixedo guixon guixor
+
 
 To do
 - Decide about features in release 0.1
@@ -43,6 +48,7 @@ Features
 
 
 Example sites:
+- http://www.ultraedit.com
 - http://www.phpedit.com/en/download/versions/phpedit-4.x/phpedit-4.0.1
 - http://www.devexpress.com/Products/NET/Controls/WinForms/Grid/
 - http://h2database.com

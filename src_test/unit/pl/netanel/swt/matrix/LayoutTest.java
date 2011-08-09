@@ -14,7 +14,7 @@ import pl.netanel.swt.matrix.Frozen;
 import pl.netanel.swt.matrix.Layout;
 import pl.netanel.swt.matrix.SectionCore;
 
-@RunWith(JUnit4.class) public class  LayoutTest {
+@SuppressWarnings({"rawtypes", "unchecked"}) @RunWith(JUnit4.class) public class  LayoutTest {
 	
 	@Test(expected = NullPointerException.class)
 	public void constructorNull() throws Exception {

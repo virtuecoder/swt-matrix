@@ -10,7 +10,7 @@ import org.junit.runners.JUnit4;
 
 import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 
-@RunWith(JUnit4.class) public class  SectionTest {
+@SuppressWarnings({"rawtypes", "unchecked"}) @RunWith(JUnit4.class) public class  SectionTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void createIllegalNumber() throws Exception {

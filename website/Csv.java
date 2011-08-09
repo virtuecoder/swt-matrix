@@ -54,7 +54,7 @@ public class Csv {
 		String line = breader.readLine();
         if (line == null) return null;
         
-        ArrayList tokens = new ArrayList();
+        ArrayList<String> tokens = new ArrayList<String>();
         StringBuffer sb = new StringBuffer();
         boolean inQuotes = false;
         do {

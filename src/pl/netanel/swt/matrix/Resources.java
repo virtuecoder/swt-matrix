@@ -200,7 +200,8 @@ import org.eclipse.swt.widgets.Display;
 	/**
 	 * Maps images to decorated images.
 	 */
-	private static Map<Image, Map<Image, Image>>[] m_decoratedImageMap = new Map[LAST_CORNER_KEY];
+	@SuppressWarnings("unchecked")
+  private static Map<Image, Map<Image, Image>>[] m_decoratedImageMap = new Map[LAST_CORNER_KEY];
 	/**
 	 * Returns an {@link Image} composed of a base image decorated by another image.
 	 * 

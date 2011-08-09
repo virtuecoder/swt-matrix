@@ -20,15 +20,15 @@ import pl.netanel.swt.matrix.ZoneEditor;
 /**
  * Simplest zone editor.
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class EmbeddedControls {
-
-	public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException {
 		Display display = Display.getDefault();
 		Shell shell = new Shell(display);
 		shell.setLayout(new FillLayout());
 		
 		// Data model
-		final ArrayList<Object[]> data = new ArrayList();
+    final ArrayList<Object[]> data = new ArrayList();
 		data.add(new Object[] {"a", true, new Date()});
 		data.add(new Object[] {true, false, "Monday"});
 		data.add(new Object[] {new Date(), "Sunday", "b"});

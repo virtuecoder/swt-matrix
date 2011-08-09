@@ -74,17 +74,17 @@ class SectionCore<N extends Number> implements Section<N> {
 		count = math.ZERO_VALUE();
 		
 		order = new NumberOrder<N>(math);
-		hidden = new NumberSet(math, true);
-		resizable = new NumberSet(math, true);
-		moveable = new NumberSet(math, true);
-		hideable = new NumberSet(math, true);
+		hidden = new NumberSet<N>(math, true);
+		resizable = new NumberSet<N>(math, true);
+		moveable = new NumberSet<N>(math, true);
+		hideable = new NumberSet<N>(math, true);
 		
-		cellWidth = new IntAxisState(math, DEFAULT_CELL_WIDTH);
-		lineWidth = new IntAxisState(math, DEFAULT_LINE_WIDTH);
-		cellSpan = new ObjectAxisState(math, 1);
+		cellWidth = new IntAxisState<N>(math, DEFAULT_CELL_WIDTH);
+		lineWidth = new IntAxisState<N>(math, DEFAULT_LINE_WIDTH);
+		cellSpan = new ObjectAxisState<N, N>(math, math.ONE_VALUE());
 		
-		selection = new NumberQueueSet(math);
-		lastSelection = new NumberQueueSet(math);
+		selection = new NumberQueueSet<N>(math);
+		lastSelection = new NumberQueueSet<N>(math);
 		
 		defaultResizable = true;
 		isNavigationEnabled = isVisible = true;
@@ -131,7 +131,7 @@ class SectionCore<N extends Number> implements Section<N> {
 			MutableExtent<N> e = order.items.get(i);
 			pos2.add(e.end).subtract(e.start).subtract(hidden.getCount(e.start(), e.end()));
 			if (math.compare(pos2, position) >= 0) {
-				MutableNumber count = hidden.getCount(e.start(), pos1.getValue());
+				MutableNumber<N> count = hidden.getCount(e.start(), pos1.getValue());
 				return pos1.subtract(position).negate().add(e.start).add(count).getValue();
 			}
 			pos2.increment();
@@ -259,7 +259,7 @@ class SectionCore<N extends Number> implements Section<N> {
 		cellWidth.setValue(start, end, width);
 	}
 	
-	public void fitCellWidth(N index) {
+	public void setCellWidth(N index) {
     axis.matrix.pack(axis.symbol, this, index);
   }
 	
@@ -331,16 +331,12 @@ class SectionCore<N extends Number> implements Section<N> {
 		return hidden.contains(index);
 	}
 	
-	@Override public N getHiddenCount(N start, N end) {
-		return hidden.getCount(start, end).getValue();
-	}
-	
 	@Override public N getHiddenCount() {
 		return hidden.getCount().getValue();
 	}
 	
 	@Override public Iterator<N> getHidden() {
-		return new IndexIterator(new NumberSequence(hidden));
+		return new IndexIterator(new NumberSequence<N>(hidden));
 	}
 	
 	
@@ -422,7 +418,7 @@ class SectionCore<N extends Number> implements Section<N> {
 	 * @return a sequence of indexes of selected items
 	 */
 	NumberSequence<N> getSelected() {
-		return new NumberSequence(selection);
+		return new NumberSequence<N>(selection);
 	}
 	
 	@Override public Iterator<N> getSelectedIterator() {
@@ -558,7 +554,7 @@ class SectionCore<N extends Number> implements Section<N> {
 	}
 
 	N nextNotHiddenIndex(N index, int direction) {
-		for (MutableExtent e: hidden.items) {
+		for (MutableExtent<N> e: hidden.items) {
 			if (math.contains(e, index)) {
 				if (direction > 0) {
 					index = math.increment(e.end());
@@ -578,7 +574,7 @@ class SectionCore<N extends Number> implements Section<N> {
 	}
 
 	ExtentSequence<N> getSelectedExtentSequence() {
-		return new ExtentSequence(selection.items);
+		return new ExtentSequence<N>(selection.items);
 	}
 	
 	ExtentSequence<N> getSelectedExtentResizableSequence() {
@@ -656,7 +652,7 @@ class SectionCore<N extends Number> implements Section<N> {
 		
 		private final NumberSequence<N> seq;
 
-		IndexIterator(NumberSequence seq) {
+		IndexIterator(NumberSequence<N> seq) {
 			super();
 			this.seq = seq;
 			seq.init();

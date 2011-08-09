@@ -15,7 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class) public class  MathTest {
+@SuppressWarnings({"rawtypes", "unchecked"}) @RunWith(JUnit4.class) public class  MathTest {
 	@Test
 	public void compare() throws Exception {
 		Math math = new IntMath();

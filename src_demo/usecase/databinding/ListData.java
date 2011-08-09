@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
@@ -200,9 +199,9 @@ public class ListData<T> {
     
     // Other configuration
     Section<Integer> bodyX = matrix.getAxisX().getBody();
-    bodyX.fitCellWidth(1);
-    bodyX.fitCellWidth(2);
-    bodyX.fitCellWidth(3);
+    bodyX.setCellWidth(1);
+    bodyX.setCellWidth(2);
+    bodyX.setCellWidth(3);
     
     shell.open();
     Display display = shell.getDisplay();

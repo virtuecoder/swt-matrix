@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Shell;
 import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.Matrix;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class SnippetA {
 	public static void main(String[] args) {
 		Shell shell = new Shell();

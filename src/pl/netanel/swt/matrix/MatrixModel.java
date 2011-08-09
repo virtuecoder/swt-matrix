@@ -3,7 +3,6 @@ package pl.netanel.swt.matrix;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import pl.netanel.swt.matrix.Axis.ExtentSequence;
 import pl.netanel.util.ImmutableIterator;
 
 class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCore<X, Y>> {
@@ -186,7 +185,7 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 		}
 	
 		ZoneCore<X, Y> lastZone = null;
-		seq.init(startY, endY, startX, endX);
+		seq.init(startX, endX, startY, endY);
 		while (seq.next()) {
 			ZoneCore<X, Y> zone = getZone(seq.sectionX, seq.sectionY);
 			if (zone.isSelectionEnabled()) {
@@ -258,25 +257,27 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 	 * @author Jacek created 21-02-2011
 	 */
 	class ExtentPairSequence {
-		SectionCore sectionY, sectionX;
+	  SectionCore<X> sectionX;
+		SectionCore<Y> sectionY;
 		MutableNumber<X> startX, endX;
 		MutableNumber<Y> startY, endY;
-		ExtentSequence seqY, seqX;
+		Axis<X>.ExtentSequence seqX;
+		Axis<Y>.ExtentSequence seqY;
 		boolean empty;
-		private AxisItem startItem1;
-		private AxisItem endItem1;
+		private AxisItem<X> startItem1;
+		private AxisItem<X> endItem1;
 		
 		public ExtentPairSequence() {
 			seqY = axisY.new ExtentSequence();
 			seqX = axisX.new ExtentSequence();
 		}
 
-		public void init(AxisItem startY, AxisItem endY, AxisItem startX, AxisItem endX) {
+		public void init(AxisItem<X> startX, AxisItem<X> endX, AxisItem<Y> startY, AxisItem<Y> endY) {
 			
 			startItem1 = startX;
 			endItem1 = endX;
-			seqY.init(startY, endY);
 			seqX.init(startX, endX);
+			seqY.init(startY, endY);
 			empty = !seqY.next();
 			this.sectionY = seqY.section;
 			this.startY = seqY.start;

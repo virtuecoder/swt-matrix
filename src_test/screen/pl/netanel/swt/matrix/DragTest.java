@@ -8,8 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-@SuppressWarnings({"unchecked", "rawtypes"}) 
 @RunWith(JUnit4.class) 
+@SuppressWarnings({"unchecked", "rawtypes"}) 
 public class  DragTest extends SwtTestCase {
   
   @Test public void moveForthAndBack() throws Exception {

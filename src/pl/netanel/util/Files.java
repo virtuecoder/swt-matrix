@@ -325,7 +325,7 @@ public class Files {
 	 * @throws RuntimeException
 	 */
 	public static void delete(File ...file) {
-		List<File> list = new ArrayList();
+		List<File> list = new ArrayList<File>();
 		for (int i = 0; i < file.length; i++) {
 			if (file[i].isDirectory()) {
 				try {

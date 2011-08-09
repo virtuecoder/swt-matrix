@@ -29,12 +29,13 @@ class SectionClient<N extends Number> implements Section<N> {
   /**
 	 * Indicates whether some other object is "equal to" this one.
 	 */
-	@Override
+	@SuppressWarnings("unchecked")
+  @Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Section))
 			return false;
 		if (obj instanceof SectionClient)
-			obj = ((SectionClient) obj).core;
+			obj = ((SectionClient<N>) obj).core;
 		return core.equals(obj);
 	}
 
@@ -213,8 +214,9 @@ class SectionClient<N extends Number> implements Section<N> {
 		core.setCellWidth(start, end, width);
 	}
 
-	@Override public void fitCellWidth(N index) {
-    core.fitCellWidth(index);
+	@Override public void setCellWidth(N index) {
+	  checkCellIndex(index, "index");
+    core.setCellWidth(index);
   }
 	
 	@Override public int getCellWidth(N index) {
@@ -276,7 +278,7 @@ class SectionClient<N extends Number> implements Section<N> {
 		return core.getHiddenCount();
 	}
 
-	@Override public Iterator getHidden() {
+	@Override public Iterator<N> getHidden() {
 		return core.getHidden();
 	}
 
@@ -399,11 +401,6 @@ class SectionClient<N extends Number> implements Section<N> {
 
 	@Override public void setHiddenSelected(boolean state) {
 		core.setHiddenSelected(state);
-	}
-
-	@Override public N getHiddenCount(N start, N end) {
-	  checkRange(start, end, getCount());
-		return core.getHiddenCount(start, end);
 	}
 
 	@Override public void setSelected(N index, boolean state) {

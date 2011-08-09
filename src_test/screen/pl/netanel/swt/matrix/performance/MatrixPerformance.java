@@ -26,16 +26,16 @@ import pl.netanel.swt.matrix.Painter;
 		Display display = shell.getDisplay();
 		shell.setLayout(new FillLayout());
 		
-		Matrix matrix = new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-		matrix.addPainter(0, new Painter("start timer") {
+		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		matrix.addPainter(0, new Painter<Integer, Integer>("start timer") {
 			@Override
-			public void paint(Number indexY, Number indexX, int x, int y, int width, int height) {
+			public void paint(Integer indexY, Integer indexX, int x, int y, int width, int height) {
 				t = System.currentTimeMillis();
 			}
 		});
-		matrix.addPainter(new Painter("stop timer") {
+		matrix.addPainter(new Painter<Integer, Integer>("stop timer") {
 			@Override
-			public void paint(Number indexY, Number indexX, int x, int y, int width, int height) {
+			public void paint(Integer indexY, Integer indexX, int x, int y, int width, int height) {
 				t = System.currentTimeMillis() - t;
 				time.add(t);
 			}
@@ -44,9 +44,9 @@ import pl.netanel.swt.matrix.Painter;
 		matrix.getAxisY().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
 		matrix.getAxisX().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
 		
-		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS) {
+		matrix.getBody().replacePainter(new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
 			@Override
-			public String getText(Number indexY, Number indexX) {
+			public String getText(Integer indexY, Integer indexX) {
 				return indexY.toString() + ", " + indexX;
 			}
 		});
@@ -73,6 +73,7 @@ import pl.netanel.swt.matrix.Painter;
 //		}
 	}
 	
+	@SuppressWarnings({"rawtypes", "unchecked"}) 
 	@Test
 	public void cursorNavigationBigInteger() throws Exception {
 		Shell shell = new Shell();

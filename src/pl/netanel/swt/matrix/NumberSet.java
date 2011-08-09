@@ -16,7 +16,7 @@ class NumberSet<N extends Number> {
 	protected Math<N> math;
 	protected boolean sorted;
 	ArrayList<MutableExtent<N>> items;
-	protected ArrayList<MutableExtent> toRemove;
+	protected ArrayList<MutableExtent<N>> toRemove;
 	
 	protected MutableExtent<N> modified;
 	protected transient int modCount;
@@ -26,11 +26,11 @@ class NumberSet<N extends Number> {
 		this(math, false);
 	}
 	
-	public NumberSet(Math math, boolean sorted) {
+	public NumberSet(Math<N> math, boolean sorted) {
 		this.sorted = sorted;
 		this.math = math;
 		items = new ArrayList<MutableExtent<N>>();
-		toRemove = new ArrayList<MutableExtent>();
+		toRemove = new ArrayList<MutableExtent<N>>();
 	};
 	
 	@Override
@@ -123,7 +123,7 @@ class NumberSet<N extends Number> {
 			if (quit) break;
 		}
 		if (modified == null) {
-			items.add(i, new MutableExtent(math.create(start), math.create(end)));
+			items.add(i, new MutableExtent<N>(math.create(start), math.create(end)));
 		}
 		for (MutableExtent<N> e: toRemove) {
 			items.remove(e); 
@@ -194,9 +194,9 @@ class NumberSet<N extends Number> {
 				break;
 				
 			case INSIDE:
-				MutableNumber newEnd = item.end.copy();
+				MutableNumber<N> newEnd = item.end.copy();
 				item.end.set(math.max(math.decrement(start), item.start()));
-				items.add(i+1, new MutableExtent(math.create(end).increment(), newEnd));
+				items.add(i+1, new MutableExtent<N>(math.create(end).increment(), newEnd));
 			}
 			modified = location >= OVERLAP || modified; 
 		}
@@ -228,7 +228,7 @@ class NumberSet<N extends Number> {
 	 * @return
 	 */
 	public MutableNumber<N> getCount() {
-		MutableNumber sum = math.create(0);
+		MutableNumber<N> sum = math.create(0);
 		for (MutableExtent<N> e: items) {
 			sum.add(e.end).subtract(e.start).increment();
 		}
@@ -242,7 +242,7 @@ class NumberSet<N extends Number> {
 	 * @return
 	 */
 	public MutableNumber<N> getCount(N start, N end) {
-		MutableNumber sum = math.create(0);
+		MutableNumber<N> sum = math.create(0);
 		for (MutableExtent<N> e: items) {
 			switch (math.compare(e.start(), e.end(), start, end)) {
 			case BEFORE:				
@@ -272,7 +272,7 @@ class NumberSet<N extends Number> {
 	public void replace(NumberSet<N> set) {
 		items.clear();
 		for (MutableExtent<N> e: set.items) {
-			items.add(new MutableExtent(math.create(e.start()), math.create(e.end())));
+			items.add(new MutableExtent<N>(math.create(e.start()), math.create(e.end())));
 		}
 	}
 
@@ -281,10 +281,10 @@ class NumberSet<N extends Number> {
 	}
 
 
-	public NumberSet copy() {
-		NumberSet copy = new NumberSet(math);
+	public NumberSet<N> copy() {
+		NumberSet<N> copy = new NumberSet<N>(math);
 		for (MutableExtent<N> e: items) {
-			copy.items.add(new MutableExtent(math.create(e.start()), math.create(e.end())));
+			copy.items.add(new MutableExtent<N>(math.create(e.start()), math.create(e.end())));
 		}
 		return copy;
 	}

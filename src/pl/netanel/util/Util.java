@@ -19,4 +19,8 @@ public class Util {
 		}
 		return null;
 	}
+	
+	public static <T> T notNull(T v1, T v2) {
+	  return v1 != null ? v1 : v2;
+	}
 }

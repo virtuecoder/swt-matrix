@@ -6,7 +6,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
+@RunWith(JUnit4.class) 
 public class LayoutScrollTest {
   @Test public void initialPosition() throws Exception {
     Shell shell = new Shell();

@@ -32,7 +32,7 @@ class NumberPairSequence<X extends Number, Y extends Number> implements Sequence
 	MutableNumber<X> indexX;
 	
 	
-	NumberPairSequence(CellSet set) {
+	NumberPairSequence(CellSet<X, Y> set) {
 		this.set = set;
 	}
 	

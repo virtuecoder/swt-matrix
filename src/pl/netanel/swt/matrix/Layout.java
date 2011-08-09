@@ -47,10 +47,10 @@ class Layout<N extends Number> {
 //		sections.add(new Section(numberClass)); // header
 //		sections.add(new Section(numberClass)); // body
 		
-		forward = new Direction.Forward(math, sections, false);
-		backward = new Direction.Backward(math, sections, false);
-		forwardNavigator = new Direction.Forward(math, sections, true);
-		backwardNavigator = new Direction.Backward(math, sections, true);
+		forward = new Direction.Forward<N>(math, sections, false);
+		backward = new Direction.Backward<N>(math, sections, false);
+		forwardNavigator = new Direction.Forward<N>(math, sections, true);
+		backwardNavigator = new Direction.Backward<N>(math, sections, true);
 		
 		head = new CountCache(forward);
 		main = new DistanceCache();
@@ -69,7 +69,7 @@ class Layout<N extends Number> {
 		scrollTotal = math.create(0);
 		scrollPosition = math.create(0);
 		
-		callbacks = new ArrayList();
+		callbacks = new ArrayList<Runnable>();
 		isComputingRequired = true;
 	}
 
@@ -649,7 +649,7 @@ class Layout<N extends Number> {
 			return item == null || !item.equals(forward.freeze) && !item.equals(backward.freeze);
 		}
 		
-		public void compute(Direction<N> direction, int maxWidth) {
+    public void compute(Direction<N> direction, int maxWidth) {
 			clear();
 			
 			super.compute(direction, maxWidth, -1, direction == forward);
@@ -895,7 +895,8 @@ class Layout<N extends Number> {
 	
 	public void freezeTail(AxisItem<N> item) {
 		int count = 0;
-		List<Cache> list = (List<Cache>) caches.clone();
+		@SuppressWarnings("unchecked")
+    List<Cache> list = (List<Cache>) caches.clone();
 		Collections.reverse(list);
 		for (Cache cache: list) {
 			for (int i = cache.cells.size(); i-- > 0; count++) {

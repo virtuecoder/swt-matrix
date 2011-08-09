@@ -72,25 +72,25 @@ class MutableLong extends MutableNumber<Long> {
 	}
 
 	@Override
-	public MutableLong add(MutableNumber n) {
+	public MutableLong add(MutableNumber<Long> n) {
 		value += n.longValue();
 		return this;
 	}
 
 	@Override
-	public MutableLong subtract(MutableNumber n) {
+	public MutableLong subtract(MutableNumber<Long> n) {
 		value -= n.longValue();
 		return this;
 	}
 
 	@Override
-	public MutableLong multiply(MutableNumber n) {
+	public MutableLong multiply(MutableNumber<Long> n) {
 		value *= n.longValue();
 		return this;
 	}
 
 	@Override
-	public MutableLong divide(MutableNumber n) {
+	public MutableLong divide(MutableNumber<Long> n) {
 		value /= n.longValue();
 		return this;
 	}

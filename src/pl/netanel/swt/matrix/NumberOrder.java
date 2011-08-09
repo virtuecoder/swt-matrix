@@ -21,13 +21,13 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 		else if (compare > 0) {
 			MutableNumber<N> newLast = math.create(newCount).decrement();
 			if (items.isEmpty()) {
-				items.add(new MutableExtent(math.create(count), newLast));
+				items.add(new MutableExtent<N>(math.create(count), newLast));
 			} else {
 				MutableExtent<N> e = items.get(items.size() - 1);
 				if (math.compare(e.end(), last) == 0) {
 					e.end.set(newLast);
 				} else {
-					items.add(new MutableExtent(math.create(count), newLast));
+					items.add(new MutableExtent<N>(math.create(count), newLast));
 				}
 			}
 		} else {
@@ -57,15 +57,15 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 					break;
 				} 
 				else {
-					MutableNumber end2 = math.create(e.end);
+					MutableNumber<N> end2 = math.create(e.end);
 					e.end.set(target).decrement();
-					items.add(++i, new MutableExtent(math.create(target), end2));
+					items.add(++i, new MutableExtent<N>(math.create(target), end2));
 					break;
 				}
 			}
 		}
 
-		items.add(i, new MutableExtent(math.create(start), math.create(end)));
+		items.add(i, new MutableExtent<N>(math.create(start), math.create(end)));
 		mergeAdjacentExtents();
 	}
 	
@@ -90,16 +90,16 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 					break;
 				} 
 				else {
-					MutableNumber end2 = math.create(e.end);
+					MutableNumber<N> end2 = math.create(e.end);
 					e.end.set(target2).decrement();
-					items.add(++i, new MutableExtent(math.create(target2), end2));
+					items.add(++i, new MutableExtent<N>(math.create(target2), end2));
 					break;
 				}
 			}
 		}
 
 		for (MutableExtent<N> e: set.items) {
-			items.add(i++, new MutableExtent(math.create(e.start), math.create(e.end)));
+			items.add(i++, new MutableExtent<N>(math.create(e.start), math.create(e.end)));
 		}
 		mergeAdjacentExtents();
 	}
@@ -134,7 +134,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	public void insert(N target, N count) {
 		int imax = items.size();
 		if (imax == 0) {
-			items.add(new MutableExtent(math.create(0), math.create(0)));
+			items.add(new MutableExtent<N>(math.create(0), math.create(0)));
 		} else {
 			for (int i = 0; i < imax; i++) {
 				MutableExtent<N> e = items.get(i);
@@ -190,7 +190,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 				}
 				e.end.add(count);
 			}
-			items.add(i, new MutableExtent(math.create(target), mutableEnd));
+			items.add(i, new MutableExtent<N>(math.create(target), mutableEnd));
 		}
 	};
 

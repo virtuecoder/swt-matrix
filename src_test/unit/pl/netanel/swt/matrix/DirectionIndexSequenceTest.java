@@ -12,7 +12,7 @@ import org.junit.runners.JUnit4;
 import pl.netanel.swt.matrix.DirectionIndexSequence.Backward;
 import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 
-@RunWith(JUnit4.class) public class  DirectionIndexSequenceTest {
+@SuppressWarnings({"rawtypes", "unchecked"}) @RunWith(JUnit4.class) public class  DirectionIndexSequenceTest {
 	@Test
 	public void sequence() throws Exception {
 		SectionCore section = new SectionCore(int.class);

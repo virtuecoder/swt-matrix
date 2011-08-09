@@ -82,8 +82,8 @@ public class Arrays {
 	 * @param index of the item to insert
 	 * @return copy of source array, but with the added item
 	 */
-	public static Class[] insert(Class[] src, int index, Class value) {
-		Class[] dest = new Class[src.length + 1];
+	public static Class<?>[] insert(Class<?>[] src, int index, Class<?> value) {
+		Class<?>[] dest = new Class[src.length + 1];
 		if (index > 0)
 			System.arraycopy(src, 0, dest, 0, index);
 		if (index < src.length)

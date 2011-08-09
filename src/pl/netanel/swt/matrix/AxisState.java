@@ -12,7 +12,7 @@ abstract class AxisState<N extends Number> {
 	private final IntArray toRemove;
 
 	
-	public AxisState(Math math) {
+	public AxisState(Math<N> math) {
 		this.math = math;
 		extents = new ArrayList<MutableExtent<N>>();
 		toRemove = new IntArray();
@@ -47,12 +47,12 @@ abstract class AxisState<N extends Number> {
 				if (sameValue) return;
 				else {
 					if (ee > 0) {
-						extents.add(i+1, new MutableExtent(math.create(end).increment(), e.end.copy()));
+						extents.add(i+1, new MutableExtent<N>(math.create(end).increment(), e.end.copy()));
 						addValue(i, i+1);
 					}
 					if (ss < 0) {
 						e.end.set(start).decrement();
-						modified = new MutableExtent(math.create(start), math.create(end));
+						modified = new MutableExtent<N>(math.create(start), math.create(end));
 						extents.add(++i, modified);
 						addValue(i);
 						;
@@ -93,7 +93,7 @@ abstract class AxisState<N extends Number> {
 		}
 		
 		if (modified == null) {
-			extents.add(i, new MutableExtent(math.create(start), math.create(end)));
+			extents.add(i, new MutableExtent<N>(math.create(start), math.create(end)));
 			addValue(i);
 		}
 		

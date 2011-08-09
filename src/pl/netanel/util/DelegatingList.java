@@ -16,9 +16,9 @@ import java.util.ListIterator;
 public class DelegatingList<T> implements List<T> {
 	protected final List<T> items;
 
-	public DelegatingList(List list) {
+	public DelegatingList(List<T> list) {
 		if (list == null)
-			list = new ArrayList();
+			list = new ArrayList<T>();
 		this.items = list;
 	}
 
@@ -30,11 +30,11 @@ public class DelegatingList<T> implements List<T> {
 		return items.add(e);
 	}
 
-	public boolean addAll(Collection c) {
+	public boolean addAll(Collection<? extends T> c) {
 		return items.addAll(c);
 	}
 
-	public boolean addAll(int index, Collection c) {
+	public boolean addAll(int index, Collection<? extends T> c) {
 		return items.addAll(index, c);
 	}
 
@@ -46,7 +46,7 @@ public class DelegatingList<T> implements List<T> {
 		return items.contains(o);
 	}
 
-	public boolean containsAll(Collection c) {
+	public boolean containsAll(Collection<?> c) {
 		return items.containsAll(c);
 	}
 
@@ -62,7 +62,7 @@ public class DelegatingList<T> implements List<T> {
 		return items.isEmpty();
 	}
 
-	public Iterator iterator() {
+	public Iterator<T> iterator() {
 		return items.iterator();
 	}
 
@@ -70,11 +70,11 @@ public class DelegatingList<T> implements List<T> {
 		return items.lastIndexOf(o);
 	}
 
-	public ListIterator listIterator() {
+	public ListIterator<T> listIterator() {
 		return items.listIterator();
 	}
 
-	public ListIterator listIterator(int index) {
+	public ListIterator<T> listIterator(int index) {
 		return items.listIterator(index);
 	}
 
@@ -86,11 +86,11 @@ public class DelegatingList<T> implements List<T> {
 		return items.remove(o);
 	}
 
-	public boolean removeAll(Collection c) {
+	public boolean removeAll(Collection<?> c) {
 		return items.removeAll(c);
 	}
 
-	public boolean retainAll(Collection c) {
+	public boolean retainAll(Collection<?> c) {
 		return items.retainAll(c);
 	}
 
@@ -102,7 +102,7 @@ public class DelegatingList<T> implements List<T> {
 		return items.size();
 	}
 
-	public List subList(int fromIndex, int toIndex) {
+	public List<T> subList(int fromIndex, int toIndex) {
 		return items.subList(fromIndex, toIndex);
 	}
 
@@ -110,7 +110,9 @@ public class DelegatingList<T> implements List<T> {
 		return items.toArray();
 	}
 
-	public Object[] toArray(Object[] a) {
+	@SuppressWarnings("unchecked")
+	@Override
+  public Object[] toArray(Object[] a) {
 		return items.toArray(a);
 	}
 
@@ -119,14 +121,15 @@ public class DelegatingList<T> implements List<T> {
 		return items.toString();
 	}
 
-	public DelegatingList copy() {
+	public DelegatingList<T> copy() {
 		if (items instanceof ArrayList) {
-			List clone = (List) ((ArrayList) items).clone();
-			return new DelegatingList(clone);
+			@SuppressWarnings("unchecked")
+      List<T> clone = (List<T>) ((ArrayList<T>) items).clone();
+			return new DelegatingList<T>(clone);
 		}
 		else if (items instanceof DelegatingList) {
-			List clone = ((DelegatingList) items).copy();
-			return new DelegatingList(clone);
+			DelegatingList<T> clone = ((DelegatingList<T>) items).copy();
+			return new DelegatingList<T>(clone);
 		}
 		throw new UnsupportedOperationException();
 	}

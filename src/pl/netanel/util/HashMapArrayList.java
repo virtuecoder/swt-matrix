@@ -18,7 +18,7 @@ public class HashMapArrayList<K, V> extends DelegatingMap<K, List<V>> {
 	public void add(K key, V value) {
 		List<V> list = map.get(key);
 		if (list == null) {
-			list = new ArrayList();
+			list = new ArrayList<V>();
 			map.put(key, list);
 		}
 		list.add(value);
@@ -44,7 +44,7 @@ public class HashMapArrayList<K, V> extends DelegatingMap<K, List<V>> {
 	public int putIndexed(K key, V value) {
 		List<V> list = map.get(key);
 		if (list == null) {
-			list = new ArrayList();
+			list = new ArrayList<V>();
 			map.put(key, list);
 		}
 		int i = list.size();

@@ -9,11 +9,11 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 
 /**
- * Section represents a continuous segment of a matrix axis, for example a
- * header, body, footer. It contains a number of items indexed by the 
- * <code>&lt;N extends {@link Number}&gt;</code> type parameter.<br>
+ * Section represents a continuous segment of a matrix {@link Axis}, for example a
+ * header, body, footer. It contains a number of items indexed by the instances
+ * of a class specified by the <code>&lt;N extends {@link Number}&gt;</code> type parameter.<br>
  * 
- * Index item width consists of the line width and the cell width - 
+ * Item width consists of the line width and the cell width - 
  * the line precedes the cell. The last line index equals to getCount().
  * If the item is moved then both the cell and the preceding line are moved.  
  * <p>
@@ -25,8 +25,9 @@ import org.eclipse.swt.events.SelectionListener;
  * have the same width, then its a waste to store 1000000 ints with the same
  * values. An example of such function: setDefaultCellWidth(width).
  * <p>
- * Section has boolean flags for visibility and navigation enablement. 
+ * Section visibility and focus item can be enabled or disabled. 
  * 
+ * @param <N> specifies the indexing class for the receiver
  * 
  * @author Jacek Kolodziejczyk created 02-03-2011
  */
@@ -313,6 +314,25 @@ public interface Section<N extends Number> {
   int getLineWidth(N index);
 
   /**
+   * Sets the cell width for the range of items.
+   * <p>
+   * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position of the item on the screen 
+   * which can be altered by move and hide operations. 
+   * If the <code>width</code> is lower then 0 then the method does nothing.
+   *
+   * @param start first index of the range of items  
+   * @param end last index of the range of items  
+   * @param width the new cell width
+   * 
+   * @throws IndexOutOfBoundsException if start or end is <code>null</code>
+   * @throws IndexOutOfBoundsException if start or end is out of 0 ...
+   *         {@link #getCount()} bounds
+   * @throws IllegalArgumentException if start is greater then end
+   * 
+   */
+  void setCellWidth(N start, N end, int width);
+
+  /**
    * Sets the cell width for the item at the specified index.
    * <p>
    * <code>index</code> index refers to the model, not the visual position of the item on the screen 
@@ -334,25 +354,19 @@ public interface Section<N extends Number> {
   void setCellWidth(N index, int width);
 
   /**
-   * Sets the cell width for the range of items.
+   * Sets the cell width that best fits its content.
    * <p>
-   * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position of the item on the screen 
-   * which can be altered by move and hide operations. 
-   * If the <code>width</code> is lower then 0 then the method does nothing.
-   *
-   * @param start first index of the range of items  
-   * @param end last index of the range of items  
+   * The width is calculated by {@link Painter#computeSize(Number, Number, int, int)} 
+   * of the zones to which the section belongs.
+   *   
+   * @param index index of the item to set the cell width for 
    * @param width the new cell width
    * 
-   * @throws IndexOutOfBoundsException if start or end is <code>null</code>
-   * @throws IndexOutOfBoundsException if start or end is out of 0 ...
+   * @throws IndexOutOfBoundsException if index is <code>null</code>
+   * @throws IndexOutOfBoundsException if index is out of 0 ...
    *         {@link #getCount()} bounds
-   * @throws IllegalArgumentException if start is greater then end
-   * 
    */
-  void setCellWidth(N start, N end, int width);
-
-  void fitCellWidth(N index);
+  void setCellWidth(N index);
   
   /**
    * Returns the cell width at the given index in the receiver.  
@@ -624,24 +638,6 @@ public interface Section<N extends Number> {
    *         
    */
   boolean isHidden(N index);
-
-  /**
-   * Returns the number of hidden items in the given range of items.
-   * 
-   * <code>start</code> and <code>end</code> indexes refer to the model, not the visual position of the item on the screen
-   * which can be altered by move and hide operations. Width that is lower then zero is ignored. 
-   *
-   * @param start first index of the range of items  
-   * @param end last index of the range of items  
-   * @return the number of hidden items 
-   * 
-   * @throws IndexOutOfBoundsException if start or end is <code>null</code>
-   * @throws IndexOutOfBoundsException if start or end is out of 0 ...
-   *         {@link #getCount()} bounds
-   * @throws IllegalArgumentException if start is greater then end
-   * 
-   */
-  N getHiddenCount(N start, N end);
 
   /**
    * Returns the number of hidden items.

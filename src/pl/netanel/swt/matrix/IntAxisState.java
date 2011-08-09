@@ -2,11 +2,11 @@ package pl.netanel.swt.matrix;
 
 import pl.netanel.util.IntArray;
 
-class IntAxisState<N extends Number> extends AxisState {
+class IntAxisState<N extends Number> extends AxisState<N> {
 	private final IntArray values;
 	private int defaultValue, value;
 	
-	public IntAxisState(Math math, int defaultValue) {
+	public IntAxisState(Math<N> math, int defaultValue) {
 		super(math);
 		this.defaultValue = defaultValue;
 		values = new IntArray();
@@ -82,7 +82,7 @@ class IntAxisState<N extends Number> extends AxisState {
 	
 	
 	@Override
-	public IntArray delete(Number start, Number end) {
+	public IntArray delete(N start, N end) {
 		IntArray a = super.delete(start, end);
 		for (int i = 0, imax = a.size(); i < imax; i++) {
 			int index = a.get(i);

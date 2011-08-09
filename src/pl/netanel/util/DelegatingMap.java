@@ -17,9 +17,10 @@ public class DelegatingMap<K, V> implements Cloneable {
 		map.clear();
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+  @Override
 	public Object clone() throws CloneNotSupportedException {
-		DelegatingMap<K, V> o = (DelegatingMap<K, V>) super.clone();
+    DelegatingMap<K, V> o = (DelegatingMap<K, V>) super.clone();
 		o.map = (HashMap<K, V>) map.clone();
 		return o;
 	}
@@ -40,7 +41,7 @@ public class DelegatingMap<K, V> implements Cloneable {
 		return map.isEmpty();
 	}
 
-	public Set keySet() {
+	public Set<K> keySet() {
 		return map.keySet();
 	}
 
@@ -48,7 +49,7 @@ public class DelegatingMap<K, V> implements Cloneable {
 		return map.put(key, value);
 	}
 
-	public void putAll(Map m) {
+	public void putAll(Map<K, V> m) {
 		map.putAll(m);
 	}
 
@@ -65,7 +66,7 @@ public class DelegatingMap<K, V> implements Cloneable {
 		return map.toString();
 	}
 
-	public Collection values() {
+	public Collection<V> values() {
 		return map.values();
 	}
 }

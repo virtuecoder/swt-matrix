@@ -72,25 +72,25 @@ class MutableInt extends MutableNumber<Integer> {
 	}
 
 	@Override
-	public MutableInt add(MutableNumber n) {
+	public MutableInt add(MutableNumber<Integer> n) {
 		value += n.intValue();
 		return this;
 	}
 
 	@Override
-	public MutableInt subtract(MutableNumber n) {
+	public MutableInt subtract(MutableNumber<Integer> n) {
 		value -= n.intValue();
 		return this;
 	}
 
 	@Override
-	public MutableInt multiply(MutableNumber n) {
+	public MutableInt multiply(MutableNumber<Integer> n) {
 		value *= n.intValue();
 		return this;
 	}
 
 	@Override
-	public MutableInt divide(MutableNumber n) {
+	public MutableInt divide(MutableNumber<Integer> n) {
 		value /= n.intValue();
 		return this;
 	}

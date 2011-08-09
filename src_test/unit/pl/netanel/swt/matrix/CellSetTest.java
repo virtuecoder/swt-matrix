@@ -20,7 +20,7 @@ import pl.netanel.util.Arrays;
  * 
  * @author Jacek created 15-02-2011
  */
-@RunWith(JUnit4.class) public class  CellSetTest {
+@SuppressWarnings({"rawtypes", "unchecked"}) @RunWith(JUnit4.class) public class  CellSetTest {
 	private CellSet set;
 
 	@Before

@@ -111,6 +111,20 @@ abstract class Math<N extends Number> {
 		return compare(x, y) > 0 ? y : x;
 	}
 	
+	public N max(N n1, N n2, N n3) {
+    N max = n1;
+    if (compare(n2, max) > 0) max = n2;
+    else if (compare(n3, max) > 0) max = n3;
+    return max;
+  }
+  
+	public N min(N n1, N n2, N n3) {
+	  N min = n1;
+	  if (compare(n2, min) < 0) min = n2;
+	  else if (compare(n3, min) < 0) min = n3;
+	  return min;
+	}
+	
 	public N max(N ...n) {
 		N max = n[0];
 		for (int i = 1; i < n.length; i++) {

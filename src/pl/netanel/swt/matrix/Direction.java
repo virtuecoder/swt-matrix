@@ -115,15 +115,15 @@ abstract class Direction<N extends Number> {
 	
 
 	
-	public DirectionIndexSequence getSequence(Section section2, int sign) {
+	public DirectionIndexSequence<N> getSequence(Section<N> section2, int sign) {
 		return sign > 0 
-			? new DirectionIndexSequence.Forward(section) 
-			: new DirectionIndexSequence.Backward(section);
+			? new DirectionIndexSequence.Forward<N>(section) 
+			: new DirectionIndexSequence.Backward<N>(section);
 	}
 
 	
 
-	static class Forward<N extends Number> extends Direction {
+	static class Forward<N extends Number> extends Direction<N> {
 
 		public Forward(Math<N> math, ArrayList<SectionCore<N>> sections, boolean skipWithoutCurrent) {
 			super(math, sections, skipWithoutCurrent);
@@ -141,7 +141,7 @@ abstract class Direction<N extends Number> {
 		}
 		
 	}
-	static class Backward<N extends Number> extends Direction {
+	static class Backward<N extends Number> extends Direction<N> {
 
 		public Backward(Math<N> math, ArrayList<SectionCore<N>> sections, boolean skipWithoutCurrent) {
 			super(math, sections, skipWithoutCurrent);

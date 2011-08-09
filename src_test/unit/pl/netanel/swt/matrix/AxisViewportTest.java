@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class) public class  AxisViewportTest {
+@SuppressWarnings({"rawtypes", "unchecked"}) @RunWith(JUnit4.class) public class  AxisViewportTest {
 	@Test
 	public void isViewportTrimmed_0() throws Exception {
 		Axis axis = new Axis();

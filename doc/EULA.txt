@@ -3,7 +3,8 @@ IMPORTANT! READ CAREFULLY: This End-User License Agreement ("EULA") is a legal a
 
 1. GRANT OF LICENSE. Developer grants you the following rights provided that you comply with all terms and conditions of this EULA:
 1.1 Installation and use. You may install and use an unlimited number of copies of the Software on personal computers or other devices, as long as the specific number of Authorized Users for which Customer has paid the applicable License Fee is not exceeded or if the Software is used for a non-commercial project.
-1.2 License Grant for Documentation. The documentation that accompanies the Software is licensed for internal, non-commercial reference purposes only.
+1.2 Licence fee payment can be delayed for a startup company having no more then 2 employees until software it developed using the Product generates revenue worth 3 times the price of the Product.
+1.3 License Grant for Documentation. The documentation that accompanies the Software is licensed for internal, non-commercial reference purposes only.
 
 2. DESCRIPTION OF OTHER RIGHTS AND LIMITATIONS.
 2.1 Maintenance of Copyright Notices. You must not remove or alter any copyright notices on any and all copies of the Software.

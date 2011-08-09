@@ -69,7 +69,7 @@ class MutableBigInteger extends MutableNumber<BigInteger> {
 	}
 
 	@Override
-	MutableBigInteger add(MutableNumber n) {
+	MutableBigInteger add(MutableNumber<BigInteger> n) {
 		value = value.add(n.toBigInteger());
 		return this;
 	}
@@ -105,19 +105,19 @@ class MutableBigInteger extends MutableNumber<BigInteger> {
 	}
 
 	@Override
-	MutableNumber<BigInteger> subtract(MutableNumber n) {
+	MutableNumber<BigInteger> subtract(MutableNumber<BigInteger> n) {
 		value = value.subtract(n.toBigInteger());
 		return this;
 	}
 
 	@Override
-	MutableNumber<BigInteger> multiply(MutableNumber n) {
+	MutableNumber<BigInteger> multiply(MutableNumber<BigInteger> n) {
 		value = value.multiply(n.toBigInteger());
 		return this;
 	}
 
 	@Override
-	MutableNumber<BigInteger> divide(MutableNumber n) {
+	MutableNumber<BigInteger> divide(MutableNumber<BigInteger> n) {
 		value = value.divide(n.toBigInteger());
 		return this;
 	}

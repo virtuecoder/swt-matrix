@@ -306,7 +306,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	
 	private void apply(Control control) {
 		if (control == null) return;
-		ZoneEditorData data = getData(control);
+		ZoneEditorData<X, Y> data = getData(control);
 		if (data == null) return;
 		setModelValue(data.indexX, data.indexY, getEditorValue(control));
 		cancel(control);
@@ -364,7 +364,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	Control addControl(X indexX, Y indexY) {
 		Control control = createControl(indexX, indexY);
 		if (control != null) {
-			ZoneEditorData data = new ZoneEditorData(indexX, indexY, 
+			ZoneEditorData<X, Y> data = new ZoneEditorData<X, Y>(indexX, indexY, 
 					hasEmbeddedControl(indexX, indexY));
 			control.setData(ZONE_EDITOR_DATA, data);
 			setEditorValue(control, getModelValue(indexX, indexY));
@@ -822,11 +822,11 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	  getMatrix().redraw();
 	}
 
-	class ZoneEditorData {
-	  public X indexX;
-		public Y indexY;
+	static class ZoneEditorData<X2 extends Number, Y2 extends Number> {
+	  public X2 indexX;
+		public Y2 indexY;
 		public boolean isEmbedded;
-		public ZoneEditorData(X indexX2, Y indexY2, boolean embedded) {
+		public ZoneEditorData(X2 indexX2, Y2 indexY2, boolean embedded) {
 			indexY = indexY2;
 			indexX = indexX2;
 			isEmbedded = embedded;
@@ -835,7 +835,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 
 
 	@SuppressWarnings("unchecked") 
-	ZoneEditorData getData(Widget widget) {
-		return (ZoneEditorData) widget.getData(ZONE_EDITOR_DATA);
+	ZoneEditorData<X, Y> getData(Widget widget) {
+		return (ZoneEditorData<X, Y>) widget.getData(ZONE_EDITOR_DATA);
 	}
 }
