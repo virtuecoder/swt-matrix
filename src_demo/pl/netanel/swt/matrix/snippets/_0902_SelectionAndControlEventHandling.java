@@ -58,14 +58,14 @@ public class _0902_SelectionAndControlEventHandling {
 		bodyY.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				selectedItems("Rows selected: ", bodyY.getSelectedExtentIterator());
+				selectedItems("Rows selected: ", bodyY.getSelectedExtents());
 			}
 		});
 		
 		bodyX.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				selectedItems("Columns selected: ", bodyX.getSelectedExtentIterator());
+				selectedItems("Columns selected: ", bodyX.getSelectedExtents());
 			}
 		});
 		
@@ -75,7 +75,7 @@ public class _0902_SelectionAndControlEventHandling {
 				@SuppressWarnings("unchecked") AxisItem<Integer> item = (AxisItem<Integer>) e.data;
 				Section<Integer> section = item.getSection();
         if (section.getSelectedCount() > 0) {
-					selectedItems("Columns resized: ", section.getSelectedExtentIterator());
+					selectedItems("Columns resized: ", section.getSelectedExtents());
 				} else {
 					System.out.println("Columns resized: " + item.getIndex()); 
 				}
@@ -85,7 +85,7 @@ public class _0902_SelectionAndControlEventHandling {
 			}
 			@Override
 			public void controlMoved(ControlEvent e) {
-				selectedItems("Columns moved: ", bodyX.getSelectedExtentIterator());
+				selectedItems("Columns moved: ", bodyX.getSelectedExtents());
 				
 				@SuppressWarnings("unchecked") AxisItem<Integer> item = (AxisItem<Integer>) e.data;
 				System.out.println("Target: section " + item.getSection() + ", index " + item.getIndex());

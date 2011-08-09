@@ -2,8 +2,12 @@
 Version 0.5
 
 API changes:
-- Removed Section.getHiddenCount(N start, N end);
-- Renamed
+- Added Section.getHiddenExtents()
+- Removed Section.getHiddenCount(Number, Number)
+- Removed Section.indexOfNotHidden(Number)
+- Renamed Section fitCellWidth(Number) to Sectoin.setCellWidth(Number)
+- Renamed Section.getSelectedIterator() to Section.getSelected()
+- Renamed Section.getSelectedExtentIterator() to Section.getSelectedExtents()
 
 -------------------------------------------------------------------------------
 Version 0.4.1

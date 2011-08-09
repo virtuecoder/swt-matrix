@@ -344,7 +344,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 					int len = axis.sections.size();
 					for (int i = 0; i < len; i++) {
 						SectionCore<N> section = layout.sections.get(i);
-						NumberSequence<N> seq = section.getSelected();
+						NumberSequence<N> seq = section.getSelectedSequence();
 						for (seq.init(); seq.next();) {
 							section.setCellWidth(seq.index());
 						}

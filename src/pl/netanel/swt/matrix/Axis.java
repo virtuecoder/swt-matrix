@@ -617,12 +617,16 @@ public class Axis<N extends Number>  {
 	
 	/**
 	 * Sets the hidden state of selected indexes in each section.
-	 * @param hidden new hiding state
+	 * @param state new hiding state
 	 */
-	void setHidden(boolean hidden) {
+	void setHidden(boolean state) {
 		for (int i = 0, imax = sections.size(); i < imax; i++) {
-			Section<N> section = sections.get(i);
-			section.setHiddenSelected(hidden);
+			SectionCore<N> section = layout.sections.get(i);
+			ArrayList<MutableExtent<N>> items = section.selection.items;
+      for (int j = 0, jmax = items.size(); j < jmax; j++) {
+	      MutableExtent<N> e = items.get(j);
+	      section.setHidden(e.start(), e.end(), state);
+	    }
 		}
 	}
 	

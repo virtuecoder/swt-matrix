@@ -961,7 +961,7 @@ class Layout<N extends Number> {
 		
 		// Adjust the scroll position if moving before the start
 		if (position <= 0) {
-			NumberSequence<N> selected = sourceSection.getSelected();
+			NumberSequence<N> selected = sourceSection.getSelectedSequence();
 			selected.init(); selected.next();
 			start = AxisItem.create(sourceSection, selected.index());
 		} 

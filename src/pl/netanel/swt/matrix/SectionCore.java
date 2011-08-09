@@ -145,7 +145,7 @@ class SectionCore<N extends Number> implements Section<N> {
 	}
 	
 	
-	@Override public N indexOfNotHidden(N index) {
+	public N indexOfNotHidden(N index) {
 		if (index == null || hidden.contains(index)) return null;
 		MutableNumber<N> hiddenCount = math.create(0);
 		MutableNumber<N> pos1 = math.create(0);
@@ -240,27 +240,31 @@ class SectionCore<N extends Number> implements Section<N> {
 	 * Item properties 
 	 */
 	
-	@Override public void setLineWidth(N index, int width) {
-		lineWidth.setValue(index, index, width);
-	}
-	
 	@Override public void setLineWidth(N start, N end, int width) {
-		lineWidth.setValue(start, end, width);
+    	lineWidth.setValue(start, end, width);
+    }
+
+
+  @Override public void setLineWidth(N index, int width) {
+		lineWidth.setValue(index, index, width);
 	}
 	
 	@Override public int getLineWidth(N index) {
 		return lineWidth.getValue(index);
 	}
 	
-	@Override public void setCellWidth(N index, int width) {
+	@Override public void setCellWidth(N start, N end, int width) {
+  	cellWidth.setValue(start, end, width);
+  }
+
+
+  @Override public void setCellWidth(N index, int width) {
 		cellWidth.setValue(index, index, width);
 	}
-	@Override public void setCellWidth(N start, N end, int width) {
-		cellWidth.setValue(start, end, width);
-	}
-	
 	public void setCellWidth(N index) {
-    axis.matrix.pack(axis.symbol, this, index);
+	  if (axis != null) {
+	    axis.matrix.pack(axis.symbol, this, index);
+	  }
   }
 	
 	@Override public int getCellWidth(N index) {
@@ -268,12 +272,13 @@ class SectionCore<N extends Number> implements Section<N> {
 	}
 
 	
-	@Override public void setMoveable(N index, boolean enabled) {
-		moveable.change(index, index, enabled != defaultMoveable);
-	}
-	
 	@Override public void setMoveable(N start, N end, boolean enabled) {
-		moveable.change(start, end, enabled != defaultMoveable);
+  	moveable.change(start, end, enabled != defaultMoveable);
+  }
+
+
+  @Override public void setMoveable(N index, boolean enabled) {
+		moveable.change(index, index, enabled != defaultMoveable);
 	}
 	
 	@Override public boolean isMoveable(N index) {
@@ -281,24 +286,26 @@ class SectionCore<N extends Number> implements Section<N> {
 	}
 	
 	
-	@Override public void setResizable(N index, boolean enabled) {
-		resizable.change(index, index, enabled != defaultMoveable);
-	}
-	
 	@Override public void setResizable(N start, N end, boolean enabled) {
-		resizable.change(start, end, enabled != defaultResizable);
+  	resizable.change(start, end, enabled != defaultResizable);
+  }
+
+
+  @Override public void setResizable(N index, boolean enabled) {
+		resizable.change(index, index, enabled != defaultMoveable);
 	}
 	
 	@Override public boolean isResizable(N index) {
 		return resizable.contains(index) != defaultResizable;
 	}
 	
-	@Override public void setHideable(N index, boolean enabled) {
-		hideable.change(index, index, enabled != defaultMoveable);
-	}
-	
 	@Override public void setHideable(N start, N end, boolean enabled) {
-		hideable.change(start, end, enabled != defaultHideable);
+  	hideable.change(start, end, enabled != defaultHideable);
+  }
+
+
+  @Override public void setHideable(N index, boolean enabled) {
+		hideable.change(index, index, enabled != defaultMoveable);
 	}
 	
 	@Override public boolean isHideable(N index) {
@@ -312,19 +319,13 @@ class SectionCore<N extends Number> implements Section<N> {
 	
 	
 	
-	@Override public void setHidden(N index, boolean state) {
-		hidden.change(index, index, state);
-	}
-	
 	@Override public void setHidden(N start, N end, boolean state) {
-		hidden.change(start, end, state);
-	}
+  	hidden.change(start, end, state);
+  }
 
-	@Override public void setHiddenSelected(boolean state) {
-		for (int i = 0, imax = selection.items.size(); i < imax; i++) {
-			MutableExtent<N> e = selection.items.get(i);
-			setHidden(e.start(), e.end(), state);
-		}
+
+  @Override public void setHidden(N index, boolean state) {
+		hidden.change(index, index, state);
 	}
 	
 	@Override public boolean isHidden(N index) {
@@ -339,28 +340,48 @@ class SectionCore<N extends Number> implements Section<N> {
 		return new IndexIterator(new NumberSequence<N>(hidden));
 	}
 	
-	
-	
+	@Override public Iterator<Extent<N>> getHiddenExtents() {
+	  return new ImmutableIterator<Extent<N>>() {
+	    NumberSequence<N> seq = new NumberSequence<N>(hidden.copy());
+	    private boolean next;
+	    {
+	      seq.init();
+	    }
+	    @Override
+	    public boolean hasNext() {
+	      next = seq.nextExtent();
+	      return next;
+	    }
+
+	    @Override
+	    public Extent<N> next() {
+	      return next ? new Extent<N> (seq.start(), seq.end()) : null;
+	    }
+	  };
+	}
+
+
 	/*------------------------------------------------------------------------
 	 * Selection 
 	 */
 	
-	@Override public void setSelected(boolean state) {
+	@Override public void setSelected(N start, N end, boolean state) {
+  	selection.change(start, end, state);
+  	
+  	if (axis != null) {
+  		axis.selectInZones(this, start, end, state, false);
+  	}
+  }
+
+
+  @Override public void setSelected(N index, boolean state) {
+  	hidden.change(index, index, state);
+  }
+
+
+  @Override public void setSelected(boolean state) {
     setSelectedAll(state, false, true);
   }
-	
-	@Override public void setSelected(N index, boolean state) {
-		hidden.change(index, index, state);
-	}
-	
-	
-	@Override public void setSelected(N start, N end, boolean state) {
-		selection.change(start, end, state);
-		
-		if (axis != null) {
-			axis.selectInZones(this, start, end, state, false);
-		}
-	}
 	
 	void setSelected(N start, N end, boolean state, boolean notify) {
 	// Determine if there is a selection change
@@ -417,12 +438,12 @@ class SectionCore<N extends Number> implements Section<N> {
 	 * Returns a sequence of indexes of selected items. 
 	 * @return a sequence of indexes of selected items
 	 */
-	NumberSequence<N> getSelected() {
+	NumberSequence<N> getSelectedSequence() {
 		return new NumberSequence<N>(selection);
 	}
 	
-	@Override public Iterator<N> getSelectedIterator() {
-		return new ImmutableIterator<N>() {
+	@Override public Iterator<N> getSelected() {
+	  return new ImmutableIterator<N>() {
 			NumberSequence<N> seq = new NumberSequence<N>(selection.copy());
 			private boolean next;
 			{
@@ -441,7 +462,7 @@ class SectionCore<N extends Number> implements Section<N> {
 		};
 	}
 	
-	@Override public Iterator<Extent<N>> getSelectedExtentIterator() {
+	@Override public Iterator<Extent<N>> getSelectedExtents() {
 		return new ImmutableIterator<Extent<N>>() {
 			NumberSequence<N> seq = new NumberSequence<N>(selection.copy());
 			private boolean next;

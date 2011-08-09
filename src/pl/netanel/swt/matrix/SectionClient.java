@@ -27,7 +27,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	}
 
   /**
-	 * Indicates whether some other object is "equal to" this one.
+   * Indicates whether some other object is "equal to" this one.
 	 */
 	@SuppressWarnings("unchecked")
   @Override
@@ -282,6 +282,13 @@ class SectionClient<N extends Number> implements Section<N> {
 		return core.getHidden();
 	}
 
+	@Override
+	public Iterator<Extent<N>> getHiddenExtents() {
+	  return core.getHiddenExtents();
+	}
+
+
+	
 	/*------------------------------------------------------------------------
 	 * Selection 
 	 */
@@ -306,13 +313,13 @@ class SectionClient<N extends Number> implements Section<N> {
 	}
 
 	@Override
-	public Iterator<Extent<N>> getSelectedExtentIterator() {
-		return core.getSelectedExtentIterator();
+	public Iterator<Extent<N>> getSelectedExtents() {
+		return core.getSelectedExtents();
 	}
 
 	@Override
-	public Iterator<N> getSelectedIterator() {
-		return core.getSelectedIterator();
+	public Iterator<N> getSelected() {
+		return core.getSelected();
 	}
 
 	@Override
@@ -370,11 +377,6 @@ class SectionClient<N extends Number> implements Section<N> {
 		return core.indexOf(item);
 	}
 
-	@Override public N indexOfNotHidden(N item) {
-	  checkCellIndex(item, "item");
-		return core.indexOfNotHidden(item);
-	}
-
 	@Override public void setFocusItemEnabled(boolean enabled) {
 		core.setFocusItemEnabled(enabled);
 	}
@@ -397,10 +399,6 @@ class SectionClient<N extends Number> implements Section<N> {
 	@Override public void setHidden(N index, boolean state) {
 	  checkCellIndex(index, "index");
 		core.setHidden(index, state);
-	}
-
-	@Override public void setHiddenSelected(boolean state) {
-		core.setHiddenSelected(state);
 	}
 
 	@Override public void setSelected(N index, boolean state) {
