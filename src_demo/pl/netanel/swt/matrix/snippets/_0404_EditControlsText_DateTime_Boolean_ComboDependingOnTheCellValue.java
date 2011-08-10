@@ -75,9 +75,11 @@ public class _0404_EditControlsText_DateTime_Boolean_ComboDependingOnTheCellValu
 			protected Object parse(Integer indexX, Integer indexY, String s) {
 				Object o = s;
 				try {
-					o = dateFormat.parse(s);
-				} 
-				catch (ParseException e) { /* Ignore */}
+          o = dateFormat.parse(s);
+        }
+        catch (ParseException e) {
+          throw new RuntimeException(e);
+        }
 				return o;
 			}
 			

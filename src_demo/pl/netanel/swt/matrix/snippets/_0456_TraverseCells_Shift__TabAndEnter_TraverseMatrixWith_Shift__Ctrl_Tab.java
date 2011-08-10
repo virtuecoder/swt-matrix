@@ -100,6 +100,7 @@ public class _0456_TraverseCells_Shift__TabAndEnter_TraverseMatrixWith_Shift__Ct
                 matrix.execute(Matrix.CMD_FOCUS_RIGHT);
                 matrix.forceFocus();
               } 
+              break;
             case SWT.TRAVERSE_TAB_PREVIOUS:
               if ((e.stateMask & SWT.MOD2) == SWT.MOD2) {
                 matrix.execute(Matrix.CMD_FOCUS_LEFT);

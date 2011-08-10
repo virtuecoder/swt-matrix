@@ -83,11 +83,6 @@ class LongMath extends Math<Long> {
 	}
 
 	@Override
-	public Long getValue(Long n) {
-		return n.longValue();
-	}
-
-	@Override
 	Class<Long> getNumberClass() {
 		return Long.class;
 	}

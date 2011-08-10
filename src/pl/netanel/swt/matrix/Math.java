@@ -94,16 +94,16 @@ abstract class Math<N extends Number> {
 	}
 	
 	public boolean contains(MutableExtent<N> e, MutableNumber<N> mn) {
-		return contains((N) e.start(), (N) e.end(), (N) mn.getValue());
+		return contains(e.start(), e.end(), mn.getValue());
 	}
 	
 	public boolean contains(MutableExtent<N> e, N n) {
-		return contains((N) e.start(), (N) e.end(), (N) n);
+		return contains(e.start(), e.end(), n);
 	}
 	
 	public boolean contains(MutableNumber<N> start, MutableNumber<N> end, N n) {
-		return compare((N) start.getValue(), getValue(n)) <= 0 && 
-			   compare(getValue(n), (N) end.getValue()) <= 0;
+		return compare(start.getValue(), n) <= 0 && 
+			   compare(n, end.getValue()) <= 0;
 	}
 
 	public N max(N x, N y) {
@@ -157,7 +157,6 @@ abstract class Math<N extends Number> {
 		return create(e.end).subtract(e.start).increment().getValue();
 	}
 
-	abstract public N getValue(N n);
 	abstract Class<N> getNumberClass();
 
 	

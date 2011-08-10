@@ -502,11 +502,9 @@ public class Axis<N extends Number>  {
 			AxisItem<N> tmp = start; start = end; end = tmp;
 		}
 		
-		Section<N> lastSection = null;
     AxisExtentSequence<N> seq = new AxisExtentSequence<N>(math, layout.sections);
     for (seq.init(start, end); seq.next();) {
-      boolean sameSection = seq.section.equals(lastSection);
-      seq.section.setSelected(seq.start, seq.end, select, !sameSection);
+      seq.section.setSelected(seq.start, seq.end, select, true);
     }
 
 //		for (int i = start.getSection().index; i <= end.getSection().index; i++) {

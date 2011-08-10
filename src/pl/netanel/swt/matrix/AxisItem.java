@@ -88,18 +88,26 @@ public class AxisItem<N extends Number> {
 	  return "" + section + ":" + index;
 	}
 	
-	public boolean equals(AxisItem<N> item) {
-	  if (this == item) return true;
-	  if (item == null) return false;
-	  return item.section.equals(section) && item.index.equals(index);
-	}
 	
 	@Override
-	public int hashCode() {
-	  final int prime = 31;
-	  int result = 1;
-	  result = prime * result + index.hashCode();
-	  result = prime * result + section.hashCode();
-	  return result;
-	}
+  public boolean equals(Object obj) {
+    if (this == obj) { return true; }
+    if (obj == null) { return false; }
+    if (!(obj instanceof AxisItem)) { return false; }
+    @SuppressWarnings("rawtypes")
+    AxisItem other = (AxisItem) obj;
+    if (other.index.getClass() != index.getClass()) return false;
+    else if (!index.equals(other.index)) { return false; }
+    else if (!section.equals(other.section)) { return false; }
+    return true;
+  }
+
+	@Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((index == null) ? 0 : index.hashCode());
+    result = prime * result + ((section == null) ? 0 : section.hashCode());
+    return result;
+  }
 }

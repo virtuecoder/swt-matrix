@@ -203,7 +203,7 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 	
 	void insertInZonesX(SectionCore<X> section, X target, X count) {
 	   for (ZoneCore<X, Y> zone: zones) {
-        if (zone.sectionX.equals(this)) {
+        if (zone.sectionX.equals(section)) {
           zone.cellSelection.insertX(target, count);
           zone.lastSelection.deleteX(target, count);
         }
@@ -212,7 +212,7 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 	
   void insertInZonesY(SectionCore<Y> section, Y target, Y count) {
     for (ZoneCore<X, Y> zone: zones) {
-      if (zone.sectionY.equals(this)) {
+      if (zone.sectionY.equals(section)) {
         zone.cellSelection.insertY(target, count);
         zone.lastSelection.insertY(target, count);
       }

@@ -19,7 +19,7 @@ class BigIntegerMath extends Math<BigInteger> {
 
 	@Override
 	public MutableBigInteger create(BigInteger n) {
-		return new MutableBigInteger(getValue(n));
+		return new MutableBigInteger(n);
 	}
 	
 	@Override
@@ -77,13 +77,6 @@ class BigIntegerMath extends Math<BigInteger> {
 	@Override
 	public BigInteger add(Number x, Number y) {
 		return ((BigInteger) x).add((BigInteger) y);
-	}
-
-	@Override
-	public BigInteger getValue(BigInteger n) {
-		if (n instanceof BigInteger) return (BigInteger) n;
-//		if (n instanceof MutableBigInteger) return ((MutableBigInteger) n).value;
-		return new BigInteger(n.toString());
 	}
 
 	@Override

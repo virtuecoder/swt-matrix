@@ -52,7 +52,6 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	
 	private static final String ZONE_EDITOR_DATA = "edited cell";
 	private static final String DEFAULT_TRUE_TEXT = "\u2713";
-	private static final Calendar CALENDAR = Calendar.getInstance();
 	private static final String NEW_LINE = System.getProperty("line.separator");
  
 	final ZoneCore<X, Y> zone;
@@ -62,7 +61,6 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	private Painter<X, Y> cellsPainter;
 
 	private Image trueImage, falseImage;
-	private String trueLabel, falseLabel;
 	private String systemThemePath;
 
 
@@ -75,7 +73,6 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		this.zone = ZoneCore.from(zone);
 		this.zone.setEditor(this);
 		
-		trueLabel = DEFAULT_TRUE_TEXT;
 		setImagePath(null);
 		
 		// Painters
@@ -241,11 +238,12 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		} 
 		else if (control instanceof DateTime) {
 			DateTime date = (DateTime) control;
-			CALENDAR.clear();
-			CALENDAR.set(Calendar.YEAR, date.getYear());
-			CALENDAR.set(Calendar.MONTH, date.getMonth());
-			CALENDAR.set(Calendar.DAY_OF_MONTH, date.getDay());
-			return CALENDAR.getTime();
+			Calendar cal = Calendar.getInstance();
+			cal.clear();
+			cal.set(Calendar.YEAR, date.getYear());
+			cal.set(Calendar.MONTH, date.getMonth());
+			cal.set(Calendar.DAY_OF_MONTH, date.getDay());
+			return cal.getTime();
 		} 
 		
 		return null;
@@ -294,12 +292,13 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 //					throw new RuntimeException(e);
 //				}
 //			}
-			CALENDAR.setTime((Date) value);
+		  Calendar cal = Calendar.getInstance();
+			cal.setTime((Date) value);
 			DateTime dateTime = (DateTime) control;
 			dateTime.setDate(
-					CALENDAR.get(Calendar.YEAR), 
-					CALENDAR.get(Calendar.MONTH), 
-					CALENDAR.get(Calendar.DAY_OF_MONTH));
+					cal.get(Calendar.YEAR), 
+					cal.get(Calendar.MONTH), 
+					cal.get(Calendar.DAY_OF_MONTH));
 		} 
 	}
 
@@ -702,12 +701,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 * @see #setImagePath(String)
 	 */
 	protected final Object[] getDefaultCheckBoxLabels() {
-		if (trueLabel == null && falseLabel == null) {
-			return null;
-		}
-		else {
-			return new Object[] {trueLabel, falseLabel};
-		} 
+	  return new Object[] {DEFAULT_TRUE_TEXT, null};
 	}
 	
 	/**
@@ -722,7 +716,9 @@ public class ZoneEditor<X extends Number, Y extends Number> {
   void snapControlImages(String imagePath) {
     if (imagePath == null) {
       systemThemePath = OsUtil.getUserDirectory("SWT Matrix").getAbsolutePath();
-      new File(systemThemePath).mkdirs();
+      if (!new File(systemThemePath).mkdirs()) {
+        return;
+      }
     }
     else {
       setImagePath(imagePath);
@@ -792,17 +788,22 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 
 		// Read check box images
 		Display display = getMatrix().getDisplay();
+		FileInputStream stream;
 		try {
-			FileInputStream  stream = new FileInputStream(systemThemePath + "checked.png");
-			trueImage = new Image(display, new ImageData(stream));
-			stream.close();
-			
-			stream = new FileInputStream(systemThemePath + "unchecked.png");
-			falseImage = new Image(display, new ImageData(stream));
-			stream.close();
-		} 
-		catch (FileNotFoundException e) { /* Ignore */ }
-		catch (IOException e) { /* Ignore */ }
+		  stream = new FileInputStream(systemThemePath + "checked.png");
+		  trueImage = new Image(display, new ImageData(stream));
+		  stream.close();
+
+		  stream = new FileInputStream(systemThemePath + "unchecked.png");
+		  falseImage = new Image(display, new ImageData(stream));
+		  stream.close();
+		}
+		catch (FileNotFoundException e) {
+		  throw new RuntimeException(e);
+		}
+    catch (IOException e) {
+      throw new RuntimeException(e);
+    }
 	}
 
 	/**

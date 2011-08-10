@@ -4,6 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -19,17 +20,16 @@ import pl.netanel.swt.matrix.Section;
  * Freeze head and tail with different color for the dividing line 
  */
 public class _0201_FreezeHeadAndTailWithDifferentColorForTheDividingLine {
-	static Section<Integer> freezeHeadSectionY, freezeHeadSectionX, freezeTailSectionY, freezeTailSectionX;
-	static Number freezeHeadIndexY, freezeHeadIndexX, freezeTailIndexY, freezeTailIndexX;
-	static int headY, headX, tailY, tailX;
 	
 	public static void main(String[] args) {
-		Shell shell = (new Shell());
+		Shell shell = new Shell();
     shell.setText(title);
 		shell.setBounds(400, 200, 600, 400);
 		shell.setLayout(new GridLayout(2, false));
 		final Display display = shell.getDisplay();
 		
+		final Point head = new Point(0, 0);
+		final Point tail = new Point(0, 0);
 		
 		final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.H_SCROLL | SWT.V_SCROLL);
 		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
@@ -48,22 +48,22 @@ public class _0201_FreezeHeadAndTailWithDifferentColorForTheDividingLine {
 			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
 				Color background = gc.getBackground();
 				gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
-				if (headX > 0) {
-					int[] bound = axisX.getLineBound(axisX.getItemAt(headX));
+				if (head.x > 0) {
+					int[] bound = axisX.getLineBound(axisX.getItemAt(head.x));
 					gc.fillRectangle(bound[0], y, bound[1], height);
 				} 
 				int viewportItemCount = axisX.getViewportItemCount();
-				if (tailX > 0 ) {
-					int[] bound = axisX.getLineBound(axisX.getItemAt(viewportItemCount - tailX));
+				if (tail.x > 0 ) {
+					int[] bound = axisX.getLineBound(axisX.getItemAt(viewportItemCount - tail.x));
 					gc.fillRectangle(bound[0], y, bound[1], height);
 				}
-				if (headY > 0) {
-				  int[] bound = axisY.getLineBound(axisY.getItemAt(headY));
+				if (head.y > 0) {
+				  int[] bound = axisY.getLineBound(axisY.getItemAt(head.y));
 				  gc.fillRectangle(x, bound[0], width, bound[1]);
 				} 
 				viewportItemCount = axisY.getViewportItemCount();
-				if (tailY > 0 ) {
-				  int[] bound = axisY.getLineBound(axisY.getItemAt(viewportItemCount - tailY));
+				if (tail.y > 0 ) {
+				  int[] bound = axisY.getLineBound(axisY.getItemAt(viewportItemCount - tail.y));
 				  gc.fillRectangle(x, bound[0], width, bound[1]);
 				}
 				gc.setBackground(background);
@@ -75,10 +75,10 @@ public class _0201_FreezeHeadAndTailWithDifferentColorForTheDividingLine {
 		add.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				headY = axisY.getViewportPosition(axisY.getFocusItem());
-				headX = axisX.getViewportPosition(axisX.getFocusItem());
-				axisY.freezeHead(headY);
-				axisX.freezeHead(headX);
+				head.y = axisY.getViewportPosition(axisY.getFocusItem());
+				head.x = axisX.getViewportPosition(axisX.getFocusItem());
+				axisY.freezeHead(head.y);
+				axisX.freezeHead(head.x);
 				matrix.refresh();
 				matrix.setFocus();
 			}
@@ -89,12 +89,12 @@ public class _0201_FreezeHeadAndTailWithDifferentColorForTheDividingLine {
 		remove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				tailY = axisY.getViewportItemCount() - 
+				tail.y = axisY.getViewportItemCount() - 
 					axisY.getViewportPosition(axisY.getFocusItem()) - 1;
-				tailX = axisX.getViewportItemCount() - 
+				tail.x = axisX.getViewportItemCount() - 
 					axisX.getViewportPosition(axisX.getFocusItem()) - 1;
-				axisY.freezeTail(tailY);
-				axisX.freezeTail(tailX);
+				axisY.freezeTail(tail.y);
+				axisX.freezeTail(tail.x);
 				matrix.refresh();
 				matrix.setFocus();
 			}

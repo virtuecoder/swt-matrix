@@ -107,7 +107,7 @@ public class ListData<T> {
   
   public CellData getCellData(Integer indexX, Integer indexY) {
     for (CellDataEntry entry: cells) {
-      if (entry.index[0] == indexX || entry.index[1] == indexY) {
+      if (entry.index[0].intValue() == indexX || entry.index[1].intValue() == indexY) {
         return entry.cellData;
       }
     }

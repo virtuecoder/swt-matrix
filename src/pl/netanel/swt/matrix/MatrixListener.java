@@ -103,20 +103,17 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 //	ArrayList<GestureBinding> bindings;
 	AxisListener<X> stateX;
 	AxisListener<Y> stateY;
-	boolean instantMoving, ctrlSelectionMoving, mouseDown;
+	boolean instantMoving, mouseDown;
 	ZoneCore<X, Y> zone;
 	Cursor cursor;
-	@SuppressWarnings("rawtypes") AxisItem[] lastRange;
-	ZoneCore<X, Y> body, columnHeader, rowHeader, topLeft;
+	ZoneCore<X, Y> columnHeader, rowHeader, topLeft;
 	
 	Event mouseMoveEvent;	
-  Point imageOffset, lastImageLocation, imageSize;
+  Point imageOffset;
 	private Move mY, mX;
 	
 	public MatrixListener(final Matrix<X, Y> matrix) {
 		this.matrix = matrix;
-		lastRange = new AxisItem[4]; 
-		body = ZoneCore.from(matrix.getBody());
 		SectionCore<X> bodyX = SectionCore.from(matrix.axisX.getBody());
 		SectionCore<Y> bodyY = SectionCore.from(matrix.axisY.getBody());
 		SectionCore<X> headerX = SectionCore.from(matrix.axisX.getHeader());
@@ -216,7 +213,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 	class AxisListener<N extends Number> {
 		Axis<N> axis;
 		Layout<N> layout;
-		AxisItem<N> last, item, prev, resizeItem, lastFocus, mouseDownItem;
+		AxisItem<N> last, item, prev, resizeItem, lastFocus;
 		boolean moving, resizing, itemModified = true;
 		
 		Cursor resizeCursor;
@@ -283,7 +280,6 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 			case SWT.MouseDown:
 			  lastFocus = axis.getFocusItem();
 			  lastDistance = distance;
-			  mouseDownItem = item;
 			  prev = null;
 				boolean noModifiers = (e.stateMask & SWT.MOD1) == 0 && (e.stateMask & SWT.MOD2) == 0
 				  && (e.stateMask & SWT.MOD3) == 0;
@@ -317,7 +313,6 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 				break;
 				
 			case SWT.MouseUp:
-			  mouseDownItem = null;
 				// Resize all selected except the current one
 				if (resizeEvent == SWT.MouseMove) {
 					int len = axis.sections.size();
@@ -366,7 +361,6 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 				  matrix.update();
 				}
 				resizing = mouseDown = false;
-				lastRange = null;
 				if (cursor == Resources.getCursor(SWT.CURSOR_HAND)) {
 					matrix.setCursor(cursor = null);
 				}

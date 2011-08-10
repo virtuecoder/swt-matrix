@@ -48,7 +48,7 @@ public class _0014_AlteringRowBackground {
 			}
 			@Override
 			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
-				if (indexY.intValue() % 2 == 1) {
+				if (indexY.intValue() % 2 != 0) {
 					gc.fillRectangle(x, y, width, height);
 				}
 			}

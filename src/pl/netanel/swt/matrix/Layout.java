@@ -560,7 +560,7 @@ class Layout<N extends Number> {
 
 				if (freezeLineWidth >= 0) {
 					//				int sign = direction instanceof Forward ? 1 : -1;
-					int diff = (freezeLineWidth - lastLine.width);// * sign;
+					int diff = freezeLineWidth - lastLine.width;// * sign;
 					innerWidth += diff;
 					outerWidth += diff;
 					lastLine.width = freezeLineWidth;
@@ -654,8 +654,8 @@ class Layout<N extends Number> {
 			
 			super.compute(direction, maxWidth, -1, direction == forward);
 
-			start = Util.notNull(isEmpty() ? forward.min : items.get(0), zeroItem);
-			end = Util.notNull(isEmpty() ? forward.min: items.get(items.size() - 2), zeroItem);
+			start = Util.notNull(super.isEmpty() ? forward.min : items.get(0), zeroItem);
+			end = Util.notNull(super.isEmpty() ? forward.min: items.get(items.size() - 2), zeroItem);
 			
 			// Compute last index that fully visible (not trimmed) 
 			endNoTrim = end;
@@ -675,7 +675,7 @@ class Layout<N extends Number> {
 			
 			maxScroll.set(total).add(-tail.count);
 			scrollTotal.set(maxScroll).add(-head.count);
-			if (!main.isEmpty()) {
+			if (!super.isEmpty()) {
 				MutableNumber<N> itemPosition = getItemPosition(start);
 				if (itemPosition != null) {
 					scrollPosition.set(itemPosition);
@@ -713,7 +713,7 @@ class Layout<N extends Number> {
 			SectionCore<N> section = sections.get(i);
 			if (item.section.equals(section)) {
 				N index = section.getPosition(item.getIndex());
-				return index == null ? null : position.add(math.getValue(index));
+				return index == null ? null : position.add(index);
 			}
 			if (section.isVisible()) {
 				position.add(section.getVisibleCount());

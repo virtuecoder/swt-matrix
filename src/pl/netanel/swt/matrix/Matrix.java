@@ -962,7 +962,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	@SuppressWarnings("unchecked")
 	<N extends Number> void insertInZonesX(SectionCore<N> section, N target, N count) {
 	  for (ZoneCore<X, Y> zone: model.zones) {
-	    if (zone.sectionX.equals(this)) {
+	    if (zone.sectionX.equals(section)) {
 	      zone.cellSelection.insertX((X) target, (X) count);
 	      zone.lastSelection.insertX((X) target, (X) count);
 	    }
@@ -972,7 +972,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	@SuppressWarnings("unchecked")
   <N extends Number> void insertInZonesY(SectionCore<N> section, N target, N count) {
 	  for (ZoneCore<X, Y> zone: model.zones) {
-	    if (zone.sectionY.equals(this)) {
+	    if (zone.sectionY.equals(section)) {
 	      zone.cellSelection.insertY((Y) target, (Y) count);
 	      zone.lastSelection.insertY((Y) target, (Y) count);
 	    }
@@ -982,7 +982,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	@SuppressWarnings("unchecked")
 	<N extends Number> void deleteInZonesX(SectionCore<N> section, N target, N count) {
 	  for (ZoneCore<X, Y> zone: model.zones) {
-	    if (zone.sectionX.equals(this)) {
+	    if (zone.sectionX.equals(section)) {
 	      zone.cellSelection.deleteX((X) target, (X) count);
 	      zone.lastSelection.deleteX((X) target, (X) count);
 	    }
@@ -992,7 +992,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	@SuppressWarnings("unchecked")
 	<N extends Number> void deleteInZonesY(SectionCore<N> section, N target, N count) {
 	  for (ZoneCore<X, Y> zone: model.zones) {
-	    if (zone.sectionY.equals(this)) {
+	    if (zone.sectionY.equals(section)) {
 	      zone.cellSelection.deleteY((Y) target, (Y) count);
 	      zone.lastSelection.deleteY((Y) target, (Y) count);
 	    }

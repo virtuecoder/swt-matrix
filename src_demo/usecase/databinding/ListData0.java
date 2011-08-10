@@ -15,7 +15,7 @@ import pl.netanel.swt.matrix.ZoneEditor;
 
 public class ListData0<T> {
   
-  private List<T> list;
+  private final List<T> list;
   public List<Column<?>> columns; 
   
   public ListData0(List<T> list) {
@@ -57,11 +57,10 @@ public class ListData0<T> {
   
   class Column<C> {
     String name;
-    Class<C> dataType;
     int align;
     public Column(String name, Class<C> dataType, int align) {
       this.name = name;
-      this.dataType = dataType;
+//      this.dataType = dataType;
       this.align = align;
       columns.add(this);
     }
@@ -109,6 +108,7 @@ public class ListData0<T> {
       }
     };
     data.new Column<Character>("Gender", Character.class, SWT.CENTER) {
+      @Override
       Character getValue(Person0 item) {
         return item.gender;
       };

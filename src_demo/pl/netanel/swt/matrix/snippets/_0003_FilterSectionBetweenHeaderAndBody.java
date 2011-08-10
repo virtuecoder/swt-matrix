@@ -26,13 +26,15 @@ import pl.netanel.swt.matrix.Section;
  * 	Make sure filter.png is on your class path.
  */
 public class _0003_FilterSectionBetweenHeaderAndBody {
-	static String filter;
 	
 	public static void main(String[] args) throws Exception {
-		Shell shell = (new Shell());
+		Shell shell = new Shell();
 		shell.setText(title);
 		shell.setLayout(new GridLayout(2, false));
 		Display display = shell.getDisplay();
+		
+		// Filter container
+		final String[] filter = new String[1];
 		
 		final ArrayList<Object[]> list = new ArrayList<Object[]>();
 		list.add(new Object[] {"Task 1", "high"});
@@ -89,8 +91,9 @@ public class _0003_FilterSectionBetweenHeaderAndBody {
 		// Filter columns
 		matrix.getZone(axisX.getBody(), axisY.getSection(1)).replacePainter(
 			new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-				public String getText(Integer indexX, Integer indexY) {
-					return indexX.intValue() == 1 ? filter : null;
+				@Override
+        public String getText(Integer indexX, Integer indexY) {
+					return indexX.intValue() == 1 ? filter[0] : null;
 				};
 			}
 		); 
@@ -102,18 +105,18 @@ public class _0003_FilterSectionBetweenHeaderAndBody {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				switch (e.character) {
-				case 'a': filter = null; break;
-				case 'h': filter = "high"; break;
-				case 'm': filter = "medium"; break;
-				case 'l': filter = "low"; break;
+				case 'a': filter[0] = null; break;
+				case 'h': filter[0] = "high"; break;
+				case 'm': filter[0] = "medium"; break;
+				case 'l': filter[0] = "low"; break;
 				default: return;
 				}
 				filtered.clear();
-				if (filter == null) {
+				if (filter[0] == null) {
 					filtered.addAll(list);
 				} else {
 					for (Object[] item: list) {
-						if (item[1].equals(filter)) {
+						if (item[1].equals(filter[0])) {
 							filtered.add(item);
 						}
 					}

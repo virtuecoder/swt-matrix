@@ -28,16 +28,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
 //    core = zone;
 //  }
 
-  @Override
-  public boolean equals(Object obj) {
-    return core.equals(obj);
-  }
-
-  @Override
-  public int hashCode() {
-    return core.hashCode();
-  }
-
+  
   @Override
   public String toString() {
     return core.toString();

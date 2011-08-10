@@ -188,7 +188,7 @@ public class Files {
 			if (System.getProperty("os.name").startsWith("Windows")) { //$NON-NLS-1$ //$NON-NLS-2$
 				// magic number for Windows, 64Mb - 32Kb
 				// http://forum.java.sun.com/thread.jspa?threadID=439695&messageID=2917510
-				int maxCount = (64 * 1024 * 1024) - (32 * 1024);
+				int maxCount = 64 * 1024 * 1024 - 32 * 1024;
 				long size = inChannel.size();
 				long position = 0;
 				while (position < size)
@@ -230,7 +230,7 @@ public class Files {
 				if (System.getProperty("os.name").startsWith("Windows")) { //$NON-NLS-1$ //$NON-NLS-2$
 					// magic number for Windows, 64Mb - 32Kb
 					// http://forum.java.sun.com/thread.jspa?threadID=439695&messageID=2917510
-					int maxCount = (64 * 1024 * 1024) - (32 * 1024);
+					int maxCount = 64 * 1024 * 1024 - 32 * 1024;
 					long size = inChannel.size();
 					long position = 0;
 					while (position < size)
@@ -309,8 +309,7 @@ public class Files {
 		try {
 			File file = new File(parent, path);
 			mkdir(file.getParentFile());
-			file.createNewFile();
-			return file;
+			return file.createNewFile() ? file : null;
 		} catch (IOException e) {
 			return null;
 			
@@ -453,13 +452,16 @@ public class Files {
 
 	public static Properties readProperties(File file) throws FileNotFoundException, IOException {
 		Properties properties = new Properties();
-		file.createNewFile();
-		properties.load(new FileInputStream(file));
+		FileInputStream input = new FileInputStream(file);
+    properties.load(input);
+    input.close();
 		return properties;
 	}
 
 	public static void wrtieProperties(File file, Properties properties) throws FileNotFoundException, IOException {
-		properties.store(new FileOutputStream(file), "");
+		FileOutputStream output = new FileOutputStream(file);
+    properties.store(output, "");
+    output.close();
 	}
 
 	
