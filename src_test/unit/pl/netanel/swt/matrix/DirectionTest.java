@@ -48,7 +48,7 @@ import org.junit.runners.JUnit4;
 		assertEquals(false, backward.init());
 
 		// All hidden with two extents
-		section.move(1, 2, 0);
+		section.setOrder(1, 2, 0);
 		assertEquals(false, forward.init());
 		assertEquals(false, backward.init());
 		
@@ -105,7 +105,7 @@ import org.junit.runners.JUnit4;
 		assertEquals(null, direction.first());
 		
 		// One not hidden in the first extent 
-		layout.getSection(0).move(1, 2, 0);
+		layout.getSection(0).setOrder(1, 2, 0);
 		layout.getSection(0).setHidden(1, 1, false);
 		assertEquals("1", direction.first().getIndex().toString());
 		
@@ -124,12 +124,12 @@ import org.junit.runners.JUnit4;
 		layout = layout(3, 2);
 		direction = layout.forward;
 		layout.getSection(0).setHidden(0, 2, true);
-		assertEquals("1 0", direction.first().toString());
+		assertEquals("1:0", direction.first().toString());
 		
 		// All hidden in first section and first hidden in the second one
 		layout.getSection(1).setHidden(0, 0, true);
 		direction = layout.forward;
-		assertEquals("1 1", direction.first().toString());
+		assertEquals("1:1", direction.first().toString());
 	}
 	
 //	@Test(expected = IllegalStateException.class)
@@ -180,7 +180,7 @@ import org.junit.runners.JUnit4;
 		assertEquals(null, direction.first());
 		
 		// One hidden in the first extent 
-		layout.getSection(0).move(1, 2, 0);
+		layout.getSection(0).setOrder(1, 2, 0);
 		layout.getSection(0).setHidden(1, 1, false);
 		layout.getSection(0).setHidden(0, 0, false);
 		direction.init();
@@ -191,17 +191,17 @@ import org.junit.runners.JUnit4;
 		layout = layout(2, 2);
 		direction = layout.forward;
 		direction.init();
-		assertEquals("0 0", direction.next().toString());
-		assertEquals("0 1", direction.next().toString());
-		assertEquals("1 0", direction.next().toString());
-		assertEquals("1 1", direction.next().toString());
+		assertEquals("0:0", direction.next().toString());
+		assertEquals("0:1", direction.next().toString());
+		assertEquals("1:0", direction.next().toString());
+		assertEquals("1:1", direction.next().toString());
 		
 		// Hide the last index in the first section and the first index in the second section
 		layout.getSection(0).setHidden(1, 1, true);
 		layout.getSection(1).setHidden(0, 0, true);
 		direction.init();
-		assertEquals("0 0", direction.next().toString());
-		assertEquals("1 1", direction.next().toString());
+		assertEquals("0:0", direction.next().toString());
+		assertEquals("1:1", direction.next().toString());
 	}
 	
 	@Test
@@ -244,7 +244,7 @@ import org.junit.runners.JUnit4;
 		assertEquals(null, direction.first());
 		
 		// One hidden in the first extent 
-		layout.getSection(0).move(0, 1, 3);
+		layout.getSection(0).setOrder(0, 1, 3);
 		layout.getSection(0).setHidden(1, 1, false);
 		layout.getSection(0).setHidden(2, 2, false);
 		direction.init();
@@ -255,17 +255,17 @@ import org.junit.runners.JUnit4;
 		layout = layout(2, 2);
 		direction = layout.backward;
 		direction.init();
-		assertEquals("1 1", direction.next().toString());
-		assertEquals("1 0", direction.next().toString());
-		assertEquals("0 1", direction.next().toString());
-		assertEquals("0 0", direction.next().toString());
+		assertEquals("1:1", direction.next().toString());
+		assertEquals("1:0", direction.next().toString());
+		assertEquals("0:1", direction.next().toString());
+		assertEquals("0:0", direction.next().toString());
 		
 		// Hide the last index in the first section and the first index in the second section
 		layout.getSection(0).setHidden(1, 1, true);
 		layout.getSection(1).setHidden(0, 0, true);
 		direction.init();
-		assertEquals("1 1", direction.next().toString());
-		assertEquals("0 0", direction.next().toString());
+		assertEquals("1:1", direction.next().toString());
+		assertEquals("0:0", direction.next().toString());
 	}
 	
 	@Test
@@ -305,7 +305,7 @@ import org.junit.runners.JUnit4;
 		
 		// With many extents
 		layout.getSection(0).setHidden(0, 9, false);
-		layout.getSection(0).move(6, 9, 3);
+		layout.getSection(0).setOrder(6, 9, 3);
 		layout.getSection(0).setHidden(2, 4, true);
 		direction.init();
 		assertEquals("6", direction.next(number(3)).getIndex().toString());
@@ -319,7 +319,7 @@ import org.junit.runners.JUnit4;
 		layout = layout(5, 5);
 		direction = layout.forward;
 		direction.init();
-		assertEquals("1 1", direction.next(number(7)).toString());
+		assertEquals("1:1", direction.next(number(7)).toString());
 		
 		// Many sections with hidden
 	}
@@ -361,7 +361,7 @@ import org.junit.runners.JUnit4;
 		
 		// With many extents
 		layout.getSection(0).setHidden(0, 9, false);
-		layout.getSection(0).move(6, 9, 3);
+		layout.getSection(0).setOrder(6, 9, 3);
 		layout.getSection(0).setHidden(2, 4, true);
 		direction.init();
 		assertEquals("8", direction.next(number(3)).getIndex().toString());
@@ -375,7 +375,7 @@ import org.junit.runners.JUnit4;
 		layout = layout(5, 5);
 		direction = layout.backward;
 		direction.init();
-		assertEquals("0 3", direction.next(number(7)).toString());
+		assertEquals("0:3", direction.next(number(7)).toString());
 		
 		// Many sections with hidden
 	}
@@ -405,33 +405,33 @@ import org.junit.runners.JUnit4;
 		Section section = layout.getSection(0);
 		
 		Direction forward = layout.forwardNavigator;
-		assertEquals("1 0", forward.first().toString());
+		assertEquals("1:0", forward.first().toString());
 		section.setFocusItemEnabled(true);
-		assertEquals("0 0", forward.first().toString());
+		assertEquals("0:0", forward.first().toString());
 		section.setFocusItemEnabled(false);
 		forward.init();
 		assertTrue(forward.next() != null);
-		assertEquals("1 9", forward.next(number(20)).toString());
+		assertEquals("1:9", forward.next(number(20)).toString());
 		assertTrue(forward.next() == null);
 		
 		forward.set(item(section, 0));
-		assertEquals("1 0", forward.getItem().toString());
+		assertEquals("1:0", forward.getItem().toString());
 		forward.set(item(layout.getSection(1), 9));
 		assertEquals(null, forward.next());
 		
 		section = layout.getSection(2);
 		Direction backward = layout.backwardNavigator;
-		assertEquals("1 9", backward.first().toString());
+		assertEquals("1:9", backward.first().toString());
 		section.setFocusItemEnabled(true);
-		assertEquals("2 0", backward.first().toString());
+		assertEquals("2:0", backward.first().toString());
 		section.setFocusItemEnabled(false);
 		backward.init();
 		assertTrue(backward.next() != null);
-		assertEquals("1 0", backward.next(number(20)).toString());
+		assertEquals("1:0", backward.next(number(20)).toString());
 		assertTrue(backward.next() == null);
 		
 		backward.set(item(layout.getSection(2), 0));
-		assertEquals("1 9", backward.getItem().toString());
+		assertEquals("1:9", backward.getItem().toString());
 
 	}
 	
@@ -444,11 +444,11 @@ import org.junit.runners.JUnit4;
 		
 		Direction forward = layout.forwardNavigator;
 		Direction backward = layout.backwardNavigator;
-		assertEquals("0 0", forward.first().toString());
-		assertEquals("0 1", forward.next().toString());
-		assertEquals("2 0", forward.next().toString());
+		assertEquals("0:0", forward.first().toString());
+		assertEquals("0:1", forward.next().toString());
+		assertEquals("2:0", forward.next().toString());
 		backward.init();
-		assertEquals("0 0", backward.next(number(20)).toString());
+		assertEquals("0:0", backward.next(number(20)).toString());
 	}
 	
 	@Test
@@ -472,7 +472,7 @@ import org.junit.runners.JUnit4;
 		assertEquals(null, direction.next(number(3)));
 		
 		// Multiple extents
-		layout.getSection(0).move(6, 9, 3);
+		layout.getSection(0).setOrder(6, 9, 3);
 		direction.init();
 		assertEquals("7", direction.next(number(5)).getIndex().toString());
 		assertEquals("4", direction.next(number(4)).getIndex().toString());
@@ -483,6 +483,6 @@ import org.junit.runners.JUnit4;
 		layout = layout(5, 5);
 		direction = layout.forward;
 		direction.init();
-		assertEquals("1 1", direction.next(number(7)).toString());
+		assertEquals("1:1", direction.next(number(7)).toString());
 	}
 }

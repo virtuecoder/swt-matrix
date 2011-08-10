@@ -22,8 +22,8 @@ class AxisExtentSequence<N extends Number> {
 	void init() {
 		SectionCore<N> section2 = sections.get(sections.size() - 1);
 		init(
-			AxisItem.create(sections.get(0), math.ZERO_VALUE()), 
-			AxisItem.create(section2, math.decrement(section2.getCount())));
+			AxisItem.createInternal(sections.get(0), math.ZERO_VALUE()), 
+			AxisItem.createInternal(section2, math.decrement(section2.getCount())));
 	}
 	void init(AxisItem<N> startItem, AxisItem<N> endItem) {
 		this.startItem = startItem;

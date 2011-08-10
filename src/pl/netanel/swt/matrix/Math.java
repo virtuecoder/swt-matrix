@@ -1,6 +1,9 @@
 package pl.netanel.swt.matrix;
 
 import java.math.BigInteger;
+import java.text.MessageFormat;
+
+import pl.netanel.util.Preconditions;
 
 
 
@@ -157,6 +160,43 @@ abstract class Math<N extends Number> {
 	abstract public N getValue(N n);
 	abstract Class<N> getNumberClass();
 
+	
+	public void checkIndex(N index, String name) {
+	  Preconditions.checkNotNullWithName(index, name);
+	  if (getNumberClass() != index.getClass()) {
+      throw new IndexOutOfBoundsException(MessageFormat.format(
+        "invalid class of {0} ({1}), expected ({2})", 
+        name, index.getClass(), getNumberClass())) ;
+    }
+	  if (compare(index, ZERO_VALUE()) < 0) {
+	    throw new IndexOutOfBoundsException(MessageFormat.format(
+	      "{0} ({1}) cannot be negative", name, index)) ;
+	  }
+	}
+	
+	public static <N extends Number> void checkIndexStatic(N index, String name) {
+	  Preconditions.checkNotNullWithName(index, name);
+	  @SuppressWarnings("unchecked")
+    Math<N> math = (Math<N>) getInstance(index.getClass());
+	  math.checkIndex(index, name);
+	}
+	
+	public static <N extends Number> void checkRange(N start, N end) {
+	  Preconditions.checkNotNullWithName(start, "start");
+	  Preconditions.checkNotNullWithName(end, "end");
+	  @SuppressWarnings("unchecked")
+	  Math<N> math = (Math<N>) Math.getInstance(start.getClass());
+	  
+	  math.checkIndex(start, "start");
+	  math.checkIndex(end, "start");
+	  
+	  if (math.compare(start, end) > 0) {
+	    throw new IllegalArgumentException(MessageFormat.format(
+	      "start ({0}) cannot be greater then end {1}", start, end)) ;
+	  }
+	}
+
+	
 //	/**
 //	 * 
 //	 * @param e

@@ -6,25 +6,29 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
+import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
 public class Snippet {
-	public static void main(String[] args) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+  public static void main(String[] args) {
 		Shell shell = new Shell();
 		shell.setLayout(new FillLayout());
 		
-		Axis model0 = new Axis(Long.class, 2, 0, 1);
-		Axis model1 = new Axis(Long.class, 2, 0, 1);
+		Axis axisX = new Axis<Integer>(Integer.class, 2, 0, 1);
+		Axis axisY = new Axis<Long>(Long.class, 2, 0, 1);
 		
-		new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL , model0, model1);
+		new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, axisX, axisY);
 
-		model1.getBody().setCount(1000000000000000L);
-		model0.getBody().setCount(1000000000000000L);
-		model1.getHeader().setDefaultCellWidth(40);
-		model1.getBody().setDefaultCellWidth(50);
-		model1.getHeader().setVisible(true);
-		model0.getHeader().setVisible(true);
+		axisX.getBody().setCount(100);
+		axisX.getBody().setDefaultCellWidth(50);
+		axisX.getHeader().setDefaultCellWidth(40);
+		axisX.getHeader().setVisible(true);
+		
+		axisY.getBody().setCount(1000000000000000L);
+		axisY.getHeader().setVisible(true);
+		
+		AxisItem.create(axisY.getBody(), 5);
 		
 		
 		shell.setBounds(200, 20, 1024, 568);

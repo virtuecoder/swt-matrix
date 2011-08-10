@@ -17,15 +17,15 @@ import org.junit.runners.JUnit4;
 		layout.setViewportSize(1000);
 		layout.compute();
 		
-		assertEquals("1 0", layout.current.toString());
+		assertEquals("1:0", layout.current.toString());
 		layout.moveFocusItem(Move.PREVIOUS_PAGE);
-		assertEquals("1 0", layout.current.toString());
+		assertEquals("1:0", layout.current.toString());
 		layout.moveFocusItem(Move.NEXT_PAGE);
-		assertEquals("1 9", layout.current.toString());
+		assertEquals("1:9", layout.current.toString());
 		layout.moveFocusItem(Move.NEXT_PAGE);
-		assertEquals("1 9", layout.current.toString());
+		assertEquals("1:9", layout.current.toString());
 		layout.moveFocusItem(Move.PREVIOUS_PAGE);
-		assertEquals("1 0", layout.current.toString());
+		assertEquals("1:0", layout.current.toString());
 	}
 	
 	@Test
@@ -38,14 +38,14 @@ import org.junit.runners.JUnit4;
 		layout.setViewportSize(55);
 		layout.compute();
 		
-		assertEquals("1 0", layout.current.toString());
+		assertEquals("1:0", layout.current.toString());
 		layout.moveFocusItem(Move.NEXT_PAGE);
-		assertEquals("1 4", layout.current.toString());
+		assertEquals("1:4", layout.current.toString());
 		layout.moveFocusItem(Move.NEXT_PAGE);
-		assertEquals("1 9", layout.current.toString());
-		assertEquals("1 9", layout.end.toString());
+		assertEquals("1:9", layout.current.toString());
+		assertEquals("1:9", layout.end.toString());
 		layout.moveFocusItem(Move.NEXT_PAGE);
-		assertEquals("1 9", layout.current.toString());
+		assertEquals("1:9", layout.current.toString());
 		
 //		layout.moveFocusItem(Move.PREVIOUS_PAGE);
 	}
@@ -60,15 +60,15 @@ import org.junit.runners.JUnit4;
 		layout.setViewportSize(50);
 		layout.compute();
 		
-		assertEquals("1 0", layout.current.toString());
+		assertEquals("1:0", layout.current.toString());
 		layout.moveFocusItem(Move.NEXT_PAGE);
 //		TestUtil.showMatrix(layout);
-		assertEquals("1 4", layout.current.toString());
+		assertEquals("1:4", layout.current.toString());
 		layout.moveFocusItem(Move.NEXT_PAGE);
-		assertEquals("1 9", layout.current.toString());
-		assertEquals("1 9", layout.end.toString());
+		assertEquals("1:9", layout.current.toString());
+		assertEquals("1:9", layout.end.toString());
 		layout.moveFocusItem(Move.NEXT_PAGE);
-		assertEquals("1 9", layout.current.toString());
+		assertEquals("1:9", layout.current.toString());
 		
 //		layout.moveFocusItem(Move.PREVIOUS_PAGE);
 	}
@@ -84,7 +84,7 @@ import org.junit.runners.JUnit4;
 		layout.setViewportSize(1000);
 		layout.compute();
 		
-		assertEquals("2 0", layout.current.toString());
+		assertEquals("2:0", layout.current.toString());
 	}
 	
 	@Test
@@ -97,13 +97,13 @@ import org.junit.runners.JUnit4;
 		layout.setViewportSize(1000);
 		layout.compute();
 		
-		assertEquals("1 0", layout.current.toString());
+		assertEquals("1:0", layout.current.toString());
 		body.setHidden(0, true); layout.compute();
-		assertEquals("1 1", layout.current.toString());
+		assertEquals("1:1", layout.current.toString());
 		axis.setFocusItem(body, 9); layout.compute();
-		assertEquals("1 9", layout.current.toString());
+		assertEquals("1:9", layout.current.toString());
 		body.setHidden(9, true); layout.compute();
-		assertEquals("1 8", layout.current.toString());
+		assertEquals("1:8", layout.current.toString());
 	}
 	
 	@Test

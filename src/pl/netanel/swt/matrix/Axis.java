@@ -301,7 +301,7 @@ public class Axis<N extends Number>  {
 		section2 = checkSection(section2, "section");
 		section2.checkCellIndex(index, "index");
 		
-		layout.setFocusItem(AxisItem.create(section2, index));
+		layout.setFocusItem(AxisItem.createInternal(section2, index));
 		if (matrix != null) matrix.redraw();
 	}
 
@@ -570,13 +570,13 @@ public class Axis<N extends Number>  {
 		for (int i = sections.size(); i-- > 0;) {
 			SectionCore<N> section = layout.sections.get(i);
 			if (section.isEmpty()) continue;
-			return AxisItem.create(section, math.decrement(section.getCount()));
+			return AxisItem.createInternal(section, math.decrement(section.getCount()));
 		}
 		return getFirstItem();
 	}
 
 	AxisItem<N> getFirstItem() {
-		return AxisItem.create(layout.sections.get(0), math.ZERO_VALUE());
+		return AxisItem.createInternal(layout.sections.get(0), math.ZERO_VALUE());
 	}
 
   /**
@@ -611,8 +611,8 @@ public class Axis<N extends Number>  {
 	  int compareSections = comparePosition(item1.section, item2.section);
     if (compareSections != 0) return compareSections;
 		return math.compare(
-				item1.section.indexOf(item1.getIndex()), 
-				item2.section.indexOf(item2.getIndex()));
+				item1.section.getOrder(item1.getIndex()), 
+				item2.section.getOrder(item2.getIndex()));
 	}
 	
 	/**
@@ -686,13 +686,13 @@ public class Axis<N extends Number>  {
 
 	Bound getCellBound(SectionCore<N> section, N index) {
 		if (section == null || index == null) return null;
-		Bound bound = layout.getCellBound(AxisItem.create(section, index));
+		Bound bound = layout.getCellBound(AxisItem.createInternal(section, index));
 		return bound == null ? null : bound.copy();
 	}
 
 	Bound getLineBound(SectionCore<N> section, N index) {
 		if (section == null || index == null) return null;
-		Bound bound = layout.getLineBound(AxisItem.create(section, index));
+		Bound bound = layout.getLineBound(AxisItem.createInternal(section, index));
 		return bound == null ? null : bound.copy();
 	}
 	
@@ -730,7 +730,7 @@ public class Axis<N extends Number>  {
     } else {
       matrix.insertInZonesY(section, target, count);
     }
-    layout.show(AxisItem.create(section, target));
+    layout.show(AxisItem.createInternal(section, target));
   }
 	
 	

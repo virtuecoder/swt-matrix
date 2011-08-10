@@ -27,7 +27,7 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 		
 		for (SectionClient<Y> sectionY: axisY.sections) {
 			for (SectionClient<X> sectionX: axisX.sections) {
-				ZoneCore<X, Y> zone = getZone(sectionX.getCore(), sectionY.getCore());
+				ZoneCore<X, Y> zone = getZone(sectionX.getUnchecked(), sectionY.getUnchecked());
 				zone.setMatrix(matrix);
 				if (zone.getPainterCount() == 0) {
 					if (sectionY.equals(bodyY) && sectionX.equals(bodyX)) {
@@ -37,7 +37,7 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 					  zone.setDefaultHeaderStyle(
 					    new Painter<X, Y>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_Y) {
 					      @Override
-					      public String getText(Number indexY, Number indexX) {
+					      public String getText(Number indexX, Number indexY) {
 					        return indexX.toString();
 					      }
 					    }
@@ -72,8 +72,8 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 		for (int i = 0, imax = orderY.length; i < imax; i++) {
 			for (int j = 0, jmax = orderX.length; j < jmax; j++) {
 				paintOrder[k++] = zones.indexOf(getZone(
-				  axisX.sections.get(orderX[j]).getCore(), 
-				  axisY.sections.get(orderY[i]).getCore()));
+				  axisX.sections.get(orderX[j]).getUnchecked(), 
+				  axisY.sections.get(orderY[i]).getUnchecked()));
 			}			
 		}
 	}

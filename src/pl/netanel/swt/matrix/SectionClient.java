@@ -26,6 +26,10 @@ class SectionClient<N extends Number> implements Section<N> {
 	  core.client = this;
 	}
 
+  @Override public int hashCode() {
+  	return core.hashCode();
+  }
+
   /**
    * Indicates whether some other object is "equal to" this one.
 	 */
@@ -47,7 +51,7 @@ class SectionClient<N extends Number> implements Section<N> {
 		return core.toString();
 	}
 
-	@Override public SectionCore<N> getCore() {
+	@Override public SectionCore<N> getUnchecked() {
 	  return core;
 	}
 
@@ -199,7 +203,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	
   @Override public void setLineWidth(N index, int width) {
     if (width < 0) return;
-    checkCellIndex(index, "index");    
+    checkLineIndex(index, "index");    
     core.setLineWidth(index, width);
   }
 
@@ -324,21 +328,25 @@ class SectionClient<N extends Number> implements Section<N> {
 
 	@Override
 	public void addControlListener(ControlListener listener) {
+	  Preconditions.checkNotNullWithName(listener, "listener");
 		core.addControlListener(listener);
 	}
 
 	@Override
 	public void addSelectionListener(SelectionListener listener) {
+	  Preconditions.checkNotNullWithName(listener, "listener");
 		core.addSelectionListener(listener);
 	}
 
 	@Override
 	public void removeControlListener(ControlListener listener) {
+	  Preconditions.checkNotNullWithName(listener, "listener");
 		core.removeControlListener(listener);
 	}
 
 	@Override
 	public void removeSelectionListener(SelectionListener listener) {
+	  Preconditions.checkNotNullWithName(listener, "listener");
 		core.removeSelectionListener(listener);
 	}
 
@@ -346,38 +354,41 @@ class SectionClient<N extends Number> implements Section<N> {
 	 * Moving 
 	 */
 
-	@Override public void move(N start, N end, N target) {
+	@Override public void setOrder(N start, N end, N target) {
 		checkRange(start, end, core.count);
 		checkLineIndex(target, "target");
-		core.move(start, end, target);
+		core.setOrder(start, end, target);
 	}
-
-	@Override public void delete(N start, N end) {
-		checkRange(start, end, core.count);
-		core.delete(start, end);
-	}
-
-	@Override public void insert(N target, N count) {
+	
+	@Override public void setOrder(N index, N target) {
+	  checkCellIndex(index, "index");
 	  checkLineIndex(target, "target");
-		Preconditions.checkNotNullWithName(count, "count");
-		core.insert(target, count);
+	  core.setOrder(index, index, target);
 	}
 
-	@Override public int hashCode() {
-		return core.hashCode();
+	@Override public N getOrder(N index) {
+	  checkCellIndex(index, "index");
+	  return core.getOrder(index);
 	}
+	
+	@Override public Iterator<N> getOrder() {
+    return core.getOrder();
+  }
 
-	@Override public N get(N position) {
-	  checkCellIndex(position, "position");
-		return core.get(position);
-	}
+  @Override public Iterator<Extent<N>> getOrderExtents() {
+    return core.getOrderExtents();
+  }
 
-	@Override public N indexOf(N item) {
-	  checkCellIndex(item, "item");
-		return core.indexOf(item);
-	}
+  @Override public N getIndex(N position) {
+    checkCellIndex(position, "position");
+  	return core.getIndex(position);
+  }
 
-	@Override public void setFocusItemEnabled(boolean enabled) {
+  @Override public N getPosition(N index) {
+    return core.getPosition(index);
+  }
+
+  @Override public void setFocusItemEnabled(boolean enabled) {
 		core.setFocusItemEnabled(enabled);
 	}
 
@@ -410,7 +421,18 @@ class SectionClient<N extends Number> implements Section<N> {
 	 * Non public methods 
 	 */
 
-	 /**
+	 @Override public void insert(N target, N count) {
+	  core.math.checkIndex(count, "count");
+    checkLineIndex(target, "target");
+  	core.insert(target, count);
+  }
+
+  @Override public void delete(N start, N end) {
+  	checkRange(start, end, core.count);
+  	core.delete(start, end);
+  }
+
+  /**
    * Checks the validity of the given cell index using the name to indicate
    * which parameter is wrong.
    * 

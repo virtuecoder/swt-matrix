@@ -73,6 +73,7 @@ public class _0910_DragAndDropFiles {
 		
 		new ButtonCellBehavior<Integer, Integer>(matrix.getHeaderX());
 		new ButtonCellBehavior<Integer, Integer>(matrix.getHeaderY());
+		new ButtonCellBehavior<Integer, Integer>(matrix.getTopLeft());
 		
 		final Painter<Integer, Integer> dragPainterY = matrix.getPainter(Painter.NAME_DRAG_ITEM_Y);
 		
@@ -95,7 +96,7 @@ public class _0910_DragAndDropFiles {
 		        }
 		        else {
 		          int[] bound = axisY.getCellBound(item);
-		          position = axisY.getBody().indexOf(item.getIndex());
+		          position = axisY.getBody().getOrder(item.getIndex());
 	            if (p.y > bound[0] + bound[1] / 2) {
 	              position++;
 	            }
@@ -127,8 +128,6 @@ public class _0910_DragAndDropFiles {
         dragPainterY.setData(event);
 		  }
 		});
-		
-//		SwtTestCase.listenToAll(matrix);
 		
 		shell.open();
 		Display display = shell.getDisplay();

@@ -20,7 +20,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     Preconditions.checkNotNullWithName(sectionY, "sectionY");
     this.sectionX = sectionX;
     this.sectionY = sectionY;
-    this.core = new ZoneCore<X, Y>(sectionX.getCore(), sectionY.getCore());
+    this.core = new ZoneCore<X, Y>(sectionX.getUnchecked(), sectionY.getUnchecked());
   }
   
 //  public ZoneClient(ZoneCore<X, Y> zone) {
@@ -44,7 +44,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   }
 
   @Override
-  public ZoneCore<X, Y> getCore() {
+  public ZoneCore<X, Y> getUnchecked() {
     return core;
   }
 
@@ -141,8 +141,8 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   
   @Override
   public void setSelected(X startX, X endX, Y startY, Y endY, boolean state) {
-    sectionY.checkRange(startY, endY, sectionY.getCount());
     sectionX.checkRange(startX, endX, sectionX.getCount());
+    sectionY.checkRange(startY, endY, sectionY.getCount());
     core.setSelected(startX, endX, startY, endY, state);
   }
 

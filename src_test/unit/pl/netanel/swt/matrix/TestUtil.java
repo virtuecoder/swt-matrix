@@ -1,5 +1,9 @@
 package pl.netanel.swt.matrix;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
@@ -23,11 +27,7 @@ class TestUtil {
 	  if (section instanceof SectionCore) {
 	    section = new SectionClient((SectionCore) section);
 	  }
-		return new AxisItem((SectionClient) section, index);
-	}
-	
-	public static AxisItem item(Axis axis, int section, int index) {
-		return new AxisItem((SectionClient) axis.sections.get(section), index);
+		return AxisItem.create(section, index);
 	}
 	
 	static NumberSet numberSet() {
@@ -90,6 +90,14 @@ class TestUtil {
 //			section.setFocusItemEnabled(true);
 		}
 		return layout;
+	}
+	
+	public static <T> List<T> getList(Iterator<T> it) {
+	  ArrayList<T> list = new ArrayList<T>();
+	  while(it.hasNext()) {
+	    list.add(it.next());
+	  }
+	  return list;
 	}
 
 	public static void showMatrix(Layout layout) {

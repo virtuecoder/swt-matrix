@@ -252,7 +252,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
       for (SectionClient<X> sectionX: axisX.sections) {
         ZoneClient<X, Y> zone = new ZoneClient<X, Y>(sectionX, sectionY);
         zones.add(zone);
-        coreZones.add(zone.getCore());
+        coreZones.add(zone.getUnchecked());
       }
 		}
 		model = new MatrixModel<X, Y>(axisY, axisX, coreZones);
@@ -519,8 +519,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
 	/**
 	 * Returns a zone located at the intersection of the given axis sections.
-	 * @param sectionX section of the column axis
-	 * @param sectionY section of the row axis
+	 * @param sectionX section of the horizontal axis
+	 * @param sectionY section of the vertical axis
 	 * 
 	 * @return zone located at the intersection of the given axis sections
 	 * @throws IllegalArgumentException if item is <code>null</code> or section

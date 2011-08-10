@@ -67,18 +67,18 @@ class NumberPairSequence<X extends Number, Y extends Number> implements Sequence
 	}
 	
 	/**
-	 * Returns row axis index of the current cell. 
+	 * Returns vertical axis index of the current cell. 
 	 * 
-	 * @return row axis index
+	 * @return vertical axis index
 	 */
 	public Y indexY() {
 		return indexY.getValue();
 	}
 
 	/**
-	 * Return column axis index of the current cell. 
+	 * Return horizontal axis index of the current cell. 
 	 * 
-	 * @return column axis index 
+	 * @return horizontal axis index 
 	 */
 	public X indexX() {
 		return indexX.getValue();

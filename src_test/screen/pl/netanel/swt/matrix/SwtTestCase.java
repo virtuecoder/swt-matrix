@@ -791,7 +791,46 @@ public class  SwtTestCase {
     
     setLastClick(start);
   }
-
+  
+  public void move(int code, Point ...p) {
+    checkShellVisible();
+    if (p.length == 0) return;
+    
+    int decodedButton = decodeButton(code);
+    if (decodedButton < 1 || 3 < decodedButton) {
+      throw new IllegalArgumentException("Mouse button must be between 1 and 3");
+    }
+    if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyDown);
+    if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyDown);
+    if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyDown);
+    
+    Point start = p[0];
+    Event event = new Event();
+    event.type = SWT.DragDetect;
+    event.x = start.x;
+    event.y = start.y;
+    event.button = decodedButton;
+    event.stateMask = code;
+    postEvent(event);
+    processEvents();
+    
+    for (int i = 0; i < p.length; i++) {
+      event = new Event();
+      event.type = SWT.MouseMove;
+      event.x = p[i].x;
+      event.y = p[i].y;
+      event.stateMask = code;
+      postEvent(event);
+      processEvents();
+    }
+    
+    if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyUp);
+    if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyUp);
+    if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyUp);
+    
+    setLastClick(start);
+  }
+  
   public void selfDragAndDrop(Rectangle rect) {
     Point start = middle(focusControl, rect);
 

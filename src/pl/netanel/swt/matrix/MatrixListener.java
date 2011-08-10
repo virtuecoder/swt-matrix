@@ -61,7 +61,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
@@ -643,7 +642,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 			N count = item.section.getCount();
 			if (axis.math.compare(item.getIndex(), count) >= 0) {
 				item = axis.math.compare(count, axis.math.ZERO_VALUE()) == 0 ? null : 
-					AxisItem.create(item.section, axis.math.decrement(count));
+					AxisItem.createInternal(item.section, axis.math.decrement(count));
 			}
 		}
 
@@ -962,7 +961,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 	  protected int x2, y2;
 	  private boolean highlight;
 	  private boolean advanced;
-	  protected int feedback;
+//	  protected int feedback;
 
     public DragItemPainter(String name) {
       super(name, Painter.SCOPE_ENTIRE);
@@ -1039,7 +1038,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 
     public DragItemPainterX() {
       super(Painter.NAME_DRAG_ITEM_X);
-      header = (ZoneCore<X, Y>) MatrixListener.this.matrix.getHeaderX().getCore();
+      header = (ZoneCore<X, Y>) MatrixListener.this.matrix.getHeaderX().getUnchecked();
     }
 	  
     @Override public void paint(X indexX, Y indexY, int x, int y, int width, int height) {
@@ -1051,41 +1050,51 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       }
       if (!instantMoving) {
         Rectangle area = matrix.getClientArea();
-        int x3 = header.getBounds(Frozen.NONE, Frozen.NONE).x;
+        AxisItem<X> item = stateX.item;
+        int x3 = 0; 
         Object d = getData();
         if (d instanceof DropTargetEvent) {
           DropTargetEvent event = (DropTargetEvent) d;
           x3 = matrix.toControl(event.x, event.y).x;
-          AxisItem<X> item = matrix.axisX.getItemByDistance(x3);
-          feedback = DND.FEEDBACK_INSERT_BEFORE;
-          if (item == null) {
-            x3 = 0;
+          item = matrix.axisX.getItemByDistance(x3);
+        } 
+        else {
+          x3 = mouseMoveEvent.x;
+        }
+//        feedback = DND.FEEDBACK_INSERT_BEFORE;
+        if (item == null) {
+          x3 = 0;
+        }
+        else if (item.section.index < matrix.axisX.body.core.index) {
+          x3 = matrix.getBody().getBounds(Frozen.NONE, Frozen.NONE).x;
+        }
+        else if (item.section.index > matrix.axisX.body.core.index) {
+          x3 = matrix.getBody().getBounds(Frozen.NONE, Frozen.NONE).x + 
+            header.getBounds(Frozen.NONE, Frozen.NONE).width;
+        }
+        else {
+          bounds2 = header.getCellBounds(item.index, stateY.axis.math.ZERO_VALUE());  
+          boolean before = x3 < bounds2.x + bounds2.width / 2;
+          x3 = bounds2.x + (before ? -1 : bounds2.width);
+          if (before && stateX.layout.compare(stateX.item, stateX.last) > 0) {
+            stateX.item = stateX.layout.nextItem(item, stateX.layout.backwardNavigator);
           }
-          else if (item.section.index < matrix.axisX.body.core.index) {
-            x3 = matrix.getBody().getBounds(Frozen.NONE, Frozen.NONE).x;
+          else if (!before && stateX.layout.compare(stateX.item, stateX.last) < 0) {
+            stateX.item = stateX.layout.nextItem(item, stateX.layout.forwardNavigator);
           }
-          else if (item.section.index > matrix.axisX.body.core.index) {
-            x3 = matrix.getBody().getBounds(Frozen.NONE, Frozen.NONE).x + 
-              header.getBounds(Frozen.NONE, Frozen.NONE).width;
-          }
-          else {
-            bounds2 = header.getCellBounds(item.index, stateY.axis.math.ZERO_VALUE());  
-            boolean before = x3 < bounds2.x + bounds2.width / 2;
-            x3 = bounds2.x + (before ? -1 : bounds2.width);
-            feedback = before ? DND.FEEDBACK_INSERT_BEFORE : DND.FEEDBACK_INSERT_AFTER;
-          }
+//          feedback = before ? DND.FEEDBACK_INSERT_BEFORE : DND.FEEDBACK_INSERT_AFTER;
         }
         gc.setLineWidth(2);
         gc.drawLine(x3, area.y, x3, area.height);
       }
       super.paint(indexX, indexY, x, y, width, height);
-    };    
+    }
 	}
 	
 	class DragItemPainterY extends DragItemPainter{
 	  public DragItemPainterY() {
 	    super(Painter.NAME_DRAG_ITEM_Y);
-	    header = (ZoneCore<X, Y>) MatrixListener.this.matrix.getHeaderY().getCore();
+	    header = (ZoneCore<X, Y>) MatrixListener.this.matrix.getHeaderY().getUnchecked();
 	  }
 	  
 	  @Override public void paint(X indexX, Y indexY, int x, int y, int width, int height) {
@@ -1097,35 +1106,45 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 	    }
       if (!instantMoving) {
         Rectangle area = matrix.getClientArea();
-        int y3 = header.getBounds(Frozen.NONE, Frozen.NONE).y;
+        AxisItem<Y> item = stateY.item;
+        int y3 = 0; 
         Object d = getData();
         if (d instanceof DropTargetEvent) {
           DropTargetEvent event = (DropTargetEvent) d;
           y3 = matrix.toControl(event.x, event.y).y;
-          AxisItem<Y> item = matrix.axisY.getItemByDistance(y3);
-          feedback = DND.FEEDBACK_INSERT_BEFORE;
-          if (item == null) {
-            y3 = 0;
+          item = matrix.axisY.getItemByDistance(y3);
+        } 
+        else {
+          y3 = mouseMoveEvent.y;
+        }
+//          feedback = DND.FEEDBACK_INSERT_BEFORE;
+        if (item == null) {
+          y3 = 0;
+        }
+        else if (item.section.index < matrix.axisY.body.core.index) {
+          y3 = matrix.getBody().getBounds(Frozen.NONE, Frozen.NONE).y;
+        }
+        else if (item.section.index > matrix.axisY.body.core.index) {
+          y3 = matrix.getBody().getBounds(Frozen.NONE, Frozen.NONE).y + 
+            header.getBounds(Frozen.NONE, Frozen.NONE).height;
+        }
+        else {
+          bounds2 = header.getCellBounds(stateX.axis.math.ZERO_VALUE(), item.index);  
+          boolean before = y3 < bounds2.y + bounds2.height / 2;
+          y3 = bounds2.y + (before ? -1 : bounds2.height);
+//          feedback = before ? DND.FEEDBACK_INSERT_BEFORE : DND.FEEDBACK_INSERT_AFTER;
+          if (before && stateY.layout.compare(stateY.item, stateY.last) > 0) {
+            stateY.item = stateY.layout.nextItem(item, stateY.layout.backwardNavigator);
           }
-          else if (item.section.index < matrix.axisY.body.core.index) {
-            y3 = matrix.getBody().getBounds(Frozen.NONE, Frozen.NONE).y;
-          }
-          else if (item.section.index > matrix.axisY.body.core.index) {
-            y3 = matrix.getBody().getBounds(Frozen.NONE, Frozen.NONE).y + 
-              header.getBounds(Frozen.NONE, Frozen.NONE).height;
-          }
-          else {
-            bounds2 = header.getCellBounds(stateX.axis.math.ZERO_VALUE(), item.index);  
-            boolean before = y3 < bounds2.y + bounds2.height / 2;
-            y3 = bounds2.y + (before ? -1 : bounds2.height);
-            feedback = before ? DND.FEEDBACK_INSERT_BEFORE : DND.FEEDBACK_INSERT_AFTER;
+          else if (!before && stateY.layout.compare(stateY.item, stateY.last) < 0) {
+            stateY.item = stateY.layout.nextItem(item, stateY.layout.forwardNavigator);
           }
         }
         gc.setLineWidth(2);
         gc.drawLine(area.x, y3, area.width, y3);
       }
 	    super.paint(indexX, indexY, x, y, width, height);
-	  };   
+	  }
 	}
 }
 

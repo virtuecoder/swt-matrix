@@ -97,7 +97,7 @@ class SectionCore<N extends Number> implements Section<N> {
 		return Integer.toString(index);
 	}
 	
-	@Override public SectionCore<N> getCore() {
+	@Override public SectionCore<N> getUnchecked() {
 	  return this;
 	}
 	
@@ -121,7 +121,7 @@ class SectionCore<N extends Number> implements Section<N> {
 		return order.items.isEmpty();
 	}
 
-	@Override public N get(N position) {
+	@Override public N getIndex(N position) {
 		if (math.compare(position, getVisibleCount()) >= 0) return null;
 		
 		MutableNumber<N> pos1 = math.create(0);
@@ -140,12 +140,8 @@ class SectionCore<N extends Number> implements Section<N> {
 		return null;
 	}
 	
-	@Override public N indexOf(N item) {
-		return item == null ? null : order.indexOf(item);
-	}
-	
-	
-	public N indexOfNotHidden(N index) {
+	@Override
+	public N getPosition(N index) {
 		if (index == null || hidden.contains(index)) return null;
 		MutableNumber<N> hiddenCount = math.create(0);
 		MutableNumber<N> pos1 = math.create(0);
@@ -164,7 +160,52 @@ class SectionCore<N extends Number> implements Section<N> {
 		return null;
 	}
 
+	@Override public N getOrder(N item) {
+	  return item == null ? null : order.indexOf(item);
+	}
+	
+	@Override
+	public Iterator<N> getOrder() {
+	  return new ImmutableIterator<N>() {
+      NumberSequence<N> seq = new NumberSequence<N>(order.copy());
+      private boolean next;
+      {
+        seq.init();
+      }
+      @Override
+      public boolean hasNext() {
+        next = seq.next();
+        return next;
+      }
 
+      @Override
+      public N next() {
+        return next ? seq.index() : null;
+      }
+    };
+	}
+
+	@Override
+	public Iterator<Extent<N>> getOrderExtents() {
+	  return new ImmutableIterator<Extent<N>>() {
+	    NumberSequence<N> seq = new NumberSequence<N>(order.copy());
+	    private boolean next;
+	    {
+	      seq.init();
+	    }
+	    @Override
+	    public boolean hasNext() {
+	      next = seq.nextExtent();
+	      return next;
+	    }
+
+	    @Override
+	    public Extent<N> next() {
+	      return next ? Extent.createUnchecked(seq.start(), seq.end()) : null;
+	    }
+	  };
+	}
+	
 	/*------------------------------------------------------------------------
 	 * Section properties
 	 */
@@ -355,7 +396,7 @@ class SectionCore<N extends Number> implements Section<N> {
 
 	    @Override
 	    public Extent<N> next() {
-	      return next ? new Extent<N> (seq.start(), seq.end()) : null;
+	      return next ? Extent.createUnchecked(seq.start(), seq.end()) : null;
 	    }
 	  };
 	}
@@ -477,7 +518,7 @@ class SectionCore<N extends Number> implements Section<N> {
 			
 			@Override
 			public Extent<N> next() {
-				return next ? new Extent<N> (seq.start(), seq.end()) : null;
+				return next ? Extent.create(seq.start(), seq.end()) : null;
 			}
 		};
 	}
@@ -496,8 +537,12 @@ class SectionCore<N extends Number> implements Section<N> {
 	 * Moving
 	 */
 	
-	@Override public void move(N start, N end, N target) {
+	@Override public void setOrder(N start, N end, N target) {
 		order.move(start, end, target);
+	}
+	
+	@Override public void setOrder(N index, N target) {
+	  order.move(index, index, target);
 	}
 	
 	@Override public void delete(N start, N end) {
@@ -696,7 +741,7 @@ class SectionCore<N extends Number> implements Section<N> {
 		assert selection.contains(source);
 		if (selection.isEmpty() || selection.contains(target)) return false;
 			
-		int position = math.compare(indexOf(target), indexOf(source));
+		int position = math.compare(getOrder(target), getOrder(source));
 		if (position == 0) return false;
 		N index = position < 0 ? target : math.increment(target);
 
@@ -705,24 +750,9 @@ class SectionCore<N extends Number> implements Section<N> {
 	}
 	
 	protected void checkRange(N start, N end, N limit) {
-		Preconditions.checkNotNull(start, "start");
-		Preconditions.checkNotNull(end, "end");
-		if (math.compare(start, math.ZERO_VALUE()) < 0) {
-			throw new IndexOutOfBoundsException(MessageFormat.format(
-				"start ({0}) cannot be negative", start)) ;
-		}
-		if (math.compare(end, math.ZERO_VALUE()) < 0) {
-			throw new IndexOutOfBoundsException(MessageFormat.format(
-				"end ({0}) cannot be negative", end)) ;
-		}
-		if (math.compare(start, limit) >= 0) {
-			throw new IndexOutOfBoundsException(MessageFormat.format(
-				"start ({0}) must be lower then limit {1}", start, limit)) ;
-		}
-		if (math.compare(end, limit) >= 0) {
-			throw new IndexOutOfBoundsException(MessageFormat.format(
-				"end ({0}) must be lower then limit {1}", end, limit)) ;
-		}
+		checkIndex(start, limit, "start");
+		checkIndex(end, limit, "end");
+		
 		if (math.compare(start, end) > 0) {
 			throw new IllegalArgumentException(MessageFormat.format(
 				"start ({0}) cannot be greater then end {1}", start, end)) ;
@@ -738,7 +768,12 @@ class SectionCore<N extends Number> implements Section<N> {
 	}
 	
 	private void checkIndex(N index, N limit, String name) {
-		Preconditions.checkNotNull(index, name);
+		Preconditions.checkNotNullWithName(index, name);
+		if (getIndexClass() != index.getClass()) {
+		  throw new IndexOutOfBoundsException(MessageFormat.format(
+		    "section indexing class ({0}) must be the same as the class of index ({1})", 
+		    getIndexClass(), index.getClass())) ;
+		}
 		if (math.compare(index, math.ZERO_VALUE()) < 0) {
 			throw new IndexOutOfBoundsException(MessageFormat.format(
 					"{0} ({1}) cannot be negative", name, index)) ;
@@ -761,7 +796,8 @@ class SectionCore<N extends Number> implements Section<N> {
 	}
 	
 	static <N2 extends Number> SectionCore<N2> from(Section<N2> section) {
-	  return (SectionCore<N2>) section.getCore();
+	  return (SectionCore<N2>) section.getUnchecked();
 	}
+
 
 }

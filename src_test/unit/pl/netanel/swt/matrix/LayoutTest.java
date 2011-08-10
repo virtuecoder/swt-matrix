@@ -33,7 +33,7 @@ import pl.netanel.swt.matrix.SectionCore;
 		Layout layout = new Layout(new Axis());
 		layout.setViewportSize(350);
 
-		SectionCore body = (SectionCore) layout.axis.getBody().getCore();
+		SectionCore body = (SectionCore) layout.axis.getBody().getUnchecked();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		
@@ -79,7 +79,7 @@ import pl.netanel.swt.matrix.SectionCore;
 	@Test
 	public void freezeIndexes() throws Exception {
 		Layout layout = new Layout(new Axis());
-		SectionCore body = (SectionCore) layout.axis.getBody().getCore();
+		SectionCore body = (SectionCore) layout.axis.getBody().getUnchecked();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		
@@ -137,7 +137,7 @@ import pl.netanel.swt.matrix.SectionCore;
 	@Test
 	public void freezeDistances() throws Exception {
 		Layout layout = new Layout(new Axis());
-		SectionCore body = (SectionCore) layout.axis.getBody().getCore();
+		SectionCore body = (SectionCore) layout.axis.getBody().getUnchecked();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		
@@ -174,7 +174,7 @@ import pl.netanel.swt.matrix.SectionCore;
 	@Test
 	public void freezeLineWidth() throws Exception {
 		Layout layout = new Layout(new Axis());
-		SectionCore body = (SectionCore) layout.axis.getBody().getCore();
+		SectionCore body = (SectionCore) layout.axis.getBody().getUnchecked();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		layout.head.freezeLineWidth = 10;
@@ -207,7 +207,7 @@ import pl.netanel.swt.matrix.SectionCore;
 		body.setCellWidth(0, 0, 50);
 		body.setDefaultCellWidth(100);
 		
-		body.move(6, 9, 3);
+		body.setOrder(6, 9, 3);
 		body.setHidden(2, 4, true);
 		// 0, 1, 6, 7, 8, 9, 5
 		
@@ -266,7 +266,7 @@ import pl.netanel.swt.matrix.SectionCore;
 		Layout layout = new Layout(new Axis());
 		layout.setViewportSize(1000);
 		
-		SectionCore body = (SectionCore) layout.axis.getBody().getCore();
+		SectionCore body = (SectionCore) layout.axis.getBody().getUnchecked();
 		body.setCount(5);
 		body.setDefaultCellWidth(100);
 		body.setSelected(1, 1, true);

@@ -1,13 +1,34 @@
 -------------------------------------------------------------------------------
 Version 0.5
+The focus for this release is a much higher API stablity in the future version.
+
+Features:
+- Heavy static code validation and refactoring
+- Heavy API cleanup
+- Moving drag indicator 
 
 API changes:
+- Added AxisItem.createUnchecked(Section, Number)
+- Added Extent.create(Number, Number)
+- Added Extent.createUnchecked(Number, Number)
+- Added Cell.create(Number, Number)
+- Added Cell.createUnchecked(Number, Number)
+- Added CellExtent.create(Number, Number, Number, Number)
+- Added CellExtent.createUnchecked(Number, Number, Number, Number)
+- Added CellExtent.create(Cell, Cell)
+- Added CellExtent.createUnchecked(Cell, Cell)
+- Added Section.getHidden()
 - Added Section.getHiddenExtents()
 - Removed Section.getHiddenCount(Number, Number)
 - Removed Section.indexOfNotHidden(Number)
 - Renamed Section fitCellWidth(Number) to Sectoin.setCellWidth(Number)
 - Renamed Section.getSelectedIterator() to Section.getSelected()
 - Renamed Section.getSelectedExtentIterator() to Section.getSelectedExtents()
+- Renamed Section.getCore() to Section.getUnchecked()
+- Renamed Zone.getCore() to Zone.getUnchecked()
+
+Bug fixes:
+- Default column headers numbering was incorrect
 
 -------------------------------------------------------------------------------
 Version 0.4.1

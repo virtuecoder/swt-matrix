@@ -393,8 +393,8 @@ public class Painter<X extends Number, Y extends Number> {
 	 *        <li>{@link #SCOPE_CELLS_ITEM_X}, <li>{@link #SCOPE_LINES_Y}, <li>{@link #SCOPE_ENTIRE}</ul>
 	 * <code>indexY</code> is always null when the receiver's scope is one of the following:<ul>
 	 *        <li>{@link #SCOPE_CELLS_ITEM_Y}, <li>{@link #SCOPE_LINES_X}, <li>{@link #SCOPE_ENTIRE}</ul>
-	 * @param indexX index of a section item in the column axis 
-	 * @param indexY index of a section item in the row axis. 
+	 * @param indexX index of a section item in the horizontal axis 
+	 * @param indexY index of a section item in the vertical axis. 
 	 * @param x the x coordinate of the painting boundaries
 	 * @param y the y coordinate of the painting boundaries
 	 * @param width the width of the painting boundaries

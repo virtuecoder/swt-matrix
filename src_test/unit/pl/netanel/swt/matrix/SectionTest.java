@@ -36,7 +36,7 @@ import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 	@Test
 	public void getIndexOutOfBounds() throws Exception {
 	  SectionCore section = new SectionCore(int.class);
-	  assertNull(section.get(-1));
+	  assertNull(section.getIndex(-1));
 	}
 	
 	@Ignore

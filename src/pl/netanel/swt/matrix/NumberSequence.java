@@ -58,7 +58,7 @@ class NumberSequence<N extends Number> implements Sequence {
 	/**
 	 * Returns index of the current item. 
 	 * 
-	 * @return row axis index
+	 * @return vertical axis index
 	 */
 	public N index() {
 		return index.getValue();

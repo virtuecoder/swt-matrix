@@ -225,7 +225,7 @@ class CellSet<X extends Number, Y extends Number> {
 	public CellExtent<X, Y> getExtent() {
 		int size = itemsY.size();
 		if (size == 0) {
-			return new CellExtent<X, Y>(
+			return CellExtent.createUnchecked(
 			  mathX.ZERO_VALUE(), mathX.ZERO_VALUE(),
 				mathY.ZERO_VALUE(), mathY.ZERO_VALUE());
 		} else {
@@ -247,7 +247,7 @@ class CellSet<X extends Number, Y extends Number> {
 					endY = extentY.end.getValue();
 				}
 			}
-			return new CellExtent<X, Y>(startX, endX, startY, endY);
+			return CellExtent.createUnchecked(startX, endX, startY, endY);
 		}
 	}
 	

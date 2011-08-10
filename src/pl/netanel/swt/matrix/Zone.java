@@ -13,8 +13,8 @@ import org.eclipse.swt.widgets.Listener;
 
 
 /**
- * Constitutes a region of a matrix where a section from the row axis 
- * and a section from the column axis intersect with each other.  
+ * Constitutes a region of a matrix where a section from the vertical axis 
+ * and a section from the horizontal axis intersect with each other.  
  * <p>
  * Zone has painters to paint itself on the screen and listeners to respond 
  * to user gestures towards it. 
@@ -31,26 +31,26 @@ import org.eclipse.swt.widgets.Listener;
 public interface Zone<X extends Number, Y extends Number> {
 
   /**
-   * Returns a high-performance zone implementation that does not  
-   * validate methods parameters. It may be useful for 
-   * loop optimization, for example inside of 
+   * Returns a no argument checking implementation for this zone.
+   * It may be useful for loop optimization, for example inside of 
    * {@link Painter#paint(Number, Number, int, int, int, int)} 
    * method.
-   * @return a high-performance zone implementation 
+   * @return a no argument checking implementation for this zone
    */
-  Zone<X, Y> getCore();
+  Zone<X, Y> getUnchecked();
   
   /**
-   * Returns the zone section at row axis.
-   * @return the zone section at row axis
+   * Returns the zone section horizontal axis.
+   * @return the zone section horizontal axis
+   */
+  Section<X> getSectionX();
+
+  /**
+   * Returns the zone section at vertical axis.
+   * @return the zone section at vertical axis
    */
   Section<Y> getSectionY();
 
-  /**
-   * Returns the zone section column axis.
-   * @return the zone section column axis
-   */
-  Section<X> getSectionX();
 
   /**
    * Return rectangular bounds of the cell with the given coordinates.
@@ -170,21 +170,27 @@ public interface Zone<X extends Number, Y extends Number> {
   /**
    * Sets the selection state for the range of cells.
    * <p>
-   * <code>startY</code>,<code>endY</code>, <code>startX</code> and <code>endX</code> 
-   * indexes refer to the model, not the visual position of the item on the screen
+   * <code>startX</code>,<code>endX</code>, <code>startY</code> and
+   * <code>endY</code> numbers are item indexes in the model, 
+   * not the visual position of the item on the screen 
    * which can be altered by move and hide operations.
-   * @param startX first index of the range of column items  
-   * @param endX last index of the range of column items  
-   * @param startY first index of the range of row items  
-   * @param endY last index of the range of row items  
+   * 
+   * @param startX first index of the range of column items
+   * @param endX last index of the range of column items
+   * @param startY first index of the range of row items
+   * @param endY last index of the range of row items
    * @param state the new selection state
-   *
-   * @throws IllegalArgumentException if <code>startY</code> or 
-   *         <code>endY</code> or <code>startX</code>  or <code>endX</code> is null.
-   * @throws IndexOutOfBoundsException if <code>startY</code> or <code>endY</code>
-   *         is out of 0 ... this.getSectionY().getCount() bounds
-   * @throws IndexOutOfBoundsException if <code>startX</code> or <code>endX</code>
-   *         is out of 0 ... this.getSectionX().getCount() bounds
+   * 
+   * @throws IllegalArgumentException if <code>startX</code> or <code>endX</code>
+   *           or <code>startY</code> or <code>endY</code> is null.
+   * @throws IllegalArgumentException if <code>startX</code> is greater then <code>endX</code>
+   *           or <code>startY</code> is greater then <code>endY</code>.
+   * @throws IndexOutOfBoundsException if <code>startX</code> or
+   *           <code>endX</code> is out of 0 ... this.getSectionX().getCount()
+   *           bounds
+   * @throws IndexOutOfBoundsException if <code>startY</code> or
+   *           <code>endY</code> is out of 0 ... this.getSectionY().getCount()
+   *           bounds
    */
   void setSelected(X startX, X endX, Y startY, Y endY, boolean state);
 
@@ -239,7 +245,7 @@ public interface Zone<X extends Number, Y extends Number> {
   /**
    * Returns iterator for selected cells. First number in the array 
    * returned by the {@link Iterator#next()} method is a
-   * row axis index, the second one is a column axis index.
+   * vertical axis index, the second one is a horizontal axis index.
    * <p>
    * <code>indexX</code> and <code>indexY</code> refer to the model, 
    * not the visual position of the item on the screen
@@ -253,7 +259,7 @@ public interface Zone<X extends Number, Y extends Number> {
   /**
    * Returns iterator for selected cell extents. First two numbers in the array 
    * returned by the {@link Iterator#next()} method define start and end of a
-   * row axis extent, the second two the start and end of a column axis extent.
+   * vertical axis extent, the second two the start and end of a horizontal axis extent.
    * <p>
    * <code>indexX</code> and <code>indexY</code> refer to the model, 
    * not the visual position of the item on the screen

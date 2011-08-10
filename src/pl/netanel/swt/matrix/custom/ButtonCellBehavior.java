@@ -96,8 +96,8 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
   /**
    * Returns <tt>true</tt> if the cell at the specified location is in pushed state, 
    * or <tt>false</tt> otherwise. 
-   * @param indexX index of a section item in the column axis 
-   * @param indexY index of a section item in the row axis. 
+   * @param indexX index of a section item in the horizontal axis 
+   * @param indexY index of a section item in the vertical axis. 
    * @return <tt>true</tt> if the cell at the specified location is in pushed state
    */
   protected boolean isPushed(X indexX, Y indexY) {
@@ -109,8 +109,8 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
 
   /**
    * Paints the cell when it is in the pushed state.  
-   * @param indexX index of a section item in the column axis 
-   * @param indexY index of a section item in the row axis. 
+   * @param indexX index of a section item in the horizontal axis 
+   * @param indexY index of a section item in the vertical axis. 
    * @param x the x coordinate of the painting boundaries
    * @param y the y coordinate of the painting boundaries
    * @param width the width of the painting boundaries
@@ -122,8 +122,8 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
 
   /**
    * Paints the cell when it is in the idle (not pushed) state.
-   * @param indexX index of a section item in the column axis 
-   * @param indexY index of a section item in the row axis. 
+   * @param indexX index of a section item in the horizontal axis 
+   * @param indexY index of a section item in the vertical axis. 
    * @param x the x coordinate of the painting boundaries
    * @param y the y coordinate of the painting boundaries
    * @param width the width of the painting boundaries
@@ -131,16 +131,16 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
    */
   protected void paintIdle(X indexX, Y indexY, int x, int y, int width, int height) {
     gc.setForeground(highlightShadow);
-    gc.drawLine(x, y - 1, x + width - 1, y - 1);
-    gc.drawLine(x, y - 1, x, y + height - 1);
+    gc.drawLine(x, y, x + width - 1, y);
+    gc.drawLine(x, y, x, y + height - 1);
 
     gc.setForeground(lightShadow);
-    gc.drawLine(x + 1, y, x + width - 2, y);
-    gc.drawLine(x + 1, y, x + 1, y + height - 2);
+    gc.drawLine(x + 1, y + 1, x + width - 2, y + 1);
+    gc.drawLine(x + 1, y + 1, x + 1, y + height - 2);
 
     gc.setForeground(normalShadow);
     gc.drawLine(x + 1, y + height - 1, x + width - 1, y + height - 1);
-    gc.drawLine(x + width - 1, y, x + width - 1, y + height - 1);
+    gc.drawLine(x + width - 1, y + 1, x + width - 1, y + height - 1);
   }
 
   @Override public void clean() {

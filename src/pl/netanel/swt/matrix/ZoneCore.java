@@ -20,8 +20,8 @@ import pl.netanel.util.Preconditions;
 
 
 /**
- * Constitutes a region of a matrix where a section from the row axis 
- * and a section from the column axis intersect with each other.  
+ * Constitutes a region of a matrix where a section from the vertical axis 
+ * and a section from the horizontal axis intersect with each other.  
  * <p>
  * Zone has painters to paint itself on the screen.
  * </p><p>
@@ -56,8 +56,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
   /**
 	 * Constructs zone at intersection of the specified sections.
-   * @param sectionX section of the column axis
-   * @param sectionY section of the row axis
+   * @param sectionX section of the horizontal axis
+   * @param sectionY section of the vertical axis
 	 */
 	public ZoneCore(SectionCore<X> sectionX, SectionCore<Y> sectionY) {
 		this.sectionY = sectionY;
@@ -90,7 +90,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	}
 
 
-	@Override public Zone<X, Y> getCore() {
+	@Override public Zone<X, Y> getUnchecked() {
 	  return this;
 	}
 	
@@ -285,7 +285,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 			
 			@Override public Cell<X,Y> next() {
-				return next ? new Cell<X,Y>(seq.indexX(), seq.indexY()) : null;
+				return next ? Cell.createUnchecked(seq.indexX(), seq.indexY()) : null;
 			}
 		};
 	}
@@ -307,7 +307,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 			
 			@Override public CellExtent<X, Y> next() {
 				return next ? 
-				  new CellExtent<X, Y>(seq.startX(), seq.endX(), seq.startY(), seq.endY()) : 
+				  CellExtent.createUnchecked(seq.startX(), seq.endX(), seq.startY(), seq.endY()) : 
 			    null;
 			}
 		};
@@ -336,7 +336,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 			
 			@Override public Cell<X, Y> next() {
-				return next ? new Cell<X, Y>(seq.indexX(), seq.indexY()) : null;
+				return next ? Cell.createUnchecked(seq.indexX(), seq.indexY()) : null;
 			}
 		};
 	}
@@ -643,7 +643,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
   }
 
   public static <X2 extends Number, Y2 extends Number> ZoneCore<X2, Y2> from(Zone<X2, Y2> zone) {
-    return (ZoneCore<X2, Y2>) zone.getCore();
+    return (ZoneCore<X2, Y2>) zone.getUnchecked();
   }
 
 

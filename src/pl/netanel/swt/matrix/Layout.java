@@ -59,8 +59,8 @@ class Layout<N extends Number> {
 		caches.add(head); caches.add(main); caches.add(tail);
 		
 		SectionCore<N> section = sections.get(0);
-		start = AxisItem.create(section, math.ZERO_VALUE());
-		zeroItem = AxisItem.create(section, math.ZERO_VALUE());
+		start = AxisItem.createInternal(section, math.ZERO_VALUE());
+		zeroItem = AxisItem.createInternal(section, math.ZERO_VALUE());
 		forwardNavigator.init();
 		current = forwardNavigator.getItem();
 		total = math.create(0);
@@ -188,7 +188,7 @@ class Layout<N extends Number> {
 		N count = currentSection.getCount();
 		if (math.compare(current.getIndex(), count) >= 0) {
 			current = math.compare(count, math.ZERO_VALUE()) == 0 ? null : 
-				AxisItem.create(currentSection, math.decrement(current.getIndex()));
+				AxisItem.createInternal(currentSection, math.decrement(current.getIndex()));
 		}
 		
 		// Hidden
@@ -211,8 +211,8 @@ class Layout<N extends Number> {
 		int diff = section1.index - section2.index;
 		if (diff != 0) return diff;
 		return math.compare(
-				section1.indexOf(item1.getIndex()), 
-				section2.indexOf(item2.getIndex()));
+				section1.getOrder(item1.getIndex()), 
+				section2.getOrder(item2.getIndex()));
 	}
 	
 	
@@ -385,7 +385,7 @@ class Layout<N extends Number> {
 		return 0;
 	}
 	
-	private AxisItem<N> nextItem(AxisItem<N> item, Direction<N> direction) {
+	AxisItem<N> nextItem(AxisItem<N> item, Direction<N> direction) {
 		if (item == null) item = direction.first();
 		if (item == null) return null;
 		direction.set(item);
@@ -572,7 +572,7 @@ class Layout<N extends Number> {
 			N index2 = section.math.increment(index);
 			Bound bound = new Bound(0, section.getLineWidth(index2));
 			lines.add(bound);
-			items.add(AxisItem.create(section, index2));
+			items.add(AxisItem.createInternal(section, index2));
 			return bound;
 		}
 
@@ -712,7 +712,7 @@ class Layout<N extends Number> {
 		for (int i = 0, size = sections.size(); i < size; i++) {
 			SectionCore<N> section = sections.get(i);
 			if (item.section.equals(section)) {
-				N index = section.indexOfNotHidden(item.getIndex());
+				N index = section.getPosition(item.getIndex());
 				return index == null ? null : position.add(math.getValue(index));
 			}
 			if (section.isVisible()) {
@@ -732,7 +732,7 @@ class Layout<N extends Number> {
 			pos1.set(pos2);
 			pos2.add(section.getVisibleCount());
 			if (math.compare(pos2, position) > 0) {
-				return AxisItem.create(section, section.get(pos1.subtract(position).negate().getValue()));
+				return AxisItem.createInternal(section, section.getIndex(pos1.subtract(position).negate().getValue()));
 			}
 		}
 		return null;
@@ -963,16 +963,14 @@ class Layout<N extends Number> {
 		if (position <= 0) {
 			NumberSequence<N> selected = sourceSection.getSelectedSequence();
 			selected.init(); selected.next();
-			start = AxisItem.create(sourceSection, selected.index());
+			start = AxisItem.createInternal(sourceSection, selected.index());
 		} 
 		// Adjust the scroll position if moving the start
 		else if (sourceSection.isSelected(start.getIndex())) {
-			start = AxisItem.create(sourceSection, target.getIndex());
+			start = AxisItem.createInternal(sourceSection, target.getIndex());
 		}
 		
 		compute();
 		return true;
 	}
-
-		
 }

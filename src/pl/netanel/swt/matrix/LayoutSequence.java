@@ -31,7 +31,7 @@ class LayoutSequence<N extends Number> {
 			if (items.size() == bounds.size() /*&& 
 				axis.getZIndex(section2) < axis.getZIndex(item.section)*/) 
 			{
-				item = AxisItem.create(item.section, section.math.increment(item.getIndex()));
+				item = AxisItem.createInternal(item.section, section.math.increment(item.getIndex()));
 				bound = bounds.get(i);
 				i = bounds.size();
 				return true;
