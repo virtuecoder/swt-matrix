@@ -14,7 +14,7 @@ import pl.netanel.swt.matrix.Painter;
 public class _0019_AlignColumnToTheRight {
 	
 	public static void main(String[] args) {
-		Shell shell = (new Shell());
+		Shell shell = new Shell();
     shell.setText(title);
 		shell.setBounds(400, 200, 600, 400);
 		shell.setLayout(new FillLayout());
@@ -34,6 +34,7 @@ public class _0019_AlignColumnToTheRight {
 					return indexX.toString();
 				}
 			});
+		matrix.getHeaderX().setHeaderStyle();
 
 		matrix.getBody().replacePainter(
 			new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_Y) {
@@ -43,6 +44,7 @@ public class _0019_AlignColumnToTheRight {
 					return indexY.toString() + ", " + indexX;
 				}
 		});
+		matrix.getBody().setBodyStyle();
 		
 		shell.open();
 		Display display = shell.getDisplay();

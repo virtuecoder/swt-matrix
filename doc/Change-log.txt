@@ -19,13 +19,30 @@ API changes:
 - Added CellExtent.createUnchecked(Cell, Cell)
 - Added Section.getHidden()
 - Added Section.getHiddenExtents()
-- Removed Section.getHiddenCount(Number, Number)
-- Removed Section.indexOfNotHidden(Number)
+- Added Zone.setBodyStyle()
+- Added Zone.setHeaderStyle()
+- Added Axis.setFocusItemEnabled(boolean)
+- Added Axis.isFocusItemEnabled()
+- Deleted Section.getHiddenCount(Number, Number)
+- Deleted Section.indexOfNotHidden(Number)
+- Deleted Zone.setDefaultForeground(Color); it was a duplicate of Painter property
+- Deleted Zone.setDefaultBackground(Color); it was a duplicate of Painter property
+- Deleted Zone.setSelectionForeground(Color); it was a duplicate of Painter property
+- Deleted Zone.setSelectionBackground(Color); it was a duplicate of Painter property
+- Deleted Zone.getDefaultForeground(); it was a duplicate of Painter property
+- Deleted Zone.getDefaultBackground(); it was a duplicate of Painter property
+- Deleted Zone.getSelectionForeground(); it was a duplicate of Painter property
+- Deleted Zone.getSelectionBackground(); it was a duplicate of Painter property
+- Deleted Matrix.setFocusCellEnabled(boolean)
+
+
+- Deleted Matrix.isFocusCellEnabled()
 - Renamed Section fitCellWidth(Number) to Sectoin.setCellWidth(Number)
 - Renamed Section.getSelectedIterator() to Section.getSelected()
 - Renamed Section.getSelectedExtentIterator() to Section.getSelectedExtents()
 - Renamed Section.getCore() to Section.getUnchecked()
 - Renamed Zone.getCore() to Zone.getUnchecked()
+
 
 Bug fixes:
 - Default column headers numbering was incorrect
@@ -101,7 +118,7 @@ API changes:
 - Painter.computeSize(Number, Number, int, int) instead of computeWidth(Number, Number) and computeHeight(Number, Number)
 
 Bug fixes:
-- Snipept_0402 removed double click on emulated checkbox
+- Snipept_0402 Deleted double click on emulated checkbox
 - Snippet_0490 copy on a single cell threw exception
 
 -------------------------------------------------------------------------------
@@ -112,7 +129,7 @@ Version 0.3.1
 Bug fixes:
 - NPE while zone editor activation when the editor control was null.
 - Moving item back and forth did not work correctly
-- Removed type safety warnings from snippets
+- Deleted type safety warnings from snippets
 
 -------------------------------------------------------------------------------
 Version 0.3
@@ -129,20 +146,20 @@ Bug fixes:
 - Resizing of embedded controls did layout incorrectly.
 - Combo item was not getting selected after editor activation.
 - Change of focus cell by keyboard did not add the focus cell to selection.
-- Removed double selection notification when selecting columns or rows
+- Deleted double selection notification when selecting columns or rows
 - Columns selection after reordering was incorrect
 - Altering of columns selection with Ctrl did not work
 
 API changes
 - Matrix:
   - renamed all editing commands to have the CMD_EDIT_ prefix.
-  - removed getZoneUnchecked() - now the zone returned by getZone() is not checking the parameters to speed up performance
+  - Deleted getZoneUnchecked() - now the zone returned by getZone() is not checking the parameters to speed up performance
   - Matrix.executeCommand(int commandId)
 - Zone
-  - removed getSectionUnchecked() - now the section returned by getSection() is not checking the parameters to speed up performance
+  - Deleted getSectionUnchecked() - now the section returned by getSection() is not checking the parameters to speed up performance
 - ZoneEditor:
   - renamed setEmulationPath(String) to setImagePath(String)
-  - removed snapControlImages(String)
+  - Deleted snapControlImages(String)
 
 -------------------------------------------------------------------------------s
 Version 0.2

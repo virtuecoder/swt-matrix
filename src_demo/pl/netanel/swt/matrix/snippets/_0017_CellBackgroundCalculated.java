@@ -16,16 +16,21 @@ import pl.netanel.swt.matrix.Section;
 public class _0017_CellBackgroundCalculated {
 	
 	public static void main(String[] args) {
-		Shell shell = (new Shell());
+		Shell shell = new Shell();
     shell.setText(title);
 		shell.setBounds(400, 200, 600, 400);
 		shell.setLayout(new FillLayout());
 		Display display = shell.getDisplay();
 		
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
-		matrix.getAxisY().getBody().setCount(8);
+		matrix.getBody().setSelectionEnabled(false);
+		
 		Section<Integer> bodyX = matrix.getAxisX().getBody();
+		Section<Integer> bodyY = matrix.getAxisY().getBody();
+		
 		bodyX.setCount(8);
+		bodyY.setCount(8);
+		
 		bodyX.setDefaultCellWidth(16);
 		
 		final Color color = display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);

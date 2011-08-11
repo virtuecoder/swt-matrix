@@ -104,7 +104,7 @@ public class PainterTest extends SwtTestCase {
     int y = r.y + painter.textMarginY;
     gc.drawText(text, x, y);
     gc.copyArea(expected, 1, 1);
-    painter.printGC(gc);
+//    painter.printGC(gc);
     gc.dispose();
     shell.addDisposeListener(new DisposeListener() {
       @Override

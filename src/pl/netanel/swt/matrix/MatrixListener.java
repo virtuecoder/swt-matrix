@@ -429,7 +429,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 		}
 
 		public void moveFocusItem(Move move) {
-			if (matrix.isFocusCellEnabled() && item != null)  {
+			if (item != null)  {
 //				matrix.model.setSelected(false, false);
 				focusMoved = layout.moveFocusItem(move);
 				if (focusMoved) {
@@ -804,7 +804,6 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 	}
 	
 	protected boolean moveCursor(int commandId) {
-		if (!matrix.isFocusCellEnabled()) return true;
 		stateY.focusMoved = true;
 		stateX.focusMoved = true;
 		mY = null; mX = null;
@@ -992,8 +991,11 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       
       if ((stateX.moving || stateY.moving) && bounds != null) {
         // Background
-        gc.setBackground(header.getDefaultBackground());
-        gc.fillRectangle(x2, y2, bounds.width, bounds.height);
+        Painter<X, Y> cellPainter = header.getPainter(Painter.NAME_CELLS);
+        if (cellPainter != null && cellPainter.background != null) {
+          gc.setBackground(cellPainter.background);
+          gc.fillRectangle(x2, y2, bounds.width, bounds.height);
+        }
         
         // Text
         if (painter == null) {

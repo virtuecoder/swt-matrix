@@ -304,13 +304,38 @@ public class Axis<N extends Number>  {
 		layout.setFocusItem(AxisItem.createInternal(section2, index));
 		if (matrix != null) matrix.redraw();
 	}
+	
 
+	/**
+   * Enables current item navigation in the receiver if the argument is <code>true</code>,
+   * and disables it otherwise.
+   * <p>
+   * If the focus cell is disabled the navigation events are ignored and the 
+   * {@link Painter#NAME_FOCUS_CELL} painter of the matrix is disabled. 
+   *
+   * @param state the new focus item enablement state
+   */
+	public void setFocusItemEnabled(boolean state) {
+	  layout.isFocusItemEnabled = state;
+	  matrix.setFocusCellEnabled(state);
+	}
+
+	/**
+   * Returns <code>true</code> if the focus item navigation is enabled in the receiver. 
+   * Otherwise <code>false</code> is returned.
+   *
+   * @return the receiver's focus item enablement state
+   */
+	public boolean isFocusItemEnabled() {
+	  return layout.isFocusItemEnabled;
+	}
 	
 	/*------------------------------------------------------------------------
 	 * Freeze
 	 */
 
-	/**
+
+  /**
 	 * Freezes the specified amount of first items on this axis. 
 	 * @param freezeItemCount amount of first items to freeze
 	 * @throws IllegalArgumentException if the argument is lower then zero

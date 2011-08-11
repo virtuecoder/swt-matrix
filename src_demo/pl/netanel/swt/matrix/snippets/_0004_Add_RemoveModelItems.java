@@ -24,7 +24,7 @@ public class _0004_Add_RemoveModelItems {
 	static int counter;
 	
 	public static void main(String[] args) {
-		Shell shell = (new Shell());
+		Shell shell = new Shell();
 		shell.setText(title);
 		shell.setLayout(new GridLayout(2, false));
 		
@@ -62,6 +62,7 @@ public class _0004_Add_RemoveModelItems {
 		    }
 		  }
 		);
+		matrix.getBody().setBodyStyle();
 		
 		matrix.getHeaderX().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
@@ -71,6 +72,7 @@ public class _0004_Add_RemoveModelItems {
 		    }
 		  }
 	  );
+		matrix.getHeaderX().setHeaderStyle();
 		
 		Button add = new Button(shell, SWT.PUSH);
 		add.setText("Insert");
@@ -96,7 +98,7 @@ public class _0004_Add_RemoveModelItems {
 			  if (focusItem != null) {
 			    Integer index = focusItem.getIndex();
           bodyY.delete(index, index);
-			    list.remove(index);
+			    list.remove(index.intValue());
 			  }
 				matrix.refresh();
 				matrix.setFocus();

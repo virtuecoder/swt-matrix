@@ -27,11 +27,13 @@ class Layout<N extends Number> {
 	ArrayList<Runnable> callbacks;
 
 	boolean isComputingRequired;
+	boolean isFocusItemEnabled;
 
 	public Direction<N> forward, backward, forwardNavigator, backwardNavigator;
 	final Axis<N> axis;
 
 	ArrayList<SectionCore<N>> sections;
+
 	
 	public Layout(Axis<N> axis) {
 		Preconditions.checkArgument(axis.getSectionCount() > 0, "Layout must have at least one section");
@@ -71,6 +73,7 @@ class Layout<N extends Number> {
 		
 		callbacks = new ArrayList<Runnable>();
 		isComputingRequired = true;
+		isFocusItemEnabled = true;
 	}
 
 	public int getViewportSize() {
@@ -222,6 +225,8 @@ class Layout<N extends Number> {
 	 */
 
 	public void setFocusItem(AxisItem<N> item) {
+	  if (!isFocusItemEnabled) return;
+	  
 		if (isComputingRequired) compute();
 		
 		     if (forwardNavigator.set(item))    current = forwardNavigator.getItem();
@@ -236,6 +241,8 @@ class Layout<N extends Number> {
 	 */
 	// TODO Performance: prevent computation if current does not change
 	public boolean moveFocusItem(Move move) {
+	  if (!isFocusItemEnabled) return false;
+	  
   	AxisItem<N> current2 = null;
 		switch (move) {
 		case HOME: 				current2 = forwardNavigator.first(); break;
@@ -754,9 +761,9 @@ class Layout<N extends Number> {
 			Bound bounds = cache.cells.get(i);
 			item = cache.items.get(i);
 			if (distance <= bounds.distance + bounds.width) {
-			  if (bounds.distance <= distance) {
+//			  if (bounds.distance <= distance) {
 			    return item;
-			  }
+//			  }
 			}
 		}
 		return item;

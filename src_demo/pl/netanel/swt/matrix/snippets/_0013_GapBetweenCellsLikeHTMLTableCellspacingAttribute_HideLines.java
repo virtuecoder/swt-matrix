@@ -15,7 +15,7 @@ import pl.netanel.swt.matrix.Section;
  */
 public class _0013_GapBetweenCellsLikeHTMLTableCellspacingAttribute_HideLines {
 	public static void main(String[] args) {
-		Shell shell = (new Shell());
+		Shell shell = new Shell();
     shell.setText(title);
 		shell.setBounds(400, 200, 600, 400);
 		shell.setLayout(new FillLayout());
@@ -34,17 +34,20 @@ public class _0013_GapBetweenCellsLikeHTMLTableCellspacingAttribute_HideLines {
 		
 		// Column header painting
 		Zone<Integer, Integer> columnHeader = matrix.getHeaderX();
+		columnHeader.getPainter(Painter.NAME_CELLS).background = null;
 		columnHeader.getPainter(Painter.NAME_LINES_X).setEnabled(false);
 		columnHeader.getPainter(Painter.NAME_LINES_Y).setEnabled(false);
-		columnHeader.addPainter(
-		  new Painter<Integer, Integer>("cell border", Painter.SCOPE_CELLS) {
+		columnHeader.addPainter(0, 
+		  new Painter<Integer, Integer>("cell background and border", Painter.SCOPE_CELLS) {
 			@Override
 			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
+			  gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+			  gc.fillRectangle(x, y, width, height);
+			  
 				gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
 				gc.drawRectangle(x - 1, y - 1, width + 1, height + 1);
 			}
 		});
-		columnHeader.setDefaultBackground(null);
 		
 		// Body painting
 		Zone<Integer, Integer> body = matrix.getBody();

@@ -7,6 +7,7 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -80,7 +81,8 @@ public class SelectTest extends SwtTestCase {
     click(matrix, bounds, SWT.MOD1 | SWT.BUTTON1);
 
     assertEquals(2, matrix.getBody().getSelectedCount().intValue());
-    assertColor(body.getSelectionBackground(), bounds.x + 2, bounds.y + 2);
+    Color selectionBackground = body.getPainter(Painter.NAME_CELLS).selectionBackground;
+    assertColor(selectionBackground, bounds.x + 2, bounds.y + 2);
   }
 
   @Test
@@ -177,7 +179,8 @@ public class SelectTest extends SwtTestCase {
     click(matrix, bounds, SWT.MOD2 | SWT.BUTTON1);
 
     // Body cell should be highlighted
-    assertColor(body.getSelectionBackground(), bounds.x + 2, bounds.y + 2);
+    Color selectionBackground = body.getPainter(Painter.NAME_CELLS).selectionBackground;
+    assertColor(selectionBackground, bounds.x + 2, bounds.y + 2);
 
     // Two body cells should be selected
     assertEquals(2, body.getSelectedCount().intValue());
@@ -204,10 +207,10 @@ public class SelectTest extends SwtTestCase {
     assertEquals(1, columnHeader.getSelectedCount().intValue());
 
     // Body cell should be highlighted
-    assertColor(body.getSelectionBackground(), bounds.x + 2, bounds.y + 2);
+    assertColor(body.getPainter(Painter.NAME_CELLS).selectionBackground, bounds.x + 2, bounds.y + 2);
 
     // Column header cell should be highlighted
-    assertColor(columnHeader.getSelectionBackground(), bounds2.x + 2,
+    assertColor(columnHeader.getPainter(Painter.NAME_CELLS).selectionBackground, bounds2.x + 2,
       bounds2.y + 2);
 
     // Click again should notify
@@ -242,7 +245,7 @@ public class SelectTest extends SwtTestCase {
     assertEquals(1, columnHeader.getSelectedCount().intValue());
 
     // Column header cell should be highlighted
-    assertColor(columnHeader.getSelectionBackground(), bounds.x + 2,
+    assertColor(columnHeader.getPainter(Painter.NAME_CELLS).selectionBackground, bounds.x + 2,
       bounds.y + 2);
   }
 

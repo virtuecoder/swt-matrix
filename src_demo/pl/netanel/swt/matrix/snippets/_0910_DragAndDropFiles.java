@@ -22,14 +22,13 @@ import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
-import pl.netanel.swt.matrix.custom.ButtonCellBehavior;
 
 /**
  * Simplest matrix.
  */
 public class _0910_DragAndDropFiles {
 	public static void main(String[] args) {
-		Shell shell = (new Shell());
+		Shell shell = new Shell();
 		shell.setText(title);
 		shell.setLayout(new FillLayout());
 		shell.setBounds(400, 200, 600, 400);
@@ -49,8 +48,9 @@ public class _0910_DragAndDropFiles {
 		axisX.getBody().setDefaultMoveable(true);
     axisY.getHeader().setVisible(true);
 		
-    matrix.setFocusCellEnabled(false);
-		
+    axisX.setFocusItemEnabled(false);
+    axisY.setFocusItemEnabled(false);
+    
 		matrix.getBody().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 		    @Override public String getText(Integer indexX, Integer indexY) {
@@ -61,6 +61,8 @@ public class _0910_DragAndDropFiles {
             null;
 		    }
 		});
+		matrix.getBody().setBodyStyle();
+		
 		matrix.getHeaderX().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
       @Override public String getText(Integer indexX, Integer indexY) {
@@ -70,10 +72,11 @@ public class _0910_DragAndDropFiles {
           null;
       }
 		});
+		matrix.getHeaderX().setHeaderStyle();
 		
-		new ButtonCellBehavior<Integer, Integer>(matrix.getHeaderX());
-		new ButtonCellBehavior<Integer, Integer>(matrix.getHeaderY());
-		new ButtonCellBehavior<Integer, Integer>(matrix.getTopLeft());
+//		new ButtonCellBehavior<Integer, Integer>(matrix.getHeaderX());
+//		new ButtonCellBehavior<Integer, Integer>(matrix.getHeaderY());
+//		new ButtonCellBehavior<Integer, Integer>(matrix.getTopLeft());
 		
 		final Painter<Integer, Integer> dragPainterY = matrix.getPainter(Painter.NAME_DRAG_ITEM_Y);
 		

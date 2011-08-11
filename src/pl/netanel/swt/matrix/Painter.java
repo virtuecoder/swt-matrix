@@ -198,6 +198,14 @@ public class Painter<X extends Number, Y extends Number> {
 	 * Background color.
 	 */
 	public Color background;
+	/**
+	 * Foreground color of selected cells.
+	 */
+	public Color selectionForeground;
+	/**
+	 * Background color of selected cells.
+	 */
+	public Color selectionBackground;
 	
 	/**
 	 * Horizontal text alignment. One of the following constants defined in class SWT: 
@@ -241,7 +249,7 @@ public class Painter<X extends Number, Y extends Number> {
 	public int imageMarginY;
 	/**
 	 * Selected cells will be highlighted if <tt>true</tt>. Otherwise cell selection
-	 * will be ignored. Ddefault value is <tt>true</true>.
+	 * will be ignored. Default value is <tt>true</true>.
 	 */
 	public boolean selectionHighlight = true;
 	
@@ -251,11 +259,12 @@ public class Painter<X extends Number, Y extends Number> {
 	private boolean wordWrap;
 
 	TextClipMethod textClipMethod;
-	Zone<X, Y> zone;
+	
 	Matrix<X, Y> matrix;
+	ZoneCore<X, Y> zone;
+	Rectangle zoneBounds;
 
-	private Color lastForeground, lastBackground, defaultBackground, defaultForeground,  
-		 selectionBackground, selectionForeground;
+	private Color lastForeground, lastBackground, defaultBackground;  
 //	private boolean shouldHighlight;
 //	private boolean backgroundEnabled, foregroundEnabled;
 
@@ -335,18 +344,18 @@ public class Painter<X extends Number, Y extends Number> {
    */
 	protected boolean init() {
 		if (scope < SCOPE_CELLS) return true;
-		lastForeground = defaultForeground = 
-		  foreground == null ? zone.getDefaultForeground() : foreground;
-		lastBackground = defaultBackground = 
-  		background == null ? zone.getDefaultBackground() : background;
-		selectionBackground = zone.getSelectionBackground();
-		selectionForeground = zone.getSelectionForeground();
-		if (lastForeground != null) {
-		  gc.setForeground(lastForeground);
+		
+		// Set default value if foreground is null, background is not painted if null 
+		if (foreground == null) {
+		  foreground = Resources.getColor(SWT.COLOR_LIST_FOREGROUND);
 		}
-		if (lastBackground != null) {
+		lastForeground = foreground;
+		lastBackground = defaultBackground = background;
+		
+		gc.setForeground(lastForeground);
+		if (background != null) {
 			gc.setBackground(lastBackground);
-			gc.fillRectangle(zone.getBounds(Frozen.NONE, Frozen.NONE));
+			gc.fillRectangle(zone.bounds);
 		}
 //		backgroundEnabled = zone.isBackgroundEnabled();
 //		foregroundEnabled = zone.isForegroundEnabled();
@@ -406,12 +415,14 @@ public class Painter<X extends Number, Y extends Number> {
 	    gc.setClipping(x, y, width, height);
 	  }
 	  
-		Color foreground2 = foreground == null ? defaultForeground : foreground; 
-		Color background2 = background == null ? defaultBackground : background;
+		Color foreground2, background2;
 		if (selectionHighlight && zone != null && zone.isSelected(indexX, indexY)) {
 			// TODO Revise and maybe optimize the background / foreground color setting algorithm
 			foreground2 = selectionForeground;  
 			background2 = selectionBackground;
+		} else {
+		  foreground2 = foreground;  
+		  background2 = background;
 		}
 		
 		// Only set color if there is a change
@@ -422,6 +433,7 @@ public class Painter<X extends Number, Y extends Number> {
 			if (!background2.equals(lastBackground)) {
 				gc.setBackground(lastBackground = background2);
 			}
+			// Needed in calculated background scenario
 			if (!background2.equals(defaultBackground)) {
 				gc.fillRectangle(x, y, width, height);
 			}
@@ -686,6 +698,7 @@ public class Painter<X extends Number, Y extends Number> {
 	 * Static members 
 	 */
 	
+	
 	/**
 	 * Returns the distance of a graphical element based on the align mode and the padding margin.
 	 *  
@@ -715,7 +728,7 @@ public class Painter<X extends Number, Y extends Number> {
 	 * @param r
 	 * @param offset
 	 */
-	public static void offsetRectangle(Rectangle r, int offset) {
+	static void offsetRectangle(Rectangle r, int offset) {
 		r.x -= offset;
 		r.y -= offset;
 		r.width += 2 *offset;
@@ -754,7 +767,7 @@ public class Painter<X extends Number, Y extends Number> {
     return zone;
   }
 
-  void setZone(Zone<X, Y> zone) {
+  void setZone(ZoneCore<X, Y> zone) {
     this.zone = zone;
     this.matrix = zone.getMatrix();
   }
@@ -775,7 +788,9 @@ public class Painter<X extends Number, Y extends Number> {
     this.wordWrap = state;
   }
 
-  void printGC(GC gc) {
+  
+  
+  static void printGC(GC gc) {
 //    System.out.println("getForeground() " +  gc.getForeground());
 //    System.out.println("getBackground() " +  gc.getBackground());
 //    System.out.println("getForegroundPattern() " +  gc.getForegroundPattern());

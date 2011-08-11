@@ -31,7 +31,7 @@ import pl.netanel.swt.matrix.Section;
 public class _0005_SortingByColumns {
 
   public static void main(String[] args) throws Exception {
-    Shell shell = (new Shell());
+    Shell shell = new Shell();
     shell.setText(title);
     shell.setLayout(new GridLayout(2, false));
     Display display = shell.getDisplay();
@@ -76,7 +76,8 @@ public class _0005_SortingByColumns {
           return sorted.get(indexY.intValue())[indexX.intValue()].toString();
         }
       });
-
+    matrix.getBody().setBodyStyle();
+    
     // Paint text and sorting image in the column headers zone
     Painter<Integer, Integer> columnHeaderPainter = new Painter<Integer, Integer>(
       Painter.NAME_CELLS, Painter.SCOPE_CELLS) 
@@ -96,6 +97,7 @@ public class _0005_SortingByColumns {
     columnHeaderPainter.imageAlignY = SWT.CENTER;
     columnHeaderPainter.imageMarginX = 5;
     matrix.getHeaderX().replacePainter(columnHeaderPainter);
+    matrix.getHeaderX().setHeaderStyle();
 
     // Change sorting on mouse down in a column header 
     matrix.getHeaderX().addListener(SWT.MouseDown, new Listener() {

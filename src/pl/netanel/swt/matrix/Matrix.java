@@ -184,8 +184,6 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	final Painters<X, Y> painters;
 	private ScheduledExecutorService executor;
 	
-	private boolean focusCellEnabled = true;
-	
 	/**
 	 * Calls the {@link #Matrix(Composite, int, Axis, Axis, ZoneCore...)} constructor 
 	 * with <code>null</code> values for <code>axisY</code> and <code>axisX</code>. 
@@ -311,14 +309,6 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		axisX.setMatrix(this, 'X');
 		axisY.setMatrix(this, 'Y');
 		
-		Zone<X, Y> body = getBody();
-//		if (body.getDefaultBackground() == null) {
-//			body.setDefaultBackground(getBackground());
-//		}
-		if (body.getDefaultForeground() == null) {
-			body.setDefaultForeground(getForeground());
-		}
-		
 		this.listener = new MatrixListener<X, Y>(this);
 		listener.setLayout(layoutX, layoutY);
 	}
@@ -331,15 +321,15 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	
 	private void setDefaultPainters() {
 		
-		painters.add(new DockPainter(Frozen.NONE, Frozen.NONE));
-		painters.add(new DockPainter(Frozen.NONE, Frozen.TAIL));
-		painters.add(new DockPainter(Frozen.TAIL, Frozen.NONE));
-		painters.add(new DockPainter(Frozen.NONE, Frozen.HEAD));
-		painters.add(new DockPainter(Frozen.HEAD, Frozen.NONE));
-		painters.add(new DockPainter(Frozen.HEAD, Frozen.TAIL));
-		painters.add(new DockPainter(Frozen.TAIL, Frozen.HEAD));
-		painters.add(new DockPainter(Frozen.TAIL, Frozen.TAIL));
-		painters.add(new DockPainter(Frozen.HEAD, Frozen.HEAD));
+		painters.add(new FrozenPainter(Frozen.NONE, Frozen.NONE));
+		painters.add(new FrozenPainter(Frozen.NONE, Frozen.TAIL));
+		painters.add(new FrozenPainter(Frozen.TAIL, Frozen.NONE));
+		painters.add(new FrozenPainter(Frozen.NONE, Frozen.HEAD));
+		painters.add(new FrozenPainter(Frozen.HEAD, Frozen.NONE));
+		painters.add(new FrozenPainter(Frozen.HEAD, Frozen.TAIL));
+		painters.add(new FrozenPainter(Frozen.TAIL, Frozen.HEAD));
+		painters.add(new FrozenPainter(Frozen.TAIL, Frozen.TAIL));
+		painters.add(new FrozenPainter(Frozen.HEAD, Frozen.HEAD));
 		
 		painters.add(new Painter<X, Y>(Painter.NAME_FOCUS_CELL) {
 			@Override
@@ -361,11 +351,11 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		addPainter(listener.new DragItemPainterY());
 	}
 	
-	class DockPainter extends Painter<X, Y> {
+	class FrozenPainter extends Painter<X, Y> {
 		private final Frozen dockX;
 		private final Frozen dockY;
 
-		public DockPainter(Frozen dockX, Frozen dockY) {
+		public FrozenPainter(Frozen dockX, Frozen dockY) {
 			super("frozen " + dockX.name().toLowerCase() + " " + dockY.name().toLowerCase());
 			this.dockX = dockX;
 			this.dockY = dockY;
@@ -541,26 +531,24 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 * and disables it invisible otherwise.
 	 * <p>
 	 * If the focus cell is disabled the navigation events are ignored and the 
-	 * "focus cell" painter of the matrix is disabled. 
+	 * {@link Painter#NAME_FOCUS_CELL} painter of the matrix is disabled. 
 	 *
 	 * @param state the new focus cell enablement state
 	 */
-	public void setFocusCellEnabled(boolean state) {
-		Painter<X, Y> painter = getPainter("focus cell");
-		if (painter != null) painter.setEnabled(state);
-		focusCellEnabled = state;
+	void setFocusCellEnabled(boolean state) {
+	  Painter<X, Y> painter = getPainter(Painter.NAME_FOCUS_CELL);
+	  if (painter == null) return;
+	  
+	  if (state == true) {
+	    if (axisX.isFocusItemEnabled() && axisY.isFocusItemEnabled()) {
+	      painter.setEnabled(true);
+	    }
+	  } else {
+	    painter.setEnabled(false);
+	  }
+	  
 	}
 
-	/**
-	 * Returns <code>true</code> if the focus cell navigation is enabled in the receiver. 
-	 * Otherwise, <code>false</code> is returned.
-	 *
-	 * @return the receiver's focus item enablement state
-	 */
-	public boolean isFocusCellEnabled() {
-		return focusCellEnabled;
-	}
-	
 	
 	/*------------------------------------------------------------------------
 	 * Helper 

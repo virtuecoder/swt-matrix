@@ -82,9 +82,10 @@ public class _0490_CustomCopy_Paste {
 		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
 		// Configure the matrix
-		matrix.getAxisY().getHeader().setVisible(true);
-		matrix.getAxisY().getBody().setCount(countY);
 		matrix.getAxisX().getBody().setCount(countX);
+		matrix.getAxisY().getBody().setCount(countY);
+		matrix.getAxisY().getHeader().setVisible(true);
+		
 		matrix.getBody().replacePainter(new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 			@Override
 			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
@@ -92,6 +93,7 @@ public class _0490_CustomCopy_Paste {
 				super.paint(indexX, indexY, x, y, width, height);
 			}
 		});
+		matrix.getBody().setBodyStyle();
 		
 		final ZoneEditor<Integer, Integer> zoneEditor = 
 		  new ZoneEditor<Integer, Integer>(matrix.getBody()) {

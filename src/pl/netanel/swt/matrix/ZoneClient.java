@@ -4,7 +4,6 @@ import java.math.BigInteger;
 import java.util.Iterator;
 
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
 
@@ -59,50 +58,6 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     sectionY.checkCellIndex(indexY, "indexY");
     sectionX.checkCellIndex(indexX, "indexX");
     return core.getCellBounds(indexX, indexY);
-  }
-
-  @Override
-  public void setDefaultBackground(Color color) {
-    Preconditions.checkNotNullWithName(color, "color");
-    core.setDefaultBackground(color);
-  }
-
-  @Override
-  public Color getDefaultBackground() {
-    return core.getDefaultBackground();
-  }
-
-  @Override
-  public void setDefaultForeground(Color color) {
-    Preconditions.checkNotNullWithName(color, "color");
-    core.setDefaultForeground(color);
-  }
-
-  @Override
-  public Color getDefaultForeground() {
-    return core.getDefaultForeground();
-  }
-
-  @Override
-  public void setSelectionForeground(Color color) {
-    Preconditions.checkNotNullWithName(color, "color");
-    core.setSelectionForeground(color);
-  }
-
-  @Override
-  public Color getSelectionForeground() {
-    return core.getSelectionForeground();
-  }
-
-  @Override
-  public void setSelectionBackground(Color color) {
-    Preconditions.checkNotNullWithName(color, "color");
-    core.setSelectionBackground(color);
-  }
-
-  @Override
-  public Color getSelectionBackground() {
-    return core.getSelectionBackground();
   }
 
   @Override
@@ -235,7 +190,16 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     return core.getPainterCount();
   }
 
-  
+  @Override
+  public void setBodyStyle() {
+    core.setBodyStyle();
+  }
+
+  @Override
+  public void setHeaderStyle() {
+    core.setHeaderStyle();
+  }
+
   @Override
   public void bind(int commandId, int eventType, int code) {
     core.bind(commandId, eventType, code);

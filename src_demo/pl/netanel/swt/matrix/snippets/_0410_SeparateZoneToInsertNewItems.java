@@ -66,14 +66,15 @@ public class _0410_SeparateZoneToInsertNewItems {
 		axisX.getBody().setCount(COLUMN_COUNT);
 
 		// Paint text from the model in the body
-    matrix.getBody().replacePainter(
+    Painter<Integer, Integer> bodyPainter = 
       new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
         @Override
         public String getText(Integer indexX, Integer indexY) {
           return (String) data.get(indexY.intValue())[indexX.intValue()];
         }
-      }
-    );
+      };
+    matrix.getBody().replacePainter(bodyPainter);
+    matrix.getBody().setBodyStyle();
     
     // Insert body editor
     final InsertEditor insertEditor = new InsertEditor(matrix);
@@ -89,18 +90,21 @@ public class _0410_SeparateZoneToInsertNewItems {
       }
     };
     insertBody.replacePainter(insertPainter);
-    insertBody.setDefaultBackground(matrix.getBackground());
+    insertPainter.background = bodyPainter.background;
+    insertPainter.selectionBackground = bodyPainter.selectionBackground;
+    insertPainter.selectionForeground = bodyPainter.selectionForeground;
     
 		// Paint text in the row header of the insert section
     final Zone<Integer, Integer> insertHeader = matrix.getZone(axisX.getHeader(), insertSection);
-    insertHeader.replacePainter(
+    Painter<Integer, Integer> insertHeaderPainter = 
       new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
         @Override public String getText(Integer indexX, Integer indexY) {
           textAlignX = textAlignY = SWT.CENTER;
           return "add:";
         }
-      }
-    );
+      };
+    insertHeader.replacePainter(insertHeaderPainter);
+    insertHeaderPainter.background = matrix.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND); 
 
     new ZoneEditor<Integer, Integer>(insertHeader) {
       @Override protected Control createControl(Integer indexX, Integer indexY) {

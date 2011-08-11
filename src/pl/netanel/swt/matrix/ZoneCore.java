@@ -48,10 +48,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	private boolean selectionEnabled;
 	
 	private Matrix<X, Y> matrix;
-	private Color selectionBackground, selectionForeground;
-	private final Rectangle bounds;
-	
-	private final CellValues<X, Y, Color> background, foreground;
+	final Rectangle bounds;
 	
 
   /**
@@ -73,20 +70,14 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		cellSelection = new CellSet<X, Y>(mathX, mathY);
 		lastSelection = new CellSet<X, Y>(mathX, mathY);
 		
-		RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
-		RGB whiteColor = Resources.getColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
-		RGB color = Painter.blend(selectionColor, whiteColor, 40);
-		selectionBackground = Resources.getColor(color);
-		
-		background = new MapValueToCellSet<X, Y, Color>(mathX, mathY);
-		foreground = new MapValueToCellSet<X, Y, Color>(mathX, mathY);
+//		foreground = new MapValueToCellSet<X, Y, Color>(mathX, mathY);
 //		text = new MapValueToCellSet(this.sectionY.math, this.sectionX.math);
 //		image = new MapValueToCellSet(this.sectionY.math, this.sectionX.math);
 	}
 	
 	
 	@Override public String toString() {
-		return sectionY.toString() + " " + sectionX.toString();
+		return sectionX.toString() + " " + sectionY.toString();
 	}
 
 
@@ -102,38 +93,69 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	  return sectionY;
 	}
 	
-	
-	void setDefaultBodyStyle() {
-	  //	setDefaultBackground(matrix.getBackground());
-	  
-		Painter<X, Y> painter = new Painter<X, Y>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-			@Override public String getText(Number indexY, Number indexX) {
-				return indexY.toString() + ", " + indexX.toString();
-			}
-		};
-		painter.setZone(this);
-		replacePainter(painter);
-		Color color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
-		replacePainter(new LinePainter(Painter.NAME_LINES_X, Painter.SCOPE_LINES_X, color ));
-		replacePainter(new LinePainter(Painter.NAME_LINES_Y, Painter.SCOPE_LINES_Y, color));
+	/**
+   * Sets the default body style for the painters of this zone. 
+   * <p>
+   * It sets the foreground, background, selection foreground, selection background 
+   * colors for the {@link Painter#NAME_CELLS} painter and line (foreground) color 
+   * for the  {@link Painter#NAME_LINES_X} and {@link Painter#NAME_LINES_Y} painters.
+   */
+	@Override
+  public void setBodyStyle() {
+	  Painter<X, Y> painter = getPainter(Painter.NAME_CELLS);
+    if (painter != null) {
+      painter.foreground = painter.background = null;
+
+//      painter.selectionForeground = Resources.getColor(SWT.COLOR_LIST_SELECTION_TEXT);
+      painter.selectionForeground = painter.foreground;
+      RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
+      RGB whiteColor = Resources.getColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
+      RGB color = Painter.blend(selectionColor, whiteColor, 40);
+      painter.selectionBackground = Resources.getColor(color);
+    }
+    
+    final Color color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
+    painter = getPainter(Painter.NAME_LINES_X);
+    if (painter != null) {
+      painter.background = color;
+    }
+    painter = getPainter(Painter.NAME_LINES_Y);
+    if (painter != null) {
+      painter.background = color;
+    }
 	}
 	
-	void setDefaultHeaderStyle(Painter<X, Y> cellsPainte) {
-		setDefaultForeground(Resources.getColor(SWT.COLOR_WIDGET_FOREGROUND));
-		setDefaultBackground(Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND));
-		
-		RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
-		RGB whiteColor = Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND).getRGB();
-		RGB rgb = Painter.blend(selectionColor, whiteColor, 90);
-		setSelectionBackground(Resources.getColor(rgb));
-		
-		if (getPainterCount() == 0) {
-			cellsPainte.setZone(this);
-			addPainter(cellsPainte);
-			final Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
-			addPainter(new LinePainter(Painter.NAME_LINES_X, Painter.SCOPE_LINES_X, color));
-			addPainter(new LinePainter(Painter.NAME_LINES_Y, Painter.SCOPE_LINES_Y, color));
-		}
+	/**
+	 * Sets the default header style for the painters of this zone. 
+	 * <p>
+	 * It sets the foreground, background, selection foreground, selection background 
+	 * colors for the {@link Painter#NAME_CELLS} painter and line (foreground) color 
+	 * for the  {@link Painter#NAME_LINES_X} and {@link Painter#NAME_LINES_Y} painters.
+	 */
+	@Override
+  public void setHeaderStyle() {
+	  Painter<X, Y> painter = getPainter(Painter.NAME_CELLS);
+	  if (painter != null) {
+	    painter.foreground = Resources.getColor(SWT.COLOR_WIDGET_FOREGROUND);
+	    painter.background = Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND);
+
+//	    painter.selectionForeground = Resources.getColor(SWT.COLOR_LIST_SELECTION_TEXT);
+	    painter.selectionForeground = painter.foreground;
+	    RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
+	    RGB whiteColor = Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND).getRGB();
+	    RGB rgb = Painter.blend(selectionColor, whiteColor, 90);
+	    painter.selectionBackground = Resources.getColor(rgb);
+	  }
+	  
+		final Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
+    painter = getPainter(Painter.NAME_LINES_X);
+    if (painter != null) {
+      painter.background = color;
+    }
+    painter = getPainter(Painter.NAME_LINES_Y);
+    if (painter != null) {
+      painter.background = color;
+    }
 	}
 	
 	@Override public Rectangle getCellBounds(X indexX, Y indexY) {
@@ -145,24 +167,6 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		return null; 
 	}
 	
-	
-	@Override public void setDefaultBackground(Color color) {
-		background.setDefaultValue(color);
-	}
-	
-	@Override public Color getDefaultBackground() {
-		return background.getDefaultValue();
-	}	
-	
-	
-	@Override public void setDefaultForeground(Color color) {
-		foreground.setDefaultValue(color);
-	}
-
-	@Override public Color getDefaultForeground() {
-		return foreground.getDefaultValue();
-	}	
-
 	
 	@Override public Rectangle getBounds(Frozen frozenX, Frozen frozenY) {
 	  Bound bx = matrix.layoutX.getBound(frozenX, sectionX);
@@ -182,23 +186,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	 * Selection
 	 */
 
-	@Override public void setSelectionForeground(Color color) {
-		selectionForeground = color;
-	}
 	
-	@Override public Color getSelectionForeground() {
-		return selectionForeground;
-	}
-	
-	@Override public void setSelectionBackground(Color color) {
-		selectionBackground = color;
-	}
-	
-	@Override public Color getSelectionBackground() {
-		return selectionBackground;
-	}
-	
-
 	@Override public boolean isSelectionEnabled() {
 		return selectionEnabled;
 	}
@@ -585,25 +573,19 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	@Override public Painter<X, Y> getPainter(int index) {
 		return painters.get(index);
 	}
-	
+
+	void replaceOrAddFirst(Painter<X, Y> painter) {
+    int indexOf = painters.indexOfPainter(Painter.NAME_CELLS);
+    if (indexOf != -1) {
+      painters.set(indexOf, painter);
+    } else {
+      addPainter(0, painter);
+    }
+  }
 
 	private void setPainterMatrixAndZone(Painter<X, Y> painter) {	
 			painter.setZone(this);
 			painter.setMatrix(matrix);
-	}
-	
-	class LinePainter extends Painter<X, Y> {
-
-		public LinePainter(String name, int scope, Color color) {
-			super(name, scope);
-			this.background = color;
-		}
-		
-		
-		@Override public void paint(Number indexY, Number indexX, int x, int y, int width, int height) {
-			gc.setBackground(background);
-			gc.fillRectangle(x, y, width, height);
-		}
 	}
 	
 	

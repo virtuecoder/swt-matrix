@@ -18,6 +18,7 @@ import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
+import pl.netanel.swt.matrix.Zone;
 
 /**
  * Filter section between header and body.
@@ -46,8 +47,9 @@ public class _0003_FilterSectionBetweenHeaderAndBody {
 		filtered.addAll(list);
 		
 		Axis<Integer> axisY = new Axis<Integer>(Integer.class, 3, 0, 2);
-		axisY.getSection(1).setCount(1);
-		axisY.getSection(1).setFocusItemEnabled(false);
+		Section<Integer> filterY = axisY.getSection(1);
+    filterY.setCount(1);
+		filterY.setFocusItemEnabled(false);
 		final Section<Integer> bodyY = axisY.getBody();
 		bodyY.setCount(list.size());
 		bodyY.setDefaultResizable(true);
@@ -55,13 +57,18 @@ public class _0003_FilterSectionBetweenHeaderAndBody {
 		final Matrix<Integer, Integer> matrix = 
 		  new Matrix<Integer, Integer>(shell, SWT.V_SCROLL, null, axisY);
 		matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		
-		axisY.getHeader().setVisible(true);
-		
+
 		Axis<Integer> axisX = matrix.getAxisX();
-		axisX.getBody().setCount(2);
-		axisX.getHeader().setDefaultCellWidth(16);
-		axisX.getHeader().setVisible(true);
+		
+		Section<Integer> bodyX = axisX.getBody();
+		Section<Integer> headerX = axisX.getHeader();
+		Section<Integer> headerY = axisY.getHeader();
+		
+    bodyX.setCount(2);
+		
+    headerX.setDefaultCellWidth(16);
+		headerX.setVisible(true);
+		headerY.setVisible(true);
 		
 		matrix.getBody().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
@@ -71,11 +78,14 @@ public class _0003_FilterSectionBetweenHeaderAndBody {
   			}
   		}
 	  );
+		matrix.getBody().setBodyStyle();
 		
+		// Read image
 		FileInputStream stream = new FileInputStream("filter.png");
 		Image image = new Image(display, new ImageData(stream));
 		stream.close();
 		
+		// Column header
 		matrix.getHeaderX().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 		    @Override
@@ -84,19 +94,22 @@ public class _0003_FilterSectionBetweenHeaderAndBody {
 		    }
 		  }
 		);
+		matrix.getHeaderX().setHeaderStyle();
 		
 		// Filter row header
-		matrix.getZone(axisX.getHeader(), axisY.getSection(1)).getPainter(Painter.NAME_CELLS).image = image;
+		matrix.getZone(headerX, filterY).getPainter(Painter.NAME_CELLS).image = image;
 		
 		// Filter columns
-		matrix.getZone(axisX.getBody(), axisY.getSection(1)).replacePainter(
+		Zone<Integer, Integer> filterColumns = matrix.getZone(bodyX, filterY);
+    filterColumns.replacePainter(
 			new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 				@Override
         public String getText(Integer indexX, Integer indexY) {
 					return indexX.intValue() == 1 ? filter[0] : null;
 				};
 			}
-		); 
+		);
+    filterColumns.setHeaderStyle();
 		
 		Label label = new Label(shell, SWT.NONE);
 		label.setText("Press to filter by priority: h - high, m - medium, l - low, a - all");

@@ -30,31 +30,39 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 				ZoneCore<X, Y> zone = getZone(sectionX.getUnchecked(), sectionY.getUnchecked());
 				zone.setMatrix(matrix);
 				if (zone.getPainterCount() == 0) {
-					if (sectionY.equals(bodyY) && sectionX.equals(bodyX)) {
-						zone.setDefaultBodyStyle();
+				  zone.addPainter(new LinePainter<X, Y>(Painter.NAME_LINES_Y, Painter.SCOPE_LINES_Y));
+				  zone.addPainter(new LinePainter<X, Y>(Painter.NAME_LINES_X, Painter.SCOPE_LINES_X));
+					
+				  if (sectionY.equals(bodyY) && sectionX.equals(bodyX)) {
+					  Painter<X, Y> painter = new Painter<X, Y>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+				      @Override public String getText(Number indexY, Number indexX) {
+				        return indexY.toString() + ", " + indexX.toString();
+				      }
+				    };
+				    zone.replaceOrAddFirst(painter);
+						zone.setBodyStyle();
 					}
 					else if (sectionY.equals(headerY) && sectionX.equals(bodyX)) {
-					  zone.setDefaultHeaderStyle(
-					    new Painter<X, Y>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_Y) {
-					      @Override
-					      public String getText(Number indexX, Number indexY) {
-					        return indexX.toString();
-					      }
-					    }
-					  );
+					  zone.replaceOrAddFirst(new Painter<X, Y>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_Y) {
+              @Override
+              public String getText(Number indexX, Number indexY) {
+                return indexX.toString();
+              }
+            });
+            zone.setHeaderStyle();
 					}
 					else if (sectionX.equals(headerX) && sectionY.equals(bodyY)) {
-						zone.setDefaultHeaderStyle(
-						  new Painter<X, Y>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-						    @Override
-						    public String getText(X indexX, Y indexY) {
-						      return indexY.toString();
-						    }
-						  }
-						);						
-					} else {
-						zone.setDefaultHeaderStyle(
-						  new Painter<X, Y>(Painter.NAME_CELLS, Painter.SCOPE_CELLS));
+					  zone.replaceOrAddFirst(new Painter<X, Y>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_Y) {
+					    @Override
+					    public String getText(Number indexX, Number indexY) {
+					      return indexY.toString();
+					    }
+					  });
+					  zone.setHeaderStyle();
+					} 
+					else {
+						zone.replaceOrAddFirst(new Painter<X, Y>(Painter.NAME_CELLS, Painter.SCOPE_CELLS));
+						zone.setHeaderStyle();
 					}
 				}
 			}
@@ -63,6 +71,7 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 		
 		seq = new ExtentPairSequence();
 	}
+	
 	
 	private void calculatePaintOrder() {
 		paintOrder = new int[zones.size()];

@@ -7,7 +7,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
 
@@ -69,68 +68,12 @@ public interface Zone<X extends Number, Y extends Number> {
   Rectangle getCellBounds(X indexX, Y indexY);
 
   /**
-   * Sets the default background color for the receiver's cells. 
-   * @param color color to set
-   * @throws IllegalArgumentException if <code>color</code> or 
-   *         <code>indexY</code> is null.
-   */
-  void setDefaultBackground(Color color);
-
-  /**
-   * Returns the default background color of the receiver's cells. 
-   * @return default width of lines in this 
-   */
-  Color getDefaultBackground();
-
-  /**
-   * Sets the default foreground color for the receiver's cells. 
-   * @param color color to set
-   * @throws IllegalArgumentException if <code>color</code> or 
-   *         <code>indexY</code> is null.
-   */
-  void setDefaultForeground(Color color);
-
-  /**
-   * Returns the default foreground color of the receiver's cells. 
-   * @return default width of lines in this 
-   */
-  Color getDefaultForeground();
-
-  /**
    * Returns the rectangular boundaries of this zone in the specified freezing area. 
    * @param frozenX frozen area on horizontal axis 
    * @param frozenY frozen area on vertical axis
    * @return the rectangular boundaries of this zone
    */
   Rectangle getBounds(Frozen frozenX, Frozen frozenY);
-
-  /**
-   * Sets selection foreground color for the receiver. 
-   * @param color color to set
-   * @throws IllegalArgumentException if <code>color</code> or 
-   *         <code>indexY</code> is null.
-   */
-  void setSelectionForeground(Color color);
-
-  /**
-   * Returns the selection foreground color for the receiver.
-   * @return selection foreground color for the receiver
-   */
-  Color getSelectionForeground();
-
-  /**
-   * Sets selection background color for the receiver. 
-   * @param color color to set
-   * @throws IllegalArgumentException if <code>color</code> or 
-   *         <code>indexY</code> is null.
-   */
-  void setSelectionBackground(Color color);
-
-  /**
-   * Returns the selection background color for the receiver.
-   * @return selection background color for the receiver
-   */
-  Color getSelectionBackground();
 
   /**
    * Returns <code>true</code> if selection is enabled, false otherwise.
@@ -485,6 +428,24 @@ public interface Zone<X extends Number, Y extends Number> {
    *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
    */
   Painter<X, Y> getPainter(int index);
+
+  /**
+   * Sets the default body style for the painters of this zone. 
+   * <p>
+   * It sets the foreground, background, selection foreground, selection background 
+   * colors for the {@link Painter#NAME_CELLS} painter and line (foreground) color 
+   * for the  {@link Painter#NAME_LINES_X} and {@link Painter#NAME_LINES_Y} painters.
+   */
+  void setBodyStyle();
+  
+  /**
+   * Sets the default header style for the painters of this zone. 
+   * <p>
+   * It sets the foreground, background, selection foreground, selection background 
+   * colors for the {@link Painter#NAME_CELLS} painter and line (foreground) color 
+   * for the  {@link Painter#NAME_LINES_X} and {@link Painter#NAME_LINES_Y} painters.
+   */
+  void setHeaderStyle();
 
   /**
    * Returns the matrix to which the zone belongs.
