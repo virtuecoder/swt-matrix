@@ -20,7 +20,7 @@ public class _0010_DrawCustomBackgroundForTheWholeMatrix_ResizeTheWindow_ {
   static Point point = new Point(-1000, -1000);
   
 	public static void main(String[] args) {
-		Shell shell = (new Shell());
+		Shell shell = new Shell();
     shell.setText(title);
 		shell.setBounds(400, 200, 600, 400);
 		shell.setLayout(new FillLayout());
@@ -57,7 +57,8 @@ public class _0010_DrawCustomBackgroundForTheWholeMatrix_ResizeTheWindow_ {
 		});
 		
 		matrix.addPainter(0, new Painter<Integer, Integer>("background") {
-			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
+			@Override
+      public void paint(int x, int y, int width, int height) {
 				gc.drawImage(image2, point.x - 50, point.y - 50);
 			};
 		});

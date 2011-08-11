@@ -20,7 +20,7 @@ public class _0018_ImagePainting {
 	private static final int COLUMN_COUNT = 4;
 
 	public static void main(String[] args) {
-		Shell shell = (new Shell());
+		Shell shell = new Shell();
     shell.setText(title);
 		shell.setBounds(400, 200, 600, 400);
 		shell.setLayout(new FillLayout());
@@ -52,15 +52,16 @@ public class _0018_ImagePainting {
 		
 		matrix.getBody().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-			@Override
-			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
-				text = indexY.toString() + ", " + indexX;
-				Image[] row = images[indexY.intValue()];
-				image = row == null ? null : row[indexX.intValue()];
-				imageAlignX = indexX.intValue() == 1 ? SWT.RIGHT : SWT.LEFT;
-				super.paint(indexX, indexY, x, y, width, height);
-			}
-		});
+		    @Override
+	      public void setup(Integer indexX, Integer indexY) {
+		      super.setup(indexX, indexY);
+	        text = indexY.toString() + ", " + indexX;
+	        Image[] row = images[indexY.intValue()];
+	        image = row == null ? null : row[indexX.intValue()];
+	        imageAlignX = indexX.intValue() == 1 ? SWT.RIGHT : SWT.LEFT;
+	      }
+  		});
+		matrix.getBody().setBodyStyle();
 		
 		shell.setBounds(400, 200, 600, 400);
 		shell.open();

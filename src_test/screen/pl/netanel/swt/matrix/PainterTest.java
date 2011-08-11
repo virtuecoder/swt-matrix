@@ -7,6 +7,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.junit.Test;
@@ -30,6 +31,8 @@ public class PainterTest extends SwtTestCase {
     body.addPainter(0, new Painter<Integer, Integer>("gradient row background",
       Painter.SCOPE_CELLS_ITEM_Y) {
       int matrixWidth;
+      AxisItem focusItem;
+      boolean isCurrent;
 
       @Override
       protected boolean init() {
@@ -38,6 +41,11 @@ public class PainterTest extends SwtTestCase {
         gc.setAdvanced(true);
         if (gc.getAdvanced()) gc.setAlpha(127);
         matrixWidth = matrix.getClientArea().width;
+        
+        // Get the focus item
+        Axis axisY = matrix.getAxisY();
+        focusItem = axisY.getFocusItem();
+        
         return true;
       }
 
@@ -47,12 +55,15 @@ public class PainterTest extends SwtTestCase {
       }
 
       @Override
-      public void paint(Integer indexX, Integer indexY, int x, int y,
-        int width, int height) {
-        Axis axisY = matrix.getAxisY();
-        AxisItem focusItem = axisY.getFocusItem();
-        if (body.getSectionY().equals(focusItem.getSection())
-          && indexY.equals(focusItem.getIndex())) {
+        public void setup(Integer indexX, Integer indexY) {
+          super.setup(indexX, indexY);
+          isCurrent = body.getSectionY().equals(focusItem.getSection())
+            && indexY.equals(focusItem.getIndex());
+        }
+      
+      @Override
+      public void paint(int x, int y, int width, int height) {
+        if (isCurrent) {
           gc.fillGradientRectangle(0, y - 1, matrixWidth, height + 2, false);
         }
       }
@@ -120,13 +131,14 @@ public class PainterTest extends SwtTestCase {
   Image paintCell(Zone zone, Number indexY, Number indexX) {
     Matrix matrix = zone.getMatrix();
     Rectangle r = zone.getCellBounds(indexX, indexY);
-    Painter painter = matrix.getBody().getPainter(Painter.NAME_CELLS);
+    Painter painter = new TestPainter(matrix.getBody().getPainter(Painter.NAME_CELLS));
     Rectangle clientArea = matrix.getClientArea();
 
     final Image image = new Image(display, clientArea.width, clientArea.height);
     GC gc = new GC(matrix);
     painter.init(gc);
-    painter.paint(2, 0, r.x, r.y, r.width, r.height);
+    painter.setup(0, 0);
+    painter.paint(r.x, r.y, r.width, r.height);
     gc.copyArea(image, 0, 0);
     gc.dispose();
     shell.addDisposeListener(new DisposeListener() {
@@ -136,5 +148,89 @@ public class PainterTest extends SwtTestCase {
       }
     });
     return image;
+  }
+  
+  static class TestPainter extends Painter {
+    Painter painter;
+
+    public TestPainter(Painter painter) {
+      super(painter.getName());
+      this.painter = painter;
+    }
+
+    @Override
+    public String toString() {
+      return painter.toString();
+    }
+
+    @Override
+    public String getName() {
+      return painter.getName();
+    }
+
+    @Override
+    public int getScope() {
+      return painter.getScope();
+    }
+
+    @Override
+    public void clean() {
+      painter.clean();
+    }
+
+    @Override
+    public void setup(Number indexX, Number indexY) {
+      painter.setup(indexX, indexY);
+    }
+
+    public void test(int x, int y, int width, int height) {
+      painter.paint(x, y, width, height);
+    }
+    
+    @Override
+    public void setData(Object data) {
+      painter.setData(data);
+    }
+
+    @Override
+    public Object getData() {
+      return painter.getData();
+    }
+
+    @Override
+    public String getText(Number indexX, Number indexY) {
+      return painter.getText(indexX, indexY);
+    }
+
+    @Override
+    public Image getImage(Number indexX, Number indexY) {
+      return painter.getImage(indexX, indexY);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+      painter.setEnabled(enabled);
+    }
+
+    @Override
+    public boolean isEnabled() {
+      return painter.isEnabled();
+    }
+
+    @Override
+    public Point computeSize(Number indexX, Number indexY, int wHint, int hHint) {
+      return painter.computeSize(indexX, indexY, wHint, hHint);
+    }
+
+    @Override
+    public boolean isWordWrap() {
+      return painter.isWordWrap();
+    }
+
+    @Override
+    public void setWordWrap(boolean state) {
+      painter.setWordWrap(state);
+    }
+    
   }
 }

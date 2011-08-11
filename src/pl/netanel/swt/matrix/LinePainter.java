@@ -7,7 +7,7 @@ class LinePainter<X extends Number, Y extends Number>  extends Painter<X, Y> {
   }
   
   
-  @Override public void paint(Number indexY, Number indexX, int x, int y, int width, int height) {
+  @Override public void paint(int x, int y, int width, int height) {
     gc.setBackground(background);
     gc.fillRectangle(x, y, width, height);
   }

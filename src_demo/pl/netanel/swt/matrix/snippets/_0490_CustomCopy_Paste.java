@@ -88,9 +88,9 @@ public class _0490_CustomCopy_Paste {
 		
 		matrix.getBody().replacePainter(new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 			@Override
-			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
+			public void setup(Integer indexX, Integer indexY) {
+			  super.setup(indexX, indexY);
 				text = data.get(indexY.intValue()).get(indexX.intValue()).toString();
-				super.paint(indexX, indexY, x, y, width, height);
 			}
 		});
 		matrix.getBody().setBodyStyle();

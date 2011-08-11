@@ -437,8 +437,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 					width = seqY.getWidth();
 					Y indexX = seqY.item.getIndex();
 					for (seqX.init(); seqX.next();) {
-						p.paint(seqX.item.getIndex(), indexX, 
-							seqX.getDistance(), distance, seqX.getWidth(), width);
+					  p.setup(seqX.item.getIndex(), indexX);
+						p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
 					}
 				}
 				break;
@@ -451,8 +451,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 					width = seqX.getWidth();
 					X indexX = seqX.item.getIndex();
 					for (seqY.init(); seqY.next();) {
-						p.paint(indexX, seqY.item.getIndex(),
-							distance, seqY.getDistance(), width, seqY.getWidth());
+					  p.setup(indexX, seqY.item.getIndex());
+						p.paint(distance, seqY.getDistance(), width, seqY.getWidth());
 					}
 				}
 				break;
@@ -462,7 +462,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				distance = bounds.x;
 				width = bounds.width;
 				for (seqY.init(); seqY.next();) {
-					p.paint(null, seqY.item.getIndex(), distance, seqY.getDistance(), width, seqY.getWidth());
+				  p.setup(sectionX.math.ZERO_VALUE(), seqY.item.getIndex());
+					p.paint(distance, seqY.getDistance(), width, seqY.getWidth());
 				}
 				break;
 				
@@ -471,7 +472,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				distance = bounds.y;
 				width = bounds.height;
 				for (seqX.init(); seqX.next();) {
-					p.paint(seqX.item.getIndex(), null, seqX.getDistance(), distance, seqX.getWidth(), width);
+				  p.setup(seqX.item.getIndex(), sectionY.math.ZERO_VALUE());
+					p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
 				}
 				break;
 				
@@ -480,7 +482,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				distance = bounds.x;
 				width = bounds.width;
 				for (seqY.init(); seqY.next();) {
-					p.paint(null, seqY.item.getIndex(), distance, seqY.getDistance(), width, seqY.getWidth());
+				  p.setup(sectionX.math.ZERO_VALUE(), seqY.item.getIndex());
+					p.paint(distance, seqY.getDistance(), width, seqY.getWidth());
 				}
 				break;
 			
@@ -489,7 +492,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				distance = bounds.y;
 				width = bounds.height;
 				for (seqX.init(); seqX.next();) {
-					p.paint(seqX.item.getIndex(), null, seqX.getDistance(), distance, seqX.getWidth(), width);
+				  p.setup(seqX.item.getIndex(), sectionY.math.ZERO_VALUE()); 
+					p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
 				}
 				break;
 				
@@ -511,8 +515,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 						int width = seqY.getWidth();
 						Y index = seqY.item.getIndex();
 						for (seqX.init(); seqX.next();) {
-							p.paint(seqX.item.getIndex(), index, 
-									seqX.getDistance(), distance, seqX.getWidth(), width);
+						  p.setup(seqX.item.getIndex(), index); 
+							p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
 						}
 					}
 					p.clean();

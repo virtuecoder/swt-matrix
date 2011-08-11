@@ -252,6 +252,7 @@ public class Painter<X extends Number, Y extends Number> {
 	 * will be ignored. Default value is <tt>true</true>.
 	 */
 	public boolean selectionHighlight = true;
+	public boolean isSelected = false;
 	
 	/**
 	 * Word wrapping for text in cells. 
@@ -409,14 +410,14 @@ public class Painter<X extends Number, Y extends Number> {
 	 * @param width the width of the painting boundaries
 	 * @param height the height of the painting boundaries
 	 */
-	public void paint(X indexX, Y indexY, int x, int y, int width, int height) {
-	  setup(indexX, indexY);
+	protected void paint(int x, int y, int width, int height) {
+//	  setup(indexX, indexY);
 	  if (isWordWrap()) {
 	    gc.setClipping(x, y, width, height);
 	  }
 	  
 		Color foreground2, background2;
-		if (selectionHighlight && zone != null && zone.isSelected(indexX, indexY)) {
+		if (isSelected) {
 			// TODO Revise and maybe optimize the background / foreground color setting algorithm
 			foreground2 = selectionForeground;  
 			background2 = selectionBackground;
@@ -439,15 +440,9 @@ public class Painter<X extends Number, Y extends Number> {
 			}
 		}
 		
-//		lineWidth0 = zone.sectionY.getLineWidth(indexY);
-//		lineWidth1 = zone.sectionX.getLineWidth(indexX);
-//		lineColor = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 		int x2 = x, y2 = y;
 		int x3 = x, y3 = y;
 		
-		
-//		imageAlignX = getImageAlignX(indexY, indexX);
-//		imageAlignY = getImageAlignY(indexY, indexX);
 		if (image != null) {
 			Rectangle bounds = image.getBounds();
 			switch (imageAlignX) {
@@ -473,9 +468,7 @@ public class Painter<X extends Number, Y extends Number> {
 			width -= bounds.width;
 		}
 		
-		text = getText(indexX, indexY);
-//		textAlignX = getTextAlignX(indexY, indexX);
-//		textAlignY = getTextAlignY(indexY, indexX);
+		
 		if (text != null) {
 		  
 		  if (textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
@@ -528,11 +521,11 @@ public class Painter<X extends Number, Y extends Number> {
 		  else {
 //			if (width < 4 || height < 4) return;
 		    
-		    
 		    gc.drawString(text, x3, y3, true);
 		  }
 		}
 	}
+	
 	
 	/**
    * Defines painter configuration that is called both by
@@ -549,6 +542,7 @@ public class Painter<X extends Number, Y extends Number> {
 	public void setup(X indexX, Y indexY) {
 	  image = getImage(indexX, indexY);
     text = getText(indexX, indexY);
+    isSelected = selectionHighlight && zone != null && zone.isSelected(indexX, indexY);
 	}
 	
 	/**

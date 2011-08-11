@@ -37,9 +37,8 @@ public class _0017_CellBackgroundCalculated {
 		matrix.getBody().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 		    @Override
-		    public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
+        public void setup(Integer indexX, Integer indexY) {
 		      background = indexY.intValue() % 2 + indexX.intValue() % 2 == 1 ? color : null;
-		      super.paint(indexX, indexY, x, y, width, height);
 		    }
 		  }
 	  );

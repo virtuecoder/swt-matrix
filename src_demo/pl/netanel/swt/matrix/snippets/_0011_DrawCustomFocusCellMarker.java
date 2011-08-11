@@ -16,7 +16,7 @@ import pl.netanel.swt.matrix.Painter;
  */
 public class _0011_DrawCustomFocusCellMarker {
 	public static void main(String[] args) {
-		Shell shell = (new Shell());
+		Shell shell = new Shell();
 		shell.setText(title);
 		shell.setBounds(400, 200, 600, 400);
 		shell.setLayout(new FillLayout());
@@ -28,7 +28,7 @@ public class _0011_DrawCustomFocusCellMarker {
 		
 		matrix.replacePainter(new Painter<Integer, Integer>(Painter.NAME_FOCUS_CELL) {
 			@Override
-			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
+			public void paint(int x, int y, int width, int height) {
 				// Get bounds of the focus cell 
 			  AxisItem<Integer> itemX = matrix.getAxisX().getFocusItem();
 				AxisItem<Integer> itemY = matrix.getAxisY().getFocusItem();

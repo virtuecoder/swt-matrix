@@ -34,14 +34,13 @@ API changes:
 - Deleted Zone.getSelectionForeground(); it was a duplicate of Painter property
 - Deleted Zone.getSelectionBackground(); it was a duplicate of Painter property
 - Deleted Matrix.setFocusCellEnabled(boolean)
-
-
 - Deleted Matrix.isFocusCellEnabled()
 - Renamed Section fitCellWidth(Number) to Sectoin.setCellWidth(Number)
 - Renamed Section.getSelectedIterator() to Section.getSelected()
 - Renamed Section.getSelectedExtentIterator() to Section.getSelectedExtents()
 - Renamed Section.getCore() to Section.getUnchecked()
 - Renamed Zone.getCore() to Zone.getUnchecked()
+- Changed Painter.paint(Number, Number, int, int, int, int) to Painter.paint(int, int, int, int); indexed based operations are done through Painter.setup(Number, Number) method.
 
 
 Bug fixes:

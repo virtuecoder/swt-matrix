@@ -29,13 +29,13 @@ import pl.netanel.swt.matrix.Painter;
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		matrix.addPainter(0, new Painter<Integer, Integer>("start timer") {
 			@Override
-			public void paint(Integer indexY, Integer indexX, int x, int y, int width, int height) {
+			public void paint(int x, int y, int width, int height) {
 				t = System.currentTimeMillis();
 			}
 		});
 		matrix.addPainter(new Painter<Integer, Integer>("stop timer") {
 			@Override
-			public void paint(Integer indexY, Integer indexX, int x, int y, int width, int height) {
+			public void paint(int x, int y, int width, int height) {
 				t = System.currentTimeMillis() - t;
 				time.add(t);
 			}
@@ -63,7 +63,7 @@ import pl.netanel.swt.matrix.Painter;
 			sum += time.get(i);
 		}
 		long avg = sum / (time.size() - 1);
-//		System.out.println(avg);
+		System.out.println(avg);
 		assertTrue("" + avg + " expected to be <= 60", avg <= 60);
 	
 //		while (!shell.isDisposed()) {
@@ -83,13 +83,13 @@ import pl.netanel.swt.matrix.Painter;
 		Matrix matrix = new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		matrix.addPainter(0, new Painter("start timer") {
 			@Override
-			public void paint(Number indexY, Number indexX, int x, int y, int width, int height) {
+			public void paint(int x, int y, int width, int height) {
 				t = System.currentTimeMillis();
 			}
 		});
 		matrix.addPainter(new Painter("stop timer") {
 			@Override
-			public void paint(Number indexY, Number indexX, int x, int y, int width, int height) {
+			public void paint(int x, int y, int width, int height) {
 				t = System.currentTimeMillis() - t;
 				time.add(t);
 			}
@@ -110,7 +110,7 @@ import pl.netanel.swt.matrix.Painter;
 			sum += time.get(i);
 		}
 		long avg = sum / (time.size() - 1);
-//		System.out.println(avg);
+		System.out.println(avg);
 		assertTrue("" + avg + " expected to be <= 60", avg <= 60);
 		
 //		while (!shell.isDisposed()) {

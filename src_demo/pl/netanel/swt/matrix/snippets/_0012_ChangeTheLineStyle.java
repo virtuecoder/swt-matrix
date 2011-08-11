@@ -13,7 +13,7 @@ import pl.netanel.swt.matrix.Painter;
  */
 public class _0012_ChangeTheLineStyle {
 	public static void main(String[] args) {
-		Shell shell = (new Shell());
+		Shell shell = new Shell();
 		shell.setText(title);
 		shell.setBounds(400, 200, 600, 400);
 		shell.setLayout(new FillLayout());
@@ -26,9 +26,14 @@ public class _0012_ChangeTheLineStyle {
 		
 		matrix.getBody().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_LINES_X, Painter.SCOPE_LINES_X) {
+		    private int row;
+        @Override
+        public void setup(Integer indexX, Integer indexY) {
+		      row = indexY.intValue();
+		    };
 		    @Override
-		    public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
-		      switch (indexY.intValue()) {
+		    public void paint(int x, int y, int width, int height) {
+		      switch (row) {
 		      case 1:
 		        gc.setBackground(display.getSystemColor(SWT.COLOR_BLUE));
 		        gc.fillRectangle(x, y, width, height);

@@ -333,7 +333,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		
 		painters.add(new Painter<X, Y>(Painter.NAME_FOCUS_CELL) {
 			@Override
-			public void paint(X indexY, Y indexX, int x, int y, int width, int height) {
+			public void paint(int x, int y, int width, int height) {
 			  AxisItem<X> itemX = axisX.getFocusItem();
 				AxisItem<Y> itemY = axisY.getFocusItem();
 				if (itemX == null || itemY == null) return;
@@ -362,7 +362,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		}
 		
 		@Override
-		public void paint(X indexY, Y indexX, int x, int y, int width, int height) {
+		public void paint(int x, int y, int width, int height) {
 		  Bound bbX = layoutX.getBound(dockX);
 			Bound bbY = layoutY.getBound(dockY);
 			
@@ -397,7 +397,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		
 		for (Painter<X, Y> p: painters) {
 			if (!p.isEnabled() || !p.init(gc)) continue;
-			p.paint(null, null, area.x, area.y, area.width, area.height);
+			p.paint(area.x, area.y, area.width, area.height);
 			p.clean();
 		}
 //		gc.setBackground(Resources.getColor(SWT.COLOR_RED));

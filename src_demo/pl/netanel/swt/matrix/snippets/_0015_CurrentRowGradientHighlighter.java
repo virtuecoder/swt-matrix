@@ -16,7 +16,7 @@ import pl.netanel.swt.matrix.Painter;
  */
 public class _0015_CurrentRowGradientHighlighter {
 	public static void main(String[] args) {
-		Shell shell = (new Shell());
+		Shell shell = new Shell();
     shell.setText(title);
 		shell.setBounds(400, 200, 600, 400);
 		shell.setLayout(new FillLayout());
@@ -34,13 +34,21 @@ public class _0015_CurrentRowGradientHighlighter {
 		body.addPainter(0, 
 		  new Painter<Integer, Integer>("gradient row background", Painter.SCOPE_CELLS_ITEM_Y) {
   		  int matrixWidth;
-  		  @Override
+        AxisItem<Integer> focusItem;
+        boolean isFocused;
+  		  
+        @Override
   		  protected boolean init() {
   		    gc.setForeground(display.getSystemColor(SWT.COLOR_RED));
   		    gc.setBackground(display.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
   		    gc.setAdvanced(true);
   		    if (gc.getAdvanced()) gc.setAlpha(127);
   		    matrixWidth = matrix.getClientArea().width;
+  		    
+  		    // Get focus item
+  		    Axis<Integer> axisY = matrix.getAxisY();
+  		    focusItem = axisY.getFocusItem();
+  		    
   		    return true;
   		  }
   		  @Override
@@ -49,12 +57,14 @@ public class _0015_CurrentRowGradientHighlighter {
   		  }
   
   		  @Override
-  		  public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
-  		    Axis<Integer> axisY = matrix.getAxisY();
-  		    AxisItem<Integer> focusItem = axisY.getFocusItem();
-  		    if (body.getSectionY().equals(focusItem.getSection()) &&
-  		      indexY.equals(focusItem.getIndex())) 
-  		    {
+        public void setup(Integer indexX, Integer indexY) {
+  		    isFocused = body.getSectionY().equals(focusItem.getSection()) &&
+            indexY.equals(focusItem.getIndex());
+  		  }
+  		  
+  		  @Override
+  		  public void paint(int x, int y, int width, int height) {
+  		    if (isFocused) {
   		      gc.fillGradientRectangle(0, y - 1, matrixWidth, height + 2, false);
   		    }
   		  }

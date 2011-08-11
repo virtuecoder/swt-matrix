@@ -981,7 +981,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       gc.setAdvanced(advanced);
     }
     
-    @Override public void paint(X indexX, Y indexY, int x, int y, int width, int height) {
+    @Override public void paint(int x, int y, int width, int height) {
       if (!instantMoving) {
         gc.setForeground(matrix.getDisplay().getSystemColor(SWT.COLOR_BLACK));
         advanced = gc.getAdvanced();
@@ -1003,8 +1003,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
             x2 + 1, y2 + 1);
         } 
         else if (bounds != null) {
-          painter.paint(stateX.last.getIndex(), stateY.last.getIndex(),
-            x2, y2, bounds.width, bounds.height);
+          painter.paint(x2, y2, bounds.width, bounds.height);
         }
         
         // Border
@@ -1037,7 +1036,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       header = (ZoneCore<X, Y>) MatrixListener.this.matrix.getHeaderX().getUnchecked();
     }
 	  
-    @Override public void paint(X indexX, Y indexY, int x, int y, int width, int height) {
+    @Override public void paint(int x, int y, int width, int height) {
       if (mouseMoveEvent == null) return;
       x2 = mouseMoveEvent.x - imageOffset.x;
       y2 = 1;
@@ -1083,7 +1082,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         gc.setLineWidth(2);
         gc.drawLine(x3, area.y, x3, area.height);
       }
-      super.paint(indexX, indexY, x, y, width, height);
+      super.paint(x, y, width, height);
     }
 	}
 	
@@ -1093,7 +1092,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 	    header = (ZoneCore<X, Y>) MatrixListener.this.matrix.getHeaderY().getUnchecked();
 	  }
 	  
-	  @Override public void paint(X indexX, Y indexY, int x, int y, int width, int height) {
+	  @Override public void paint(int x, int y, int width, int height) {
 	    if (mouseMoveEvent == null) return;
 	    x2 = 1;
 	    y2 = mouseMoveEvent.y - (imageOffset == null ? 0 : imageOffset.y);
@@ -1139,7 +1138,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         gc.setLineWidth(2);
         gc.drawLine(area.x, y3, area.width, y3);
       }
-	    super.paint(indexX, indexY, x, y, width, height);
+	    super.paint(x, y, width, height);
 	  }
 	}
 }

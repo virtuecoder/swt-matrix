@@ -15,7 +15,7 @@ import pl.netanel.swt.matrix.Section;
  */
 public class _0014_AlteringRowBackground {
 	public static void main(String[] args) {
-		Shell shell = (new Shell());
+		Shell shell = new Shell();
 		shell.setText(title);
 		shell.setBounds(400, 200, 600, 400);
 		shell.setLayout(new FillLayout());
@@ -40,24 +40,31 @@ public class _0014_AlteringRowBackground {
 		
 		body.addPainter(0, 
 		  new Painter<Integer, Integer>("alter row background", Painter.SCOPE_CELLS_ITEM_Y) {
-			@Override
-			protected boolean init() {
-				super.init();
-				gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
-				return true;
-			}
-			@Override
-			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
-				if (indexY.intValue() % 2 != 0) {
-					gc.fillRectangle(x, y, width, height);
-				}
-			}
-			
-			@Override
-			public void clean() {
-				gc.setBackground(matrix.getBackground());
-			}
-		});
+  			private boolean isOdd;
+  
+        @Override
+  			protected boolean init() {
+  				super.init();
+  				gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+  				return true;
+  			}
+  			@Override
+  			  public void setup(Integer indexX, Integer indexY) {
+  			    super.setup(indexX, indexY);
+  			    isOdd = indexY.intValue() % 2 != 0; 
+  			  }
+  			@Override
+  			public void paint(int x, int y, int width, int height) {
+  				if (isOdd) {
+  					gc.fillRectangle(x, y, width, height);
+  				}
+  			}
+  			
+  			@Override
+  			public void clean() {
+  				gc.setBackground(matrix.getBackground());
+  			}
+  		});
 		
 		
 		shell.open();

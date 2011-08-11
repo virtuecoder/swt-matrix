@@ -45,7 +45,7 @@ public class _0201_FreezeHeadAndTailWithDifferentColorForTheDividingLine {
 
 		matrix.addPainter(new Painter<Integer, Integer>("freeze lines") {
 			@Override
-			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
+			public void paint(int x, int y, int width, int height) {
 				Color background = gc.getBackground();
 				gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
 				if (head.x > 0) {

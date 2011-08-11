@@ -76,7 +76,7 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
   }
 	
 	@Override
-	public void paint(X indexX, Y indexY, int x, int y, int width, int height) {
+	public void setup(X indexX, Y indexY) {
 		if (editor.hasEmbeddedControl(indexX, indexY)) {
 			Control control = editor.addControl(indexX, indexY);
 			control.addListener(SWT.FocusIn, focusInListener );

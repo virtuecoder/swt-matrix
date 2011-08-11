@@ -83,7 +83,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		  @Override protected boolean init() {
 		    return true;
 		  }
-		  @Override public void paint(X indexX, Y indexY, int x, int y, int width, int height) {
+		  @Override public void setup(X indexX, Y indexY) {
 				Object[] emul = getCheckboxEmulation(indexX, indexY);
 				if (emul == null) return;
 				Object value = getModelValue(indexX, indexY);
@@ -97,7 +97,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 					textAlignX = textAlignY = SWT.CENTER;
 					text = (String) (Boolean.TRUE.equals(value) ? emul[0] : emul[1]);
 				}
-				super.paint(indexX, indexY, x, y, width, height);
+				super.setup(indexX, indexY);
 			};
 		});
 		zone.addPainter(embedded = new EmbeddedControlsPainter<X, Y>(this));

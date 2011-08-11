@@ -40,7 +40,7 @@ public class _0013_GapBetweenCellsLikeHTMLTableCellspacingAttribute_HideLines {
 		columnHeader.addPainter(0, 
 		  new Painter<Integer, Integer>("cell background and border", Painter.SCOPE_CELLS) {
 			@Override
-			public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
+			public void paint(int x, int y, int width, int height) {
 			  gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 			  gc.fillRectangle(x, y, width, height);
 			  
@@ -56,7 +56,7 @@ public class _0013_GapBetweenCellsLikeHTMLTableCellspacingAttribute_HideLines {
 		body.addPainter(
 		  new Painter<Integer, Integer>("cell border", Painter.SCOPE_CELLS) {
 		    @Override
-		    public void paint(Integer indexX, Integer indexY, int x, int y, int width, int height) {
+		    public void paint(int x, int y, int width, int height) {
 		      gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
 		      gc.drawRectangle(x - 1, y - 1, width + 1, height + 1);
 		    }

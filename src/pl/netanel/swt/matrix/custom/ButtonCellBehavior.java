@@ -43,6 +43,7 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
   private final Zone<X, Y> zone;
   private AxisItem<X> pushedX;
   private AxisItem<Y> pushedY;
+  private boolean isPushed;
   
   public ButtonCellBehavior(Zone<X, Y> zone) {
     super("button cells", SCOPE_CELLS);
@@ -85,11 +86,16 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
     return true;
   }
   
-  @Override public void paint(X indexX, Y indexY, int x, int y, int width, int height) {
-    if (isPushed(indexX, indexY)) {
-      paintPushed(indexX, indexY, x, y, width, height);
+  @Override
+  public void setup(X indexX, Y indexY) {
+    isPushed = isPushed(indexX, indexY); 
+  };
+  
+  @Override public void paint(int x, int y, int width, int height) {
+    if (isPushed) {
+      paintPushed(x, y, width, height);
     } else {
-      paintIdle(indexX, indexY, x, y, width, height);
+      paintIdle(x, y, width, height);
     }
   };
   
@@ -116,8 +122,8 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
    * @param width the width of the painting boundaries
    * @param height the height of the painting boundaries
    */
-  protected void paintPushed(X indexX, Y indexY, int x, int y, int width, int height) {
-    super.paint(indexX, indexY, x, y, width, height);
+  protected void paintPushed(int x, int y, int width, int height) {
+    super.paint(x, y, width, height);
   }
 
   /**
@@ -129,7 +135,7 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
    * @param width the width of the painting boundaries
    * @param height the height of the painting boundaries
    */
-  protected void paintIdle(X indexX, Y indexY, int x, int y, int width, int height) {
+  protected void paintIdle(int x, int y, int width, int height) {
     gc.setForeground(highlightShadow);
     gc.drawLine(x, y, x + width - 1, y);
     gc.drawLine(x, y, x, y + height - 1);
