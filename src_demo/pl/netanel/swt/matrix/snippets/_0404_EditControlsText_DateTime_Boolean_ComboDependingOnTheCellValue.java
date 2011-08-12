@@ -124,16 +124,16 @@ public class _0404_EditControlsText_DateTime_Boolean_ComboDependingOnTheCellValu
 		// Paint text from the model in the body
 		matrix.getBody().replacePainter(new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 			@Override
-			public String getText(Integer indexX, Integer indexY) {
+			public void setupSpatial(Integer indexX, Integer indexY){
 				Object value = data.get(indexY.intValue())[indexX.intValue()];
 				if (value instanceof String) {
-					return (String) value;
+				  text = (String) value;
 				}
 				else if (value instanceof Date) {
-					return dateFormat.format(value); 
+				  text = dateFormat.format(value); 
 				}
 				else {
-					return null;
+				  text = null;
 				}
 			}
 		});

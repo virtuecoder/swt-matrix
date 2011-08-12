@@ -19,12 +19,15 @@ API changes:
 - Added CellExtent.createUnchecked(Cell, Cell)
 - Added Section.getHidden()
 - Added Section.getHiddenExtents()
+- Added Section.getOrder()
+- Added Section.getOrderExtents()
+- Added Section.setOrder(Number, Number)
 - Added Zone.setBodyStyle()
 - Added Zone.setHeaderStyle()
 - Added Axis.setFocusItemEnabled(boolean)
 - Added Axis.isFocusItemEnabled()
+- Added Painter.setupSpatial(Number, Number)
 - Deleted Section.getHiddenCount(Number, Number)
-- Deleted Section.indexOfNotHidden(Number)
 - Deleted Zone.setDefaultForeground(Color); it was a duplicate of Painter property
 - Deleted Zone.setDefaultBackground(Color); it was a duplicate of Painter property
 - Deleted Zone.setSelectionForeground(Color); it was a duplicate of Painter property
@@ -33,9 +36,14 @@ API changes:
 - Deleted Zone.getDefaultBackground(); it was a duplicate of Painter property
 - Deleted Zone.getSelectionForeground(); it was a duplicate of Painter property
 - Deleted Zone.getSelectionBackground(); it was a duplicate of Painter property
-- Deleted Matrix.setFocusCellEnabled(boolean)
-- Deleted Matrix.isFocusCellEnabled()
+- Deleted Matrix.setFocusCellEnabled(boolean); replaced with Axis.setFocusItemEnabled(boolean)
+- Deleted Matrix.isFocusCellEnabled(); replaced with Axis.isFocusItemEnabled()
+- Deleted Painter.setWordWrap(boolean); direct property access hasWordWrap
+- Deleted Painter.isWordWrap(); direct property access hasWordWrap
+- Renamed Section.indexOf(Number) to Section.getOrder(Number)
+- Renamed Section.indexOfNotHidden(Number) to Section.getPosition(Number)
 - Renamed Section fitCellWidth(Number) to Sectoin.setCellWidth(Number)
+- Renamed Section.move(Number, Number, Number) to Section.setOrder(Number, Number, Number)
 - Renamed Section.getSelectedIterator() to Section.getSelected()
 - Renamed Section.getSelectedExtentIterator() to Section.getSelectedExtents()
 - Renamed Section.getCore() to Section.getUnchecked()

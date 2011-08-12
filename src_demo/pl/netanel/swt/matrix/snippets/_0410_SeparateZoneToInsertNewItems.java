@@ -69,8 +69,8 @@ public class _0410_SeparateZoneToInsertNewItems {
     Painter<Integer, Integer> bodyPainter = 
       new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
         @Override
-        public String getText(Integer indexX, Integer indexY) {
-          return (String) data.get(indexY.intValue())[indexX.intValue()];
+        public void setupSpatial(Integer indexX, Integer indexY){
+          text = (String) data.get(indexY.intValue())[indexX.intValue()];
         }
       };
     matrix.getBody().replacePainter(bodyPainter);
@@ -85,8 +85,8 @@ public class _0410_SeparateZoneToInsertNewItems {
     Painter<Integer, Integer> insertPainter = new Painter<Integer, Integer>(
       Painter.NAME_CELLS, Painter.SCOPE_CELLS) 
     {
-      @Override public String getText(Integer indexX, Integer indexY) {
-        return (String) insertEditor.item[indexX.intValue()];
+      @Override public void setupSpatial(Integer indexX, Integer indexY){
+        text =  (String) insertEditor.item[indexX.intValue()];
       }
     };
     insertBody.replacePainter(insertPainter);
@@ -98,9 +98,9 @@ public class _0410_SeparateZoneToInsertNewItems {
     final Zone<Integer, Integer> insertHeader = matrix.getZone(axisX.getHeader(), insertSection);
     Painter<Integer, Integer> insertHeaderPainter = 
       new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-        @Override public String getText(Integer indexX, Integer indexY) {
+        @Override public void setupSpatial(Integer indexX, Integer indexY){
           textAlignX = textAlignY = SWT.CENTER;
-          return "add:";
+          text = "add:";
         }
       };
     insertHeader.replacePainter(insertHeaderPainter);

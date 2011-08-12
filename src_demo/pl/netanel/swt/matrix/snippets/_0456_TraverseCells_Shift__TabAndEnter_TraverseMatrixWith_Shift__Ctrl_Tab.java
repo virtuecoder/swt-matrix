@@ -48,9 +48,9 @@ public class _0456_TraverseCells_Shift__TabAndEnter_TraverseMatrixWith_Shift__Ct
 		// Data painter
     body.replacePainter(new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 			@Override
-			public String getText(Integer indexX, Integer indexY) {
+			public void setupSpatial(Integer indexX, Integer indexY){
 				Object value = data.get(indexY.intValue())[indexX.intValue()];
-				return value == null ? "" : value.toString();
+				text = value == null ? "" : value.toString();
 			}
 		});
 		

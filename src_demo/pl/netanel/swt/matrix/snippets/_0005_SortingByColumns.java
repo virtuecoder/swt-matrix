@@ -72,8 +72,8 @@ public class _0005_SortingByColumns {
     // Paint data text in the body zone
     matrix.getBody().replacePainter(
       new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-        @Override public String getText(Integer indexX, Integer indexY) {
-          return sorted.get(indexY.intValue())[indexX.intValue()].toString();
+        @Override public void setupSpatial(Integer indexX, Integer indexY){
+          text = sorted.get(indexY.intValue())[indexX.intValue()].toString();
         }
       });
     matrix.getBody().setBodyStyle();
@@ -82,13 +82,11 @@ public class _0005_SortingByColumns {
     Painter<Integer, Integer> columnHeaderPainter = new Painter<Integer, Integer>(
       Painter.NAME_CELLS, Painter.SCOPE_CELLS) 
     {
-      @Override public String getText(Integer indexX, Integer indexY) {
-        return indexX.toString();
-      }
-
-      @Override public Image getImage(Integer indexX, Integer indexY) {
+      @Override public void setupSpatial(Integer indexX, Integer indexY){
+        text = indexX.toString();
+        
         int column = indexX.intValue();
-        return direction[column] == 0 ? null
+        image = direction[column] == 0 ? null
           : direction[column] == 1 ? sortAsc : sortDesc;
       }
     };

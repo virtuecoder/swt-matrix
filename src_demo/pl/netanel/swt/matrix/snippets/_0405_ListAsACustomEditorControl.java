@@ -41,8 +41,8 @@ public class _0405_ListAsACustomEditorControl {
 		// Paint text from the model in the body
     matrix.getBody().replacePainter(new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
       @Override
-      public String getText(Integer indexX, Integer indexY) {
-        return (String) data.get(indexY.intValue())[indexX.intValue()];
+      public void setupSpatial(Integer indexX, Integer indexY){
+        text = (String) data.get(indexY.intValue())[indexX.intValue()];
       }
     });
     
@@ -68,7 +68,7 @@ public class _0405_ListAsACustomEditorControl {
 			@Override
 			public void setEditorValue(Control control, Object value) {
 				if (control instanceof List) {
-					List list = ((List) control);
+					List list = (List) control;
 					list.deselectAll();
 					int position = list.indexOf((String) value);
 					if (position != -1) {

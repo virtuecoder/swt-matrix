@@ -90,9 +90,9 @@ public class PainterTest extends SwtTestCase {
     Painter<Integer, Integer> painter = new Painter<Integer, Integer>("cells",
       Painter.SCOPE_CELLS_Y) {
       @Override
-      public String getText(Integer indexX, Integer indexY) {
+      public void setupSpatial(Integer indexX, Integer indexY) {
         textAlignX = indexX.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
-        return indexY.toString() + ", " + indexX;
+        text = indexY.toString() + ", " + indexX;
       }
     };
     body.replacePainter(painter);
@@ -110,7 +110,8 @@ public class PainterTest extends SwtTestCase {
     final Image expected = new Image(display, r.width, r.height);
     GC gc = new GC(matrix);
     gc.fillRectangle(clientArea);
-    String text = painter.getText(2, 0);
+    painter.setupSpatial(2, 0);
+    String text = painter.text;
     int x = r.x + r.width - painter.textMarginX - gc.stringExtent(text).x;
     int y = r.y + painter.textMarginY;
     gc.drawText(text, x, y);
@@ -183,6 +184,11 @@ public class PainterTest extends SwtTestCase {
       painter.setup(indexX, indexY);
     }
 
+    @Override
+    public void setupSpatial(Number indexX, Number indexY) {
+      painter.setupSpatial(indexX, indexY);
+    }
+    
     public void test(int x, int y, int width, int height) {
       painter.paint(x, y, width, height);
     }
@@ -195,16 +201,6 @@ public class PainterTest extends SwtTestCase {
     @Override
     public Object getData() {
       return painter.getData();
-    }
-
-    @Override
-    public String getText(Number indexX, Number indexY) {
-      return painter.getText(indexX, indexY);
-    }
-
-    @Override
-    public Image getImage(Number indexX, Number indexY) {
-      return painter.getImage(indexX, indexY);
     }
 
     @Override
@@ -221,16 +217,5 @@ public class PainterTest extends SwtTestCase {
     public Point computeSize(Number indexX, Number indexY, int wHint, int hHint) {
       return painter.computeSize(indexX, indexY, wHint, hHint);
     }
-
-    @Override
-    public boolean isWordWrap() {
-      return painter.isWordWrap();
-    }
-
-    @Override
-    public void setWordWrap(boolean state) {
-      painter.setWordWrap(state);
-    }
-    
   }
 }

@@ -195,7 +195,9 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 * @param indexY cell index on the vertical axis 
 	 */
 	protected Object getModelValue(X indexX, Y indexY) {
-		return cellsPainter == null ? null : cellsPainter.getText(indexX, indexY); 
+	  if (cellsPainter == null) return null;
+	  cellsPainter.setupSpatial(indexX, indexY);
+	  return cellsPainter.text;
 	}
 	
 	/**
@@ -595,7 +597,9 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 * @return 
 	 */
 	protected String format(X indexX, Y indexY) {
-		return cellsPainter == null ? null : cellsPainter.getText(indexX, indexY);
+	   if (cellsPainter == null) return null;
+	    cellsPainter.setupSpatial(indexX, indexY);
+	    return cellsPainter.text;
 //		Object value = getModelValue(indexY, indexX);
 //		return value == null ? "" : value.toString();
 	}

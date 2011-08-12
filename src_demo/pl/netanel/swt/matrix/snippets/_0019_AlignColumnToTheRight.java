@@ -29,9 +29,9 @@ public class _0019_AlignColumnToTheRight {
 		matrix.getHeaderX().replacePainter(
 			new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_Y) {
 				@Override
-				public String getText(Integer indexX, Integer indexY) {
+				public void setupSpatial(Integer indexX, Integer indexY){
 					textAlignX = indexX.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
-					return indexX.toString();
+					text = indexX.toString();
 				}
 			});
 		matrix.getHeaderX().setHeaderStyle();
@@ -39,9 +39,9 @@ public class _0019_AlignColumnToTheRight {
 		matrix.getBody().replacePainter(
 			new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_Y) {
 				@Override
-				public String getText(Integer indexX, Integer indexY) {
+				public void setupSpatial(Integer indexX, Integer indexY){
 					textAlignX = indexX.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
-					return indexY.toString() + ", " + indexX;
+					text = indexY.toString() + ", " + indexX;
 				}
 		});
 		matrix.getBody().setBodyStyle();

@@ -73,8 +73,8 @@ public class _0003_FilterSectionBetweenHeaderAndBody {
 		matrix.getBody().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
   			@Override
-  			public String getText(Integer indexX, Integer indexY) {
-  				return filtered.get(indexY.intValue())[indexX.intValue()].toString();
+  			public void setupSpatial(Integer indexX, Integer indexY){
+  				text = filtered.get(indexY.intValue())[indexX.intValue()].toString();
   			}
   		}
 	  );
@@ -89,8 +89,8 @@ public class _0003_FilterSectionBetweenHeaderAndBody {
 		matrix.getHeaderX().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 		    @Override
-		    public String getText(Integer indexX, Integer indexY) {
-		      return indexX.intValue() == 0 ? "Task" : "Priority";
+		    public void setupSpatial(Integer indexX, Integer indexY){
+		      text = indexX.intValue() == 0 ? "Task" : "Priority";
 		    }
 		  }
 		);
@@ -104,8 +104,8 @@ public class _0003_FilterSectionBetweenHeaderAndBody {
     filterColumns.replacePainter(
 			new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 				@Override
-        public String getText(Integer indexX, Integer indexY) {
-					return indexX.intValue() == 1 ? filter[0] : null;
+        public void setupSpatial(Integer indexX, Integer indexY){
+				  text = indexX.intValue() == 1 ? filter[0] : null;
 				};
 			}
 		);

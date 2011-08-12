@@ -248,17 +248,16 @@ public class Painter<X extends Number, Y extends Number> {
 	 */
 	public int imageMarginY;
 	/**
+	 * Word wrapping for text in cells. 
+	 */
+	public boolean hasWordWraping;
+	/**
 	 * Selected cells will be highlighted if <tt>true</tt>. Otherwise cell selection
 	 * will be ignored. Default value is <tt>true</true>.
 	 */
 	public boolean selectionHighlight = true;
-	public boolean isSelected = false;
 	
-	/**
-	 * Word wrapping for text in cells. 
-	 */
-	private boolean wordWrap;
-
+	boolean isSelected = false;
 	TextClipMethod textClipMethod;
 	
 	Matrix<X, Y> matrix;
@@ -412,7 +411,7 @@ public class Painter<X extends Number, Y extends Number> {
 	 */
 	protected void paint(int x, int y, int width, int height) {
 //	  setup(indexX, indexY);
-	  if (isWordWrap()) {
+	  if (hasWordWraping) {
 	    gc.setClipping(x, y, width, height);
 	  }
 	  
@@ -501,7 +500,7 @@ public class Painter<X extends Number, Y extends Number> {
         y3 += height - extent.y - textMarginY; break;
       }
       
-		  if (isWordWrap()) {
+		  if (hasWordWraping) {
 		    if (textLayout == null) {
 		      textLayout = new TextLayout(gc.getDevice());
 		      getMatrix().addDisposeListener(new DisposeListener() {
@@ -528,22 +527,33 @@ public class Painter<X extends Number, Y extends Number> {
 	
 	
 	/**
-   * Defines painter configuration that is called both by
-   * {@link #paint(Number, Number, int, int, int, int)} and by
-   * {@link #computeSize(Number, Number, int, int)} methods.
+   * Configures the painter properties according to the given indexes. 
    * <p>
-   * Default implementation invokes {@link #getText(Number, Number)} and
-   * {@link #getImage(Number, Number)} , but can be overridden to setup any of
-   * the painter's properties which depend on the cell indexes.
+   * Default implementation invokes {@link #setupSpatial(Number, Number)} 
+   * and determines if the cell is selected. 
    * 
    * @param indexX cell index on the horizontal axis
    * @param indexY cell index on the vertical axis
    */
 	public void setup(X indexX, Y indexY) {
-	  image = getImage(indexX, indexY);
-    text = getText(indexX, indexY);
+	  setupSpatial(indexX, indexY);
     isSelected = selectionHighlight && zone != null && zone.isSelected(indexX, indexY);
 	}
+	
+  /**
+   * Sets the spatial properties for this painter.
+   * <p>
+   * It is utilized by both painting mechanism as well as
+   * {@link #computeSize(Number, Number, int, int)} routine. 
+   * The reason to separate it from {@link #setup(Number, Number)} method
+   * was to improve performance of size computing by eliminating unnecessary 
+   * processing, like setting colors, determining whether the cell is selected, etc.  
+   * 
+   * @param indexX cell index on the horizontal axis
+   * @param indexY cell index on the vertical axis
+   */
+	public void setupSpatial(X indexX, Y indexY) {}
+	
 	
 	/**
    * Sets custom data for this painter.
@@ -570,36 +580,6 @@ public class Painter<X extends Number, Y extends Number> {
 	public Object getData() {
     return data;
   }
-	
-
-  /**
-	 * Returns the text to be drawn by the painter.
-	 * <p>
-	 * This method is used both by {@link #paint(Number, Number, int, int, int, int)} 
-	 * and by {@link #computeHeight(Number, Number)} and {@link #computeWidth(Number, Number)}
-	 * @param indexX cell index on the horizontal axis 
-	 * @param indexY cell index on the vertical axis  
-	 *  
-	 * @return the text to be drawn by the painter
-	 */
-	public String getText(X indexX, Y indexY) {
-		return text;
-	}
-	
-	/**
-	 * Returns the image to be drawn by the painter.
-	 * <p>
-	 * This method is used both by {@link #paint(Number, Number, int, int, int, int)} 
-	 * and by {@link #computeHeight(Number, Number)} and {@link #computeWidth(Number, Number)}
-	 * @param indexX cell index on the horizontal axis 
-	 * @param indexY cell index on the vertical axis  
-	 *  
-	 * @return the image to be drawn by the painter
-	 */
-	public Image getImage(X indexX, Y indexY) {
-		return image;
-	}
-	
 	
 	/**
 	 * Sets the enabled state of the receiver.
@@ -634,12 +614,10 @@ public class Painter<X extends Number, Y extends Number> {
 	 * @return the preferred size of the control
 	 */
 	public Point computeSize(X indexX, Y indexY, int wHint, int hHint) {
-	  assert zone != null;
-	  setup(indexX, indexY);
+	  setupSpatial(indexX, indexY);
 	  
 	  int x = 0, y = 0;
 	  
-	  image = getImage(indexX, indexY);
 	  if (image != null) {
 	    Rectangle bounds = image.getBounds();
 	    x = bounds.width + 2 * imageMarginX;
@@ -650,7 +628,7 @@ public class Painter<X extends Number, Y extends Number> {
     if (text != null) {
       p = gc.stringExtent(text);
       
-      if (isWordWrap()) {
+      if (hasWordWraping) {
         if (wHint == SWT.DEFAULT) {
           return new Point(
             zone.getSectionX().getCellWidth(indexX), 
@@ -764,22 +742,6 @@ public class Painter<X extends Number, Y extends Number> {
   void setZone(ZoneCore<X, Y> zone) {
     this.zone = zone;
     this.matrix = zone.getMatrix();
-  }
-
-  /**
-   * Returns the word wrapping state.
-   * @return the word wrapping state
-   */
-  public boolean isWordWrap() {
-    return wordWrap;
-  }
-
-  /**
-   * Sets the word wrapping state. If true then the words will be wrapped to many lines. 
-   * @param state word wrapping state
-   */
-  public void setWordWrap(boolean state) {
-    this.wordWrap = state;
   }
 
   

@@ -49,9 +49,9 @@ public class EmbeddedControls {
 		// Data painter
 		matrix.getBody().replacePainter(new Painter("cells", Painter.SCOPE_CELLS) {
 			@Override
-			public String getText(Number indexY, Number indexX) {
+			public void setupSpatial(Number indexX, Number indexY){
 				Object value = data.get(indexY.intValue())[indexX.intValue()];
-				return value == null || value instanceof Boolean ? "" : value.toString();
+				text = value == null || value instanceof Boolean ? "" : value.toString();
 			}
 		});
 		

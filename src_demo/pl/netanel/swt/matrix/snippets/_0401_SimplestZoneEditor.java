@@ -40,9 +40,9 @@ public class _0401_SimplestZoneEditor {
 		matrix.getBody().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 			@Override
-			public String getText(Integer indexX, Integer indexY) {
+			public void setupSpatial(Integer indexX, Integer indexY){
 				Object value = data.get(indexY.intValue())[indexX.intValue()];
-				return value == null ? "" : value.toString();
+				text = value == null ? "" : value.toString();
 			}
 		});
 		

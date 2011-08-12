@@ -49,9 +49,9 @@ public class ListData<T> {
     
     matrix.getBody().replacePainter(
       new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-        @Override public String getText(Integer indexX, Integer indexY) {
+        @Override public void setupSpatial(Integer indexX, Integer indexY){
           Object value = getModelValue(indexX, indexY);
-          return value == null || value instanceof Boolean ? "" : 
+          text = value == null || value instanceof Boolean ? "" : 
             value instanceof Date ? dateFormat.format(value) :
               value.toString(); 
         }
@@ -59,9 +59,9 @@ public class ListData<T> {
     
     matrix.getHeaderX().replacePainter(
       new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-        @Override public String getText(Integer indexX, Integer indexY) {
+        @Override public void setupSpatial(Integer indexX, Integer indexY){
           ItemData itemX = itemsX.get(indexX);
-          return itemX == null ? null : itemX.headerText; 
+          text =  itemX == null ? null : itemX.headerText; 
         }
       });
     

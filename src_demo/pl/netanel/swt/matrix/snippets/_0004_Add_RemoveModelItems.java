@@ -54,9 +54,9 @@ public class _0004_Add_RemoveModelItems {
 		matrix.getBody().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 		    @Override
-		    public String getText(Integer indexX, Integer indexY) {
+		    public void setupSpatial(Integer indexX, Integer indexY){
 		      String value = list.get(indexY.intValue());
-		      return indexX.intValue() == 0 
+		      text = indexX.intValue() == 0 
 		        ? value
 	          : Integer.toString(value.length());
 		    }
@@ -67,8 +67,8 @@ public class _0004_Add_RemoveModelItems {
 		matrix.getHeaderX().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
 		    @Override
-		    public String getText(Integer indexX, Integer indexY) {
-		      return indexX.intValue() == 0 ? "Value" : "Length";
+		    public void setupSpatial(Integer indexX, Integer indexY){
+		      text = indexX.intValue() == 0 ? "Value" : "Length";
 		    }
 		  }
 	  );

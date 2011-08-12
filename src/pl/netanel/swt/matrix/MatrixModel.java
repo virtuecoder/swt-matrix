@@ -35,9 +35,10 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 					
 				  if (sectionY.equals(bodyY) && sectionX.equals(bodyX)) {
 					  Painter<X, Y> painter = new Painter<X, Y>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-				      @Override public String getText(Number indexY, Number indexX) {
-				        return indexY.toString() + ", " + indexX.toString();
-				      }
+					    @Override
+              public void setupSpatial(X indexX, Y indexY) {
+	                text = indexY.toString() + ", " + indexX.toString();
+					    }
 				    };
 				    zone.replaceOrAddFirst(painter);
 						zone.setBodyStyle();
@@ -45,8 +46,8 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 					else if (sectionY.equals(headerY) && sectionX.equals(bodyX)) {
 					  zone.replaceOrAddFirst(new Painter<X, Y>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_Y) {
               @Override
-              public String getText(Number indexX, Number indexY) {
-                return indexX.toString();
+              public void setupSpatial(X indexX, Y indexY) {
+                text = indexX.toString();
               }
             });
             zone.setHeaderStyle();
@@ -54,8 +55,8 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 					else if (sectionX.equals(headerX) && sectionY.equals(bodyY)) {
 					  zone.replaceOrAddFirst(new Painter<X, Y>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_Y) {
 					    @Override
-					    public String getText(Number indexX, Number indexY) {
-					      return indexY.toString();
+					    public void setupSpatial(Number indexX, Number indexY) {
+					      text = indexY.toString();
 					    }
 					  });
 					  zone.setHeaderStyle();

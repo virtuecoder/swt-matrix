@@ -45,10 +45,10 @@ import pl.netanel.swt.matrix.Painter;
 		matrix.getAxisX().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
 		
 		matrix.getBody().replacePainter(new Painter<Integer, Integer>("cells", Painter.SCOPE_CELLS) {
-			@Override
-			public String getText(Integer indexY, Integer indexX) {
-				return indexY.toString() + ", " + indexX;
-			}
+		  @Override
+		  public void setupSpatial(Integer indexX, Integer indexY) {
+		    text = indexY.toString() + ", " + indexX;
+		  }
 		});
 		
 		shell.setBounds(display.getBounds());

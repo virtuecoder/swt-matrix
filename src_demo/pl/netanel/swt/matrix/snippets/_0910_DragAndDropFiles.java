@@ -53,9 +53,9 @@ public class _0910_DragAndDropFiles {
     
 		matrix.getBody().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-		    @Override public String getText(Integer indexX, Integer indexY) {
+		    @Override public void setupSpatial(Integer indexX, Integer indexY){
 		      File file = files.get(indexY);
-		      return indexX == 0 ? file.getAbsolutePath() :
+		      text = indexX == 0 ? file.getAbsolutePath() :
 		        indexX == 1 ? Long.toString(file.length()) :
 	          indexX == 2 ? SimpleDateFormat.getInstance().format(file.lastModified()) : 
             null;
@@ -65,8 +65,8 @@ public class _0910_DragAndDropFiles {
 		
 		matrix.getHeaderX().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-      @Override public String getText(Integer indexX, Integer indexY) {
-        return indexX == 0 ? "Path" :
+      @Override public void setupSpatial(Integer indexX, Integer indexY){
+        text = indexX == 0 ? "Path" :
           indexX == 1 ? "Size" :
           indexX == 2 ? "Last Modified" : 
           null;

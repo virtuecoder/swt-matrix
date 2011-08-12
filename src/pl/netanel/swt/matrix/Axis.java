@@ -429,10 +429,18 @@ public class Axis<N extends Number>  {
 		this.resizeOffset = offset;
 	}
 	
+	/**
+	 * Returns the minimal cell width to be achieved by a user driven cell resizing.
+	 * @return the minimal cell width to be achieved by a user driven cell resizing
+	 */
 	public int getMinimalCellWidth() {
 	  return minimalCellWidth;
 	}
 	
+	/**
+	 * Sets the minimal cell width to be achieved by a user driven cell resizing.
+	 * @param width new minimal width to set
+	 */
 	public void setMinimalCellWidth(int minimalCellWidth) {
 	  this.minimalCellWidth = minimalCellWidth;
 	}

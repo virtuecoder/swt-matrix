@@ -7,5 +7,5 @@ package pl.netanel.swt.matrix;
  * @created 20-10-2010
  */
 public enum Frozen {
-	NONE, TAIL, HEAD 
+  HEAD, NONE, TAIL  
 }
