@@ -41,7 +41,7 @@ public class _0450_ActivateEditorWithSingleClickInsteadOfDoubleClick {
 		
 		// Data painter
     body.replacePainter(
-      new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+      new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override
         public void setupSpatial(Integer indexX, Integer indexY){
           Object value = data.get(indexY.intValue())[indexX.intValue()];

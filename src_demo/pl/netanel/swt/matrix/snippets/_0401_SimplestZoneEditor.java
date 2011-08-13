@@ -38,7 +38,7 @@ public class _0401_SimplestZoneEditor {
 
 		// Data painter
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+		  new Painter<Integer, Integer>(Painter.NAME_CELLS) {
 			@Override
 			public void setupSpatial(Integer indexX, Integer indexY){
 				Object value = data.get(indexY.intValue())[indexX.intValue()];

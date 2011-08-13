@@ -39,12 +39,13 @@ public class _0405_ListAsACustomEditorControl {
 		matrix.getAxisX().getBody().setDefaultCellWidth(80);
 
 		// Paint text from the model in the body
-    matrix.getBody().replacePainter(new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-      @Override
-      public void setupSpatial(Integer indexX, Integer indexY){
-        text = (String) data.get(indexY.intValue())[indexX.intValue()];
-      }
-    });
+    matrix.getBody().replacePainter(
+      new Painter<Integer, Integer>(Painter.NAME_CELLS) {
+        @Override
+        public void setupSpatial(Integer indexX, Integer indexY){
+          text = (String) data.get(indexY.intValue())[indexX.intValue()];
+        }
+      });
     
 		// Body editor
 		new ZoneEditor<Integer, Integer>(matrix.getBody()) {

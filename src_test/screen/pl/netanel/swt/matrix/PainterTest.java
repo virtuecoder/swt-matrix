@@ -91,7 +91,7 @@ public class PainterTest extends SwtTestCase {
       Painter.SCOPE_CELLS_Y) {
       @Override
       public void setupSpatial(Integer indexX, Integer indexY) {
-        textAlignX = indexX.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
+        style.textAlignX = indexX.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
         text = indexY.toString() + ", " + indexX;
       }
     };
@@ -112,8 +112,8 @@ public class PainterTest extends SwtTestCase {
     gc.fillRectangle(clientArea);
     painter.setupSpatial(2, 0);
     String text = painter.text;
-    int x = r.x + r.width - painter.textMarginX - gc.stringExtent(text).x;
-    int y = r.y + painter.textMarginY;
+    int x = r.x + r.width - painter.style.textMarginX - gc.stringExtent(text).x;
+    int y = r.y + painter.style.textMarginY;
     gc.drawText(text, x, y);
     gc.copyArea(expected, 1, 1);
 //    painter.printGC(gc);

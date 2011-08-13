@@ -90,11 +90,11 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 				
 				if (emul[0] instanceof Image || emul[1] instanceof Image) {
 					text = null;
-					imageAlignX = imageAlignY = SWT.CENTER;
+					style.imageAlignX = style.imageAlignY = SWT.CENTER;
 					image = (Image) (Boolean.TRUE.equals(value) ? emul[0] : emul[1]); 
 				} else {
 					image = null;
-					textAlignX = textAlignY = SWT.CENTER;
+					style.textAlignX = style.textAlignY = SWT.CENTER;
 					text = (String) (Boolean.TRUE.equals(value) ? emul[0] : emul[1]);
 				}
 				super.setup(indexX, indexY);

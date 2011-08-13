@@ -52,7 +52,7 @@ public class _0910_DragAndDropFiles {
     axisY.setFocusItemEnabled(false);
     
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+		  new Painter<Integer, Integer>(Painter.NAME_CELLS) {
 		    @Override public void setupSpatial(Integer indexX, Integer indexY){
 		      File file = files.get(indexY);
 		      text = indexX == 0 ? file.getAbsolutePath() :
@@ -61,10 +61,9 @@ public class _0910_DragAndDropFiles {
             null;
 		    }
 		});
-		matrix.getBody().setBodyStyle();
 		
 		matrix.getHeaderX().replacePainter(
-		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+		  new Painter<Integer, Integer>(Painter.NAME_CELLS) {
       @Override public void setupSpatial(Integer indexX, Integer indexY){
         text = indexX == 0 ? "Path" :
           indexX == 1 ? "Size" :
@@ -72,7 +71,6 @@ public class _0910_DragAndDropFiles {
           null;
       }
 		});
-		matrix.getHeaderX().setHeaderStyle();
 		
 //		new ButtonCellBehavior<Integer, Integer>(matrix.getHeaderX());
 //		new ButtonCellBehavior<Integer, Integer>(matrix.getHeaderY());

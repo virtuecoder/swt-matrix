@@ -2,6 +2,9 @@ package pl.netanel.swt.matrix;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
+
+import pl.netanel.swt.matrix.Painter.TextClipMethod;
 
 
 /**
@@ -9,7 +12,7 @@ import org.eclipse.swt.graphics.Color;
  * 
  * @author Jacek Kolodziejczyk created 11-08-2011
  */
-class Style {
+public class Style {
 	
 	/**
 	 * Foreground color.
@@ -73,6 +76,79 @@ class Style {
    * Word wrapping for text in cells. 
    */
   public boolean hasWordWraping;
+  
+  TextClipMethod textClipMethod;
 
+  public Style() {
+    textMarginY = 1; 
+    textMarginX = 4;
+    textAlignY = SWT.BEGINNING; 
+    textAlignX = SWT.BEGINNING;
+    textClipMethod = TextClipMethod.DOTS_IN_THE_MIDDLE;
+  }
+
+  /**
+   * Creates a default style for the cells of the body zone.
+   * @return a new instance of this class
+   */
+  public static Style createBodyCellStyle() {
+    Style style = new Style();
+    
+    style.foreground = style.background = null;
+
+    // style.selectionForeground = Resources.getColor(SWT.COLOR_LIST_SELECTION_TEXT);
+    style.selectionForeground = style.foreground;
+    RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
+    RGB whiteColor = Resources.getColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
+    RGB color = Painter.blend(selectionColor, whiteColor, 40);
+    style.selectionBackground = Resources.getColor(color);
+
+    return style;
+  }
 	
+  
+  /**
+   * Creates a default style for the lines of the body zone.
+   * @return a new instance of this class
+   */
+  public static Style createBodyLineStyle() {
+    Style style = new Style();
+    style.background = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
+    return style;
+  }
+  
+  
+  /**
+   * Creates a default style for the cells of the header type of zones.
+   * @return a new instance of this class
+   */
+  public static Style createHeaderCellStyle() {
+    Style style = new Style();
+    
+    style.foreground = Resources.getColor(SWT.COLOR_WIDGET_FOREGROUND);
+    style.background = Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND);
+
+    // style.selectionForeground = Resources.getColor(SWT.COLOR_LIST_SELECTION_TEXT);
+    style.selectionForeground = style.foreground;
+    RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
+    RGB whiteColor = Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND).getRGB();
+    RGB rgb = Painter.blend(selectionColor, whiteColor, 90);
+    style.selectionBackground = Resources.getColor(rgb);
+    
+    return style;
+  }
+  
+  
+  /**
+   * Creates a default style for the lines of the header type of zones.
+   * @return a new instance of this class
+   */
+  public static Style createHeaderLineStyle() {
+    Style style = new Style();
+    style.background = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
+    return style;
+  }
+  
+  
+  
 }

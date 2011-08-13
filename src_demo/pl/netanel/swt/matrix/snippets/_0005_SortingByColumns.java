@@ -21,6 +21,7 @@ import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
+import pl.netanel.swt.matrix.Style;
 
 /**
  * Sorting by columns.
@@ -71,31 +72,31 @@ public class _0005_SortingByColumns {
 
     // Paint data text in the body zone
     matrix.getBody().replacePainter(
-      new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-        @Override public void setupSpatial(Integer indexX, Integer indexY){
+      new Painter<Integer, Integer>(Painter.NAME_CELLS) {
+        @Override
+        public void setupSpatial(Integer indexX, Integer indexY) {
           text = sorted.get(indexY.intValue())[indexX.intValue()].toString();
         }
       });
-    matrix.getBody().setBodyStyle();
-    
-    // Paint text and sorting image in the column headers zone
-    Painter<Integer, Integer> columnHeaderPainter = new Painter<Integer, Integer>(
-      Painter.NAME_CELLS, Painter.SCOPE_CELLS) 
-    {
-      @Override public void setupSpatial(Integer indexX, Integer indexY){
-        text = indexX.toString();
-        
-        int column = indexX.intValue();
-        image = direction[column] == 0 ? null
-          : direction[column] == 1 ? sortAsc : sortDesc;
-      }
-    };
 
-    columnHeaderPainter.imageAlignX = SWT.RIGHT;
-    columnHeaderPainter.imageAlignY = SWT.CENTER;
-    columnHeaderPainter.imageMarginX = 5;
+    // Paint text and sorting image in the column headers zone
+    Painter<Integer, Integer> columnHeaderPainter = 
+      new Painter<Integer, Integer>(Painter.NAME_CELLS) {
+        @Override
+        public void setupSpatial(Integer indexX, Integer indexY) {
+          text = indexX.toString();
+  
+          int column = indexX.intValue();
+          image = direction[column] == 0 ? null
+            : direction[column] == 1 ? sortAsc : sortDesc;
+        }
+      };
+
     matrix.getHeaderX().replacePainter(columnHeaderPainter);
-    matrix.getHeaderX().setHeaderStyle();
+    Style style = columnHeaderPainter.getStyle();
+    style.imageAlignX = SWT.RIGHT;
+    style.imageAlignY = SWT.CENTER;
+    style.imageMarginX = 5;
 
     // Change sorting on mouse down in a column header 
     matrix.getHeaderX().addListener(SWT.MouseDown, new Listener() {

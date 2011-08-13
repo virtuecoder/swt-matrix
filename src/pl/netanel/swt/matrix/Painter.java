@@ -169,10 +169,10 @@ public class Painter<X extends Number, Y extends Number> {
    * Default name of the painter belonging to a matrix responsible to paint the 
    * lines dividing the frozen areas.
    */
-  public static final String NAME_FREEZE_LINES_HEAD_X = "freeze line head x";
-  public static final String NAME_FREEZE_LINES_HEAD_Y = "freeze line head y";
-  public static final String NAME_FREEZE_LINES_TAIL_X = "freeze line tail x";
-  public static final String NAME_FREEZE_LINES_TAIL_Y = "freeze line tail y";
+  public static final String NAME_FREEZE_HEAD_LINE_X = "freeze head line x";
+  public static final String NAME_FREEZE_HEAD_LINE_Y = "freeze head line y";
+  public static final String NAME_FREEZE_TAIL_LINE_X = "freeze tail line x";
+  public static final String NAME_FREEZE_TAIL_LINE_Y = "freeze tail line y";
 	
 	private static int[] EXTENT_ALIGN = {SWT.RIGHT, SWT.END, SWT.BOTTOM, SWT.CENTER};
 	static enum TextClipMethod {DOTS_IN_THE_MIDDLE, DOTS_AT_THE_END, CUT, NONE};
@@ -184,7 +184,7 @@ public class Painter<X extends Number, Y extends Number> {
 	 */
 	protected GC gc;
 
-	final int scope;
+	int scope;
 	final String name;
 	private boolean enabled = true;
 	
@@ -198,83 +198,23 @@ public class Painter<X extends Number, Y extends Number> {
 	 * {@link #imageAlignY}, {@link #imageMarginX}, {@link #imageMarginY} properties.
 	 */
 	public Image image;
-	/**
-	 * Foreground color.
-	 */
-	public Color foreground;
-	/**
-	 * Background color.
-	 */
-	public Color background;
-	/**
-	 * Foreground color of selected cells.
-	 */
-	public Color selectionForeground;
-	/**
-	 * Background color of selected cells.
-	 */
-	public Color selectionBackground;
 	
-	/**
-	 * Horizontal text alignment. One of the following constants defined in class SWT: 
-	 * SWT.LEFT, SWT.RIGHT, SWT.CENTER, SWT.BEGINING, SWT.END.
-	 */
-	public int textAlignX = SWT.BEGINNING;
-	/**
-	 * Vertical text alignment. One of the following constants defined in class SWT: 
-	 * SWT.LEFT, SWT.RIGHT, SWT.CENTER, SWT.BEGINING, SWT.END.
-	 */
-	public int textAlignY = SWT.BEGINNING;
-	/**
-	 * Horizontal image alignment. One of the following constants defined in class SWT: 
-	 * SWT.LEFT, SWT.RIGHT, SWT.CENTER, SWT.BEGINING, SWT.END.
-	 */
-	public int imageAlignX = SWT.BEGINNING;
-	/**
-	 * Vertical image alignment. One of the following constants defined in class SWT: 
-	 * SWT.TOP, SWT.BOTTOM, SWT.CENTER, SWT.BEGINING, SWT.END.
-	 */
-	public int imageAlignY = SWT.BEGINNING;
-	/**
-	 * Horizontal text margin. It is measured from the cell boundaries 
-	 * (which don't include dividing lines). 
-	 */
-	public int textMarginX;
-	/**
-	 * Vertical text margin. It is measured from the cell boundaries 
-	 * (which don't include dividing lines). 
-	 */
-	public int textMarginY;
-	/**
-	 * Horizontal image margin. It is measured from the cell boundaries 
-	 * (which don't include dividing lines). 
-	 */
-	public int imageMarginX;
-	/**
-	 * Vertical image margin. It is measured from the cell boundaries 
-	 * (which don't include dividing lines). 
-	 */
-	public int imageMarginY;
-	/**
-	 * Word wrapping for text in cells. 
-	 */
-	public boolean hasWordWraping;
+
 	/**
 	 * Selected cells will be highlighted if <tt>true</tt>. Otherwise cell selection
 	 * will be ignored. Default value is <tt>true</true>.
 	 */
 	public boolean selectionHighlight = true;
+
+	Style style;
 	
 	boolean isSelected = false;
-	TextClipMethod textClipMethod;
 	
 	Matrix<X, Y> matrix;
 	ZoneCore<X, Y> zone;
 	Rectangle zoneBounds;
 
 	private Color lastForeground, lastBackground, defaultBackground;  
-//	private boolean shouldHighlight;
-//	private boolean backgroundEnabled, foregroundEnabled;
 
 	private Font lastFont;
 	private int[] extentCache;
@@ -285,11 +225,26 @@ public class Painter<X extends Number, Y extends Number> {
 
 	
 	/**
-	 * Constructor with the scope defaulted to {@link #SCOPE_ENTIRE}. 
-	 * @param name the name of the painter, must be unique in the collection to which it is added
+	 * Constructs a painter with the given name. 
+	 * <p>
+	 * The scope of the painter is determined according to the following rules:<br>
+	 * for name {@link #NAME_CELLS} scope = {@link #SCOPE_CELLS}<br>
+	 * for name {@link #NAME_LINES_X} scope = {@link #SCOPE_LINES_X} <br>
+	 * for name {@link #NAME_LINES_Y} scope = {@link #SCOPE_LINES_Y}<br> 
+	 * for name {@link #NAME_EMBEDDED_CONTROLS} scope = {@link #SCOPE_CELLS}<br>
+	 * for name {@link #NAME_EMULATED_CONTROLS} scope = {@link #SCOPE_CELLS}<br>
+	 * else {@link #SCOPE_ENTIRE}. 
+	 * @param name of the painter, must be unique in the collection to which it is added
+	 * @see #Painter(String, int)
 	 */
 	public Painter(String name) {
-		this(name, SCOPE_ENTIRE);
+		this(name, 
+  		name.equals(NAME_CELLS) || 
+  		name.equals(NAME_EMBEDDED_CONTROLS) || 
+  		name.equals(NAME_EMULATED_CONTROLS) ?     SCOPE_CELLS :
+  		name.equals(NAME_LINES_X) ?               SCOPE_LINES_X :
+  		name.equals(NAME_LINES_Y) ?               SCOPE_LINES_Y : 
+  		                                          SCOPE_ENTIRE);
 	}
 
 	/**
@@ -304,10 +259,7 @@ public class Painter<X extends Number, Y extends Number> {
 		Preconditions.checkNotNullWithName(name, "name");
 		this.name = name;
 		this.scope = scope;
-		textMarginY = 1; textMarginX = 4;
-		textAlignY = SWT.BEGINNING; textAlignX = SWT.BEGINNING;
-		textClipMethod = TextClipMethod.DOTS_IN_THE_MIDDLE;
-
+		this.style = new Style();
 	}
 
 	/**
@@ -339,7 +291,7 @@ public class Painter<X extends Number, Y extends Number> {
 		return init();
 	};
 
-	  /**
+	/**
    * Allows graphic optimization by performing operation that can be taken out
    * of the cell painting loop.
    * <p>
@@ -354,34 +306,17 @@ public class Painter<X extends Number, Y extends Number> {
 		if (scope < SCOPE_CELLS) return true;
 		
 		// Set default value if foreground is null, background is not painted if null 
-		if (foreground == null) {
-		  foreground = Resources.getColor(SWT.COLOR_LIST_FOREGROUND);
+		if (style.foreground == null) {
+		  style.foreground = Resources.getColor(SWT.COLOR_LIST_FOREGROUND);
 		}
-		lastForeground = foreground;
-		lastBackground = defaultBackground = background;
+		lastForeground = style.foreground;
+		lastBackground = defaultBackground = style.background;
 		
 		gc.setForeground(lastForeground);
-		if (background != null) {
+		if (style.background != null) {
 			gc.setBackground(lastBackground);
 			gc.fillRectangle(zone.bounds);
 		}
-//		backgroundEnabled = zone.isBackgroundEnabled();
-//		foregroundEnabled = zone.isForegroundEnabled();
-		
-		// Body must be checked otherwise a header of a single item selected would not be highlighted 
-//		BigInteger selectionCount = BigInteger.ZERO;
-//		for (Zone zone: matrix) {
-//		  selectionCount = selectionCount.add(zone.getSelectedCount());
-//		}
-//		
-//		shouldHighlight = 
-//		  !zone.sectionY.isFocusItemEnabled() ||
-//		  !zone.sectionX.isFocusItemEnabled() ||
-//		  selectionCount.compareTo(BigInteger.ONE) > 0;
-		  
-//		shouldHighlight = zone.isSingleCellSelectionHighlight() || 
-//		  zone.getSelectionCount().compareTo(BigInteger.ONE) != 0;
-		
 		
 		extentCache = FontWidthCache.get(gc, gc.getFont());
 		extent = new Point(-1, gc.stringExtent("ty").y);
@@ -420,7 +355,7 @@ public class Painter<X extends Number, Y extends Number> {
 	protected void paint(int x, int y, int width, int height) {
 //	  setup(indexX, indexY);
 	  Rectangle clipping2 = null;
-	  if (hasWordWraping) {
+	  if (style.hasWordWraping) {
       clipping2 = gc.getClipping();
 	    gc.setClipping(x, y, width, height);
 	  }
@@ -428,11 +363,11 @@ public class Painter<X extends Number, Y extends Number> {
 		Color foreground2, background2;
 		if (isSelected) {
 			// TODO Revise and maybe optimize the background / foreground color setting algorithm
-			foreground2 = selectionForeground;  
-			background2 = selectionBackground;
+			foreground2 = style.selectionForeground;  
+			background2 = style.selectionBackground;
 		} else {
-		  foreground2 = foreground;  
-		  background2 = background;
+		  foreground2 = style.foreground;  
+		  background2 = style.background;
 		}
 		
 		// Only set color if there is a change
@@ -454,21 +389,21 @@ public class Painter<X extends Number, Y extends Number> {
 		
 		if (image != null) {
 			Rectangle bounds = image.getBounds();
-			switch (imageAlignX) {
+			switch (style.imageAlignX) {
 			case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP: 
-				x2 += imageMarginX; x3 += bounds.width; break;
+				x2 += style.imageMarginX; x3 += bounds.width; break;
 			case SWT.CENTER:
 				x2 += (width - bounds.width) / 2; break; 
 			case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
-				x2 += width - bounds.width - imageMarginX; break;
+				x2 += width - bounds.width - style.imageMarginX; break;
 			}
-			switch (imageAlignY) {
+			switch (style.imageAlignY) {
 			case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
-				y2 += imageMarginY; break;
+				y2 += style.imageMarginY; break;
 			case SWT.CENTER:
 				y2 += (height - bounds.height) / 2; break; 
 			case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
-				y2 += height - bounds.height - imageMarginY; break;
+				y2 += height - bounds.height - style.imageMarginY; break;
 			}
 			Rectangle lastClipping = gc.getClipping();
 			gc.setClipping(x, y, width, height);
@@ -480,38 +415,40 @@ public class Painter<X extends Number, Y extends Number> {
 		
 		if (text != null) {
 		  
-		  if (!hasWordWraping) {
-		    if (textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
-		      text = FontWidthCache.shortenTextMiddle(text, width - textMarginX * 2, extent, extentCache);      
+		  if (!style.hasWordWraping) {
+		    if (style.textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
+		      text = FontWidthCache.shortenTextMiddle(
+		        text, width - style.textMarginX * 2, extent, extentCache);      
 		    } 
-		    else if (textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
-		      text = FontWidthCache.shortenTextEnd(text, width - textMarginX * 2, extent, extentCache);     
+		    else if (style.textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
+		      text = FontWidthCache.shortenTextEnd(
+		        text, width - style.textMarginX * 2, extent, extentCache);     
 		    } 
 		    // Compute extent only when font changes or text horizontal align is center or right  
 		    else if (lastFont != null && lastFont != gc.getFont() || 
-		      Arrays.contains(EXTENT_ALIGN, textAlignX)) {
+		      Arrays.contains(EXTENT_ALIGN, style.textAlignX)) {
 		      extent = gc.stringExtent(text);
 		    }
 		  }
 		  
-		  switch (textAlignX) {
+		  switch (style.textAlignX) {
       case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP: 
-        x3 += textMarginX; break;
+        x3 += style.textMarginX; break;
       case SWT.CENTER:
         x3 += (width - extent.x) / 2; break; 
       case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
-        x3 += width - extent.x - textMarginX; break;
+        x3 += width - extent.x - style.textMarginX; break;
       }
-      switch (textAlignY) {
+      switch (style.textAlignY) {
       case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
-        y3 += textMarginY; break;
+        y3 += style.textMarginY; break;
       case SWT.CENTER:
         y3 += (height - extent.y) / 2; break; 
       case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
-        y3 += height - extent.y - textMarginY; break;
+        y3 += height - extent.y - style.textMarginY; break;
       }
       
-		  if (hasWordWraping) {
+		  if (style.hasWordWraping) {
 		    if (textLayout == null) {
 		      textLayout = new TextLayout(gc.getDevice());
 		      getMatrix().addDisposeListener(new DisposeListener() {
@@ -522,8 +459,8 @@ public class Painter<X extends Number, Y extends Number> {
 		    }
 		    textLayout.setFont(gc.getFont());
 		    textLayout.setText(text);
-		    textLayout.setAlignment(textAlignX);
-		    textLayout.setWidth(width < 1 ? 1 : width - textMarginX);
+		    textLayout.setAlignment(style.textAlignX);
+		    textLayout.setWidth(width < 1 ? 1 : width - style.textMarginX);
 
 //		    Rectangle clipping2 = gc.getClipping();
 		    textLayout.draw(gc, x3, y3);
@@ -576,7 +513,22 @@ public class Painter<X extends Number, Y extends Number> {
    */
 	public void setupSpatial(X indexX, Y indexY) {}
 	
-	
+	/**
+	 * Returns the style of this painter.
+	 * @return the style of this painter
+	 */
+  public Style getStyle() {
+    return style;
+  }
+
+  /**
+   * Set the style of the painter.
+   * @param style to set
+   */
+  public void setStyle(Style style) {
+    this.style = style;
+  }
+
 	/**
    * Sets custom data for this painter.
    * <p>
@@ -642,15 +594,15 @@ public class Painter<X extends Number, Y extends Number> {
 	  
 	  if (image != null) {
 	    Rectangle bounds = image.getBounds();
-	    x = bounds.width + 2 * imageMarginX;
-	    y = bounds.height + 2 * imageMarginY;
+	    x = bounds.width + 2 * style.imageMarginX;
+	    y = bounds.height + 2 * style.imageMarginY;
 	  }
 	  
     Point p;
     if (text != null) {
       p = gc.stringExtent(text);
       
-      if (hasWordWraping) {
+      if (style.hasWordWraping) {
         if (wHint == SWT.DEFAULT) {
           return new Point(
             zone.getSectionX().getCellWidth(indexX), 
@@ -668,18 +620,18 @@ public class Painter<X extends Number, Y extends Number> {
         }
         textLayout.setFont(gc.getFont());
         textLayout.setText(text);
-        textLayout.setAlignment(textAlignX);
-        textLayout.setWidth(x2 < 1 ? 1 : x2 - 2 * textMarginX);
+        textLayout.setAlignment(style.textAlignX);
+        textLayout.setWidth(x2 < 1 ? 1 : x2 - 2 * style.textMarginX);
         
         for (int i = 0; i < textLayout.getLineCount(); i++)
           y2 += textLayout.getLineBounds(i).height;
         
-        x += wHint == SWT.DEFAULT ? textLayout.getBounds().width + 2 * textMarginX: x2;
-        y = java.lang.Math.max(y, y2 + 2 * textMarginY);
+        x += wHint == SWT.DEFAULT ? textLayout.getBounds().width + 2 * style.textMarginX: x2;
+        y = java.lang.Math.max(y, y2 + 2 * style.textMarginY);
       } 
       else {
-        x += p.x + 2 * textMarginX;
-        y = java.lang.Math.max(y, y + 2 * textMarginY);
+        x += p.x + 2 * style.textMarginX;
+        y = java.lang.Math.max(y, y + 2 * style.textMarginY);
       }
     }
     

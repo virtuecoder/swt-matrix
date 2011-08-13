@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Painter;
+import pl.netanel.swt.matrix.Style;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Section;
@@ -32,9 +33,9 @@ public class _0016_MarkSelectionWithSWT_COLOR_LIST___Colors {
 		body1X.setDefaultCellWidth(50);
 
 		final Zone<Integer, Integer> body = matrix.getBody();
-		Painter<Integer, Integer> painter = body.getPainter(Painter.NAME_CELLS);
-		painter.selectionBackground = display.getSystemColor(SWT.COLOR_LIST_SELECTION);
-		painter.selectionForeground = display.getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT);
+		Style style = body.getPainter(Painter.NAME_CELLS).getStyle();
+		style.selectionBackground = display.getSystemColor(SWT.COLOR_LIST_SELECTION);
+		style.selectionForeground = display.getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT);
 		body.setSelected(1, 2, 1, 2, true);
 		
 		shell.open();

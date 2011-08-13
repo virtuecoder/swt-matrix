@@ -343,7 +343,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		painters.add(new FrozenPainter(Frozen.HEAD, Frozen.HEAD));
 		
 		Painter<X, Y> frozenLinePainter = 
-		  new LinePainter<X, Y>(Painter.NAME_FREEZE_LINES_HEAD_X, Painter.SCOPE_ENTIRE) {
+		  new LinePainter<X, Y>(Painter.NAME_FREEZE_HEAD_LINE_X, Painter.SCOPE_ENTIRE) {
         @Override
         public void paint(int x, int y, int width, int height) {
           if (axisX.getFreezeHead() > 0) {
@@ -353,10 +353,10 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 //          gc.setBackground(background);
         }
       };
-    frozenLinePainter.background = Resources.getColor(SWT.COLOR_BLACK); 
+    frozenLinePainter.style.background = Resources.getColor(SWT.COLOR_BLACK); 
     painters.add(frozenLinePainter);
 
-    frozenLinePainter = new LinePainter<X, Y>(Painter.NAME_FREEZE_LINES_HEAD_Y, Painter.SCOPE_ENTIRE) {
+    frozenLinePainter = new LinePainter<X, Y>(Painter.NAME_FREEZE_HEAD_LINE_Y) {
       @Override
       public void paint(int x, int y, int width, int height) {
         if (axisY.getFreezeHead() > 0) {
@@ -365,10 +365,10 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
         } 
       }
     };
-    frozenLinePainter.background = Resources.getColor(SWT.COLOR_BLACK); 
+    frozenLinePainter.style.background = Resources.getColor(SWT.COLOR_BLACK); 
     painters.add(frozenLinePainter);
 
-    frozenLinePainter = new LinePainter<X, Y>(Painter.NAME_FREEZE_LINES_TAIL_X, Painter.SCOPE_ENTIRE) {
+    frozenLinePainter = new LinePainter<X, Y>(Painter.NAME_FREEZE_TAIL_LINE_X) {
         @Override
         public void paint(int x, int y, int width, int height) {
           int viewportItemCount = axisX.getVisibleItemCount();
@@ -378,10 +378,10 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
           }
         }
       };
-    frozenLinePainter.background = Resources.getColor(SWT.COLOR_BLACK); 
+    frozenLinePainter.style.background = Resources.getColor(SWT.COLOR_BLACK); 
     painters.add(frozenLinePainter);
     
-    frozenLinePainter = new LinePainter<X, Y>(Painter.NAME_FREEZE_LINES_TAIL_Y, Painter.SCOPE_ENTIRE) {
+    frozenLinePainter = new LinePainter<X, Y>(Painter.NAME_FREEZE_TAIL_LINE_Y) {
         @Override
         public void paint(int x, int y, int width, int height) {
           int viewportItemCount = axisY.getVisibleItemCount();
@@ -391,7 +391,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
           }
         }
       };
-    frozenLinePainter.background = Resources.getColor(SWT.COLOR_BLACK); 
+    frozenLinePainter.style.background = Resources.getColor(SWT.COLOR_BLACK); 
     painters.add(frozenLinePainter);
 		
 		painters.add(new Painter<X, Y>(Painter.NAME_FOCUS_CELL) {

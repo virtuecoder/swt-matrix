@@ -25,7 +25,7 @@ public class _0012_ChangeTheLineStyle {
 		
 		
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>(Painter.NAME_LINES_X, Painter.SCOPE_LINES_X) {
+		  new Painter<Integer, Integer>(Painter.NAME_LINES_X) {
 		    private int row;
         @Override
         public void setup(Integer indexX, Integer indexY) {

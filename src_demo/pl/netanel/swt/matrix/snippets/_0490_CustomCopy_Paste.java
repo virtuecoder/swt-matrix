@@ -86,14 +86,14 @@ public class _0490_CustomCopy_Paste {
 		matrix.getAxisY().getBody().setCount(countY);
 		matrix.getAxisY().getHeader().setVisible(true);
 		
-		matrix.getBody().replacePainter(new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-			@Override
-			public void setup(Integer indexX, Integer indexY) {
-			  super.setup(indexX, indexY);
-				text = data.get(indexY.intValue()).get(indexX.intValue()).toString();
-			}
-		});
-		matrix.getBody().setBodyStyle();
+		matrix.getBody().replacePainter(
+		  new Painter<Integer, Integer>(Painter.NAME_CELLS) {
+  			@Override
+  			public void setup(Integer indexX, Integer indexY) {
+  			  super.setup(indexX, indexY);
+  				text = data.get(indexY.intValue()).get(indexX.intValue()).toString();
+  			}
+  		});
 		
 		final ZoneEditor<Integer, Integer> zoneEditor = 
 		  new ZoneEditor<Integer, Integer>(matrix.getBody()) {

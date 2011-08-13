@@ -3,9 +3,10 @@ Version 0.5
 The focus for this release is a much higher API stablity in the future version.
 
 Features:
-- Heavy static code validation and refactoring
-- Heavy API cleanup
-- Moving drag indicator 
+- Heavy static code validation and refactoring.
+- Thorough API cleanup.
+- Moving drag indicator.
+- Painter(String) constructor sets a default scope for the predefined painter names.
 
 API changes:
 - Added AxisItem.createUnchecked(Section, Number)
@@ -22,15 +23,16 @@ API changes:
 - Added Section.getOrder()
 - Added Section.getOrderExtents()
 - Added Section.setOrder(Number, Number)
-- Added Zone.setBodyStyle()
-- Added Zone.setHeaderStyle()
 - Added Axis.setFocusItemEnabled(boolean)
 - Added Axis.isFocusItemEnabled()
 - Added Axis.showItem(Section, Number)
 - Added Axis.getFreezeHead()
 - Added Axis.getFreezeTail()
 - Added Painter.setupSpatial(Number, Number)
-- Added Painter.NAME_FROZEN_LINES
+- Added Painter.setStyle()
+- Added Painter.getStyle()
+- Added Painter.NAME_FREEZE_HEAD_LINE_X, Painter.NAME_FREEZE_HEAD_LINE_Y
+- Added Painter.NAME_FREEZE_TAIL_LINE_X, Painter.NAME_FREEZE_TAIL_LINE_Y
 - Added Matrix(Composite, int, Class, Class)
 - Deleted Section.getHiddenCount(Number, Number)
 - Deleted Zone.setDefaultForeground(Color); it was a duplicate of Painter property

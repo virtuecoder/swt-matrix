@@ -28,20 +28,20 @@ public class ListData0<T> {
     matrix.getAxisY().getBody().setCount(list.size());
     
     matrix.getBody().replacePainter(
-      new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+      new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override public void setupSpatial(Integer indexX, Integer indexY){
           Column<?> column = columns.get(indexX);
           T item = list.get(indexY);
-          textAlignX = column.align;
+          getStyle().textAlignX = column.align;
           text = column.getValue(item).toString(); 
         }
     });
     
     matrix.getHeaderX().replacePainter(
-      new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+      new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override public void setupSpatial(Integer indexX, Integer indexY){
           Column<?> column = columns.get(indexX);
-          textAlignX = column.align;
+          getStyle().textAlignX = column.align;
           text = column.name; 
         }
       });

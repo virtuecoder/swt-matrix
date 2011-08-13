@@ -25,7 +25,7 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 	private final ControlListener controlListener;
 
 	public EmbeddedControlsPainter(final ZoneEditor<X, Y> editor) {
-		super(Painter.NAME_EMBEDDED_CONTROLS, Painter.SCOPE_CELLS);
+		super(Painter.NAME_EMBEDDED_CONTROLS);
 		this.editor = editor;
 		controls = new HashMap<Number, HashMap<Number, Control>>();
 		

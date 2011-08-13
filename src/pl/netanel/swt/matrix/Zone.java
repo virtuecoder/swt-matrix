@@ -430,22 +430,22 @@ public interface Zone<X extends Number, Y extends Number> {
   Painter<X, Y> getPainter(int index);
 
   /**
-   * Sets the default body style for the painters of this zone. 
-   * <p>
-   * It sets the foreground, background, selection foreground, selection background 
-   * colors for the {@link Painter#NAME_CELLS} painter and line (foreground) color 
-   * for the  {@link Painter#NAME_LINES_X} and {@link Painter#NAME_LINES_Y} painters.
-   */
-  void setBodyStyle();
-  
-  /**
-   * Sets the default header style for the painters of this zone. 
-   * <p>
-   * It sets the foreground, background, selection foreground, selection background 
-   * colors for the {@link Painter#NAME_CELLS} painter and line (foreground) color 
-   * for the  {@link Painter#NAME_LINES_X} and {@link Painter#NAME_LINES_Y} painters.
-   */
-  void setHeaderStyle();
+//   * Sets the default body style for the painters of this zone. 
+//   * <p>
+//   * It sets the foreground, background, selection foreground, selection background 
+//   * colors for the {@link Painter#NAME_CELLS} painter and line (foreground) color 
+//   * for the  {@link Painter#NAME_LINES_X} and {@link Painter#NAME_LINES_Y} painters.
+//   */
+//  void setBodyStyle();
+//  
+//  /**
+//   * Sets the default header style for the painters of this zone. 
+//   * <p>
+//   * It sets the foreground, background, selection foreground, selection background 
+//   * colors for the {@link Painter#NAME_CELLS} painter and line (foreground) color 
+//   * for the  {@link Painter#NAME_LINES_X} and {@link Painter#NAME_LINES_Y} painters.
+//   */
+//  void setHeaderStyle();
 
   /**
    * Returns the matrix to which the zone belongs.

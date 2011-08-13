@@ -191,16 +191,6 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   }
 
   @Override
-  public void setBodyStyle() {
-    core.setBodyStyle();
-  }
-
-  @Override
-  public void setHeaderStyle() {
-    core.setHeaderStyle();
-  }
-
-  @Override
   public void bind(int commandId, int eventType, int code) {
     core.bind(commandId, eventType, code);
   }

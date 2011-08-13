@@ -6,9 +6,7 @@ import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -100,28 +98,18 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
    * colors for the {@link Painter#NAME_CELLS} painter and line (foreground) color 
    * for the  {@link Painter#NAME_LINES_X} and {@link Painter#NAME_LINES_Y} painters.
    */
-	@Override
-  public void setBodyStyle() {
+  void setBodyStyle() {
 	  Painter<X, Y> painter = getPainter(Painter.NAME_CELLS);
     if (painter != null) {
-      painter.foreground = painter.background = null;
-
-//      painter.selectionForeground = Resources.getColor(SWT.COLOR_LIST_SELECTION_TEXT);
-      painter.selectionForeground = painter.foreground;
-      RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
-      RGB whiteColor = Resources.getColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
-      RGB color = Painter.blend(selectionColor, whiteColor, 40);
-      painter.selectionBackground = Resources.getColor(color);
+      painter.setStyle(Style.createBodyCellStyle());
     }
-    
-    final Color color = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
     painter = getPainter(Painter.NAME_LINES_X);
     if (painter != null) {
-      painter.background = color;
+      painter.setStyle(Style.createBodyLineStyle());
     }
     painter = getPainter(Painter.NAME_LINES_Y);
     if (painter != null) {
-      painter.background = color;
+      painter.setStyle(Style.createBodyLineStyle());
     }
 	}
 	
@@ -132,29 +120,18 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	 * colors for the {@link Painter#NAME_CELLS} painter and line (foreground) color 
 	 * for the  {@link Painter#NAME_LINES_X} and {@link Painter#NAME_LINES_Y} painters.
 	 */
-	@Override
-  public void setHeaderStyle() {
+  void setHeaderStyle() {
 	  Painter<X, Y> painter = getPainter(Painter.NAME_CELLS);
 	  if (painter != null) {
-	    painter.foreground = Resources.getColor(SWT.COLOR_WIDGET_FOREGROUND);
-	    painter.background = Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND);
-
-//	    painter.selectionForeground = Resources.getColor(SWT.COLOR_LIST_SELECTION_TEXT);
-	    painter.selectionForeground = painter.foreground;
-	    RGB selectionColor = Resources.getColor(SWT.COLOR_LIST_SELECTION).getRGB();
-	    RGB whiteColor = Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND).getRGB();
-	    RGB rgb = Painter.blend(selectionColor, whiteColor, 90);
-	    painter.selectionBackground = Resources.getColor(rgb);
+	    painter.setStyle(Style.createHeaderCellStyle());
 	  }
-	  
-		final Color color = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
     painter = getPainter(Painter.NAME_LINES_X);
     if (painter != null) {
-      painter.background = color;
+      painter.setStyle(Style.createHeaderLineStyle());
     }
     painter = getPainter(Painter.NAME_LINES_Y);
     if (painter != null) {
-      painter.background = color;
+      painter.setStyle(Style.createHeaderLineStyle());
     }
 	}
 	

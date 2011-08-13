@@ -7,7 +7,7 @@ import pl.netanel.util.Preconditions;
 
 class Painters<X extends Number, Y extends Number> implements Iterable<Painter<X, Y>> {
   
-  private ArrayList<Painter<X, Y>> items;
+  private final ArrayList<Painter<X, Y>> items;
 
 //	private Zone zone;
 //	private Matrix matrix;
@@ -51,7 +51,9 @@ class Painters<X extends Number, Y extends Number> implements Iterable<Painter<X
 		if (indexOfPainter == -1) {
 			add(painter);
 		} else {
+		  Painter<X, Y> painter2 = get(indexOfPainter);
 			set(indexOfPainter, painter);
+			painter.setStyle(painter2.getStyle());
 		}
 	}
 

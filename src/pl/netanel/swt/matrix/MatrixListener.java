@@ -957,7 +957,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 //	  protected int feedback;
 
     public DragItemPainter(String name) {
-      super(name, Painter.SCOPE_ENTIRE);
+      super(name);
       setEnabled(false);
       matrix = MatrixListener.this.matrix;
     }
@@ -992,8 +992,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       if ((stateX.moving || stateY.moving) && bounds != null) {
         // Background
         Painter<X, Y> cellPainter = header.getPainter(Painter.NAME_CELLS);
-        if (cellPainter != null && cellPainter.background != null) {
-          gc.setBackground(cellPainter.background);
+        if (cellPainter != null && cellPainter.style.background != null) {
+          gc.setBackground(cellPainter.style.background);
           gc.fillRectangle(x2, y2, bounds.width, bounds.height);
         }
         
@@ -1013,7 +1013,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         }
         Color color = linePainter == null 
           ? matrix.getDisplay().getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW)
-            : linePainter.background;
+            : linePainter.style.background;
           gc.setForeground(color);
           gc.setLineWidth(1);
           gc.drawRectangle(x2 - 1, y2 - 1, bounds.width + 1, bounds.height + 1);

@@ -81,7 +81,7 @@ public class SelectTest extends SwtTestCase {
     click(matrix, bounds, SWT.MOD1 | SWT.BUTTON1);
 
     assertEquals(2, matrix.getBody().getSelectedCount().intValue());
-    Color selectionBackground = body.getPainter(Painter.NAME_CELLS).selectionBackground;
+    Color selectionBackground = body.getPainter(Painter.NAME_CELLS).style.selectionBackground;
     assertColor(selectionBackground, bounds.x + 2, bounds.y + 2);
   }
 
@@ -179,7 +179,7 @@ public class SelectTest extends SwtTestCase {
     click(matrix, bounds, SWT.MOD2 | SWT.BUTTON1);
 
     // Body cell should be highlighted
-    Color selectionBackground = body.getPainter(Painter.NAME_CELLS).selectionBackground;
+    Color selectionBackground = body.getPainter(Painter.NAME_CELLS).style.selectionBackground;
     assertColor(selectionBackground, bounds.x + 2, bounds.y + 2);
 
     // Two body cells should be selected
@@ -207,10 +207,10 @@ public class SelectTest extends SwtTestCase {
     assertEquals(1, columnHeader.getSelectedCount().intValue());
 
     // Body cell should be highlighted
-    assertColor(body.getPainter(Painter.NAME_CELLS).selectionBackground, bounds.x + 2, bounds.y + 2);
+    assertColor(body.getPainter(Painter.NAME_CELLS).style.selectionBackground, bounds.x + 2, bounds.y + 2);
 
     // Column header cell should be highlighted
-    assertColor(columnHeader.getPainter(Painter.NAME_CELLS).selectionBackground, bounds2.x + 2,
+    assertColor(columnHeader.getPainter(Painter.NAME_CELLS).style.selectionBackground, bounds2.x + 2,
       bounds2.y + 2);
 
     // Click again should notify
@@ -245,7 +245,7 @@ public class SelectTest extends SwtTestCase {
     assertEquals(1, columnHeader.getSelectedCount().intValue());
 
     // Column header cell should be highlighted
-    assertColor(columnHeader.getPainter(Painter.NAME_CELLS).selectionBackground, bounds.x + 2,
+    assertColor(columnHeader.getPainter(Painter.NAME_CELLS).style.selectionBackground, bounds.x + 2,
       bounds.y + 2);
   }
 

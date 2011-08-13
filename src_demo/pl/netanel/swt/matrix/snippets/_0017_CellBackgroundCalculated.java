@@ -35,10 +35,10 @@ public class _0017_CellBackgroundCalculated {
 		
 		final Color color = display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+		  new Painter<Integer, Integer>(Painter.NAME_CELLS) {
 		    @Override
         public void setup(Integer indexX, Integer indexY) {
-		      background = indexY.intValue() % 2 + indexX.intValue() % 2 == 1 ? color : null;
+		      getStyle().background = indexY.intValue() % 2 + indexX.intValue() % 2 == 1 ? color : null;
 		    }
 		  }
 	  );

@@ -114,16 +114,15 @@ public class Snippet_1001 {
   }
   
   private void setPainters() {
-    matrix.getPainter(Painter.NAME_FREEZE_LINES_HEAD_Y).setEnabled(false);
+    matrix.getPainter(Painter.NAME_FREEZE_TAIL_LINE_Y).setEnabled(false);
     
     matrix.getHeaderX().replacePainter(
-      new Painter<Integer, BigInteger>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+      new Painter<Integer, BigInteger>(Painter.NAME_CELLS) {
         @Override
         public void setupSpatial(Integer indexX, BigInteger indexY) {
           text = "Column " + indexX;
         }
     });
-    matrix.getHeaderX().setHeaderStyle();
     
     new ButtonCellBehavior<Integer, BigInteger>(matrix.getHeaderX());
     new ButtonCellBehavior<Integer, BigInteger>(matrix.getHeaderXY());
@@ -134,23 +133,22 @@ public class Snippet_1001 {
     body.setSelected(3, indexYY[1], true);
     
     body.replacePainter(
-      new Painter<Integer, BigInteger>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+      new Painter<Integer, BigInteger>(Painter.NAME_CELLS) {
         @Override
         public void setupSpatial(Integer indexX, BigInteger indexY) {
-          hasWordWraping = false;
+          getStyle().hasWordWraping = false;
           if (booleanCells.contains(Cell.create(indexX, indexY))) {
             text = null;
           }
           else if (indexX == 3 && indexY.equals(indexYY[5])) {
             text = "This text has word wrap set on";
-            hasWordWraping = true;
+            getStyle().hasWordWraping = true;
           }
           else {
             text = indexY + ", " + indexX;
           }
         }
     });
-    body.setBodyStyle();
   }
   
   

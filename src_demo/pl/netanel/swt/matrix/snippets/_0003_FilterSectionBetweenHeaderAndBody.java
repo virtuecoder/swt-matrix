@@ -70,16 +70,14 @@ public class _0003_FilterSectionBetweenHeaderAndBody {
 		headerX.setVisible(true);
 		headerY.setVisible(true);
 		
-		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-  			@Override
-  			public void setupSpatial(Integer indexX, Integer indexY){
-  				text = filtered.get(indexY.intValue())[indexX.intValue()].toString();
-  			}
-  		}
-	  );
-		matrix.getBody().setBodyStyle();
-		
+    matrix.getBody().replacePainter(
+      new Painter<Integer, Integer>(Painter.NAME_CELLS) {
+        @Override
+        public void setupSpatial(Integer indexX, Integer indexY) {
+          text = filtered.get(indexY.intValue())[indexX.intValue()].toString();
+        }
+      });
+
 		// Read image
 		FileInputStream stream = new FileInputStream("filter.png");
 		Image image = new Image(display, new ImageData(stream));
@@ -87,14 +85,13 @@ public class _0003_FilterSectionBetweenHeaderAndBody {
 		
 		// Column header
 		matrix.getHeaderX().replacePainter(
-		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+		  new Painter<Integer, Integer>(Painter.NAME_CELLS) {
 		    @Override
 		    public void setupSpatial(Integer indexX, Integer indexY){
 		      text = indexX.intValue() == 0 ? "Task" : "Priority";
 		    }
 		  }
 		);
-		matrix.getHeaderX().setHeaderStyle();
 		
 		// Filter row header
 		matrix.getZone(headerX, filterY).getPainter(Painter.NAME_CELLS).image = image;
@@ -102,14 +99,13 @@ public class _0003_FilterSectionBetweenHeaderAndBody {
 		// Filter columns
 		Zone<Integer, Integer> filterColumns = matrix.getZone(bodyX, filterY);
     filterColumns.replacePainter(
-			new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-				@Override
-        public void setupSpatial(Integer indexX, Integer indexY){
-				  text = indexX.intValue() == 1 ? filter[0] : null;
-				};
-			}
-		);
-    filterColumns.setHeaderStyle();
+      new Painter<Integer, Integer>(
+        Painter.NAME_CELLS) {
+        @Override
+        public void setupSpatial(Integer indexX, Integer indexY) {
+          text = indexX.intValue() == 1 ? filter[0] : null;
+        };
+      });
 		
 		Label label = new Label(shell, SWT.NONE);
 		label.setText("Press to filter by priority: h - high, m - medium, l - low, a - all");

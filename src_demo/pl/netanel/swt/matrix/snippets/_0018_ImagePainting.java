@@ -51,17 +51,16 @@ public class _0018_ImagePainting {
 		matrix.getAxisY().getBody().setCount(ROW_COUNT);
 		
 		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+		  new Painter<Integer, Integer>(Painter.NAME_CELLS) {
 		    @Override
 	      public void setup(Integer indexX, Integer indexY) {
 		      super.setup(indexX, indexY);
 	        text = indexY.toString() + ", " + indexX;
 	        Image[] row = images[indexY.intValue()];
 	        image = row == null ? null : row[indexX.intValue()];
-	        imageAlignX = indexX.intValue() == 1 ? SWT.RIGHT : SWT.LEFT;
+	        getStyle().imageAlignX = indexX.intValue() == 1 ? SWT.RIGHT : SWT.LEFT;
 	      }
   		});
-		matrix.getBody().setBodyStyle();
 		
 		shell.setBounds(400, 200, 600, 400);
 		shell.open();

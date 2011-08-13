@@ -51,18 +51,15 @@ public class _0004_Add_RemoveModelItems {
 		axisX.getHeader().setDefaultCellWidth(16);
 		axisX.getHeader().setVisible(true);
 		
-		matrix.getBody().replacePainter(
-		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-		    @Override
-		    public void setupSpatial(Integer indexX, Integer indexY){
-		      String value = list.get(indexY.intValue());
-		      text = indexX.intValue() == 0 
-		        ? value
-	          : Integer.toString(value.length());
-		    }
-		  }
-		);
-		matrix.getBody().setBodyStyle();
+    matrix.getBody().replacePainter(
+      new Painter<Integer, Integer>(Painter.NAME_CELLS) {
+        @Override
+        public void setupSpatial(Integer indexX, Integer indexY) {
+          String value = list.get(indexY.intValue());
+          text = indexX.intValue() == 0 ? value : Integer.toString(value
+            .length());
+        }
+      });
 		
 		matrix.getHeaderX().replacePainter(
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
@@ -72,7 +69,6 @@ public class _0004_Add_RemoveModelItems {
 		    }
 		  }
 	  );
-		matrix.getHeaderX().setHeaderStyle();
 		
 		Button add = new Button(shell, SWT.PUSH);
 		add.setText("Insert");

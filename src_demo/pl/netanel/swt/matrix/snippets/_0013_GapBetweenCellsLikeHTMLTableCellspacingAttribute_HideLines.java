@@ -34,7 +34,7 @@ public class _0013_GapBetweenCellsLikeHTMLTableCellspacingAttribute_HideLines {
 		
 		// Column header painting
 		Zone<Integer, Integer> columnHeader = matrix.getHeaderX();
-		columnHeader.getPainter(Painter.NAME_CELLS).background = null;
+		columnHeader.getPainter(Painter.NAME_CELLS).getStyle().background = null;
 		columnHeader.getPainter(Painter.NAME_LINES_X).setEnabled(false);
 		columnHeader.getPainter(Painter.NAME_LINES_Y).setEnabled(false);
 		columnHeader.addPainter(0, 

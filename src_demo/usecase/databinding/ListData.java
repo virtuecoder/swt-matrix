@@ -48,7 +48,7 @@ public class ListData<T> {
     matrix.getAxisY().getBody().setCount(list.size());
     
     matrix.getBody().replacePainter(
-      new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+      new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override public void setupSpatial(Integer indexX, Integer indexY){
           Object value = getModelValue(indexX, indexY);
           text = value == null || value instanceof Boolean ? "" : 
@@ -58,7 +58,7 @@ public class ListData<T> {
     });
     
     matrix.getHeaderX().replacePainter(
-      new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+      new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override public void setupSpatial(Integer indexX, Integer indexY){
           ItemData itemX = itemsX.get(indexX);
           text =  itemX == null ? null : itemX.headerText; 

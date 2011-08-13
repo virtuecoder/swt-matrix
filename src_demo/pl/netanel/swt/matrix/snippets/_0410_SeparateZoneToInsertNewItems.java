@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
+import pl.netanel.swt.matrix.Style;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
@@ -67,14 +68,13 @@ public class _0410_SeparateZoneToInsertNewItems {
 
 		// Paint text from the model in the body
     Painter<Integer, Integer> bodyPainter = 
-      new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+      new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override
         public void setupSpatial(Integer indexX, Integer indexY){
           text = (String) data.get(indexY.intValue())[indexX.intValue()];
         }
       };
     matrix.getBody().replacePainter(bodyPainter);
-    matrix.getBody().setBodyStyle();
     
     // Insert body editor
     final InsertEditor insertEditor = new InsertEditor(matrix);
@@ -82,29 +82,25 @@ public class _0410_SeparateZoneToInsertNewItems {
 
     // Insert body painter
     Zone<Integer, Integer> insertBody = matrix.getZone(matrix.getAxisX().getBody(), insertSection);
-    Painter<Integer, Integer> insertPainter = new Painter<Integer, Integer>(
-      Painter.NAME_CELLS, Painter.SCOPE_CELLS) 
-    {
-      @Override public void setupSpatial(Integer indexX, Integer indexY){
-        text =  (String) insertEditor.item[indexX.intValue()];
-      }
-    };
+    Painter<Integer, Integer> insertPainter = 
+      new Painter<Integer, Integer>( Painter.NAME_CELLS) {
+        @Override public void setupSpatial(Integer indexX, Integer indexY){
+          text =  (String) insertEditor.item[indexX.intValue()];
+        }
+      };
     insertBody.replacePainter(insertPainter);
-    insertPainter.background = bodyPainter.background;
-    insertPainter.selectionBackground = bodyPainter.selectionBackground;
-    insertPainter.selectionForeground = bodyPainter.selectionForeground;
     
 		// Paint text in the row header of the insert section
     final Zone<Integer, Integer> insertHeader = matrix.getZone(axisX.getHeader(), insertSection);
     Painter<Integer, Integer> insertHeaderPainter = 
-      new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+      new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override public void setupSpatial(Integer indexX, Integer indexY){
-          textAlignX = textAlignY = SWT.CENTER;
+          Style style = getStyle();
+          style.textAlignX = style.textAlignY = SWT.CENTER;
           text = "add:";
         }
       };
     insertHeader.replacePainter(insertHeaderPainter);
-    insertHeaderPainter.background = matrix.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND); 
 
     new ZoneEditor<Integer, Integer>(insertHeader) {
       @Override protected Control createControl(Integer indexX, Integer indexY) {
