@@ -32,10 +32,12 @@ public class  EditorTest extends SwtTestCase {
       @Override protected Control createControl(Number indexY, Number indexX) {
         return button;
       }
-      @Override protected Object getModelValue(Number indexY, Number indexX) {
+      @Override
+      public Object getModelValue(Number indexY, Number indexX) {
         return data[0];
       }
-      @Override protected void setModelValue(Number indexY, Number indexX, Object value) {
+      @Override
+      public void setModelValue(Number indexY, Number indexX, Object value) {
         data[0] = (Boolean) value;
       }
     };
@@ -64,10 +66,12 @@ public class  EditorTest extends SwtTestCase {
       @Override protected Control createControl(Number indexY, Number indexX) {
         return button;
       }
-      @Override protected Object getModelValue(Number indexY, Number indexX) {
+      @Override
+      public Object getModelValue(Number indexY, Number indexX) {
         return data[0];
       }
-      @Override protected void setModelValue(Number indexY, Number indexX, Object value) {
+      @Override
+      public void setModelValue(Number indexY, Number indexX, Object value) {
         data[0] = (Boolean) value;
       }
     };
@@ -113,7 +117,8 @@ public class  EditorTest extends SwtTestCase {
     Zone body = matrix.getBody();
     final Object[] data = new Object[1];
     new ZoneEditor(body) {
-      @Override protected void setModelValue(Number indexY, Number indexX, Object value) {
+      @Override
+      public void setModelValue(Number indexY, Number indexX, Object value) {
         data[0] = value;
       }
     };

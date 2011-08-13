@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 
 import pl.netanel.util.ImmutableIterator;
@@ -193,6 +194,13 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		this(parent, style, null, null);
 	}
 	
+	
+	public Matrix(Shell parent, int style, Class<X> classX, Class<Y> classY) {
+	  this(parent, style, new Axis<X>(classX, 2), new Axis<Y>(classY, 2));
+	  configureAxises(true, true);
+	}
+
+	
 	/**
 	 * Constructs a new instance of this class given its parent
 	 * and a style value describing its behavior and appearance.
@@ -231,29 +239,24 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		setBackground(Resources.getColor(SWT.COLOR_LIST_BACKGROUND));
 		setForeground(Resources.getColor(SWT.COLOR_LIST_FOREGROUND));
 		
-		if (axisX == null) {
-		  axisX = new Axis<X>();
-		  axisX.getHeader().setDefaultCellWidth(40);
-		  axisX.getBody().setDefaultCellWidth(50);
-		  axisX.setAutoScrollOffset(Matrix.AUTOSCROLL_OFFSET_X);
-		  axisX.setResizeOffset(Matrix.RESIZE_OFFSET_X);
-		}
-		if (axisY == null) {
-			axisY = new Axis<Y>();
-			axisY.setAutoScrollOffset(Matrix.AUTOSCROLL_OFFSET_Y);
-			axisY.setResizeOffset(Matrix.RESIZE_OFFSET_Y);
-		}
+		
+		this.axisX = axisX == null ? new Axis<X>() : axisX;
+	  this.axisY = axisY == null ? new Axis<Y>() : axisY;
+	  this.layoutX = this.axisX.layout;
+	  this.layoutY = this.axisY.layout;
+
+		configureAxises(axisX == null, axisY == null);
 		
 		zones = new ArrayList<ZoneClient<X, Y>>();
 		final ArrayList<ZoneCore<X, Y>> coreZones = new ArrayList<ZoneCore<X, Y>>();
-		for (SectionClient<Y> sectionY: axisY.sections) {
-      for (SectionClient<X> sectionX: axisX.sections) {
+		for (SectionClient<Y> sectionY: this.axisY.sections) {
+      for (SectionClient<X> sectionX: this.axisX.sections) {
         ZoneClient<X, Y> zone = new ZoneClient<X, Y>(sectionX, sectionY);
         zones.add(zone);
         coreZones.add(zone.getUnchecked());
       }
 		}
-		model = new MatrixModel<X, Y>(axisY, axisX, coreZones);
+		model = new MatrixModel<X, Y>(coreZones);
 		
 		painters = new Painters<X, Y>();
 
@@ -297,15 +300,23 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 //    });
 	}
 
+	private void configureAxises(boolean x, boolean y) {
+	  if (x) {
+      axisX.getHeader().setDefaultCellWidth(40);
+      axisX.getBody().setDefaultCellWidth(50);
+      axisX.setAutoScrollOffset(Matrix.AUTOSCROLL_OFFSET_X);
+      axisX.setResizeOffset(Matrix.RESIZE_OFFSET_X);
+    }
+    if (y) {
+      axisY.setAutoScrollOffset(Matrix.AUTOSCROLL_OFFSET_Y);
+      axisY.setResizeOffset(Matrix.RESIZE_OFFSET_Y);
+    }
+	}
 
-	private void setModel(MatrixModel<X, Y> model) {
+  private void setModel(MatrixModel<X, Y> model) {
 		this.model = model;
 		model.setMatrix(this);
 		
-		axisX = model.axisX;
-		axisY = model.axisY;
-		layoutX = model.axisX.layout;
-		layoutY = model.axisY.layout;
 		axisX.setMatrix(this, 'X');
 		axisY.setMatrix(this, 'Y');
 		
@@ -330,6 +341,58 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		painters.add(new FrozenPainter(Frozen.TAIL, Frozen.HEAD));
 		painters.add(new FrozenPainter(Frozen.TAIL, Frozen.TAIL));
 		painters.add(new FrozenPainter(Frozen.HEAD, Frozen.HEAD));
+		
+		Painter<X, Y> frozenLinePainter = 
+		  new LinePainter<X, Y>(Painter.NAME_FREEZE_LINES_HEAD_X, Painter.SCOPE_ENTIRE) {
+        @Override
+        public void paint(int x, int y, int width, int height) {
+          if (axisX.getFreezeHead() > 0) {
+            int[] bound = axisX.getLineBound(axisX.getItemByPosition(axisX.getFreezeHead()));
+            gc.fillRectangle(bound[0], y, bound[1], height);
+          } 
+//          gc.setBackground(background);
+        }
+      };
+    frozenLinePainter.background = Resources.getColor(SWT.COLOR_BLACK); 
+    painters.add(frozenLinePainter);
+
+    frozenLinePainter = new LinePainter<X, Y>(Painter.NAME_FREEZE_LINES_HEAD_Y, Painter.SCOPE_ENTIRE) {
+      @Override
+      public void paint(int x, int y, int width, int height) {
+        if (axisY.getFreezeHead() > 0) {
+          int[] bound = axisY.getLineBound(axisY.getItemByPosition(axisY.getFreezeHead()));
+          gc.fillRectangle(x, bound[0], width, bound[1]);
+        } 
+      }
+    };
+    frozenLinePainter.background = Resources.getColor(SWT.COLOR_BLACK); 
+    painters.add(frozenLinePainter);
+
+    frozenLinePainter = new LinePainter<X, Y>(Painter.NAME_FREEZE_LINES_TAIL_X, Painter.SCOPE_ENTIRE) {
+        @Override
+        public void paint(int x, int y, int width, int height) {
+          int viewportItemCount = axisX.getVisibleItemCount();
+          if (axisX.getFreezeTail() > 0 ) {
+            int[] bound = axisX.getLineBound(axisX.getItemByPosition(viewportItemCount - axisX.getFreezeTail()));
+            gc.fillRectangle(bound[0], y, bound[1], height);
+          }
+        }
+      };
+    frozenLinePainter.background = Resources.getColor(SWT.COLOR_BLACK); 
+    painters.add(frozenLinePainter);
+    
+    frozenLinePainter = new LinePainter<X, Y>(Painter.NAME_FREEZE_LINES_TAIL_Y, Painter.SCOPE_ENTIRE) {
+        @Override
+        public void paint(int x, int y, int width, int height) {
+          int viewportItemCount = axisY.getVisibleItemCount();
+          if (axisY.getFreezeTail() > 0 ) {
+            int[] bound = axisY.getLineBound(axisY.getItemByPosition(viewportItemCount - axisY.getFreezeTail()));
+            gc.fillRectangle(x, bound[0], width, bound[1]);
+          }
+        }
+      };
+    frozenLinePainter.background = Resources.getColor(SWT.COLOR_BLACK); 
+    painters.add(frozenLinePainter);
 		
 		painters.add(new Painter<X, Y>(Painter.NAME_FOCUS_CELL) {
 			@Override
@@ -442,19 +505,19 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		// If at one of the scroll bar visibility has changed then update the other one also
 		if (axisX.updateScrollBarVisibility()) {
 			area = getClientArea();
-			model.axisY.updateScrollBarVisibility();
-			model.axisX.updateScrollBarVisibility();
+			axisY.updateScrollBarVisibility();
+			axisX.updateScrollBarVisibility();
 			area = getClientArea();
 		}
-		else if (model.axisY.updateScrollBarVisibility()) {
+		else if (axisY.updateScrollBarVisibility()) {
 			area = getClientArea();			 
-			model.axisX.updateScrollBarVisibility();
-			model.axisY.updateScrollBarVisibility();
+			axisX.updateScrollBarVisibility();
+			axisY.updateScrollBarVisibility();
 			area = getClientArea();
 		}
 		
-		model.axisX.updateScrollBarValues(area.width);
-		model.axisY.updateScrollBarValues(area.height);
+		axisX.updateScrollBarValues(area.width);
+		axisY.updateScrollBarValues(area.height);
 		
 		area = getClientArea();
 		
@@ -503,7 +566,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 * Returns the top left zone of this matrix.
 	 * @return the top left zone of this matrix
 	 */
-	public Zone<X, Y> getTopLeft() {
+	public Zone<X, Y> getHeaderXY() {
 		return getZone(axisX.getHeader(), axisY.getHeader());
 	}
 
@@ -840,7 +903,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
   }
 
 	private void setPainterMatrixAndZone(Painter<X, Y> painter) {
-		if (painter.scope == Painter.SCOPE_CELLS ||
+		if (painter.scope == Painter.SCOPE_CELLS_X ||
 				painter.scope == Painter.SCOPE_CELLS_Y) 
 		{
 			painter.setMatrix(this);

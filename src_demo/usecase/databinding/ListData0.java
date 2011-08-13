@@ -47,7 +47,8 @@ public class ListData0<T> {
       });
     
     new ZoneEditor<Integer, Integer>(matrix.getBody()) {
-      @Override protected void setModelValue(Integer indexX, Integer indexY, Object value) {
+      @Override
+      public void setModelValue(Integer indexX, Integer indexY, Object value) {
         Column<?> column = columns.get(indexX);
         T item = list.get(indexY);
         column.setValue(item, value);

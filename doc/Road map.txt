@@ -1,10 +1,31 @@
-0, 1 -> X, Y
-  
-  axis.index == 0 -> axis.symbol == 'Y'
-  public boolean isSelected(X indexX, Y indexY) {
-	return cellSelection.contains(indexX, indexY);
-  }
+Screenshot
 
+BigInteger
+filter 
+sorting
+insert row
+summary
+reorder
+hide item
+custom background
+push button headers
+alter selection
+variable row height
+variable line width
+freezing
+line color
+text color
+cell background
+text, image aligning 
+text, image margin
+embedded progress bar, checkbox
+combo editor
+zone listener
+
+copy paste
+autoscroll 
+drag indicator
+column width compress
 
 From nebula forum
 - different colors for the fore- and background of cells. If i select one colored cell, the selection "overwrites" the color setting, so that every selected cell looks the same. Is there a way to change the color of selected cells, so that i can still see the differences?
@@ -12,10 +33,10 @@ From nebula forum
 - Nebula CompositeTable, flexible row layout
 
 To do:
-- paint order for ButtonCellBehavior
+- draw button cell selected as pushed
+- freeze line painters are by default
 - rename snippets
 - partial redraw/paint cell, zone, row column
-- type safe compiler checks
 - painter top, bottom, left, right margins for text and image instead of x, y margins
 - add to Zone and Section @see #getListeners(int)   * @see #removeListener(int, Listener)   * @see #notifyListeners
 - snippet with selection background and custom foreground

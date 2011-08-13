@@ -143,14 +143,6 @@ public class Axis<N extends Number>  {
 	
 	
 	/**
-	 * Returns the number of sections in the receiver. 
-	 * @return the number of sections in the receiver.
-	 */
-	public int getSectionCount() {
-		return sections.size();
-	}
-	
-	/**
 	 * Returns the section at the specified position in this axis.
 	 * 
 	 * @param sectionIndex index of the section to return
@@ -170,50 +162,53 @@ public class Axis<N extends Number>  {
 	 */
 
 	/**
-	 * Returns number of items visible in the viewport. Including items partially visible.
+   * Returns the number of sections in the receiver. 
+   * @return the number of sections in the receiver.
+   */
+  public int getSectionCount() {
+  	return sections.size();
+  }
+
+  /**
+	 * Returns number of items visible in the viewport. Including partially visible items.
 	 * @return number of items visible in the viewport
 	 */
-	public int getViewportItemCount() {
+	public int getVisibleItemCount() {
 		layout.computeIfRequired();
 		return layout.head.count + layout.tail.count + 
 			layout.main.cells.size(); // - layout.trim;
 	}
 	
 	
-	boolean isLastCellTrimmed() {
-		layout.computeIfRequired();
-		return layout.isTrimmed;
-	}
-	
 	/**
-	 * Returns the position of the given item in the viewport or -1
-	 * if the viewport does not display the item.
-	 * 
-	 * @param item the item to get position for
-	 * @return the position of the given item in the viewport
-	 * @throws IllegalArgumentException if item is <code>null</code> or item's section
-	 * 		does not belong to this axis.
-	 * @throws IndexOutOfBoundsException if item's index is out 
-	 * 		of 0 ... {@link SectionCore#getCount()}-1 bounds
-	 */
-	public int getViewportPosition(AxisItem<N> item) {
-		Preconditions.checkNotNullWithName(item, "item");
-		SectionCore<N> section = item.section;
-		section = checkSection(section, "item section");
-		section.checkCellIndex(item.getIndex(), "item index");
-		
-		layout.computeIfRequired();
-		return layout.indexOf(item);
-	}
-	
-	/**
+   * Returns the position of the given item in the viewport or -1
+   * if the viewport does not display the item.
+   * 
+   * @param item the item to get position for
+   * @return the position of the given item in the viewport
+   * @throws IllegalArgumentException if item is <code>null</code> or item's section
+   * 		does not belong to this axis.
+   * @throws IndexOutOfBoundsException if item's index is out 
+   * 		of 0 ... {@link SectionCore#getCount()}-1 bounds
+   */
+  public int getVisiblePosition(AxisItem<N> item) {
+  	Preconditions.checkNotNullWithName(item, "item");
+  	SectionCore<N> section = item.section;
+  	section = checkSection(section, "item section");
+  	section.checkCellIndex(item.getIndex(), "item index");
+  	
+  	layout.computeIfRequired();
+  	return layout.indexOf(item);
+  }
+
+  /**
 	 * Returns item visible at the specified position in the viewport or <code>null</code>
 	 * if the position is outside of the viewport bounds.
 	 * 
 	 * @param position the position the get the item for
 	 * @return item visible at the specified position in the viewport
 	 */
-	public AxisItem<N> getItemAt(int position) {
+	public AxisItem<N> getItemByPosition(int position) {
 		AxisItem<N> item = layout.getIndexAt(position);
 		return item == null ? null : item;
 	}
@@ -263,6 +258,54 @@ public class Axis<N extends Number>  {
 	 */
 
 	/**
+   * Compares section positions on this axis and returns value greater then 0 if
+   * section1 is behind section 2, value lower then zero if section1 is before
+   * section2 and 0 if sections are the same.
+   * 
+   * @param section1 a section to compare
+   * @param section2 another section section to compare
+   * @return comparison result
+   * 
+   * @throws IllegalArgumentException if section1 or section2 is <code>null</code> or 
+   *    does not belong to this axis.
+   */
+  public int compare(Section<N> section1, Section<N> section2) {
+    return 
+      checkSection(section1, "section 1").index -
+      checkSection(section2, "section 2").index;
+  }
+
+  public int compare(AxisItem<N> item1, AxisItem<N> item2) {
+    checkItem(item1, "item1");
+    checkItem(item2, "item2");
+    return comparePosition(item1, item2);
+  }
+
+  /**
+   * Returns <code>true</code> if the focus item navigation is enabled in the receiver. 
+   * Otherwise <code>false</code> is returned.
+   *
+   * @return the receiver's focus item enablement state
+   */
+  public boolean isFocusItemEnabled() {
+    return layout.isFocusItemEnabled;
+  }
+
+  /**
+   * Enables current item navigation in the receiver if the argument is <code>true</code>,
+   * and disables it otherwise.
+   * <p>
+   * If the focus cell is disabled the navigation events are ignored and the 
+   * {@link Painter#NAME_FOCUS_CELL} painter of the matrix is disabled. 
+   *
+   * @param state the new focus item enablement state
+   */
+  public void setFocusItemEnabled(boolean state) {
+    layout.isFocusItemEnabled = state;
+    matrix.setFocusCellEnabled(state);
+  }
+
+  /**
 	 * Returns the focus item. Or <code>null</code> if no item has focus.
 	 * @return the focus item
 	 */
@@ -284,7 +327,7 @@ public class Axis<N extends Number>  {
 	
 	
 	/**
-	 * Sets the focus marker to the item at given index in the given section.
+	 * Sets the focus marker to the item with the given index in the model of the given section.
 	 * <p>
 	 * If section has the focus item disabled (see {@link SectionCore#setFocusItemEnabled(boolean)}) 
 	 * then this method does nothing.
@@ -305,30 +348,33 @@ public class Axis<N extends Number>  {
 		if (matrix != null) matrix.redraw();
 	}
 	
-
 	/**
-   * Enables current item navigation in the receiver if the argument is <code>true</code>,
-   * and disables it otherwise.
-   * <p>
-   * If the focus cell is disabled the navigation events are ignored and the 
-   * {@link Painter#NAME_FOCUS_CELL} painter of the matrix is disabled. 
-   *
-   * @param state the new focus item enablement state
-   */
-	public void setFocusItemEnabled(boolean state) {
-	  layout.isFocusItemEnabled = state;
-	  matrix.setFocusCellEnabled(state);
+	 * Scrolls to the item with the given index in the model of the given section.
+	 * It makes it visible in the viewport.
+	 * <p>
+	 * It works only when the matrix size has been set, which usually happens 
+	 * when the shell to which the matrix belongs gets open.
+	 *  
+	 * @param section section in which to set the focus
+	 * @param index index in the section at which to set the focus 
+	 * @throws IllegalArgumentException if the section is <code>null</code> or 
+	 * 		does not belong to this axis.
+	 * @throws IndexOutOfBoundsException if index is out 
+	 * 		of 0 ... {@link SectionCore#getCount()}-1 bounds
+	 */
+	public void showItem(Section<N> section, N index) {
+	  SectionCore<N> section2 = SectionCore.from(section);
+	  section2 = checkSection(section2, "section");
+	  section2.checkCellIndex(index, "index");
+	  
+	  if (layout.show(AxisItem.createInternal(section2, index))) {
+	    scroll();
+	    if (matrix != null) matrix.redraw();
+	  }
 	}
+	
 
-	/**
-   * Returns <code>true</code> if the focus item navigation is enabled in the receiver. 
-   * Otherwise <code>false</code> is returned.
-   *
-   * @return the receiver's focus item enablement state
-   */
-	public boolean isFocusItemEnabled() {
-	  return layout.isFocusItemEnabled;
-	}
+	
 	
 	/*------------------------------------------------------------------------
 	 * Freeze
@@ -340,19 +386,35 @@ public class Axis<N extends Number>  {
 	 * @param freezeItemCount amount of first items to freeze
 	 * @throws IllegalArgumentException if the argument is lower then zero
 	 */
-	public void freezeHead(int freezeItemCount) {
+	public void setFreezeHead(int freezeItemCount) {
 		Preconditions.checkArgument(freezeItemCount >= 0, FREEZE_ITEM_COUNT_ERROR);
 		layout.freezeHead(freezeItemCount);
 	}
 
 	/**
+   * Returns frozen items at the beginning this axis. 
+   * @return frozen items at the beginning this axis
+   */
+  public int getFreezeHead() {
+    return layout.head.count;
+  }
+
+  /**
 	 * Freezes the specified amount of last items on this axis. 
 	 * @param freezeItemCount amount of last items to freeze
 	 * @throws IllegalArgumentException if the argument is lower then zero
 	 */
-	public void freezeTail(int freezeItemCount) {
+	public void setFreezeTail(int freezeItemCount) {
 		Preconditions.checkArgument(freezeItemCount >= 0, FREEZE_ITEM_COUNT_ERROR);
 		layout.freezeTail(freezeItemCount);
+	}
+	
+	/**
+	 * Returns frozen items at the end this axis. 
+	 * @return frozen items at the end this axis
+	 */
+	public int getFreezeTail() {
+	  return layout.tail.count;
 	}
 	
 //	/**
@@ -364,7 +426,7 @@ public class Axis<N extends Number>  {
 //	 * @return number of frozen items
 //	 */
 //	public int freezeHead(AxisItem<N> item) {
-//		layout.freezeHead(item);
+//		layout.setFreezeHead(item);
 //		return layout.head.count;
 //	}
 //	
@@ -377,7 +439,7 @@ public class Axis<N extends Number>  {
 //	 * @return number of frozen items
 //	 */
 //	public int freezeTail(AxisItem<N> item) {
-//		layout.freezeTail(item);
+//		layout.setFreezeTail(item);
 //		return layout.tail.count;
 //	}
 	
@@ -610,32 +672,13 @@ public class Axis<N extends Number>  {
 		return AxisItem.createInternal(layout.sections.get(0), math.ZERO_VALUE());
 	}
 
-  /**
-   * Compares section positions on this axis and returns value greater then 0 if
-   * section1 is behind section 2, value lower then zero if section1 is before
-   * section2 and 0 if sections are the same.
-   * 
-   * @param section1 a section to compare
-   * @param section2 another section section to compare
-   * @return comparison result
-   * 
-   * @throws IllegalArgumentException if section1 or section2 is <code>null</code> or 
-   *    does not belong to this axis.
-   */
-	public int compare(Section<N> section1, Section<N> section2) {
-	  return 
-	    checkSection(section1, "section 1").index -
-	    checkSection(section2, "section 2").index;
-	}
-	
-	int comparePosition(SectionCore<N> section1, SectionCore<N> section2) {
+  boolean isLastCellTrimmed() {
+  	layout.computeIfRequired();
+  	return layout.isTrimmed;
+  }
+
+  int comparePosition(SectionCore<N> section1, SectionCore<N> section2) {
 	  return section1.index - section2.index;
-	}
-	
-	public int compare(AxisItem<N> item1, AxisItem<N> item2) {
-	  checkItem(item1, "item1");
-    checkItem(item2, "item2");
-    return comparePosition(item1, item2);
 	}
 	
 	int comparePosition(AxisItem<N> item1, AxisItem<N> item2) {

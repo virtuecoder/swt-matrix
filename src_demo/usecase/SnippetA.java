@@ -24,8 +24,8 @@ public class SnippetA {
 //		matrix.getAxisX().getBody().setDefaultCellWidth(100);
 		axisY.getHeader().setVisible(true);
 		axisX.getHeader().setVisible(true);
-//		axisY.freezeHead(1);
-//		axisX.freezeHead(2);
+//		axisY.setFreezeHead(1);
+//		axisX.setFreezeHead(2);
 		axisX.getHeader().setDefaultResizable(true);
 		axisX.getBody().setDefaultResizable(true);
 		axisX.getBody().setResizable(4, 4, false);

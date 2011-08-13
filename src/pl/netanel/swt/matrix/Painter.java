@@ -165,6 +165,14 @@ public class Painter<X extends Number, Y extends Number> {
    * items being dragged on y axis.
    */
   public static final String NAME_DRAG_ITEM_Y = "drag item y";
+  /**
+   * Default name of the painter belonging to a matrix responsible to paint the 
+   * lines dividing the frozen areas.
+   */
+  public static final String NAME_FREEZE_LINES_HEAD_X = "freeze line head x";
+  public static final String NAME_FREEZE_LINES_HEAD_Y = "freeze line head y";
+  public static final String NAME_FREEZE_LINES_TAIL_X = "freeze line tail x";
+  public static final String NAME_FREEZE_LINES_TAIL_Y = "freeze line tail y";
 	
 	private static int[] EXTENT_ALIGN = {SWT.RIGHT, SWT.END, SWT.BOTTOM, SWT.CENTER};
 	static enum TextClipMethod {DOTS_IN_THE_MIDDLE, DOTS_AT_THE_END, CUT, NONE};
@@ -411,7 +419,9 @@ public class Painter<X extends Number, Y extends Number> {
 	 */
 	protected void paint(int x, int y, int width, int height) {
 //	  setup(indexX, indexY);
+	  Rectangle clipping2 = null;
 	  if (hasWordWraping) {
+      clipping2 = gc.getClipping();
 	    gc.setClipping(x, y, width, height);
 	  }
 	  
@@ -470,18 +480,19 @@ public class Painter<X extends Number, Y extends Number> {
 		
 		if (text != null) {
 		  
-		  if (textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
-        text = FontWidthCache.shortenTextMiddle(text, width - textMarginX * 2, extent, extentCache);      
-      } 
-      else if (textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
-        text = FontWidthCache.shortenTextEnd(text, width - textMarginX * 2, extent, extentCache);     
-      } 
-      // Compute extent only when font changes or text horizontal align is center or right  
-      else if (lastFont != null && lastFont != gc.getFont() || 
-        Arrays.contains(EXTENT_ALIGN, textAlignX)) {
-        extent = gc.stringExtent(text);
-      }
-      
+		  if (!hasWordWraping) {
+		    if (textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
+		      text = FontWidthCache.shortenTextMiddle(text, width - textMarginX * 2, extent, extentCache);      
+		    } 
+		    else if (textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
+		      text = FontWidthCache.shortenTextEnd(text, width - textMarginX * 2, extent, extentCache);     
+		    } 
+		    // Compute extent only when font changes or text horizontal align is center or right  
+		    else if (lastFont != null && lastFont != gc.getFont() || 
+		      Arrays.contains(EXTENT_ALIGN, textAlignX)) {
+		      extent = gc.stringExtent(text);
+		    }
+		  }
 		  
 		  switch (textAlignX) {
       case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP: 
@@ -523,6 +534,9 @@ public class Painter<X extends Number, Y extends Number> {
 		    gc.drawString(text, x3, y3, true);
 		  }
 		}
+		if (clipping2 != null) {
+		  gc.setClipping(clipping2);
+		}
 	}
 	
 	
@@ -541,13 +555,21 @@ public class Painter<X extends Number, Y extends Number> {
 	}
 	
   /**
-   * Sets the spatial properties for this painter.
+   * Sets the spatial properties for this painter. 
+   * Spatial properties are the ones that effect the space of the cell and 
+   * include: text, image, text and image margins, text wrapping. 
    * <p>
    * It is utilized by both painting mechanism as well as
    * {@link #computeSize(Number, Number, int, int)} routine. 
    * The reason to separate it from {@link #setup(Number, Number)} method
    * was to improve performance of size computing by eliminating unnecessary 
-   * processing, like setting colors, determining whether the cell is selected, etc.  
+   * processing, like setting colors, determining whether the cell is selected, etc.
+   * <p>
+   * The most common usage is to set the text to display:
+   * <pre>  public void setupSpatial(Integer indexX, Integer indexY){
+      text = data[indexY][indexX]; 
+  }
+   * </pre>  
    * 
    * @param indexX cell index on the horizontal axis
    * @param indexY cell index on the vertical axis

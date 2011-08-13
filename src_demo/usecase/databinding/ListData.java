@@ -66,13 +66,16 @@ public class ListData<T> {
       });
     
     new ZoneEditor<Integer, Integer>(matrix.getBody()) {
-      @Override protected Object getModelValue(Integer indexX, Integer indexY) {
+      @Override
+      public Object getModelValue(Integer indexX, Integer indexY) {
         return ListData.this.getModelValue(indexX, indexY);
       }
-      @Override protected void setModelValue(Integer indexX, Integer indexY, Object value) {
+      @Override
+      public void setModelValue(Integer indexX, Integer indexY, Object value) {
         ListData.this.setModelValue(indexX, indexY, value);
       }
-      @Override protected Control createControl(Integer indexX, Integer indexY) {
+      @Override 
+      protected Control createControl(Integer indexX, Integer indexY) {
         Class<?> type = getDataType(indexX, indexY);
         if (type == String.class) return new Text(matrix, SWT.BORDER); 
         if (type == Boolean.class) return new Button(matrix, SWT.CHECK); 

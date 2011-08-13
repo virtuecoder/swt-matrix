@@ -28,7 +28,7 @@ public class _0002_UnlimitedNumberOfItems {
     matrix.getAxisX().getBody().setDefaultCellWidth(200);
     matrix.getAxisX().getHeader().setVisible(true);
     matrix.getAxisX().getHeader().setDefaultCellWidth(200);
-    matrix.getAxisX().freezeHead(1);
+    matrix.getAxisX().setFreezeHead(1);
     matrix.getAxisY().getBody().setCount(new BigInteger("123456789012345678901234567890"));
 
     shell.setBounds(400, 200, 600, 400);

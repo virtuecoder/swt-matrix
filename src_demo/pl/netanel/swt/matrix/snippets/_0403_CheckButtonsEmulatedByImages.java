@@ -58,7 +58,7 @@ public class _0403_CheckButtonsEmulatedByImages {
 		// Body editor
 		new ZoneEditor<Integer, Integer>(matrix.getBody()) {
 			@Override
-			protected Object getModelValue(Integer indexX, Integer indexY) {
+      public Object getModelValue(Integer indexX, Integer indexY) {
 				return data.get(indexY.intValue())[indexX.intValue()];
 			}
 			@Override

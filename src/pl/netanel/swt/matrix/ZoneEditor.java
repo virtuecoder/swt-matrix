@@ -194,7 +194,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 * @param indexX cell index on the horizontal axis 
 	 * @param indexY cell index on the vertical axis 
 	 */
-	protected Object getModelValue(X indexX, Y indexY) {
+	public Object getModelValue(X indexX, Y indexY) {
 	  if (cellsPainter == null) return null;
 	  cellsPainter.setupSpatial(indexX, indexY);
 	  return cellsPainter.text;
@@ -208,7 +208,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 * @param indexY cell index on the vertical axis 
 	 * @param value to set in the model
 	 */
-	protected void setModelValue(X indexX, Y indexY, Object value) {
+	public void setModelValue(X indexX, Y indexY, Object value) {
 		
 	}
 	
@@ -372,7 +372,6 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 			setBounds(indexX, indexY, control);
 			control.moveAbove(getMatrix());
 			controlListener.attachTo(control);
-			control.moveAbove(getMatrix());
 		}
 		return control;
 	}

@@ -43,7 +43,7 @@ import org.junit.runners.JUnit4;
 	public void getViewportItemCount_0() throws Exception {
 		Axis axis = new Axis();
 		axis.layout.setViewportSize(1000);
-		assertEquals(0, axis.getViewportItemCount());
+		assertEquals(0, axis.getVisibleItemCount());
 	}
 	
 	@Test
@@ -51,7 +51,7 @@ import org.junit.runners.JUnit4;
 		Axis axis = new Axis();
 		axis.layout.setViewportSize(1000);
 		axis.getBody().setCount(1);
-		assertEquals(1, axis.getViewportItemCount());
+		assertEquals(1, axis.getVisibleItemCount());
 	}
 	
 	@Test
@@ -62,19 +62,19 @@ import org.junit.runners.JUnit4;
     layout.setViewportSize(100);
 		layout.compute();
 		assertTrue(layout.isTrimmed);
-		assertEquals(6, axis.getViewportItemCount());
+		assertEquals(6, axis.getVisibleItemCount());
 	}
 	
 	@Test
 	public void getViewportItemCount_freeze() throws Exception {
 		Axis axis = new Axis();
 		axis.getBody().setCount(10);
-		axis.freezeHead(1);
+		axis.setFreezeHead(1);
 		Layout layout = axis.layout;
     layout.setViewportSize(100);
     layout.compute();
 		assertTrue(layout.isTrimmed);
-		assertEquals(6, axis.getViewportItemCount());
+		assertEquals(6, axis.getVisibleItemCount());
 	}
 	
 	
@@ -82,10 +82,10 @@ import org.junit.runners.JUnit4;
 	public void getViewportIndexOf_freeze() throws Exception {
 		Axis axis = new Axis();
 		axis.getBody().setCount(10);
-		axis.freezeHead(1);
+		axis.setFreezeHead(1);
 		Layout layout = axis.layout;
     layout.setViewportSize(100);
 		layout.compute();
-		assertEquals(2, axis.getViewportPosition(AxisItem.create(axis.getBody(), 2)));
+		assertEquals(2, axis.getVisiblePosition(AxisItem.create(axis.getBody(), 2)));
 	}
 }

@@ -58,7 +58,7 @@ public class EmbeddedControls {
 		// Body editor
 		new ZoneEditor(matrix.getBody()) {
 			@Override
-			protected Object getModelValue(Number indexY, Number indexX) {
+      public Object getModelValue(Number indexY, Number indexX) {
 				return data.get(indexY.intValue())[indexX.intValue()];
 			}
 			@Override

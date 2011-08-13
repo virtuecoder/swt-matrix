@@ -26,7 +26,12 @@ API changes:
 - Added Zone.setHeaderStyle()
 - Added Axis.setFocusItemEnabled(boolean)
 - Added Axis.isFocusItemEnabled()
+- Added Axis.showItem(Section, Number)
+- Added Axis.getFreezeHead()
+- Added Axis.getFreezeTail()
 - Added Painter.setupSpatial(Number, Number)
+- Added Painter.NAME_FROZEN_LINES
+- Added Matrix(Composite, int, Class, Class)
 - Deleted Section.getHiddenCount(Number, Number)
 - Deleted Zone.setDefaultForeground(Color); it was a duplicate of Painter property
 - Deleted Zone.setDefaultBackground(Color); it was a duplicate of Painter property
@@ -48,6 +53,11 @@ API changes:
 - Renamed Section.getSelectedExtentIterator() to Section.getSelectedExtents()
 - Renamed Section.getCore() to Section.getUnchecked()
 - Renamed Zone.getCore() to Zone.getUnchecked()
+- Renamed Axis.getViewportItemCount() to Axis.getVisibleItemCount()
+- Renamed Axis.getViewportPosition() to Axis.getVisiblePosition()
+- Renamed Axis.freezeHead(int) to Axis.setFreezeHead(int)
+- Renamed Axis.freezeTail(int) to Axis.setFreezeTail(int)
+- Renamed Matrix.getTopLeft() to Matrix.getHeaderXY(); to bo more consistent with X-Y notation
 - Changed Painter.paint(Number, Number, int, int, int, int) to Painter.paint(int, int, int, int); indexed based operations are done through Painter.setup(Number, Number) method.
 
 

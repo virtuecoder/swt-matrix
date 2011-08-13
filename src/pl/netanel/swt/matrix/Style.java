@@ -70,24 +70,9 @@ class Style {
 	public int imageMarginY;
 	
 	/**
-	 * Word wrapping for text in cells. 
-	 */
-	private boolean wordWrap;
+   * Word wrapping for text in cells. 
+   */
+  public boolean hasWordWraping;
 
 	
-  /**
-   * Returns the word wrapping state.
-   * @return the word wrapping state
-   */
-  public boolean isWordWrap() {
-    return wordWrap;
-  }
-
-  /**
-   * Sets the word wrapping state. If true then the words will be wrapped to many lines. 
-   * @param state word wrapping state
-   */
-  public void setWordWrap(boolean state) {
-    this.wordWrap = state;
-  }
 }

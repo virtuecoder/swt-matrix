@@ -263,17 +263,20 @@ class Layout<N extends Number> {
 	 * Scroll 
 	 */
 
-	public void show(AxisItem<N> item) {
-		if (item == null) return;
+	public boolean show(AxisItem<N> item) {
+		if (item == null) return false;
 		if (isComputingRequired) compute();
 		
 		if (axis.comparePosition(item, endNoTrim) > 0) {
 			compute(item, backward);
+			return true;
 		} 
 		else if (axis.comparePosition(item, start) < 0) {
 			compute(item, forward);
+			return true;
 		} 
 		// else it is visible already
+		return false;
 	}
 	
 	AxisItem<N> scroll(MutableNumber<N> itemCount, Direction<N> direction) {
