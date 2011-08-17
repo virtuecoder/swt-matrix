@@ -41,7 +41,7 @@ public class AxisItem<N extends Number> {
 	 * @return a new instance of this class
 	 * @return
 	 */
-	public static <N2 extends Number> AxisItem<N2> createUnchecked2(Section<N2> section, N2 index) {
+	public static <N2 extends Number> AxisItem<N2> createUnchecked(Section<N2> section, N2 index) {
 		return new AxisItem<N2>(SectionCore.from(section), index);
 	}
 	

@@ -155,7 +155,7 @@ public class SelectTest extends SwtTestCase {
     click(matrix, columnHeader.getCellBounds(0, 0), SWT.BUTTON1);
     dragAndDrop(columnHeader.getCellBounds(0, 0),
       columnHeader.getCellBounds(4, 0));
-    assertEquals(0, matrix.getAxisX().getItemByPosition(5).getIndex().intValue());
+    assertEquals(0, matrix.getAxisX().getItemByViewportPosition(5).getIndex().intValue());
 
     SectionSelectionCounter sectionCounter = new SectionSelectionCounter(matrix
       .getAxisX().getBody());

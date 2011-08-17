@@ -812,6 +812,10 @@ class Layout<N extends Number> {
 		}
 		return false;
 	}
+	
+	public boolean contains(AxisItem<N> item) {
+	  return getCache(item.section, item.index) != null; 
+	}
 
 	public Bound getBound(Frozen frozen) {
 		Cache cache = getCache(frozen);

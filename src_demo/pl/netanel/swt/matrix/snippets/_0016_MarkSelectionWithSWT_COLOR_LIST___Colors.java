@@ -33,7 +33,7 @@ public class _0016_MarkSelectionWithSWT_COLOR_LIST___Colors {
 		body1X.setDefaultCellWidth(50);
 
 		final Zone<Integer, Integer> body = matrix.getBody();
-		Style style = body.getPainter(Painter.NAME_CELLS).getStyle();
+		Style style = body.getPainter(Painter.NAME_CELLS).style;
 		style.selectionBackground = display.getSystemColor(SWT.COLOR_LIST_SELECTION);
 		style.selectionForeground = display.getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT);
 		body.setSelected(1, 2, 1, 2, true);

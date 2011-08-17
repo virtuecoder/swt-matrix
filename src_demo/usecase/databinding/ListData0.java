@@ -32,7 +32,7 @@ public class ListData0<T> {
         @Override public void setupSpatial(Integer indexX, Integer indexY){
           Column<?> column = columns.get(indexX);
           T item = list.get(indexY);
-          getStyle().textAlignX = column.align;
+          style.textAlignX = column.align;
           text = column.getValue(item).toString(); 
         }
     });
@@ -41,7 +41,7 @@ public class ListData0<T> {
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override public void setupSpatial(Integer indexX, Integer indexY){
           Column<?> column = columns.get(indexX);
-          getStyle().textAlignX = column.align;
+          style.textAlignX = column.align;
           text = column.name; 
         }
       });

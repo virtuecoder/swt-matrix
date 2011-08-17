@@ -163,10 +163,10 @@ public class CellExtent<X extends Number, Y extends Number> {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((endX == null) ? 0 : endX.hashCode());
-    result = prime * result + ((endY == null) ? 0 : endY.hashCode());
-    result = prime * result + ((startX == null) ? 0 : startX.hashCode());
-    result = prime * result + ((startY == null) ? 0 : startY.hashCode());
+    result = prime * result + (endX == null ? 0 : endX.hashCode());
+    result = prime * result + (endY == null ? 0 : endY.hashCode());
+    result = prime * result + (startX == null ? 0 : startX.hashCode());
+    result = prime * result + (startY == null ? 0 : startY.hashCode());
     return result;
   }
 
@@ -190,7 +190,7 @@ public class CellExtent<X extends Number, Y extends Number> {
   public String toString() {
     return "[" + startX + "-" + endX + ", " + startY + "-" + endY + "]";
   }
-  
+
   
   
 }

@@ -1051,7 +1051,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         if (d instanceof DropTargetEvent) {
           DropTargetEvent event = (DropTargetEvent) d;
           x3 = matrix.toControl(event.x, event.y).x;
-          item = matrix.axisX.getItemByDistance(x3);
+          item = matrix.axisX.getItemByViewportDistance(x3);
         } 
         else {
           x3 = mouseMoveEvent.x;
@@ -1107,7 +1107,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         if (d instanceof DropTargetEvent) {
           DropTargetEvent event = (DropTargetEvent) d;
           y3 = matrix.toControl(event.x, event.y).y;
-          item = matrix.axisY.getItemByDistance(y3);
+          item = matrix.axisY.getItemByViewportDistance(y3);
         } 
         else {
           y3 = mouseMoveEvent.y;

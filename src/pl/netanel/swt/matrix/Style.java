@@ -2,6 +2,7 @@ package pl.netanel.swt.matrix;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
 
 import pl.netanel.swt.matrix.Painter.TextClipMethod;
@@ -73,6 +74,11 @@ public class Style {
 	public int imageMarginY;
 	
 	/**
+	 * Font for the text.
+	 */
+	public Font font;
+	
+	/**
    * Word wrapping for text in cells. 
    */
   public boolean hasWordWraping;
@@ -126,7 +132,7 @@ public class Style {
     Style style = new Style();
     
     style.foreground = Resources.getColor(SWT.COLOR_WIDGET_FOREGROUND);
-    style.background = Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND);
+//    style.background = Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND);
 
     // style.selectionForeground = Resources.getColor(SWT.COLOR_LIST_SELECTION_TEXT);
     style.selectionForeground = style.foreground;

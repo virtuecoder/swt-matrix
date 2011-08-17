@@ -34,6 +34,7 @@ API changes:
 - Added Painter.NAME_FREEZE_HEAD_LINE_X, Painter.NAME_FREEZE_HEAD_LINE_Y
 - Added Painter.NAME_FREEZE_TAIL_LINE_X, Painter.NAME_FREEZE_TAIL_LINE_Y
 - Added Matrix(Composite, int, Class, Class)
+- Added Zone.contains(CellExtent, Number, Number)
 - Deleted Section.getHiddenCount(Number, Number)
 - Deleted Zone.setDefaultForeground(Color); it was a duplicate of Painter property
 - Deleted Zone.setDefaultBackground(Color); it was a duplicate of Painter property
@@ -57,6 +58,7 @@ API changes:
 - Renamed Zone.getCore() to Zone.getUnchecked()
 - Renamed Axis.getViewportItemCount() to Axis.getVisibleItemCount()
 - Renamed Axis.getViewportPosition() to Axis.getVisiblePosition()
+- Renamed Axis.getItemByPosition() to Axis.getItemByVisiblePosition()
 - Renamed Axis.freezeHead(int) to Axis.setFreezeHead(int)
 - Renamed Axis.freezeTail(int) to Axis.setFreezeTail(int)
 - Renamed Matrix.getTopLeft() to Matrix.getHeaderXY(); to bo more consistent with X-Y notation
@@ -65,6 +67,8 @@ API changes:
 
 Bug fixes:
 - Default column headers numbering was incorrect
+- Painting of embedded controls could throw SWT Exception "Graphic is disposed"
+- Embedded controls where not always painted when dragged.
 
 -------------------------------------------------------------------------------
 Version 0.4.1

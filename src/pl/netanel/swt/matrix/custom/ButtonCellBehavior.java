@@ -67,8 +67,8 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
     switch (e.type) {
     
     case SWT.MouseDown:
-      pushedX = zone.getMatrix().getAxisX().getItemByDistance(e.x);
-      pushedY = zone.getMatrix().getAxisY().getItemByDistance(e.y);
+      pushedX = zone.getMatrix().getAxisX().getItemByViewportDistance(e.x);
+      pushedY = zone.getMatrix().getAxisY().getItemByViewportDistance(e.y);
       break;
       
     case SWT.MouseUp:
@@ -88,11 +88,12 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
   
   @Override
   public void setup(X indexX, Y indexY) {
+    super.setup(indexX, indexY);
     isPushed = isPushed(indexX, indexY); 
   };
   
   @Override public void paint(int x, int y, int width, int height) {
-    if (isPushed) {
+    if (isPushed || isSelected) {
       paintPushed(x, y, width, height);
     } else {
       paintIdle(x, y, width, height);

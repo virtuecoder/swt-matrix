@@ -38,7 +38,7 @@ public class _0017_CellBackgroundCalculated {
 		  new Painter<Integer, Integer>(Painter.NAME_CELLS) {
 		    @Override
         public void setup(Integer indexX, Integer indexY) {
-		      getStyle().background = indexY.intValue() % 2 + indexX.intValue() % 2 == 1 ? color : null;
+		      style.background = indexY.intValue() % 2 + indexX.intValue() % 2 == 1 ? color : null;
 		    }
 		  }
 	  );

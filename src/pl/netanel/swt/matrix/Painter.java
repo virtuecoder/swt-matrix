@@ -92,6 +92,11 @@ public class Painter<X extends Number, Y extends Number> {
    */
   public static final String NAME_LINES_Y = "lines y";
   /**
+   * Default name of a painter belonging to a zone and responsible to paint its
+   * background.
+   */
+  public static final String NAME_BACKGORUND = "background";
+  /**
    * Default name of a painter belonging to a matrix and responsible to paint the
    * area not frozen.
    */
@@ -184,6 +189,12 @@ public class Painter<X extends Number, Y extends Number> {
 	 */
 	protected GC gc;
 
+	/**
+	 * Expresses the selected state of the cell to paint set by default
+	 * by the {@link #setup(Number, Number)} method.
+	 */
+	protected boolean isSelected = false;
+	
 	int scope;
 	final String name;
 	private boolean enabled = true;
@@ -206,15 +217,17 @@ public class Painter<X extends Number, Y extends Number> {
 	 */
 	public boolean selectionHighlight = true;
 
-	Style style;
+	/**
+	 * Painter style properties.
+	 */
+	public Style style;
 	
-	boolean isSelected = false;
 	
 	Matrix<X, Y> matrix;
 	ZoneCore<X, Y> zone;
 	Rectangle zoneBounds;
 
-	private Color lastForeground, lastBackground, defaultBackground;  
+	private Color lastForeground, lastBackground, defaultBackground, defaultForeground;  
 
 	private Font lastFont;
 	private int[] extentCache;
@@ -309,16 +322,22 @@ public class Painter<X extends Number, Y extends Number> {
 		if (style.foreground == null) {
 		  style.foreground = Resources.getColor(SWT.COLOR_LIST_FOREGROUND);
 		}
-		lastForeground = style.foreground;
+		defaultForeground = style.foreground;
+		if (defaultForeground == null) {
+		  defaultForeground = matrix.getForeground();
+		}
+		lastForeground = defaultForeground;
 		lastBackground = defaultBackground = style.background;
 		
 		gc.setForeground(lastForeground);
 		if (style.background != null) {
 			gc.setBackground(lastBackground);
-			gc.fillRectangle(zone.bounds);
+//			gc.fillRectangle(zone.bounds);
 		}
 		
-		extentCache = FontWidthCache.get(gc, gc.getFont());
+		Font font = style.font == null ? matrix.getDisplay().getSystemFont() : style.font;
+    gc.setFont(font);
+		extentCache = FontWidthCache.get(gc, font);
 		extent = new Point(-1, gc.stringExtent("ty").y);
 		clipping = gc.getClipping();
 		return true; 
@@ -337,16 +356,6 @@ public class Painter<X extends Number, Y extends Number> {
 	/**
 	 * Draws on the canvas within the given boundaries according to the given indexes. 
 	 * <p>
-	 * The types of the <code>indexX</code>, <code>indexY</code> arguments are not checked 
-	 * in the runtime for performance reasons. Thus the use of generics is recommended to
-	 * check against wrong type in compile time; 
-	 * <p>
-	 * <code>indexX</code> is always null when the receiver's scope is one of the following:<ul>
-	 *        <li>{@link #SCOPE_CELLS_ITEM_X}, <li>{@link #SCOPE_LINES_Y}, <li>{@link #SCOPE_ENTIRE}</ul>
-	 * <code>indexY</code> is always null when the receiver's scope is one of the following:<ul>
-	 *        <li>{@link #SCOPE_CELLS_ITEM_Y}, <li>{@link #SCOPE_LINES_X}, <li>{@link #SCOPE_ENTIRE}</ul>
-	 * @param indexX index of a section item in the horizontal axis 
-	 * @param indexY index of a section item in the vertical axis. 
 	 * @param x the x coordinate of the painting boundaries
 	 * @param y the y coordinate of the painting boundaries
 	 * @param width the width of the painting boundaries
@@ -370,8 +379,14 @@ public class Painter<X extends Number, Y extends Number> {
 		  background2 = style.background;
 		}
 		
+		if (foreground2 == null) {
+		  if (defaultForeground == null) {
+		    defaultForeground = matrix.getForeground();
+		  }
+		  foreground2 = defaultForeground;
+		}
 		// Only set color if there is a change
-		if (foreground2 != null && !foreground2.equals(lastForeground)) {
+		if (!foreground2.equals(lastForeground)) {
 			gc.setForeground(lastForeground = foreground2);
 		}
 		if (background2 != null) {
@@ -414,8 +429,21 @@ public class Painter<X extends Number, Y extends Number> {
 		
 		
 		if (text != null) {
+		  boolean fontChange = style.font != lastFont;
+		  if (fontChange) {
+		    Font font = style.font == null ? matrix.getDisplay().getSystemFont() : style.font;
+        gc.setFont(font);
+		    extentCache = FontWidthCache.get(gc, font);
+		    lastFont = font;
+		  }
 		  
 		  if (!style.hasWordWraping) {
+		    // Compute extent only when font changes or text horizontal align is center or right  
+		    if (fontChange || 
+          Arrays.contains(EXTENT_ALIGN, style.textAlignX)) {
+          extent = gc.stringExtent(text);
+        }
+		    
 		    if (style.textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
 		      text = FontWidthCache.shortenTextMiddle(
 		        text, width - style.textMarginX * 2, extent, extentCache);      
@@ -424,11 +452,6 @@ public class Painter<X extends Number, Y extends Number> {
 		      text = FontWidthCache.shortenTextEnd(
 		        text, width - style.textMarginX * 2, extent, extentCache);     
 		    } 
-		    // Compute extent only when font changes or text horizontal align is center or right  
-		    else if (lastFont != null && lastFont != gc.getFont() || 
-		      Arrays.contains(EXTENT_ALIGN, style.textAlignX)) {
-		      extent = gc.stringExtent(text);
-		    }
 		  }
 		  
 		  switch (style.textAlignX) {
@@ -513,14 +536,6 @@ public class Painter<X extends Number, Y extends Number> {
    */
 	public void setupSpatial(X indexX, Y indexY) {}
 	
-	/**
-	 * Returns the style of this painter.
-	 * @return the style of this painter
-	 */
-  public Style getStyle() {
-    return style;
-  }
-
   /**
    * Set the style of the painter.
    * @param style to set
@@ -734,7 +749,7 @@ public class Painter<X extends Number, Y extends Number> {
 //    System.out.println("getAntialias() " +  gc.getAntialias());
 //    System.out.println("getFillRule() " +  gc.getFillRule());
 //    System.out.println("getInterpolation() " +  gc.getInterpolation());
-//    System.out.println("getStyle() " +  gc.getStyle());
+//    System.out.println("style " +  gc.style);
 //    System.out.println("getTextAntialias() " +  gc.getTextAntialias());
   }
 }

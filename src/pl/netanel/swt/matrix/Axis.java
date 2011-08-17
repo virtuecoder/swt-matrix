@@ -173,7 +173,7 @@ public class Axis<N extends Number>  {
 	 * Returns number of items visible in the viewport. Including partially visible items.
 	 * @return number of items visible in the viewport
 	 */
-	public int getVisibleItemCount() {
+	public int getViewportItemCount() {
 		layout.computeIfRequired();
 		return layout.head.count + layout.tail.count + 
 			layout.main.cells.size(); // - layout.trim;
@@ -181,8 +181,8 @@ public class Axis<N extends Number>  {
 	
 	
 	/**
-   * Returns the position of the given item in the viewport or -1
-   * if the viewport does not display the item.
+   * Returns the position of the given item in the sequence of items 
+   * visible in the viewport or -1 if the viewport does not display the item.
    * 
    * @param item the item to get position for
    * @return the position of the given item in the viewport
@@ -191,39 +191,62 @@ public class Axis<N extends Number>  {
    * @throws IndexOutOfBoundsException if item's index is out 
    * 		of 0 ... {@link SectionCore#getCount()}-1 bounds
    */
-  public int getVisiblePosition(AxisItem<N> item) {
-  	Preconditions.checkNotNullWithName(item, "item");
-  	SectionCore<N> section = item.section;
-  	section = checkSection(section, "item section");
-  	section.checkCellIndex(item.getIndex(), "item index");
-  	
+  public int getViewportPosition(AxisItem<N> item) {
+  	checkItem(item, "item");
   	layout.computeIfRequired();
   	return layout.indexOf(item);
   }
 
   /**
-	 * Returns item visible at the specified position in the viewport or <code>null</code>
+	 * Returns the item visible at the specified position in the viewport or <code>null</code>
 	 * if the position is outside of the viewport bounds.
 	 * 
 	 * @param position the position the get the item for
-	 * @return item visible at the specified position in the viewport
+	 * @return the item visible at the specified position in the viewport
 	 */
-	public AxisItem<N> getItemByPosition(int position) {
+	public AxisItem<N> getItemByViewportPosition(int position) {
 		AxisItem<N> item = layout.getIndexAt(position);
 		return item == null ? null : item;
 	}
 	
-	/**
-	 * Returns item visible at the specified distance from the beginning of viewport area 
-	 * or <code>null</code> if the distance is outside of the viewport bounds.
-	 * 
-	 * @param position the position the get the item for
-	 * @return the position of the given item in the viewport
-	 */
-	public AxisItem<N> getItemByDistance(int distance) {
+  /**
+   * Returns the item visible at the specified distance from the beginning of
+   * viewport area or <code>null</code> if the distance is outside of the
+   * viewport bounds.
+   * 
+   * @param position the position the get the item for
+   * @return the item visible at the specified distance
+   */
+	public AxisItem<N> getItemByViewportDistance(int distance) {
 		AxisItem<N> item = layout.getItemByDistance(distance);
 		return item == null ? null : item;
 	}
+	
+	/**
+	 * Returns the item visible at the specified offset from the item specified 
+	 * by the given section and index or <code>null</code> if the such an item 
+	 * is outside of the viewport bounds.
+	 * <p>
+	 * If the <code>offset</code> is positive the item to returned will be computed
+	 * in the forward direction. Otherwise item in the backward direction will 
+	 * be returned. 
+   * 
+   * @param item the item to set the focus for
+   * @param offset number of items to move away from the referenced item 
+   * @throws IllegalArgumentException if item is <code>null</code> or item's
+   *           section does not belong to this axis.
+   * @throws IndexOutOfBoundsException if item's index is out of 0 ...
+   *           {@link SectionCore#getCount()}-1 bounds
+   */
+  public AxisItem<N> getItemByVisibleOffset(AxisItem<N> item, int offset) {
+    checkItem(item, "item");
+    AxisItem<N> nextItem = layout.nextItem(item, 
+      math.create(java.lang.Math.abs(offset)), 
+      offset > 0 ? layout.forward : layout.backward);
+    
+    return layout.contains(nextItem) ? nextItem : null;
+  }
+
 	
 	/**
 	 * Returns the cell bound of the specified item in the viewport or <code>null</code>
@@ -253,17 +276,20 @@ public class Axis<N extends Number>  {
 		return bound == null ? null : new int[] {bound.distance, bound.width};
 	}
 	
+	
+	
+	
 	/*------------------------------------------------------------------------
 	 * Navigation 
 	 */
 
 	/**
-   * Compares section positions on this axis and returns value greater then 0 if
-   * section1 is behind section 2, value lower then zero if section1 is before
+   * Compares positions of sections on this axis and returns value greater then 0 if
+   * section1 is behind section2, value lower then zero if section1 is before
    * section2 and 0 if sections are the same.
    * 
    * @param section1 a section to compare
-   * @param section2 another section section to compare
+   * @param section2 another section to compare
    * @return comparison result
    * 
    * @throws IllegalArgumentException if section1 or section2 is <code>null</code> or 
@@ -275,6 +301,20 @@ public class Axis<N extends Number>  {
       checkSection(section2, "section 2").index;
   }
 
+  /**
+   * Compares positions of items on this axis and returns value greater then 0 if
+   * item1 is behind item2, value lower then zero if item1 is before
+   * item2 and 0 if items are the same.
+   * 
+   * @param item1 one of the items to compare
+   * @param item2 another item to compare
+   * @return comparison result
+   * 
+   * @throws IllegalArgumentException if item1 or item2 is <code>null</code> or item's
+   *           section does not belong to this axis.
+   * @throws IndexOutOfBoundsException if index of item1 or item2 is out of 0 ...
+   *           {@link SectionCore#getCount()}-1 bounds
+   */
   public int compare(AxisItem<N> item1, AxisItem<N> item2) {
     checkItem(item1, "item1");
     checkItem(item2, "item2");
@@ -326,48 +366,41 @@ public class Axis<N extends Number>  {
 	
 	
 	
-	/**
-	 * Sets the focus marker to the item with the given index in the model of the given section.
-	 * <p>
-	 * If section has the focus item disabled (see {@link SectionCore#setFocusItemEnabled(boolean)}) 
-	 * then this method does nothing.
-	 *   
-	 * @param section section in which to set the focus
-	 * @param index index in the section at which to set the focus 
-	 * @throws IllegalArgumentException if the section is <code>null</code> or 
-	 * 		does not belong to this axis.
-	 * @throws IndexOutOfBoundsException if index is out 
-	 * 		of 0 ... {@link SectionCore#getCount()}-1 bounds
-	 */
-	public void setFocusItem(Section<N> section, N index) {
-	  SectionCore<N> section2 = SectionCore.from(section);
-		section2 = checkSection(section2, "section");
-		section2.checkCellIndex(index, "index");
-		
-		layout.setFocusItem(AxisItem.createInternal(section2, index));
+	  /**
+   * Sets the focus marker to the given item.
+   * <p>
+   * If section has the focus item disabled (see
+   * {@link SectionCore#setFocusItemEnabled(boolean)}) then this method does
+   * nothing.
+   * 
+   * @param item the item to set the focus for
+   * @throws IllegalArgumentException if item is <code>null</code> or item's
+   *           section does not belong to this axis.
+   * @throws IndexOutOfBoundsException if item's index is out of 0 ...
+   *           {@link SectionCore#getCount()}-1 bounds
+   */
+	public void setFocusItem(AxisItem<N> item) {
+	  checkItem(item, "item");
+		layout.setFocusItem(item);
 		if (matrix != null) matrix.redraw();
 	}
 	
 	/**
-	 * Scrolls to the item with the given index in the model of the given section.
-	 * It makes it visible in the viewport.
+	 * Scrolls to the given making it visible in the viewport.
 	 * <p>
 	 * It works only when the matrix size has been set, which usually happens 
 	 * when the shell to which the matrix belongs gets open.
 	 *  
-	 * @param section section in which to set the focus
-	 * @param index index in the section at which to set the focus 
-	 * @throws IllegalArgumentException if the section is <code>null</code> or 
-	 * 		does not belong to this axis.
-	 * @throws IndexOutOfBoundsException if index is out 
-	 * 		of 0 ... {@link SectionCore#getCount()}-1 bounds
+   * @param item the item to show
+   * @throws IllegalArgumentException if item is <code>null</code> or item's
+   *           section does not belong to this axis.
+   * @throws IndexOutOfBoundsException if item's index is out of 0 ...
+   *           {@link SectionCore#getCount()}-1 bounds
 	 */
-	public void showItem(Section<N> section, N index) {
-	  SectionCore<N> section2 = SectionCore.from(section);
-	  section2 = checkSection(section2, "section");
-	  section2.checkCellIndex(index, "index");
+	public void showItem(AxisItem<N> item) {
+	  checkItem(item, "item");
 	  
-	  if (layout.show(AxisItem.createInternal(section2, index))) {
+	  if (layout.show(item)) {
 	    scroll();
 	    if (matrix != null) matrix.redraw();
 	  }
@@ -838,4 +871,6 @@ public class Axis<N extends Number>  {
 	  }
 	  return null;
 	}
+
+  
 }

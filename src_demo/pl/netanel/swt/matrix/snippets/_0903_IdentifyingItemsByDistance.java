@@ -30,8 +30,8 @@ public class _0903_IdentifyingItemsByDistance {
 		
 		matrix.addMouseMoveListener(new MouseMoveListener() {
 			public void mouseMove(MouseEvent e) {
-			  AxisItem<Integer> itemX = matrix.getAxisX().getItemByDistance(e.x);
-				AxisItem<Integer> itemY = matrix.getAxisY().getItemByDistance(e.y);
+			  AxisItem<Integer> itemX = matrix.getAxisX().getItemByViewportDistance(e.x);
+				AxisItem<Integer> itemY = matrix.getAxisY().getItemByViewportDistance(e.y);
 				System.out.println(itemX.toString() + ":" +  itemY.toString());
 			}
 		});

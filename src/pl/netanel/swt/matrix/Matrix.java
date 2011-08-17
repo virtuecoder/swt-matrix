@@ -347,7 +347,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
         @Override
         public void paint(int x, int y, int width, int height) {
           if (axisX.getFreezeHead() > 0) {
-            int[] bound = axisX.getLineBound(axisX.getItemByPosition(axisX.getFreezeHead()));
+            int[] bound = axisX.getLineBound(axisX.getItemByViewportPosition(axisX.getFreezeHead()));
             gc.fillRectangle(bound[0], y, bound[1], height);
           } 
 //          gc.setBackground(background);
@@ -360,7 +360,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
       @Override
       public void paint(int x, int y, int width, int height) {
         if (axisY.getFreezeHead() > 0) {
-          int[] bound = axisY.getLineBound(axisY.getItemByPosition(axisY.getFreezeHead()));
+          int[] bound = axisY.getLineBound(axisY.getItemByViewportPosition(axisY.getFreezeHead()));
           gc.fillRectangle(x, bound[0], width, bound[1]);
         } 
       }
@@ -371,9 +371,9 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
     frozenLinePainter = new LinePainter<X, Y>(Painter.NAME_FREEZE_TAIL_LINE_X) {
         @Override
         public void paint(int x, int y, int width, int height) {
-          int viewportItemCount = axisX.getVisibleItemCount();
+          int viewportItemCount = axisX.getViewportItemCount();
           if (axisX.getFreezeTail() > 0 ) {
-            int[] bound = axisX.getLineBound(axisX.getItemByPosition(viewportItemCount - axisX.getFreezeTail()));
+            int[] bound = axisX.getLineBound(axisX.getItemByViewportPosition(viewportItemCount - axisX.getFreezeTail()));
             gc.fillRectangle(bound[0], y, bound[1], height);
           }
         }
@@ -384,9 +384,9 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
     frozenLinePainter = new LinePainter<X, Y>(Painter.NAME_FREEZE_TAIL_LINE_Y) {
         @Override
         public void paint(int x, int y, int width, int height) {
-          int viewportItemCount = axisY.getVisibleItemCount();
+          int viewportItemCount = axisY.getViewportItemCount();
           if (axisY.getFreezeTail() > 0 ) {
-            int[] bound = axisY.getLineBound(axisY.getItemByPosition(viewportItemCount - axisY.getFreezeTail()));
+            int[] bound = axisY.getLineBound(axisY.getItemByViewportPosition(viewportItemCount - axisY.getFreezeTail()));
             gc.fillRectangle(x, bound[0], width, bound[1]);
           }
         }

@@ -8,7 +8,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TypedListener;
@@ -124,6 +123,12 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	  Painter<X, Y> painter = getPainter(Painter.NAME_CELLS);
 	  if (painter != null) {
 	    painter.setStyle(Style.createHeaderCellStyle());
+	  }
+	  painter = getPainter(Painter.NAME_BACKGORUND);
+	  if (painter != null) {
+	    Style style = new Style();
+	    style.background = Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND);
+	    painter.setStyle(style);
 	  }
     painter = getPainter(Painter.NAME_LINES_X);
     if (painter != null) {
@@ -378,8 +383,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		matrix.addListener(eventType, new Listener() {
 			
 			@Override public void handleEvent(Event e) {
-			  AxisItem<X> itemX = matrix.getAxisX().getItemByDistance(e.x);
-				AxisItem<Y> itemY = matrix.getAxisY().getItemByDistance(e.y);
+			  AxisItem<X> itemX = matrix.getAxisX().getItemByViewportDistance(e.x);
+				AxisItem<Y> itemY = matrix.getAxisY().getItemByViewportDistance(e.y);
 				if (itemX != null && itemY != null && ZoneCore.this == 
 						matrix.model.getZone(itemX.section, itemY.section))
 				{
@@ -394,7 +399,10 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	 * Painting 
 	 */
 
-	void paint(final GC gc, final Layout<X> layoutX, final Layout<Y> layoutY, final Frozen dockX, final Frozen dockY) {
+	void paint(final GC gc, 
+	  final Layout<X> layoutX, final Layout<Y> layoutY, 
+	  final Frozen frozenX, final Frozen frozenY) 
+	{
 		Painter<X, Y> embedded = null;
 		for (Painter<X, Y> p: painters) {
 			if (p instanceof EmbeddedControlsPainter) {
@@ -407,8 +415,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 			switch (p.scope) {
 			
 			case Painter.SCOPE_CELLS_X:
-			  LayoutSequence<X> seqX = layoutX.cellSequence(dockX, sectionX);
-				LayoutSequence<Y> seqY = layoutY.cellSequence(dockY, sectionY);
+			  LayoutSequence<X> seqX = layoutX.cellSequence(frozenX, sectionX);
+				LayoutSequence<Y> seqY = layoutY.cellSequence(frozenY, sectionY);
 				for (seqY.init(); seqY.next();) {
 					distance = seqY.getDistance();
 					width = seqY.getWidth();
@@ -421,8 +429,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				break;
 				
 			case Painter.SCOPE_CELLS_Y:
-				seqY = layoutY.cellSequence(dockY, sectionY);
-				seqX = layoutX.cellSequence(dockX, sectionX);
+				seqY = layoutY.cellSequence(frozenY, sectionY);
+				seqX = layoutX.cellSequence(frozenX, sectionX);
 				for (seqX.init(); seqX.next();) {
 					distance = seqX.getDistance();
 					width = seqX.getWidth();
@@ -435,7 +443,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				break;
 			
 			case Painter.SCOPE_CELLS_ITEM_Y:
-				seqY = layoutY.cellSequence(dockY, sectionY);
+				seqY = layoutY.cellSequence(frozenY, sectionY);
 				distance = bounds.x;
 				width = bounds.width;
 				for (seqY.init(); seqY.next();) {
@@ -445,7 +453,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				break;
 				
 			case Painter.SCOPE_CELLS_ITEM_X:
-				seqX = layoutX.cellSequence(dockX, sectionX);
+				seqX = layoutX.cellSequence(frozenX, sectionX);
 				distance = bounds.y;
 				width = bounds.height;
 				for (seqX.init(); seqX.next();) {
@@ -455,7 +463,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				break;
 				
 			case Painter.SCOPE_LINES_X:
-				seqY = layoutY.lineSequence(dockY, sectionY);
+				seqY = layoutY.lineSequence(frozenY, sectionY);
 				distance = bounds.x;
 				width = bounds.width;
 				for (seqY.init(); seqY.next();) {
@@ -465,7 +473,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				break;
 			
 			case Painter.SCOPE_LINES_Y:
-				seqX = layoutX.lineSequence(dockX, sectionX);
+				seqX = layoutX.lineSequence(frozenX, sectionX);
 				distance = bounds.y;
 				width = bounds.height;
 				for (seqX.init(); seqX.next();) {
@@ -474,19 +482,30 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				}
 				break;
 				
+			case Painter.SCOPE_ENTIRE:
+			  seqX = layoutX.lineSequence(frozenX, sectionX);
+			  for (seqX.init(); seqX.next();) {
+			    p.setup(sectionX.math.ZERO_VALUE(), sectionY.math.ZERO_VALUE()); 
+			    p.paint(bounds.x, bounds.y, bounds.width, bounds.height);
+			  }
+			  break;
 			}
 			p.clean();
 		}
 		
 		if (embedded != null) {
 			final Painter<X, Y> p = embedded;
-			Display display = matrix.getDisplay();
-			display.asyncExec(new Runnable() {
-				@Override public void run() {
+//			Display display = matrix.getDisplay();
+//			display.asyncExec(new Runnable() {
+//				@Override public void run() {
+//				  GC gc2 = gc;
+//				  if (gc2.isDisposed()) {
+//				    gc2 = new GC(matrix.getDisplay());
+//				  }
 					if (!p.isEnabled() || !p.init(gc)) return;
 					
-					LayoutSequence<Y> seqY = layoutY.cellSequence(dockY, sectionY);
-					LayoutSequence<X> seqX = layoutX.cellSequence(dockX, sectionX);
+					LayoutSequence<Y> seqY = layoutY.cellSequence(frozenY, sectionY);
+					LayoutSequence<X> seqX = layoutX.cellSequence(frozenX, sectionX);
 					for (seqY.init(); seqY.next();) {
 						int distance = seqY.getDistance();
 						int width = seqY.getWidth();
@@ -497,8 +516,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 						}
 					}
 					p.clean();
-				}
-			});
+//				}
+//			});
 		}
 	}
 	
@@ -556,7 +575,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	}
 
 	void replaceOrAddFirst(Painter<X, Y> painter) {
-    int indexOf = painters.indexOfPainter(Painter.NAME_CELLS);
+    int indexOf = painters.indexOfPainter(painter.name);
     if (indexOf != -1) {
       painters.set(indexOf, painter);
     } else {
@@ -607,6 +626,13 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
   public static <X2 extends Number, Y2 extends Number> ZoneCore<X2, Y2> from(Zone<X2, Y2> zone) {
     return (ZoneCore<X2, Y2>) zone.getUnchecked();
+  }
+
+
+  @Override
+  public boolean contains(CellExtent<X, Y> cellExtent, X indexX, Y indexY) {
+    return sectionX.math.contains(cellExtent.startX, cellExtent.getEndX(), indexX) &&
+      sectionY.math.contains(cellExtent.startY, cellExtent.getEndY(), indexY);
   }
 
 

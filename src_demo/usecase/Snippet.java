@@ -10,15 +10,14 @@ import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 
 public class Snippet {
-	@SuppressWarnings({ "unchecked", "rawtypes" })
   public static void main(String[] args) {
 		Shell shell = new Shell();
 		shell.setLayout(new FillLayout());
 		
-		Axis axisX = new Axis<Integer>(Integer.class, 2, 0, 1);
-		Axis axisY = new Axis<Long>(Long.class, 2, 0, 1);
+		Axis<Integer> axisX = new Axis<Integer>(Integer.class, 2, 0, 1);
+		Axis<Long> axisY = new Axis<Long>(Long.class, 2, 0, 1);
 		
-		new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, axisX, axisY);
+		new Matrix<Integer, Long>(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, axisX, axisY);
 
 		axisX.getBody().setCount(100);
 		axisX.getBody().setDefaultCellWidth(50);
@@ -28,7 +27,7 @@ public class Snippet {
 		axisY.getBody().setCount(1000000000000000L);
 		axisY.getHeader().setVisible(true);
 		
-		AxisItem.create(axisY.getBody(), 5);
+		AxisItem.create(axisY.getBody(), 5L);
 		
 		
 		shell.setBounds(200, 20, 1024, 568);

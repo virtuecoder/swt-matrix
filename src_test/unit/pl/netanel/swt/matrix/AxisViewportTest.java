@@ -43,7 +43,7 @@ import org.junit.runners.JUnit4;
 	public void getViewportItemCount_0() throws Exception {
 		Axis axis = new Axis();
 		axis.layout.setViewportSize(1000);
-		assertEquals(0, axis.getVisibleItemCount());
+		assertEquals(0, axis.getViewportItemCount());
 	}
 	
 	@Test
@@ -51,7 +51,7 @@ import org.junit.runners.JUnit4;
 		Axis axis = new Axis();
 		axis.layout.setViewportSize(1000);
 		axis.getBody().setCount(1);
-		assertEquals(1, axis.getVisibleItemCount());
+		assertEquals(1, axis.getViewportItemCount());
 	}
 	
 	@Test
@@ -62,7 +62,7 @@ import org.junit.runners.JUnit4;
     layout.setViewportSize(100);
 		layout.compute();
 		assertTrue(layout.isTrimmed);
-		assertEquals(6, axis.getVisibleItemCount());
+		assertEquals(6, axis.getViewportItemCount());
 	}
 	
 	@Test
@@ -74,7 +74,7 @@ import org.junit.runners.JUnit4;
     layout.setViewportSize(100);
     layout.compute();
 		assertTrue(layout.isTrimmed);
-		assertEquals(6, axis.getVisibleItemCount());
+		assertEquals(6, axis.getViewportItemCount());
 	}
 	
 	
@@ -86,6 +86,6 @@ import org.junit.runners.JUnit4;
 		Layout layout = axis.layout;
     layout.setViewportSize(100);
 		layout.compute();
-		assertEquals(2, axis.getVisiblePosition(AxisItem.create(axis.getBody(), 2)));
+		assertEquals(2, axis.getViewportPosition(AxisItem.create(axis.getBody(), 2)));
 	}
 }

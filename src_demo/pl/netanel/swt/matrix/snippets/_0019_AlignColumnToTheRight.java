@@ -30,7 +30,7 @@ public class _0019_AlignColumnToTheRight {
 			new Painter<Integer, Integer>(Painter.NAME_CELLS) {
 				@Override
 				public void setupSpatial(Integer indexX, Integer indexY){
-					getStyle().textAlignX = indexX.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
+					style.textAlignX = indexX.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
 					text = indexX.toString();
 				}
 			});
@@ -39,7 +39,7 @@ public class _0019_AlignColumnToTheRight {
 			new Painter<Integer, Integer>(Painter.NAME_CELLS) {
 				@Override
 				public void setupSpatial(Integer indexX, Integer indexY){
-				  getStyle().textAlignX = indexX.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
+				  style.textAlignX = indexX.intValue() == 2 ? SWT.RIGHT : SWT.LEFT;
 					text = indexY.toString() + ", " + indexX;
 				}
 		});

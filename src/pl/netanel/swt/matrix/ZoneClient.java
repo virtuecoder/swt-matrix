@@ -239,4 +239,10 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     }
   }
 
+  @Override
+  public boolean contains(CellExtent<X, Y> cellExtent, X indexX, Y indexY) {
+    return core.contains(cellExtent, indexX, indexY);
+  }
+
+  
 }

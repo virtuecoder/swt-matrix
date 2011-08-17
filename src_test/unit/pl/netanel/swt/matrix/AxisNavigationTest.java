@@ -100,7 +100,7 @@ import org.junit.runners.JUnit4;
 		assertEquals("1:0", layout.current.toString());
 		body.setHidden(0, true); layout.compute();
 		assertEquals("1:1", layout.current.toString());
-		axis.setFocusItem(body, 9); layout.compute();
+		axis.setFocusItem(AxisItem.create(body, 9)); layout.compute();
 		assertEquals("1:9", layout.current.toString());
 		body.setHidden(9, true); layout.compute();
 		assertEquals("1:8", layout.current.toString());

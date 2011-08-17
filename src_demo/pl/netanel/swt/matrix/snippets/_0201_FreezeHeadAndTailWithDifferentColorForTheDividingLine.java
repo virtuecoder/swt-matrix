@@ -46,8 +46,8 @@ public class _0201_FreezeHeadAndTailWithDifferentColorForTheDividingLine {
 		add.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				head.y = axisY.getVisiblePosition(axisY.getFocusItem());
-				head.x = axisX.getVisiblePosition(axisX.getFocusItem());
+				head.y = axisY.getViewportPosition(axisY.getFocusItem());
+				head.x = axisX.getViewportPosition(axisX.getFocusItem());
 				axisY.setFreezeHead(head.y); 
 				axisX.setFreezeHead(head.x);
 				matrix.refresh();
@@ -60,10 +60,10 @@ public class _0201_FreezeHeadAndTailWithDifferentColorForTheDividingLine {
 		remove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				tail.y = axisY.getVisibleItemCount() - 
-					axisY.getVisiblePosition(axisY.getFocusItem()) - 1;
-				tail.x = axisX.getVisibleItemCount() - 
-					axisX.getVisiblePosition(axisX.getFocusItem()) - 1;
+				tail.y = axisY.getViewportItemCount() - 
+					axisY.getViewportPosition(axisY.getFocusItem()) - 1;
+				tail.x = axisX.getViewportItemCount() - 
+					axisX.getViewportPosition(axisX.getFocusItem()) - 1;
 				axisY.setFreezeTail(tail.y);
 				axisX.setFreezeTail(tail.x);
 				matrix.refresh();

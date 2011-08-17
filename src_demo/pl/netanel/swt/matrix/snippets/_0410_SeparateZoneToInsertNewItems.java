@@ -15,11 +15,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
-import pl.netanel.swt.matrix.Style;
-import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
+import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.ZoneEditor;
 
 /**
@@ -95,7 +94,6 @@ public class _0410_SeparateZoneToInsertNewItems {
     Painter<Integer, Integer> insertHeaderPainter = 
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override public void setupSpatial(Integer indexX, Integer indexY){
-          Style style = getStyle();
           style.textAlignX = style.textAlignY = SWT.CENTER;
           text = "add:";
         }

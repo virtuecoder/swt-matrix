@@ -85,7 +85,7 @@ public class _0910_DragAndDropFiles {
 		    FileTransfer ft = FileTransfer.getInstance();
 		    if (ft.isSupportedType(event.currentDataType)) {
 		      Point p = matrix.toControl(event.x, event.y);
-		      AxisItem<Integer> item = axisY.getItemByDistance(p.y);
+		      AxisItem<Integer> item = axisY.getItemByViewportDistance(p.y);
 		      int position = 0;
 		      if (item != null) {
 		        int compare = axisY.compare(item.getSection(), axisY.getBody());

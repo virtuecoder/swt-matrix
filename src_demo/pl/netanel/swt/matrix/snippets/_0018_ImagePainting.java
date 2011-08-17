@@ -58,7 +58,7 @@ public class _0018_ImagePainting {
 	        text = indexY.toString() + ", " + indexX;
 	        Image[] row = images[indexY.intValue()];
 	        image = row == null ? null : row[indexX.intValue()];
-	        getStyle().imageAlignX = indexX.intValue() == 1 ? SWT.RIGHT : SWT.LEFT;
+	        style.imageAlignX = indexX.intValue() == 1 ? SWT.RIGHT : SWT.LEFT;
 	      }
   		});
 		

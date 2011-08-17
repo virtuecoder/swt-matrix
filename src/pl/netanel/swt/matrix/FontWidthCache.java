@@ -44,7 +44,7 @@ class FontWidthCache {
 		return extent;
 	}
 	
-	
+	// TODO unit test it!
 	public static String shortenTextMiddle(String s, int width, Point extent, int[] cache) {
 		if (s == null) return s;
 		
@@ -65,11 +65,14 @@ class FontWidthCache {
 			int last = len - 1;
 			while (pos1 > 0 && pos2 < last) {
 				if ((w = len1 + dot2 + len2) <= width) break;
-				else if ((pos1 <= 1 && (w = len1 + dot2) <= width)) { 
+				else if (pos1 <= 1 && (w = len1 + dot2) <= width) { 
 					pos2 = len; break; 
 				}
-				len1 -= cache[s.charAt(--pos1)];
-				len2 -= cache[s.charAt(++pos2)];
+				int w2 = cache[s.charAt(--pos1)];
+        len1 -= w2;
+				if (w - w2 > width) {
+				  len2 -= cache[s.charAt(++pos2)];
+				}
 			}
 			if (w <= width) {
 				s = s.substring(0, pos1) + ".." + s.substring(pos2, len);

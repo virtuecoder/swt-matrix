@@ -453,6 +453,6 @@ public interface Zone<X extends Number, Y extends Number> {
    */
   Matrix<X, Y> getMatrix();
 
-
+  boolean contains(CellExtent<X, Y> cellExtent, X indexX, Y indexY);
 
 }

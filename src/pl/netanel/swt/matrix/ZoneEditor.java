@@ -330,7 +330,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		
 //		Control control = embedded.getControl(indexY, indexX);
 		Object[] emulation = getCheckboxEmulation(indexX, indexY);
-		Control control = embedded.getControl(indexY, indexX);
+		Control control = embedded.getControl(indexX, indexY);
 		if (emulation != null || isCheckbox(control)) {			
 			boolean value = !Boolean.TRUE.equals(getModelValue(indexX, indexY));
 			setModelValue(indexX, indexY, value);
@@ -454,7 +454,16 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		return false;
 	}
 
-	
+	/**
+	 * Returns a control embedded in the cell with the given coordinates or null 
+	 * if the cell does not have an embedded control or the control is not visible. 
+   * @param indexX cell index on the horizontal axis
+   * @param indexY cell index on the vertical axis  
+	 * @return Returns a control embedded in the cell with the given coordinates 
+	 */
+	public Control getEmbeddedControl(X indexX, Y indexY) {
+	  return embedded.getControl(indexX, indexY);
+	}
 	
 	/*------------------------------------------------------------------------
 	 * Commands

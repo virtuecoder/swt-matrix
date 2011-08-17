@@ -93,7 +93,7 @@ public class _0005_SortingByColumns {
       };
 
     matrix.getHeaderX().replacePainter(columnHeaderPainter);
-    Style style = columnHeaderPainter.getStyle();
+    Style style = columnHeaderPainter.style;
     style.imageAlignX = SWT.RIGHT;
     style.imageAlignY = SWT.CENTER;
     style.imageMarginX = 5;
@@ -102,7 +102,7 @@ public class _0005_SortingByColumns {
     matrix.getHeaderX().addListener(SWT.MouseDown, new Listener() {
       @Override public void handleEvent(Event e) {
         // AxisItem<Y> item0 = matrix.getAxisY().getItemByDistance(e.y);
-        AxisItem<Integer> itemX = matrix.getAxisX().getItemByDistance(e.x);
+        AxisItem<Integer> itemX = matrix.getAxisX().getItemByViewportDistance(e.x);
         final int column = itemX.getIndex().intValue();
 
         int previousDirection = direction[column];

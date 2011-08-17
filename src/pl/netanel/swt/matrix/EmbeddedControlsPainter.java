@@ -36,8 +36,8 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 				Matrix<X, Y> matrix = getMatrix();
 				ZoneEditorData<X, Y> data = editor.getData(e.widget);
 				matrix.model.setSelected(false, true); 
-				matrix.axisY.setFocusItem(editor.zone.getSectionY(), data.indexY);
-				matrix.axisX.setFocusItem(editor.zone.getSectionX(), data.indexX);
+				matrix.axisY.setFocusItem(AxisItem.createInternal(editor.zone.sectionY, data.indexY));
+				matrix.axisX.setFocusItem(AxisItem.createInternal(editor.zone.sectionX, data.indexX));
 				matrix.redraw();
 			}
 		};
@@ -103,7 +103,7 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 		}
 	}
 	
-	public Control getControl(Y indexY, X indexX) {
+	public Control getControl(X indexX, Y indexY) {
 		HashMap<Number, Control> row = controls.get(indexY);
 		if (row == null) {
 			return null;
