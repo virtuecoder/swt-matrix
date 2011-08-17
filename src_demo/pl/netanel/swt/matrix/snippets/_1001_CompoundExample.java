@@ -1,4 +1,4 @@
-package screenshots;
+package pl.netanel.swt.matrix.snippets;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ import pl.netanel.swt.matrix.ZoneEditor;
 /**
  * Simplest matrix.
  */
-public class Snippet_1001 {
+public class _1001_CompoundExample {
   //Meta data
   static final String title = "Screenshot 1";
   static final String instructions = "";
@@ -74,7 +74,7 @@ public class Snippet_1001 {
   private final Color blueColor;
   private final Color redColor;
   
-	public Snippet_1001(Composite parent) {
+	public _1001_CompoundExample(Composite parent) {
     super();
     
     setData();
@@ -181,6 +181,7 @@ public class Snippet_1001 {
     
     bodyX.setCount(10);
     bodyY.setCount(new BigInteger("123456789012345678901234567890"));
+    bodyY.setOrder(indexYY[11], indexYY[9]);
     
     bodyX.setDefaultCellWidth(70);
     bodyX.setDefaultMoveable(true);
@@ -334,7 +335,8 @@ public class Snippet_1001 {
           super.paint(x, y, width, height);
         }
     });
-    
+  
+    // Vertical lines painter
     body.replacePainter(new Painter<Integer, BigInteger>(Painter.NAME_LINES_Y) {
       private boolean merge;
       private boolean dotted;
@@ -347,7 +349,7 @@ public class Snippet_1001 {
       public void setup(Integer indexX, BigInteger indexY) {
         super.setup(indexX, indexY);
         merge = indexX == 4;
-        AxisItem<Integer> nextItem = axisX.getItemByVisibleOffset(
+        AxisItem<Integer> nextItem = axisX.getItemByViewportOffset(
           AxisItem.create(bodyX, 2), 1);
         dotted = indexX == 2 || nextItem != null && indexX == nextItem.getIndex();
       }
@@ -365,7 +367,7 @@ public class Snippet_1001 {
         else if (dotted) {
           gc.setForeground(display.getSystemColor(SWT.COLOR_BLUE));
           gc.setLineDash(new int[] {5, 2});
-          gc.drawLine(x, y, x, y + height);
+          gc.drawLine(x, y, x, y + height - 1);
           gc.setLineDash(null);
         }
         else {
@@ -583,7 +585,7 @@ public class Snippet_1001 {
     shell.setText(title);
     shell.setLayout(new GridLayout(1, false));
   
-    Snippet_1001 app = new Snippet_1001(shell);
+    _1001_CompoundExample app = new _1001_CompoundExample(shell);
     
     shell.setBounds(400, 200, 700, 400);
     shell.open();

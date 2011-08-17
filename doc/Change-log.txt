@@ -25,9 +25,10 @@ API changes:
 - Added Section.setOrder(Number, Number)
 - Added Axis.setFocusItemEnabled(boolean)
 - Added Axis.isFocusItemEnabled()
-- Added Axis.showItem(Section, Number)
+- Added Axis.showItem(AxisItem)
 - Added Axis.getFreezeHead()
 - Added Axis.getFreezeTail()
+- Added Axis.getItemByViewportOffset()
 - Added Painter.setupSpatial(Number, Number)
 - Added Painter.setStyle()
 - Added Painter.getStyle()
@@ -56,12 +57,12 @@ API changes:
 - Renamed Section.getSelectedExtentIterator() to Section.getSelectedExtents()
 - Renamed Section.getCore() to Section.getUnchecked()
 - Renamed Zone.getCore() to Zone.getUnchecked()
-- Renamed Axis.getViewportItemCount() to Axis.getVisibleItemCount()
-- Renamed Axis.getViewportPosition() to Axis.getVisiblePosition()
-- Renamed Axis.getItemByPosition() to Axis.getItemByVisiblePosition()
+- Renamed Axis.getItemByPosition() to Axis.getItemByViewportPosition()
+- Renamed Axis.getItemByDistance() to Axis.getItemByViewportDistance()
 - Renamed Axis.freezeHead(int) to Axis.setFreezeHead(int)
 - Renamed Axis.freezeTail(int) to Axis.setFreezeTail(int)
 - Renamed Matrix.getTopLeft() to Matrix.getHeaderXY(); to bo more consistent with X-Y notation
+- Changed Axis.setFocusItem(Section, Number) to Axis.setFocusItem(AxisItem)
 - Changed Painter.paint(Number, Number, int, int, int, int) to Painter.paint(int, int, int, int); indexed based operations are done through Painter.setup(Number, Number) method.
 
 
@@ -69,6 +70,7 @@ Bug fixes:
 - Default column headers numbering was incorrect
 - Painting of embedded controls could throw SWT Exception "Graphic is disposed"
 - Embedded controls where not always painted when dragged.
+- Drag scrolling to the start of BigInteger axis did not work
 
 -------------------------------------------------------------------------------
 Version 0.4.1

@@ -238,7 +238,7 @@ public class Axis<N extends Number>  {
    * @throws IndexOutOfBoundsException if item's index is out of 0 ...
    *           {@link SectionCore#getCount()}-1 bounds
    */
-  public AxisItem<N> getItemByVisibleOffset(AxisItem<N> item, int offset) {
+  public AxisItem<N> getItemByViewportOffset(AxisItem<N> item, int offset) {
     checkItem(item, "item");
     AxisItem<N> nextItem = layout.nextItem(item, 
       math.create(java.lang.Math.abs(offset)), 
@@ -553,23 +553,27 @@ public class Axis<N extends Number>  {
 		scrollBar = symbol == 'Y' ? matrix.getVerticalBar() : matrix.getHorizontalBar();
 		if (scrollBar != null) {
 			scrollBar.addListener(SWT.Selection, new Listener() {
-				private int selection = -1;
 
 				@Override public void handleEvent(Event e) {
 					int newSelection = scrollBar.getSelection();
-					if (newSelection == selection) return;
-					selection = newSelection;
+//					selection = newSelection;
 					//				debugSWT(e.detail);
-					Move move = 
+					
+					Move move =
 						e.detail == SWT.ARROW_DOWN 	? Move.NEXT :
-							e.detail == SWT.ARROW_UP 	? Move.PREVIOUS : 
-								e.detail == SWT.PAGE_DOWN 	? Move.NEXT_PAGE: 
-									e.detail == SWT.PAGE_UP 	? Move.PREVIOUS_PAGE: 
-										Move.NULL;
-
-					layout.setScrollPosition(selection, move);
-					scrollBar.setThumb(layout.getScrollThumb());
-					matrix.redraw();
+						e.detail == SWT.ARROW_UP 	  ? Move.PREVIOUS : 
+						e.detail == SWT.PAGE_DOWN 	? Move.NEXT_PAGE: 
+						e.detail == SWT.PAGE_UP 	  ? Move.PREVIOUS_PAGE: 
+					  newSelection == scrollBar.getMinimum() ? Move.HOME :
+				    newSelection == scrollBar.getMaximum() - scrollBar.getThumb() ? Move.END :					    
+								Move.NULL;
+					
+					if (layout.setScrollPosition(newSelection, move)) {
+					  scrollBar.setThumb(layout.getScrollThumb());
+					  scrollBar.setSelection(layout.getScrollPosition());
+//					  TestUtil.log(move, newSelection, layout.getScrollPosition(), layout.getScrollThumb());
+					  matrix.redraw();
+					}
 				}
 			});
 		}
@@ -616,7 +620,7 @@ public class Axis<N extends Number>  {
 		if (thumb == max) thumb = max-1;
 		if (thumb == 0) thumb = 1;
 		// Extend the maximum to show the last trimmed element
-		if (thumb <= 1) { 
+		if (thumb < 1) { 
 			thumb = 1;
 			max += layout.trim;
 		}

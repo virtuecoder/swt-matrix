@@ -34,6 +34,8 @@ class Layout<N extends Number> {
 
 	ArrayList<SectionCore<N>> sections;
 
+  private final MutableNumber<N> maxIntegerLessOne;
+
 	
 	public Layout(Axis<N> axis) {
 		Preconditions.checkArgument(axis.getSectionCount() > 0, "Layout must have at least one section");
@@ -67,6 +69,7 @@ class Layout<N extends Number> {
 		current = forwardNavigator.getItem();
 		total = math.create(0);
 		maxInteger = math.create(Integer.MAX_VALUE);
+		maxIntegerLessOne = math.create(maxInteger).decrement();
 		maxScroll = math.create(0);
 		scrollTotal = math.create(0);
 		scrollPosition = math.create(0);
@@ -308,13 +311,25 @@ class Layout<N extends Number> {
 	}
 
 	public int getScrollThumb() {
-		return main.cells.size() - trim;
+	  int thumb = main.cells.size() - trim;
+    if (isIntegerTooSmall()) {
+      MutableNumber<N> index = math.create(thumb); 
+      index.multiply(maxInteger).divide(scrollTotal);
+      thumb = index.compareTo(math.ZERO_VALUE()) == 0 ? 1 : index.intValue();
+	  } 
+    return thumb;
 	}
 
 	public int getScrollPosition() {
 		MutableNumber<N> index = math.create(scrollPosition); 
 		if (isIntegerTooSmall()) {
 			index.set(scrollPosition).multiply(maxInteger).divide(scrollTotal);
+			if (math.compare(index, maxIntegerLessOne) == 0) {
+			  index.add(-2);
+			}
+//			if (index.intValue() < head.count) {
+//			  return head.count + main.cells.size() + 1;
+//			}
 		}
 		return index.intValue();
 	}
@@ -326,24 +341,53 @@ class Layout<N extends Number> {
 	 * @param position
 	 * @param move
 	 */
-	// TODO Performance: prevent computing in edge cases or when the position is the same 
-	public void setScrollPosition(int position, Move move) {
-//		if (main.scroll == position) return;
- 		AxisItem<N> item = start;
+	public boolean setScrollPosition(int position, Move move) {
+    //		if (main.scroll == position) return;
 		switch (move) {
-		case NEXT: 			item = nextItem(start, forward); break;
-		case PREVIOUS: 		item = nextItem(start, backward); break;
-		case NEXT_PAGE: 	nextPage(backward.start, forward); return;
-		case PREVIOUS_PAGE: nextPage(forward.start, backward); return;
+		case NEXT: 			     
+		  if (compare(endNoTrim, backward.min) == 0) return false;
+		  compute(nextItem(start, forward), forward); 
+		  return true;
+		  
+		case PREVIOUS: 		   
+		  if (compare(start, forward.min) == 0) return false;
+		  compute(nextItem(start, backward), forward); 
+		  return true;
+		
+		case NEXT_PAGE: 	   
+		  if (compare(endNoTrim, backward.min) == 0) return false;
+		  compute(nextItem(backward.start, forward), forward); 
+		  return true;
+		  
+		case PREVIOUS_PAGE:  
+		  if (compare(start, forward.min) == 0) return false;
+		  compute(nextItem(forward.start, backward), backward); 
+		  return true;
+		
+		case HOME:  
+		  if (compare(start, forward.min) == 0) return false;
+		  compute(forward.min, forward);
+		  return true;
+
+		case END:  
+		  if (compare(endNoTrim, backward.min) == 0) return false;
+		  compute(backward.min, backward);
+		  return true;
 			
 		default:
 			MutableNumber<N> index = math.create(position);
+			AxisItem<N> item;
 			if (isIntegerTooSmall()) {
 				if (position >= getScrollMax() - getScrollMin() - getScrollThumb()) {
 					/* Enforce going to the end by dragging, 
 						since the thumb number of items will not fit in the viewport */
 					item = backward.min;
-				} else {
+				}
+				else if (position <= head.count) {
+				  // Enforce going to the start 
+				  item = forward.min;
+				}
+				else {
 					index.multiply(total);
 					index.divide(maxInteger);
 					item = getItemByPosition(index);
@@ -351,11 +395,12 @@ class Layout<N extends Number> {
 			} else {
 				item = getItemByPosition(index);
 			}
+			if (item != null) {
+			  compute(item, forward);
+			  return true;
+			}
 		}
-		// item can be null if position is out of scope
-		if (item != null) {
-			compute(item, forward);
-		}
+		return false;
 	}
 
 	private boolean isIntegerTooSmall() {
