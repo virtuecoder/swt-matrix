@@ -227,14 +227,19 @@ class Layout<N extends Number> {
 	 * Navigation 
 	 */
 
-	public void setFocusItem(AxisItem<N> item) {
-	  if (!isFocusItemEnabled) return;
-	  
-		if (isComputingRequired) compute();
-		
-		     if (forwardNavigator.set(item))    current = forwardNavigator.getItem();
-		else if (backwardNavigator.set(item))   current = backwardNavigator.getItem();
-		else 									                  current = null;
+	public boolean setFocusItem(AxisItem<N> item) {
+	  if (!isFocusItemEnabled || item == null || !item.section.isFocusItemEnabled()) return false;
+
+	  if (isComputingRequired) compute();
+
+	  AxisItem<N> current2 = 
+	    forwardNavigator.set(item) ? forwardNavigator.getItem() :
+      backwardNavigator.set(item) ? backwardNavigator.getItem() : null;
+
+    if (current2 == null) return false;
+    boolean result = compare(current, current2) != 0;
+    current = current2;
+    return result;
 	}
 	
 	/**

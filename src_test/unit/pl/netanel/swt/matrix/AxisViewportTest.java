@@ -69,7 +69,7 @@ import org.junit.runners.JUnit4;
 	public void getViewportItemCount_freeze() throws Exception {
 		Axis axis = new Axis();
 		axis.getBody().setCount(10);
-		axis.setFreezeHead(1);
+		axis.setFrozenHead(1);
 		Layout layout = axis.layout;
     layout.setViewportSize(100);
     layout.compute();
@@ -82,7 +82,7 @@ import org.junit.runners.JUnit4;
 	public void getViewportIndexOf_freeze() throws Exception {
 		Axis axis = new Axis();
 		axis.getBody().setCount(10);
-		axis.setFreezeHead(1);
+		axis.setFrozenHead(1);
 		Layout layout = axis.layout;
     layout.setViewportSize(100);
 		layout.compute();

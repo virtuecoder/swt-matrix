@@ -172,11 +172,23 @@ public class Painter<X extends Number, Y extends Number> {
   public static final String NAME_DRAG_ITEM_Y = "drag item y";
   /**
    * Default name of the painter belonging to a matrix responsible to paint the 
-   * lines dividing the frozen areas.
+   * line dividing the frozen head on the horizontal axis.
    */
   public static final String NAME_FREEZE_HEAD_LINE_X = "freeze head line x";
+  /**
+   * Default name of the painter belonging to a matrix responsible to paint the 
+   * line dividing the frozen head on the vertical axis.
+   */
   public static final String NAME_FREEZE_HEAD_LINE_Y = "freeze head line y";
+  /**
+   * Default name of the painter belonging to a matrix responsible to paint the 
+   * line dividing the frozen tail on the horizontal axis.
+   */
   public static final String NAME_FREEZE_TAIL_LINE_X = "freeze tail line x";
+  /**
+   * Default name of the painter belonging to a matrix responsible to paint the 
+   * line dividing the frozen tail on the vertical axis.
+   */
   public static final String NAME_FREEZE_TAIL_LINE_Y = "freeze tail line y";
 	
 	private static int[] EXTENT_ALIGN = {SWT.RIGHT, SWT.END, SWT.BOTTOM, SWT.CENTER};

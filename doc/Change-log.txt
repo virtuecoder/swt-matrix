@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 Version 0.5
-The focus for this release is a much higher API stablity in the future version.
+The focus for this release has been stabilizing the API.
 
 Features:
 - Heavy static code validation and refactoring.
@@ -32,8 +32,9 @@ API changes:
 - Added Painter.setupSpatial(Number, Number)
 - Added Painter.setStyle()
 - Added Painter.getStyle()
-- Added Painter.NAME_FREEZE_HEAD_LINE_X, Painter.NAME_FREEZE_HEAD_LINE_Y
-- Added Painter.NAME_FREEZE_TAIL_LINE_X, Painter.NAME_FREEZE_TAIL_LINE_Y
+- Added Painter.NAME_FREEZE_HEAD_LINE_X and Painter.NAME_FREEZE_HEAD_LINE_Y
+- Added Painter.NAME_FREEZE_TAIL_LINE_X and Painter.NAME_FREEZE_TAIL_LINE_Y
+- Added Painter.NAME_BACKGROUND
 - Added Matrix(Composite, int, Class, Class)
 - Added Zone.contains(CellExtent, Number, Number)
 - Deleted Section.getHiddenCount(Number, Number)
@@ -45,6 +46,8 @@ API changes:
 - Deleted Zone.getDefaultBackground(); it was a duplicate of Painter property
 - Deleted Zone.getSelectionForeground(); it was a duplicate of Painter property
 - Deleted Zone.getSelectionBackground(); it was a duplicate of Painter property
+- Deleted ZoneEditor.setImagePath()
+- Deleted ZoneEditor.getImagePath()
 - Deleted Matrix.setFocusCellEnabled(boolean); replaced with Axis.setFocusItemEnabled(boolean)
 - Deleted Matrix.isFocusCellEnabled(); replaced with Axis.isFocusItemEnabled()
 - Deleted Painter.setWordWrap(boolean); direct property access hasWordWrap
@@ -64,7 +67,6 @@ API changes:
 - Renamed Matrix.getTopLeft() to Matrix.getHeaderXY(); to bo more consistent with X-Y notation
 - Changed Axis.setFocusItem(Section, Number) to Axis.setFocusItem(AxisItem)
 - Changed Painter.paint(Number, Number, int, int, int, int) to Painter.paint(int, int, int, int); indexed based operations are done through Painter.setup(Number, Number) method.
-
 
 Bug fixes:
 - Default column headers numbering was incorrect

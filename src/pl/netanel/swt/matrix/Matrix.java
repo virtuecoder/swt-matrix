@@ -346,8 +346,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		  new LinePainter<X, Y>(Painter.NAME_FREEZE_HEAD_LINE_X, Painter.SCOPE_ENTIRE) {
         @Override
         public void paint(int x, int y, int width, int height) {
-          if (axisX.getFreezeHead() > 0) {
-            int[] bound = axisX.getLineBound(axisX.getItemByViewportPosition(axisX.getFreezeHead()));
+          if (axisX.getFrozenHead() > 0) {
+            int[] bound = axisX.getLineBound(axisX.getItemByViewportPosition(axisX.getFrozenHead()));
             gc.fillRectangle(bound[0], y, bound[1], height);
           } 
 //          gc.setBackground(background);
@@ -359,8 +359,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
     frozenLinePainter = new LinePainter<X, Y>(Painter.NAME_FREEZE_HEAD_LINE_Y) {
       @Override
       public void paint(int x, int y, int width, int height) {
-        if (axisY.getFreezeHead() > 0) {
-          int[] bound = axisY.getLineBound(axisY.getItemByViewportPosition(axisY.getFreezeHead()));
+        if (axisY.getFrozenHead() > 0) {
+          int[] bound = axisY.getLineBound(axisY.getItemByViewportPosition(axisY.getFrozenHead()));
           gc.fillRectangle(x, bound[0], width, bound[1]);
         } 
       }
@@ -372,8 +372,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
         @Override
         public void paint(int x, int y, int width, int height) {
           int viewportItemCount = axisX.getViewportItemCount();
-          if (axisX.getFreezeTail() > 0 ) {
-            int[] bound = axisX.getLineBound(axisX.getItemByViewportPosition(viewportItemCount - axisX.getFreezeTail()));
+          if (axisX.getFrozenTail() > 0 ) {
+            int[] bound = axisX.getLineBound(axisX.getItemByViewportPosition(viewportItemCount - axisX.getFrozenTail()));
             gc.fillRectangle(bound[0], y, bound[1], height);
           }
         }
@@ -385,8 +385,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
         @Override
         public void paint(int x, int y, int width, int height) {
           int viewportItemCount = axisY.getViewportItemCount();
-          if (axisY.getFreezeTail() > 0 ) {
-            int[] bound = axisY.getLineBound(axisY.getItemByViewportPosition(viewportItemCount - axisY.getFreezeTail()));
+          if (axisY.getFrozenTail() > 0 ) {
+            int[] bound = axisY.getLineBound(axisY.getItemByViewportPosition(viewportItemCount - axisY.getFrozenTail()));
             gc.fillRectangle(x, bound[0], width, bound[1]);
           }
         }
@@ -469,7 +469,6 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 //		System.out.println(BigDecimal.valueOf(System.nanoTime() - t, 6).toString());
 	}
 
-	
 	/*------------------------------------------------------------------------
 	 * Resize and scrolling
 	 */

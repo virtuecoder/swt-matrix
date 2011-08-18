@@ -415,68 +415,41 @@ public class Axis<N extends Number>  {
 
 
   /**
-	 * Freezes the specified amount of first items on this axis. 
-	 * @param freezeItemCount amount of first items to freeze
+	 * Freezes the specified amount of items at the beginning this axis. 
+	 * @param amount of items to freeze
 	 * @throws IllegalArgumentException if the argument is lower then zero
 	 */
-	public void setFreezeHead(int freezeItemCount) {
-		Preconditions.checkArgument(freezeItemCount >= 0, FREEZE_ITEM_COUNT_ERROR);
-		layout.freezeHead(freezeItemCount);
+	public void setFrozenHead(int amount) {
+		Preconditions.checkArgument(amount >= 0, FREEZE_ITEM_COUNT_ERROR);
+		layout.freezeHead(amount);
 	}
 
 	/**
-   * Returns frozen items at the beginning this axis. 
-   * @return frozen items at the beginning this axis
+   * Returns the amount of items frozen at the beginning this axis. 
+   * @return the amount of items frozen at the beginning this axis
    */
-  public int getFreezeHead() {
+  public int getFrozenHead() {
     return layout.head.count;
   }
 
   /**
-	 * Freezes the specified amount of last items on this axis. 
-	 * @param freezeItemCount amount of last items to freeze
+	 * Freezes the specified amount of last items at the end of this axis. 
+	 * @param amount of items to freeze
 	 * @throws IllegalArgumentException if the argument is lower then zero
 	 */
-	public void setFreezeTail(int freezeItemCount) {
-		Preconditions.checkArgument(freezeItemCount >= 0, FREEZE_ITEM_COUNT_ERROR);
-		layout.freezeTail(freezeItemCount);
+	public void setFrozenTail(int amount) {
+		Preconditions.checkArgument(amount >= 0, FREEZE_ITEM_COUNT_ERROR);
+		layout.freezeTail(amount);
 	}
 	
 	/**
-	 * Returns frozen items at the end this axis. 
-	 * @return frozen items at the end this axis
+	 * Returns the amount of items frozen at the end this axis. 
+	 * @return the amount of items frozen at the end this axis
 	 */
-	public int getFreezeTail() {
+	public int getFrozenTail() {
 	  return layout.tail.count;
 	}
 	
-//	/**
-//	 * Freezes the amount of first items on this axis that is between 
-//	 * the first visible item (inclusively) the specified item (exclusively).
-//	 *  
-//	 * @param section section of the item bounding the head frozen area
-//	 * @param index index of the item bounding the head frozen area
-//	 * @return number of frozen items
-//	 */
-//	public int freezeHead(AxisItem<N> item) {
-//		layout.setFreezeHead(item);
-//		return layout.head.count;
-//	}
-//	
-//	/**
-//	 * Freezes the amount of last items on this axis that is between 
-//	 * the specified item (exclusively) and the last visible item (inclusively). 
-//	 *  
-//	 * @param section section of the item bounding the tail frozen area
-//	 * @param index index of the item bounding the tail frozen area
-//	 * @return number of frozen items
-//	 */
-//	public int freezeTail(AxisItem<N> item) {
-//		layout.setFreezeTail(item);
-//		return layout.tail.count;
-//	}
-	
-
 	
 	/*------------------------------------------------------------------------
 	 *

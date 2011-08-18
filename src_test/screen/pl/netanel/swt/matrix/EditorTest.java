@@ -131,7 +131,7 @@ public class  EditorTest extends SwtTestCase {
     click(matrix, bounds);
     assertEquals(Matrix.class, display.getFocusControl().getClass());    
     assertEquals(0, matrix.getChildren().length);    
-    assertEquals("a", data[0]);
+    assertEquals("0, 0a", data[0]);
   }
   
  

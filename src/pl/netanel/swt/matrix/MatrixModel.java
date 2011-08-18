@@ -64,8 +64,6 @@ class MatrixModel<X extends Number, Y extends Number> implements Iterable<ZoneCo
 						zone.addPainter(new Painter<X, Y>(Painter.NAME_CELLS));
 						zone.setHeaderStyle();
 					}
-				  
-				  
 				}
 			}
 		}

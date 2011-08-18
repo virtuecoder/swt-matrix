@@ -15,6 +15,7 @@ class GestureBinding {
 	boolean enabled;
 	boolean isCharActivated;
   char character;
+  Event event;
 
 	public GestureBinding(int commandId, int eventType, int code) {
 		Preconditions.checkArgument(commandId != 0, "CommandId cannot equal to zero");
@@ -41,4 +42,8 @@ class GestureBinding {
 	  int index = Arrays.binarySearch(FontWidthCache.PRINTABLE_CHARS, c);
 	  return index >= 0;
 	}
+
+  public static boolean isMouseEvent(int type) {
+    return SWT.MouseDown <= type && type <= SWT.MouseDoubleClick;
+  }
 }

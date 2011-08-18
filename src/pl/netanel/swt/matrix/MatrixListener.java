@@ -184,7 +184,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 			// Execute bound commands
 			
 			if (zone != null) {
-			  boolean mouseEvent = SWT.MouseDown <= e.type && e.type <= SWT.MouseDoubleClick;
+			  boolean mouseEvent = GestureBinding.isMouseEvent(e.type);
 			  if (e.type == SWT.MouseMove && !(stateY.itemModified || stateX.itemModified)) {
 			    mouseEvent = false;
 			  }
@@ -195,6 +195,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 			    for (GestureBinding b: zone.getBindings()) {
 			      if (b.isMatching(e)) {
 			        if (e.type != SWT.MouseMove || mouseDown) {
+			          b.event = e;
 			          executeCommand(b);
 			        }
 			        // does not quit the loop because can execute many bindings 
@@ -422,10 +423,9 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 					axis.symbol == 'X' ? zone.sectionY : zone.sectionX);
 		}
 
-		public void setCurrentItem() {
-			if (item != null) { // && item.section.isNavigationEnabled()) {
-				layout.setFocusItem(item);
-			}
+		public boolean setFocusItem() {
+		  if (item == null) return false;
+			return layout.setFocusItem(item);
 		}
 
 		public void moveFocusItem(Move move) {
@@ -762,11 +762,11 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 		switch (commandId) {
 		case CMD_RESIZE_PACK:		stateY.pack(); stateX.pack(); break;
 		
-		case CMD_EDIT_ACTIVATE:				if (zone.editor != null) zone.editor.edit(b); return;
-		case CMD_CUT:				if (zone.editor != null) zone.editor.cut(); return;
-		case CMD_COPY:				if (zone.editor != null) zone.editor.copy(); return;
-		case CMD_PASTE:				if (zone.editor != null) zone.editor.paste(); return;
-		case CMD_DELETE:			if (zone.editor != null) zone.editor.delete(); return;
+		case CMD_EDIT_ACTIVATE:				 if (zone.editor != null) zone.editor.edit(b); return;
+		case CMD_CUT:				           if (zone.editor != null) zone.editor.cut(); return;
+		case CMD_COPY:				         if (zone.editor != null) zone.editor.copy(); return;
+		case CMD_PASTE:				         if (zone.editor != null) zone.editor.paste(); return;
+		case CMD_DELETE:			         if (zone.editor != null) zone.editor.delete(); return;
 		case CMD_TRAVERSE_TAB_NEXT:			matrix.traverse(SWT.TRAVERSE_TAB_NEXT); return;
 		case CMD_TRAVERSE_TAB_PREVIOUS: matrix.traverse(SWT.TRAVERSE_TAB_PREVIOUS); return;
 		}
@@ -836,9 +836,15 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 		case CMD_SELECT_COLUMN:			case CMD_SELECT_COLUMN_ALTER:
 		case CMD_SELECT_TO_ROW: 		case CMD_SELECT_TO_ROW_ALTER:
 		case CMD_SELECT_ROW:			case CMD_SELECT_ROW_ALTER:
-			stateY.setCurrentItem();
-			stateX.setCurrentItem();
-			break;														
+//		  AxisItem<X> focusX = stateX.layout.current;
+//		  if (!stateX.setFocusItem()) return false;
+//		  if (!stateY.setFocusItem()) {
+//		    stateX.layout.setFocusItem(focusX);
+//		    return false;
+//		  }
+//			return true;														
+		  stateX.setFocusItem();
+		  stateY.setFocusItem();
 		}
 		
 		if (mY != null) stateY.moveFocusItem(mY);
@@ -1071,10 +1077,10 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
           bounds2 = header.getCellBounds(item.index, stateY.axis.math.ZERO_VALUE());  
           boolean before = x3 < bounds2.x + bounds2.width / 2;
           x3 = bounds2.x + (before ? -1 : bounds2.width);
-          if (before && stateX.layout.compare(stateX.item, stateX.last) > 0) {
+          if (before && (stateX.item == null || stateX.layout.compare(stateX.item, stateX.last) > 0)) {
             stateX.item = stateX.layout.nextItem(item, stateX.layout.backwardNavigator);
           }
-          else if (!before && stateX.layout.compare(stateX.item, stateX.last) < 0) {
+          else if (!before && (stateX.item == null ||stateX.layout.compare(stateX.item, stateX.last) < 0)) {
             stateX.item = stateX.layout.nextItem(item, stateX.layout.forwardNavigator);
           }
 //          feedback = before ? DND.FEEDBACK_INSERT_BEFORE : DND.FEEDBACK_INSERT_AFTER;
@@ -1128,10 +1134,10 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
           boolean before = y3 < bounds2.y + bounds2.height / 2;
           y3 = bounds2.y + (before ? -1 : bounds2.height);
 //          feedback = before ? DND.FEEDBACK_INSERT_BEFORE : DND.FEEDBACK_INSERT_AFTER;
-          if (before && stateY.layout.compare(stateY.item, stateY.last) > 0) {
+          if (before && (stateY.item == null || stateY.layout.compare(stateY.item, stateY.last) > 0)) {
             stateY.item = stateY.layout.nextItem(item, stateY.layout.backwardNavigator);
           }
-          else if (!before && stateY.layout.compare(stateY.item, stateY.last) < 0) {
+          else if (!before && (stateY.item == null || stateY.layout.compare(stateY.item, stateY.last) < 0)) {
             stateY.item = stateY.layout.nextItem(item, stateY.layout.forwardNavigator);
           }
         }

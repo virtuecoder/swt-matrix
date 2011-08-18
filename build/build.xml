@@ -1,5 +1,5 @@
 <project name="swt-matrix" default="local website" basedir=".">
-	<property name="version" value="0.4.2" />
+	<property name="version" value="0.5" />
 	<property name="local_website" value="c:\dev\wamp\www\netanel15" />
 
 	<property name="db.username" value="root"/>
@@ -155,12 +155,8 @@
 		<fileset dir="../doc" includes="EULA.txt"/>
 	</copy>
 	
-	 
-
-	<copy todir="${local_website}\swt-matrix" file="swt-matrix-${version}.jar" />
-	<!--copy todir="${local_website}\swt-matrix" file="swt-matrix-custom-${version}.jar" /-->
-	<copy todir="${local_website}\swt-matrix" file="swt-matrix-snippets-${version}.zip" />
-	<copy todir="${local_website}\swt-matrix" file="swt-matrix-javadoc-${version}.zip" />
+	<copy todir="${local_website}\swt-matrix" file="swt-matrix-${version}.zip" />
+	<copy todir="${local_website}\swt-matrix" file="../doc/Change-log.txt" />
 
 	<java classname="JoomlaMysqlUpdate" dir=".." fork="true">
 		<classpath>

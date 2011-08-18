@@ -8,10 +8,6 @@ import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_DEACTIVATE_APPLY;
 import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_DEACTIVATE_CANCEL;
 import static pl.netanel.swt.matrix.Matrix.CMD_PASTE;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,25 +17,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DateTime;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
-
-import pl.netanel.util.OsUtil;
-import pl.netanel.util.Preconditions;
 
 /**
  * Provides editing support for zone cells.
@@ -60,9 +47,6 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	EmbeddedControlsPainter<X, Y> embedded;
 	private Painter<X, Y> cellsPainter;
 
-	private Image trueImage, falseImage;
-	private String systemThemePath;
-
 
 	/**
 	 * Default constructor, facilitates editing of the specified zone. 
@@ -73,7 +57,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		this.zone = ZoneCore.from(zone);
 		this.zone.setEditor(this);
 		
-		setImagePath(null);
+//		setImagePath(null);
 		
 		// Painters
 		cellsPainter = zone.getPainter(Painter.NAME_CELLS);
@@ -84,16 +68,16 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		    return true;
 		  }
 		  @Override public void setup(X indexX, Y indexY) {
+		    image = null;
+		    text = null;
 				Object[] emul = getCheckboxEmulation(indexX, indexY);
 				if (emul == null) return;
 				Object value = getModelValue(indexX, indexY);
 				
 				if (emul[0] instanceof Image || emul[1] instanceof Image) {
-					text = null;
 					style.imageAlignX = style.imageAlignY = SWT.CENTER;
 					image = (Image) (Boolean.TRUE.equals(value) ? emul[0] : emul[1]); 
 				} else {
-					image = null;
 					style.textAlignX = style.textAlignY = SWT.CENTER;
 					text = (String) (Boolean.TRUE.equals(value) ? emul[0] : emul[1]);
 				}
@@ -108,7 +92,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		zone.bind(CMD_PASTE, SWT.KeyDown, SWT.MOD1 | 'v');
 		zone.bind(CMD_DELETE, SWT.KeyDown, SWT.DEL);
 		zone.bind(CMD_EDIT_ACTIVATE, SWT.KeyUp, SWT.F2);
-		zone.bind(CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1);
+//		zone.bind(CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1);
 		zone.bind(CMD_EDIT_ACTIVATE, SWT.KeyDown, Matrix.PRINTABLE_CHARS);
 
 		// Clicking on the image emulation
@@ -127,7 +111,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 						(emulation[0] instanceof Image || emulation[1] instanceof Image)) {
 					// Calculate the image bounds
 					Rectangle cellBounds = matrix.getBody().getCellBounds(indexX, indexY);
-					Rectangle imageBounds = trueImage.getBounds();
+					Rectangle imageBounds = ((Image) emulation[0]).getBounds();
 					imageBounds.x = cellBounds.x + (cellBounds.width - imageBounds.width) / 2;
 					imageBounds.y = cellBounds.y + (cellBounds.height - imageBounds.height) / 2;
 					return imageBounds.contains(e.x, e.y);
@@ -152,12 +136,12 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		      (emulation[0] instanceof Image || emulation[1] instanceof Image)) {
 		      // Calculate the image bounds
 		      Rectangle cellBounds = matrix.getBody().getCellBounds(indexX, indexY);
-		      Rectangle imageBounds = trueImage.getBounds();
+		      Rectangle imageBounds = ((Image) emulation[0]).getBounds();
 		      imageBounds.x = cellBounds.x + (cellBounds.width - imageBounds.width) / 2;
 		      imageBounds.y = cellBounds.y + (cellBounds.height - imageBounds.height) / 2;
 		      return !imageBounds.contains(e.x, e.y);
 		    }
-		    return false;
+		    return true;
 		  }
 		});
 		
@@ -471,11 +455,18 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	
 	void edit(GestureBinding b) {
 		Matrix<X, Y> matrix = getMatrix();
-		final AxisItem<X> focusItem1X = matrix.axisX.getFocusItem();
-		final AxisItem<Y> focusItemY = matrix.axisY.getFocusItem();
-		if (focusItem1X == null || focusItemY == null) return;
+		AxisItem<X> focusItemX;
+		AxisItem<Y> focusItemY;
+		if (GestureBinding.isMouseEvent(b.eventType)) {
+		  focusItemX = matrix.layoutX.getItemByDistance(b.event.x);
+		  focusItemY = matrix.layoutY.getItemByDistance(b.event.y);
+		} else {
+      focusItemX = matrix.axisX.getFocusItem();	  
+		  focusItemY = matrix.axisY.getFocusItem();
+		}
+		if (focusItemX == null || focusItemY == null) return;
 
-		activate(focusItem1X.getIndex(), focusItemY.getIndex(), b);
+		activate(focusItemX.getIndex(), focusItemY.getIndex(), b);
 	}
 
 	/**
@@ -674,33 +665,32 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 * @param indexY cell index on the vertical axis  
 	 *  
 	 * @return the check box emulation data.
-	 * @see #getDefaultCheckBoxImages() 
-	 * @see #getDefaultCheckBoxLabels() 
+	 * @see #getDefaultCheckboxLabels() 
 	 */
 	protected Object[] getCheckboxEmulation(X indexX, Y indexY) {
 		return null;
 	}
 	
-	/**
-	 * Returns the default images to emulate check boxes. 
-	 * The first image in the returned array is for the <code>true</code> value,
-	 * the second one is for the <code>false</code> value.
-	 * <p>
-	 * The default check box images can be configured with the {@link #snapControlImages(String)}
-	 * and the {@link #setImagePath(String)}
-	 *    
-	 * @return default images to emulate check boxes.
-	 * @see #getCheckboxEmulation(Number, Number)
-	 * @see #setImagePath(String)
-	 */
-	protected final Object[] getDefaultCheckBoxImages() {
-		if (trueImage == null && falseImage == null) {
-			return null;
-		}
-		else {
-			return new Object[] {trueImage, falseImage};
-		} 
-	}
+//	/**
+//	 * Returns the default images to emulate check boxes. 
+//	 * The first image in the returned array is for the <code>true</code> value,
+//	 * the second one is for the <code>false</code> value.
+//	 * <p>
+//	 * The default check box images can be configured with 
+//	 * the {@link #setImagePath(String)} method.
+//	 *    
+//	 * @return default images to emulate check boxes.
+//	 * @see #getCheckboxEmulation(Number, Number)
+//	 * @see #setImagePath(String)
+//	 */
+//	protected final Object[] getDefaultCheckBoxImages() {
+//		if (trueImage == null && falseImage == null) {
+//			return null;
+//		}
+//		else {
+//			return new Object[] {trueImage, falseImage};
+//		} 
+//	}
 	
 	/**
 	 * Returns the default labels to emulate check boxes. 
@@ -712,120 +702,119 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 * @see #getCheckboxEmulation(Number, Number)
 	 * @see #setImagePath(String)
 	 */
-	protected final Object[] getDefaultCheckBoxLabels() {
+	protected final Object[] getDefaultCheckboxLabels() {
 	  return new Object[] {DEFAULT_TRUE_TEXT, null};
 	}
 	
-	/**
-	 * Snaps the image of a selected and unselected check box control 
-	 * to be used for a check box emulation. The images are placed 
-	 * in the specified directory or if the argument is null then in the 
-	 * system default location for application files.  
-	 * <p>
-	 * Note: it opens a temporary shell in order to snap the images and then closes it immediately.
-	 * @param imagePath
-	 */
-  void snapControlImages(String imagePath) {
-    if (imagePath == null) {
-      systemThemePath = OsUtil.getUserDirectory("SWT Matrix").getAbsolutePath();
-      if (!new File(systemThemePath).mkdirs()) {
-        return;
-      }
-    }
-    else {
-      setImagePath(imagePath);
-    }
-
-    File file = new File(systemThemePath);
-    Preconditions.checkArgument(file.exists(), "Directory {0} does not exist.",
-      file.getAbsoluteFile());
-    Preconditions.checkArgument(file.isDirectory(),
-      "Path {0} is not e directory.", file.getAbsoluteFile());
-
-    Shell shell = new Shell();
-    RowLayout layout = new RowLayout();
-    layout.spacing = layout.marginBottom = layout.marginTop = 0;
-    layout.marginLeft = layout.marginRight = 0;
-    shell.setLayout(layout);
-    shell.setSize(100, 100);
-    shell.open();
-
-    Display display = shell.getDisplay();
-    ImageLoader loader = new ImageLoader();
-
-    // Check boxes
-    Button button = new Button(shell, SWT.CHECK);
-    shell.layout();
-    shell.update();
-    Point size = button.getSize();
-    GC gc = new GC(button);
-    Image image = new Image(display, size.x, size.y);
-    gc.copyArea(image, 0, 0);
-    loader.data = new ImageData[] { image.getImageData() };
-    loader.save(new File(imagePath, "unchecked.png").getAbsolutePath(), SWT.IMAGE_PNG);
-    gc.dispose();
-    image.dispose();
-    button.dispose();
-
-    button = new Button(shell, SWT.CHECK);
-    button.setSelection(true);
-    shell.layout();
-    shell.update();
-    gc = new GC(button);
-    image = new Image(display, size.x, size.y);
-    gc.copyArea(image, 0, 0);
-    loader.data = new ImageData[] { image.getImageData() };
-    loader.save(new File(imagePath, "checked.png").getAbsolutePath(),
-      SWT.IMAGE_PNG);
-    gc.dispose();
-    image.dispose();
-    button.dispose();
-
-    shell.dispose();
-  }
-
-	/**
-	 * Sets the path to the folder containing images emulating the system theme.
-	 * @param systemThemePath path to the folder containing system theme emulation images
-	 * @see #snapControlImages(String)
-	 */
-	public void setImagePath(String path) {
-		systemThemePath = path == null 
-			? "" : path + System.getProperty("file.separator");
-		File file = new File(systemThemePath);
-		if (path != null) {
-			Preconditions.checkArgument(file.exists(), " does not the exist", systemThemePath);
-			Preconditions.checkArgument(file.isDirectory(), " is not a directory", systemThemePath);
-		}
-
-		// Read check box images
-		Display display = getMatrix().getDisplay();
-		FileInputStream stream;
-		try {
-		  stream = new FileInputStream(systemThemePath + "checked.png");
-		  trueImage = new Image(display, new ImageData(stream));
-		  stream.close();
-
-		  stream = new FileInputStream(systemThemePath + "unchecked.png");
-		  falseImage = new Image(display, new ImageData(stream));
-		  stream.close();
-		}
-		catch (FileNotFoundException e) {
-		  throw new RuntimeException(e);
-		}
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-	}
-
-	/**
-	 * Returns the path to the folder containing system theme emulation images.
-	 * @return the path to the folder containing system theme emulation images
-	 * @see #snapControlImages(String)
-	 */
-	public String getEmulationPath() {
-		return systemThemePath;
-	}
+//	/**
+//	 * Snaps the image of a selected and unselected check box control 
+//	 * to be used for a check box emulation. The images are placed 
+//	 * in the specified directory or if the argument is null then in the 
+//	 * system default location for application files.  
+//	 * <p>
+//	 * Note: it opens a temporary shell in order to snap the images and then closes it immediately.
+//	 * @param imagePath
+//	 */
+//  void snapControlImages(String imagePath) {
+//    if (imagePath == null) {
+//      systemThemePath = OsUtil.getUserDirectory("SWT Matrix").getAbsolutePath();
+//      if (!new File(systemThemePath).mkdirs()) {
+//        return;
+//      }
+//    }
+//    else {
+//      setImagePath(imagePath);
+//    }
+//
+//    File file = new File(systemThemePath);
+//    Preconditions.checkArgument(file.exists(), "Directory {0} does not exist.",
+//      file.getAbsoluteFile());
+//    Preconditions.checkArgument(file.isDirectory(),
+//      "Path {0} is not e directory.", file.getAbsoluteFile());
+//
+//    Shell shell = new Shell();
+//    RowLayout layout = new RowLayout();
+//    layout.spacing = layout.marginBottom = layout.marginTop = 0;
+//    layout.marginLeft = layout.marginRight = 0;
+//    shell.setLayout(layout);
+//    shell.setSize(100, 100);
+//    shell.open();
+//
+//    Display display = shell.getDisplay();
+//    ImageLoader loader = new ImageLoader();
+//
+//    // Check boxes
+//    Button button = new Button(shell, SWT.CHECK);
+//    shell.layout();
+//    shell.update();
+//    Point size = button.getSize();
+//    GC gc = new GC(button);
+//    Image image = new Image(display, size.x, size.y);
+//    gc.copyArea(image, 0, 0);
+//    loader.data = new ImageData[] { image.getImageData() };
+//    loader.save(new File(imagePath, "unchecked.png").getAbsolutePath(), SWT.IMAGE_PNG);
+//    gc.dispose();
+//    image.dispose();
+//    button.dispose();
+//
+//    button = new Button(shell, SWT.CHECK);
+//    button.setSelection(true);
+//    shell.layout();
+//    shell.update();
+//    gc = new GC(button);
+//    image = new Image(display, size.x, size.y);
+//    gc.copyArea(image, 0, 0);
+//    loader.data = new ImageData[] { image.getImageData() };
+//    loader.save(new File(imagePath, "checked.png").getAbsolutePath(),
+//      SWT.IMAGE_PNG);
+//    gc.dispose();
+//    image.dispose();
+//    button.dispose();
+//
+//    shell.dispose();
+//  }
+//
+//	/**
+//	 * Sets the path to the folder containing images emulating the system theme.
+//	 * @param path to the folder containing system theme emulation images
+//	 */
+//	public void setImagePath(String path) {
+//		systemThemePath = path == null 
+//			? "" : path + System.getProperty("file.separator");
+//		File file = new File(systemThemePath);
+//		if (path != null) {
+//			Preconditions.checkArgument(file.exists(), " does not the exist", systemThemePath);
+//			Preconditions.checkArgument(file.isDirectory(), " is not a directory", systemThemePath);
+//		}
+//
+//		// Read check box images
+//		Display display = getMatrix().getDisplay();
+//		FileInputStream stream;
+//		try {
+//		  stream = new FileInputStream(systemThemePath + "checked.png");
+//		  trueImage = new Image(display, new ImageData(stream));
+//		  stream.close();
+//
+//		  stream = new FileInputStream(systemThemePath + "unchecked.png");
+//		  falseImage = new Image(display, new ImageData(stream));
+//		  stream.close();
+//		}
+//		catch (FileNotFoundException e) {
+//		  throw new RuntimeException(e);
+//		}
+//    catch (IOException e) {
+//      throw new RuntimeException(e);
+//    }
+//	}
+//
+//	/**
+//	 * Returns the path to the folder containing system theme emulation images.
+//	 * @return the path to the folder containing system theme emulation images
+//	 * @see #snapControlImages(String)
+//	 */
+//	public String getImagePath() {
+//		return systemThemePath;
+//	}
 	
 	/**
 	 * Makes the embedded controls to be recreated.
