@@ -1,9 +1,15 @@
-Screenshot
+This is a feature rather then a bug. 
+Double click between columns triggers a columns size calculation which iterates over 123456789012345678901234567000 rows! 
+It is up to the programmer to provide a non default behavior in this case, which might be:
+1) Unbind the Matrix.CMD_RESIZE_PACK command from the matrix.getHeaderX() zone 
+2) Override Section.setCellWidth(Number) and do nothing by removing a call to super.setCellWidth(Number) (the same effect as 1)
+3) Override Section.setCellWidth(Number) and ask a user if he wants to perform a very long running operation
+4) Override Section.setCellWidth(Number) and set an arbitrary optimal size without calculating it with super.setCellWidth(Number). For example an optimal size for a column with short dates can be determined without checking all the rows.
 
-BigInteger
-filter 
-sorting
-insert row
+
+
+
+Samples:
 summary
 reorder
 hide item
@@ -33,6 +39,7 @@ From nebula forum
 - Nebula CompositeTable, flexible row layout
 
 To do:
+- multi column sorting
 - draw button cell selected as pushed
 - freeze line painters are by default
 - rename snippets

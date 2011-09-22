@@ -238,7 +238,7 @@ import pl.netanel.swt.matrix.SectionCore;
 //	}
 	
 	@Test
-	public void reorderBeforeStart() throws Exception {
+	public void reorderBeforeFirst() throws Exception {
 		Layout layout = new Layout(new Axis());
 		layout.setViewportSize(1000);
 		
@@ -260,6 +260,30 @@ import pl.netanel.swt.matrix.SectionCore;
 		layout.reorder(item(body, 1), item(body, 9));
 		assertEquals(0, layout.start.getIndex());
 	}
+	
+	@Test
+	public void reorderAfterLast() throws Exception {
+	  Layout layout = new Layout(new Axis());
+	  layout.setViewportSize(1000);
+	  
+	  SectionCore body = (SectionCore) layout.axis.getBody().getUnchecked();
+	  body.setCount(5);
+	  body.setDefaultCellWidth(100);
+	  body.setSelected(0, 0, true);
+	  
+	  layout.compute();
+	  assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Frozen.NONE, body)));
+	  
+	  layout.reorder(item(body, 0), item(body, 4));
+	  assertEquals("1, 2, 3, 4, 0", indexes(layout.cellSequence(Frozen.NONE, body)));
+	  
+	  body.setSelected(false);
+	  body.setSelected(1, 1, true);
+	  layout.reorder(item(body, 1), item(body, 0));
+	  assertEquals("2, 3, 4, 0, 1", indexes(layout.cellSequence(Frozen.NONE, body)));
+	}
+	
+	
 	
 	@Test
 	public void reorderScattered() throws Exception {

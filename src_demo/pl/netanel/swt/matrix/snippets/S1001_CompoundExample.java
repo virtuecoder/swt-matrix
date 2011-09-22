@@ -38,7 +38,7 @@ import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.ZoneEditor;
 
 /**
- * Simplest matrix.
+ * Compound example.
  */
 public class S1001_CompoundExample {
   //Meta data
@@ -277,6 +277,7 @@ public class S1001_CompoundExample {
             circleImage : null;
           
         }
+        
     });
   
     // Vertical lines painter
@@ -292,8 +293,8 @@ public class S1001_CompoundExample {
       public void setup(Integer indexX, BigInteger indexY) {
         super.setup(indexX, indexY);
         merge = indexX == 4;
-        AxisItem<Integer> nextItem = axisX.getItemByViewportOffset(
-          AxisItem.create(bodyX, 2), 1);
+        int position = axisX.getViewportPosition(AxisItem.create(bodyX, 2));
+        AxisItem<Integer> nextItem = axisX.getItemByViewportPosition(position + 1);
         dotted = indexX == 2 || nextItem != null && indexX == nextItem.getIndex();
       }
       @Override
@@ -494,7 +495,7 @@ public class S1001_CompoundExample {
       }
     });
     
-    
+    matrix.getHeaderX().unbind(Matrix.CMD_RESIZE_PACK, SWT.MouseDoubleClick, 1);
   }
   
   void highlightHeaders() {

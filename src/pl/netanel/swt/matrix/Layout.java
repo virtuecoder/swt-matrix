@@ -501,13 +501,13 @@ class Layout<N extends Number> {
 	 * @return
 	 */
 	public AxisItem<N> getResizeItem(int distance) {
-		int resizeMargin = axis.getResizeOffset();
-		Cache cache = getCache(distance - resizeMargin);
+		int resizeOffset = axis.getResizeOffset();
+		Cache cache = getCache(distance - resizeOffset);
 			
 		for (int i = 1; i < cache.lines.size(); i++) {
 			Bound bound = cache.lines.get(i);
-			int left = bound.distance - resizeMargin;
-			int right = bound.distance + bound.width + resizeMargin;
+			int left = bound.distance - resizeOffset;
+			int right = bound.distance + bound.width + resizeOffset;
 			if (left <= distance && distance <= right) {
 				AxisItem<N> item = cache.items.get(i - 1);
 				return item.section.isResizable(item.getIndex()) ? item : null;		

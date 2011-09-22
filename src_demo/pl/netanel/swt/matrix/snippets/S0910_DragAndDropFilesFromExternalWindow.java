@@ -24,9 +24,9 @@ import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
 
 /**
- * Simplest matrix.
+ * Drag and drop files from external window.
  */
-public class S0910_DragAndDropFiles {
+public class S0910_DragAndDropFilesFromExternalWindow {
 	public static void main(String[] args) {
 		Shell shell = new Shell();
 		shell.setText(title);

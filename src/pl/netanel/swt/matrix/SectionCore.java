@@ -757,9 +757,13 @@ class SectionCore<N extends Number> implements Section<N> {
 		assert selection.contains(source);
 		if (selection.isEmpty() || selection.contains(target)) return false;
 			
-		int position = math.compare(getOrder(target), getOrder(source));
-		if (position == 0) return false;
-		N index = position < 0 ? target : math.increment(target);
+		N targetRank = getOrder(target);
+    N sourceRank = getOrder(source);
+    int compareRank = math.compare(targetRank, sourceRank);
+		if (compareRank == 0) return false;
+		N index = compareRank < 0 ? target : 
+		  math.compare(targetRank, math.decrement(count)) == 0 ? count : 
+		    getIndex(math.increment(targetRank));
 
 		order.move(selection, index);
 		return true;

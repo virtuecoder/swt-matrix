@@ -153,17 +153,52 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 */
 	public static final int CMD_DELETE = 209;						
 	
+	
 	public static final int CMD_ITEM_HIDE = 301;						// binding = SWT.MOD3 + SWT.DEL;
 	public static final int CMD_ITEM_SHOW = 302;					// binding = SWT.MOD3 + SWT.INSERT;
 	
-	static final int RESIZE_START = 320;					    
-	static final int RESIZE_STOP = 321;					    
-	static final int CMD_RESIZE_PACK = 322;					   
+	public static final int CMD_RESIZE_START = 320;					    
+	public static final int CMD_RESIZE = 321;					    
+	public static final int CMD_RESIZE_STOP = 321;					    
+	public static final int CMD_RESIZE_PACK = 322;
+	
+	public static final int CMD_MOVE_START = 330;					    
+	public static final int CMD_MOVE = 331;					    
+	public static final int CMD_MOVE_STOP = 331;
+	
+	public static final int CMD_SELECT_START = 340;					    
+	public static final int CMD_SELECT = 341;					    
+	public static final int CMD_SELECT_STOP = 341;					    
+	
+	public static final int CMD_SELECT_ALTER_START = 350;					    
+	public static final int CMD_SELECT_ALTER = 351;					    
+	public static final int CMD_SELECT_ALTER_STOP = 351;					    
 	
 	public static final int CMD_TRAVERSE_TAB_NEXT = 400;       // binding = SWT.TAB
 	public static final int CMD_TRAVERSE_TAB_PREVIOUS = 401;       // binding = SWT.MOD2 + SWT.TAB
 
-	
+	/**
+	 * State bit indicating that the an item has been clicked again
+	 * Value is 1&lt;&lt;5
+	 */
+	public static final int STATE_CLICKED_AGAIN = 1 << 5;
+	/**
+	 * State bit indicating that the matrix in the process of moving an item
+	 * Value is 1&lt;&lt;6
+	 */
+	public static final int STATE_MOVING = 1 << 6;
+	/**
+	 * State bit indicating that the matrix in the process of resizing an item
+	 * Value is 1&lt;&lt;7
+	 */
+	public static final int STATE_RESIZING = 1 << 7;
+	/**
+	 * State bit indicating that the mouse is in the resize area of the zone.
+	 * When in resize area the user can resize the item by dragging or double click.
+	 * The resize area offset is defined by {@link Axis#setResizeOffset(int)}.
+	 * Value is 1&lt;&lt;8
+	 */
+	public static final int STATE_RESIZE_AREA = 1 << 8;
 
 	/*------------------------------------------------------------------------
 	 * Mouse event modifiers, cannot collide with SWT state masks or mouse button numbers
@@ -698,8 +733,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 //		layoutY.start = layoutY.current == null ? layoutY.start : layoutY.current;
 //		layoutX.start = layoutX.current == null ? layoutX.start : layoutX.current;
 
-		layoutY.start = layoutY.current;
-		layoutX.start = layoutX.current;
+//		layoutY.start = layoutY.current;
+//		layoutX.start = layoutX.current;
 		layoutY.compute();
 		layoutX.compute();
 		updateScrollBars();

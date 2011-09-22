@@ -1,5 +1,5 @@
 <project name="swt-matrix" default="local website" basedir=".">
-	<property name="version" value="0.5" />
+	<property name="version" value="0.5.3" />
 	<property name="local_website" value="c:\dev\wamp\www\netanel15" />
 
 	<property name="db.username" value="root"/>

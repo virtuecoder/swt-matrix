@@ -103,6 +103,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 //	ArrayList<GestureBinding> bindings;
 	AxisListener<X> stateX;
 	AxisListener<Y> stateY;
+	int state;
 	boolean instantMoving, mouseDown;
 	ZoneCore<X, Y> zone;
 	Cursor cursor;
@@ -150,8 +151,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 	public void handleEvent(Event e) {
 //	  System.out.println(SwtTestCase.getTypeName(e.type));
 		try {
+		  stateX.setItem(e);
 			stateY.setItem(e);
-			stateX.setItem(e);
 
 			boolean keyEvent = e.type == SWT.KeyDown || e.type == SWT.KeyUp;
 			if (keyEvent) {
@@ -169,8 +170,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 			  mouseDown = true;
 			  matrix.forceFocus();
 			}
-			stateY.update(e, e.y);
 			stateX.update(e, e.x);
+			stateY.update(e, e.y);
 			
 			// Execute zone listeners
 			/* TODO Make zone detection only for x,y events (mouse and maybe something else),
@@ -237,7 +238,9 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 		
 		public void setItem(Event e) {
 		  if (e.type == SWT.Activate) {
-		    item = last = axis.getFocusItem();
+		    if (item == null) {
+		      item = last = axis.getFocusItem();
+		    }
 		  }
 		  else if (e.type == SWT.MouseMove) {
 				distance = axis.symbol == 'X' ? e.x : e.y;
@@ -986,7 +989,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       gc.setAlpha(255);
       gc.setAdvanced(advanced);
     }
-    
+
     @Override public void paint(int x, int y, int width, int height) {
       if (!instantMoving) {
         gc.setForeground(matrix.getDisplay().getSystemColor(SWT.COLOR_BLACK));
@@ -1005,10 +1008,10 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         
         // Text
         if (painter == null) {
-          gc.drawText((stateY.moving ? stateY : stateX).last.getIndex().toString(),
-            x2 + 1, y2 + 1);
+          gc.drawText((stateY.moving ? stateY : stateX).last.getIndex().toString(), x2 + 1, y2 + 1);
         } 
         else if (bounds != null) {
+          painter.setup(stateX.last.getIndex(), stateY.last.getIndex());
           painter.paint(x2, y2, bounds.width, bounds.height);
         }
         
@@ -1080,7 +1083,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
           if (before && (stateX.item == null || stateX.layout.compare(stateX.item, stateX.last) > 0)) {
             stateX.item = stateX.layout.nextItem(item, stateX.layout.backwardNavigator);
           }
-          else if (!before && (stateX.item == null ||stateX.layout.compare(stateX.item, stateX.last) < 0)) {
+          else if (!before && (stateX.item == null || stateX.layout.compare(stateX.item, stateX.last) < 0)) {
             stateX.item = stateX.layout.nextItem(item, stateX.layout.forwardNavigator);
           }
 //          feedback = before ? DND.FEEDBACK_INSERT_BEFORE : DND.FEEDBACK_INSERT_AFTER;

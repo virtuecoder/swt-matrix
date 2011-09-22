@@ -1,4 +1,27 @@
 -------------------------------------------------------------------------------
+Version 0.5.3
+
+Bug fixes:
+- Moving items to the end did not always work.
+
+-------------------------------------------------------------------------------
+Version 0.5.2
+
+Bug fixes:
+- Focus item was set to initial value after widget lost and regained focus.
+
+-------------------------------------------------------------------------------
+Version 0.5.1
+
+API changes:
+- Removed Axis.getItemByViewportOffset(AxisItem, int) - it can be replaced with int pos = axis.getViewportPosition(AxisItem); axis.getItemByViewportPosition(post + offset);
+
+Bug fixes:
+- Axis was making the foces item to be the first in the viewport after Matrix.refresh
+- java.lang.IndexOutOfBoundsException when refreshing an empty section.
+
+
+-------------------------------------------------------------------------------
 Version 0.5
 The focus for this release has been stabilizing the API.
 

@@ -35,7 +35,10 @@ abstract class Direction<N extends Number> {
 		section = item.section;
 		seq = getSequence(section, sign);
 		seq.init();
-		if (!seq.set(item.getIndex())) return false;
+		if (!seq.set(item.getIndex())) {
+		  hasMore = false;
+		  return false;
+		}
 		seq.level = 1;
 		level = !section.isVisible() || skipWithoutCurrent && !section.isFocusItemEnabled() ? 0 : 1;
 		pending = false;
