@@ -11,7 +11,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class) 
 @SuppressWarnings({"unchecked", "rawtypes"}) 
-public class  DragTest extends SwtTestCase {
+public class  DragMoveTest extends SwtTestCase {
   
   @Test public void dragForthAndBack() throws Exception {
     final Matrix matrix = new Matrix(shell, 0);

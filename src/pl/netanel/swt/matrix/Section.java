@@ -782,6 +782,10 @@ public interface Section<N extends Number> {
    */
   void setOrder(N index, N target);
   
+  void setOrder(Iterator<N> iterator);
+  
+  void setOrderExtents(Iterator<Extent<N>> iterator);
+  
   /**
    * Returns the order rank of the item with the given index in the model.
    * It is calculated according to the current order including the hidden items.

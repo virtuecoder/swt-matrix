@@ -26,6 +26,7 @@ class FontWidthCache {
 				a[ch] = gc.stringExtent(Character.toString((char) ch)).x;
 			}
 			cache.put(font, a);
+			System.out.println(font.hashCode());
 		}
 		return a;
 	}

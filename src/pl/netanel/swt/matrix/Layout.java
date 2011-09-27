@@ -414,6 +414,9 @@ class Layout<N extends Number> {
 
 	public boolean isScrollRequired() {
 		if (main.isEmpty()) return false;
+//		if (axis.symbol == 'X') {
+//		  System.out.println("is required " + (compare(start, forward.min) != 0 || compare(endNoTrim, backward.min) != 0));
+//		}
 		return compare(start, forward.min) != 0 || compare(endNoTrim, backward.min) != 0; 
 	}
 	
@@ -717,19 +720,26 @@ class Layout<N extends Number> {
 			start = Util.notNull(super.isEmpty() ? forward.min : items.get(0), zeroItem);
 			end = Util.notNull(super.isEmpty() ? forward.min: items.get(items.size() - 2), zeroItem);
 			
-			// Compute last index that fully visible (not trimmed) 
+			// Compute last index that is fully visible (not trimmed) 
 			endNoTrim = end;
 			isTrimmed = false;
 			trim = 0;
 			if (cells.size() > 1) {
-				if (outerWidth > maxWidth && outerWidth != maxWidth +
-						cells.get(cells.size() - 1).width +
-						lines.get(lines.size() - 2).width) {
+				if (outerWidth > maxWidth /*&& */) {
 					endNoTrim = items.get(items.size() - 3);
-					isTrimmed = true;
-					trim = 1;
+					if (outerWidth != maxWidth +
+            cells.get(cells.size() - 1).width +
+            lines.get(lines.size() - 2).width) 
+					{
+					  isTrimmed = true;
+					  trim = 1;
+					}
 				}
 			}
+//			if (start.section.index == 1) {
+//			  TestUtil.log(axis.matrix.getDisplay().getCursorLocation().x, endNoTrim, end, isTrimmed);
+//			}
+      
 			forward.start = start;
 			backward.start = endNoTrim;
 			

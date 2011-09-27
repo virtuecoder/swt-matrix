@@ -384,6 +384,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         }
 				resizeItem.section.setCellWidth(
 						resizeItem.getIndex(), resizeItem.getIndex(), newCellWidth);
+				
+//				System.out.println(Matrix.changeCount);
 				layout.compute();
 				matrix.updateScrollBars();
 				matrix.redraw();

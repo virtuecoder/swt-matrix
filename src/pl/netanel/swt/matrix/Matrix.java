@@ -157,22 +157,22 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	public static final int CMD_ITEM_HIDE = 301;						// binding = SWT.MOD3 + SWT.DEL;
 	public static final int CMD_ITEM_SHOW = 302;					// binding = SWT.MOD3 + SWT.INSERT;
 	
-	public static final int CMD_RESIZE_START = 320;					    
-	public static final int CMD_RESIZE = 321;					    
-	public static final int CMD_RESIZE_STOP = 321;					    
+	public static final int CMD_RESIZE_DND_START = 320;					    
+	public static final int CMD_RESIZE_DND = 321;					    
+	public static final int CMD_RESIZE_DND_STOP = 321;					    
 	public static final int CMD_RESIZE_PACK = 322;
 	
-	public static final int CMD_MOVE_START = 330;					    
-	public static final int CMD_MOVE = 331;					    
-	public static final int CMD_MOVE_STOP = 331;
+	public static final int CMD_MOVE_DND_START = 330;					    
+	public static final int CMD_MOVE_DND = 331;					    
+	public static final int CMD_MOVE_DND_STOP = 331;
 	
-	public static final int CMD_SELECT_START = 340;					    
-	public static final int CMD_SELECT = 341;					    
-	public static final int CMD_SELECT_STOP = 341;					    
+	public static final int CMD_SELECT_DND_START = 340;					    
+	public static final int CMD_SELECT_DND = 341;					    
+	public static final int CMD_SELECT_DND_STOP = 341;					    
 	
-	public static final int CMD_SELECT_ALTER_START = 350;					    
-	public static final int CMD_SELECT_ALTER = 351;					    
-	public static final int CMD_SELECT_ALTER_STOP = 351;					    
+	public static final int CMD_SELECT_DND_ALTER_START = 350;					    
+	public static final int CMD_SELECT_DND_ALTER = 351;					    
+	public static final int CMD_SELECT_DND_ALTER_STOP = 351;					    
 	
 	public static final int CMD_TRAVERSE_TAB_NEXT = 400;       // binding = SWT.TAB
 	public static final int CMD_TRAVERSE_TAB_PREVIOUS = 401;       // binding = SWT.MOD2 + SWT.TAB
@@ -181,7 +181,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 * State bit indicating that the an item has been clicked again
 	 * Value is 1&lt;&lt;5
 	 */
-	public static final int STATE_CLICKED_AGAIN = 1 << 5;
+	public static final int STATE_IS_SELECTED = 1 << 5;
 	/**
 	 * State bit indicating that the matrix in the process of moving an item
 	 * Value is 1&lt;&lt;6

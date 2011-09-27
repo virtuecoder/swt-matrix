@@ -1,5 +1,7 @@
 package pl.netanel.swt.matrix;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.swt.events.ControlListener;
@@ -365,6 +367,36 @@ class SectionClient<N extends Number> implements Section<N> {
 	  checkLineIndex(target, "target");
 	  core.setOrder(index, index, target);
 	}
+	
+	@Override public void setOrder(Iterator<N> iterator) {
+	  @SuppressWarnings("unchecked")
+    ArrayList<MutableExtent<N>> copy = (ArrayList<MutableExtent<N>>) core.order.items.clone();
+    
+	  core.setOrder(iterator);
+    
+    MutableNumber<N> iteratorCount = core.order.getCount();
+    if (core.math.compare(iteratorCount, core.getCount()) != 0) {
+      core.order.items = copy;
+      throw new IllegalArgumentException(MessageFormat.format(
+        "The number of items in the iterator {0} must be equal to the item count of the section {1}", 
+        iteratorCount, core.getCount()));
+    }
+  }
+  
+  @Override public void setOrderExtents(Iterator<Extent<N>> iterator) {
+    @SuppressWarnings("unchecked")
+    ArrayList<MutableExtent<N>> copy = (ArrayList<MutableExtent<N>>) core.order.items.clone();
+    
+    core.setOrderExtents(iterator);
+    
+    MutableNumber<N> iteratorCount = core.order.getCount();
+    if (core.math.compare(iteratorCount, core.getCount()) != 0) {
+      core.order.items = copy;
+      throw new IllegalArgumentException(MessageFormat.format(
+        "The number of items in the iterator {0} must be equal to the item count of the section {1}", 
+        iteratorCount, core.getCount()));
+    }
+  }
 
 	@Override public N getOrder(N index) {
 	  checkCellIndex(index, "index");

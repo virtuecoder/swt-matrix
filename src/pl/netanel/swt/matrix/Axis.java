@@ -35,7 +35,9 @@ public class Axis<N extends Number>  {
 	
 	char symbol;
 	Matrix<? extends Number, ? extends Number> matrix;
-	private ScrollBar scrollBar;
+	ScrollBar scrollBar;
+
+  private boolean scrollBarVisible;
 
 	/**
 	 * Constructs axis indexed by Integer class with two sections.
@@ -478,7 +480,7 @@ public class Axis<N extends Number>  {
 	}
 
 	/**
-	 * Returns the offset from the dividing line within which dragging changes the axis item width. 
+	 * Returns the offset from the dividing line within which dragging changes the width of the axis item.
 	 * The default value is 3 for horizontal and 2 for vertical axis.  
 	 */
 	public int getResizeOffset() {
@@ -570,9 +572,13 @@ public class Axis<N extends Number>  {
 	 */
 	boolean updateScrollBarVisibility() {
 		if (scrollBar == null) return false;
-		boolean b = scrollBar.getVisible();
+		if (scrollBarVisible != scrollBar.getVisible()) {
+//		  System.out.println("was visible: " + scrollBarVisible);
+//		  System.out.println(layout.isScrollRequired());
+		}
+		scrollBarVisible = scrollBar.getVisible();
 		scrollBar.setVisible(layout.isScrollRequired());
-		return b != scrollBar.isVisible();
+		return scrollBarVisible != scrollBar.isVisible();
 	}
 
 	/**

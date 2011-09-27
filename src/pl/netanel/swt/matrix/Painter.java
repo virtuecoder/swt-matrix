@@ -1,5 +1,7 @@
 package pl.netanel.swt.matrix;
 
+import static java.lang.Math.max;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.DisposeEvent;
@@ -13,7 +15,6 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.TextLayout;
 
-import pl.netanel.util.Arrays;
 import pl.netanel.util.Preconditions;
 
 
@@ -191,7 +192,7 @@ public class Painter<X extends Number, Y extends Number> {
    */
   public static final String NAME_FREEZE_TAIL_LINE_Y = "freeze tail line y";
 	
-	private static int[] EXTENT_ALIGN = {SWT.RIGHT, SWT.END, SWT.BOTTOM, SWT.CENTER};
+	//private static int[] EXTENT_ALIGN = {SWT.RIGHT, SWT.END, SWT.BOTTOM, SWT.CENTER};
 	static enum TextClipMethod {DOTS_IN_THE_MIDDLE, DOTS_AT_THE_END, CUT, NONE};
 	
 	/**
@@ -348,6 +349,7 @@ public class Painter<X extends Number, Y extends Number> {
 		}
 		
 		Font font = style.font == null ? matrix.getDisplay().getSystemFont() : style.font;
+		TestUtil.log(font.hashCode(), style.font);
     gc.setFont(font);
 		extentCache = FontWidthCache.get(gc, font);
 		extent = new Point(-1, gc.stringExtent("ty").y);
@@ -432,10 +434,11 @@ public class Painter<X extends Number, Y extends Number> {
 			case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
 				y2 += height - bounds.height - style.imageMarginY; break;
 			}
-			Rectangle lastClipping = gc.getClipping();
-			gc.setClipping(x, y, width, height);
+			if (clipping2 == null) {
+			  clipping2 = gc.getClipping();
+			  gc.setClipping(x, y, width, height);
+			}
 			gc.drawImage(image, x2, y2);
-			gc.setClipping(lastClipping);
 			width -= bounds.width;
 		}
 		
@@ -451,19 +454,21 @@ public class Painter<X extends Number, Y extends Number> {
 		  
 		  if (!style.hasWordWraping) {
 		    // Compute extent only when font changes or text horizontal align is center or right  
-		    if (fontChange || 
-          Arrays.contains(EXTENT_ALIGN, style.textAlignX)) {
-          extent = gc.stringExtent(text);
-        }
+//		    if (fontChange || 
+//          Arrays.contains(EXTENT_ALIGN, style.textAlignX)) {
+//          extent = gc.stringExtent(text);
+//        }
+        extent = gc.stringExtent(text);
 		    
 		    if (style.textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
+//		      text = shortenTextMiddle(text, width - style.textMarginX * 2);      
 		      text = FontWidthCache.shortenTextMiddle(
 		        text, width - style.textMarginX * 2, extent, extentCache);      
 		    } 
-		    else if (style.textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
-		      text = FontWidthCache.shortenTextEnd(
-		        text, width - style.textMarginX * 2, extent, extentCache);     
-		    } 
+//		    else if (style.textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
+//		      text = FontWidthCache.shortenTextEnd(
+//		        text, width - style.textMarginX * 2, extent, extentCache);     
+//		    } 
 		  }
 		  
 		  switch (style.textAlignX) {
@@ -502,7 +507,11 @@ public class Painter<X extends Number, Y extends Number> {
 		  } 
 		  else {
 //			if (width < 4 || height < 4) return;
-		    
+	      if (clipping2 == null && height < extent.y + 2 * style.textMarginY) {
+	        clipping2 = gc.getClipping();
+	        gc.setClipping(x, y, width, height);
+	      }
+
 		    gc.drawString(text, x3, y3, true);
 		  }
 		}
@@ -510,6 +519,44 @@ public class Painter<X extends Number, Y extends Number> {
 		  gc.setClipping(clipping2);
 		}
 	}
+	
+	public String shortenTextMiddle(String s, int width) {
+    if (s == null) return s;
+    
+    int len = s.length();
+    int w = 0;
+    int i = 0;
+    if (extent.x > width) {
+      int dot = gc.stringExtent(".").x;
+      int dot2 = gc.stringExtent("..").x;
+      int pivot = i / 2;
+      int pos1 = pivot;
+      int pos2 = len - pivot;
+      int len1 = gc.stringExtent(s.substring(0, pos1)).x;
+      int len2 = gc.stringExtent(s.substring(pos2, len)).x;
+      int last = len - 1;
+      while (pos1 > 0 && pos2 < last) {
+        if ((w = len1 + dot2 + len2) <= width) break;
+        else if (pos1 <= 1 && (w = len1 + dot2) <= width) { 
+          pos2 = len; break; 
+        }
+        int w2 = gc.stringExtent(Character.toString(s.charAt(--pos1))).x;
+        len1 -= w2;
+        if (w - w2 > width) {
+          len2 -= gc.stringExtent(Character.toString(s.charAt(++pos2))).x;
+        }
+      }
+      if (w <= width) {
+        s = s.substring(0, pos1) + ".." + s.substring(pos2, len);
+      }
+      else {
+        w = dot2 <= width ? dot2 : dot <= width ? dot : 0;
+        s = dot2 <= width ? ".." : dot <= width ? "." : "";
+      }
+    }
+    extent.x = w;
+    return s;
+  }
 	
 	
 	/**
@@ -625,9 +672,7 @@ public class Painter<X extends Number, Y extends Number> {
 	    y = bounds.height + 2 * style.imageMarginY;
 	  }
 	  
-    Point p;
     if (text != null) {
-      p = gc.stringExtent(text);
       
       if (style.hasWordWraping) {
         if (wHint == SWT.DEFAULT) {
@@ -654,15 +699,17 @@ public class Painter<X extends Number, Y extends Number> {
           y2 += textLayout.getLineBounds(i).height;
         
         x += wHint == SWT.DEFAULT ? textLayout.getBounds().width + 2 * style.textMarginX: x2;
-        y = java.lang.Math.max(y, y2 + 2 * style.textMarginY);
+        y = max(y, y2 + 2 * style.textMarginY);
       } 
       else {
-        x += p.x + 2 * style.textMarginX;
-        y = java.lang.Math.max(y, y + 2 * style.textMarginY);
+//        extent = gc.stringExtent(text);
+//        x += extent.x + 2 * style.textMarginX;
+        x += FontWidthCache.getWidth(text, gc, extentCache) + 2 * style.textMarginX;
+        y = max(y, extent.y + 2 * style.textMarginY);
       }
     }
     
-	  return new Point(x, y);
+	  return new Point(max(x, wHint), max(y, hHint));
 	}
 
 	
@@ -748,20 +795,19 @@ public class Painter<X extends Number, Y extends Number> {
   
   
   static void printGC(GC gc) {
-//    System.out.println("getForeground() " +  gc.getForeground());
-//    System.out.println("getBackground() " +  gc.getBackground());
-//    System.out.println("getForegroundPattern() " +  gc.getForegroundPattern());
-//    System.out.println("getBackgroundPattern() " +  gc.getBackgroundPattern());
-//    System.out.println("isClipped() " +  gc.isClipped());
-//    System.out.println("getLineWidth() " +  gc.getLineWidth());
-//    System.out.println("getXORMode() " +  gc.getXORMode());
+    System.out.println("getForeground() " +  gc.getForeground());
+    System.out.println("getBackground() " +  gc.getBackground());
+    System.out.println("getForegroundPattern() " +  gc.getForegroundPattern());
+    System.out.println("getBackgroundPattern() " +  gc.getBackgroundPattern());
+    System.out.println("isClipped() " +  gc.isClipped());
+    System.out.println("getLineWidth() " +  gc.getLineWidth());
+    System.out.println("getXORMode() " +  gc.getXORMode());
     
-//    System.out.println("getAdvanced() " +  gc.getAdvanced());
-//    System.out.println("getAlpha() " +  gc.getAlpha());
-//    System.out.println("getAntialias() " +  gc.getAntialias());
-//    System.out.println("getFillRule() " +  gc.getFillRule());
-//    System.out.println("getInterpolation() " +  gc.getInterpolation());
-//    System.out.println("style " +  gc.style);
-//    System.out.println("getTextAntialias() " +  gc.getTextAntialias());
+    System.out.println("getAdvanced() " +  gc.getAdvanced());
+    System.out.println("getAlpha() " +  gc.getAlpha());
+    System.out.println("getAntialias() " +  gc.getAntialias());
+    System.out.println("getFillRule() " +  gc.getFillRule());
+    System.out.println("getInterpolation() " +  gc.getInterpolation());
+    System.out.println("getTextAntialias() " +  gc.getTextAntialias());
   }
 }

@@ -45,7 +45,7 @@ public class S0005_SortingByColumns {
     list.add(new String[] { "Task 3", "low" });
     list.add(new String[] { "Task 4", "high" });
     list.add(new String[] { "Task 5", "medium" });
-    
+
     // Sorted list holder
     final ArrayList<String[]> sorted = new ArrayList<String[]>();
     sorted.addAll(list);
@@ -58,9 +58,9 @@ public class S0005_SortingByColumns {
     gc.fillRectangle(0, 0, 9, 5);
     gc.setBackground(display.getSystemColor(SWT.COLOR_DARK_GRAY));
     gc.setAntialias(SWT.ON);
-    gc.fillPolygon(new int[] {5, 0, 9, 5, 0, 5});    
+    gc.fillPolygon(new int[] { 5, 0, 9, 5, 0, 5 });
     gc.dispose();
-    
+
     final Image sortDesc = new Image(display, 9, 5);
     gc = new GC(sortDesc);
     gc.setAntialias(SWT.ON);
@@ -68,13 +68,14 @@ public class S0005_SortingByColumns {
     gc.fillRectangle(0, 0, 9, 5);
     gc.setBackground(display.getSystemColor(SWT.COLOR_DARK_GRAY));
     gc.setAntialias(SWT.ON);
-    gc.fillPolygon(new int[] {5, 5, 9, 0, 0, 0});    
+    gc.fillPolygon(new int[] { 5, 5, 9, 0, 0, 0 });
     gc.dispose();
-    
+
     final int[] direction = new int[] { 0, 0 };
 
     // Matrix
-    final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
+    final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell,
+      SWT.V_SCROLL);
     matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
     Axis<Integer> axisY = matrix.getAxisY();
@@ -99,17 +100,17 @@ public class S0005_SortingByColumns {
       });
 
     // Paint text and sorting image in the column headers zone
-    Painter<Integer, Integer> columnHeaderPainter = 
-      new Painter<Integer, Integer>(Painter.NAME_CELLS) {
-        @Override
-        public void setupSpatial(Integer indexX, Integer indexY) {
-          text = indexX.toString();
-  
-          int column = indexX.intValue();
-          image = direction[column] == 0 ? null
-            : direction[column] == 1 ? sortAsc : sortDesc;
-        }
-      };
+    Painter<Integer, Integer> columnHeaderPainter = new Painter<Integer, Integer>( 
+      Painter.NAME_CELLS) {
+      @Override
+      public void setupSpatial(Integer indexX, Integer indexY) {
+        text = indexX.toString();
+
+        int column = indexX.intValue();
+        image = direction[column] == 0 ? null
+          : direction[column] == 1 ? sortAsc : sortDesc;
+      }
+    };
 
     matrix.getHeaderX().replacePainter(columnHeaderPainter);
     Style style = columnHeaderPainter.style;
@@ -117,11 +118,13 @@ public class S0005_SortingByColumns {
     style.imageAlignY = SWT.CENTER;
     style.imageMarginX = 5;
 
-    // Change sorting on mouse down in a column header 
+    // Change sorting on mouse down in a column header
     matrix.getHeaderX().addListener(SWT.MouseDown, new Listener() {
-      @Override public void handleEvent(Event e) {
+      @Override
+      public void handleEvent(Event e) {
         // AxisItem<Y> item0 = matrix.getAxisY().getItemByDistance(e.y);
-        AxisItem<Integer> itemX = matrix.getAxisX().getItemByViewportDistance(e.x);
+        AxisItem<Integer> itemX = matrix.getAxisX().getItemByViewportDistance(
+          e.x);
         final int column = itemX.getIndex().intValue();
 
         int previousDirection = direction[column];
@@ -131,14 +134,15 @@ public class S0005_SortingByColumns {
         direction[column] = previousDirection <= 0 ? 1 : -1;
 
         Collections.sort(sorted, new Comparator<String[]>() {
-          @Override public int compare(String[] o1, String[] o2) {
+          @Override
+          public int compare(String[] o1, String[] o2) {
             return o1[column].compareTo(o2[column]) * direction[column];
           }
         });
         matrix.redraw();
       }
     });
-    
+
     // Unbind column selection on click
     matrix.getHeaderX().unbind(Matrix.CMD_SELECT_COLUMN, SWT.MouseDown, 1);
     matrix.getHeaderX().unbind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
@@ -161,8 +165,8 @@ public class S0005_SortingByColumns {
     return image;
   }
 
-	// Meta data
-	static final String title = "Sorting by columns";
-	static final String instructions = "";
-	static final String code = "0005";
+  // Meta data
+  static final String title = "Sorting by columns";
+  static final String instructions = "";
+  static final String code = "0005";
 }

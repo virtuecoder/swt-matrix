@@ -399,6 +399,10 @@ public class  SwtTestCase {
     postClick(p, SWT.BUTTON1);
     processEvents();
   }
+  
+  public void click(int x, int y) {
+    click(new Point(x, y));
+  }
 
   /**
    * Imitates double clicking on the middle of the control with left mouse

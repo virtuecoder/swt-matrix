@@ -561,6 +561,22 @@ class SectionCore<N extends Number> implements Section<N> {
 	  order.move(index, index, target);
 	}
 	
+	@Override public void setOrder(Iterator<N> iterator) {
+	  order.clear();
+	  while(iterator.hasNext()) {
+	    N next = iterator.next();
+	    order.add(next);
+	  }
+	}
+	
+	@Override public void setOrderExtents(Iterator<Extent<N>> iterator) {
+	  order.clear();
+	  while(iterator.hasNext()) {
+	    Extent<N> next = iterator.next();
+	    order.add(next.start, next.end);
+	  }
+	}
+	
 	@Override public void delete(N start, N end) {
 		cellWidth.delete(start, end);
 		lineWidth.delete(start, end);

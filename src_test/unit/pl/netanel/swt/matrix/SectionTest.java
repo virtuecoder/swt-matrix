@@ -3,6 +3,8 @@ package pl.netanel.swt.matrix;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.Arrays;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -212,6 +214,17 @@ import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 //		section.insert(0, 1);
 //		assertEquals(2, section.getCount());
 	}
+	
+	@Ignore
+	@Test
+  public void setOrderItarator() throws Exception {
+	  SectionCore section = new SectionCore(int.class);
+    section.setCount(5);
+    section.setOrder(Arrays.asList(new Integer[] {1, 2, 0, 3, 4}).iterator());
+    assertEquals("1, 2, 0, 3, 4", toString(section));
+  }
+	
+	
 	
 //	private static String moveSelected(SectionUnchecked section, int source, int target) {
 //		section.moveSelected(source, target);
