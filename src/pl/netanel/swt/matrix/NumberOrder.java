@@ -35,6 +35,31 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 		}
 		count = newCount;
 	}
+	
+	/**
+	 * Adds indexes in a sequential order
+	 */
+	@Override
+	public boolean add(N index) {
+	  if (!items.isEmpty()) {
+	    MutableExtent<N> e = items.get(items.size() - 1);
+	    if (math.compare(index, math.increment(e.end())) == 0) {
+	      e.end.set(index);
+	      return true;
+	    } 
+	  }
+    items.add(new MutableExtent<N>(math.create(index), math.create(index)));
+	  return true;
+	}
+	
+	/**
+	 * Adds extents in a sequential order
+	 */
+	@Override
+	public boolean add(N start, N end) {
+	  items.add(new MutableExtent<N>(math.create(start), math.create(end)));
+	  return true;
+	}
 
 	public void move(N start, N end, N target) {
 		// Adjust the target if subject contains it
@@ -131,7 +156,8 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	}
 
 	// TODO Merge inserted extent with the next one
-	public void insert(N target, N count) {
+	@Override
+  public void insert(N target, N count) {
 		int imax = items.size();
 		if (imax == 0) {
 			items.add(new MutableExtent<N>(math.create(0), math.create(0)));
