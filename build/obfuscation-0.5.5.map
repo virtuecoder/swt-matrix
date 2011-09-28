@@ -45,24 +45,24 @@ pl.netanel.swt.matrix.Axis -> pl.netanel.swt.matrix.Axis:
     525:555:void setMatrix(pl.netanel.swt.matrix.Matrix,char) -> a
     562:565:void scroll() -> a
     574:581:boolean updateScrollBarVisibility() -> b
-    593:607:void updateScrollBarValues(int) -> a
-    612:638:void setSelected(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem,boolean) -> a
-    662:670:void setSelected(boolean,boolean,boolean) -> a
-    673:676:void selectInZones(pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number,boolean,boolean) -> a
-    679:684:pl.netanel.swt.matrix.AxisItem getLastItem() -> c
-    688:688:pl.netanel.swt.matrix.AxisItem getFirstItem() -> d
-    692:693:boolean isLastCellTrimmed() -> e
-    697:697:int comparePosition(pl.netanel.swt.matrix.SectionCore,pl.netanel.swt.matrix.SectionCore) -> a
-    701:703:int comparePosition(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem) -> a
-    713:721:void setHidden(boolean) -> a
-    778:780:pl.netanel.swt.matrix.Bound getCellBound(pl.netanel.swt.matrix.SectionCore,java.lang.Number) -> a
-    784:786:pl.netanel.swt.matrix.Bound getLineBound(pl.netanel.swt.matrix.SectionCore,java.lang.Number) -> b
-    793:802:int[] getZOrder() -> f
-    806:815:void deleteInZones(pl.netanel.swt.matrix.SectionCore,java.lang.Number,java.lang.Number) -> a
-    818:824:void insertInZones(pl.netanel.swt.matrix.SectionCore,java.lang.Number,java.lang.Number) -> b
-    829:840:pl.netanel.swt.matrix.SectionCore checkSection(pl.netanel.swt.matrix.Section,java.lang.String) -> a
-    844:846:void checkItem(pl.netanel.swt.matrix.AxisItem,java.lang.String) -> a
-    849:855:pl.netanel.swt.matrix.SectionClient sectionClient(pl.netanel.swt.matrix.Section) -> a
+    593:609:void updateScrollBarValues(int) -> a
+    614:640:void setSelected(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem,boolean) -> a
+    664:672:void setSelected(boolean,boolean,boolean) -> a
+    675:678:void selectInZones(pl.netanel.swt.matrix.Section,java.lang.Number,java.lang.Number,boolean,boolean) -> a
+    681:686:pl.netanel.swt.matrix.AxisItem getLastItem() -> c
+    690:690:pl.netanel.swt.matrix.AxisItem getFirstItem() -> d
+    694:695:boolean isLastCellTrimmed() -> e
+    699:699:int comparePosition(pl.netanel.swt.matrix.SectionCore,pl.netanel.swt.matrix.SectionCore) -> a
+    703:705:int comparePosition(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem) -> a
+    715:723:void setHidden(boolean) -> a
+    780:782:pl.netanel.swt.matrix.Bound getCellBound(pl.netanel.swt.matrix.SectionCore,java.lang.Number) -> a
+    786:788:pl.netanel.swt.matrix.Bound getLineBound(pl.netanel.swt.matrix.SectionCore,java.lang.Number) -> b
+    795:804:int[] getZOrder() -> f
+    808:817:void deleteInZones(pl.netanel.swt.matrix.SectionCore,java.lang.Number,java.lang.Number) -> a
+    820:826:void insertInZones(pl.netanel.swt.matrix.SectionCore,java.lang.Number,java.lang.Number) -> b
+    831:842:pl.netanel.swt.matrix.SectionCore checkSection(pl.netanel.swt.matrix.Section,java.lang.String) -> a
+    846:848:void checkItem(pl.netanel.swt.matrix.AxisItem,java.lang.String) -> a
+    851:857:pl.netanel.swt.matrix.SectionClient sectionClient(pl.netanel.swt.matrix.Section) -> a
 pl.netanel.swt.matrix.Axis$1 -> pl.netanel.swt.matrix.Axis$b:
     pl.netanel.swt.matrix.Axis this$0 -> a
     pl.netanel.swt.matrix.Matrix val$matrix -> b
@@ -82,8 +82,8 @@ pl.netanel.swt.matrix.Axis$ExtentSequence -> pl.netanel.swt.matrix.Axis$a:
     pl.netanel.swt.matrix.AxisItem startItem -> m
     pl.netanel.swt.matrix.AxisItem endItem -> n
     pl.netanel.swt.matrix.Axis this$0 -> f
-    738:754:void init(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem) -> a
-    757:773:boolean next() -> a
+    740:756:void init(pl.netanel.swt.matrix.AxisItem,pl.netanel.swt.matrix.AxisItem) -> a
+    759:775:boolean next() -> a
 pl.netanel.swt.matrix.AxisExtentSequence -> pl.netanel.swt.matrix.d:
     java.util.List sections -> a
     pl.netanel.swt.matrix.SectionCore section -> b
@@ -719,36 +719,36 @@ pl.netanel.swt.matrix.Matrix -> pl.netanel.swt.matrix.Matrix:
     int CMD_DELETE -> CMD_DELETE
     int CMD_ITEM_HIDE -> CMD_ITEM_HIDE
     int CMD_ITEM_SHOW -> CMD_ITEM_SHOW
-    int CMD_RESIZE_DND_START -> h
-    int CMD_RESIZE_DND -> i
-    int CMD_RESIZE_DND_STOP -> j
+    int CMD_RESIZE_DND_START -> CMD_RESIZE_DND_START
+    int CMD_RESIZE_DND -> CMD_RESIZE_DND
+    int CMD_RESIZE_DND_STOP -> CMD_RESIZE_DND_STOP
     int CMD_RESIZE_PACK -> CMD_RESIZE_PACK
-    int CMD_MOVE_DND_START -> k
-    int CMD_MOVE_DND -> l
-    int CMD_MOVE_DND_STOP -> m
-    int CMD_SELECT_DND_START -> n
-    int CMD_SELECT_DND -> o
-    int CMD_SELECT_DND_STOP -> p
-    int CMD_SELECT_DND_ALTER_START -> q
-    int CMD_SELECT_DND_ALTER -> r
-    int CMD_SELECT_DND_ALTER_STOP -> s
+    int CMD_MOVE_DND_START -> CMD_MOVE_DND_START
+    int CMD_MOVE_DND -> CMD_MOVE_DND
+    int CMD_MOVE_DND_STOP -> CMD_MOVE_DND_STOP
+    int CMD_SELECT_DND_START -> CMD_SELECT_DND_START
+    int CMD_SELECT_DND -> CMD_SELECT_DND
+    int CMD_SELECT_DND_STOP -> CMD_SELECT_DND_STOP
+    int CMD_SELECT_DND_ALTER_START -> CMD_SELECT_DND_ALTER_START
+    int CMD_SELECT_DND_ALTER -> CMD_SELECT_DND_ALTER
+    int CMD_SELECT_DND_ALTER_STOP -> CMD_SELECT_DND_ALTER_STOP
     int CMD_TRAVERSE_TAB_NEXT -> CMD_TRAVERSE_TAB_NEXT
     int CMD_TRAVERSE_TAB_PREVIOUS -> CMD_TRAVERSE_TAB_PREVIOUS
-    int STATE_IS_SELECTED -> t
-    int STATE_MOVING -> u
-    int STATE_RESIZING -> v
-    int STATE_RESIZE_AREA -> w
-    pl.netanel.swt.matrix.MatrixModel model -> x
-    java.util.ArrayList zones -> y
-    pl.netanel.swt.matrix.Axis axisY -> z
-    pl.netanel.swt.matrix.Axis axisX -> A
-    pl.netanel.swt.matrix.Layout layoutY -> B
-    pl.netanel.swt.matrix.Layout layoutX -> C
-    pl.netanel.swt.matrix.MatrixListener listener -> D
-    org.eclipse.swt.widgets.Listener listener2 -> E
-    org.eclipse.swt.graphics.Rectangle area -> F
-    pl.netanel.swt.matrix.Painters painters -> G
-    java.util.concurrent.ScheduledExecutorService executor -> H
+    int STATE_IS_SELECTED -> h
+    int STATE_MOVING -> i
+    int STATE_RESIZING -> j
+    int STATE_RESIZE_AREA -> k
+    pl.netanel.swt.matrix.MatrixModel model -> l
+    java.util.ArrayList zones -> m
+    pl.netanel.swt.matrix.Axis axisY -> n
+    pl.netanel.swt.matrix.Axis axisX -> o
+    pl.netanel.swt.matrix.Layout layoutY -> p
+    pl.netanel.swt.matrix.Layout layoutX -> q
+    pl.netanel.swt.matrix.MatrixListener listener -> r
+    org.eclipse.swt.widgets.Listener listener2 -> s
+    org.eclipse.swt.graphics.Rectangle area -> t
+    pl.netanel.swt.matrix.Painters painters -> u
+    java.util.concurrent.ScheduledExecutorService executor -> v
     82:82:boolean isCursorMove(int) -> a
     116:116:boolean isBodySelect(int) -> b
     120:120:boolean isHeaderSelect(int) -> c

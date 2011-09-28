@@ -592,6 +592,8 @@ public class Axis<N extends Number>  {
 		// Quit if there is no scroll bar or the visible area is not initialized
 		if (scrollBar == null || size == 0) return;
 	
+//		System.out.println("update " + matrix.getDisplay().getCursorLocation().x);
+		
 		layout.setViewportSize(size);
 		int min = layout.getScrollMin();
 		int max = layout.getScrollMax();

@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------
+Version 0.5.5
+
+Bug fixes:
+- Scroll thumb had incorrect size when the last visible cell was not trimmed.
+
+-------------------------------------------------------------------------------
 Version 0.5.4
 
 New Features:

@@ -45,5 +45,11 @@ public class  DragResizeTest extends SwtTestCase {
     click(p1);
     dragAndDrop(SWT.BUTTON1, p1, p2, p3);
     assertTrue(matrix.getHorizontalBar().getVisible());
+    
+//    pause();
+//    Point p4 = new Point(452, p1.y);
+//    dragAndDrop(SWT.BUTTON1, p3, p4);
+//    show();
+    
   }
 }

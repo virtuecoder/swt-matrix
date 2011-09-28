@@ -48,5 +48,55 @@ public class LayoutScrollTest {
     assertEquals(4, layout.getScrollMax());
     assertEquals(3, layout.getScrollThumb());
     assertEquals(1, layout.getScrollPosition());
+  }
+  
+  @Test public void thumbSizeWhenNoTrim() throws Exception {
+    Shell shell = new Shell();
+    shell.setLayout(new FillLayout());
+    
+    Matrix matrix = new Matrix(shell, SWT.H_SCROLL);
+    matrix.axisX.getBody().setCount(10);
+    matrix.axisY.getBody().setCount(1);
+    matrix.axisX.getBody().setDefaultCellWidth(100);
+    Layout layout = matrix.layoutX;
+    
+    layout.setViewportSize(303);
+    layout.compute();
+    assertEquals(2, layout.getScrollThumb());
+    layout.setViewportSize(304);
+    layout.compute();
+    assertEquals(3, layout.getScrollThumb());
+    layout.setViewportSize(305);
+    layout.compute();
+    assertEquals(3, layout.getScrollThumb());
+    
+//    TestUtil.showMatrix(matrix);
+    
+  }
+  
+  @Test public void thumbSizeWhenNoTrimVariedLineWidth() throws Exception {
+    Shell shell = new Shell();
+    shell.setLayout(new FillLayout());
+    
+    Matrix matrix = new Matrix(shell, SWT.H_SCROLL);
+    matrix.axisY.getHeader().setVisible(true);
+    matrix.axisX.getBody().setCount(10);
+    matrix.axisY.getBody().setCount(1);
+    matrix.axisX.getBody().setDefaultCellWidth(100);
+    matrix.axisX.getBody().setLineWidth(3, 5);
+    Layout layout = matrix.layoutX;
+    
+    layout.setViewportSize(303);
+    layout.compute();
+    assertEquals(2, layout.getScrollThumb());
+    layout.setViewportSize(304);
+    layout.compute();
+    assertEquals(3, layout.getScrollThumb());
+    layout.setViewportSize(305);
+    layout.compute();
+    assertEquals(3, layout.getScrollThumb());
+    
+//    TestUtil.showMatrix(matrix);
+    
   }  
 }

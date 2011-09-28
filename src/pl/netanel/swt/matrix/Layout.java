@@ -732,8 +732,8 @@ class Layout<N extends Number> {
             lines.get(lines.size() - 2).width) 
 					{
 					  isTrimmed = true;
-					  trim = 1;
 					}
+					trim = 1;
 				}
 			}
 //			if (start.section.index == 1) {

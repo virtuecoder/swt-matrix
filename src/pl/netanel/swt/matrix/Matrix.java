@@ -181,24 +181,24 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 * State bit indicating that the an item has been clicked again
 	 * Value is 1&lt;&lt;5
 	 */
-	public static final int STATE_IS_SELECTED = 1 << 5;
+	static final int STATE_IS_SELECTED = 1 << 5;
 	/**
 	 * State bit indicating that the matrix in the process of moving an item
 	 * Value is 1&lt;&lt;6
 	 */
-	public static final int STATE_MOVING = 1 << 6;
+	static final int STATE_MOVING = 1 << 6;
 	/**
 	 * State bit indicating that the matrix in the process of resizing an item
 	 * Value is 1&lt;&lt;7
 	 */
-	public static final int STATE_RESIZING = 1 << 7;
+	static final int STATE_RESIZING = 1 << 7;
 	/**
 	 * State bit indicating that the mouse is in the resize area of the zone.
 	 * When in resize area the user can resize the item by dragging or double click.
 	 * The resize area offset is defined by {@link Axis#setResizeOffset(int)}.
 	 * Value is 1&lt;&lt;8
 	 */
-	public static final int STATE_RESIZE_AREA = 1 << 8;
+	static final int STATE_RESIZE_AREA = 1 << 8;
 
 	/*------------------------------------------------------------------------
 	 * Mouse event modifiers, cannot collide with SWT state masks or mouse button numbers
