@@ -37,7 +37,7 @@ public class S0401_SimplestZoneEditor {
     matrix.getAxisX().getBody().setCount(3);
 
     // Data painter
-    matrix.getBody().replacePainter(
+    matrix.getBody().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override
         public void setupSpatial(Integer indexX, Integer indexY) {

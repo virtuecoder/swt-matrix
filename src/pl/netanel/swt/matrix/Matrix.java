@@ -837,6 +837,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 * Replaces the painter at the index of painter with the same name.
 	 * If a painter with the specified name does not exist, 
 	 * then the new painter is added at the end.
+	 *   
 	 * @param painter painter to replace a painter with the same name
 	 * @throws IllegalArgumentException if the painter is null
 	 */
@@ -844,6 +845,24 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	  checkOwner(painter);
 		painters.replacePainter(painter);
 		setPainterMatrixAndZone(painter);
+	}
+	
+	/**
+	 * Replaces the painter at the index of painter with the same name.
+	 * If a painter with the specified name does not exist, 
+	 * then the new painter is added at the end.
+	 * <p>
+	 * The new painter inherits the style from the painter that's being replaced. 
+	 * This helps for example to change text in the headers without the need to
+	 * re-apply all the styling data, like background color, selections colors, etc.
+	 *   
+	 * @param painter painter to replace a painter with the same name
+	 * @throws IllegalArgumentException if the painter is null
+	 */
+	public void replacePainterPreserveStyle(Painter<X, Y> painter) {
+	  checkOwner(painter);
+	  painters.replacePainterPreserveStyle(painter);
+	  setPainterMatrixAndZone(painter);
 	}
 	
 	/**

@@ -51,7 +51,7 @@ public class S0004_Add_RemoveModelItems {
     axisX.getHeader().setDefaultCellWidth(16);
     axisX.getHeader().setVisible(true);
 
-    matrix.getBody().replacePainter(
+    matrix.getBody().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override
         public void setupSpatial(Integer indexX, Integer indexY) {
@@ -61,7 +61,7 @@ public class S0004_Add_RemoveModelItems {
         }
       });
 
-    matrix.getHeaderX().replacePainter(
+    matrix.getHeaderX().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
         @Override
         public void setupSpatial(Integer indexX, Integer indexY) {

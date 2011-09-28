@@ -51,7 +51,7 @@ public class S0910_DragAndDropFilesFromExternalWindow {
     axisX.setFocusItemEnabled(false);
     axisY.setFocusItemEnabled(false);
 
-    matrix.getBody().replacePainter(
+    matrix.getBody().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override
         public void setupSpatial(Integer indexX, Integer indexY) {
@@ -62,7 +62,7 @@ public class S0910_DragAndDropFilesFromExternalWindow {
         }
       });
 
-    matrix.getHeaderX().replacePainter(
+    matrix.getHeaderX().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override
         public void setupSpatial(Integer indexX, Integer indexY) {

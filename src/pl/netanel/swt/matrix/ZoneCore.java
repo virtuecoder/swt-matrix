@@ -541,6 +541,13 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		setPainterMatrixAndZone(painter);
 	}
 	
+	@Override public void replacePainterPreserveStyle(Painter<X, Y> painter) {
+	  painters.replacePainterPreserveStyle(painter);
+	  setPainterMatrixAndZone(painter);
+	}
+	
+	
+	
 	@Override public Painter<X, Y> removePainter(int index) {
 		return painters.remove(index);
 	}

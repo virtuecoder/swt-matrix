@@ -91,7 +91,7 @@ public class S0005_SortingByColumns {
     axisX.getHeader().setVisible(true);
 
     // Paint data text in the body zone
-    matrix.getBody().replacePainter(
+    matrix.getBody().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override
         public void setupSpatial(Integer indexX, Integer indexY) {
@@ -112,7 +112,7 @@ public class S0005_SortingByColumns {
       }
     };
 
-    matrix.getHeaderX().replacePainter(columnHeaderPainter);
+    matrix.getHeaderX().replacePainterPreserveStyle(columnHeaderPainter);
     Style style = columnHeaderPainter.style;
     style.imageAlignX = SWT.RIGHT;
     style.imageAlignY = SWT.CENTER;

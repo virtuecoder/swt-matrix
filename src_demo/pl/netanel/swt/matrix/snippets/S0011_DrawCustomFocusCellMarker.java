@@ -27,7 +27,7 @@ public class S0011_DrawCustomFocusCellMarker {
     matrix.getAxisY().getBody().setCount(1000);
 
     matrix
-      .replacePainter(new Painter<Integer, Integer>(Painter.NAME_FOCUS_CELL) {
+      .replacePainterPreserveStyle(new Painter<Integer, Integer>(Painter.NAME_FOCUS_CELL) {
         @Override
         public void paint(int x, int y, int width, int height) {
           // Get bounds of the focus cell

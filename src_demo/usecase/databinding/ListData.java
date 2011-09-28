@@ -47,7 +47,7 @@ public class ListData<T> {
     matrix.getAxisX().getBody().setCount(columnCount);
     matrix.getAxisY().getBody().setCount(list.size());
     
-    matrix.getBody().replacePainter(
+    matrix.getBody().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override public void setupSpatial(Integer indexX, Integer indexY){
           Object value = getModelValue(indexX, indexY);
@@ -57,7 +57,7 @@ public class ListData<T> {
         }
     });
     
-    matrix.getHeaderX().replacePainter(
+    matrix.getHeaderX().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override public void setupSpatial(Integer indexX, Integer indexY){
           ItemData itemX = itemsX.get(indexX);

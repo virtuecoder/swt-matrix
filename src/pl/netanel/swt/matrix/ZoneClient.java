@@ -146,7 +146,13 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   @Override
   public void replacePainter(Painter<X, Y> painter) {
     checkPainter(painter);
-    core.replacePainter(painter);
+    core.replacePainterPreserveStyle(painter);
+  }
+  
+  @Override
+  public void replacePainterPreserveStyle(Painter<X, Y> painter) {
+    checkPainter(painter);
+    core.replacePainterPreserveStyle(painter);
   }
 
   @Override

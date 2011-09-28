@@ -1,4 +1,22 @@
 -------------------------------------------------------------------------------
+Version 0.5.4
+
+New Features:
+- Set order from iterator
+
+API changes:
+- Added Section.setOrder(Iterator)
+- Added Section.setOrderExtents(Iterator)
+- Added Zone.replacePainterPreserveStyle(Painter) - replacePainter(Painter) does not copy style any more
+- Added Matrix.replacePainterPreserveStyle(Painter) - replacePainter(Painter) does not copy style any more
+
+Bug fixes:
+- S1001_CompoundExample was creating a new font on every paint event.
+- Resizing of item was hiding a scrollbar when the last visible item was not trimmed.
+- Clean snippets source code formatting
+- Snippet S0015 did not revert gc.setAdvanced(false) in the Painter.clear() method. 
+
+-------------------------------------------------------------------------------
 Version 0.5.3
 
 Bug fixes:

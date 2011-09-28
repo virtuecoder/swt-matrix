@@ -164,7 +164,7 @@ public class S1001_CompoundExample {
   private void setPainters() {
     matrix.getPainter(Painter.NAME_FREEZE_TAIL_LINE_Y).setEnabled(false);
 
-    matrix.getHeaderX().replacePainter(
+    matrix.getHeaderX().replacePainterPreserveStyle(
       new Painter<Integer, BigInteger>(Painter.NAME_CELLS) {
         @Override
         protected boolean init() {
@@ -225,7 +225,7 @@ public class S1001_CompoundExample {
     body.setSelected(5, indexYY[4], true);
     body.setSelected(5, indexYY[6], true);
 
-    body.replacePainter(bodyPainter = new Painter<Integer, BigInteger>(
+    body.replacePainterPreserveStyle(bodyPainter = new Painter<Integer, BigInteger>(
       Painter.NAME_CELLS) {
       @Override
       public void setup(Integer indexX, BigInteger indexY) {
@@ -279,7 +279,7 @@ public class S1001_CompoundExample {
     
 
     // Vertical lines painter
-    body.replacePainter(new Painter<Integer, BigInteger>(Painter.NAME_LINES_Y) {
+    body.replacePainterPreserveStyle(new Painter<Integer, BigInteger>(Painter.NAME_LINES_Y) {
       private boolean merge;
       private boolean dotted;
 
@@ -340,7 +340,7 @@ public class S1001_CompoundExample {
     painter.style.textAlignX = SWT.RIGHT;
 
     // Total body
-    totalBody.replacePainter(new Painter<Integer, BigInteger>(
+    totalBody.replacePainterPreserveStyle(new Painter<Integer, BigInteger>(
       Painter.NAME_CELLS) {
       @Override
       public void setupSpatial(Integer indexX, BigInteger indexY) {

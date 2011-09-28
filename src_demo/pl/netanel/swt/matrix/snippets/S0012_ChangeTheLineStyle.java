@@ -23,7 +23,7 @@ public class S0012_ChangeTheLineStyle {
     matrix.getAxisX().getBody().setCount(4);
     matrix.getAxisY().getBody().setCount(10);
 
-    matrix.getBody().replacePainter(
+    matrix.getBody().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_LINES_X) {
         private int row;
 

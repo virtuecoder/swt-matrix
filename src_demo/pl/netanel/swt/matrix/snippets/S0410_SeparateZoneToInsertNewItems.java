@@ -73,7 +73,7 @@ public class S0410_SeparateZoneToInsertNewItems {
         text = (String) data.get(indexY.intValue())[indexX.intValue()];
       }
     };
-    matrix.getBody().replacePainter(bodyPainter);
+    matrix.getBody().replacePainterPreserveStyle(bodyPainter);
 
     // Insert body editor
     final InsertEditor insertEditor = new InsertEditor(matrix);
@@ -88,7 +88,7 @@ public class S0410_SeparateZoneToInsertNewItems {
         text = (String) insertEditor.item[indexX.intValue()];
       }
     };
-    insertBody.replacePainter(insertPainter);
+    insertBody.replacePainterPreserveStyle(insertPainter);
 
     insertBody.getPainter(Painter.NAME_BACKGORUND).style.background = null;
 
@@ -103,7 +103,7 @@ public class S0410_SeparateZoneToInsertNewItems {
         text = "add:";
       }
     };
-    insertHeader.replacePainter(insertHeaderPainter);
+    insertHeader.replacePainterPreserveStyle(insertHeaderPainter);
 
     new ZoneEditor<Integer, Integer>(insertHeader) {
       @Override

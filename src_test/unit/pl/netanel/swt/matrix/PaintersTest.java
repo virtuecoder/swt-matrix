@@ -46,7 +46,7 @@ import org.junit.runners.JUnit4;
     final Matrix matrix = new Matrix(new Shell(), 0);
     checkExceptionContains("painter", new Runnable() {
       public void run() {
-        matrix.replacePainter(null);        
+        matrix.replacePainterPreserveStyle(null);        
       }
     });
   }

@@ -48,7 +48,7 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
   public ButtonCellBehavior(Zone<X, Y> zone) {
     super("button cells", SCOPE_CELLS);
     this.zone = zone;
-    zone.replacePainter(this);
+    zone.replacePainterPreserveStyle(this);
 
     Display display = zone.getMatrix().getDisplay();
     highlightShadow = display.getSystemColor(SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW);

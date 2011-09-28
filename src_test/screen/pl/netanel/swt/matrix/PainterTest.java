@@ -95,7 +95,7 @@ public class PainterTest extends SwtTestCase {
         text = indexY.toString() + ", " + indexX;
       }
     };
-    body.replacePainter(painter);
+    body.replacePainterPreserveStyle(painter);
 
     shell.setBounds(300, 300, 150, 150);
     shell.open();

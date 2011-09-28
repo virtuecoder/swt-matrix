@@ -39,7 +39,7 @@ public class S0405_ListAsACustomEditorControl {
     matrix.getAxisX().getBody().setDefaultCellWidth(80);
 
     // Paint text from the model in the body
-    matrix.getBody().replacePainter(
+    matrix.getBody().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override
         public void setupSpatial(Integer indexX, Integer indexY) {

@@ -30,7 +30,7 @@ public class S0000_OrderSample {
 		matrix.getAxisX().getHeader().setVisible(true);
 		matrix.getAxisY().getHeader().setVisible(true);
 		
-		matrix.getHeaderX().replacePainter(new Painter<Integer, Integer>(Painter.NAME_CELLS) {
+		matrix.getHeaderX().replacePainterPreserveStyle(new Painter<Integer, Integer>(Painter.NAME_CELLS) {
 		  @Override
 		  public void setupSpatial(Integer indexX, Integer indexY) {
 		    switch (indexX) {

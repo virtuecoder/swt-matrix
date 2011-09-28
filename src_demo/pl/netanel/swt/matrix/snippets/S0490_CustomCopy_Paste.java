@@ -91,7 +91,7 @@ public class S0490_CustomCopy_Paste {
     matrix.getAxisY().getBody().setCount(countY);
     matrix.getAxisY().getHeader().setVisible(true);
 
-    matrix.getBody().replacePainter(
+    matrix.getBody().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override
         public void setup(Integer indexX, Integer indexY) {

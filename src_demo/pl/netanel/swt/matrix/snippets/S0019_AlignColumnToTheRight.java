@@ -26,7 +26,7 @@ public class S0019_AlignColumnToTheRight {
     matrix.getAxisY().getBody().setCount(10);
     matrix.getAxisY().getHeader().setVisible(true);
 
-    matrix.getHeaderX().replacePainter(
+    matrix.getHeaderX().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override
         public void setupSpatial(Integer indexX, Integer indexY) {
@@ -35,7 +35,7 @@ public class S0019_AlignColumnToTheRight {
         }
       });
 
-    matrix.getBody().replacePainter(
+    matrix.getBody().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override
         public void setupSpatial(Integer indexX, Integer indexY) {

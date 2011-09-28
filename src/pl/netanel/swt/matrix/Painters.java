@@ -51,10 +51,20 @@ class Painters<X extends Number, Y extends Number> implements Iterable<Painter<X
 		if (indexOfPainter == -1) {
 			add(painter);
 		} else {
-		  Painter<X, Y> painter2 = get(indexOfPainter);
 			set(indexOfPainter, painter);
-			painter.setStyle(painter2.style);
 		}
+	}
+	
+	public void replacePainterPreserveStyle(Painter<X, Y> painter) {
+	  Preconditions.checkNotNullWithName(painter, "painter");
+	  int indexOfPainter = indexOfPainter(painter.name);
+	  if (indexOfPainter == -1) {
+	    add(painter);
+	  } else {
+	    Painter<X, Y> painter2 = get(indexOfPainter);
+	    set(indexOfPainter, painter);
+	    painter.setStyle(painter2.style);
+	  }
 	}
 
 	public int indexOfPainter(String name) {

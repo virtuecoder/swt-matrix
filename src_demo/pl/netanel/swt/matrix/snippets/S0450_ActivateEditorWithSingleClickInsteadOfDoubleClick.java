@@ -40,7 +40,7 @@ public class S0450_ActivateEditorWithSingleClickInsteadOfDoubleClick {
     Zone<Integer, Integer> body = matrix.getBody();
 
     // Data painter
-    body.replacePainter(new Painter<Integer, Integer>(Painter.NAME_CELLS) {
+    body.replacePainterPreserveStyle(new Painter<Integer, Integer>(Painter.NAME_CELLS) {
       @Override
       public void setupSpatial(Integer indexX, Integer indexY) {
         Object value = data.get(indexY.intValue())[indexX.intValue()];

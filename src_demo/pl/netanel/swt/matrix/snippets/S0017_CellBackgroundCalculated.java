@@ -34,7 +34,7 @@ public class S0017_CellBackgroundCalculated {
     bodyX.setDefaultCellWidth(16);
 
     final Color color = display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
-    matrix.getBody().replacePainter(
+    matrix.getBody().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override
         public void setup(Integer indexX, Integer indexY) {

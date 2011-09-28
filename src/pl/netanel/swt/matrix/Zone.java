@@ -346,10 +346,25 @@ public interface Zone<X extends Number, Y extends Number> {
    * Replaces the painter at the index of painter with the same name.
    * If a painter with the specified name does not exist, 
    * then the new painter is added at the end.
+   * 
    * @param painter painter to replace a painter with the same name
    * @throws IllegalArgumentException if the painter is null
    */
   void replacePainter(Painter<X, Y> painter);
+  
+  /**
+   * Replaces the painter at the index of painter with the same name.
+   * If a painter with the specified name does not exist, 
+   * then the new painter is added at the end.
+   * <p>
+   * The new painter inherits the style from the painter that's being replaced. 
+   * This helps for example to customize text in the cells without the need to
+   * re-apply all the styling data, like background color, selection colors, etc.
+   * 
+   * @param painter painter to replace a painter with the same name
+   * @throws IllegalArgumentException if the painter is null
+   */
+  void replacePainterPreserveStyle(Painter<X, Y> painter);
 
   /**
    * Removes the element at the specified position in the list of painters. 

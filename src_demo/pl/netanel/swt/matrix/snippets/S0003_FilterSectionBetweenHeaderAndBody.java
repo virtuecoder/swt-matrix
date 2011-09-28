@@ -78,7 +78,7 @@ public class S0003_FilterSectionBetweenHeaderAndBody {
     headerX.setVisible(true);
     headerY.setVisible(true);
 
-    matrix.getBody().replacePainter(
+    matrix.getBody().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override
         public void setupSpatial(Integer indexX, Integer indexY) {
@@ -87,7 +87,7 @@ public class S0003_FilterSectionBetweenHeaderAndBody {
       });
 
     // Column header
-    matrix.getHeaderX().replacePainter(
+    matrix.getHeaderX().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override
         public void setupSpatial(Integer indexX, Integer indexY) {
@@ -100,7 +100,7 @@ public class S0003_FilterSectionBetweenHeaderAndBody {
 
     // Filter columns
     Zone<Integer, Integer> filterColumns = matrix.getZone(bodyX, filterY);
-    filterColumns.replacePainter(new Painter<Integer, Integer>(
+    filterColumns.replacePainterPreserveStyle(new Painter<Integer, Integer>(
       Painter.NAME_CELLS) {
       @Override
       public void setupSpatial(Integer indexX, Integer indexY) {

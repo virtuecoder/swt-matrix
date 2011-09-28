@@ -50,7 +50,7 @@ public class S0018_ImagePainting {
 
     matrix.getAxisY().getBody().setCount(ROW_COUNT);
 
-    matrix.getBody().replacePainter(
+    matrix.getBody().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override
         public void setup(Integer indexX, Integer indexY) {
