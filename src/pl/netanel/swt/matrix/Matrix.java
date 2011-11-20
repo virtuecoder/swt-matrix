@@ -26,26 +26,26 @@ import pl.netanel.util.ImmutableIterator;
 import pl.netanel.util.Preconditions;
 
 /**
- * This class represents a two dimensional grid of cells. 
+ * This class represents a two dimensional grid of cells.
  * Uses custom painter to paint itself on the screen and responds to the user generated
  * events. This is the main class in the package.
- * 
+ *
  * <dl>
  * <dt><b>Styles:</b></dt>
  * <dd>SWT.SINGLE, SWT.MULTI, SWT.NO_FOCUS, SWT.CHECK, SWT.VIRTUAL</dd>
  * <dt><b>Events:</b></dt>
  * <dd>Selection, DefaultSelection</dd>
  * </dl>
- * @param <X> indexing type for the horizontal axis 
+ * @param <X> indexing type for the horizontal axis
  * @param <Y> indexing type for vertical axis
- * 
+ *
  * @author Jacek
  * @created 27-03-2011
  */
-public class Matrix<X extends Number, Y extends Number> extends Canvas 
-	implements Iterable<Zone<X, Y>> 
+public class Matrix<X extends Number, Y extends Number> extends Canvas
+	implements Iterable<Zone<X, Y>>
 {
-	static final int CELL_WIDTH = 16;			
+	static final int CELL_WIDTH = 16;
 	static final int LINE_WIDTH = 1;
 	static final int RESIZE_OFFSET_X = 3;
 	static final int RESIZE_OFFSET_Y = 2;
@@ -54,11 +54,11 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	static final int AUTOSCROLL_RATE = 50;
 
 	public static final int PRINTABLE_CHARS = 10;
-	
+
 	/*
 	 *  Navigation Key Actions. Key bindings for the actions are set
 	 *  by the StyledText widget.
-	 */	
+	 */
 	public static final int CMD_FOCUS_UP = 1; 					// binding = SWT.ARROW_UP
 	public static final int CMD_FOCUS_DOWN = 2; 				// binding = SWT.ARROW_DOWN
 	public static final int CMD_FOCUS_LEFT = 3; 				// binding = SWT.ARROW_LEFT
@@ -77,15 +77,15 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	public static final int CMD_FOCUS_LOCATION_ALTER = 16; 			// binding = SWT.MOD1 + SWT.MouseDown
 //	public static final int WORD_PREVIOUS = 17039363;		// binding = SWT.MOD1 + SWT.ARROW_LEFT
 //	public static final int WORD_NEXT = 17039364; 			// binding = SWT.MOD1 + SWT.ARROW_RIGHT
-	
-	
+
+
 	static boolean isCursorMove(int id) {
 		return CMD_FOCUS_UP <= id && id <= CMD_FOCUS_LOCATION_ALTER;
 	}
-	
 
-	/* 
-	 * Selection Key Actions 
+
+	/*
+	 * Selection Key Actions
 	 */
 	public static final int CMD_SELECT_ALL = 100; 				// binding = SWT.MOD1 + 'A'
 	public static final int CMD_SELECT_UP = 101; 				// binding = SWT.MOD2 + SWT.ARROW_UP
@@ -112,24 +112,24 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	public static final int CMD_SELECT_TO_ROW_ALTER = 125; 			// binding = SWT.MOD1 + SWT.MouseDown + Zone.ROW_HEADER
 	public static final int CMD_SELECT_TO_COLUMN = 126;			// binding = SWT.MouseDown + Zone.COLUMN_HEADER
 	public static final int CMD_SELECT_TO_COLUMN_ALTER = 127;		// binding = SWT.MOD1 + SWT.MouseDown + Zone.COLUMN_HEADER
-	
+
 	static boolean isBodySelect(int id) {
-		return CMD_FOCUS_UP <= id && id <= CMD_SELECT_TO_LOCATION_ALTER || 
+		return CMD_FOCUS_UP <= id && id <= CMD_SELECT_TO_LOCATION_ALTER ||
 		  id == CMD_DND_SELECT;
 	}
-	
+
 	static boolean isHeaderSelect(int id) {
 		return CMD_SELECT_ROW <= id && id <= CMD_SELECT_TO_COLUMN_ALTER;
 	}
-	
+
 	static boolean isExtendingSelect(int id) {
-		return CMD_SELECT_UP <= id && id <= CMD_SELECT_TO_LOCATION_ALTER || 
-			CMD_SELECT_TO_ROW <= id && id <= CMD_SELECT_TO_COLUMN_ALTER || 
+		return CMD_SELECT_UP <= id && id <= CMD_SELECT_TO_LOCATION_ALTER ||
+			CMD_SELECT_TO_ROW <= id && id <= CMD_SELECT_TO_COLUMN_ALTER ||
 	      id == CMD_DND_SELECT;
 	}
 
 	/*
-	 *  Modification Key Actions 
+	 *  Modification Key Actions
 	 */
 	public static final int CMD_CUT = 200; 						// binding = SWT.MOD2 + SWT.DEL
 	public static final int CMD_COPY = 201; 					// binding = SWT.MOD1 + SWT.INSERT;
@@ -138,49 +138,49 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	/**
 	 * Command to activate the editor control by setting focus on it.
 	 */
-	public static final int CMD_EDIT_ACTIVATE = 205;						
+	public static final int CMD_EDIT_ACTIVATE = 205;
   /**
-   * Command to deactivate the editor control with applying it's value to the model. 
+   * Command to deactivate the editor control with applying it's value to the model.
    */
-	public static final int CMD_EDIT_DEACTIVATE_APPLY = 206;						
+	public static final int CMD_EDIT_DEACTIVATE_APPLY = 206;
   /**
    * Command to deactivate the editor control without applying it's value to the model.
    */
-	public static final int CMD_EDIT_DEACTIVATE_CANCEL = 207;						
+	public static final int CMD_EDIT_DEACTIVATE_CANCEL = 207;
 	/**
 	 * Command to apply the value from the editor control to the model without deactivating the control.
 	 */
-	public static final int CMD_EDIT_APPLY = 208;			
+	public static final int CMD_EDIT_APPLY = 208;
 	/**
 	 * Command to delete (set to null) the values of the selected cells.
 	 */
-	public static final int CMD_DELETE = 209;						
-	
-	
+	public static final int CMD_DELETE = 209;
+
+
 	public static final int CMD_ITEM_HIDE = 301;						// binding = SWT.MOD3 + SWT.DEL;
 	public static final int CMD_ITEM_SHOW = 302;					// binding = SWT.MOD3 + SWT.INSERT;
 	public static final int CMD_RESIZE_PACK = 303;
-	
-	public static final int CMD_DND_RESIZE_START = 320;					    
-	public static final int CMD_DND_RESIZE = 321;					    
-	public static final int CMD_DND_RESIZE_STOP = 321;					    
-	
-	public static final int CMD_DND_MOVE_START = 330;					    
-	public static final int CMD_DND_MOVE = 331;					    
-	public static final int CMD_DND_MOVE_STOP = 331;
-	
-	public static final int CMD_DND_SELECT_START = 340;					    
-	public static final int CMD_DND_SELECT = 341;					    
-	public static final int CMD_DND_SELECT_STOP = 341;					    
-	
-	public static final int CMD_DND_SELECT_ALTER_START = 350;					    
-	public static final int CMD_DND_SELECT_ALTER = 351;					    
-	public static final int CMD_DND_SELECT_ALTER_STOP = 351;					    
-	
+
+	static final int CMD_DND_RESIZE_START = 320;
+	static final int CMD_DND_RESIZE = 321;
+	static final int CMD_DND_RESIZE_STOP = 321;
+
+	static final int CMD_DND_MOVE_START = 330;
+	static final int CMD_DND_MOVE = 331;
+	static final int CMD_DND_MOVE_STOP = 331;
+
+	static final int CMD_DND_SELECT_START = 340;
+	static final int CMD_DND_SELECT = 341;
+	static final int CMD_DND_SELECT_STOP = 341;
+
+	static final int CMD_DND_SELECT_ALTER_START = 350;
+	static final int CMD_DND_SELECT_ALTER = 351;
+	static final int CMD_DND_SELECT_ALTER_STOP = 351;
+
 	public static final int CMD_TRAVERSE_TAB_NEXT = 400;       // binding = SWT.TAB
 	public static final int CMD_TRAVERSE_TAB_PREVIOUS = 401;       // binding = SWT.MOD2 + SWT.TAB
 
-	
+
 	/**
 	 * State bit indicating that the matrix is in the process of selecting cells
 	 * Value is 1&lt;&lt;5
@@ -203,7 +203,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 * Value is 1&lt;&lt;8
 	 */
 	static final int STATE_RESIZE_AREA = 1 << 8;
-	
+
 	/**
    * State bit indicating that the an item has been clicked again
    * Value is 1&lt;&lt;9
@@ -215,8 +215,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 */
 
 //	static final int RESIZE_AREA = 1 << 26;
-	
-	
+
+
 	MatrixModel<X, Y> model;
 	final ArrayList<ZoneClient<X, Y>> zones;
 	Axis<Y> axisY;
@@ -225,44 +225,44 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	Layout<X> layoutX;
 	MatrixListener<X, Y> listener;
 	Listener listener2;
-	
-	Rectangle area; 
+
+	Rectangle area;
 	final Painters<X, Y> painters;
 	private ScheduledExecutorService executor;
-	
+
 	/**
-	 * Calls the {@link #Matrix(Composite, int, Axis, Axis, ZoneCore...)} constructor 
-	 * with <code>null</code> values for <code>axisY</code> and <code>axisX</code>. 
+	 * Calls the {@link #Matrix(Composite, int, Axis, Axis, ZoneCore...)} constructor
+	 * with <code>null</code> values for <code>axisY</code> and <code>axisX</code>.
 	 * @see #Matrix(Composite, int, Axis, Axis, ZoneCore...)
 	 */
 	public Matrix(Composite parent, int style) {
 		this(parent, style, null, null);
 	}
-	
-	
+
+
 	public Matrix(Shell parent, int style, Class<X> classX, Class<Y> classY) {
 	  this(parent, style, new Axis<X>(classX, 2), new Axis<Y>(classY, 2));
 	  configureAxises(true, true);
 	}
 
-	
+
 	/**
 	 * Constructs a new instance of this class given its parent
 	 * and a style value describing its behavior and appearance.
 	 * <p>
 	 * The style value is either one of the style constants defined in
 	 * class <code>SWT</code> which is applicable to instances of this
-	 * class, or must be built by <em>bitwise OR</em>'ing together 
+	 * class, or must be built by <em>bitwise OR</em>'ing together
 	 * (that is, using the <code>int</code> "|" operator) two or more
 	 * of those <code>SWT</code> style constants. The class description
 	 * lists the style constants that are applicable to the class.
 	 * Style bits are also inherited from superclasses.
 	 * </p><p>
-	 * It the <code>axisY</code> or <code>axisX</code> is null then 
+	 * It the <code>axisY</code> or <code>axisX</code> is null then
 	 * the axis is created with the {@link Axis#Axis()} constructor.
 	 * </p><p>
-	 * If any of <code>zones</code> has zero painters then default painters are attached. 
-	 * </p><p> 
+	 * If any of <code>zones</code> has zero painters then default painters are attached.
+	 * </p><p>
 	 *
 	 * @param parent a composite control which will be the parent of the new instance (cannot be null)
 	 * @param style the style of control to construct
@@ -283,15 +283,15 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		super(parent, style | SWT.DOUBLE_BUFFERED);
 		setBackground(Resources.getColor(SWT.COLOR_LIST_BACKGROUND));
 		setForeground(Resources.getColor(SWT.COLOR_LIST_FOREGROUND));
-		
-		
+
+
 		this.axisX = axisX == null ? new Axis<X>() : axisX;
 	  this.axisY = axisY == null ? new Axis<Y>() : axisY;
 	  this.layoutX = this.axisX.layout;
 	  this.layoutY = this.axisY.layout;
 
 		configureAxises(axisX == null, axisY == null);
-		
+
 		zones = new ArrayList<ZoneClient<X, Y>>();
 		final ArrayList<ZoneCore<X, Y>> coreZones = new ArrayList<ZoneCore<X, Y>>();
 		for (SectionClient<Y> sectionY: this.axisY.sections) {
@@ -302,12 +302,12 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
       }
 		}
 		model = new MatrixModel<X, Y>(coreZones);
-		
+
 		painters = new Painters<X, Y>();
 
 		setModel(model);
 		setDefaultPainters();
-		
+
 		listener2 = new Listener() {
 			@Override
 			public void handleEvent(Event event) {
@@ -321,17 +321,17 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 				}
 			}
 		};
-		
+
 		addListener(SWT.Paint, listener2);
 		addListener(SWT.Resize,	listener2);
-		
+
 		addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				if (executor != null) executor.shutdownNow();
 			}
 		});
-		
+
 //		parent.addControlListener(new ControlListener() {
 //      @Override public void controlResized(ControlEvent e) {
 //        for (Zone zone: Matrix.this) {
@@ -340,7 +340,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 //          }
 //        }
 //      }
-//      
+//
 //      @Override public void controlMoved(ControlEvent e) {}
 //    });
 	}
@@ -361,22 +361,22 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
   private void setModel(MatrixModel<X, Y> model) {
 		this.model = model;
 		model.setMatrix(this);
-		
+
 		axisX.setMatrix(this, 'X');
 		axisY.setMatrix(this, 'Y');
-		
+
 		this.listener = new MatrixListener<X, Y>(this);
 		listener.setLayout(layoutX, layoutY);
 	}
-	
-	
-	
+
+
+
 	/*------------------------------------------------------------------------
-	 * Painting 
+	 * Painting
 	 */
-	
+
 	private void setDefaultPainters() {
-		
+
 		painters.add(new FrozenPainter(Frozen.NONE, Frozen.NONE));
 		painters.add(new FrozenPainter(Frozen.NONE, Frozen.TAIL));
 		painters.add(new FrozenPainter(Frozen.TAIL, Frozen.NONE));
@@ -386,19 +386,19 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		painters.add(new FrozenPainter(Frozen.TAIL, Frozen.HEAD));
 		painters.add(new FrozenPainter(Frozen.TAIL, Frozen.TAIL));
 		painters.add(new FrozenPainter(Frozen.HEAD, Frozen.HEAD));
-		
-		Painter<X, Y> frozenLinePainter = 
+
+		Painter<X, Y> frozenLinePainter =
 		  new LinePainter<X, Y>(Painter.NAME_FREEZE_HEAD_LINE_X, Painter.SCOPE_ENTIRE) {
         @Override
         public void paint(int x, int y, int width, int height) {
           if (axisX.getFrozenHead() > 0) {
             int[] bound = axisX.getLineBound(axisX.getItemByViewportPosition(axisX.getFrozenHead()));
             gc.fillRectangle(bound[0], y, bound[1], height);
-          } 
+          }
 //          gc.setBackground(background);
         }
       };
-    frozenLinePainter.style.background = Resources.getColor(SWT.COLOR_BLACK); 
+    frozenLinePainter.style.background = Resources.getColor(SWT.COLOR_BLACK);
     painters.add(frozenLinePainter);
 
     frozenLinePainter = new LinePainter<X, Y>(Painter.NAME_FREEZE_HEAD_LINE_Y) {
@@ -407,10 +407,10 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
         if (axisY.getFrozenHead() > 0) {
           int[] bound = axisY.getLineBound(axisY.getItemByViewportPosition(axisY.getFrozenHead()));
           gc.fillRectangle(x, bound[0], width, bound[1]);
-        } 
+        }
       }
     };
-    frozenLinePainter.style.background = Resources.getColor(SWT.COLOR_BLACK); 
+    frozenLinePainter.style.background = Resources.getColor(SWT.COLOR_BLACK);
     painters.add(frozenLinePainter);
 
     frozenLinePainter = new LinePainter<X, Y>(Painter.NAME_FREEZE_TAIL_LINE_X) {
@@ -423,9 +423,9 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
           }
         }
       };
-    frozenLinePainter.style.background = Resources.getColor(SWT.COLOR_BLACK); 
+    frozenLinePainter.style.background = Resources.getColor(SWT.COLOR_BLACK);
     painters.add(frozenLinePainter);
-    
+
     frozenLinePainter = new LinePainter<X, Y>(Painter.NAME_FREEZE_TAIL_LINE_Y) {
         @Override
         public void paint(int x, int y, int width, int height) {
@@ -436,9 +436,9 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
           }
         }
       };
-    frozenLinePainter.style.background = Resources.getColor(SWT.COLOR_BLACK); 
+    frozenLinePainter.style.background = Resources.getColor(SWT.COLOR_BLACK);
     painters.add(frozenLinePainter);
-		
+
 		painters.add(new Painter<X, Y>(Painter.NAME_FOCUS_CELL) {
 			@Override
 			public void paint(int x, int y, int width, int height) {
@@ -454,11 +454,11 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 				gc.drawRectangle(r);
 			}
 		});
-		
+
 		addPainter(listener.new DragItemPainterX());
 		addPainter(listener.new DragItemPainterY());
 	}
-	
+
 	class FrozenPainter extends Painter<X, Y> {
 		private final Frozen dockX;
 		private final Frozen dockY;
@@ -468,41 +468,41 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 			this.dockX = dockX;
 			this.dockY = dockY;
 		}
-		
+
 		@Override
 		public void paint(int x, int y, int width, int height) {
 		  Bound bbX = layoutX.getBound(dockX);
 			Bound bbY = layoutY.getBound(dockY);
-			
+
 			for (ZoneCore<X, Y> zone: model) {
 			  Bound bx = layoutX.getBound(dockX, zone.sectionX);
 			  Bound by = layoutY.getBound(dockY, zone.sectionY);
 			  zone.setBounds(bx.distance, by.distance, bx.width, by.width);
-			  
+
 				if (layoutY.contains(dockY, zone.sectionY) &&
-					  layoutX.contains(dockX, zone.sectionX) ) 
+					  layoutX.contains(dockX, zone.sectionX) )
 				{
 				  gc.setClipping(bbX.distance, bbY.distance, bbX.width, bbY.width);
-				  
+
 				  // Paint cells
 				  zone.paint(gc, layoutX, layoutY, dockX, dockY);
 				}
 			}
 		}
-		
+
 		@Override
 		public void clean() {
 			super.clean();
 			gc.setClipping((Rectangle) null);
 		}
 	}
-	
+
 	void onPaint(Event event) {
 //		long t = System.nanoTime();
 		final GC gc = event.gc;
 		layoutX.computeIfRequired();
 		layoutY.computeIfRequired();
-		
+
 		for (Painter<X, Y> p: painters) {
 			if (!p.isEnabled() || !p.init(gc)) continue;
 			p.paint(area.x, area.y, area.width, area.height);
@@ -510,7 +510,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		}
 //		gc.setBackground(Resources.getColor(SWT.COLOR_RED));
 //		gc.fillRectangle(51, 193, 3, 18);
-		
+
 //		System.out.println(BigDecimal.valueOf(System.nanoTime() - t, 6).toString());
 	}
 
@@ -525,18 +525,18 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	private void resize() {
 		// Return if there is no model provided yet.
 		if (layoutY == null) return;
-				
+
 		area = getClientArea();
-		
+
 		// Return if the widget does not have an area to draw yet.
 		if (area.width == 0) return;
-		
+
 		layoutY.setViewportSize(area.height);
 		layoutX.setViewportSize(area.width);
-		
+
 		updateScrollBars();
 	}
-	
+
 	/**
 	 * Called on resize or item count change.
 	 */
@@ -544,7 +544,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		area = getClientArea();
 		layoutY.computeIfRequired();
 		layoutX.computeIfRequired();
-		
+
 		// Update the scroll bars visibility
 		// If at one of the scroll bar visibility has changed then update the other one also
 		if (axisX.updateScrollBarVisibility()) {
@@ -554,17 +554,17 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 			area = getClientArea();
 		}
 		else if (axisY.updateScrollBarVisibility()) {
-			area = getClientArea();			 
+			area = getClientArea();
 			axisX.updateScrollBarVisibility();
 			axisY.updateScrollBarVisibility();
 			area = getClientArea();
 		}
-		
+
 		axisX.updateScrollBarValues(area.width);
 		axisY.updateScrollBarValues(area.height);
-		
+
 		area = getClientArea();
-		
+
 //		listener.state0.item = layoutY.current;
 //		listener.state1.item = layoutX.current;
 	}
@@ -584,7 +584,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	public Axis<Y> getAxisY() {
 		return axisY;
 	}
-	
+
 	/**
 	 * Returns the body zone of this matrix.
 	 * @return the body zone of this matrix
@@ -618,34 +618,34 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 * Returns a zone located at the intersection of the given axis sections.
 	 * @param sectionX section of the horizontal axis
 	 * @param sectionY section of the vertical axis
-	 * 
+	 *
 	 * @return zone located at the intersection of the given axis sections
 	 * @throws IllegalArgumentException if item is <code>null</code> or section
 	 * 		does not belong to an axis of this matrix.
 	 */
 	public Zone<X, Y> getZone(Section<X> sectionX, Section<Y> sectionY) {
 	  for (ZoneClient<X, Y> zone: zones) {
-	    if (zone.sectionX.core.equals(axisX.checkSection(sectionX, "sectionX")) && 
+	    if (zone.sectionX.core.equals(axisX.checkSection(sectionX, "sectionX")) &&
 	        zone.sectionY.core.equals(axisY.checkSection(sectionY, "sectionY")) ) {
 	      return zone;
 	    }
 	  }
 	  return null;
 	}
-	
+
 	/**
 	 * Enables current cell navigation in the receiver if the argument is <code>true</code>,
 	 * and disables it invisible otherwise.
 	 * <p>
-	 * If the focus cell is disabled the navigation events are ignored and the 
-	 * {@link Painter#NAME_FOCUS_CELL} painter of the matrix is disabled. 
+	 * If the focus cell is disabled the navigation events are ignored and the
+	 * {@link Painter#NAME_FOCUS_CELL} painter of the matrix is disabled.
 	 *
 	 * @param state the new focus cell enablement state
 	 */
 	void setFocusCellEnabled(boolean state) {
 	  Painter<X, Y> painter = getPainter(Painter.NAME_FOCUS_CELL);
 	  if (painter == null) return;
-	  
+
 	  if (state == true) {
 	    if (axisX.isFocusItemEnabled() && axisY.isFocusItemEnabled()) {
 	      painter.setEnabled(true);
@@ -653,12 +653,12 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	  } else {
 	    painter.setEnabled(false);
 	  }
-	  
+
 	}
 
-	
+
 	/*------------------------------------------------------------------------
-	 * Helper 
+	 * Helper
 	 */
 
 	ScheduledExecutorService getExecutor() {
@@ -673,7 +673,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		}
 		return executor;
 	}
-	
+
 	/**
 	 * Stops the executor and re-throws wrapped in RuntimeException
 	 */
@@ -685,20 +685,20 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 			executor.shutdown();
 			try {
 				executor.awaitTermination(1, TimeUnit.SECONDS);
-			} 
+			}
 			catch (InterruptedException e1) { }
 		}
-		
-		throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e); 
+
+		throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e);
 	}
-	
-	
-	@SuppressWarnings("unchecked") <N2 extends Number> 
+
+
+	@SuppressWarnings("unchecked") <N2 extends Number>
 	void selectInZones(char symbol, Section<N2> section, N2 start, N2 end, boolean state, boolean notify) {
 	  if (symbol == 'X') {
 	    selectInZonesX((Section<X>) section, (X) start, (X) end, state, notify);
 	  } else {
-	    selectInZonesY((Section<Y>) section, (Y) start, (Y) end, state, notify);        
+	    selectInZonesY((Section<Y>) section, (Y) start, (Y) end, state, notify);
 	  }
 	}
 
@@ -706,7 +706,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	  for (ZoneCore<X, Y> zone: model.zones) {
 	    if (zone.sectionX.equals(section)) {
 	      Math<Y> mathY = zone.sectionY.math;
-	      zone.setSelected( 
+	      zone.setSelected(
 	        start, end,
 	        mathY.ZERO_VALUE(), mathY.decrement(zone.sectionY.getCount()),
 	        state);
@@ -717,14 +717,14 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    }
 	  }
 	}
-	
+
 	void selectInZonesY(Section<Y> section, Y start, Y end, boolean state, boolean notify) {
 	  for (ZoneCore<X, Y> zone: model.zones) {
 	    if (zone.sectionY.equals(section)) {
 	      Math<X> mathX = zone.sectionX.math;
 	      zone.setSelected(
-	        mathX.ZERO_VALUE(), mathX.decrement(zone.sectionX.getCount()), 
-	        start, end, 
+	        mathX.ZERO_VALUE(), mathX.decrement(zone.sectionX.getCount()),
+	        start, end,
 	        state);
 
 	      if (notify) {
@@ -735,8 +735,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	}
 
 	/**
-	 * Recalculates the matrix layout and repaints it. 
-	 * It can be called after changing the model for example to reflect the changes on the screen. 
+	 * Recalculates the matrix layout and repaints it.
+	 * It can be called after changing the model for example to reflect the changes on the screen.
 	 */
 	public void refresh() {
 		// After freeze head to 0 is it would scroll to previous head count.
@@ -755,35 +755,35 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		redraw();
 	}
 
-	
+
 	/**
 	 * Binds the command to the user gesture specified by the event type and code.
-	 * Code is a logical <i>OR</i> of key, state mask and mouse button codes. 
+	 * Code is a logical <i>OR</i> of key, state mask and mouse button codes.
 	 */
 	public void bind(int commandId, int eventType, int code) {
 	  for (Zone<X, Y> zone: this) {
 	    zone.bind(commandId, eventType, code);
 	  }
 	}
-	
+
 	/**
 	 * Removes the binding the command to the user gesture specified by the event type and code.
-	 * Code is a logical <i>OR</i> of key, state mask and mouse button codes. 
+	 * Code is a logical <i>OR</i> of key, state mask and mouse button codes.
 	 */
 	public void unbind(int commandId, int eventType, int code) {
 	  for (Zone<X, Y> zone: this) {
 	    zone.unbind(commandId, eventType, code);
 	  }
 	}
-	
-	
+
+
 	/*------------------------------------------------------------------------
-	 * Painters 
+	 * Painters
 	 */
 
 	/**
 	 * Returns order in which the zones will be painted.
-	 * @return an array of zone indexes indicating the paint order of zones 
+	 * @return an array of zone indexes indicating the paint order of zones
 	 */
 	public int[] getZonePaintOrder() {
 		return model.paintOrder;
@@ -795,8 +795,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 */
 	public void setZonePaintOrder(int[] order) {
 	  Preconditions.checkNotNullWithName(order, "order");
-		Preconditions.checkArgument(order.length == model.paintOrder.length, 
-				"The length of the order array ({0}) must be equal to the number of of zones: ({1})", 
+		Preconditions.checkArgument(order.length == model.paintOrder.length,
+				"The length of the order array ({0}) must be equal to the number of of zones: ({1})",
 				order.length, model.paintOrder.length);
 		model.paintOrder = order;
 	}
@@ -818,36 +818,36 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 * @throws IndexOutOfBoundsException if the index is out of range
    *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)
    * @throws IllegalArgumentException if the painter is null
-   * @throws IllegalArgumentException if the painter's name already exists 
-   *         in the collection of painters. 
+   * @throws IllegalArgumentException if the painter's name already exists
+   *         in the collection of painters.
 	 */
   public void addPainter(int index, Painter<X, Y> painter) {
     checkOwner(painter);
 		painters.add(index, painter);
 		setPainterMatrixAndZone(painter);
 	}
-	
+
 	/**
-	 * Replaces the painter at the given index of the receiver's painters list. 
+	 * Replaces the painter at the given index of the receiver's painters list.
 	 * @param index index of the element to replace
 	 * @param painter painter to be stored at the specified position
 	 * @throws IndexOutOfBoundsException if the index is out of range
-   *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)   *         
+   *         (<tt>index &lt; 0 || index &gt;= getPainterCount()</tt>)   *
    * @throws IllegalArgumentException if the painter is null
-   * @throws IllegalArgumentException if the painter's name already exists 
-   *         in the collection of painters. 
+   * @throws IllegalArgumentException if the painter's name already exists
+   *         in the collection of painters.
 	 */
 	public void setPainter(int index, Painter<X, Y> painter) {
 	  checkOwner(painter);
 		painters.set(index, painter);
 		setPainterMatrixAndZone(painter);
 	}
-	
+
 	/**
 	 * Replaces the painter at the index of painter with the same name.
-	 * If a painter with the specified name does not exist, 
+	 * If a painter with the specified name does not exist,
 	 * then the new painter is added at the end.
-	 *   
+	 *
 	 * @param painter painter to replace a painter with the same name
 	 * @throws IllegalArgumentException if the painter is null
 	 */
@@ -856,16 +856,16 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		painters.replacePainter(painter);
 		setPainterMatrixAndZone(painter);
 	}
-	
+
 	/**
 	 * Replaces the painter at the index of painter with the same name.
-	 * If a painter with the specified name does not exist, 
+	 * If a painter with the specified name does not exist,
 	 * then the new painter is added at the end.
 	 * <p>
-	 * The new painter inherits the style from the painter that's being replaced. 
+	 * The new painter inherits the style from the painter that's being replaced.
 	 * This helps for example to change text in the headers without the need to
 	 * re-apply all the styling data, like background color, selections colors, etc.
-	 *   
+	 *
 	 * @param painter painter to replace a painter with the same name
 	 * @throws IllegalArgumentException if the painter is null
 	 */
@@ -874,9 +874,9 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	  painters.replacePainterPreserveStyle(painter);
 	  setPainterMatrixAndZone(painter);
 	}
-	
+
 	/**
-   * Removes the element at the specified position in the list of painters. 
+   * Removes the element at the specified position in the list of painters.
    * Shifts any subsequent painters to the left (subtracts one
    * from their indices). Returns the painter that was removed from the
    * list.
@@ -889,8 +889,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	public Painter<X, Y> removePainter(int index) {
 		return painters.remove(index);
 	}
-	
-	
+
+
 	/**
    * Removes the first occurrence of the specified element from this list,
    * if it is present (optional operation). If this list does not contain
@@ -905,10 +905,10 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
     checkOwner(painter);
     return painters.remove(painter);
   }
-  
+
 	/**
    * Returns the index of a painter with the specified name
-   * in the list of the receiver's painters, or -1 
+   * in the list of the receiver's painters, or -1
    * if this list does not contain the element.
    *
    * @param name painter name to search for
@@ -918,7 +918,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	public int indexOfPainter(String name) {
 		return painters.indexOfPainter(name);
 	}
-	
+
 	/**
    * Returns a painter with the specified name, or <code>null</code>
    * if the painters list does not contain such painter.
@@ -932,16 +932,16 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		int index = indexOfPainter(name);
     return index == -1 ? null : painters.get(index);
 	}
-	
+
 	/**
-   * Returns the number of the receiver's painters. 
+   * Returns the number of the receiver's painters.
    *
    * @return the number of the receiver's painters
    */
 	public int getPainterCount() {
 		return painters.size();
 	}
-	
+
 	/**
    * Returns the painter at the specified position in the receiver's list of painters.
    *
@@ -954,21 +954,21 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		Preconditions.checkPositionIndex(index, painters.size());
 		return painters.get(index);
 	}
-	
+
 	private void checkOwner(Painter<X, Y> painter) {
 	  if (painter == null) return;
-	  
-	  Preconditions.checkArgument(painter.matrix == null || this.equals(painter.matrix), 
+
+	  Preconditions.checkArgument(painter.matrix == null || this.equals(painter.matrix),
 	    "The painter belongs to a different matrix: %s", painter.matrix);
 
-	  Preconditions.checkArgument(painter.zone == null, 
+	  Preconditions.checkArgument(painter.zone == null,
       "The painter belongs to a zone: %s", painter.zone);
-    
+
   }
 
 	private void setPainterMatrixAndZone(Painter<X, Y> painter) {
 		if (painter.scope == Painter.SCOPE_CELLS_X ||
-				painter.scope == Painter.SCOPE_CELLS_Y) 
+				painter.scope == Painter.SCOPE_CELLS_Y)
 		{
 			painter.setMatrix(this);
 		}
@@ -995,10 +995,10 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    "Only cell focus navigation commands are permitted");
 		listener.executeCommand(new GestureBinding(commandId, 0, 0));
 	}
-	
 
 
-	@SuppressWarnings("unchecked") 
+
+	@SuppressWarnings("unchecked")
 	<N extends Number> void pack(char axisSymbol, Section<N> section, N index) {
 	  if (axisSymbol == 'X') {
 	    packX((Section<X>) section, (X) index);
@@ -1006,7 +1006,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    packY((Section<Y>) section, (Y) index);
 	  }
 	}
-	
+
 	void packX(Section<X> section, X index) {
 	  Cursor cursor = getCursor();
 	  GC gc = new GC(this);
@@ -1014,7 +1014,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    int w = 0;
 	    for (ZoneCore<X, Y> zone: model.zones) {
 	      if (!zone.sectionX.equals(section)) continue;
-	      
+
 	      CellSet<X, Y> set = new CellSet<X, Y>(zone.sectionX.math, zone.sectionY.math);
 	      set.add(index, index,
 	        zone.sectionY.math.ZERO_VALUE(), zone.sectionY.math.decrement(zone.sectionY.getCount()));
@@ -1030,7 +1030,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    }
 
 	    if (w != 0) section.setCellWidth(index, w);
-	  } 
+	  }
 	  finally {
 	    gc.dispose();
 	    setCursor(cursor);
@@ -1038,7 +1038,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	  axisX.layout.compute();
 	  redraw();
 	}
-	
+
 	void packY(Section<Y> section, Y index) {
 	  Cursor cursor = getCursor();
 	  GC gc = new GC(this);
@@ -1048,22 +1048,22 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	      if (zone.sectionY.equals(section)) {
 	        CellSet<X, Y> set = new CellSet<X, Y>(zone.sectionX.math, zone.sectionY.math);
 	        set.add(zone.sectionX.math.ZERO_VALUE(), zone.sectionX.math.decrement(zone.sectionX.getCount()),
-	          index, 
+	          index,
 	          index);
 	        NumberPairSequence<X, Y> seq = new NumberPairSequence<X, Y>(set);
 	        for (Painter<X, Y> painter: zone.painters) {
 	          painter.init(gc);
 	          for (seq.init(); seq.next();) {
 	            w = java.lang.Math.max(w, painter.computeSize(
-	              seq.indexX(), seq.indexY(), 
+	              seq.indexX(), seq.indexY(),
 	              zone.sectionX.getCellWidth(seq.indexX.getValue()), SWT.DEFAULT).y);
 	          }
 	        }
 	      }
 	    }
-	    
+
 	    if (w != 0) section.setCellWidth(index, w);
-	  } 
+	  }
 	  finally {
 	    gc.dispose();
 	    setCursor(cursor);
@@ -1080,7 +1080,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	  }
 	  return computeSize(wHint, hHint);
 	}
-	
+
 	@Override
 	public Point computeSize(int wHint, int hHint) {
 	  if (wHint == SWT.DEFAULT) {
@@ -1101,7 +1101,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	  }
     return new Point(wHint, hHint);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	<N extends Number> void insertInZonesX(SectionCore<N> section, N target, N count) {
 	  for (ZoneCore<X, Y> zone: model.zones) {
@@ -1111,7 +1111,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    }
 	  }
 	}
-	
+
 	@SuppressWarnings("unchecked")
   <N extends Number> void insertInZonesY(SectionCore<N> section, N target, N count) {
 	  for (ZoneCore<X, Y> zone: model.zones) {
@@ -1121,7 +1121,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    }
 	  }
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	<N extends Number> void deleteInZonesX(SectionCore<N> section, N target, N count) {
 	  for (ZoneCore<X, Y> zone: model.zones) {
@@ -1131,7 +1131,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    }
 	  }
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	<N extends Number> void deleteInZonesY(SectionCore<N> section, N target, N count) {
 	  for (ZoneCore<X, Y> zone: model.zones) {
