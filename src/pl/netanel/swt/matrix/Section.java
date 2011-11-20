@@ -119,6 +119,9 @@ public interface Section<N extends Number> {
    * If the <code>width</code> is lower then 0 then the method does nothing.
    * 
    * @param width new value for default width.
+   * 
+   * @throws IllegalArgumentException if the width is lower then 
+   *  the minimal cell width of the axis
    */
   void setDefaultCellWidth(int width);
 

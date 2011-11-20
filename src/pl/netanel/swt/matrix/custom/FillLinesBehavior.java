@@ -6,6 +6,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import pl.netanel.swt.matrix.Frozen;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Zone;
@@ -15,49 +16,72 @@ public class FillLinesBehavior<X extends Number, Y extends Number>  {
   public boolean extendLinesY = true;
   public boolean extraLinesX = true;
   public boolean extraLinesY;
-  private final Zone<X, Y> zone;
+  private final Matrix<X, Y> matrix;
 
-  public FillLinesBehavior(final Zone<X, Y> zone) {
-    this.zone = zone;
+  public FillLinesBehavior(final Matrix<X, Y> matrix) {
+        
+    
+    this.matrix = matrix;
+    Painter<X, Y> extraLinesPainter = new Painter<X, Y>("fill lines") {
+      @Override
+      protected void paint(int x, int y, int width, int height) {
+        final Zone<X, Y> body = matrix.getBody();
+        Rectangle bodyBounds = body.getBounds(Frozen.NONE, Frozen.NONE);
+        Rectangle areaBounds = matrix.getClientArea();
+        Painter<X, Y> painter2 = matrix.getBody().getPainter(Painter.NAME_LINES_X);
+        if (painter2 != null) {
+          gc.setBackground(painter2.style.background);
+        }
+        if (extraLinesX) {
+          int cell = body.getSectionY().getDefaultCellWidth();
+          int line = body.getSectionY().getDefaultLineWidth();
+          int delta = cell + line;
+          int length = extendLinesX ? areaBounds.width : bodyBounds.width;
+          for (int distance = bodyBounds.y + bodyBounds.height - line; 
+            distance < areaBounds.height; 
+            distance += delta) {
+            gc.fillRectangle(0, distance, length, line);
+          }
+        }
+        if (extraLinesY) {
+          int cell = body.getSectionX().getDefaultCellWidth();
+          int line = body.getSectionX().getDefaultLineWidth();
+          int delta = cell + line;
+          int length = extendLinesY ? areaBounds.height : bodyBounds.height;
+          for (int distance = bodyBounds.x + bodyBounds.width - line; 
+            distance < areaBounds.width; 
+            distance += delta) {
+            gc.fillRectangle(distance, 0, line, length);
+          }
+        }
+        gc.setBackground(matrix.getBackground());
+      }
+    };
+    
+    int index = matrix.indexOfPainter(Painter.NAME_FROZEN_NONE_NONE);
+    if (index >= 0) {
+      matrix.addPainter(index, extraLinesPainter);
+    }
+    
+    
+    
     Painter<X, Y> painterX = new LinePainter(Painter.NAME_LINES_X) {
-
       @Override
       public void paint(int x, int y, int width, int height) {
         super.paint(x, max = y, length = extendLinesX ? clientArea.width : width, height);
       }
-      
-      @Override
-      public void clean() {
-        if (extraLinesX) {
-          int cell = zone.getSectionY().getDefaultCellWidth();
-          int line = zone.getSectionY().getDefaultLineWidth();
-          for (int distance = max + cell; distance < clientArea.height; distance += cell + line) {
-            super.paint(0, distance, length, line);
-          }
-        }
-        super.clean();
-      }
     };
+    
     Painter<X, Y> painterY = new LinePainter(Painter.NAME_LINES_Y) {
       @Override
       public void paint(int x, int y, int width, int height) {
         super.paint(max = x, y, width, length = extendLinesY ? clientArea.height : height);
       }
-      
-      @Override
-      public void clean() {
-        if (extraLinesY) {
-          int cell = zone.getSectionX().getDefaultCellWidth();
-          int line = zone.getSectionX().getDefaultLineWidth();
-          for (int distance = max + cell; distance < clientArea.width; distance += cell + line) {
-            super.paint(distance, 0, line, length);
-          }
-        }
-        super.clean();
-      }
     };
-    zone.replacePainter(painterX);
-    zone.replacePainter(painterY);
+    
+    final Zone<X, Y> body = matrix.getBody();
+    body.replacePainter(painterX);
+    body.replacePainter(painterY);
   }
 
   class LinePainter extends Painter<X, Y> {
@@ -70,7 +94,7 @@ public class FillLinesBehavior<X extends Number, Y extends Number>  {
     
     @Override
     protected boolean init() {
-      clientArea = zone.getMatrix().getClientArea();
+      clientArea = matrix.getClientArea();
       gc.setBackground(style.background);
       return true;
     }
@@ -80,6 +104,7 @@ public class FillLinesBehavior<X extends Number, Y extends Number>  {
     }
   }
   
+ 
   public static void main(String[] args) {
     Shell shell = new Shell();
     shell.setLayout(new FillLayout());
@@ -90,7 +115,7 @@ public class FillLinesBehavior<X extends Number, Y extends Number>  {
     matrix.getAxisY().getBody().setCount(10);
     matrix.getAxisY().getHeader().setVisible(true);
 
-    FillLinesBehavior<Integer, Integer> behavior = new FillLinesBehavior<Integer, Integer>(matrix.getBody());
+    FillLinesBehavior<Integer, Integer> behavior = new FillLinesBehavior<Integer, Integer>(matrix);
     behavior.extendLinesX = true;
     behavior.extendLinesY = true;
     behavior.extraLinesX = true;

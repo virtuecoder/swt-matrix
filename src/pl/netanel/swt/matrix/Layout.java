@@ -1018,7 +1018,7 @@ class Layout<N extends Number> {
 	public Bound getLineBound(int index) {
 		if (index < head.count) return head.lines.get(index);
 		index -= head.count;
-		if (index < main.cells.size()) return main.lines.get(index);
+		if (index < main.lines.size()) return main.lines.get(index);
 		index -= main.cells.size();
 		if (index < tail.count) return tail.lines.get(index);
 		return null;

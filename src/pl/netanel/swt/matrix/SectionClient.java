@@ -148,6 +148,8 @@ class SectionClient<N extends Number> implements Section<N> {
 
 	@Override public void setDefaultCellWidth(int width) {
 		if (width < 0) return;
+		Preconditions.checkArgument(core.axis.getMinimalCellWidth() <= width, 
+		  "Default cell width cannot be lower then the minimal cell width of the axis"); 
 		core.setDefaultCellWidth(width);
 	}
 

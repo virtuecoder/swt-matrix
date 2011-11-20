@@ -509,10 +509,18 @@ public class Axis<N extends Number>  {
 	
 	/**
 	 * Sets the minimal cell width to be achieved by a user driven cell resizing.
+	 * <p>
+	 * The default cell size of any section in this axis lower then minimal cell width 
+	 * is increased to then minimal cell width.
 	 * @param width new minimal width to set
 	 */
 	public void setMinimalCellWidth(int minimalCellWidth) {
 	  this.minimalCellWidth = minimalCellWidth;
+	  for (Section<N> section: sections) {
+	    if (section.getDefaultCellWidth() < minimalCellWidth) {
+	      section.setDefaultCellWidth(minimalCellWidth);
+	    }
+	  }
 	}
 	
 	

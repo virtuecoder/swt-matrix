@@ -13,6 +13,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
@@ -113,7 +114,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	public static final int CMD_SELECT_TO_COLUMN_ALTER = 127;		// binding = SWT.MOD1 + SWT.MouseDown + Zone.COLUMN_HEADER
 	
 	static boolean isBodySelect(int id) {
-		return CMD_FOCUS_UP <= id && id <= CMD_SELECT_TO_LOCATION_ALTER;
+		return CMD_FOCUS_UP <= id && id <= CMD_SELECT_TO_LOCATION_ALTER || 
+		  id == CMD_DND_SELECT;
 	}
 	
 	static boolean isHeaderSelect(int id) {
@@ -122,7 +124,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	
 	static boolean isExtendingSelect(int id) {
 		return CMD_SELECT_UP <= id && id <= CMD_SELECT_TO_LOCATION_ALTER || 
-			CMD_SELECT_TO_ROW <= id && id <= CMD_SELECT_TO_COLUMN_ALTER;
+			CMD_SELECT_TO_ROW <= id && id <= CMD_SELECT_TO_COLUMN_ALTER || 
+	      id == CMD_DND_SELECT;
 	}
 
 	/*
@@ -156,39 +159,40 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	
 	public static final int CMD_ITEM_HIDE = 301;						// binding = SWT.MOD3 + SWT.DEL;
 	public static final int CMD_ITEM_SHOW = 302;					// binding = SWT.MOD3 + SWT.INSERT;
+	public static final int CMD_RESIZE_PACK = 303;
 	
-	public static final int CMD_RESIZE_DND_START = 320;					    
-	public static final int CMD_RESIZE_DND = 321;					    
-	public static final int CMD_RESIZE_DND_STOP = 321;					    
-	public static final int CMD_RESIZE_PACK = 322;
+	public static final int CMD_DND_RESIZE_START = 320;					    
+	public static final int CMD_DND_RESIZE = 321;					    
+	public static final int CMD_DND_RESIZE_STOP = 321;					    
 	
-	public static final int CMD_MOVE_DND_START = 330;					    
-	public static final int CMD_MOVE_DND = 331;					    
-	public static final int CMD_MOVE_DND_STOP = 331;
+	public static final int CMD_DND_MOVE_START = 330;					    
+	public static final int CMD_DND_MOVE = 331;					    
+	public static final int CMD_DND_MOVE_STOP = 331;
 	
-	public static final int CMD_SELECT_DND_START = 340;					    
-	public static final int CMD_SELECT_DND = 341;					    
-	public static final int CMD_SELECT_DND_STOP = 341;					    
+	public static final int CMD_DND_SELECT_START = 340;					    
+	public static final int CMD_DND_SELECT = 341;					    
+	public static final int CMD_DND_SELECT_STOP = 341;					    
 	
-	public static final int CMD_SELECT_DND_ALTER_START = 350;					    
-	public static final int CMD_SELECT_DND_ALTER = 351;					    
-	public static final int CMD_SELECT_DND_ALTER_STOP = 351;					    
+	public static final int CMD_DND_SELECT_ALTER_START = 350;					    
+	public static final int CMD_DND_SELECT_ALTER = 351;					    
+	public static final int CMD_DND_SELECT_ALTER_STOP = 351;					    
 	
 	public static final int CMD_TRAVERSE_TAB_NEXT = 400;       // binding = SWT.TAB
 	public static final int CMD_TRAVERSE_TAB_PREVIOUS = 401;       // binding = SWT.MOD2 + SWT.TAB
 
+	
 	/**
-	 * State bit indicating that the an item has been clicked again
+	 * State bit indicating that the matrix is in the process of selecting cells
 	 * Value is 1&lt;&lt;5
 	 */
-	static final int STATE_IS_SELECTED = 1 << 5;
+	static final int STATE_SELECTING = 1 << 5;
 	/**
-	 * State bit indicating that the matrix in the process of moving an item
+	 * State bit indicating that the matrix is in the process of moving items
 	 * Value is 1&lt;&lt;6
 	 */
 	static final int STATE_MOVING = 1 << 6;
 	/**
-	 * State bit indicating that the matrix in the process of resizing an item
+	 * State bit indicating that the matrix is in the process of resizing items
 	 * Value is 1&lt;&lt;7
 	 */
 	static final int STATE_RESIZING = 1 << 7;
@@ -199,6 +203,12 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 * Value is 1&lt;&lt;8
 	 */
 	static final int STATE_RESIZE_AREA = 1 << 8;
+	
+	/**
+   * State bit indicating that the an item has been clicked again
+   * Value is 1&lt;&lt;9
+   */
+	static final int STATE_IS_SELECTED = 1 << 9;
 
 	/*------------------------------------------------------------------------
 	 * Mouse event modifiers, cannot collide with SWT state masks or mouse button numbers
@@ -914,12 +924,13 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
    * if the painters list does not contain such painter.
    *
    * @param name painter name to search for
-   * @return the index of a painter with the specified name
+   * @return painter with the specified name
    * @throws IllegalArgumentException if the name is null
    */
 	public Painter<X, Y> getPainter(String name) {
 		Preconditions.checkNotNullWithName(name, "name");
-		return painters.get(indexOfPainter(name));
+		int index = indexOfPainter(name);
+    return index == -1 ? null : painters.get(index);
 	}
 	
 	/**
@@ -1061,7 +1072,35 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	  redraw();
 	}
 
+	@Override
+	public Point computeSize(int wHint, int hHint, boolean changed) {
+	  if (changed) {
+	    layoutX.compute();
+	    layoutY.compute();
+	  }
+	  return computeSize(wHint, hHint);
+	}
 	
+	@Override
+	public Point computeSize(int wHint, int hHint) {
+	  if (wHint == SWT.DEFAULT) {
+	    Bound x = layoutX.getLineBound(layoutX.indexOf(axisX.getLastItem()) + 1);
+	    if (x == null) {
+	    	wHint = 0;
+	    } else {
+	    	wHint = x.distance + x.width;
+	    }
+	  }
+	  if (hHint == SWT.DEFAULT) {
+	    Bound y = layoutY.getLineBound(layoutY.indexOf(axisY.getLastItem()) + 1);
+	    if (y == null) {
+	    	hHint = 0;
+	    } else {
+	    	hHint = y.distance + y.width;
+	    }
+	  }
+    return new Point(wHint, hHint);
+	}
 	
 	@SuppressWarnings("unchecked")
 	<N extends Number> void insertInZonesX(SectionCore<N> section, N target, N count) {

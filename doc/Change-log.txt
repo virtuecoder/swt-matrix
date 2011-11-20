@@ -1,4 +1,15 @@
 -------------------------------------------------------------------------------
+Version 0.5.6
+
+New Features:
+- Matrix.computeSize(...) implementation
+
+Bug fixes:
+- Matrix.getPainter(String) was throwing IndexOutOfBoundsException when painter with the given name have not existed.
+- Bug #9 FillLinesBehavior doesn't work for empty table. Constructor has changed to FillLinesBehavior<Integer, Integer>(matrix)
+- Bug #11 Default row/column size should not be lower than minimal size
+
+-------------------------------------------------------------------------------
 Version 0.5.5
 
 Bug fixes:

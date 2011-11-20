@@ -1321,6 +1321,11 @@ public class  SwtTestCase {
     TestUtil.log(sb);
   }
   
+  /**
+   * Creates 5x5 matrix indexed by Integer with visible headers 
+   * and opens the shell with it.
+   * @return matrix
+   */
   public Matrix createMatrix() {
     Matrix matrix = new Matrix(shell, 0);
 //    listenToAll(matrix);
@@ -1332,6 +1337,12 @@ public class  SwtTestCase {
     shell.open();
     processEvents();
     return matrix;
+  }
+  
+  public void runBinding(GestureBinding b) {
+	  switch (b.eventType) {
+	  case SWT.MouseDown:
+	  }
   }
 
   public static void log(Object ...s) {
