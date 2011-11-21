@@ -17,36 +17,36 @@ import pl.netanel.util.Preconditions;
 
 
 /**
- * Constitutes a region of a matrix where a section from the vertical axis 
- * and a section from the horizontal axis intersect with each other.  
+ * Constitutes a region of a matrix where a section from the vertical axis
+ * and a section from the horizontal axis intersect with each other.
  * <p>
  * Zone has painters to paint itself on the screen.
  * </p><p>
  * </p>
- * 
+ *
  * @param <Y> indexing type for vertical axis
  * @param <X> indexing type for the horizontal axis
  * @see SectionCore
- * 
+ *
  * @author Jacek
  * @created 13-10-2010
  */
 class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
-	
+
 	final Painters<X, Y> painters;
 	final SectionCore<X> sectionX;
 	final SectionCore<Y> sectionY;
 	CellSet<X, Y> cellSelection;
 	CellSet<X, Y> lastSelection; // For adding selection
 	ZoneEditor<X, Y> editor;
-	
+
 	private final Listeners listeners;
 	private final ArrayList<GestureBinding> bindings;
 	private boolean selectionEnabled;
-	
+
 	private Matrix<X, Y> matrix;
 	final Rectangle bounds;
-	
+
 
   /**
 	 * Constructs zone at intersection of the specified sections.
@@ -61,18 +61,18 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
     bindings = new ArrayList<GestureBinding>();
     bounds = new Rectangle(0, 0, 0, 0);
     selectionEnabled = true;
-    
+
     Math<X> mathX = SectionCore.from(sectionX).math;
 		Math<Y> mathY = SectionCore.from(sectionY).math;
 		cellSelection = new CellSet<X, Y>(mathX, mathY);
 		lastSelection = new CellSet<X, Y>(mathX, mathY);
-		
+
 //		foreground = new MapValueToCellSet<X, Y, Color>(mathX, mathY);
 //		text = new MapValueToCellSet(this.sectionY.math, this.sectionX.math);
 //		image = new MapValueToCellSet(this.sectionY.math, this.sectionX.math);
 	}
-	
-	
+
+
 	@Override public String toString() {
 		return sectionX.toString() + " " + sectionY.toString();
 	}
@@ -81,20 +81,20 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	@Override public Zone<X, Y> getUnchecked() {
 	  return this;
 	}
-	
+
 	@Override public Section<X> getSectionX() {
 	  return sectionX;
 	}
-	
+
 	@Override public Section<Y> getSectionY() {
 	  return sectionY;
 	}
-	
+
 	/**
-   * Sets the default body style for the painters of this zone. 
+   * Sets the default body style for the painters of this zone.
    * <p>
-   * It sets the foreground, background, selection foreground, selection background 
-   * colors for the {@link Painter#NAME_CELLS} painter and line (foreground) color 
+   * It sets the foreground, background, selection foreground, selection background
+   * colors for the {@link Painter#NAME_CELLS} painter and line (foreground) color
    * for the  {@link Painter#NAME_LINES_X} and {@link Painter#NAME_LINES_Y} painters.
    */
   void setBodyStyle() {
@@ -111,12 +111,12 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
       painter.setStyle(Style.createBodyLineStyle());
     }
 	}
-	
+
 	/**
-	 * Sets the default header style for the painters of this zone. 
+	 * Sets the default header style for the painters of this zone.
 	 * <p>
-	 * It sets the foreground, background, selection foreground, selection background 
-	 * colors for the {@link Painter#NAME_CELLS} painter and line (foreground) color 
+	 * It sets the foreground, background, selection foreground, selection background
+	 * colors for the {@link Painter#NAME_CELLS} painter and line (foreground) color
 	 * for the  {@link Painter#NAME_LINES_X} and {@link Painter#NAME_LINES_Y} painters.
 	 */
   void setHeaderStyle() {
@@ -139,17 +139,17 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
       painter.setStyle(Style.createHeaderLineStyle());
     }
 	}
-	
+
 	@Override public Rectangle getCellBounds(X indexX, Y indexY) {
 		Bound b0 = sectionY.axis.getCellBound(sectionY, indexY);
 		Bound b1 = sectionX.axis.getCellBound(sectionX, indexX);
 		if (b0 != null && b1 != null) {
 			return new Rectangle(b1.distance, b0.distance, b1.width, b0.width);
 		}
-		return null; 
+		return null;
 	}
-	
-	
+
+
 	@Override public Rectangle getBounds(Frozen frozenX, Frozen frozenY) {
 	  Bound bx = matrix.layoutX.getBound(frozenX, sectionX);
     Bound by = matrix.layoutY.getBound(frozenY, sectionY);
@@ -163,12 +163,12 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		bounds.height = height;
 	}
 
-	
+
 	/*------------------------------------------------------------------------
 	 * Selection
 	 */
 
-	
+
 	@Override public boolean isSelectionEnabled() {
 		return selectionEnabled;
 	}
@@ -180,23 +180,23 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		this.selectionEnabled = enabled;
 	}
 
-	
+
 	@Override public boolean isSelected(X indexX, Y indexY) {
 		return cellSelection.contains(indexX, indexY);
 	}
-	
-	@Override 
+
+	@Override
 	public void setSelected(X startX, X endX, Y startY, Y endY, boolean state) {
-		
+
 		if (!selectionEnabled) return;
 		if (state) {
 			cellSelection.add(startX, endX, startY, endY);
 		} else {
-			cellSelection.remove(startX, endX, startY, endY);			
+			cellSelection.remove(startX, endX, startY, endY);
 		}
 	}
-	
-	@Override 
+
+	@Override
 	public void setSelected(X indexX, Y indexY, boolean state) {
 		setSelected(indexX, indexX, indexY, indexY, state);
 	}
@@ -207,7 +207,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 			Math<Y> mathY = sectionY.math;
       Math<X> mathX = sectionX.math;
       cellSelection.add(
-					mathX.ZERO_VALUE(), mathX.decrement(sectionX.getCount()), 
+					mathX.ZERO_VALUE(), mathX.decrement(sectionX.getCount()),
 					mathY.ZERO_VALUE(), mathY.decrement(sectionY.getCount()));
 		} else {
 			cellSelection.clear();
@@ -216,14 +216,14 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 //		sectionY.setSelectedAll(state);
 //		sectionX.setSelectedAll(state);
 	}
-	
+
 	@Override public BigInteger getSelectedCount() {
 		return cellSelection.getCount().getValue();
 	}
 
-	
+
 	/**
-	 * Returns a sequence of index pairs for selected cells. 
+	 * Returns a sequence of index pairs for selected cells.
 	 * @return a sequence of index pairs for selected cells
 	 */
 /*
@@ -231,14 +231,14 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		return new NumberPairSequence(cellSelection.copy());
 	}
 */
-	
+
 	@Override public BigInteger getSelectionCount() {
 		if (!selectionEnabled) {
 			return BigInteger.ZERO;
 		}
 		return cellSelection.getCount().value;
 	}
-	
+
 
 	@Override public Iterator<Cell<X,Y>> getSelectedIterator() {
 		return new ImmutableIterator<Cell<X,Y>>() {
@@ -247,20 +247,20 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 			{
 				seq.init();
 			}
-			
+
 			@Override public boolean hasNext() {
 				next = seq.next();
 				return next;
 			}
 
-			
+
 			@Override public Cell<X,Y> next() {
 				return next ? Cell.createUnchecked(seq.indexX(), seq.indexY()) : null;
 			}
 		};
 	}
-	
-	
+
+
 	@Override public Iterator<CellExtent<X, Y>> getSelectedExtentIterator() {
 		return new ImmutableIterator<CellExtent<X, Y>>() {
 			NumberPairSequence<X, Y> seq = new NumberPairSequence<X, Y>(cellSelection.copy());
@@ -268,22 +268,22 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 			{
 				seq.init();
 			}
-			
+
 			@Override public boolean hasNext() {
 				next = seq.nextExtent();
 				return next;
 			}
 
-			
+
 			@Override public CellExtent<X, Y> next() {
-				return next ? 
-				  CellExtent.createUnchecked(seq.startX(), seq.endX(), seq.startY(), seq.endY()) : 
+				return next ?
+				  CellExtent.createUnchecked(seq.startX(), seq.endX(), seq.startY(), seq.endY()) :
 			    null;
 			}
 		};
 	}
-	
-	
+
+
 	ImmutableIterator<Cell<X, Y>> getSelectedBoundsIterator() {
 		return new ImmutableIterator<Cell<X, Y>>() {
 			NumberPairSequence<X, Y> seq;
@@ -293,86 +293,86 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				set.add(e.startX, e.endX, e.startY, e.endY);
 				seq = new NumberPairSequence<X, Y>(set);
 			}
-			
+
 			private boolean next;
 			{
 				seq.init();
 			}
-			
+
 			@Override public boolean hasNext() {
 				next = seq.next();
 				return next;
 			}
 
-			
+
 			@Override public Cell<X, Y> next() {
 				return next ? Cell.createUnchecked(seq.indexX(), seq.indexY()) : null;
 			}
 		};
 	}
-	
-	
-	
+
+
+
 	@Override public CellExtent<X, Y> getSelectedExtent() {
 		return cellSelection.getExtent();
 	}
-	
+
 	void backupSelection() {
 		lastSelection = cellSelection.copy();
 	}
-	
+
 	void restoreSelection() {
 		cellSelection = lastSelection.copy();
 	}
 
 
 	/*------------------------------------------------------------------------
-	 * Gesture 
+	 * Gesture
 	 */
-	
+
 	@Override public void bind(int commandId, int eventType, int code) {
 		bind(new GestureBinding(commandId, eventType, code));
 	}
-	
+
 	void bind(GestureBinding binding) {
 		if (editor != null && (
-				binding.commandId == Matrix.CMD_EDIT_DEACTIVATE_APPLY || 
+				binding.commandId == Matrix.CMD_EDIT_DEACTIVATE_APPLY ||
 				binding.commandId == Matrix.CMD_EDIT_DEACTIVATE_CANCEL )) {
 			editor.controlListener.bindings.add(binding);
 		} else {
 			bindings.add(binding);
 		}
 	}
-	
+
 	@Override public void unbind(int commandId, int eventType, int code) {
 		if (editor != null && (
-				commandId == Matrix.CMD_EDIT_DEACTIVATE_APPLY || 
+				commandId == Matrix.CMD_EDIT_DEACTIVATE_APPLY ||
 				commandId == Matrix.CMD_EDIT_DEACTIVATE_CANCEL )) {
 			editor.controlListener.unbind(commandId, eventType, code);
 		}
 		else {
 			for (int i = bindings.size(); i-- > 0;) {
 				GestureBinding binding = bindings.get(i);
-				if (binding.commandId == commandId && binding.eventType == eventType 
+				if (binding.commandId == commandId && binding.eventType == eventType
 						&& binding.key == code) {
 					bindings.remove(i);
 				};
 			}
 		}
 	}
-	
+
 	Iterable<GestureBinding> getBindings() {
 		return bindings;
 	}
-	
-	
+
+
 	@Override public void addSelectionListener (SelectionListener listener) {
 		Preconditions.checkNotNullWithName(listener, "listener");
 		TypedListener typedListener = new TypedListener(listener);
 		this.listeners.add(SWT.Selection, typedListener);
 		this.listeners.add(SWT.DefaultSelection, typedListener);
 	}
-	
+
 	@Override public void removeSelectionListener(SelectionListener listener) {
 		Preconditions.checkNotNullWithName(listener, "listener");
 		listeners.remove(SWT.Selection, listener);
@@ -381,11 +381,11 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 	@Override public void addListener(int eventType, final Listener listener) {
 		matrix.addListener(eventType, new Listener() {
-			
+
 			@Override public void handleEvent(Event e) {
 			  AxisItem<X> itemX = matrix.getAxisX().getItemByViewportDistance(e.x);
 				AxisItem<Y> itemY = matrix.getAxisY().getItemByViewportDistance(e.y);
-				if (itemX != null && itemY != null && ZoneCore.this == 
+				if (itemX != null && itemY != null && ZoneCore.this ==
 						matrix.model.getZone(itemX.section, itemY.section))
 				{
 					listener.handleEvent(e);
@@ -394,14 +394,14 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		});
 	}
 
-	
+
 	/*------------------------------------------------------------------------
-	 * Painting 
+	 * Painting
 	 */
 
-	void paint(final GC gc, 
-	  final Layout<X> layoutX, final Layout<Y> layoutY, 
-	  final Frozen frozenX, final Frozen frozenY) 
+	void paint(final GC gc,
+	  final Layout<X> layoutX, final Layout<Y> layoutY,
+	  final Frozen frozenX, final Frozen frozenY)
 	{
 		Painter<X, Y> embedded = null;
 		for (Painter<X, Y> p: painters) {
@@ -410,10 +410,10 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				continue;
 			}
 			if (!p.isEnabled() || !p.init(gc)) continue;
-			
+
 			int distance = 0, width = 0;
 			switch (p.scope) {
-			
+
 			case Painter.SCOPE_CELLS_X:
 			  LayoutSequence<X> seqX = layoutX.cellSequence(frozenX, sectionX);
 				LayoutSequence<Y> seqY = layoutY.cellSequence(frozenY, sectionY);
@@ -427,7 +427,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 					}
 				}
 				break;
-				
+
 			case Painter.SCOPE_CELLS_Y:
 				seqY = layoutY.cellSequence(frozenY, sectionY);
 				seqX = layoutX.cellSequence(frozenX, sectionX);
@@ -441,7 +441,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 					}
 				}
 				break;
-			
+
 			case Painter.SCOPE_CELLS_ITEM_Y:
 				seqY = layoutY.cellSequence(frozenY, sectionY);
 				distance = bounds.x;
@@ -451,7 +451,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 					p.paint(distance, seqY.getDistance(), width, seqY.getWidth());
 				}
 				break;
-				
+
 			case Painter.SCOPE_CELLS_ITEM_X:
 				seqX = layoutX.cellSequence(frozenX, sectionX);
 				distance = bounds.y;
@@ -461,7 +461,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 					p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
 				}
 				break;
-				
+
 			case Painter.SCOPE_LINES_X:
 				seqY = layoutY.lineSequence(frozenY, sectionY);
 				distance = bounds.x;
@@ -471,28 +471,28 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 					p.paint(distance, seqY.getDistance(), width, seqY.getWidth());
 				}
 				break;
-			
+
 			case Painter.SCOPE_LINES_Y:
 				seqX = layoutX.lineSequence(frozenX, sectionX);
 				distance = bounds.y;
 				width = bounds.height;
 				for (seqX.init(); seqX.next();) {
-				  p.setup(seqX.item.getIndex(), sectionY.math.ZERO_VALUE()); 
+				  p.setup(seqX.item.getIndex(), sectionY.math.ZERO_VALUE());
 					p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
 				}
 				break;
-				
+
 			case Painter.SCOPE_ENTIRE:
 			  seqX = layoutX.lineSequence(frozenX, sectionX);
 			  for (seqX.init(); seqX.next();) {
-			    p.setup(sectionX.math.ZERO_VALUE(), sectionY.math.ZERO_VALUE()); 
+			    p.setup(sectionX.math.ZERO_VALUE(), sectionY.math.ZERO_VALUE());
 			    p.paint(bounds.x, bounds.y, bounds.width, bounds.height);
 			  }
 			  break;
 			}
 			p.clean();
 		}
-		
+
 		if (embedded != null) {
 			final Painter<X, Y> p = embedded;
 //			Display display = matrix.getDisplay();
@@ -503,7 +503,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 //				    gc2 = new GC(matrix.getDisplay());
 //				  }
 					if (!p.isEnabled() || !p.init(gc)) return;
-					
+
 					LayoutSequence<Y> seqY = layoutY.cellSequence(frozenY, sectionY);
 					LayoutSequence<X> seqX = layoutX.cellSequence(frozenX, sectionX);
 					for (seqY.init(); seqY.next();) {
@@ -511,7 +511,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 						int width = seqY.getWidth();
 						Y index = seqY.item.getIndex();
 						for (seqX.init(); seqX.next();) {
-						  p.setup(seqX.item.getIndex(), index); 
+						  p.setup(seqX.item.getIndex(), index);
 							p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
 						}
 					}
@@ -520,7 +520,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 //			});
 		}
 	}
-	
+
 	@Override public void addPainter(Painter<X, Y> painter) {
 		painters.add(painter);
 		setPainterMatrixAndZone(painter);
@@ -530,53 +530,53 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		painters.add(index, painter);
 		setPainterMatrixAndZone(painter);
 	}
-	
+
 	@Override public void setPainter(int index, Painter<X, Y> painter) {
 		painters.set(index, painter);
 		setPainterMatrixAndZone(painter);
 	}
-	
+
 	@Override public void replacePainter(Painter<X, Y> painter) {
 		painters.replacePainter(painter);
 		setPainterMatrixAndZone(painter);
 	}
-	
+
 	@Override public void replacePainterPreserveStyle(Painter<X, Y> painter) {
 	  painters.replacePainterPreserveStyle(painter);
 	  setPainterMatrixAndZone(painter);
 	}
-	
-	
-	
+
+
+
 	@Override public Painter<X, Y> removePainter(int index) {
 		return painters.remove(index);
 	}
-	
-	
+
+
 	@Override public boolean removePainter(Painter<X, Y> painter) {
     return painters.remove(painter);
   }
-  
+
   @Override public boolean removePainter(String name) {
     int i = indexOfPainter(name);
     if (i == -1) return false;
     return painters.remove(painters.get(i));
   }
-  
+
 	@Override public int indexOfPainter(String name) {
 		return painters.indexOfPainter(name);
 	}
-	
+
 	@Override public Painter<X, Y> getPainter(String name) {
 		int i = indexOfPainter(name);
 		if (i == -1) return null;
     return painters.get(i);
 	}
-	
+
 	@Override public int getPainterCount() {
 		return painters.size();
 	}
-	
+
 	@Override public Painter<X, Y> getPainter(int index) {
 		return painters.get(index);
 	}
@@ -590,21 +590,21 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
     }
   }
 
-	private void setPainterMatrixAndZone(Painter<X, Y> painter) {	
+	private void setPainterMatrixAndZone(Painter<X, Y> painter) {
 			painter.setZone(this);
 			painter.setMatrix(matrix);
 	}
-	
-	
+
+
 	/*------------------------------------------------------------------------
-	 * Non-public 
+	 * Non-public
 	 */
-	
+
 	void setMatrix(Matrix<X, Y> matrix) {
 		this.matrix = matrix;
 		for (Painter<X, Y> painter: painters) {
 			if (painter.scope == Painter.SCOPE_CELLS ||
-					painter.scope == Painter.SCOPE_CELLS_Y) 
+					painter.scope == Painter.SCOPE_CELLS_Y)
 			{
 				painter.setZone(this);
 				painter.setMatrix(matrix);
@@ -615,7 +615,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	@Override public Matrix<X, Y> getMatrix() {
 		return matrix;
 	}
-	
+
 	void setEditor(ZoneEditor<X, Y> editor) {
 		this.editor = editor;
 	}

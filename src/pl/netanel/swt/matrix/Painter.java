@@ -20,22 +20,22 @@ import pl.netanel.util.Preconditions;
 
 /**
  * This class draws everything that appears on the matrix canvas: background, images, text, lines.
- * 
+ *
  * <h3>Optimization</h3>
- * Because the {@link #paint(Number, Number, int, int, int, int)} method is called in the loop to paint cells and lines 
+ * Because the {@link #paint(Number, Number, int, int, int, int)} method is called in the loop to paint cells and lines
  * then it is recommended to take as many operations out of it as possible in order to improve the
- * the graphics performance. All the repetitive operations that are common to all elements, 
+ * the graphics performance. All the repetitive operations that are common to all elements,
  * like setting a font or a background color can be done in the {@link #init()} method, which is called only once.
  * <p>
- * It's also a good practice to restore any of the GC attributes modified by in {@link #init()} or {@link #paint(Number, Number, int, int, int, int)} 
- * back to the default value to provide a clean start for a next painter. 
- * It can be done in the {@link #clean()} method.  
+ * It's also a good practice to restore any of the GC attributes modified by in {@link #init()} or {@link #paint(Number, Number, int, int, int, int)}
+ * back to the default value to provide a clean start for a next painter.
+ * It can be done in the {@link #clean()} method.
  * <p>
  * This optimization is possible due to replacing of painting operations loop with the cell iteration loop.
  * In Matrix cell iteration happens inside of the painters iteration and it can still fold to a single
  * cell iteration if all the drawing is done by a single painter.
- * 
- * 	
+ *
+ *
  * @author jacek.p.kolodziejczyk@gmail.com
  * @created 2010-06-13
  */
@@ -75,10 +75,10 @@ public class Painter<X extends Number, Y extends Number> {
    * Shortcut for {@link #SCOPE_CELLS_X}
    */
   public static final int SCOPE_CELLS = SCOPE_CELLS_X;
-	
+
   /**
    * Default name of a painter belonging to a zone and responsible to paint its
-   * cells. Painter with that name should not be removed, because 
+   * cells. Painter with that name should not be removed, because
    * {@link ZoneEditor} and {@link #NAME_DRAG_ITEM_X} use it to perform their functions.
    */
   public static final String NAME_CELLS = "cells";
@@ -162,42 +162,42 @@ public class Painter<X extends Number, Y extends Number> {
    */
   public static final String NAME_EMBEDDED_CONTROLS = "embedded controls";
   /**
-   * Default name of the painter belonging to a matrix responsible to paint the 
+   * Default name of the painter belonging to a matrix responsible to paint the
    * items being dragged on x axis.
    */
   public static final String NAME_DRAG_ITEM_X = "drag item x";
   /**
-   * Default name of the painter belonging to a matrix responsible to paint the 
+   * Default name of the painter belonging to a matrix responsible to paint the
    * items being dragged on y axis.
    */
   public static final String NAME_DRAG_ITEM_Y = "drag item y";
   /**
-   * Default name of the painter belonging to a matrix responsible to paint the 
+   * Default name of the painter belonging to a matrix responsible to paint the
    * line dividing the frozen head on the horizontal axis.
    */
   public static final String NAME_FREEZE_HEAD_LINE_X = "freeze head line x";
   /**
-   * Default name of the painter belonging to a matrix responsible to paint the 
+   * Default name of the painter belonging to a matrix responsible to paint the
    * line dividing the frozen head on the vertical axis.
    */
   public static final String NAME_FREEZE_HEAD_LINE_Y = "freeze head line y";
   /**
-   * Default name of the painter belonging to a matrix responsible to paint the 
+   * Default name of the painter belonging to a matrix responsible to paint the
    * line dividing the frozen tail on the horizontal axis.
    */
   public static final String NAME_FREEZE_TAIL_LINE_X = "freeze tail line x";
   /**
-   * Default name of the painter belonging to a matrix responsible to paint the 
+   * Default name of the painter belonging to a matrix responsible to paint the
    * line dividing the frozen tail on the vertical axis.
    */
   public static final String NAME_FREEZE_TAIL_LINE_Y = "freeze tail line y";
-	
+
 	//private static int[] EXTENT_ALIGN = {SWT.RIGHT, SWT.END, SWT.BOTTOM, SWT.CENTER};
 	static enum TextClipMethod {DOTS_IN_THE_MIDDLE, DOTS_AT_THE_END, CUT, NONE};
-	
+
 	/**
-	 * Provides graphic to the {@link #init()}, {@link #clean()}, 
-	 * {@link #paint(Number, Number, int, int, int, int)} methods. 
+	 * Provides graphic to the {@link #init()}, {@link #clean()},
+	 * {@link #paint(Number, Number, int, int, int, int)} methods.
 	 * It is not safe to use it inside of other methods.
 	 */
 	protected GC gc;
@@ -207,22 +207,22 @@ public class Painter<X extends Number, Y extends Number> {
 	 * by the {@link #setup(Number, Number)} method.
 	 */
 	protected boolean isSelected = false;
-	
+
 	int scope;
 	final String name;
 	private boolean enabled = true;
-	
+
 	/**
-	 * Text to be painted. The placement of the text depends on the {@link #textAlignX}, 
+	 * Text to be painted. The placement of the text depends on the {@link #textAlignX},
 	 * {@link #textAlignY}, {@link #textMarginX}, {@link #textMarginY} properties.
 	 */
 	public String text;
 	/**
-	 * Image to be painted. The placement of the image depends on the {@link #imageAlignX}, 
+	 * Image to be painted. The placement of the image depends on the {@link #imageAlignX},
 	 * {@link #imageAlignY}, {@link #imageMarginX}, {@link #imageMarginY} properties.
 	 */
 	public Image image;
-	
+
 
 	/**
 	 * Selected cells will be highlighted if <tt>true</tt>. Otherwise cell selection
@@ -234,13 +234,13 @@ public class Painter<X extends Number, Y extends Number> {
 	 * Painter style properties.
 	 */
 	public Style style;
-	
-	
+
+
 	Matrix<X, Y> matrix;
 	ZoneCore<X, Y> zone;
 	Rectangle zoneBounds;
 
-	private Color lastForeground, lastBackground, defaultBackground, defaultForeground;  
+	private Color lastForeground, lastBackground, defaultBackground, defaultForeground;
 
 	private Font lastFont;
 	private int[] extentCache;
@@ -249,36 +249,36 @@ public class Painter<X extends Number, Y extends Number> {
   Rectangle clipping;
   private Object data;
 
-	
+
 	/**
-	 * Constructs a painter with the given name. 
+	 * Constructs a painter with the given name.
 	 * <p>
 	 * The scope of the painter is determined according to the following rules:<br>
 	 * for name {@link #NAME_CELLS} scope = {@link #SCOPE_CELLS}<br>
 	 * for name {@link #NAME_LINES_X} scope = {@link #SCOPE_LINES_X} <br>
-	 * for name {@link #NAME_LINES_Y} scope = {@link #SCOPE_LINES_Y}<br> 
+	 * for name {@link #NAME_LINES_Y} scope = {@link #SCOPE_LINES_Y}<br>
 	 * for name {@link #NAME_EMBEDDED_CONTROLS} scope = {@link #SCOPE_CELLS}<br>
 	 * for name {@link #NAME_EMULATED_CONTROLS} scope = {@link #SCOPE_CELLS}<br>
-	 * else {@link #SCOPE_ENTIRE}. 
+	 * else {@link #SCOPE_ENTIRE}.
 	 * @param name of the painter, must be unique in the collection to which it is added
 	 * @see #Painter(String, int)
 	 */
 	public Painter(String name) {
-		this(name, 
-  		name.equals(NAME_CELLS) || 
-  		name.equals(NAME_EMBEDDED_CONTROLS) || 
+		this(name,
+  		name.equals(NAME_CELLS) ||
+  		name.equals(NAME_EMBEDDED_CONTROLS) ||
   		name.equals(NAME_EMULATED_CONTROLS) ?     SCOPE_CELLS :
   		name.equals(NAME_LINES_X) ?               SCOPE_LINES_X :
-  		name.equals(NAME_LINES_Y) ?               SCOPE_LINES_Y : 
+  		name.equals(NAME_LINES_Y) ?               SCOPE_LINES_Y :
   		                                          SCOPE_ENTIRE);
 	}
 
 	/**
 	 * The main constructor.
-	 * 
+	 *
 	 * @param name the name of the painter, must be unique in the collection to which it is added
-	 * @param scope the scope of the painter deciding on the order and size of the boundaries 
-	 * the {@link #paint(Number, Number, int, int, int, int)} method receives. 
+	 * @param scope the scope of the painter deciding on the order and size of the boundaries
+	 * the {@link #paint(Number, Number, int, int, int, int)} method receives.
 	 * The value must be one of the Painter constants prefixed with <code>SCOPE_</code>.
 	 */
 	public Painter(String name, int scope) {
@@ -290,16 +290,16 @@ public class Painter<X extends Number, Y extends Number> {
 
 	/**
 	 * Returns the painter name.
-	 * 
+	 *
 	 * @return the painter name
 	 */
 	public String getName() {
 		return name;
 	}
-		
+
 	/**
 	 * Returns the painter scope.
-	 * 
+	 *
 	 * @return the painter scope
 	 */
 	public int getScope() {
@@ -308,7 +308,7 @@ public class Painter<X extends Number, Y extends Number> {
 
   /**
 	 * Initializes the GC property of the receiver to be used by its other methods.
-	 * To change the painter initialization behavior override its protected {@link #init()} method. 
+	 * To change the painter initialization behavior override its protected {@link #init()} method.
 	 * @param gc
 	 * @return true if the initialization succeeded or false otherwise.
 	 */
@@ -324,14 +324,14 @@ public class Painter<X extends Number, Y extends Number> {
    * If this method returns false the
    * {@link #paint(Number, Number, int, int, int, int)} and {@link #clean()}
    * methods will not be executed.
-   * 
+   *
    * @return true if the initialization succeeded or false otherwise.
    * @see <code>clean()</code>
    */
 	protected boolean init() {
 		if (scope < SCOPE_CELLS) return true;
-		
-		// Set default value if foreground is null, background is not painted if null 
+
+		// Set default value if foreground is null, background is not painted if null
 		if (style.foreground == null) {
 		  style.foreground = Resources.getColor(SWT.COLOR_LIST_FOREGROUND);
 		}
@@ -341,33 +341,33 @@ public class Painter<X extends Number, Y extends Number> {
 		}
 		lastForeground = defaultForeground;
 		lastBackground = defaultBackground = style.background;
-		
+
 		gc.setForeground(lastForeground);
 		if (style.background != null) {
 			gc.setBackground(lastBackground);
 //			gc.fillRectangle(zone.bounds);
 		}
-		
+
 		Font font = style.font == null ? matrix.getDisplay().getSystemFont() : style.font;
     gc.setFont(font);
 		extentCache = FontWidthCache.get(gc, font);
 		extent = new Point(-1, gc.stringExtent("ty").y);
 		clipping = gc.getClipping();
-		return true; 
+		return true;
 	}
-	
+
 
 	/**
-	 * Restores the default {@link GC} settings modified by modified by in {@link #init()} 
+	 * Restores the default {@link GC} settings modified by modified by in {@link #init()}
 	 * or {@link #paint(Number, Number, int, int, int, int)}.
 	 * @see <code>init()</code>
 	 */
 	public void clean() {
-	  gc.setClipping(clipping);
+	  //gc.setClipping(clipping);
 	}
 
 	/**
-	 * Draws on the canvas within the given boundaries according to the given indexes. 
+	 * Draws on the canvas within the given boundaries according to the given indexes.
 	 * <p>
 	 * @param x the x coordinate of the painting boundaries
 	 * @param y the y coordinate of the painting boundaries
@@ -381,17 +381,17 @@ public class Painter<X extends Number, Y extends Number> {
       clipping2 = gc.getClipping();
 	    gc.setClipping(x, y, width, height);
 	  }
-	  
+
 		Color foreground2, background2;
 		if (isSelected) {
 			// TODO Revise and maybe optimize the background / foreground color setting algorithm
-			foreground2 = style.selectionForeground;  
+			foreground2 = style.selectionForeground;
 			background2 = style.selectionBackground;
 		} else {
-		  foreground2 = style.foreground;  
+		  foreground2 = style.foreground;
 		  background2 = style.background;
 		}
-		
+
 		if (foreground2 == null) {
 		  if (defaultForeground == null) {
 		    defaultForeground = matrix.getForeground();
@@ -411,17 +411,17 @@ public class Painter<X extends Number, Y extends Number> {
 				gc.fillRectangle(x, y, width, height);
 			}
 		}
-		
+
 		int x2 = x, y2 = y;
 		int x3 = x, y3 = y;
-		
+
 		if (image != null) {
 			Rectangle bounds = image.getBounds();
 			switch (style.imageAlignX) {
-			case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP: 
+			case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP:
 				x2 += style.imageMarginX; x3 += bounds.width; break;
 			case SWT.CENTER:
-				x2 += (width - bounds.width) / 2; break; 
+				x2 += (width - bounds.width) / 2; break;
 			case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
 				x2 += width - bounds.width - style.imageMarginX; break;
 			}
@@ -429,7 +429,7 @@ public class Painter<X extends Number, Y extends Number> {
 			case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
 				y2 += style.imageMarginY; break;
 			case SWT.CENTER:
-				y2 += (height - bounds.height) / 2; break; 
+				y2 += (height - bounds.height) / 2; break;
 			case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
 				y2 += height - bounds.height - style.imageMarginY; break;
 			}
@@ -440,8 +440,8 @@ public class Painter<X extends Number, Y extends Number> {
 			gc.drawImage(image, x2, y2);
 			width -= bounds.width;
 		}
-		
-		
+
+
 		if (text != null) {
 		  boolean fontChange = style.font != lastFont;
 		  if (fontChange) {
@@ -450,31 +450,31 @@ public class Painter<X extends Number, Y extends Number> {
 		    extentCache = FontWidthCache.get(gc, font);
 		    lastFont = font;
 		  }
-		  
+
 		  if (!style.hasWordWraping) {
-		    // Compute extent only when font changes or text horizontal align is center or right  
-//		    if (fontChange || 
+		    // Compute extent only when font changes or text horizontal align is center or right
+//		    if (fontChange ||
 //          Arrays.contains(EXTENT_ALIGN, style.textAlignX)) {
 //          extent = gc.stringExtent(text);
 //        }
         extent = gc.stringExtent(text);
-		    
+
 		    if (style.textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
-//		      text = shortenTextMiddle(text, width - style.textMarginX * 2);      
+//		      text = shortenTextMiddle(text, width - style.textMarginX * 2);
 		      text = FontWidthCache.shortenTextMiddle(
-		        text, width - style.textMarginX * 2, extent, extentCache);      
-		    } 
+		        text, width - style.textMarginX * 2, extent, extentCache);
+		    }
 //		    else if (style.textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
 //		      text = FontWidthCache.shortenTextEnd(
-//		        text, width - style.textMarginX * 2, extent, extentCache);     
-//		    } 
+//		        text, width - style.textMarginX * 2, extent, extentCache);
+//		    }
 		  }
-		  
+
 		  switch (style.textAlignX) {
-      case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP: 
+      case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP:
         x3 += style.textMarginX; break;
       case SWT.CENTER:
-        x3 += (width - extent.x) / 2; break; 
+        x3 += (width - extent.x) / 2; break;
       case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
         x3 += width - extent.x - style.textMarginX; break;
       }
@@ -482,11 +482,11 @@ public class Painter<X extends Number, Y extends Number> {
       case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
         y3 += style.textMarginY; break;
       case SWT.CENTER:
-        y3 += (height - extent.y) / 2; break; 
+        y3 += (height - extent.y) / 2; break;
       case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
         y3 += height - extent.y - style.textMarginY; break;
       }
-      
+
 		  if (style.hasWordWraping) {
 		    if (textLayout == null) {
 		      textLayout = new TextLayout(gc.getDevice());
@@ -503,7 +503,7 @@ public class Painter<X extends Number, Y extends Number> {
 
 //		    Rectangle clipping2 = gc.getClipping();
 		    textLayout.draw(gc, x3, y3);
-		  } 
+		  }
 		  else {
 //			if (width < 4 || height < 4) return;
 	      if (clipping2 == null && height < extent.y + 2 * style.textMarginY) {
@@ -518,10 +518,10 @@ public class Painter<X extends Number, Y extends Number> {
 		  gc.setClipping(clipping2);
 		}
 	}
-	
+
 	public String shortenTextMiddle(String s, int width) {
     if (s == null) return s;
-    
+
     int len = s.length();
     int w = 0;
     int i = 0;
@@ -536,8 +536,8 @@ public class Painter<X extends Number, Y extends Number> {
       int last = len - 1;
       while (pos1 > 0 && pos2 < last) {
         if ((w = len1 + dot2 + len2) <= width) break;
-        else if (pos1 <= 1 && (w = len1 + dot2) <= width) { 
-          pos2 = len; break; 
+        else if (pos1 <= 1 && (w = len1 + dot2) <= width) {
+          pos2 = len; break;
         }
         int w2 = gc.stringExtent(Character.toString(s.charAt(--pos1))).x;
         len1 -= w2;
@@ -556,14 +556,14 @@ public class Painter<X extends Number, Y extends Number> {
     extent.x = w;
     return s;
   }
-	
-	
+
+
 	/**
-   * Configures the painter properties according to the given indexes. 
+   * Configures the painter properties according to the given indexes.
    * <p>
-   * Default implementation invokes {@link #setupSpatial(Number, Number)} 
-   * and determines if the cell is selected. 
-   * 
+   * Default implementation invokes {@link #setupSpatial(Number, Number)}
+   * and determines if the cell is selected.
+   *
    * @param indexX cell index on the horizontal axis
    * @param indexY cell index on the vertical axis
    */
@@ -571,29 +571,29 @@ public class Painter<X extends Number, Y extends Number> {
 	  setupSpatial(indexX, indexY);
     isSelected = selectionHighlight && zone != null && zone.isSelected(indexX, indexY);
 	}
-	
+
   /**
-   * Sets the spatial properties for this painter. 
-   * Spatial properties are the ones that effect the space of the cell and 
-   * include: text, image, text and image margins, text wrapping. 
+   * Sets the spatial properties for this painter.
+   * Spatial properties are the ones that effect the space of the cell and
+   * include: text, image, text and image margins, text wrapping.
    * <p>
    * It is utilized by both painting mechanism as well as
-   * {@link #computeSize(Number, Number, int, int)} routine. 
+   * {@link #computeSize(Number, Number, int, int)} routine.
    * The reason to separate it from {@link #setup(Number, Number)} method
-   * was to improve performance of size computing by eliminating unnecessary 
+   * was to improve performance of size computing by eliminating unnecessary
    * processing, like setting colors, determining whether the cell is selected, etc.
    * <p>
    * The most common usage is to set the text to display:
    * <pre>  public void setupSpatial(Integer indexX, Integer indexY){
-      text = data[indexY][indexX]; 
+      text = data[indexY][indexX];
   }
-   * </pre>  
-   * 
+   * </pre>
+   *
    * @param indexX cell index on the horizontal axis
    * @param indexY cell index on the vertical axis
    */
 	public void setupSpatial(X indexX, Y indexY) {}
-	
+
   /**
    * Set the style of the painter.
    * @param style to set
@@ -613,7 +613,7 @@ public class Painter<X extends Number, Y extends Number> {
    *     dragPainterY.setData(event);
    *   }
    * });</pre>
-   * 
+   *
    * @param data data to set
    */
 	public void setData(Object data) {
@@ -627,13 +627,13 @@ public class Painter<X extends Number, Y extends Number> {
 	public Object getData() {
     return data;
   }
-	
+
 	/**
 	 * Sets the enabled state of the receiver.
 	 * <p>
-	 * Allows to skip the receiver in the painting sequence. 
+	 * Allows to skip the receiver in the painting sequence.
 	 * It can be used to hide/show the lines for example.
-	 * 
+	 *
 	 * @param enabled the new enabled state
 	 */
 	public void setEnabled(boolean enabled) {
@@ -643,9 +643,9 @@ public class Painter<X extends Number, Y extends Number> {
 	/**
 	 * Returns true if the painter is enabled, or false otherwise.
 	 * <p>
-	 * Communicates to the client to skip this painter in the painting sequence. 
+	 * Communicates to the client to skip this painter in the painting sequence.
 	 * It can be used to hide/show the lines for example.
-	 * 
+	 *
 	 * @return the enabled state
 	 */
 	public boolean isEnabled() {
@@ -654,29 +654,29 @@ public class Painter<X extends Number, Y extends Number> {
 
 	/**
 	 * Returns the preferred size of the receiver.
-   * @param indexX cell index on the horizontal axis 
-   * @param indexY cell index on the vertical axis  
+   * @param indexX cell index on the horizontal axis
+   * @param indexY cell index on the vertical axis
 	 * @param wHint the width hint (can be <code>SWT.DEFAULT</code>)
 	 * @param hHint the height hint (can be <code>SWT.DEFAULT</code>)
 	 * @return the preferred size of the control
 	 */
 	public Point computeSize(X indexX, Y indexY, int wHint, int hHint) {
 	  setupSpatial(indexX, indexY);
-	  
+
 	  int x = 0, y = 0;
-	  
+
 	  if (image != null) {
 	    Rectangle bounds = image.getBounds();
 	    x = bounds.width + 2 * style.imageMarginX;
 	    y = bounds.height + 2 * style.imageMarginY;
 	  }
-	  
+
     if (text != null) {
-      
+
       if (style.hasWordWraping) {
         if (wHint == SWT.DEFAULT) {
           return new Point(
-            zone.getSectionX().getCellWidth(indexX), 
+            zone.getSectionX().getCellWidth(indexX),
             zone.getSectionY().getCellWidth(indexY));
         }
         int x2 = wHint == SWT.DEFAULT ?  zone.getSectionX().getCellWidth(indexX) : wHint;
@@ -693,13 +693,13 @@ public class Painter<X extends Number, Y extends Number> {
         textLayout.setText(text);
         textLayout.setAlignment(style.textAlignX);
         textLayout.setWidth(x2 < 1 ? 1 : x2 - 2 * style.textMarginX);
-        
+
         for (int i = 0; i < textLayout.getLineCount(); i++)
           y2 += textLayout.getLineBounds(i).height;
-        
+
         x += wHint == SWT.DEFAULT ? textLayout.getBounds().width + 2 * style.textMarginX: x2;
         y = max(y, y2 + 2 * style.textMarginY);
-      } 
+      }
       else {
 //        extent = gc.stringExtent(text);
 //        x += extent.x + 2 * style.textMarginX;
@@ -707,21 +707,21 @@ public class Painter<X extends Number, Y extends Number> {
         y = max(y, extent.y + 2 * style.textMarginY);
       }
     }
-    
+
 	  return new Point(max(x, wHint), max(y, hHint));
 	}
 
-	
-	
+
+
 	/*------------------------------------------------------------------------
-	 * Static members 
+	 * Static members
 	 */
-	
-	
+
+
 	/**
 	 * Returns the distance of a graphical element based on the align mode and the padding margin.
-	 *  
-	 * @param align the alignment mode, one of: {@link SWT#LEFT}, {@link SWT#RIGHT}, {@link SWT#CENTER}, 
+	 *
+	 * @param align the alignment mode, one of: {@link SWT#LEFT}, {@link SWT#RIGHT}, {@link SWT#CENTER},
 	 * 		{@link SWT#TOP}, {@link SWT#BOTTOM}, {@link SWT#BEGINNING}, {@link SWT#END}
 	 * @param margin the number of pixels from the edge to which to align, does not matter with {@link SWT#CENTER}
 	 * @param width the width of the element
@@ -734,16 +734,16 @@ public class Painter<X extends Number, Y extends Number> {
 		case SWT.LEFT: case SWT.TOP: case SWT.BEGINNING:
 			return margin;
 		case SWT.CENTER:
-			return (bound - width) / 2; 
+			return (bound - width) / 2;
 		case SWT.RIGHT: case SWT.BOTTOM: case SWT.END:
-			return bound - width - margin; 
+			return bound - width - margin;
 		}
 		return margin;
 	}
-	
+
 	/**
-	 * Enlarge or shrink the rectangle by the given offset. 
-	 * The rectangle is enlarged if the offset is positive and shrunk otherwise. 
+	 * Enlarge or shrink the rectangle by the given offset.
+	 * The rectangle is enlarged if the offset is positive and shrunk otherwise.
 	 * @param r
 	 * @param offset
 	 */
@@ -753,14 +753,14 @@ public class Painter<X extends Number, Y extends Number> {
 		r.width += 2 *offset;
 		r.height += 2 *offset;
 	}
-	
+
 	static RGB blend(RGB c1, RGB c2, int ratio) {
 		int r = blend(c1.red, c2.red, ratio);
 		int g = blend(c1.green, c2.green, ratio);
 		int b = blend(c1.blue, c2.blue, ratio);
 		return new RGB(r, g, b);
 	}
-	
+
 	private static int blend(int v1, int v2, int ratio) {
 		return (ratio*v1 + (100-ratio)*v2)/100;
 	}
@@ -772,10 +772,10 @@ public class Painter<X extends Number, Y extends Number> {
 	/**
 	 * Returns the matrix to which the painter belongs.
 	 * <p>
-	 * It returns <code>null</code> before the painter is added to the collection 
-	 * of the zone painters or matrix painters, which means it's always 
+	 * It returns <code>null</code> before the painter is added to the collection
+	 * of the zone painters or matrix painters, which means it's always
 	 * null in the painter's constructor.
-	 *  
+	 *
 	 * @return the matrix to which the painter belongs
 	 */
 	Matrix<X, Y> getMatrix() {
@@ -791,8 +791,8 @@ public class Painter<X extends Number, Y extends Number> {
     this.matrix = zone.getMatrix();
   }
 
-  
-  
+
+
   static void printGC(GC gc) {
     System.out.println("getForeground() " +  gc.getForeground());
     System.out.println("getBackground() " +  gc.getBackground());
@@ -801,7 +801,7 @@ public class Painter<X extends Number, Y extends Number> {
     System.out.println("isClipped() " +  gc.isClipped());
     System.out.println("getLineWidth() " +  gc.getLineWidth());
     System.out.println("getXORMode() " +  gc.getXORMode());
-    
+
     System.out.println("getAdvanced() " +  gc.getAdvanced());
     System.out.println("getAlpha() " +  gc.getAlpha());
     System.out.println("getAntialias() " +  gc.getAntialias());

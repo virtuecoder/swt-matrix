@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------
+Version 0.5.8
+Bug fixes:
+- Matrix.computeSize was throwing IndexOutOfBoundsException
+- Clipping did not work correctly for frozen areas 
+
+-------------------------------------------------------------------------------
 Version 0.5.7
 
 Bug fixes:

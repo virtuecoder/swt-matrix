@@ -1083,20 +1083,29 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
 	@Override
 	public Point computeSize(int wHint, int hHint) {
+	  area = getClientArea();
 	  if (wHint == SWT.DEFAULT) {
-	    Bound x = layoutX.getLineBound(layoutX.indexOf(axisX.getLastItem()) + 1);
-	    if (x == null) {
-	    	wHint = 0;
+	    if (area.width == 0) {
+	      wHint = 0;
 	    } else {
-	    	wHint = x.distance + x.width;
+	      Bound x = layoutX.getLineBound(layoutX.indexOf(axisX.getLastItem()) + 1);
+	      if (x == null) {
+	        wHint = 0;
+	      } else {
+	        wHint = x.distance + x.width;
+	      }
 	    }
 	  }
 	  if (hHint == SWT.DEFAULT) {
-	    Bound y = layoutY.getLineBound(layoutY.indexOf(axisY.getLastItem()) + 1);
-	    if (y == null) {
-	    	hHint = 0;
+	    if (area.width == 0) {
+	      wHint = 0;
 	    } else {
-	    	hHint = y.distance + y.width;
+	      Bound y = layoutY.getLineBound(layoutY.indexOf(axisY.getLastItem()) + 1);
+	      if (y == null) {
+	        hHint = 0;
+	      } else {
+	        hHint = y.distance + y.width;
+	      }
 	    }
 	  }
     return new Point(wHint, hHint);
