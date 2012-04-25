@@ -14,12 +14,12 @@ import pl.netanel.util.Preconditions;
 
 /**
  * Section represents a continuous segment of a matrix axis, for example a
- * header, body, footer. It contains a number of items indexed by the 
+ * header, body, footer. It contains a number of items indexed by the
  * <code>&lt;N extends {@link Number}&gt;</code> type parameter.<br>
- * 
- * Index item width consists of the line width and the cell width - 
+ *
+ * Index item width consists of the line width and the cell width -
  * the line precedes the cell. The last line index equals to getCount().
- * If the item is moved then both the cell and the preceding line are moved.  
+ * If the item is moved then both the cell and the preceding line are moved.
  * <p>
  * Item attributes include cell width, line width, moveable, resizable,
  * hideable, hidden, selected. To optimize data storage of those attributes one
@@ -29,19 +29,19 @@ import pl.netanel.util.Preconditions;
  * have the same width, then its a waste to store 1000000 ints with the same
  * values. An example of such function: setDefaultCellWidth(width).
  * <p>
- * Section has boolean flags for visibility and navigation enablement. 
- * 
- * 
+ * Section has boolean flags for visibility and navigation enablement.
+ *
+ *
  * @author Jacek Kolodziejczyk created 02-03-2011
  */
 class SectionCore<N extends Number> implements Section<N> {
 
 	static final int DEFAULT_CELL_WIDTH = 16;
 	static final int DEFAULT_LINE_WIDTH = 1;
-	
+
 	final Math<N> math;
 	N count;
-	
+
 	final NumberOrder<N> order;
 	final NumberSet<N> hidden;
 	private final NumberSet<N> resizable;
@@ -50,69 +50,69 @@ class SectionCore<N extends Number> implements Section<N> {
 	private final IntAxisState<N> cellWidth;
 	private final IntAxisState<N> lineWidth;
 	private final ObjectAxisState<N, N> cellSpan;
-	
+
 	final NumberQueueSet<N> selection;
 	private final NumberQueueSet<N> lastSelection;
 
-	private boolean defaultResizable, defaultMoveable, defaultHideable; 
+	private boolean defaultResizable, defaultMoveable, defaultHideable;
 	private boolean isNavigationEnabled, isVisible;
-	
+
 	Axis<N> axis;
 	int index;
 	final Listeners listeners;
   private final Class<N> indexClass;
   SectionClient<N> client;
-	
+
 	/**
 	 * Constructs a section indexed by the given sub-class of {@link Number}.
-	 * 
+	 *
 	 * @param numberClass defines the class used for indexing
 	 */
 	public SectionCore(Class<N> numberClass) {
 	  math = Math.getInstance(numberClass);
 	  indexClass = math.getNumberClass();
 		count = math.ZERO_VALUE();
-		
+
 		order = new NumberOrder<N>(math);
 		hidden = new NumberSet<N>(math, true);
 		resizable = new NumberSet<N>(math, true);
 		moveable = new NumberSet<N>(math, true);
 		hideable = new NumberSet<N>(math, true);
-		
+
 		cellWidth = new IntAxisState<N>(math, DEFAULT_CELL_WIDTH);
 		lineWidth = new IntAxisState<N>(math, DEFAULT_LINE_WIDTH);
 		cellSpan = new ObjectAxisState<N, N>(math, math.ONE_VALUE());
-		
+
 		selection = new NumberQueueSet<N>(math);
 		lastSelection = new NumberQueueSet<N>(math);
-		
+
 		defaultResizable = true;
 		isNavigationEnabled = isVisible = true;
 		listeners = new Listeners();
 	}
-	
+
 
 	@Override
 	public String toString() {
 		return Integer.toString(index);
 	}
-	
+
 	@Override public SectionCore<N> getUnchecked() {
 	  return this;
 	}
-	
+
 	@Override public Class<N> getIndexClass() {
 	  return indexClass;
 	}
 	/*------------------------------------------------------------------------
-	 * Collection like  
+	 * Collection like
 	 */
 
 	@Override public void setCount(N count) {
 		this.count = count;
 		order.setCount(count);
 	}
-	
+
 	@Override public N getCount() {
 		return count;
 	}
@@ -123,10 +123,10 @@ class SectionCore<N extends Number> implements Section<N> {
 
 	@Override public N getIndex(N position) {
 		if (math.compare(position, getVisibleCount()) >= 0) return null;
-		
+
 		MutableNumber<N> pos1 = math.create(0);
 		MutableNumber<N> pos2 = math.create(0);
-		
+
 		for (int i = 0, size = order.items.size(); i < size; i++) {
 			MutableExtent<N> e = order.items.get(i);
 			pos2.add(e.end).subtract(e.start).subtract(hidden.getCount(e.start(), e.end()));
@@ -135,18 +135,18 @@ class SectionCore<N extends Number> implements Section<N> {
 				return pos1.subtract(position).negate().add(e.start).add(count).getValue();
 			}
 			pos2.increment();
-			pos1.set(pos2); 
+			pos1.set(pos2);
 		}
 		return null;
 	}
-	
+
 	@Override
 	public N getPosition(N index) {
 		if (index == null || hidden.contains(index)) return null;
 		MutableNumber<N> hiddenCount = math.create(0);
 		MutableNumber<N> pos1 = math.create(0);
 		MutableNumber<N> pos2 = math.create(0);
-		
+
 		for (int i = 0, size = order.items.size(); i < size; i++) {
 			MutableExtent<N> e = order.items.get(i);
 			boolean contains = math.contains(e, index);
@@ -163,7 +163,7 @@ class SectionCore<N extends Number> implements Section<N> {
 	@Override public N getOrder(N item) {
 	  return item == null ? null : order.indexOf(item);
 	}
-	
+
 	@Override
 	public Iterator<N> getOrder() {
 	  return new ImmutableIterator<N>() {
@@ -188,24 +188,24 @@ class SectionCore<N extends Number> implements Section<N> {
 	@Override
 	public Iterator<Extent<N>> getOrderExtents() {
 	  return new ImmutableIterator<Extent<N>>() {
-	    NumberSequence<N> seq = new NumberSequence<N>(order.copy());
+	    ExtentSequence<N> seq = new ExtentSequence<N>(order.items);
 	    private boolean next;
 	    {
 	      seq.init();
 	    }
 	    @Override
 	    public boolean hasNext() {
-	      next = seq.nextExtent();
+	      next = seq.next();
 	      return next;
 	    }
 
 	    @Override
 	    public Extent<N> next() {
-	      return next ? Extent.createUnchecked(seq.start(), seq.end()) : null;
+	      return next ? Extent.createUnchecked(seq.start, seq.end) : null;
 	    }
 	  };
 	}
-	
+
 	/*------------------------------------------------------------------------
 	 * Section properties
 	 */
@@ -213,7 +213,7 @@ class SectionCore<N extends Number> implements Section<N> {
 	@Override public void setVisible(boolean visible) {
 		this.isVisible = visible;
 	}
-	
+
 	@Override public boolean isVisible() {
 		return isVisible;
 	}
@@ -221,36 +221,36 @@ class SectionCore<N extends Number> implements Section<N> {
 	@Override public void setFocusItemEnabled(boolean enabled) {
 		this.isNavigationEnabled = enabled;
 	}
-	
+
 	@Override public boolean isFocusItemEnabled() {
 		return isNavigationEnabled;
 	}
 
-	
-	
+
+
 	/*------------------------------------------------------------------------
-	 * Default values 
+	 * Default values
 	 */
-	
+
 	  @Override public void setDefaultCellWidth(int width) {
 		if (width < 0) return;
 		cellWidth.setDefault(width);
 	}
-	
+
 	@Override public int getDefaultCellWidth() {
 		return cellWidth.getDefault();
 	}
-	
+
 	@Override public void setDefaultLineWidth(int width) {
 		if (width < 0) return;
 		lineWidth.setDefault(width);
 	}
-	
+
 	@Override public int getDefaultLineWidth() {
 		return lineWidth.getDefault();
 	}
-	
-	
+
+
 	@Override public boolean isDefaultResizable() {
 		return defaultResizable;
 	}
@@ -258,7 +258,7 @@ class SectionCore<N extends Number> implements Section<N> {
 	  @Override public void setDefaultResizable(boolean resizable) {
 		this.defaultResizable = resizable;
 	}
-	
+
 	@Override public boolean isDefaultMoveable() {
 		return defaultMoveable;
 	}
@@ -274,13 +274,13 @@ class SectionCore<N extends Number> implements Section<N> {
 	  @Override public void setDefaultHideable(boolean hideable) {
 		this.defaultHideable = hideable;
 	}
-	
-	
-	
+
+
+
 	/*------------------------------------------------------------------------
-	 * Item properties 
+	 * Item properties
 	 */
-	
+
   @Override
   public void setLineWidth(N start, N end, int width) {
     lineWidth.setValue(start, end, width);
@@ -342,7 +342,7 @@ class SectionCore<N extends Number> implements Section<N> {
   public void setResizable(N index, boolean enabled) {
     resizable.change(index, index, enabled != defaultMoveable);
   }
-	
+
   @Override
   public boolean isResizable(N index) {
     return resizable.contains(index) != defaultResizable;
@@ -363,13 +363,13 @@ class SectionCore<N extends Number> implements Section<N> {
     return hideable.contains(index) != defaultHideable;
   }
 
-	
+
 	/*------------------------------------------------------------------------
-	 * Hiding 
+	 * Hiding
 	 */
-	
-	
-	
+
+
+
   @Override
   public void setHidden(N start, N end, boolean state) {
     hidden.change(start, end, state);
@@ -394,11 +394,11 @@ class SectionCore<N extends Number> implements Section<N> {
   public Iterator<N> getHidden() {
     return new IndexIterator(new NumberSequence<N>(hidden));
   }
-	
+
   @Override
   public Iterator<Extent<N>> getHiddenExtents() {
     return new ImmutableIterator<Extent<N>>() {
-      NumberSequence<N> seq = new NumberSequence<N>(hidden.copy());
+      ExtentSequence<N> seq = new ExtentSequence<N>(hidden.items);
       private boolean next;
       {
         seq.init();
@@ -406,25 +406,25 @@ class SectionCore<N extends Number> implements Section<N> {
 
       @Override
       public boolean hasNext() {
-        next = seq.nextExtent();
+        next = seq.next();
         return next;
       }
 
       @Override
       public Extent<N> next() {
-        return next ? Extent.createUnchecked(seq.start(), seq.end()) : null;
+        return next ? Extent.createUnchecked(seq.start, seq.end) : null;
       }
     };
   }
 
 
 	/*------------------------------------------------------------------------
-	 * Selection 
+	 * Selection
 	 */
-	
+
 	@Override public void setSelected(N start, N end, boolean state) {
   	selection.change(start, end, state);
-  	
+
   	if (axis != null) {
   		axis.selectInZones(this, start, end, state, false);
   	}
@@ -439,7 +439,7 @@ class SectionCore<N extends Number> implements Section<N> {
   @Override public void setSelected(boolean state) {
     setSelectedAll(state, false, true);
   }
-	
+
 	void setSelected(N start, N end, boolean state, boolean notify) {
 	// Determine if there is a selection change
 //    boolean modified = false;
@@ -457,18 +457,18 @@ class SectionCore<N extends Number> implements Section<N> {
 //          }
 //        }
 //    }
-    
+
 	  selection.change(start, end, state);
-	  
+
 //	  if (modified) {
       addSelectionEvent();
 //    }
-	  
+
 	  if (axis != null) {
 	    axis.selectInZones(this, start, end, state, notify);
 	  }
 	}
-	
+
 	void setSelectedAll(boolean state, boolean notify, boolean notifyInZones) {
 	  N start = math.ZERO_VALUE();
 	  N end = math.decrement(count);
@@ -477,28 +477,28 @@ class SectionCore<N extends Number> implements Section<N> {
 		} else {
 			selection.clear();
 		}
-		
+
 		if (axis != null) {
       axis.selectInZones(this, start, end, state, notifyInZones);
     }
 	}
-	
+
 	@Override public boolean isSelected(N index) {
 		return selection.contains(index);
 	}
-	
+
 	@Override public N getSelectedCount() {
 		return selection.getCount().getValue();
 	}
-	
+
 	/**
-	 * Returns a sequence of indexes of selected items. 
+	 * Returns a sequence of indexes of selected items.
 	 * @return a sequence of indexes of selected items
 	 */
 	NumberSequence<N> getSelectedSequence() {
 		return new NumberSequence<N>(selection);
 	}
-	
+
 	@Override public Iterator<N> getSelected() {
 	  return new ImmutableIterator<N>() {
 			NumberSequence<N> seq = new NumberSequence<N>(selection.copy());
@@ -518,49 +518,49 @@ class SectionCore<N extends Number> implements Section<N> {
 			}
 		};
 	}
-	
+
 	@Override public Iterator<Extent<N>> getSelectedExtents() {
 		return new ImmutableIterator<Extent<N>>() {
-			NumberSequence<N> seq = new NumberSequence<N>(selection.copy());
+			ExtentSequence<N> seq = new ExtentSequence<N>(selection.items);
 			private boolean next;
 			{
 				seq.init();
 			}
 			@Override
 			public boolean hasNext() {
-				next = seq.nextExtent();
+				next = seq.next();
 				return next;
 			}
-			
+
 			@Override
 			public Extent<N> next() {
-				return next ? Extent.create(seq.start(), seq.end()) : null;
+				return next ? Extent.create(seq.start, seq.end) : null;
 			}
 		};
 	}
-	
+
 	void backupSelection() {
 		lastSelection.replace(selection);
 	}
-	
+
 	void restoreSelection() {
 		selection.replace(lastSelection);
 	}
-	
-	
-	
+
+
+
 	/*------------------------------------------------------------------------
 	 * Moving
 	 */
-	
+
 	@Override public void setOrder(N start, N end, N target) {
 		order.move(start, end, target);
 	}
-	
+
 	@Override public void setOrder(N index, N target) {
 	  order.move(index, index, target);
 	}
-	
+
 	@Override public void setOrder(Iterator<N> iterator) {
 	  order.clear();
 	  while(iterator.hasNext()) {
@@ -568,7 +568,7 @@ class SectionCore<N extends Number> implements Section<N> {
 	    order.add(next);
 	  }
 	}
-	
+
 	@Override public void setOrderExtents(Iterator<Extent<N>> iterator) {
 	  order.clear();
 	  while(iterator.hasNext()) {
@@ -576,7 +576,7 @@ class SectionCore<N extends Number> implements Section<N> {
 	    order.add(next.start, next.end);
 	  }
 	}
-	
+
 	@Override public void delete(N start, N end) {
 		cellWidth.delete(start, end);
 		lineWidth.delete(start, end);
@@ -589,7 +589,7 @@ class SectionCore<N extends Number> implements Section<N> {
 		selection.delete(start, end);
 		lastSelection.delete(start, end);
 		count = math.create(count).subtract(end).add(start).decrement().getValue();
-		
+
 		if (axis != null) {
 			axis.deleteInZones(this, start, end);
 		}
@@ -607,18 +607,18 @@ class SectionCore<N extends Number> implements Section<N> {
 		selection.insert(target, count);
 		lastSelection.insert(target, count);
 		this.count = math.create(this.count).add(count).getValue();
-		
+
 		if (axis != null) {
 		  axis.insertInZones(this, target, count);
 		}
 	}
-	
+
 	@Override public void addControlListener(ControlListener listener) {
 		TypedListener typedListener = new TypedListener(listener);
 		listeners.add(SWT.Resize, typedListener);
 		listeners.add(SWT.Move, typedListener);
 	}
-	
+
 	@Override public void addSelectionListener (SelectionListener listener) {
 		Preconditions.checkNotNullWithName(listener, "listener");
 		TypedListener typedListener = new TypedListener(listener);
@@ -638,15 +638,15 @@ class SectionCore<N extends Number> implements Section<N> {
 		listeners.remove(SWT.DefaultSelection, listener);
 	}
 
-	
+
 	/*------------------------------------------------------------------------
-	 * Non public 
+	 * Non public
 	 */
-	
+
 	N getVisibleCount() {
 		return math.create(count).subtract(hidden.getCount()).getValue();
 	}
-	
+
 	N getCellSpan(N index) {
 		return cellSpan.getValue(index);
 	}
@@ -674,80 +674,13 @@ class SectionCore<N extends Number> implements Section<N> {
 	ExtentSequence<N> getSelectedExtentSequence() {
 		return new ExtentSequence<N>(selection.items);
 	}
-	
+
 	ExtentSequence<N> getSelectedExtentResizableSequence() {
-		return new ExtentSequence<N>(selection.items) {
-//			private int j;
-//			@Override
-//			public void init() {
-//				super.init();
-//				j = -1;
-//			}
-			@Override
-			public boolean next() {
-				return super.next();
-//				if (++i >= items.size() ) return false;
-//				Extent<N> e = items.get(i);
-//				start = e.start();
-//				end = e.end();
-//				
-//				boolean quit = false;
-//				while (++j < resizable.items.size()) {
-//					Extent<N> e2 = resizable.items.get(j);
-//					int location = math.compare(e.start(), e.end(), e2.start(), e2.end());
-//					switch (location) {
-//					case AFTER: 			continue;
-//					case BEFORE: 		
-//						j = resizable.items.size(); // Quit the loop
-//						break;
-//					
-//					case CROSS_BEFORE:	
-//						start = math.increment(end);
-//						break;
-//						
-//					case CROSS_AFTER:	
-//						item.end.set(math.max(math.decrement(start), item.start()));
-//						break;
-//						
-//					case EQUAL:	
-//					case OVERLAP:	
-//						toRemove.add(0, item);
-//						break;
-//						
-//					case INSIDE:
-//						MutableNumber newEnd = item.end.copy();
-//						item.end.set(math.max(math.decrement(start), item.start()));
-//						items.add(i+1, new Extent(math.create(end).increment(), newEnd));
-//					}
-//					
-//					
-//					int compare = math.compare(e.start(), e.end(), e2.start(), e2.end());
-//					switch (compare) {
-//					case AFTER: 		quit = true; break; 
-//					case EQUAL:
-//					case INSIDE:		return false;
-//					
-//					case CROSS_BEFORE: 			
-//					case CROSS_AFTER:		
-//					case OVERLAP:		
-//						if (math.contains(e, e2.start()) || math.contains(e, e2.end())) {
-//							if (defaultResizable == true) {
-//								start = math.min(e.start(), e2.start());
-//								end = math.min(e.start(), e2.start());
-//							}
-//						} 
-//						break; 
-//					}
-//					
-//					if (quit) break;
-//				}
-//				return true;
-			}
-		};
+		return new ExtentSequence<N>(selection.items);
 	}
-	
+
 	class IndexIterator extends ImmutableIterator<N> {
-		
+
 		private final NumberSequence<N> seq;
 
 		IndexIterator(NumberSequence<N> seq) {
@@ -772,42 +705,42 @@ class SectionCore<N extends Number> implements Section<N> {
 	boolean moveSelected(N source, N target) {
 		assert selection.contains(source);
 		if (selection.isEmpty() || selection.contains(target)) return false;
-			
+
 		N targetRank = getOrder(target);
     N sourceRank = getOrder(source);
     int compareRank = math.compare(targetRank, sourceRank);
 		if (compareRank == 0) return false;
-		N index = compareRank < 0 ? target : 
-		  math.compare(targetRank, math.decrement(count)) == 0 ? count : 
+		N index = compareRank < 0 ? target :
+		  math.compare(targetRank, math.decrement(count)) == 0 ? count :
 		    getIndex(math.increment(targetRank));
 
 		order.move(selection, index);
 		return true;
 	}
-	
+
 	protected void checkRange(N start, N end, N limit) {
 		checkIndex(start, limit, "start");
 		checkIndex(end, limit, "end");
-		
+
 		if (math.compare(start, end) > 0) {
 			throw new IllegalArgumentException(MessageFormat.format(
 				"start ({0}) cannot be greater then end {1}", start, end)) ;
 		}
 	}
-	
+
 	public void checkCellIndex(N index, String name) {
 	  checkIndex(index, count, name);
 	}
-	
+
 	public void checkLineIndex(N index, String name) {
 	  checkIndex(index, math.increment(count), name);
 	}
-	
+
 	private void checkIndex(N index, N limit, String name) {
 		Preconditions.checkNotNullWithName(index, name);
 		if (getIndexClass() != index.getClass()) {
 		  throw new IndexOutOfBoundsException(MessageFormat.format(
-		    "section indexing class ({0}) must be the same as the class of index ({1})", 
+		    "section indexing class ({0}) must be the same as the class of index ({1})",
 		    getIndexClass(), index.getClass())) ;
 		}
 		if (math.compare(index, math.ZERO_VALUE()) < 0) {
@@ -826,11 +759,11 @@ class SectionCore<N extends Number> implements Section<N> {
     event.widget = axis.matrix;
     listeners.add(event);
   }
-	
+
 	static <N2 extends Number> SectionCore<N2> from(AxisItem<N2> item) {
 	  return item.section;
 	}
-	
+
 	static <N2 extends Number> SectionCore<N2> from(Section<N2> section) {
 	  return (SectionCore<N2>) section.getUnchecked();
 	}

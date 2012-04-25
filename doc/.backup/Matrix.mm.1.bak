@@ -1,0 +1,24 @@
+<map version="0.9.0">
+<!--To view this file, download free mind mapping software Freeplane from http://freeplane.sourceforge.net -->
+<node TEXT="Matrix" ID="ID_278717382" CREATED="1329072177860" MODIFIED="1329072389641">
+<hook NAME="MapStyle" max_node_width="600"/>
+<font SIZE="16" BOLD="true"/>
+<node TEXT="Plan" POSITION="right" ID="ID_1238879801" CREATED="1329072199345" MODIFIED="1329072205579">
+<node TEXT="Release 1.0" ID="ID_1532929363" CREATED="1329072206579" MODIFIED="1329072213454">
+<node TEXT="Gesture Binding" ID="ID_1322581099" CREATED="1329072329141" MODIFIED="1329072339188">
+<node TEXT="Drag and drop commands" ID="ID_1698500173" CREATED="1329072341016" MODIFIED="1329072352391"/>
+</node>
+<node TEXT="Standard API" ID="ID_797297877" CREATED="1329072263579" MODIFIED="1329072309516">
+<node TEXT="SWT Table wrapper" ID="ID_610238882" CREATED="1329072222891" MODIFIED="1329072313173"/>
+<node TEXT="JFace TableViewer wrapper" ID="ID_655818112" CREATED="1329072238204" MODIFIED="1329072321813"/>
+</node>
+<node TEXT="Issues" ID="ID_231470278" CREATED="1329081790140" MODIFIED="1329081792328">
+<node TEXT="swtmatrix-10 Auto-size necessary for cells with e.g. wrapped text" ID="ID_7867706" CREATED="1329081796703" MODIFIED="1329081820250" LINK="http://netanel.myjetbrains.com/youtrack/issue/swtmatrix-10"/>
+<node TEXT="swtmatrix-6 Better names for API" ID="ID_1134056659" CREATED="1329081956468" MODIFIED="1329081971765" LINK="http://netanel.myjetbrains.com/youtrack/issue/swtmatrix-6"/>
+<node TEXT="swtmatrix-3 Clicking twice between columns in S1001_CompoundExample makes program hang." ID="ID_630752359" CREATED="1329081995265" MODIFIED="1329082003812" LINK="http://netanel.myjetbrains.com/youtrack/issue/swtmatrix-3"/>
+</node>
+</node>
+<node TEXT="Release 2.0" ID="ID_1031425119" CREATED="1329072214188" MODIFIED="1329072218938"/>
+</node>
+</node>
+</map>

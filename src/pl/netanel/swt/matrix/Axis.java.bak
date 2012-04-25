@@ -10,13 +10,13 @@ import org.eclipse.swt.widgets.ScrollBar;
 import pl.netanel.util.Preconditions;
 
 /**
- * Axis represents a horizontal or vertical axis of a matrix.
+ * Axis represents a horizontal or vertical axis of a matrix. 
  * It is divided into sections.
  * <dl>
  * <dt><b>Events:</b></dt>
  * <dd>Selection, DefaultSelection</dd>
  * </dl>
- *
+ * 
  * @param <N> specifies the indexing class for the receiver
  * @see Section
  *
@@ -25,42 +25,40 @@ import pl.netanel.util.Preconditions;
  */
 public class Axis<N extends Number>  {
 	private static final String FREEZE_ITEM_COUNT_ERROR = "Freeze item count cannot be negative";
-
+	
 	Math<N> math;
 	ArrayList<SectionClient<N>> sections;
-
+	
 	SectionClient<N> body, header;
 	private int autoScrollOffset, resizeOffset, minimalCellWidth = 5;
 	Layout<N> layout;
-
+	
 	char symbol;
 	Matrix<? extends Number, ? extends Number> matrix;
-	ScrollBar scrollBar;
-
-  private boolean scrollBarVisible;
+	private ScrollBar scrollBar;
 
 	/**
 	 * Constructs axis indexed by Integer class with two sections.
 	 * @see #Axis(Class, int)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") 
 	public Axis() {
 		this((Class<N>) Integer.class, 2, 0, 1);
 	}
-
+	
   /**
    * Constructs axis indexed by the specified Number subclass containing the
    * specified number of sections. The header section count is set to one,
    * its visibility to false and focus item enabled to false.
-   *
+   * 
    * @param numberClass sub-type of {@link Number} class to index the sections
    * @param sectionCount number of sections to create
    * @throws IllegalArgumentException if <code>numberClass</code> is other then
    *  int.class, Integer.class, long.class, Long.class, BigInteger.class
-   * @throws IllegalArgumentException if the sectionCount is lower then 2
+   * @throws IllegalArgumentException if the sectionCount is lower then 2 
    * @throws IndexOutOfBoundsException if the headerIndex or bodyIndex is out of range
    *         (<tt>index &lt; 0 || index &gt;= sectionCount</tt>)
-   * @throws IllegalArgumentException if the headerIndex equals bodyIndex
+   * @throws IllegalArgumentException if the headerIndex equals bodyIndex 
    */
 	public Axis(Class<N> numberClass, int sectionCount, int headerIndex, int bodyIndex) {
 	  Preconditions.checkNotNullWithName(numberClass, "numberClass");
@@ -68,12 +66,12 @@ public class Axis<N extends Number>  {
 	  Preconditions.checkPositionIndex(headerIndex, sectionCount, "headerIndex");
 	  Preconditions.checkPositionIndex(bodyIndex, sectionCount, "bodyIndex");
 	  Preconditions.checkArgument(bodyIndex != headerIndex, "headerIndex cannot equal bodyIndex");
-
+	  
 	  init(numberClass, sectionCount, headerIndex, bodyIndex);
 	}
 
 	/**
-	 * Needed only for test!
+	 * Needed only for test! 
 	 * TODO: refactor DirectionTests
 	 * @param numberClass
 	 * @param sectionCount
@@ -81,46 +79,46 @@ public class Axis<N extends Number>  {
 	Axis(Class<N> numberClass, int sectionCount) {
 	  init(numberClass, sectionCount, 0, 1);
 	}
-
+	
   private void init(Class<N> numberClass, int sectionCount,
     int headerIndex, int bodyIndex) {
     math = Math.getInstance(numberClass);
 	  sections = new ArrayList<SectionClient<N>>(sectionCount);
 	  for (int i = 0; i < sectionCount; i++) {
 	    SectionCore<N> section = new SectionCore<N>(numberClass);
-//	    Preconditions.checkArgument(
+//	    Preconditions.checkArgument( 
 //	      section.getIndexClass().equals(numberClass),
 //	      "Section at %s position is indexed by a different Number subclass " +
 //	        "then the first section: %s != %s",
 //	        i, section.getIndexClass(), numberClass);
-
+	    
 	    section.index = i;
       section.axis = this;
       sections.add(new SectionClient<N>(section));
 	  }
-
+	  
 	  if (headerIndex < sectionCount) {
 	    header = sections.get(headerIndex);
 	    header.setCount(math.ONE_VALUE());
 	    header.setFocusItemEnabled(false);
 	    header.setVisible(false);
 	  }
-
+	  
 	  if (bodyIndex < sectionCount) {
 	    body = sections.get(bodyIndex);
 	  }
-
+	  
 	  autoScrollOffset = Matrix.AUTOSCROLL_OFFSET_Y;
 	  resizeOffset = Matrix.RESIZE_OFFSET_Y;
 	  layout = new Layout<N>(this);
   }
 
-
+	
 
 	@Override public String toString() {
 	  return Character.toString(symbol);
 	}
-
+	
 	/**
 	 * Returns the body section, which is by default a second section of the axis.
 	 * Another section can be set as body by specifying <code>bodyIndex</code> argument
@@ -131,7 +129,7 @@ public class Axis<N extends Number>  {
 	public Section<N> getBody() {
 		return body;
 	}
-
+	
 	/**
 	 * Returns the header section, which is by default the first section of the axis.
 	 * Another section can be set as header by specifying <code>headerIndex</code> argument
@@ -142,29 +140,29 @@ public class Axis<N extends Number>  {
 	public Section<N> getHeader() {
 		return header;
 	}
-
-
+	
+	
 	/**
 	 * Returns the section at the specified position in this axis.
-	 *
+	 * 
 	 * @param sectionIndex index of the section to return
 	 * @return the section at the specified position in this axis
-	 * @throws IndexOutOfBoundsException if sectionIndex
+	 * @throws IndexOutOfBoundsException if sectionIndex 
 	 * 		is out of 0 ... {@link #getSectionCount()}-1 bounds
-	 *
+	 * 
 	 */
 	public Section<N> getSection(int sectionIndex) {
 	  Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
 	  return sections.get(sectionIndex);
 	}
-
-
+	
+	
 	/*------------------------------------------------------------------------
-	 * Viewport
+	 * Viewport 
 	 */
 
 	/**
-   * Returns the number of sections in the receiver.
+   * Returns the number of sections in the receiver. 
    * @return the number of sections in the receiver.
    */
   public int getSectionCount() {
@@ -177,20 +175,20 @@ public class Axis<N extends Number>  {
 	 */
 	public int getViewportItemCount() {
 		layout.computeIfRequired();
-		return layout.head.count + layout.tail.count +
+		return layout.head.count + layout.tail.count + 
 			layout.main.cells.size(); // - layout.trim;
 	}
-
-
+	
+	
 	/**
-   * Returns the position of the given item in the sequence of items
+   * Returns the position of the given item in the sequence of items 
    * visible in the viewport or -1 if the viewport does not display the item.
-   *
+   * 
    * @param item the item to get position for
    * @return the position of the given item in the viewport
    * @throws IllegalArgumentException if item is <code>null</code> or item's section
    * 		does not belong to this axis.
-   * @throws IndexOutOfBoundsException if item's index is out
+   * @throws IndexOutOfBoundsException if item's index is out 
    * 		of 0 ... {@link SectionCore#getCount()}-1 bounds
    */
   public int getViewportPosition(AxisItem<N> item) {
@@ -202,7 +200,7 @@ public class Axis<N extends Number>  {
   /**
 	 * Returns the item visible at the specified position in the viewport or <code>null</code>
 	 * if the position is outside of the viewport bounds.
-	 *
+	 * 
 	 * @param position the position the get the item for
 	 * @return the item visible at the specified position in the viewport
 	 */
@@ -210,12 +208,12 @@ public class Axis<N extends Number>  {
 		AxisItem<N> item = layout.getIndexAt(position);
 		return item == null ? null : item;
 	}
-
+	
   /**
    * Returns the item visible at the specified distance from the beginning of
    * viewport area or <code>null</code> if the distance is outside of the
    * viewport bounds.
-   *
+   * 
    * @param position the position the get the item for
    * @return the item visible at the specified distance
    */
@@ -223,18 +221,18 @@ public class Axis<N extends Number>  {
 		AxisItem<N> item = layout.getItemByDistance(distance);
 		return item == null ? null : item;
 	}
-
+	
 	/**
-	 * Returns the item visible at the specified offset from the item specified
-	 * by the given section and index or <code>null</code> if the such an item
+	 * Returns the item visible at the specified offset from the item specified 
+	 * by the given section and index or <code>null</code> if the such an item 
 	 * is outside of the viewport bounds.
 	 * <p>
 	 * If the <code>offset</code> is positive the item to returned will be computed
-	 * in the forward direction. Otherwise item in the backward direction will
-	 * be returned.
-   *
+	 * in the forward direction. Otherwise item in the backward direction will 
+	 * be returned. 
+   * 
    * @param item the item to set the focus for
-   * @param offset number of items to move away from the referenced item
+   * @param offset number of items to move away from the referenced item 
    * @throws IllegalArgumentException if item is <code>null</code> or item's
    *           section does not belong to this axis.
    * @throws IndexOutOfBoundsException if item's index is out of 0 ...
@@ -242,20 +240,20 @@ public class Axis<N extends Number>  {
    */
   public AxisItem<N> getItemByViewportOffset(AxisItem<N> item, int offset) {
     checkItem(item, "item");
-    AxisItem<N> nextItem = layout.nextItem(item,
-      math.create(java.lang.Math.abs(offset)),
+    AxisItem<N> nextItem = layout.nextItem(item, 
+      math.create(java.lang.Math.abs(offset)), 
       offset > 0 ? layout.forward : layout.backward);
-
+    
     return layout.contains(nextItem) ? nextItem : null;
   }
 
-
+	
 	/**
 	 * Returns the cell bound of the specified item in the viewport or <code>null</code>
-	 * if the position is outside of the viewport scope. Cell bound is an array of integers,
+	 * if the position is outside of the viewport scope. Cell bound is an array of integers, 
 	 * where the first one is the distance from the beginning of viewport and the second one
-	 * is the cell width.
-	 *
+	 * is the cell width. 
+	 * 
 	 * @param position the position the line bound the item for
 	 * @return the cell bound at the specified position in the viewport
 	 */
@@ -263,13 +261,13 @@ public class Axis<N extends Number>  {
 		Bound bound = layout.getCellBound(item);
 		return bound == null ? null : new int[] {bound.distance, bound.width};
 	}
-
+	
 	/**
 	 * Returns the line bound of the specified item in the viewport or <code>null</code>
-	 * if the position is outside of the viewport scope. Line bound is an array of integers,
+	 * if the position is outside of the viewport scope. Line bound is an array of integers, 
 	 * where the first one is the distance from the beginning of viewport and the second one
-	 * is the line width.
-	 *
+	 * is the line width. 
+	 * 
 	 * @param position the position the line bound the item for
 	 * @return the line bound at the specified position in the viewport
 	 */
@@ -277,28 +275,28 @@ public class Axis<N extends Number>  {
 		Bound bound = layout.getLineBound(item);
 		return bound == null ? null : new int[] {bound.distance, bound.width};
 	}
-
-
-
-
+	
+	
+	
+	
 	/*------------------------------------------------------------------------
-	 * Navigation
+	 * Navigation 
 	 */
 
 	/**
    * Compares positions of sections on this axis and returns value greater then 0 if
    * section1 is behind section2, value lower then zero if section1 is before
    * section2 and 0 if sections are the same.
-   *
+   * 
    * @param section1 a section to compare
    * @param section2 another section to compare
    * @return comparison result
-   *
-   * @throws IllegalArgumentException if section1 or section2 is <code>null</code> or
+   * 
+   * @throws IllegalArgumentException if section1 or section2 is <code>null</code> or 
    *    does not belong to this axis.
    */
   public int compare(Section<N> section1, Section<N> section2) {
-    return
+    return 
       checkSection(section1, "section 1").index -
       checkSection(section2, "section 2").index;
   }
@@ -307,11 +305,11 @@ public class Axis<N extends Number>  {
    * Compares positions of items on this axis and returns value greater then 0 if
    * item1 is behind item2, value lower then zero if item1 is before
    * item2 and 0 if items are the same.
-   *
+   * 
    * @param item1 one of the items to compare
    * @param item2 another item to compare
    * @return comparison result
-   *
+   * 
    * @throws IllegalArgumentException if item1 or item2 is <code>null</code> or item's
    *           section does not belong to this axis.
    * @throws IndexOutOfBoundsException if index of item1 or item2 is out of 0 ...
@@ -324,7 +322,7 @@ public class Axis<N extends Number>  {
   }
 
   /**
-   * Returns <code>true</code> if the focus item navigation is enabled in the receiver.
+   * Returns <code>true</code> if the focus item navigation is enabled in the receiver. 
    * Otherwise <code>false</code> is returned.
    *
    * @return the receiver's focus item enablement state
@@ -337,8 +335,8 @@ public class Axis<N extends Number>  {
    * Enables current item navigation in the receiver if the argument is <code>true</code>,
    * and disables it otherwise.
    * <p>
-   * If the focus cell is disabled the navigation events are ignored and the
-   * {@link Painter#NAME_FOCUS_CELL} painter of the matrix is disabled.
+   * If the focus cell is disabled the navigation events are ignored and the 
+   * {@link Painter#NAME_FOCUS_CELL} painter of the matrix is disabled. 
    *
    * @param state the new focus item enablement state
    */
@@ -355,9 +353,9 @@ public class Axis<N extends Number>  {
 		layout.computeIfRequired();
 		return layout.current;
 	}
-
+	
 //	/**
-//	 * Returns the item at which a SWT.MouseDown event happened.
+//	 * Returns the item at which a SWT.MouseDown event happened. 
 //	 * Or <code>null</code> if no item has been clicked on.
 //	 * @return the item at which a SWT.MouseDown event happened
 //	 */
@@ -365,16 +363,16 @@ public class Axis<N extends Number>  {
 //	  layout.computeIfRequired();
 //	  return (symbol == 'Y' ? matrix.listener.state0 : matrix.listener.state1).mouseDownItem;
 //	}
-
-
-
+	
+	
+	
 	  /**
    * Sets the focus marker to the given item.
    * <p>
    * If section has the focus item disabled (see
    * {@link SectionCore#setFocusItemEnabled(boolean)}) then this method does
    * nothing.
-   *
+   * 
    * @param item the item to set the focus for
    * @throws IllegalArgumentException if item is <code>null</code> or item's
    *           section does not belong to this axis.
@@ -386,13 +384,13 @@ public class Axis<N extends Number>  {
 		layout.setFocusItem(item);
 		if (matrix != null) matrix.redraw();
 	}
-
+	
 	/**
 	 * Scrolls to the given making it visible in the viewport.
 	 * <p>
-	 * It works only when the matrix size has been set, which usually happens
+	 * It works only when the matrix size has been set, which usually happens 
 	 * when the shell to which the matrix belongs gets open.
-	 *
+	 *  
    * @param item the item to show
    * @throws IllegalArgumentException if item is <code>null</code> or item's
    *           section does not belong to this axis.
@@ -401,23 +399,23 @@ public class Axis<N extends Number>  {
 	 */
 	public void showItem(AxisItem<N> item) {
 	  checkItem(item, "item");
-
+	  
 	  if (layout.show(item)) {
 	    scroll();
 	    if (matrix != null) matrix.redraw();
 	  }
 	}
+	
 
-
-
-
+	
+	
 	/*------------------------------------------------------------------------
 	 * Freeze
 	 */
 
 
   /**
-	 * Freezes the specified amount of items at the beginning this axis.
+	 * Freezes the specified amount of items at the beginning this axis. 
 	 * @param amount of items to freeze
 	 * @throws IllegalArgumentException if the argument is lower then zero
 	 */
@@ -427,7 +425,7 @@ public class Axis<N extends Number>  {
 	}
 
 	/**
-   * Returns the amount of items frozen at the beginning this axis.
+   * Returns the amount of items frozen at the beginning this axis. 
    * @return the amount of items frozen at the beginning this axis
    */
   public int getFrozenHead() {
@@ -435,7 +433,7 @@ public class Axis<N extends Number>  {
   }
 
   /**
-	 * Freezes the specified amount of last items at the end of this axis.
+	 * Freezes the specified amount of last items at the end of this axis. 
 	 * @param amount of items to freeze
 	 * @throws IllegalArgumentException if the argument is lower then zero
 	 */
@@ -443,54 +441,54 @@ public class Axis<N extends Number>  {
 		Preconditions.checkArgument(amount >= 0, FREEZE_ITEM_COUNT_ERROR);
 		layout.freezeTail(amount);
 	}
-
+	
 	/**
-	 * Returns the amount of items frozen at the end this axis.
+	 * Returns the amount of items frozen at the end this axis. 
 	 * @return the amount of items frozen at the end this axis
 	 */
 	public int getFrozenTail() {
 	  return layout.tail.count;
 	}
-
-
+	
+	
 	/*------------------------------------------------------------------------
 	 *
 	 */
 
 	/**
-	 * Returns the offset from the edge of scrolling area within which dragging causes
-	 * the content to scroll automatically and extend the dragged distance.
-	 * The default value is 8 for horizontal and 6 for vertical axis.
+	 * Returns the offset from the edge of scrolling area within which dragging causes 
+	 * the content to scroll automatically and extend the dragged distance. 
+	 * The default value is 8 for horizontal and 6 for vertical axis.  
 	 */
 	public int getAutoScrollOffset() {
 		return autoScrollOffset;
 	}
 
 	/**
-	 * Sets the offset from the edge of scrolling area within which dragging causes
+	 * Sets the offset from the edge of scrolling area within which dragging causes 
 	 * the content to scroll automatically and extend the dragged distance.
-	 *
-	 * @param offset maximum distance from the edge of the scrolling area in which dragging will
-	 * 	cause the content to scroll automatically
+	 * 
+	 * @param offset maximum distance from the edge of the scrolling area in which dragging will 
+	 * 	cause the content to scroll automatically 
 	 * @throws IllegalArgumentException if the argument is lower then zero
-	 */
+	 */  
 	public void setAutoScrollOffset(int offset) {
 		Preconditions.checkArgument(offset >= 0, "offset cannot be negative");
 		this.autoScrollOffset = offset;
 	}
 
 	/**
-	 * Returns the offset from the dividing line within which dragging changes the width of the axis item.
-	 * The default value is 3 for horizontal and 2 for vertical axis.
+	 * Returns the offset from the dividing line within which dragging changes the axis item width. 
+	 * The default value is 3 for horizontal and 2 for vertical axis.  
 	 */
 	public int getResizeOffset() {
 		return resizeOffset;
 	}
 
 	/**
-	 * Sets the offset from the dividing line within which dragging changes the axis item width.
-	 *
-	 * @param offset maximum distance from the edge of the line in which dragging will
+	 * Sets the offset from the dividing line within which dragging changes the axis item width. 
+	 * 
+	 * @param offset maximum distance from the edge of the line in which dragging will 
 	 * 	cause cell width change
 	 * @throws IllegalArgumentException if the argument is lower then zero
 	 */
@@ -498,7 +496,7 @@ public class Axis<N extends Number>  {
 		Preconditions.checkArgument(offset >= 0, "offset cannot be negative");
 		this.resizeOffset = offset;
 	}
-
+	
 	/**
 	 * Returns the minimal cell width to be achieved by a user driven cell resizing.
 	 * @return the minimal cell width to be achieved by a user driven cell resizing
@@ -506,33 +504,25 @@ public class Axis<N extends Number>  {
 	public int getMinimalCellWidth() {
 	  return minimalCellWidth;
 	}
-
+	
 	/**
 	 * Sets the minimal cell width to be achieved by a user driven cell resizing.
-	 * <p>
-	 * The default cell size of any section in this axis lower then minimal cell width
-	 * is increased to then minimal cell width.
 	 * @param width new minimal width to set
 	 */
 	public void setMinimalCellWidth(int minimalCellWidth) {
 	  this.minimalCellWidth = minimalCellWidth;
-	  for (Section<N> section: sections) {
-	    if (section.getDefaultCellWidth() < minimalCellWidth) {
-	      section.setDefaultCellWidth(minimalCellWidth);
-	    }
-	  }
 	}
-
-
+	
+	
 	/*------------------------------------------------------------------------
-	 * Non public
+	 * Non public 
 	 */
 
 
   void setMatrix(final Matrix<?, ?> matrix, char symbol) {
 	  this.symbol = symbol;
 		this.matrix = matrix;
-
+		
 		scrollBar = symbol == 'Y' ? matrix.getVerticalBar() : matrix.getHorizontalBar();
 		if (scrollBar != null) {
 			scrollBar.addListener(SWT.Selection, new Listener() {
@@ -541,16 +531,16 @@ public class Axis<N extends Number>  {
 					int newSelection = scrollBar.getSelection();
 //					selection = newSelection;
 					//				debugSWT(e.detail);
-
+					
 					Move move =
 						e.detail == SWT.ARROW_DOWN 	? Move.NEXT :
-						e.detail == SWT.ARROW_UP 	  ? Move.PREVIOUS :
-						e.detail == SWT.PAGE_DOWN 	? Move.NEXT_PAGE:
-						e.detail == SWT.PAGE_UP 	  ? Move.PREVIOUS_PAGE:
+						e.detail == SWT.ARROW_UP 	  ? Move.PREVIOUS : 
+						e.detail == SWT.PAGE_DOWN 	? Move.NEXT_PAGE: 
+						e.detail == SWT.PAGE_UP 	  ? Move.PREVIOUS_PAGE: 
 					  newSelection == scrollBar.getMinimum() ? Move.HOME :
-				    newSelection == scrollBar.getMaximum() - scrollBar.getThumb() ? Move.END :
+				    newSelection == scrollBar.getMaximum() - scrollBar.getThumb() ? Move.END :					    
 								Move.NULL;
-
+					
 					if (layout.setScrollPosition(newSelection, move)) {
 					  scrollBar.setThumb(layout.getScrollThumb());
 					  scrollBar.setSelection(layout.getScrollPosition());
@@ -561,8 +551,8 @@ public class Axis<N extends Number>  {
 			});
 		}
 	}
-
-
+	
+	
 	/**
 	 * Scrolls the bar according to the axis state.
 	 */
@@ -574,24 +564,20 @@ public class Axis<N extends Number>  {
 
 	/**
 	 * Update the scroll bar visibility.
-	 *
+	 * 
 	 * @param size
 	 * @return true if the visibility has changed/
 	 */
 	boolean updateScrollBarVisibility() {
 		if (scrollBar == null) return false;
-		if (scrollBarVisible != scrollBar.getVisible()) {
-//		  System.out.println("was visible: " + scrollBarVisible);
-//		  System.out.println(layout.isScrollRequired());
-		}
-		scrollBarVisible = scrollBar.getVisible();
+		boolean b = scrollBar.getVisible();
 		scrollBar.setVisible(layout.isScrollRequired());
-		return scrollBarVisible != scrollBar.isVisible();
+		return b != scrollBar.isVisible();
 	}
 
 	/**
 	 * Calibrates the scroll bar after change of display area size or the number of items.
-	 *
+	 * 
 	 * @param size
 	 * @return true if the visibility of the scroll bar has change to allow
 	 *         recalculation of the matrix visibility information.
@@ -599,9 +585,7 @@ public class Axis<N extends Number>  {
 	void updateScrollBarValues(int size) {
 		// Quit if there is no scroll bar or the visible area is not initialized
 		if (scrollBar == null || size == 0) return;
-
-//		System.out.println("update " + matrix.getDisplay().getCursorLocation().x);
-
+	
 		layout.setViewportSize(size);
 		int min = layout.getScrollMin();
 		int max = layout.getScrollMax();
@@ -609,20 +593,20 @@ public class Axis<N extends Number>  {
 		if (thumb == max) thumb = max-1;
 		if (thumb == 0) thumb = 1;
 		// Extend the maximum to show the last trimmed element
-		if (thumb < 1) {
+		if (thumb < 1) { 
 			thumb = 1;
 			max += layout.trim;
 		}
 		scrollBar.setValues(layout.getScrollPosition(), min, max, thumb, 1, thumb);
 	}
 
-
+	
 	void setSelected(AxisItem<N> start, AxisItem<N> end, boolean select) {
-		// Make sure start < end
+		// Make sure start < end 
 		if (comparePosition(start, end) > 0) {
 			AxisItem<N> tmp = start; start = end; end = tmp;
 		}
-
+		
     AxisExtentSequence<N> seq = new AxisExtentSequence<N>(math, layout.sections);
     for (seq.init(start, end); seq.next();) {
       seq.section.setSelected(seq.start, seq.end, select, true);
@@ -631,11 +615,11 @@ public class Axis<N extends Number>  {
 //		for (int i = start.getSection().index; i <= end.getSection().index; i++) {
 //			Section section = sections.get(i);
 //			Number startIndex = i == start.getSection().index ? start.getIndex() : math.ZERO_VALUE();
-//			Number endIndex = i == end.getSection().index ? end.getIndex() :
+//			Number endIndex = i == end.getSection().index ? end.getIndex() : 
 //				math.increment(section.getCount());
-//
+//			
 //			section.setSelected(startIndex, endIndex, select);
-//
+//			
 //			if (select == true) {
 //				Event event = new Event();
 //				event.type = SWT.Selection;
@@ -668,11 +652,11 @@ public class Axis<N extends Number>  {
 //        }
 //      }
 //    }
-
+    
 		for (int i = 0, imax = sections.size(); i < imax; i++) {
 			SectionCore<N> section = SectionCore.from(sections.get(i));
 			section.setSelectedAll(selectState, notify, notifyInZones);
-
+			
 			if (notify) {
 			  section.addSelectionEvent();
 			}
@@ -684,7 +668,7 @@ public class Axis<N extends Number>  {
 			matrix.selectInZones(symbol, section, start, end, state, notify);
 		}
 	}
-
+	
 	AxisItem<N> getLastItem() {
 		for (int i = sections.size(); i-- > 0;) {
 			SectionCore<N> section = layout.sections.get(i);
@@ -706,18 +690,17 @@ public class Axis<N extends Number>  {
   int comparePosition(SectionCore<N> section1, SectionCore<N> section2) {
 	  return section1.index - section2.index;
 	}
-
+	
 	int comparePosition(AxisItem<N> item1, AxisItem<N> item2) {
 	  int compareSections = comparePosition(item1.section, item2.section);
     if (compareSections != 0) return compareSections;
 		return math.compare(
-				item1.section.getOrder(item1.getIndex()),
+				item1.section.getOrder(item1.getIndex()), 
 				item2.section.getOrder(item2.getIndex()));
 	}
-
+	
 	/**
 	 * Sets the hidden state of selected indexes in each section.
-	 * To be called from UI only.
 	 * @param state new hiding state
 	 */
 	void setHidden(boolean state) {
@@ -730,12 +713,12 @@ public class Axis<N extends Number>  {
 	    }
 		}
 	}
+	
 
-
-
+	
 	/**
-	 * Iterates over extents between the start and end items.
-	 *
+	 * Iterates over extents between the start and end items. 
+	 * 
 	 * @author Jacek Kolodziejczyk created 11-03-2011
 	 */
 	class ExtentSequence {
@@ -744,26 +727,26 @@ public class Axis<N extends Number>  {
 		private int i, istart, iend, sectionIndex, lastSectionIndex;
 		private ArrayList<MutableExtent<N>> items;
 		private AxisItem<N> startItem, endItem;
-
+	
 		void init(AxisItem<N> startItem, AxisItem<N> endItem) {
 			this.startItem = startItem;
 			this.endItem = endItem;
 			SectionCore<N> startSection = startItem.section;
 	    SectionCore<N> endSection = endItem.section;
-			istart = startSection.order.items.isEmpty() ? 0 :
+			istart = startSection.order.items.isEmpty() ? 0 : 
 				startSection.order.getExtentIndex(startItem.getIndex());
-			iend = endSection.order.items.isEmpty() ? 0 :
+			iend = endSection.order.items.isEmpty() ? 0 : 
 				endSection.order.getExtentIndex(endItem.getIndex());
 			startItemIndex = math.create(startItem.getIndex());
 			endItemIndex = math.create(endItem.getIndex());
-
+			
 			section = startSection;
-			sectionIndex = section.index;
+			sectionIndex = section.index; 
 			items = section.order.items;
-			lastSectionIndex = layout.sections.indexOf(endItem.section);
+			lastSectionIndex = layout.sections.indexOf(endItem.section); 
 			i = istart;
 		}
-
+		
 		boolean next() {
 			while (i >= items.size()) {
 				sectionIndex++;
@@ -772,10 +755,10 @@ public class Axis<N extends Number>  {
 				items = section.order.items;
 				i = 0;
 			}
-			MutableExtent<N> e = items.get(i);
-			start = section == startItem.section && i == istart ?
+			MutableExtent<N> e = items.get(i);	
+			start = section == startItem.section && i == istart ? 
 					startItemIndex : e.start;
-			end = section == endItem.section && i == iend ?
+			end = section == endItem.section && i == iend ? 
 					endItemIndex : e.end;
 			if (i >= iend && math.compare(end, endItemIndex) == 0) {
 				i = items.size();
@@ -796,9 +779,9 @@ public class Axis<N extends Number>  {
 		Bound bound = layout.getLineBound(AxisItem.createInternal(section, index));
 		return bound == null ? null : bound.copy();
 	}
-
-
-
+	
+	
+	
 	int[] getZOrder() {
 		// Calculate z-order
 		int[] order = new int[sections.size()];
@@ -819,12 +802,12 @@ public class Axis<N extends Number>  {
     } else {
       matrix.deleteInZonesY(section, start, end);
     }
-    if (layout.current.section.equals(section) &&
+    if (layout.current.section.equals(section) && 
       layout.math.contains(start, end, layout.current.getIndex())) {
       layout.ensureCurrentIsValid();
     }
 	}
-
+  
   void insertInZones(SectionCore<N> section, N target, N count) {
     if (symbol == 'X') {
       matrix.insertInZonesX(section, target, count);
@@ -833,8 +816,8 @@ public class Axis<N extends Number>  {
     }
     layout.show(AxisItem.createInternal(section, target));
   }
-
-
+	
+	
 
 	SectionCore<N> checkSection(Section<N> section, String name) {
 		Preconditions.checkNotNullWithName(section, name);
@@ -850,12 +833,12 @@ public class Axis<N extends Number>  {
 		}
 		return section1;
 	}
-
+	
 	void checkItem(AxisItem<N> item, String name) {
 	  Preconditions.checkNotNullWithName(item, name);
 	  checkSection(item.section, "item section");
 	}
-
+	
 	SectionClient<N> sectionClient(Section<N> section) {
 	  if (section instanceof SectionClient) return (SectionClient<N>) section;
 	  for (SectionClient<N> section2: sections) {
@@ -866,5 +849,5 @@ public class Axis<N extends Number>  {
 	  return null;
 	}
 
-
+  
 }

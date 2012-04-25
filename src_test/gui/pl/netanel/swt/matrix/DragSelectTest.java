@@ -56,7 +56,6 @@ public class  DragSelectTest extends SwtTestCase {
 		Point p1 = middle(bounds1);
 		Point p2 = middle(bounds2);
 		dragAndDrop(SWT.BUTTON1 | SWT.MOD1, p1, p2);
-		pause();
 		assertEquals(7, body.getSelectionCount().intValue());
 	}
 }

@@ -36,33 +36,33 @@ import org.eclipse.swt.widgets.Widget;
  * @param <Y> indexing type for vertical axis
  */
 public class ZoneEditor<X extends Number, Y extends Number> {
-	
+
 	private static final String ZONE_EDITOR_DATA = "edited cell";
 	private static final String DEFAULT_TRUE_TEXT = "\u2713";
 	private static final String NEW_LINE = System.getProperty("line.separator");
- 
+
 	final ZoneCore<X, Y> zone;
 	final CommandListener controlListener;
-	
+
 	EmbeddedControlsPainter<X, Y> embedded;
 	private Painter<X, Y> cellsPainter;
 
 
 	/**
-	 * Default constructor, facilitates editing of the specified zone. 
+	 * Default constructor, facilitates editing of the specified zone.
 	 * @param zone
 	 */
 	public ZoneEditor(Zone<X, Y> zone) {
 		super();
 		this.zone = ZoneCore.from(zone);
 		this.zone.setEditor(this);
-		
+
 //		setImagePath(null);
-		
+
 		// Painters
 		cellsPainter = zone.getPainter(Painter.NAME_CELLS);
 		zone.replacePainterPreserveStyle(new Painter<X, Y>(
-		  Painter.NAME_EMULATED_CONTROLS, Painter.SCOPE_CELLS) 
+		  Painter.NAME_EMULATED_CONTROLS, Painter.SCOPE_CELLS)
 	  {
 		  @Override protected boolean init() {
 		    return true;
@@ -73,10 +73,10 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 				Object[] emul = getCheckboxEmulation(indexX, indexY);
 				if (emul == null) return;
 				Object value = getModelValue(indexX, indexY);
-				
+
 				if (emul[0] instanceof Image || emul[1] instanceof Image) {
 					style.imageAlignX = style.imageAlignY = SWT.CENTER;
-					image = (Image) (Boolean.TRUE.equals(value) ? emul[0] : emul[1]); 
+					image = (Image) (Boolean.TRUE.equals(value) ? emul[0] : emul[1]);
 				} else {
 					style.textAlignX = style.textAlignY = SWT.CENTER;
 					text = (String) (Boolean.TRUE.equals(value) ? emul[0] : emul[1]);
@@ -85,7 +85,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 			};
 		});
 		zone.addPainter(embedded = new EmbeddedControlsPainter<X, Y>(this));
-	
+
 		// Command binding
 		zone.bind(CMD_CUT, SWT.KeyDown, SWT.MOD1 | 'x');
 		zone.bind(CMD_COPY, SWT.KeyDown, SWT.MOD1 | 'c');
@@ -97,17 +97,17 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 
 		// Clicking on the image emulation
 		this.zone.bind(new GestureBinding(CMD_EDIT_ACTIVATE, SWT.MouseDown, 1) {
-			
+
 			@Override public boolean isMatching(Event e) {
 				if (!super.isMatching(e)) return false;
-				
+
 				// Change boolean value when clicked on the check box image
 				Matrix<X, Y> matrix = getMatrix();
 				Y indexY = matrix.getAxisY().getFocusItem().getIndex();
 				X indexX = matrix.getAxisX().getFocusItem().getIndex();
 				Object[] emulation = getCheckboxEmulation(indexX, indexY);
-				
-				if (emulation != null && 
+
+				if (emulation != null &&
 						(emulation[0] instanceof Image || emulation[1] instanceof Image)) {
 					// Calculate the image bounds
 					Rectangle cellBounds = matrix.getBody().getCellBounds(indexX, indexY);
@@ -119,20 +119,20 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 				return false;
 			}
 		});
-		
+
 		// Avoid double click on the image
 		this.zone.bind(new GestureBinding(CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1) {
-		  
+
 		  @Override public boolean isMatching(Event e) {
 		    if (!super.isMatching(e)) return false;
-		    
+
 		    // Change boolean value when clicked on the check box image
 		    Matrix<X, Y> matrix = getMatrix();
 		    Y indexY = matrix.getAxisY().getFocusItem().getIndex();
 		    X indexX = matrix.getAxisX().getFocusItem().getIndex();
 		    Object[] emulation = getCheckboxEmulation(indexX, indexY);
-		    
-		    if (emulation != null && 
+
+		    if (emulation != null &&
 		      (emulation[0] instanceof Image || emulation[1] instanceof Image)) {
 		      // Calculate the image bounds
 		      Rectangle cellBounds = matrix.getBody().getCellBounds(indexX, indexY);
@@ -144,11 +144,11 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		    return true;
 		  }
 		});
-		
+
 		controlListener = new CommandListener() {
 			@Override protected void executeCommand(int commandId) {
 				Control control = (Control) event.widget;
-				
+
 				switch (commandId) {
 				case CMD_EDIT_DEACTIVATE_APPLY: apply(control); break;
 				case CMD_EDIT_DEACTIVATE_CANCEL: cancel(control); break;
@@ -167,44 +167,44 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	}
 
 
-	/** 
-	 * Returns value from the model.  
+	/**
+	 * Returns value from the model.
 	 * <p>
-	 * This method is usually overridden, since the default implementation returns 
-	 * the result of the {@link Painter#getText(Number, Number)} method of the 
-	 * zone's Painter.NAME_CELLS painter, which is always {@link String}, while some edit 
-	 * controls require other types, like {@link Boolean} or {@link Date}. 
-	 * If the Painter.NAME_CELLS painter does not exist in the zone it always returns null. 
-	 * @param indexX cell index on the horizontal axis 
-	 * @param indexY cell index on the vertical axis 
+	 * This method is usually overridden, since the default implementation returns
+	 * the result of the {@link Painter#getText(Number, Number)} method of the
+	 * zone's Painter.NAME_CELLS painter, which is always {@link String}, while some edit
+	 * controls require other types, like {@link Boolean} or {@link Date}.
+	 * If the Painter.NAME_CELLS painter does not exist in the zone it always returns null.
+	 * @param indexX cell index on the horizontal axis
+	 * @param indexY cell index on the vertical axis
 	 */
 	public Object getModelValue(X indexX, Y indexY) {
 	  if (cellsPainter == null) return null;
 	  cellsPainter.setupSpatial(indexX, indexY);
 	  return cellsPainter.text;
 	}
-	
+
 	/**
 	 * Sets the specified value to the model.
 	 * <p>
-	 * It is used to apply the result of cell editing. 
-	 * @param indexX cell index on the horizontal axis 
-	 * @param indexY cell index on the vertical axis 
+	 * It is used to apply the result of cell editing.
+	 * @param indexX cell index on the horizontal axis
+	 * @param indexY cell index on the vertical axis
 	 * @param value to set in the model
 	 */
 	public void setModelValue(X indexX, Y indexY, Object value) {
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Returns a value from the specified edit control.
 	 * <p>
 	 * It returns: <ul>
 	 * <li>{@link String} from {@link Text} and {@link Combo} controls
-	 * <li>{@link java.util.Date} from a {@link DateTime} control 
+	 * <li>{@link java.util.Date} from a {@link DateTime} control
 	 * <li>{@link Boolean} from a {@link Button}
-	 * </ul>  
+	 * </ul>
 	 * @return a value from the specified control
 	 * @see #setEditorValue(Control, Object)
 	 */
@@ -212,7 +212,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		if (control == null || control.isDisposed()) return null;
 		if (control instanceof Text) {
 			return ((Text) control).getText();
-		} 
+		}
 		else if (control instanceof Button) {
 			return ((Button) control).getSelection();
 		}
@@ -221,7 +221,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 //			Combo combo = (Combo) control;
 //			int selectionIndex = combo.getSelectionIndex();
 //			return selectionIndex == -1 ? null : combo.getItem(selectionIndex);
-		} 
+		}
 		else if (control instanceof DateTime) {
 			DateTime date = (DateTime) control;
 			Calendar cal = Calendar.getInstance();
@@ -230,8 +230,8 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 			cal.set(Calendar.MONTH, date.getMonth());
 			cal.set(Calendar.DAY_OF_MONTH, date.getDay());
 			return cal.getTime();
-		} 
-		
+		}
+
 		return null;
 	}
 
@@ -239,10 +239,10 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 * Sets the value in the cell editor control.
 	 * <p>
 	 * The value must of the following type: <ul>
-	 * <li>{@link java.util.Date} for a {@link DateTime} control 
+	 * <li>{@link java.util.Date} for a {@link DateTime} control
 	 * <li>{@link Boolean} for a {@link Button}
 	 * <li>any type for {@link Text} and {@link Combo} controls
-	 * </ul>  
+	 * </ul>
 	 * @param control to set the value for
 	 * @param value to set in the control
 	 * @see {@link #getEditorValue(Control)}
@@ -250,12 +250,12 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	protected void setEditorValue(Control control, Object value) {
 		if (control == null || control.isDisposed()) return;
 		String s = value == null ? "" : value.toString();
-		
+
     if (control instanceof Text) {
 			Text text = (Text) control;
       text.setText(s);
 			text.setSelection(s.length());
-		} 
+		}
 		else if (control instanceof Combo) {
 			Combo combo = (Combo) control;
 			int indexOf = combo.indexOf(s);
@@ -264,7 +264,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 			} else {
 			  combo.select(indexOf);
 			}
-		} 
+		}
 		else if (control instanceof Button && (control.getStyle() & SWT.CHECK) != 0) {
 			Button button = (Button) control;
 			button.setSelection((Boolean) value);
@@ -273,7 +273,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 //			if (value != null && !(value instanceof Date)) {
 //				try {
 //					value = dateFormat.parse(value.toString());
-//				} 
+//				}
 //				catch (ParseException e) {
 //					throw new RuntimeException(e);
 //				}
@@ -282,13 +282,13 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 			cal.setTime((Date) value);
 			DateTime dateTime = (DateTime) control;
 			dateTime.setDate(
-					cal.get(Calendar.YEAR), 
-					cal.get(Calendar.MONTH), 
+					cal.get(Calendar.YEAR),
+					cal.get(Calendar.MONTH),
 					cal.get(Calendar.DAY_OF_MONTH));
-		} 
+		}
 	}
 
-	
+
 	private void apply(Control control) {
 		if (control == null) return;
 		ZoneEditorData<X, Y> data = getData(control);
@@ -297,7 +297,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		cancel(control);
 		getMatrix().redraw();
 	}
-	
+
 	private void cancel(Control control) {
 		if (control != null && !getData(control).isEmbedded) {
 			disposeControl(control);
@@ -305,17 +305,17 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		getMatrix().forceFocus();
 	}
 
-	
+
 	/**
-	 * Shows a control to edit the value of the specified cell. 
+	 * Shows a control to edit the value of the specified cell.
 	 */
 	private Control activate(X indexX, Y indexY, GestureBinding b) {
 		cellsPainter = zone.getPainter(Painter.NAME_CELLS);
-		
+
 //		Control control = embedded.getControl(indexY, indexX);
 		Object[] emulation = getCheckboxEmulation(indexX, indexY);
 		Control control = embedded.getControl(indexX, indexY);
-		if (emulation != null || isCheckbox(control)) {			
+		if (emulation != null || isCheckbox(control)) {
 			boolean value = !Boolean.TRUE.equals(getModelValue(indexX, indexY));
 			setModelValue(indexX, indexY, value);
 			getMatrix().redraw();
@@ -341,15 +341,15 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		}
 		return control;
 	}
-	
+
 	private boolean isCheckbox(Control control) {
 		return control instanceof Button && (control.getStyle() & SWT.CHECK) != 0;
 	}
-	
+
 	Control addControl(X indexX, Y indexY) {
 		Control control = createControl(indexX, indexY);
 		if (control != null) {
-			ZoneEditorData<X, Y> data = new ZoneEditorData<X, Y>(indexX, indexY, 
+			ZoneEditorData<X, Y> data = new ZoneEditorData<X, Y>(indexX, indexY,
 					hasEmbeddedControl(indexX, indexY));
 			control.setData(ZONE_EDITOR_DATA, data);
 			setEditorValue(control, getModelValue(indexX, indexY));
@@ -359,55 +359,55 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		}
 		return control;
 	}
-	
+
 	/**
 	 * Creates a control to edit the value of the specified cell.
-	 * <p> 
-	 * It creates a {@link Text} control by default. 
-	 * The method should return null to make the cell read only. 
 	 * <p>
-	 * The <code>parent</code> argument is always the parent of {@link Matrix} component. 
-	 * It is passed explicitly to discourage creating edit controls 
-	 * as children of {@link Matrix} which would block the matrix 
+	 * It creates a {@link Text} control by default.
+	 * The method should return null to make the cell read only.
+	 * <p>
+	 * The <code>parent</code> argument is always the parent of {@link Matrix} component.
+	 * It is passed explicitly to discourage creating edit controls
+	 * as children of {@link Matrix} which would block the matrix
 	 * from receiving focus and thus any key or mouse events.
-	 * @param indexX cell index on the horizontal axis 
-	 * @param indexY cell index on the vertical axis 
+	 * @param indexX cell index on the horizontal axis
+	 * @param indexY cell index on the vertical axis
 	 * @param parent composite to create the control in
-	 *  
+	 *
 	 * @return control to edit the value of the specified cell
 	 * @see #createControl(Number, Number)
 	 */
 	protected Control createControl(X indexX, Y indexY) {
 		return new Text(getMatrix(), SWT.BORDER);
 	}
-	
+
 	/**
-	 * Disposes the edit control. This method can be overridden to implement 
+	 * Disposes the edit control. This method can be overridden to implement
 	 * the control hiding instead of disposing, making also the {@link #createControl(Number, Number)}
-	 * method to show the control instead of creating a new one in that case.  
-	 * 
+	 * method to show the control instead of creating a new one in that case.
+	 *
 	 * @param control
 	 * @see #createControl(Number, Number)
 	 */
 	protected void disposeControl(Control control) {
 		control.dispose();
 	}
-	
-	
+
+
 	/**
 	 * Sets the bounds of the specified edit control in the specified cell.
 	 * <p>
-	 * The cell bounds are offset by 1 pixel and applied with 
-	 * the {@link Control#setBounds(Rectangle)} method, unless the control 
-	 * is a check button whose size is not modified. Then the control 
+	 * The cell bounds are offset by 1 pixel and applied with
+	 * the {@link Control#setBounds(Rectangle)} method, unless the control
+	 * is a check button whose size is not modified. Then the control
 	 * location is centralized relating to the cell.
-	 * @param indexX cell index on the horizontal axis  
-	 * @param indexY cell index on the vertical axis  
+	 * @param indexX cell index on the horizontal axis
+	 * @param indexY cell index on the vertical axis
 	 * @param control to set the bounds for
 	 */
 	protected void setBounds(X indexX, Y indexY, Control control) {
 		Rectangle bounds = zone.getCellBounds(indexX, indexY);
-		Painter.offsetRectangle(bounds, 1);			
+		Painter.offsetRectangle(bounds, 1);
 
 		Point size  = null;
 		if (isCheckbox(control)) {
@@ -419,19 +419,19 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 			size = control.getSize();
 		}
 		control.setLocation(
-				bounds.x + Painter.align(SWT.CENTER, 0, size.x, bounds.width),			
-				bounds.y + Painter.align(SWT.CENTER, 0, size.y, bounds.height));	
+				bounds.x + Painter.align(SWT.CENTER, 0, size.x, bounds.width),
+				bounds.y + Painter.align(SWT.CENTER, 0, size.y, bounds.height));
 	}
 
-	
+
 	/**
 	 * Returns <code>true</code> if the cell editor control for the specified cell
 	 * is embedded in the cell, or <code>false</code> if it is a pop-up.
 	 * <p>
 	 * By default this function returns <code>false</code>.
 	 * @param indexX cell index on the horizontal axis
-	 * @param indexY cell index on the vertical axis  
-	 * 
+	 * @param indexY cell index on the vertical axis
+	 *
 	 * @return
 	 */
 	protected boolean hasEmbeddedControl(X indexX, Y indexY) {
@@ -439,20 +439,20 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	}
 
 	/**
-	 * Returns a control embedded in the cell with the given coordinates or null 
-	 * if the cell does not have an embedded control or the control is not visible. 
+	 * Returns a control embedded in the cell with the given coordinates or null
+	 * if the cell does not have an embedded control or the control is not visible.
    * @param indexX cell index on the horizontal axis
-   * @param indexY cell index on the vertical axis  
-	 * @return Returns a control embedded in the cell with the given coordinates 
+   * @param indexY cell index on the vertical axis
+	 * @return Returns a control embedded in the cell with the given coordinates
 	 */
 	public Control getEmbeddedControl(X indexX, Y indexY) {
 	  return embedded.getControl(indexX, indexY);
 	}
-	
+
 	/*------------------------------------------------------------------------
 	 * Commands
 	 */
-	
+
 	void edit(GestureBinding b) {
 		Matrix<X, Y> matrix = getMatrix();
 		AxisItem<X> focusItemX;
@@ -461,7 +461,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		  focusItemX = matrix.layoutX.getItemByDistance(b.event.x);
 		  focusItemY = matrix.layoutY.getItemByDistance(b.event.y);
 		} else {
-      focusItemX = matrix.axisX.getFocusItem();	  
+      focusItemX = matrix.axisX.getFocusItem();
 		  focusItemY = matrix.axisY.getFocusItem();
 		}
 		if (focusItemX == null || focusItemY == null) return;
@@ -474,7 +474,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 */
 	void delete() {
 		Iterator<Cell<X, Y>> it = zone.getSelectedIterator();
-		
+
 		while (it.hasNext()) {
 		  Cell<X, Y> cell = it.next();
 			setModelValue(cell.getIndexX(), cell.getIndexY(), null);
@@ -482,13 +482,13 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		embedded.needsPainting = true;
 		getMatrix().redraw();
 	}
-	
+
 	/**
-	 * Copies selected cells to the clipboard. 
+	 * Copies selected cells to the clipboard.
 	 * <p>
-	 * Only rectangular area can be copied. 
+	 * Only rectangular area can be copied.
 	 */
-	public void copy() 
+	public void copy()
 	{
 		StringBuilder sb = new StringBuilder();
 		cellsPainter = zone.getPainter(Painter.NAME_CELLS);
@@ -497,7 +497,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		Y maxY = n.getEndY();
 		X maxX = n.getEndX();
 		Iterator<Cell<X, Y>> it = zone.getSelectedBoundsIterator();
-		
+
 		while (it.hasNext()) {
 			Cell<X, Y> next = it.next();
 			X indexX = next.getIndexX();
@@ -511,24 +511,24 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		if (sb.length() > 0) {
 			Clipboard clipboard = new Clipboard(getMatrix().getDisplay());
 			clipboard.setContents(new Object[] {sb.toString()},
-					new Transfer[] {TextTransfer.getInstance()});		
+					new Transfer[] {TextTransfer.getInstance()});
 			clipboard.dispose();
 		}
 	}
-	
+
 	/**
 	 * Pastes form the clipboard to the zone starting from the focus cell.
 	 * <p>
-	 * The items in the clipboard exceeding the section item count will be ignored. 
+	 * The items in the clipboard exceeding the section item count will be ignored.
 	 */
-	public void paste() 
+	public void paste()
 	{
 		Clipboard clipboard = new Clipboard(getMatrix().getDisplay());
 		Object contents = clipboard.getContents(TextTransfer.getInstance());
 		clipboard.dispose();
-		
+
 		if (contents == null) return;
-		
+
 		Axis<X> axisX = getMatrix().getAxisX();
 		Axis<Y> axisY = getMatrix().getAxisY();
 
@@ -542,7 +542,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		Y startY = focusItemY.getIndex(), indexY = startY;
 		X countX = axisX.getBody().getCount();
 		Y countY = axisY.getBody().getCount();
-		
+
 		String[] rows = contents.toString().split(NEW_LINE);
 		for (int i = 0; i < rows.length && mathY.compare(indexY, countY) < 0; i++) {
 			String[] cells = split(rows[i], "\t");
@@ -556,17 +556,17 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 			}
 			indexY = mathY.increment(indexY);
 		}
-		
+
 		embedded.needsPainting = true;
 		getMatrix().redraw();
 	}
 
 	/**
-	 * Cuts the selected cells by copying them to the clipboard 
+	 * Cuts the selected cells by copying them to the clipboard
 	 * and setting <code>null</code> value to them.
 	 * <p>
 	 * Only rectangular area can be copied.
-	 *  
+	 *
 	 * @see #copy()
 	 */
 	public void cut() {
@@ -585,15 +585,15 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		embedded.needsPainting = true;
 		getMatrix().redraw();
 	}
-	
+
 	/**
-	 * Returns the label for the specified cell to be included 
-	 * in the clipboard copying. By default it returns a value from 
+	 * Returns the label for the specified cell to be included
+	 * in the clipboard copying. By default it returns a value from
 	 * the {@link Painter#getText(Number, Number)} method call.
-	 * @param indexX cell index on the horizontal axis 
-	 * @param indexY cell index on the vertical axis 
-	 * 
-	 * @return 
+	 * @param indexX cell index on the horizontal axis
+	 * @param indexY cell index on the vertical axis
+	 *
+	 * @return
 	 */
 	protected String format(X indexX, Y indexY) {
 	   if (cellsPainter == null) return null;
@@ -602,14 +602,16 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 //		Object value = getModelValue(indexY, indexX);
 //		return value == null ? "" : value.toString();
 	}
-	
+
 	/**
-	 * Parses a text for the specified cell.
+	 * Parses a text for the specified cell during paste operation.
+	 * To parse a value from editor control use {@link #getEditorValue(Control)}.
+	 * <p>
 	 * By default it returns the <code>s</code> argument.
-	 * @param indexX cell index on the horizontal axis 
-	 * @param indexY cell index on the vertical axis 
+	 * @param indexX cell index on the horizontal axis
+	 * @param indexY cell index on the vertical axis
 	 * @param s text to parse from
-	 *  
+	 *
 	 * @return
 	 */
 	protected Object parse(X indexX, Y indexY, String s) {
@@ -617,11 +619,11 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	}
 
 	/**
-	 * Overcomes the limitation of the String split method needed to parse 
+	 * Overcomes the limitation of the String split method needed to parse
 	 * the pasted text.
-	 * 
+	 *
 	 * @param s String to parse
-	 * @param separator 
+	 * @param separator
 	 * @return
 	 */
 	private String[] split(String s, String separator) {
@@ -649,36 +651,36 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	Matrix<X, Y> getMatrix() {
 		return zone.getMatrix();
 	}
-	
-	
-	
+
+
+
 	/*------------------------------------------------------------------------
-	 * Emulation 
+	 * Emulation
 	 */
 
 	/**
-	 * Returns the check box emulation data. 
-	 * It is an array with either two {@link String} elements 
+	 * Returns the check box emulation data.
+	 * It is an array with either two {@link String} elements
 	 * for a true value label and false value label,
 	 * or two {@link Image} elements for a true value image and a false value image.
 	 * @param indexX cell index on the horizontal axis
-	 * @param indexY cell index on the vertical axis  
-	 *  
+	 * @param indexY cell index on the vertical axis
+	 *
 	 * @return the check box emulation data.
-	 * @see #getDefaultCheckboxLabels() 
+	 * @see #getDefaultCheckboxLabels()
 	 */
 	protected Object[] getCheckboxEmulation(X indexX, Y indexY) {
 		return null;
 	}
-	
+
 //	/**
-//	 * Returns the default images to emulate check boxes. 
+//	 * Returns the default images to emulate check boxes.
 //	 * The first image in the returned array is for the <code>true</code> value,
 //	 * the second one is for the <code>false</code> value.
 //	 * <p>
-//	 * The default check box images can be configured with 
+//	 * The default check box images can be configured with
 //	 * the {@link #setImagePath(String)} method.
-//	 *    
+//	 *
 //	 * @return default images to emulate check boxes.
 //	 * @see #getCheckboxEmulation(Number, Number)
 //	 * @see #setImagePath(String)
@@ -689,15 +691,15 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 //		}
 //		else {
 //			return new Object[] {trueImage, falseImage};
-//		} 
+//		}
 //	}
-	
+
 	/**
-	 * Returns the default labels to emulate check boxes. 
-	 * The first label in the returned array is &#x2713; for the 
-	 * <code>true</code> value, the second one is <code>null</code> 
+	 * Returns the default labels to emulate check boxes.
+	 * The first label in the returned array is &#x2713; for the
+	 * <code>true</code> value, the second one is <code>null</code>
 	 * for the <code>false</code> value.
-	 *    
+	 *
 	 * @return default labels to emulate check boxes.
 	 * @see #getCheckboxEmulation(Number, Number)
 	 * @see #setImagePath(String)
@@ -705,12 +707,12 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	protected final Object[] getDefaultCheckboxLabels() {
 	  return new Object[] {DEFAULT_TRUE_TEXT, null};
 	}
-	
+
 //	/**
-//	 * Snaps the image of a selected and unselected check box control 
-//	 * to be used for a check box emulation. The images are placed 
-//	 * in the specified directory or if the argument is null then in the 
-//	 * system default location for application files.  
+//	 * Snaps the image of a selected and unselected check box control
+//	 * to be used for a check box emulation. The images are placed
+//	 * in the specified directory or if the argument is null then in the
+//	 * system default location for application files.
 //	 * <p>
 //	 * Note: it opens a temporary shell in order to snap the images and then closes it immediately.
 //	 * @param imagePath
@@ -779,7 +781,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 //	 * @param path to the folder containing system theme emulation images
 //	 */
 //	public void setImagePath(String path) {
-//		systemThemePath = path == null 
+//		systemThemePath = path == null
 //			? "" : path + System.getProperty("file.separator");
 //		File file = new File(systemThemePath);
 //		if (path != null) {
@@ -815,7 +817,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 //	public String getImagePath() {
 //		return systemThemePath;
 //	}
-	
+
 	/**
 	 * Makes the embedded controls to be recreated.
 	 */
@@ -836,7 +838,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	}
 
 
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings("unchecked")
 	ZoneEditorData<X, Y> getData(Widget widget) {
 		return (ZoneEditorData<X, Y>) widget.getData(ZONE_EDITOR_DATA);
 	}

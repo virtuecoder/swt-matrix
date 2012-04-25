@@ -1,23 +1,86 @@
-END-USER LICENSE AGREEMENT FOR Jacek Kolodziejczyk Software
-IMPORTANT! READ CAREFULLY: This End-User License Agreement ("EULA") is a legal agreement between you as either an individual or a single entity ("Customer") and Jacek Kolodziejczyk ("Developer") for the Developer's software that accompanies this EULA, which includes associated software components, media, printed materials, and "online" or electronic documentation ("Product"). YOU AGREE TO BE BOUND BY THE TERMS OF THIS EULA BY INSTALLING, COPYING, OR USING THE SOFTWARE. IF YOU DO NOT AGREE, DO NOT INSTALL, COPY, OR USE THE SOFTWARE; YOU MAY RETURN IT TO YOUR PLACE OF PURCHASE FOR A FULL REFUND, IF APPLICABLE. 
+END-USER LICENSE AGREEMENT
+FOR ALL SOFTWARE COMPONENT PRODUCT(S).
+IMPORTANT! READ CAREFULLY: This End-User License Agreement ("EULA") is a legal agreement between you, a developer of software applications ("DEVELOPER") and Netanel ("SUPPLIER") for all SUPPLIER's products that accompanies this EULA, which includes software components, samples, demos, source code, intermediate files, media, printed materials, and "online" or electronic documentation ("SOFTWARE COMPONENT PRODUCT(S)").
 
-1. GRANT OF LICENSE. Developer grants you the following rights provided that you comply with all terms and conditions of this EULA:
-1.1 Installation and use. You may install and use an unlimited number of copies of the Software on personal computers or other devices, as long as the specific number of Authorized Users for which Customer has paid the applicable License Fee is not exceeded or if the Software is used for a non-commercial project.
-1.2 The payment of the licence fee can be delayed for a startup company having no more then 2 employees until their outcome maufactered with the Product generates revenue worth 3 times the price of the Product.
-1.3 License Grant for Documentation. The documentation that accompanies the Software is licensed for internal, non-commercial reference purposes only.
+All SOFTWARE COMPONENT PRODUCT(S) is licensed, not sold. If you are an individual, you must acquire an individual license for the SOFTWARE COMPONENT PRODUCT(S) from SUPPLIER or its authorized resellers. If you are an entity, you must acquire an individual license for each developer within your organization from SUPPLIER or its authorized resellers.
 
-2. DESCRIPTION OF OTHER RIGHTS AND LIMITATIONS.
-2.1 Maintenance of Copyright Notices. You must not remove or alter any copyright notices on any and all copies of the Software.
-2.2 Distribution. You may not distribute registered copies of the Software to third parties unless they qualify for the unpaid license. Evaluation and unpaid versions available for download from Developer's websites may be freely distributed.
-2.3 Prohibition on Reverse Engineering, Decompilation, and Disassembly. You may not reverse engineer, decompile, or disassemble the Software, except and only to the extent that such activity is expressly permitted by this EULA or applicable law notwithstanding this limitation. 
-2.4 No Rental. You may not rent, lease, lend or sublicense the Software.
-2.5 Support Services. This EULA applies to updates, supplements, add-on components, or Internet-based services components, of the Software that Developer may provide to you or make available to you after the date you obtain your initial copy of the Software, unless they are accompanied by separate terms. Developer reserves the right to discontinue Internet-based services provided to you or made available to you through the use of the Software.
-2.6 Compliance with Applicable Laws. You must comply with all applicable laws regarding use of the Software.
+RIGOROUS ENFORCEMENT OF INTELLECTUAL PROPERTY RIGHTS. If the licensed right of use for this SOFTWARE COMPONENT PRODUCT(S) is purchased by you with any intent to reverse engineer, decompile, create derivative works, and the exploitation or unauthorized transfer of, any SUPPLIER intellectual property and trade secrets, to include any exposed methods or source code where provided, no licensed right of use shall exist, and any products(s) created as a result shall be judged illegal by definition of all applicable law. Any sale or resale of intellectual property or created derivatives so obtained will be prosecuted to the fullest extent of all local and international law.
 
-3. RESERVATION OF RIGHTS AND OWNERSHIP. Developer reserves all rights not expressly granted to you in this EULA. The Software is protected by copyright and other intellectual property laws and treaties. Developer or its suppliers own the title, copyright, and other intellectual property rights in the Software. The Software is licensed, not sold. This EULA does not grant you any rights to trademarks or service marks of Developer.
+1. GRANT OF LICENSE. 
 
-4. TERMINATION. Without prejudice to any other rights, Developer may terminate this EULA if you fail to comply with the terms and conditions of this EULA. In such event, you must destroy all copies of the Software in your possession.
+This EULA, if legally executed as defined herein, licenses and so grants the single individual DEVELOPER right to install and use the SOFTWARE COMPONENT PRODUCT(S) on any number of computers, servers, or portable devices as long as all the individual developers using the SOFTWARE COMPONENT PRODUCT(S) at those locations have acuired this license.
 
-5. DISCLAIMER OF WARRANTIES. Developer and its suppliers provide the Software and support services (if any) AS IS AND WITH ALL FAULTS, and hereby disclaim all warranties and conditions, whether express, implied or statutory, including, but not limited to, any (if any) implied warranties, duties or conditions of merchantability, of fitness for a particular purpose, of reliability or availability, of accuracy or completeness of responses, of results, of workmanlike effort, of lack of viruses, and of lack of negligence, all with regard to the Software, and the provision of or failure to provide support or other services, information, software, and related content through the Software or otherwise arising out of the use of the Software. ALSO, THERE IS NO WARRANTY OR CONDITION OF TITLE, QUIET ENJOYMENT, QUIET POSSESSION, CORRESPONDENCE TO DESCRIPTION OR NON-INFRINGEMENT WITH REGARD TO THE SOFTWARE.
+2. LIMITATIONS ON REVERSE ENGINEERING, DECOMPILATION, AND DISASSEMBLY.
 
-6. LIMITATION OF LIABILITY. To the maximum extent permitted by applicable law, in no event shall Developer or its suppliers be liable for any special, incidental, punitive, indirect, or consequential damages whatsoever (including, but not limited to, damages for loss of profits or confidential or other information, for business interruption, for personal injury, for loss of privacy, moral rights or the disclosure of confidential information, for failure to meet any duty including of good faith or of reasonable care, for negligence, and for any other pecuniary or other loss whatsoever) arising out of or in any way related to the use of or inability to use the software, the provision of or failure to provide support or other services, informaton, software, and related content through the software or otherwise arising out of the use of the software, or otherwise under or in connection with any provision of this EULA, even in the event of the fault, tort (including negligence), misrepresentation, strict liability, breach of contract or breach of warranty of Developer or any supplier, and even if Developer or any supplier has been advised of the possibility of such damages.
+You may not reverse engineer, decompile, create derivative works, translate, or disassemble the SOFTWARE COMPONENT PRODUCT(S), and only to the extent that such activity is expressly permitted by applicable law notwithstanding this limitation. You agree to take all reasonable, legal and appropriate measures to prohibit the illegal dissemination of the SOFTWARE COMPONENT PRODUCT(S) or any of its constituent parts and redistributables to the fullest extent of all applicable local, US Codes and International Laws and Treaties regarding anti-circumvention, including but not limited to, the Geneva and Berne World Intellectual Property Organization (WIPO) Diplomatic Conferences.
+
+3. SEPARATION OF COMPONENTS.
+
+The SOFTWARE COMPONENT PRODUCT(S) is licensed as a single PRODUCT(s). The SOFTWARE COMPONENT PRODUCT(S) and its constituent parts and any provided redistributables may not be reverse engineered, decompiled, disassembled or separated for use on more than one computer, nor placed for distribution, sale, or resale as individual creations by DEVELOPER. The provision of source code, if included with the SOFTWARE COMPONENT PRODUCT(S), does not constitute transfer of any legal rights to such code, and resale or distribution of all or any portion of all source code and intellectual property will be prosecuted to the fullest extent of all applicable local and international laws. All SUPPLIER libraries, source code, redistributables and other files remain SUPPLIER's exclusive property. You may not distribute any files, except those that SUPPLIER has expressly designated as Redistributable.
+
+4. RENTAL.
+
+You may not rent, lease, or lend the SOFTWARE COMPONENT PRODUCT(S).
+
+5. TRANSFER.
+
+You may NOT permanently or temporarily transfer ANY of your rights under this EULA to any individual or entity without prior written approval from SUPPLIER. Regardless of any modifications which you make and regardless of how you might compile, link, and/or package your programs, under no circumstances may the libraries, redistributables, and/or other files of the SOFTWARE COMPONENT PRODUCT(S) (including any portions thereof) be used for developing programs by anyone other than you. Only you as the licensed DEVELOPER have the right to use the libraries, Redistributables, or other files of the SOFTWARE COMPONENT PRODUCT(S) (or any portions thereof) for developing programs created with the SOFTWARE COMPONENT PRODUCT(S). In particular, you may not share copies of the Redistributables with other co-developers. You may not reproduce or distribute any SUPPLIER documentation without SUPPLIER's explicit permission.
+
+6. ROYALTY FREE REDISTRIBUTION.
+
+SUPPLIER PRODUCT(s) may include certain files ("Redistributable(s)") intended for distribution by you to the users of software applications which you create. Redistributables include, for example, those files identified in printed or on-line documentation as redistributable files, or those files preselected for deployment by an install utility provided with the SOFTWARE COMPONENT PRODUCT(S) (if any). In all circumstances, the Redistributables for the SOFTWARE COMPONENT PRODUCT(S) are only those files specifically designated as such by SUPPLIER.
+
+Subject to all of the terms and conditions in this EULA, you may reproduce and distribute copies of the Redistributables, provided that such copies are made from the original copy of the Redistributables included with the SOFTWARE COMPONENT PRODUCT(S) or modified versions of the Redistributables which are provided to you by SUPPLIER or those which you create. Copies of Redistributables may only be distributed with and for the sole purpose of executing application programs permitted under this EULA that you have created using the SOFTWARE COMPONENT PRODUCT(S).
+
+REDISTRIBUTABLES. The following file(s) are considered redistributables under this EULA:
+swt-matrix-*.jar
+
+AT NO TIME MAY DEVELOPER CREATE ANY TOOL, REDISTRIBUTABLE, OR SOFTWARE COMPONENT PRODUCT(S) THAT DIRECTLY OR INDIRECTLY COMPETES WITH SUPPLIER SOFTWARE COMPONENT PRODUCT(S) WHICH UTILIZES ALL OR ANY PORTION OF THE SOFTWARE COMPONENT PRODUCT(S) contained within this installation.
+
+Distribution by the DEVELOPER of any design-time tools, executables, and source code distributed to DEVELOPER by SUPPLIER as part of this SOFTWARE COMPONENT PRODUCT(S) and not explicitly identified as a redistributable file is strictly prohibited. The DEVELOPER shall not develop software applications that provide an application programming interface to the SOFTWARE COMPONENT PRODUCT(S) or the SOFTWARE COMPONENT PRODUCT(S) as modified.
+
+The DEVELOPER may NOT distribute the SOFTWARE COMPONENT PRODUCT(S), in any format, to other users for development or application compilation purposes. Specifically, if DEVELOPER creates a control using the SOFTWARE COMPONENT PRODUCT(S) as a constituent control, DEVELOPER may NOT distribute the control created with the SOFTWARE COMPONENT PRODUCT(S) (in any format) to users to be used at design time and or for ANY development purposes.
+
+DEVELOPER MAY NOT REDISTRIBUTE any SOFTWARE COMPONENT PRODUCT(s) files if using an evaluation, trial, Not for Resale, or demo version of the SOFTWARE COMPONENT PRODUCT(s).
+
+7. UPGRADES.
+
+If the SOFTWARE COMPONENT PRODUCT(S) is labeled as an upgrade, you must be properly licensed to use the SOFTWARE COMPONENT PRODUCT(S) identified by SUPPLIER as being eligible for the upgrade in order to use the SOFTWARE COMPONENT PRODUCT(S). A SOFTWARE COMPONENT PRODUCT(S) labeled as an upgrade replaces and/or supplements the SOFTWARE COMPONENT PRODUCT(S) that formed the basis for your eligibility for the upgrade, and together constitutes a single PRODUCT(S). You may use the resulting upgraded PRODUCT(S) only in accordance with all the terms of this EULA.
+
+8. COPYRIGHT.
+
+All title and copyrights in and to the SOFTWARE COMPONENT PRODUCT(S) (including but not limited to any copywritten images, demos, source code, intermediate files, packages, photographs, redistributables, animations, video, audio, music, text, and "applets" incorporated into the SOFTWARE COMPONENT PRODUCT(S) the accompanying printed materials, and any copies of the SOFTWARE COMPONENT PRODUCT(S)) are owned by SUPPLIER or its subsidiaries. The SOFTWARE COMPONENT PRODUCT(S) is protected by copyright laws and international treaty provisions and therefore, you must treat the SOFTWARE COMPONENT PRODUCT(S) like any other copyrighted material except that you may install the SOFTWARE COMPONENT PRODUCT(S) as described in this EULA.
+
+9. DISCLAIMER OF WARRANTY.
+
+SUPPLIER expressly disclaims any warranty for the SOFTWARE COMPONENT PRODUCT(S). THE SOFTWARE COMPONENT PRODUCT(S) AND ANY RELATED DOCUMENTATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NONINFRINGEMENT. SUPPLIER DOES NOT WARRANT, GUARANTEE, OR MAKE ANY REPRESENTATIONS REGARDING THE USE, OR THE RESULTS OF THE USE, OF THE SOFTWARE COMPONENT PRODUCT(S) IN TERMS OF CORRECTNESS, ACCURACY, RELIABILITY, OR OTHERWISE. THE ENTIRE RISK ARISING OUT OF USE OR PERFORMANCE OF THE SOFTWARE COMPONENT PRODUCT(S) REMAINS WITH YOU. No oral or written information or advice given by SUPPLIER or its employees shall create a warranty or in any way increase the scope of this warranty.
+
+10. LIMITATIONS ON LIABILITY.
+
+To the maximum extent permitted by applicable law, in no event shall SUPPLIER be liable for any special, incidental, indirect, or consequential damages whatsoever (including, without limitation, damages for loss of business profits, business interruption, loss of business information, or any other pecuniary loss) arising out of the use of or inability to use the SOFTWARE COMPONENT PRODUCT(S) or the provision of or failure to provide Support Services, even if SUPPLIER has been advised of the possibility of such damages.
+
+DEVELOPER understands that the SOFTWARE COMPONENT PRODUCT(S) may produce inaccurate results because of a failure or fault within the SOFTWARE COMPONENT PRODUCT(S) or failure by DEVELOPER to properly use and or deploy the SOFTWARE COMPONENT PRODUCT(S). DEVELOPER assumes full and sole responsibility for any use of the SOFTWARE COMPONENT PRODUCT(S), and bears the entire risk for failures or faults within the SOFTWARE COMPONENT PRODUCT(S). You agree that regardless of the cause of failure or fault or the form of any claim, YOUR SOLE REMEDY AND SUPPLIER'S SOLE OBLIGATION SHALL BE GOVERNED BY THIS AGREEMENT AND IN NO EVENT SHALL SUPPLIER'S LIABILITY EXCEED THE PRICE PAID TO SUPPLIER FOR THE SOFTWARE COMPONENT PRODUCT(S). This Limited Warranty is void if failure of the SOFTWARE COMPONENT PRODUCT(S) has resulted from accident, abuse, alteration, unauthorized use or misapplication of the SOFTWARE COMPONENT PRODUCT(S).
+
+11. SUPPORT SERVICES.
+
+SUPPLIER may provide you with support services related to the SOFTWARE COMPONENT PRODUCT(S) ("Support Services"). Use of Support Services is governed by SUPPLIER policies and programs described in the user manual, in "on line" documentation and/or other SUPPLIER provided materials. Any supplemental SOFTWARE COMPONENT PRODUCT(S) provided to you as part of the Support Services shall be considered part of the SOFTWARE COMPONENT PRODUCT(S) and subject to the terms and conditions of this EULA. With respect to technical information you provide to SUPPLIER as part of the Support Services, SUPPLIER may use such information for its business purposes, including for SOFTWARE COMPONENT PRODUCT(s) support and development. SUPPLIER will not utilize such technical information in a form that personally identifies you.
+
+12. TERMINATION. 
+
+Without prejudice to any other rights, SUPPLIER may terminate this EULA if you fail to comply with the terms and conditions of this EULA. In such event, you must destroy all copies of the SOFTWARE COMPONENT PRODUCT(S) and all of its component parts including any related documentation, and must remove ANY and ALL use of such technology immediately from any applications using technology contained in the SOFTWARE COMPONENT PRODUCT(S) developed by you, whether in native, altered or compiled state.
+
+13. RESERVATION OF RIGHTS AND OWNERSHIP. 
+
+SUPPLIER reserves all rights not expressly granted to you in this EULA. The Software is protected by copyright and other intellectual property laws and treaties. SUPPLIER owns the title, copyright, and other intellectual property rights in the Software. The Software is licensed, not sold. This EULA does not grant you any rights to trademarks or service marks of SUPPLIER.
+
+14. TAX.
+
+SUPPLIER delivers its software electronically and does not collect sales or use tax for residents of US states in which it operates. You should confirm that your local, state, or federal government does not impose any sales or use tax on electronically delivered software. You are entirely liable for any such sales or use tax.
+
+15. MISCELLANEOUS.
+
+SUPPLIER reserves all rights not specifically granted in this EULA.
+
+ACKNOWLEDGEMENTS. DEVELOPER acknowledges that he or she has read this Agreement, understands it, and agrees to be bound by its terms and conditions.
+
+Should you have any questions concerning this EULA, or if you desire to contact SUPPLIER for any reason, please contact us directly at +48 506 132 662 or write: Netanel, ul. Œw. Benedykta 6/1, 30-536 Kraków, Poland.

@@ -407,9 +407,9 @@ public class Painter<X extends Number, Y extends Number> {
 				gc.setBackground(lastBackground = background2);
 			}
 			// Needed in calculated background scenario
-			if (!background2.equals(defaultBackground)) {
+			//if (!background2.equals(defaultBackground)) {
 				gc.fillRectangle(x, y, width, height);
-			}
+			//}
 		}
 
 		int x2 = x, y2 = y;
