@@ -73,7 +73,7 @@ public class SelectTest extends SwtTestCase {
   }
 
   @Test
-  public void selectBodyAppend() throws Exception {
+  public void selectBodyAptpend() throws Exception {
     Matrix matrix = createMatrix();
     Zone body = matrix.getBody();
     Rectangle bounds = matrix.getBody().getCellBounds(2, 2);
@@ -318,7 +318,7 @@ public class SelectTest extends SwtTestCase {
 
   /**
    * Should not send the resize event on the click.
-   * 
+   *
    * @throws Exception
    */
   @Test

@@ -1,0 +1,49 @@
+There is no silver bullet of course. The performance of the matrix (and insert/delete methods) can degrade when index based state of the section (cell width, line width, resizable, movable, hideable, hidden, order, selection) is intensively fragmented. Since matrix maps the state to ranges of indexes insted of single indexes, that happens if there are many different values 
+
+
+
+
+Tabular widgets are required for most of the GUI applications. Yet I was frustrated by the state of the <a href="http://www.eclipse.org/swt">SWT</a> Java GUI toolkit components I've come across. To the point I have implemented my own widget called <a href="http://netanel.pl">SWT Matrix</a>. I can hear you say "Yeah, yet another component". But wait a minute.
+
+What makes it different from other such components is <strong>unlimited capacity</strong> and <strong>instant rendering</strong>. It also focuses on developer productivity by <strong>clean design</strong> with minimal learning curve.
+
+
+Title: SWT tabular widget done right.
+
+Tabular widgets are required for most of the GUI applications. Yet I was frustrated by the state of the SWT components I've come across. To the point I have implemented my own widget called Matrix. I can hear you say "Yeah, yet another component". But here's what makes it distinct.
+
+1) Unlimited capacity. SWT Matrix can handle an unlimited number of rows and columns. Integer.MAX_VALUE is not a limit, neither is Long.MAX_VALUE. And still multiple selection, moving, resizing and setting of cell, rows and columns properties works without performance penalty (in most common scenarios). More then 2147483647 items is a rare case, which makes this feature low demanded. But at the same time it's the most heavy one cross-cutting the whole design of the widget from public API to the very core. It's better to include it when designing from scratch then later neglect it.
+
+2) Ultimate performance. Consider content scrolling of a full 1680 x 1050 screen table with 1 milion rows and columns. It's around 2000 visible cells of size 50x16. The components that don't support virtual display choke completely. BTW don't be misslead by SWT.VIRTUAL constructor flag. Scroll to the end and you will see that it is lazy initialization rather then virtualization. None of the components I tested on Windows XP 2GHz was consistent on getting below what is considered instant, namely below 100 ms. Matrix paints itself in about 50 ms, which is 10x better then the closest competitor. 
+
+3) Clear design
+  - Separation of concerns by Model Prezenter design pattern. A GUI widget has two main responsibilities: a) paint itself on the screen, b) notify about user gestures on it. . 
+  - Symetry - There is no such a thing that works for columns, but does not work for rows and vice versa, since they both are instances of MatrixAxis class. All matrix zones (body, column header, row header) have own cell and line painters and own event listeners. Even freezing is symetric. If the head of an axis can be frozen why not the tail? A frozen footer may come handy. It makes the API more simple and of better quality (less feature missing).
+
+
+
+
+---
+
+4) SWT-likness. It is not a unique feature obviously as SWT Table is SWT-like :-), but it is important one for a quick transition and a short learning curve. Replace Matrix -> MatrixTable, TableColumn -> MatrixColumn, TableItem -> MatrixItem and most of the SWT snippets for Table will work.
+
+4) Visual precision. Line is part of layout it means making it wider spreads the cells
+
+5) Flexibility - True separation of model and presentation. You can decide how to maintain the widget state to balance memory and performance in the way most suting your requirements. Control over painting order,
+
+
+Worth mention is that I am thinking of dual licensing policy. Free for personal/non-comercial use and a comercial licence.
+
+This is alpha stage, but I am working on it full time. Your feedback would be highly appreciated, as I expcet it would give me additional momentum and some direction.
+
+
+
+Did it appetize you? Want more? Then 
+- look forward to more detail introduction in the next artciles
+- download demo
+- examin the snippets 
+- browse the API
+- give your feedback
+
+I'd love to hear from you.
+

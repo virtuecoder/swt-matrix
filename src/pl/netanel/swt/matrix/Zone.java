@@ -136,7 +136,58 @@ public interface Zone<X extends Number, Y extends Number> {
    *           bounds
    */
   void setSelected(X startX, X endX, Y startY, Y endY, boolean state);
+  
+  /**
+   * Sets the merging state for the range of cells. If the given range of cell contains
+   * merged cells the merging will be removed for all of those cells. Otherwise the
+   * cells will be merged. 
+   * <p>
+   * <code>startX</code>,<code>endX</code>, <code>startY</code> and
+   * <code>endY</code> numbers are item indexes in the model, 
+   * not the visual position of the item on the screen 
+   * which can be altered by move and hide operations.
+   * 
+   * @param startX first index of the range of column items
+   * @param endX last index of the range of column items
+   * @param startY first index of the range of row items
+   * @param endY last index of the range of row items
+   * @return true if the cell become merged, false if the merging has been removed
+   * 
+   * @throws IllegalArgumentException if <code>startX</code> or <code>endX</code>
+   *           or <code>startY</code> or <code>endY</code> is null.
+   * @throws IllegalArgumentException if <code>startX</code> is greater then <code>endX</code>
+   *           or <code>startY</code> is greater then <code>endY</code>.
+   * @throws IndexOutOfBoundsException if <code>startX</code> or
+   *           <code>endX</code> is out of 0 ... this.getSectionX().getCount()
+   *           bounds
+   * @throws IndexOutOfBoundsException if <code>startY</code> or
+   *           <code>endY</code> is out of 0 ... this.getSectionY().getCount()
+   *           bounds
+   */
+  boolean setMerged(X startX, X endX, Y startY, Y endY); 
+  
+  /**
+   * Returns <code>true</code> if the cell at given indexes is merged.
+   * Otherwise, <code>false</code> is returned.
+   * <p>
+   * <code>indexX</code> and <code>indexY</code> refer to the model, 
+   * not the visual position of the item on the screen
+   * which can be altered by move and hide operations. 
+   * @param indexX cell index on the horizontal axis 
+   * @param indexY cell index on the vertical axis  
+   * 
+   * @return the selection state of the specified cell
+   * 
+   * @throws IllegalArgumentException if <code>indexX</code> or 
+   *         <code>indexY</code> is null.
+   * @throws IndexOutOfBoundsException if <code>indexX</code> is out of 
+   *         0 ... this.getSectionY().getCount() bounds
+   * @throws IndexOutOfBoundsException if <code>indexY</code> is out of 
+   *         0 ... this.getSectionX().getCount() bounds
+   */
+  boolean isMerged(X indexX, Y indexY);
 
+  
   /**
    * Sets the selection state for the specified cell.
    * <p>

@@ -5,38 +5,39 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import pl.netanel.swt.matrix.Axis;
-import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
+import pl.netanel.swt.matrix.Painter;
 
-public class Snippet {
-  public static void main(String[] args) {
-		Shell shell = new Shell();
-		shell.setLayout(new FillLayout());
+public class Snippet
+{
+    public static void main(String[] args) {
+        final Shell shell = new Shell();
+        shell.setText("hehe");
+        shell.setLayout(new FillLayout());
 
-		Axis<Integer> axisX = new Axis<Integer>(Integer.class, 2, 0, 1);
-		Axis<Long> axisY = new Axis<Long>(Long.class, 2, 0, 1);
+        Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
+        matrix.getAxisX().getBody().setCount(4);
+        matrix.getAxisY().getBody().setCount(10);
+        matrix.getAxisY().getHeader().setVisible(true);
 
-		new Matrix<Integer, Long>(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, axisX, axisY);
+        matrix.getHeaderX().replacePainter(new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
+            @Override
+            public void setup(Integer indexX, Integer indexY) {
+                text = indexX.toString();
+                style.textAlignX = SWT.CENTER;
+                style.background = shell.getDisplay().getSystemColor(SWT.COLOR_CYAN);
+            }
+        });
 
-		axisX.getBody().setCount(100);
-		axisX.getBody().setDefaultCellWidth(50);
-		axisX.getHeader().setDefaultCellWidth(40);
-		axisX.getHeader().setVisible(true);
-
-		axisY.getBody().setCount(1000000000000000L);
-		axisY.getHeader().setVisible(true);
-
-		AxisItem.create(axisY.getBody(), 5L);
-
-
-		shell.setBounds(200, 20, 1024, 568);
-		shell.open();
-		Display display = shell.getDisplay();
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
-			}
-		}
-	}
+        shell.setBounds(400, 200, 600, 400);
+        shell.open();
+        Display display = shell.getDisplay();
+        while (!shell.isDisposed())
+        {
+            if (!display.readAndDispatch())
+            {
+                display.sleep();
+            }
+        }
+    }
 }

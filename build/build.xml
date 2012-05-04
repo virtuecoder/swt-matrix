@@ -1,5 +1,5 @@
 <project name="swt-matrix" default="local website" basedir=".">
-	<property name="version" value="0.5.8" />
+	<property name="version" value="0.5.9" />
 	<property name="local_website" value="d:\dev\wamp\www\netanel15" />
 
 	<property name="db.username" value="root"/>
@@ -91,10 +91,10 @@
 	      use="true" 
 	      version="false" 
 	      windowtitle="SWT Matrix - API javadoc" 
-	      doctitle="SWT Matrix 0.01 API">
+	      doctitle="SWT Matrix ${version} API">
 
 			<bottom>
-				<![CDATA[<i>Copyright &#169; 2011 netanel. All Rights Reserved.</i>]]>
+				<![CDATA[<i>Copyright &#169; 2012 netanel. All Rights Reserved.</i>]]>
 			</bottom>
   	</javadoc>
   	

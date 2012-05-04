@@ -6,8 +6,8 @@
 	<classpathentry kind="src" path="src_test/spec"/>
 	<classpathentry kind="src" path="src_test/gui"/>
 	<classpathentry kind="src" path="website"/>
-	<classpathentry kind="lib" path="D:/Dev/Java/java_lib/commons-net-2.0/commons-net-2.0.jar"/>
-	<classpathentry kind="lib" path="D:/Dev/Java/java_lib/mysql-connector-java-5.1.8/mysql-connector-java-5.1.8-bin.jar"/>
+	<classpathentry kind="var" path="JAVA_LIB/commons-net-2.0/commons-net-2.0.jar"/>
+	<classpathentry kind="var" path="JAVA_LIB/mysql-connector-java-5.1.8/mysql-connector-java-5.1.8-bin.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>

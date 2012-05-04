@@ -122,7 +122,22 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     return core.getSelectedExtent();
   }
 
+  
+  @Override
+  public boolean setMerged(X startX, X endX, Y startY, Y endY) {
+    sectionX.checkRange(startX, endX, sectionX.getCount());
+    sectionY.checkRange(startY, endY, sectionY.getCount());
+    return core.setMerged(startX, endX, startY, endY);
+  }
 
+  @Override
+  public boolean isMerged(X indexX, Y indexY) {
+    sectionX.checkCellIndex(indexX, "indexX");
+    sectionY.checkCellIndex(indexY, "indexY");
+    return core.isMerged(indexX, indexY);
+  }
+
+  
   @Override
   public void addPainter(Painter<X, Y> painter) {
     checkPainter(painter);
@@ -250,5 +265,4 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     return core.contains(cellExtent, indexX, indexY);
   }
 
-  
 }

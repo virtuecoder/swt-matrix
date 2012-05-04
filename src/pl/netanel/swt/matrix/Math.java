@@ -9,7 +9,7 @@ import pl.netanel.util.Preconditions;
 
 /**
  * Abstracts arithmetics on integer types including BigInteger.
- * 
+ *
  * @author Jacek Kolodziejczyk created 01-03-2011
  */
 abstract class Math<N extends Number> {
@@ -27,12 +27,12 @@ abstract class Math<N extends Number> {
 	public static final int CROSS = 11;
 
 
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings("unchecked")
 	public static <N2 extends Number> Math<N2> getInstance(Class<N2> numberClass) {
-		if (numberClass == Integer.class) 			    return (Math<N2>) IntMath.getInstance(); 
-		else if (numberClass == int.class) 	        return (Math<N2>) IntMath.getInstance(); 
-		else if (numberClass == Long.class) 		    return (Math<N2>) LongMath.getInstance(); 
-		else if (numberClass == long.class) 		    return (Math<N2>) LongMath.getInstance(); 
+		if (numberClass == Integer.class) 			    return (Math<N2>) IntMath.getInstance();
+		else if (numberClass == int.class) 	        return (Math<N2>) IntMath.getInstance();
+		else if (numberClass == Long.class) 		    return (Math<N2>) LongMath.getInstance();
+		else if (numberClass == long.class) 		    return (Math<N2>) LongMath.getInstance();
 		else if	(numberClass == BigInteger.class) 	return (Math<N2>) BigIntegerMath.getInstance();
 		else throw new IllegalArgumentException(
 		  "Cannot do arithmetics on " + numberClass.getName() + " class");
@@ -44,7 +44,7 @@ abstract class Math<N extends Number> {
 
 	public abstract MutableNumber<N> ZERO();
 	public abstract MutableNumber<N> ONE();
-	
+
 	public abstract N ZERO_VALUE();
 	public abstract N ONE_VALUE();
 
@@ -52,21 +52,25 @@ abstract class Math<N extends Number> {
 	public abstract N increment(Number n);
 	public abstract N add(Number x, Number y);
 	public abstract N subtract(Number x, Number y);
-	
+
 	/*------------------------------------------------------------------------
-	 * Comparison 
+	 * Comparison
 	 */
-	
+
 	public abstract int compare(N x, N y);
-	
+
+	public int compare(MutableExtent<N> x, MutableExtent<N> y) {
+	  return compare(x.start.getValue(), x.end.getValue(), y.start.getValue(), y.end.getValue());
+	}
+
 	public int compare(MutableNumber<N> x, MutableNumber<N> y) {
 		return compare(x.getValue(), y.getValue());
 	}
-	
+
 	public int compare(MutableNumber<N> x, N y) {
 		return x.compareTo(y);
 	}
-	
+
 	public int compare(N startX, N endX, N start2, N end2) {
 		if (compare(endX, start2) < 0) {
 			if (compare(increment(endX), start2) == 0)	return ADJACENT_BEFORE;
@@ -76,7 +80,7 @@ abstract class Math<N extends Number> {
 			if (compare(decrement(startX), end2) == 0) 	return ADJACENT_AFTER;
 			else 										return AFTER;
 		}
-		
+
 		int ss = compare(startX, start2);
 		int ee = compare(endX, end2);
 		if (ss == 0 && ee == 0)							return EQUAL;
@@ -85,49 +89,49 @@ abstract class Math<N extends Number> {
 			else										return CROSS_BEFORE;
 		}
 		if (ee >= 0)		 							return CROSS_AFTER;
-		else 											return INSIDE; 
+		else 											return INSIDE;
 	}
-	
-	
+
+
 	public boolean contains(N start, N end, N n) {
 		return compare(start, n) <= 0 && compare(n, end) <= 0;
 	}
-	
+
 	public boolean contains(MutableExtent<N> e, MutableNumber<N> mn) {
 		return contains(e.start(), e.end(), mn.getValue());
 	}
-	
+
 	public boolean contains(MutableExtent<N> e, N n) {
 		return contains(e.start(), e.end(), n);
 	}
-	
+
 	public boolean contains(MutableNumber<N> start, MutableNumber<N> end, N n) {
-		return compare(start.getValue(), n) <= 0 && 
+		return compare(start.getValue(), n) <= 0 &&
 			   compare(n, end.getValue()) <= 0;
 	}
 
 	public N max(N x, N y) {
 		return compare(x, y) < 0 ? y : x;
 	}
-	
+
 	public N min(N x, N y) {
 		return compare(x, y) > 0 ? y : x;
 	}
-	
+
 	public N max(N n1, N n2, N n3) {
     N max = n1;
     if (compare(n2, max) > 0) max = n2;
     else if (compare(n3, max) > 0) max = n3;
     return max;
   }
-  
+
 	public N min(N n1, N n2, N n3) {
 	  N min = n1;
 	  if (compare(n2, min) < 0) min = n2;
 	  else if (compare(n3, min) < 0) min = n3;
 	  return min;
 	}
-	
+
 	public N max(N ...n) {
 		N max = n[0];
 		for (int i = 1; i < n.length; i++) {
@@ -137,7 +141,7 @@ abstract class Math<N extends Number> {
 		}
 		return max;
 	}
-	
+
 	public N min(N ...n) {
 		N min = n[0];
 		for (int i = 1; i < n.length; i++) {
@@ -152,19 +156,19 @@ abstract class Math<N extends Number> {
 	public MutableNumber<N> min(MutableNumber<N> x, MutableNumber<N> y) {
 		return x.min(y);
 	}
-	
+
 	N getCount(MutableExtent<N> e) {
 		return create(e.end).subtract(e.start).increment().getValue();
 	}
 
 	abstract Class<N> getNumberClass();
 
-	
+
 	public void checkIndex(N index, String name) {
 	  Preconditions.checkNotNullWithName(index, name);
 	  if (getNumberClass() != index.getClass()) {
       throw new IndexOutOfBoundsException(MessageFormat.format(
-        "invalid class of {0} ({1}), expected ({2})", 
+        "invalid class of {0} ({1}), expected ({2})",
         name, index.getClass(), getNumberClass())) ;
     }
 	  if (compare(index, ZERO_VALUE()) < 0) {
@@ -172,32 +176,32 @@ abstract class Math<N extends Number> {
 	      "{0} ({1}) cannot be negative", name, index)) ;
 	  }
 	}
-	
+
 	public static <N extends Number> void checkIndexStatic(N index, String name) {
 	  Preconditions.checkNotNullWithName(index, name);
 	  @SuppressWarnings("unchecked")
     Math<N> math = (Math<N>) getInstance(index.getClass());
 	  math.checkIndex(index, name);
 	}
-	
+
 	public static <N extends Number> void checkRange(N start, N end) {
 	  Preconditions.checkNotNullWithName(start, "start");
 	  Preconditions.checkNotNullWithName(end, "end");
 	  @SuppressWarnings("unchecked")
 	  Math<N> math = (Math<N>) Math.getInstance(start.getClass());
-	  
+
 	  math.checkIndex(start, "start");
 	  math.checkIndex(end, "start");
-	  
+
 	  if (math.compare(start, end) > 0) {
 	    throw new IllegalArgumentException(MessageFormat.format(
 	      "start ({0}) cannot be greater then end {1}", start, end)) ;
 	  }
 	}
 
-	
+
 //	/**
-//	 * 
+//	 *
 //	 * @param e
 //	 * @param start
 //	 * @param end

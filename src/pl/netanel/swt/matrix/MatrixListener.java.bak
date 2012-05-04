@@ -720,8 +720,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 
     //		System.out.println("execute " + commandId);
     switch (commandId) {
-    //case CMD_DND_SELECT_START:		 state &= STATE_SELECTING; break;
-    //case CMD_DND_SELECT_STOP:		   state &= ~STATE_SELECTING; break;
+    case CMD_DND_SELECT_START:		 state &= STATE_SELECTING; break;
+    case CMD_DND_SELECT_STOP:		   state &= ~STATE_SELECTING; break;
 
     case CMD_RESIZE_PACK:		       stateY.pack(); stateX.pack(); break;
 

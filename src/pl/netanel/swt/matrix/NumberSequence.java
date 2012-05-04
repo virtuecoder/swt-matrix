@@ -17,7 +17,7 @@ package pl.netanel.swt.matrix;
  *     System.out.println(seq.start() + " : " + seq.end());
  * }
  * </pre>
- * 
+ *
  * @author Jacek created 21-02-2011
  */
 class NumberSequence<N extends Number> implements Sequence {
@@ -25,12 +25,12 @@ class NumberSequence<N extends Number> implements Sequence {
 	int i, size;
 	MutableExtent<N> e;
 	MutableNumber<N> index;
-	
-	
+
+
 	NumberSequence(NumberSet<N> set) {
 		this.set = set;
 	}
-	
+
 	public void init() {
 		i = 0;
 		size = set.items.size();
@@ -39,10 +39,10 @@ class NumberSequence<N extends Number> implements Sequence {
 		index = set.math.create(e.start);
 		index.decrement();
 	}
-	
+
 	/**
-	 * Returns true if the next iteration step succeeded, false otherwise. 
-	 * Another words false return value means the iteration has reached the end.   
+	 * Returns true if the next iteration step succeeded, false otherwise.
+	 * Another words false return value means the iteration has reached the end.
 	 * @return
 	 */
 	public boolean next() {
@@ -54,10 +54,10 @@ class NumberSequence<N extends Number> implements Sequence {
 		}
 		return true;
 	}
-	
+
 	/**
-	 * Returns index of the current item. 
-	 * 
+	 * Returns index of the current item.
+	 *
 	 * @return vertical axis index
 	 */
 	public N index() {
@@ -66,21 +66,5 @@ class NumberSequence<N extends Number> implements Sequence {
 
 	boolean hasNext() {
 		return i < size - 1 || set.math.compare(index.increment(), e.end) < 0;
-	}
-	
-	
-	public boolean nextExtent() {
-		if (i++ >= size) return false;
-		e = set.items.get(i-1);
-		index.set(e.start);
-		return true;
-	}
-	
-	public N start() {
-		return e.start();
-	}
-	
-	public N end() {
-		return e.end();
 	}
 }
