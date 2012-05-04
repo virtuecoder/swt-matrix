@@ -122,6 +122,13 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     return core.getSelectedExtent();
   }
 
+  
+  @Override
+  public void setMerged(X startX, X endX, Y startY, Y endY) {
+    sectionX.checkRange(startX, endX, sectionX.getCount());
+    sectionY.checkRange(startY, endY, sectionY.getCount());
+    core.setMerged(startX, endX, startY, endY);
+  }
 
   @Override
   public void addPainter(Painter<X, Y> painter) {

@@ -38,6 +38,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	final SectionCore<Y> sectionY;
 	CellSet<X, Y> cellSelection;
 	CellSet<X, Y> lastSelection; // For adding selection
+	CellSet<X, Y> cellMerging;
 	ZoneEditor<X, Y> editor;
 
 	private final Listeners listeners;
@@ -195,7 +196,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 			cellSelection.remove(startX, endX, startY, endY);
 		}
 	}
-
+	
 	@Override
 	public void setSelected(X indexX, Y indexY, boolean state) {
 		setSelected(indexX, indexX, indexY, indexY, state);
@@ -325,6 +326,19 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		cellSelection = lastSelection.copy();
 	}
 
+	
+	@Override
+	public void setMerged(X startX, X endX, Y startY, Y endY) {
+	  if (!cellMerging.removeContaining(startX, endX, startY, endY)) {
+	    cellMerging.add(startX, endX, startY, endY);
+	  }    
+	}
+
+	@Override 
+	public boolean isMerged(X indexX, Y indexY) {
+    return cellMerging.contains(indexX, indexY);
+  }
+	
 
 	/*------------------------------------------------------------------------
 	 * Gesture
@@ -641,6 +655,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
     return sectionX.math.contains(cellExtent.startX, cellExtent.getEndX(), indexX) &&
       sectionY.math.contains(cellExtent.startY, cellExtent.getEndY(), indexY);
   }
+
+
 
 
 }

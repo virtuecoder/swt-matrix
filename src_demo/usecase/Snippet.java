@@ -14,6 +14,7 @@ public class Snippet
 {
     public static void main(String[] args) {
         final Shell shell = new Shell();
+        shell.setText("hehe");
         shell.setLayout(new FillLayout());
 
         Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);

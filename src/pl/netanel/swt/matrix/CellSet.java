@@ -8,7 +8,8 @@ import pl.netanel.util.IntArray;
 
 
 /**
- * Manages a consistent set of extent arrays (cubes). It can model a cell selection. 
+ * Manages a consistent, not overlapping set of cell ranges.
+ * It can model a cell selection. 
  *
  * @author Jacek
  * @created 15-11-2010
@@ -122,8 +123,8 @@ class CellSet<X extends Number, Y extends Number> {
 	
 	public void remove(X startX, X endX, Y startY, Y endY) {
 		IntArray toRemove = new IntArray();
+		
 		int i = 0;
-
 		int size = itemsY.size();
 		for (;i < size; i++) {
 		  MutableExtent<X> itemX = itemsX.get(i);
@@ -185,6 +186,44 @@ class CellSet<X extends Number, Y extends Number> {
 		}
 	}
 	
+	/**
+	 * Removes cell groups that contain any cell from the given range. 
+	 * @param startX
+	 * @param endX
+	 * @param startY
+	 * @param endY
+	 * @return true if anything was removed
+	 */
+	public boolean removeContaining(X startX, X endX, Y startY, Y endY) {
+	  IntArray toRemove = new IntArray();
+	  int i = 0;
+	  int size = itemsY.size();
+	  for (;i < size; i++) {
+      MutableExtent<X> itemX = itemsX.get(i);
+      MutableExtent<Y> itemY = itemsY.get(i);
+      
+      X startXb = itemX.start.getValue(), endXb = itemX.end.getValue();
+      Y startYb = itemY.start.getValue(), endYb = itemY.end.getValue(); 
+      
+      int esX = mathX.compare(endX, startXb);
+      int seX = mathX.compare(startX, endXb);
+      int esY = mathY.compare(endY, startYb);
+      int seY = mathY.compare(startY, endYb);
+
+      // Separate
+      if (esY < 0 || seY > 0 || esX < 0 || seX > 0) continue;
+      
+      toRemove.add(i);
+	  }
+	  boolean removed = !toRemove.isEmpty();
+    for (int j = toRemove.size(); j-- > 0;) {
+      itemsY.remove(toRemove.get(j));
+      itemsX.remove(toRemove.get(j));
+    }
+    return removed;
+	}
+	
+	
 	private void insert(X startX, X endX, Y startY, Y endY) {
 		itemsY.add(new MutableExtent<Y>(mathY.create(startY), mathY.create(endY)));
 		itemsX.add(new MutableExtent<X>(mathX.create(startX), mathX.create(endX)));
@@ -234,16 +273,16 @@ class CellSet<X extends Number, Y extends Number> {
 			for (int i = 0; i < size; i++) {
 				MutableExtent<X> extentX = itemsX.get(i);
 				MutableExtent<Y> extentY = itemsY.get(i);
-				if (startX == null || mathX.compare(extentX.start, (X) startX) < 0) {
+				if (startX == null || mathX.compare(extentX.start, startX) < 0) {
 				  startX = extentX.start.getValue();
 				}
-				if (endX == null || mathX.compare(extentX.end, (X) endX) > 0) {
+				if (endX == null || mathX.compare(extentX.end, endX) > 0) {
 				  endX = extentX.end.getValue();
 				}
-				if (startY == null || mathY.compare(extentY.start, (Y) startY) < 0) {
+				if (startY == null || mathY.compare(extentY.start, startY) < 0) {
 					startY = extentY.start.getValue();
 				}
-				if (endY == null || mathY.compare(extentY.end, (Y) endY) > 0) {
+				if (endY == null || mathY.compare(extentY.end, endY) > 0) {
 					endY = extentY.end.getValue();
 				}
 			}
