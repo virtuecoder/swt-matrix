@@ -31,3 +31,10 @@ Najbli¿sze dzia³ania jakie widzê z mojej strony:
 Ciekawe artyku³y na ten temat:
 http://www.binpress.com/blog/2011/05/23/the-science-of-software-pricing/
 http://answers.onstartups.com/questions/17332/business-models-for-a-software-component
+
+
+
+Licencja
+	
+W¹tpliwoœci: czy mo¿na ³aczyæ z GPL i LGPL.
+Condition to License Grants . As a condition of each license grant, You will not take any action that would (a) create, or purport to create, obligations for Microsoft with respect to the Source Code or derivative work thereof; or (b) grant, or purport to grant, to any third party any rights or immunities under Microsoft’s intellectual property or proprietary rights in the Source Code or derivative work thereof. For example, You shall not incorporate into or combine with the Source Code, or use in the development of a derivative work of the Source Code, any software subject to the General Public License (“GPL”) or Lesser General Public License (“LGPL”).
