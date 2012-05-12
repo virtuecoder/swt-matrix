@@ -6,7 +6,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Matrix;
-import pl.netanel.swt.matrix.Painter;
+import pl.netanel.swt.matrix.Zone;
+import pl.netanel.swt.matrix.ZoneEditor;
 
 public class Snippet
 {
@@ -16,18 +17,19 @@ public class Snippet
         shell.setLayout(new FillLayout());
 
         Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
-        matrix.getAxisX().getBody().setCount(4);
-        matrix.getAxisY().getBody().setCount(10);
+
+        matrix.getAxisX().getBody().setCount(0);
+        matrix.getAxisY().getBody().setCount(0);
         matrix.getAxisY().getHeader().setVisible(true);
 
-        matrix.getHeaderX().replacePainter(new Painter<Integer, Integer>(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {
-            @Override
-            public void setup(Integer indexX, Integer indexY) {
-                text = indexX.toString();
-                style.textAlignX = SWT.CENTER;
-                style.background = shell.getDisplay().getSystemColor(SWT.COLOR_CYAN);
-            }
-        });
+//        bodyX.setSelected(bodyX.getIndex(1); bodyX.getIndex(2));
+
+
+        Zone<Integer, Integer> body = matrix.getBody();
+        //body.setMerged(0, 0, 1, 1);
+
+        new ZoneEditor(body);
+
 
         shell.setBounds(400, 200, 600, 400);
         shell.open();

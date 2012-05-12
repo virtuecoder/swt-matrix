@@ -30,8 +30,7 @@ public class Axis<N extends Number>  {
 	ArrayList<SectionClient<N>> sections;
 
 	SectionClient<N> body, header;
-	private int autoScrollOffset, resizeOffset, minimalCellWidth = 5;
-	Layout<N> layout;
+	AxisLayout<N> layout;
 
 	char symbol;
 	Matrix<? extends Number, ? extends Number> matrix;
@@ -110,9 +109,7 @@ public class Axis<N extends Number>  {
 	    body = sections.get(bodyIndex);
 	  }
 
-	  autoScrollOffset = Matrix.AUTOSCROLL_OFFSET_Y;
-	  resizeOffset = Matrix.RESIZE_OFFSET_Y;
-	  layout = new Layout<N>(this);
+	  layout = new AxisLayout<N>(sections);
   }
 
 
@@ -463,7 +460,7 @@ public class Axis<N extends Number>  {
 	 * The default value is 8 for horizontal and 6 for vertical axis.
 	 */
 	public int getAutoScrollOffset() {
-		return autoScrollOffset;
+		return layout.autoScrollOffset;
 	}
 
 	/**
@@ -476,7 +473,7 @@ public class Axis<N extends Number>  {
 	 */
 	public void setAutoScrollOffset(int offset) {
 		Preconditions.checkArgument(offset >= 0, "offset cannot be negative");
-		this.autoScrollOffset = offset;
+		layout.autoScrollOffset = offset;
 	}
 
 	/**
@@ -484,7 +481,7 @@ public class Axis<N extends Number>  {
 	 * The default value is 3 for horizontal and 2 for vertical axis.
 	 */
 	public int getResizeOffset() {
-		return resizeOffset;
+		return layout.resizeOffset;
 	}
 
 	/**
@@ -496,7 +493,7 @@ public class Axis<N extends Number>  {
 	 */
 	public void setResizeOffset(int offset) {
 		Preconditions.checkArgument(offset >= 0, "offset cannot be negative");
-		this.resizeOffset = offset;
+		layout.resizeOffset = offset;
 	}
 
 	/**
@@ -504,7 +501,7 @@ public class Axis<N extends Number>  {
 	 * @return the minimal cell width to be achieved by a user driven cell resizing
 	 */
 	public int getMinimalCellWidth() {
-	  return minimalCellWidth;
+	  return layout.minimalCellWidth;
 	}
 
 	/**
@@ -515,7 +512,7 @@ public class Axis<N extends Number>  {
 	 * @param width new minimal width to set
 	 */
 	public void setMinimalCellWidth(int minimalCellWidth) {
-	  this.minimalCellWidth = minimalCellWidth;
+	  layout.minimalCellWidth = minimalCellWidth;
 	  for (Section<N> section: sections) {
 	    if (section.getDefaultCellWidth() < minimalCellWidth) {
 	      section.setDefaultCellWidth(minimalCellWidth);
@@ -703,16 +700,8 @@ public class Axis<N extends Number>  {
   	return layout.isTrimmed;
   }
 
-  int comparePosition(SectionCore<N> section1, SectionCore<N> section2) {
-	  return section1.index - section2.index;
-	}
-
 	int comparePosition(AxisItem<N> item1, AxisItem<N> item2) {
-	  int compareSections = comparePosition(item1.section, item2.section);
-    if (compareSections != 0) return compareSections;
-		return math.compare(
-				item1.section.getOrder(item1.getIndex()),
-				item2.section.getOrder(item2.getIndex()));
+	  return layout.comparePosition(item1, item2);
 	}
 
 	/**

@@ -1,3 +1,4 @@
+Axis.setSelected(from position, to position) ?
 
 
 Samples:

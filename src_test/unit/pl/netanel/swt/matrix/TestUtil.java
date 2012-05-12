@@ -74,9 +74,9 @@ class TestUtil {
 		return sb.toString();
 	}
 	
-	public static Layout layout(int ...count) {
+	public static AxisLayout layout(int ...count) {
 		Axis axis = new Axis(Integer.class, count.length);
-		Layout layout = axis.layout;
+		AxisLayout layout = axis.layout;
 		for (int i = 0; i < count.length; i++) {
 		  SectionCore section = layout.getSection(i);
 		  if (i != 1) {
@@ -100,7 +100,7 @@ class TestUtil {
 	  return list;
 	}
 
-	public static void showMatrix(Layout layout) {
+	public static void showMatrix(AxisLayout layout) {
 		Axis rowModel = new Axis(); rowModel.getBody().setCount(1);
 		
 		// Make the columns variable width

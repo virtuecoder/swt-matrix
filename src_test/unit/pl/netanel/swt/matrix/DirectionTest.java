@@ -17,7 +17,7 @@ import org.junit.runners.JUnit4;
 	public void init() throws Exception {
 		// Empty
 		Direction forward, backward;
-		Layout layout = layout(0);
+		AxisLayout layout = layout(0);
 		assertEquals(false, layout.forward.init());
 		assertEquals(false, layout.backward.init());
 		assertEquals(false, layout.forwardNavigator.init());
@@ -83,7 +83,7 @@ import org.junit.runners.JUnit4;
 	@Test
 	public void first() throws Exception {
 		// Empty
-		Layout layout = layout(0);
+		AxisLayout layout = layout(0);
 		Direction direction = layout.forward;
 		assertEquals(null, direction.first());
 		
@@ -143,7 +143,7 @@ import org.junit.runners.JUnit4;
 	@Test
 	public void next() throws Exception {
 		// Empty
-		Layout layout = layout(0);
+		AxisLayout layout = layout(0);
 		Direction direction = layout.forward;
 		direction.init();
 		assertEquals(null, direction.next());
@@ -207,7 +207,7 @@ import org.junit.runners.JUnit4;
 	@Test
 	public void nextBacward() throws Exception {
 		// Empty
-		Layout layout = layout(0);
+		AxisLayout layout = layout(0);
 		Direction direction = layout.backward;
 		direction.init();
 		assertEquals(null, direction.next());
@@ -271,7 +271,7 @@ import org.junit.runners.JUnit4;
 	@Test
 	public void nextCount() throws Exception {
 		// Empty
-		Layout layout = layout(0);
+		AxisLayout layout = layout(0);
 		Direction direction = layout.forward;
 		direction.init();
 		assertEquals(null, direction.next());
@@ -327,7 +327,7 @@ import org.junit.runners.JUnit4;
 	@Test
 	public void nextCountBackward() throws Exception {
 		// Empty
-		Layout layout = layout(0);
+		AxisLayout layout = layout(0);
 		Direction direction = layout.backward;
 		direction.init();
 		assertEquals(null, direction.next());
@@ -382,7 +382,7 @@ import org.junit.runners.JUnit4;
 	
 	@Test
 	public void set() throws Exception {
-		Layout layout = layout(10);
+		AxisLayout layout = layout(10);
 		Direction direction = layout.forward;
 		Section section = layout.getSection(0);
 		direction.set(item(section, 0));
@@ -401,7 +401,7 @@ import org.junit.runners.JUnit4;
 	
 	@Test
 	public void setCurrentItemEnabled() throws Exception {
-		Layout layout = layout(2, 10, 1);
+		AxisLayout layout = layout(2, 10, 1);
 		Section section = layout.getSection(0);
 		
 		Direction forward = layout.forwardNavigator;
@@ -437,7 +437,7 @@ import org.junit.runners.JUnit4;
 	
 	@Test
 	public void sectionsWithCurrentEnableDisabledEnabled() throws Exception {
-		Layout layout = layout(2, 10, 1);
+		AxisLayout layout = layout(2, 10, 1);
 		layout.getSection(0).setFocusItemEnabled(true);
 		layout.getSection(1).setFocusItemEnabled(false);
 		layout.getSection(2).setFocusItemEnabled(true);
@@ -453,7 +453,7 @@ import org.junit.runners.JUnit4;
 	
 	@Test
 	public void simple() throws Exception {
-		Layout layout = layout(3);
+		AxisLayout layout = layout(3);
 		Direction direction = layout.forward;
 		direction.init();
 		assertEquals("0", direction.next().getIndex().toString());

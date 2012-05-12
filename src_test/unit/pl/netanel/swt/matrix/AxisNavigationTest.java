@@ -13,7 +13,7 @@ import org.junit.runners.JUnit4;
 		Axis axis = new Axis();
 		axis.getHeader().setVisible(true);
 		axis.getBody().setCount(10);
-		Layout layout = axis.layout;
+		AxisLayout layout = axis.layout;
 		layout.setViewportSize(1000);
 		layout.compute();
 		
@@ -34,7 +34,7 @@ import org.junit.runners.JUnit4;
 		axis.getBody().setCount(10);
 		axis.getBody().setDefaultCellWidth(10);
 		axis.getBody().setDefaultLineWidth(0);
-		Layout layout = axis.layout;
+		AxisLayout layout = axis.layout;
 		layout.setViewportSize(55);
 		layout.compute();
 		
@@ -56,7 +56,7 @@ import org.junit.runners.JUnit4;
 		axis.getBody().setCount(10);
 		axis.getBody().setDefaultCellWidth(10);
 		axis.getBody().setDefaultLineWidth(0);
-		Layout layout = axis.layout;
+		AxisLayout layout = axis.layout;
 		layout.setViewportSize(50);
 		layout.compute();
 		
@@ -80,7 +80,7 @@ import org.junit.runners.JUnit4;
 		axis.getSection(1).setFocusItemEnabled(false);
 		axis.getBody().setCount(10);
 		
-		Layout layout = axis.layout;
+		AxisLayout layout = axis.layout;
 		layout.setViewportSize(1000);
 		layout.compute();
 		
@@ -93,7 +93,7 @@ import org.junit.runners.JUnit4;
 		axis.getHeader().setVisible(true);
 		Section body = axis.getBody();
 		body.setCount(10);
-		Layout layout = axis.layout;
+		AxisLayout layout = axis.layout;
 		layout.setViewportSize(1000);
 		layout.compute();
 		

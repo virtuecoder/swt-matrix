@@ -221,8 +221,9 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	final ArrayList<ZoneClient<X, Y>> zones;
 	Axis<Y> axisY;
 	Axis<X> axisX;
-	Layout<Y> layoutY;
-	Layout<X> layoutX;
+	AxisLayout<Y> layoutY;
+	AxisLayout<X> layoutX;
+	MergeCache<X, Y> mergeCache;
 	MatrixListener<X, Y> listener;
 	Listener listener2;
 
@@ -291,6 +292,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	  this.layoutY = this.axisY.layout;
 
 		configureAxises(axisX == null, axisY == null);
+
+		mergeCache = new MergeCache(this);
 
 		zones = new ArrayList<ZoneClient<X, Y>>();
 		final ArrayList<ZoneCore<X, Y>> coreZones = new ArrayList<ZoneCore<X, Y>>();
@@ -366,7 +369,6 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		axisY.setMatrix(this, 'Y');
 
 		this.listener = new MatrixListener<X, Y>(this);
-		listener.setLayout(layoutX, layoutY);
 	}
 
 
@@ -745,8 +747,9 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
 //		layoutY.start = layoutY.current;
 //		layoutX.start = layoutX.current;
+	  layoutX.compute();
 		layoutY.compute();
-		layoutX.compute();
+		mergeCache.compute();
 		updateScrollBars();
 		listener.refresh();
 		for (Zone<X, Y> zone: model.zones) {

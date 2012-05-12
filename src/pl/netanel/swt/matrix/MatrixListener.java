@@ -51,11 +51,10 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
   //	ArrayList<GestureBinding> bindings;
   AxisListener<X> stateX;
   AxisListener<Y> stateY;
-  private int state;
   boolean instantMoving, mouseDown;
   ZoneCore<X, Y> zone;
   Cursor cursor;
-  ZoneCore<X, Y> columnHeader, rowHeader, topLeft;
+  ZoneCore<X, Y> body, columnHeader, rowHeader, topLeft;
 
   Event mouseMoveEvent;
   Point imageOffset;
@@ -67,6 +66,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     SectionCore<Y> bodyY = SectionCore.from(matrix.axisY.getBody());
     SectionCore<X> headerX = SectionCore.from(matrix.axisX.getHeader());
     SectionCore<Y> headerY = SectionCore.from(matrix.axisY.getHeader());
+    body = matrix.model.getZone(bodyX, bodyY);
     rowHeader = matrix.model.getZone(headerX, bodyY);
     columnHeader = matrix.model.getZone(bodyX, headerY);
     topLeft = matrix.model.getZone(headerX, headerY);
@@ -90,6 +90,13 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       matrix.addListener(EVENTS[i], this);
     }
     matrix.listener = this;
+
+    stateX.layout = matrix.layoutX;
+    stateY.layout = matrix.layoutY;
+    stateX.axis = matrix.axisX;
+    stateY.axis = matrix.axisY;
+    stateY.autoScroll = stateY.new AutoScroll();
+    stateX.autoScroll = stateX.new AutoScroll();
 
     //		instantMoving = true;
   }
@@ -162,7 +169,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 
   class AxisListener<N extends Number> {
     Axis<N> axis;
-    Layout<N> layout;
+    AxisLayout<N> layout;
     AxisItem<N> last, item, prev, resizeItem, lastFocus;
     boolean moving, resizing, itemModified = true;
 
@@ -645,7 +652,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     //		matrix.bind(Matrix.CMD_DND_SELECT, SWT.MouseMove, SWT.BUTTON1);
     //		matrix.bind(Matrix.CMD_DND_SELECT_STOP, SWT.MouseUp, 1);
 
-    //		bindKey(Matrix.CMD_COPY, SWT.MOD1 | 'c');
+//    body.bind(new GestureBinding(Matrix.CMD_COPY, SWT.KeyUp, SWT.MOD1 | 'c'));
+//    body.bind(new GestureBinding(Matrix.CMD_PASTE, SWT.KeyUp, SWT.MOD1 | 'v'));
 
     // Mouse current item
     //		body.bind(new GestureBinding(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1));
@@ -659,8 +667,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     /* 1 is for e.button == 1 */
     matrix.bind(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseDown, SWT.MOD2 | 1);
     matrix.bind(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1);
-	matrix.bind(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseMove, SWT.BUTTON1);
-	matrix.bind(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1);
+    matrix.bind(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseMove, SWT.BUTTON1);
+    matrix.bind(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1);
 
     if (rowHeader != null) {
       rowHeader.bind(new GestureBinding(Matrix.CMD_SELECT_ROW, SWT.MouseDown, 1));
@@ -897,15 +905,6 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     for (ZoneCore<X, Y> zone: matrix.model.zones) {
       zone.sendEvents();
     }
-  }
-
-  void setLayout(Layout<X> layoutX, Layout<Y> layoutY) {
-    stateY.layout = layoutY;
-    stateY.axis = layoutY.axis;
-    stateX.layout = layoutX;
-    stateX.axis = layoutX.axis;
-    stateY.autoScroll = stateY.new AutoScroll();
-    stateX.autoScroll = stateX.new AutoScroll();
   }
 
 

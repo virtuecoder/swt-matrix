@@ -494,6 +494,8 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		cellsPainter = zone.getPainter(Painter.NAME_CELLS);
 
 		CellExtent<X, Y> n = zone.getSelectedExtent();
+		if (n == null) return;
+
 		Y maxY = n.getEndY();
 		X maxX = n.getEndX();
 		Iterator<Cell<X, Y>> it = zone.getSelectedBoundsIterator();

@@ -67,7 +67,7 @@ import org.junit.runners.JUnit4;
 	@Test
 	public void hideCurrent() throws Exception {
 		Axis model = new Axis();
-		Layout layout = model.layout;
+		AxisLayout layout = model.layout;
 		layout.setViewportSize(350);
 
 		Section body = model.getBody();

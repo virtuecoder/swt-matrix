@@ -197,7 +197,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 			cellSelection.remove(startX, endX, startY, endY);
 		}
 	}
-	
+
 	@Override
 	public void setSelected(X indexX, Y indexY, boolean state) {
 		setSelected(indexX, indexX, indexY, indexY, state);
@@ -327,7 +327,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		cellSelection = lastSelection.copy();
 	}
 
-	
+
 	@Override
 	public boolean setMerged(X startX, X endX, Y startY, Y endY) {
 	  boolean removed = cellMerging.removeContaining(startX, endX, startY, endY);
@@ -337,11 +337,11 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
     return !removed;
 	}
 
-	@Override 
+	@Override
 	public boolean isMerged(X indexX, Y indexY) {
     return cellMerging.contains(indexX, indexY);
   }
-	
+
 
 	/*------------------------------------------------------------------------
 	 * Gesture
@@ -417,7 +417,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	 */
 
 	void paint(final GC gc,
-	  final Layout<X> layoutX, final Layout<Y> layoutY,
+	  final AxisLayout<X> layoutX, final AxisLayout<Y> layoutY,
 	  final Frozen frozenX, final Frozen frozenY)
 	{
 		Painter<X, Y> embedded = null;
@@ -429,34 +429,41 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 			if (!p.isEnabled() || !p.init(gc)) continue;
 
 			int distance = 0, width = 0;
-			switch (p.scope) {
+			LayoutSequence<Y> seqY;
+      LayoutSequence<X> seqX;
+      switch (p.scope) {
 
 			case Painter.SCOPE_CELLS_X:
-			  LayoutSequence<X> seqX = layoutX.cellSequence(frozenX, sectionX);
-				LayoutSequence<Y> seqY = layoutY.cellSequence(frozenY, sectionY);
-				for (seqY.init(); seqY.next();) {
-					distance = seqY.getDistance();
-					width = seqY.getWidth();
-					Y indexX = seqY.item.getIndex();
-					for (seqX.init(); seqX.next();) {
-					  p.setup(seqX.item.getIndex(), indexX);
-						p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
-					}
+			  LayoutSequence2<X, Y> seqXY = new LayoutSequence2(
+			      layoutX.cellSequence(frozenX, sectionX),
+			      layoutY.cellSequence(frozenY, sectionY));
+				for (seqXY.init(); seqXY.next();) {
+				  p.setup(seqXY.seq1.item.getIndex(), seqXY.seq2.item.getIndex());
+					p.paint(seqXY.seq1.getDistance(), seqXY.seq2.getDistance(), seqXY.seq1.getWidth(), seqXY.seq2.getWidth());
 				}
 				break;
 
 			case Painter.SCOPE_CELLS_Y:
-				seqY = layoutY.cellSequence(frozenY, sectionY);
-				seqX = layoutX.cellSequence(frozenX, sectionX);
-				for (seqX.init(); seqX.next();) {
-					distance = seqX.getDistance();
-					width = seqX.getWidth();
-					X indexX = seqX.item.getIndex();
-					for (seqY.init(); seqY.next();) {
-					  p.setup(indexX, seqY.item.getIndex());
-						p.paint(distance, seqY.getDistance(), width, seqY.getWidth());
-					}
-				}
+			  LayoutSequence2<Y, X> seqYX = new LayoutSequence2(
+			      layoutY.cellSequence(frozenY, sectionY),
+			      layoutX.cellSequence(frozenX, sectionX)
+            );
+        for (seqYX.init(); seqYX.next();) {
+          p.setup(seqYX.seq2.item.getIndex(), seqYX.seq1.item.getIndex());
+          p.paint(seqYX.seq2.getDistance(), seqYX.seq1.getDistance(), seqYX.seq2.getWidth(), seqYX.seq1.getWidth());
+        }
+
+//				seqY = layoutY.cellSequence(frozenY, sectionY);
+//				seqX = layoutX.cellSequence(frozenX, sectionX);
+//				for (seqX.init(); seqX.next();) {
+//					distance = seqX.getDistance();
+//					width = seqX.getWidth();
+//					X indexX = seqX.item.getIndex();
+//					for (seqY.init(); seqY.next();) {
+//					  p.setup(indexX, seqY.item.getIndex());
+//						p.paint(distance, seqY.getDistance(), width, seqY.getWidth());
+//					}
+//				}
 				break;
 
 			case Painter.SCOPE_CELLS_ITEM_Y:
