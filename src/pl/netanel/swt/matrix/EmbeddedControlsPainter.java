@@ -35,7 +35,7 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 			public void handleEvent(Event e) {
 				Matrix<X, Y> matrix = getMatrix();
 				ZoneEditorData<X, Y> data = editor.getData(e.widget);
-				matrix.model.setSelected(false, true); 
+				matrix.layout.setSelected(false, true); 
 				matrix.axisY.setFocusItem(AxisItem.createInternal(editor.zone.sectionY, data.indexY));
 				matrix.axisX.setFocusItem(AxisItem.createInternal(editor.zone.sectionX, data.indexX));
 				matrix.redraw();

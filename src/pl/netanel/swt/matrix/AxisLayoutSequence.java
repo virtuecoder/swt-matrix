@@ -2,16 +2,16 @@ package pl.netanel.swt.matrix;
 
 import java.util.List;
 
-class LayoutSequence<N extends Number> implements Sequence {
+class AxisLayoutSequence<N extends Number> implements Sequence {
 
   private final List<AxisItem<N>> items;
 	private final List<Bound> bounds;
 	private final SectionCore<N>section;
 	private int i;
 	Bound bound;
-	AxisItem<N> item;
+	N index;
 
-	public LayoutSequence(List<AxisItem<N>> items, List<Bound> bounds, SectionCore<N> section) {
+	public AxisLayoutSequence(List<AxisItem<N>> items, List<Bound> bounds, SectionCore<N> section) {
     this.items = items;
 		this.bounds = bounds;
 		this.section = section;
@@ -31,7 +31,7 @@ class LayoutSequence<N extends Number> implements Sequence {
 			if (items.size() == bounds.size() /*&&
 				axis.getZIndex(section2) < axis.getZIndex(item.section)*/)
 			{
-				item = AxisItem.createInternal(item.section, section.math.increment(item.getIndex()));
+				index = section.math.increment(index);
 				bound = bounds.get(i);
 				i = bounds.size();
 				return true;
@@ -39,12 +39,8 @@ class LayoutSequence<N extends Number> implements Sequence {
 			return false;
 		}
 		bound = bounds.get(i);
-		item = items.get(i++);
+		index = items.get(i++).index;
 		return true;
-	}
-
-	public AxisItem<N> getItem() {
-		return item;
 	}
 
 	public int getDistance() {
@@ -56,6 +52,6 @@ class LayoutSequence<N extends Number> implements Sequence {
 	}
 
 	public N getIndex() {
-		return item == null ? null : item.getIndex();
+		return index;
 	}
 }

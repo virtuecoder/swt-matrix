@@ -53,7 +53,12 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	static final int AUTOSCROLL_OFFSET_Y = 6;
 	static final int AUTOSCROLL_RATE = 50;
 
+	static final int TYPE_CELLS = 1;
+	static final int TYPE_LINES = 2;
+
 	public static final int PRINTABLE_CHARS = 10;
+
+
 
 	/*
 	 *  Navigation Key Actions. Key bindings for the actions are set
@@ -217,13 +222,12 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 //	static final int RESIZE_AREA = 1 << 26;
 
 
-	MatrixModel<X, Y> model;
+	MatrixLayout<X, Y> layout;
 	final ArrayList<ZoneClient<X, Y>> zones;
 	Axis<Y> axisY;
 	Axis<X> axisX;
 	AxisLayout<Y> layoutY;
 	AxisLayout<X> layoutX;
-	MergeCache<X, Y> mergeCache;
 	MatrixListener<X, Y> listener;
 	Listener listener2;
 
@@ -293,22 +297,16 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
 		configureAxises(axisX == null, axisY == null);
 
-		mergeCache = new MergeCache(this);
+		layout = new MatrixLayout<X, Y>(layoutX, layoutY);
 
 		zones = new ArrayList<ZoneClient<X, Y>>();
-		final ArrayList<ZoneCore<X, Y>> coreZones = new ArrayList<ZoneCore<X, Y>>();
-		for (SectionClient<Y> sectionY: this.axisY.sections) {
-      for (SectionClient<X> sectionX: this.axisX.sections) {
-        ZoneClient<X, Y> zone = new ZoneClient<X, Y>(sectionX, sectionY);
-        zones.add(zone);
-        coreZones.add(zone.getUnchecked());
-      }
+		for (ZoneCore<X, Y> zone: layout.zones) {
+		  zones.add(new ZoneClient<X, Y>(zone));
 		}
-		model = new MatrixModel<X, Y>(coreZones);
 
 		painters = new Painters<X, Y>();
 
-		setModel(model);
+		setLayout(layout);
 		setDefaultPainters();
 
 		listener2 = new Listener() {
@@ -361,8 +359,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
     }
 	}
 
-  private void setModel(MatrixModel<X, Y> model) {
-		this.model = model;
+  private void setLayout(MatrixLayout<X, Y> model) {
+		this.layout = model;
 		model.setMatrix(this);
 
 		axisX.setMatrix(this, 'X');
@@ -447,7 +445,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 			  AxisItem<X> itemX = axisX.getFocusItem();
 				AxisItem<Y> itemY = axisY.getFocusItem();
 				if (itemX == null || itemY == null) return;
-				ZoneCore<X, Y> zone = model.getZone(itemX.section, itemY.section);
+				ZoneCore<X, Y> zone = layout.getZone(itemX.section, itemY.section);
 				if (zone == null) return;
 				Rectangle r = zone.getCellBounds(itemX.getIndex(), itemY.getIndex());
 				if (r == null) return;
@@ -476,7 +474,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		  Bound bbX = layoutX.getBound(dockX);
 			Bound bbY = layoutY.getBound(dockY);
 
-			for (ZoneCore<X, Y> zone: model) {
+			for (ZoneCore<X, Y> zone: layout) {
 			  Bound bx = layoutX.getBound(dockX, zone.sectionX);
 			  Bound by = layoutY.getBound(dockY, zone.sectionY);
 			  zone.setBounds(bx.distance, by.distance, bx.width, by.width);
@@ -504,6 +502,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		final GC gc = event.gc;
 		layoutX.computeIfRequired();
 		layoutY.computeIfRequired();
+		layout.computeMerging();
 
 		for (Painter<X, Y> p: painters) {
 			if (!p.isEnabled() || !p.init(gc)) continue;
@@ -705,7 +704,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	}
 
 	void selectInZonesX(Section<X> section, X start, X end, boolean state, boolean notify) {
-	  for (ZoneCore<X, Y> zone: model.zones) {
+	  for (ZoneCore<X, Y> zone: layout.zones) {
 	    if (zone.sectionX.equals(section)) {
 	      Math<Y> mathY = zone.sectionY.math;
 	      zone.setSelected(
@@ -721,7 +720,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	}
 
 	void selectInZonesY(Section<Y> section, Y start, Y end, boolean state, boolean notify) {
-	  for (ZoneCore<X, Y> zone: model.zones) {
+	  for (ZoneCore<X, Y> zone: layout.zones) {
 	    if (zone.sectionY.equals(section)) {
 	      Math<X> mathX = zone.sectionX.math;
 	      zone.setSelected(
@@ -747,12 +746,10 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
 //		layoutY.start = layoutY.current;
 //		layoutX.start = layoutX.current;
-	  layoutX.compute();
-		layoutY.compute();
-		mergeCache.compute();
+	  layout.compute();
 		updateScrollBars();
 		listener.refresh();
-		for (Zone<X, Y> zone: model.zones) {
+		for (Zone<X, Y> zone: layout.zones) {
 			zone.setSelectedAll(false);
 		}
 		redraw();
@@ -789,7 +786,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 * @return an array of zone indexes indicating the paint order of zones
 	 */
 	public int[] getZonePaintOrder() {
-		return model.paintOrder;
+		return layout.paintOrder;
 	}
 
 	/**
@@ -798,10 +795,10 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 */
 	public void setZonePaintOrder(int[] order) {
 	  Preconditions.checkNotNullWithName(order, "order");
-		Preconditions.checkArgument(order.length == model.paintOrder.length,
+		Preconditions.checkArgument(order.length == layout.paintOrder.length,
 				"The length of the order array ({0}) must be equal to the number of of zones: ({1})",
-				order.length, model.paintOrder.length);
-		model.paintOrder = order;
+				order.length, layout.paintOrder.length);
+		layout.paintOrder = order;
 	}
 
 	/**
@@ -1015,7 +1012,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	  GC gc = new GC(this);
 	  try {
 	    int w = 0;
-	    for (ZoneCore<X, Y> zone: model.zones) {
+	    for (ZoneCore<X, Y> zone: layout.zones) {
 	      if (!zone.sectionX.equals(section)) continue;
 
 	      CellSet<X, Y> set = new CellSet<X, Y>(zone.sectionX.math, zone.sectionY.math);
@@ -1038,7 +1035,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    gc.dispose();
 	    setCursor(cursor);
 	  }
-	  axisX.layout.compute();
+	  layout.compute(true, false);
 	  redraw();
 	}
 
@@ -1047,7 +1044,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	  GC gc = new GC(this);
 	  try {
 	    int w = 0;
-	    for (ZoneCore<X, Y> zone: model.zones) {
+	    for (ZoneCore<X, Y> zone: layout.zones) {
 	      if (zone.sectionY.equals(section)) {
 	        CellSet<X, Y> set = new CellSet<X, Y>(zone.sectionX.math, zone.sectionY.math);
 	        set.add(zone.sectionX.math.ZERO_VALUE(), zone.sectionX.math.decrement(zone.sectionX.getCount()),
@@ -1071,15 +1068,14 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    gc.dispose();
 	    setCursor(cursor);
 	  }
-	  axisY.layout.compute();
+	  layout.compute(false, true);
 	  redraw();
 	}
 
 	@Override
 	public Point computeSize(int wHint, int hHint, boolean changed) {
 	  if (changed) {
-	    layoutX.compute();
-	    layoutY.compute();
+	    layout.compute();
 	  }
 	  return computeSize(wHint, hHint);
 	}
@@ -1116,7 +1112,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
 	@SuppressWarnings("unchecked")
 	<N extends Number> void insertInZonesX(SectionCore<N> section, N target, N count) {
-	  for (ZoneCore<X, Y> zone: model.zones) {
+	  for (ZoneCore<X, Y> zone: layout.zones) {
 	    if (zone.sectionX.equals(section)) {
 	      zone.cellSelection.insertX((X) target, (X) count);
 	      zone.lastSelection.insertX((X) target, (X) count);
@@ -1126,7 +1122,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
 	@SuppressWarnings("unchecked")
   <N extends Number> void insertInZonesY(SectionCore<N> section, N target, N count) {
-	  for (ZoneCore<X, Y> zone: model.zones) {
+	  for (ZoneCore<X, Y> zone: layout.zones) {
 	    if (zone.sectionY.equals(section)) {
 	      zone.cellSelection.insertY((Y) target, (Y) count);
 	      zone.lastSelection.insertY((Y) target, (Y) count);
@@ -1136,7 +1132,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
 	@SuppressWarnings("unchecked")
 	<N extends Number> void deleteInZonesX(SectionCore<N> section, N target, N count) {
-	  for (ZoneCore<X, Y> zone: model.zones) {
+	  for (ZoneCore<X, Y> zone: layout.zones) {
 	    if (zone.sectionX.equals(section)) {
 	      zone.cellSelection.deleteX((X) target, (X) count);
 	      zone.lastSelection.deleteX((X) target, (X) count);
@@ -1146,7 +1142,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
 	@SuppressWarnings("unchecked")
 	<N extends Number> void deleteInZonesY(SectionCore<N> section, N target, N count) {
-	  for (ZoneCore<X, Y> zone: model.zones) {
+	  for (ZoneCore<X, Y> zone: layout.zones) {
 	    if (zone.sectionY.equals(section)) {
 	      zone.cellSelection.deleteY((Y) target, (Y) count);
 	      zone.lastSelection.deleteY((Y) target, (Y) count);

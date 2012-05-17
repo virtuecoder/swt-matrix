@@ -12,6 +12,11 @@ import pl.netanel.util.Preconditions;
  *
  * @author Jacek Kolodziejczyk created 01-03-2011
  */
+/**
+ *
+ * @author jacek.p.kolodziejczyk@gmail.com
+ * @created 14-05-2012
+ */
 abstract class Math<N extends Number> {
 
 	public static final int BEFORE = 1;
@@ -67,31 +72,63 @@ abstract class Math<N extends Number> {
 		return compare(x.getValue(), y.getValue());
 	}
 
+	/**
+	 * Returns -1, 0, or 1.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public int compare(MutableNumber<N> x, N y) {
 		return x.compareTo(y);
 	}
 
-	public int compare(N startX, N endX, N start2, N end2) {
-		if (compare(endX, start2) < 0) {
-			if (compare(increment(endX), start2) == 0)	return ADJACENT_BEFORE;
-			else 										return BEFORE;
+	/**
+	 * Returns a Math constant.
+	 * @param start1
+	 * @param end1
+	 * @param start2
+	 * @param end2
+	 * @return
+	 */
+	public int compare(N start1, N end1, N start2, N end2) {
+		if (compare(end1, start2) < 0) {
+			if (compare(increment(end1), start2) == 0)	return ADJACENT_BEFORE;
+			else 										                    return BEFORE;
 		}
-		if (compare(startX, end2) > 0) {
-			if (compare(decrement(startX), end2) == 0) 	return ADJACENT_AFTER;
-			else 										return AFTER;
+		if (compare(start1, end2) > 0) {
+			if (compare(decrement(start1), end2) == 0) 	return ADJACENT_AFTER;
+			else 										                    return AFTER;
 		}
 
-		int ss = compare(startX, start2);
-		int ee = compare(endX, end2);
-		if (ss == 0 && ee == 0)							return EQUAL;
+		int ss = compare(start1, start2);
+		int ee = compare(end1, end2);
+		if (ss == 0 && ee == 0)							          return EQUAL;
 		if (ss <= 0) {
-			if (ee >= 0) 								return OVERLAP;
-			else										return CROSS_BEFORE;
+			if (ee >= 0) 								                return OVERLAP;
+			else										                    return CROSS_BEFORE;
 		}
-		if (ee >= 0)		 							return CROSS_AFTER;
-		else 											return INSIDE;
+		if (ee >= 0)		 							                return CROSS_AFTER;
+		else 											                    return INSIDE;
 	}
 
+	/**
+	 * Return Math constant
+	 * @param start
+	 * @param end
+	 * @param n
+	 * @return
+	 */
+	public int compare(N start, N end, N n) {
+	  int s = compare(n, start);
+	  int e = compare(n, end);
+    if (s > 0) {
+      if (e < 0)                                  return INSIDE;
+	    else if (e == 0)                            return CROSS_AFTER;
+	    else                                        return AFTER;
+	  }
+    else if (s == 0)                              return CROSS_BEFORE;
+    else                                          return BEFORE;
+	}
 
 	public boolean contains(N start, N end, N n) {
 		return compare(start, n) <= 0 && compare(n, end) <= 0;

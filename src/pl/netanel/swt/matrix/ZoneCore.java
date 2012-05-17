@@ -39,6 +39,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	CellSet<X, Y> cellSelection;
 	CellSet<X, Y> lastSelection; // For adding selection
 	CellSet<X, Y> cellMerging;
+
 	ZoneEditor<X, Y> editor;
 
 	private final Listeners listeners;
@@ -331,7 +332,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	@Override
 	public boolean setMerged(X startX, X endX, Y startY, Y endY) {
 	  boolean removed = cellMerging.removeContaining(startX, endX, startY, endY);
-    if (!removed) {
+    if (!removed && (sectionX.math.compare(startX, endX) != 0 || sectionY.math.compare(startY, endY) != 0)) {
 	    cellMerging.add(startX, endX, startY, endY);
 	  }
     return !removed;
@@ -403,7 +404,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 			  AxisItem<X> itemX = matrix.getAxisX().getItemByViewportDistance(e.x);
 				AxisItem<Y> itemY = matrix.getAxisY().getItemByViewportDistance(e.y);
 				if (itemX != null && itemY != null && ZoneCore.this ==
-						matrix.model.getZone(itemX.section, itemY.section))
+						matrix.layout.getZone(itemX.section, itemY.section))
 				{
 					listener.handleEvent(e);
 				}
@@ -429,27 +430,30 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 			if (!p.isEnabled() || !p.init(gc)) continue;
 
 			int distance = 0, width = 0;
-			LayoutSequence<Y> seqY;
-      LayoutSequence<X> seqX;
+			AxisLayoutSequence<Y> seqY;
+      AxisLayoutSequence<X> seqX;
       switch (p.scope) {
 
 			case Painter.SCOPE_CELLS_X:
-			  LayoutSequence2<X, Y> seqXY = new LayoutSequence2(
-			      layoutX.cellSequence(frozenX, sectionX),
-			      layoutY.cellSequence(frozenY, sectionY));
-				for (seqXY.init(); seqXY.next();) {
-				  p.setup(seqXY.seq1.item.getIndex(), seqXY.seq2.item.getIndex());
-					p.paint(seqXY.seq1.getDistance(), seqXY.seq2.getDistance(), seqXY.seq1.getWidth(), seqXY.seq2.getWidth());
+			  MatrixLayoutSequence<X, Y> seq =
+			    new MatrixLayoutSequence<X, Y>(matrix.layout, frozenX, frozenY, this, Matrix.TYPE_CELLS);
+
+//			  LayoutSequence2<X, Y> seqXY = new LayoutSequence2<X, Y>(
+//			      layoutX.cellSequence(frozenX, sectionX),
+//			      layoutY.cellSequence(frozenY, sectionY));
+				for (seq.init(); seq.next();) {
+				  p.setup(seq.indexX, seq.indexY);
+					p.paint(seq.boundX.distance, seq.boundY.distance, seq.boundX.width, seq.boundY.width);
 				}
 				break;
 
 			case Painter.SCOPE_CELLS_Y:
-			  LayoutSequence2<Y, X> seqYX = new LayoutSequence2(
+			  LayoutSequence2<Y, X> seqYX = new LayoutSequence2<Y, X>(
 			      layoutY.cellSequence(frozenY, sectionY),
 			      layoutX.cellSequence(frozenX, sectionX)
             );
         for (seqYX.init(); seqYX.next();) {
-          p.setup(seqYX.seq2.item.getIndex(), seqYX.seq1.item.getIndex());
+          p.setup(seqYX.seq2.getIndex(), seqYX.seq1.getIndex());
           p.paint(seqYX.seq2.getDistance(), seqYX.seq1.getDistance(), seqYX.seq2.getWidth(), seqYX.seq1.getWidth());
         }
 
@@ -471,7 +475,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				distance = bounds.x;
 				width = bounds.width;
 				for (seqY.init(); seqY.next();) {
-				  p.setup(sectionX.math.ZERO_VALUE(), seqY.item.getIndex());
+				  p.setup(sectionX.math.ZERO_VALUE(), seqY.getIndex());
 					p.paint(distance, seqY.getDistance(), width, seqY.getWidth());
 				}
 				break;
@@ -481,7 +485,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				distance = bounds.y;
 				width = bounds.height;
 				for (seqX.init(); seqX.next();) {
-				  p.setup(seqX.item.getIndex(), sectionY.math.ZERO_VALUE());
+				  p.setup(seqX.getIndex(), sectionY.math.ZERO_VALUE());
 					p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
 				}
 				break;
@@ -491,7 +495,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				distance = bounds.x;
 				width = bounds.width;
 				for (seqY.init(); seqY.next();) {
-				  p.setup(sectionX.math.ZERO_VALUE(), seqY.item.getIndex());
+				  p.setup(sectionX.math.ZERO_VALUE(), seqY.getIndex());
 					p.paint(distance, seqY.getDistance(), width, seqY.getWidth());
 				}
 				break;
@@ -501,7 +505,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				distance = bounds.y;
 				width = bounds.height;
 				for (seqX.init(); seqX.next();) {
-				  p.setup(seqX.item.getIndex(), sectionY.math.ZERO_VALUE());
+				  p.setup(seqX.getIndex(), sectionY.math.ZERO_VALUE());
 					p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
 				}
 				break;
@@ -528,14 +532,14 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 //				  }
 					if (!p.isEnabled() || !p.init(gc)) return;
 
-					LayoutSequence<Y> seqY = layoutY.cellSequence(frozenY, sectionY);
-					LayoutSequence<X> seqX = layoutX.cellSequence(frozenX, sectionX);
+					AxisLayoutSequence<Y> seqY = layoutY.cellSequence(frozenY, sectionY);
+					AxisLayoutSequence<X> seqX = layoutX.cellSequence(frozenX, sectionX);
 					for (seqY.init(); seqY.next();) {
 						int distance = seqY.getDistance();
 						int width = seqY.getWidth();
-						Y index = seqY.item.getIndex();
+						Y index = seqY.getIndex();
 						for (seqX.init(); seqX.next();) {
-						  p.setup(seqX.item.getIndex(), index);
+						  p.setup(seqX.getIndex(), index);
 							p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
 						}
 					}

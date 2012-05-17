@@ -51,6 +51,7 @@ class AxisLayout<N extends Number> {
 		init();
 	}
 
+  @SuppressWarnings("unchecked")
   public AxisLayout() {
     createSections((Class<N>) Integer.class, 2, 0, 1);
   }
@@ -806,7 +807,7 @@ class AxisLayout<N extends Number> {
 		}
 	}
 
-	private Cache getCache(Frozen frozen) {
+	Cache getCache(Frozen frozen) {
 		return 	frozen == Frozen.NONE ? main :
 				frozen == Frozen.HEAD ? head : tail;
 	}
@@ -886,16 +887,23 @@ class AxisLayout<N extends Number> {
 	}
 
 
-	public LayoutSequence<N> cellSequence(Frozen frozen, SectionCore<N> section) {
-		if (isComputingRequired) compute();
-		Cache cache = getCache(frozen);
-		return new LayoutSequence<N>(cache.items, cache.cells, section);
+	public AxisLayoutSequence<N> sequence(Frozen frozen, SectionCore<N> section, int type) {
+	  if (isComputingRequired) compute();
+	  Cache cache = getCache(frozen);
+	  ArrayList<Bound> space = type == Matrix.TYPE_CELLS ? cache.cells : cache.lines;
+    return new AxisLayoutSequence<N>(cache.items, space, section);
 	}
 
-	public LayoutSequence<N> lineSequence(Frozen frozen, SectionCore<N> section) {
+	public AxisLayoutSequence<N> cellSequence(Frozen frozen, SectionCore<N> section) {
 		if (isComputingRequired) compute();
 		Cache cache = getCache(frozen);
-		return new LayoutSequence<N>(cache.items, cache.lines, section);
+		return new AxisLayoutSequence<N>(cache.items, cache.cells, section);
+	}
+
+	public AxisLayoutSequence<N> lineSequence(Frozen frozen, SectionCore<N> section) {
+		if (isComputingRequired) compute();
+		Cache cache = getCache(frozen);
+		return new AxisLayoutSequence<N>(cache.items, cache.lines, section);
 	}
 
 //	public LayoutSequence<N> singleSequence(int distance, int width) {
@@ -1021,7 +1029,6 @@ class AxisLayout<N extends Number> {
 
 	public void freezeTail(AxisItem<N> item) {
 		int count = 0;
-		@SuppressWarnings("unchecked")
     List<Cache> list = (List<Cache>) caches.clone();
 		Collections.reverse(list);
 		for (Cache cache: list) {

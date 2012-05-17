@@ -116,7 +116,7 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
 
   /**
    * Paints the cell when it is in the pushed state.  
-   * @param indexX index of a section item in the horizontal axis 
+   * @param itemX index of a section item in the horizontal axis 
    * @param indexY index of a section item in the vertical axis. 
    * @param x the x coordinate of the painting boundaries
    * @param y the y coordinate of the painting boundaries
@@ -129,7 +129,7 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
 
   /**
    * Paints the cell when it is in the idle (not pushed) state.
-   * @param indexX index of a section item in the horizontal axis 
+   * @param itemX index of a section item in the horizontal axis 
    * @param indexY index of a section item in the vertical axis. 
    * @param x the x coordinate of the painting boundaries
    * @param y the y coordinate of the painting boundaries

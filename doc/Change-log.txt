@@ -4,9 +4,6 @@ Version 0.6.0
 API changes:
 - Zone.getSelectedExtent returns null instead of (0,0,0,0) when nothing is selected.
 
-Bug fixes:
-- Cell painter did not alter background correctly
-
 -------------------------------------------------------------------------------
 Version 0.5.9
 Bug fixes:

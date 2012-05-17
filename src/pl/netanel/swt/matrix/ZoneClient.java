@@ -21,13 +21,19 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     this.sectionY = sectionY;
     this.core = new ZoneCore<X, Y>(sectionX.getUnchecked(), sectionY.getUnchecked());
   }
-  
+
 //  public ZoneClient(ZoneCore<X, Y> zone) {
 //    Preconditions.checkNotNullWithName(zone, "zone");
 //    core = zone;
 //  }
 
-  
+
+  ZoneClient(ZoneCore<X, Y> zone) {
+    this.sectionX = zone.sectionX.client;
+    this.sectionY = zone.sectionY.client;
+    this.core = zone;
+  }
+
   @Override
   public String toString() {
     return core.toString();
@@ -42,12 +48,12 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   public Section<X> getSectionX() {
     return sectionX;
   }
-  
+
   @Override
   public Section<Y> getSectionY() {
     return sectionY;
   }
-  
+
   @Override
   public Rectangle getBounds(Frozen frozenX, Frozen frozenY) {
     return core.getBounds(frozenX, frozenY);
@@ -84,7 +90,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     sectionX.checkCellIndex(indexX, "indexX");
     core.setSelected(indexX, indexY, state);
   }
-  
+
   @Override
   public void setSelected(X startX, X endX, Y startY, Y endY, boolean state) {
     sectionX.checkRange(startX, endX, sectionX.getCount());
@@ -116,13 +122,13 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   public Iterator<Cell<X, Y>> getSelectedIterator() {
     return core.getSelectedIterator();
   }
-  
+
   @Override
   public CellExtent<X, Y> getSelectedExtent() {
     return core.getSelectedExtent();
   }
 
-  
+
   @Override
   public boolean setMerged(X startX, X endX, Y startY, Y endY) {
     sectionX.checkRange(startX, endX, sectionX.getCount());
@@ -137,7 +143,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     return core.isMerged(indexX, indexY);
   }
 
-  
+
   @Override
   public void addPainter(Painter<X, Y> painter) {
     checkPainter(painter);
@@ -163,7 +169,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     checkPainter(painter);
     core.replacePainterPreserveStyle(painter);
   }
-  
+
   @Override
   public void replacePainterPreserveStyle(Painter<X, Y> painter) {
     checkPainter(painter);
@@ -181,7 +187,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     checkPainter(painter);
     return core.removePainter(painter);
   }
-  
+
   @Override
   public boolean removePainter(String name) {
     Preconditions.checkNotNullWithName(name, "name");
@@ -199,7 +205,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     Preconditions.checkNotNullWithName(name, "name");
     return core.getPainter(name);
   }
-  
+
   @Override
   public Painter<X, Y> getPainter(int index) {
     Preconditions.checkPositionIndex(index, core.getPainterCount());
@@ -227,7 +233,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     Preconditions.checkNotNullWithName(listener, "listener");
     core.addListener(eventType, listener);
   }
-  
+
   @Override
   public void addSelectionListener(SelectionListener listener) {
     Preconditions.checkNotNullWithName(listener, "listener");
@@ -240,22 +246,22 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     core.removeSelectionListener(listener);
   }
 
-  
+
   @Override
   public Matrix<X, Y> getMatrix() {
     return core.getMatrix();
   }
 
-  
+
   private void checkPainter(Painter<X, Y> painter) {
     Preconditions.checkNotNullWithName(painter, "painter");
-    
-    Preconditions.checkArgument(painter.zone == null || this.equals(painter.zone), 
+
+    Preconditions.checkArgument(painter.zone == null || this.equals(painter.zone),
       "The painter belongs to a different zone: %s", painter.zone);
-    
+
     Matrix<X, Y> matrix2 = getMatrix();
     if (matrix2 != null) {
-      Preconditions.checkArgument(painter.matrix == null || matrix2.equals(painter.matrix), 
+      Preconditions.checkArgument(painter.matrix == null || matrix2.equals(painter.matrix),
         "The painter belongs to a different matrix: %s", painter.matrix);
     }
   }

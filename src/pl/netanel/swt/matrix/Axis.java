@@ -29,7 +29,6 @@ public class Axis<N extends Number>  {
 	Math<N> math;
 	ArrayList<SectionClient<N>> sections;
 
-	SectionClient<N> body, header;
 	AxisLayout<N> layout;
 
 	char symbol;
@@ -44,7 +43,7 @@ public class Axis<N extends Number>  {
 	 */
 	@SuppressWarnings("unchecked")
 	public Axis() {
-		this((Class<N>) Integer.class, 2, 0, 1);
+		init((Class<N>) Integer.class, 2, 0, 1);
 	}
 
   /**
@@ -81,12 +80,15 @@ public class Axis<N extends Number>  {
 	  init(numberClass, sectionCount, 0, 1);
 	}
 
-  private void init(Class<N> numberClass, int sectionCount,
-    int headerIndex, int bodyIndex) {
+  private void init(Class<N> numberClass, int sectionCount, int headerIndex, int bodyIndex) {
     math = Math.getInstance(numberClass);
+
+    layout = new AxisLayout<N>(numberClass, sectionCount, headerIndex, bodyIndex);
+
+
 	  sections = new ArrayList<SectionClient<N>>(sectionCount);
 	  for (int i = 0; i < sectionCount; i++) {
-	    SectionCore<N> section = new SectionCore<N>(numberClass);
+	    SectionCore<N> section = layout.sections.get(i);
 //	    Preconditions.checkArgument(
 //	      section.getIndexClass().equals(numberClass),
 //	      "Section at %s position is indexed by a different Number subclass " +
@@ -97,19 +99,6 @@ public class Axis<N extends Number>  {
       section.axis = this;
       sections.add(new SectionClient<N>(section));
 	  }
-
-	  if (headerIndex < sectionCount) {
-	    header = sections.get(headerIndex);
-	    header.setCount(math.ONE_VALUE());
-	    header.setFocusItemEnabled(false);
-	    header.setVisible(false);
-	  }
-
-	  if (bodyIndex < sectionCount) {
-	    body = sections.get(bodyIndex);
-	  }
-
-	  layout = new AxisLayout<N>(sections);
   }
 
 
@@ -126,7 +115,7 @@ public class Axis<N extends Number>  {
 	 * @see #getHeader()
 	 */
 	public Section<N> getBody() {
-		return body;
+		return layout.body == null ? null : layout.body.client;
 	}
 
 	/**
@@ -137,7 +126,7 @@ public class Axis<N extends Number>  {
 	 * @see #getBody()
 	 */
 	public Section<N> getHeader() {
-		return header;
+	  return layout.header == null ? null : layout.header.client;
 	}
 
 
@@ -317,7 +306,7 @@ public class Axis<N extends Number>  {
   public int compare(AxisItem<N> item1, AxisItem<N> item2) {
     checkItem(item1, "item1");
     checkItem(item2, "item2");
-    return comparePosition(item1, item2);
+    return layout.comparePosition(item1, item2);
   }
 
   /**
@@ -616,7 +605,7 @@ public class Axis<N extends Number>  {
 
 	void setSelected(AxisItem<N> start, AxisItem<N> end, boolean select) {
 		// Make sure start < end
-		if (comparePosition(start, end) > 0) {
+		if (layout.comparePosition(start, end) > 0) {
 			AxisItem<N> tmp = start; start = end; end = tmp;
 		}
 
@@ -700,9 +689,6 @@ public class Axis<N extends Number>  {
   	return layout.isTrimmed;
   }
 
-	int comparePosition(AxisItem<N> item1, AxisItem<N> item2) {
-	  return layout.comparePosition(item1, item2);
-	}
 
 	/**
 	 * Sets the hidden state of selected indexes in each section.
@@ -792,7 +778,7 @@ public class Axis<N extends Number>  {
 		// Calculate z-order
 		int[] order = new int[sections.size()];
 		int j = 0;
-		int bodyIndex = sections.indexOf(body);
+		int bodyIndex = sections.indexOf(layout.body.client);
 		for (int i = bodyIndex, imax = this.sections.size(); i < imax; i++) {
 			order[j++] = i;
 		}

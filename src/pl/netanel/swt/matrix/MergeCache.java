@@ -39,7 +39,7 @@ class MergeCache<X extends Number, Y extends Number> {
     for (AxisItem<X> itemX: layoutX.head.items) {
       for (AxisItem<Y> itemY: layoutY.head.items) {
 
-        matrix.model.getZone(itemX.section, itemY.section).cellMerging.getExtent(itemX.index, itemY.index);
+        matrix.layout.getZone(itemX.section, itemY.section).cellMerging.getExtent(itemX.index, itemY.index);
       }
     }
   }
