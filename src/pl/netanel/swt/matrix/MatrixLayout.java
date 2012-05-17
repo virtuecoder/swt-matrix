@@ -353,6 +353,9 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
   }
 
    public void computeMerging() {
+     Math<X> mathX = layoutX.math;
+     Math<Y> mathY = layoutY.math;
+
     // Clear merging cache
     int frozenCount = Frozen.values().length;
     for (int i = 0; i < frozenCount; i++) {
@@ -394,14 +397,19 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
 
               boundX.distance = cacheX.cells.get(i).distance;
               boundY.distance = cacheY.cells.get(j).distance;
+
+              // If extent is beyond viewport
+              if (mathX.compare(extent.endX, itemsX.get(itemsX.size() - 2).index) > 0) {
+
+              }
             }
             else {
               boundX = bounds[0];
               boundY = bounds[1];
             }
 
-            int compareX = layoutX.math.compare(extent.startX, itemX.index);
-            int compareY = layoutY.math.compare(extent.startY, itemY.index);
+            int compareX = mathX.compare(extent.startX, itemX.index);
+            int compareY = mathY.compare(extent.startY, itemY.index);
 
             if (compareX == 0) {
               boundY.width += cacheY.cells.get(j).width;

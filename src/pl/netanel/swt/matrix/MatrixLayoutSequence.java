@@ -55,38 +55,31 @@ public class MatrixLayoutSequence<X extends Number, Y extends Number> implements
   }
 
   private boolean setState() {
-    CellExtent<X, Y> extent = zone.cellMerging.getExtent(seqX.getIndex(), seqY.getIndex());
-    if (extent == null) {
-      indexX = seqX.index;
-      indexY = seqY.index;
-      boundX = seqX.bound;
-      boundY = seqY.bound;
-      return true;
-    }
-    else {
-      while (extent.equals(lastExtent)) {
-        if (!seqX.next()) {
-          if (!seqY.next()) return false;
-          seqX.init();
-          continue;
-        }
-        extent = zone.cellMerging.getExtent(seqX.getIndex(), seqY.getIndex());
-        if (extent == null) {
-          indexX = seqX.index;
-          indexY = seqY.index;
-          boundX = seqX.bound;
-          boundY = seqY.bound;
-          return true;
-        }
+    CellExtent<X, Y> extent;
+    do {
+      extent = zone.cellMerging.getExtent(seqX.getIndex(), seqY.getIndex());
+      if (extent == null) {
+        indexX = seqX.index;
+        indexY = seqY.index;
+        boundX = seqX.bound;
+        boundY = seqY.bound;
+        return true;
       }
-      lastExtent = extent;
-      //int compareX = zone.sectionX.math.compare(mergeExtent.startX, mergeExtent.endX, seqX.getIndex());
-      indexX = extent.startX;
-      indexY = extent.startY;
-      Bound[] bounds = cache.get(extent);
-      boundX = bounds[0];
-      boundY = bounds[1];
-      return true;
+      if (!seqX.next()) {
+        if (!seqY.next()) return false;
+        seqX.init();
+        continue;
+      }
     }
+    while (extent.equals(lastExtent));
+    lastExtent = extent;
+    //int compareX = zone.sectionX.math.compare(mergeExtent.startX, mergeExtent.endX, seqX.getIndex());
+    indexX = extent.startX;
+    indexY = extent.startY;
+    Bound[] bounds = cache.get(extent);
+    boundX = bounds[0];
+    boundY = bounds[1];
+    return true;
   }
+
 }

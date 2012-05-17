@@ -302,7 +302,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
               section.setCellWidth(seq.index());
             }
             addEvent(section, SWT.Resize, resizeItem);
-            axisLayout.compute();
+            matrix.layout.compute(axis.symbol == 'X', axis.symbol == 'Y');
             matrix.redraw();
           }
 

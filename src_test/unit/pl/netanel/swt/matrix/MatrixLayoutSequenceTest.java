@@ -77,17 +77,17 @@ public class MatrixLayoutSequenceTest {
   }
 
   @Test
-  public void cellSequence2x2_merge2x2_smallViewport() throws Exception {
-    layoutX.setViewportSize(10);
-    layoutY.setViewportSize(10);
-    layoutX.body.setCount(2);
-    layoutY.body.setCount(2);
-    zone.setMerged(0, 1, 0, 1);
+  public void cellSequence3x3_merge3x3_smallViewport() throws Exception {
+    layoutX.setViewportSize(20);
+    layoutY.setViewportSize(20);
+    layoutX.body.setCount(3);
+    layoutY.body.setCount(3);
+    zone.setMerged(0, 2, 0, 2);
     layout.compute();
     seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
     seq.init();
     assertTrue(seq.next());
-    assertCell(0, 0, 1, 1, 33, 33);
+    assertCell(0, 0, 1, 1, 50, 50);
     assertFalse(seq.next());
   }
 
@@ -175,6 +175,8 @@ public class MatrixLayoutSequenceTest {
     assertCell(0, 1, 1, 18, 16, 16);
     assertTrue(seq.next());
     assertCell(1, 1, 18, 18, 16, 16);
+    assertTrue(seq.next());
+    assertCell(2, 2, 35, 35, 16, 16);
     assertTrue(seq.next());
     assertCell(0, 2, 1, 35, 33, 16);
     assertTrue(seq.next());
