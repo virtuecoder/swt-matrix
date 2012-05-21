@@ -1,8 +1,13 @@
 -------------------------------------------------------------------------------
 Version 0.6.0
 
-API changes:
+Behavior change:
 - Zone.getSelectedExtent returns null instead of (0,0,0,0) when nothing is selected.
+- Zone.isSelected throws IllegalArgumentException only if both <code>indexX</code> and <code>indexY</code> are null. If one the parameters is null then the method returns true if any cell with the other index is selected.
+
+
+API changes:
+- Deprecated Zone.getSelectionCount. Use Zone.getSelectedCount.
 
 -------------------------------------------------------------------------------
 Version 0.5.9

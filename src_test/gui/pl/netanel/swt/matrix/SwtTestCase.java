@@ -1326,7 +1326,7 @@ public class  SwtTestCase {
    * and opens the shell with it.
    * @return matrix
    */
-  public Matrix createMatrix() {
+  public Matrix<Integer, Integer> createMatrix() {
     Matrix matrix = new Matrix(shell, 0);
 //    listenToAll(matrix);
     matrix.getAxisY().getHeader().setVisible(true);

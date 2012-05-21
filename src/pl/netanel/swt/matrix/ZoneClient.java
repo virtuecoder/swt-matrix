@@ -104,8 +104,9 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   }
 
   @Override
+  @Deprecated
   public BigInteger getSelectionCount() {
-    return core.getSelectionCount();
+    return getSelectedCount();
   }
 
   @Override

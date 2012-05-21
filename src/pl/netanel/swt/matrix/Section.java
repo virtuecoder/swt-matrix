@@ -1008,6 +1008,14 @@ public interface Section<N extends Number> {
    */
   void removeSelectionListener(SelectionListener listener);
 
+//  /**
+//   * Returns <code>true</code> if the item with the given index in the model is merged be moved by end user.
+//   * Otherwise, <code>false</code> is returned.
+//   * @param index
+//   * @return
+//   */
+//  boolean isMerged(N index);
+
 
 
 }

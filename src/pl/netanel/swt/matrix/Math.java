@@ -33,7 +33,7 @@ abstract class Math<N extends Number> {
 
 
 	@SuppressWarnings("unchecked")
-	public static <N2 extends Number> Math<N2> getInstance(Class<N2> numberClass) {
+  public static <N2 extends Number> Math<N2> getInstance(Class<N2> numberClass) {
 		if (numberClass == Integer.class) 			    return (Math<N2>) IntMath.getInstance();
 		else if (numberClass == int.class) 	        return (Math<N2>) IntMath.getInstance();
 		else if (numberClass == Long.class) 		    return (Math<N2>) LongMath.getInstance();

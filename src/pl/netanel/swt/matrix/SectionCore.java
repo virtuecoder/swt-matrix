@@ -44,6 +44,7 @@ class SectionCore<N extends Number> implements Section<N> {
 
 	final NumberOrder<N> order;
 	final NumberSet<N> hidden;
+//	private final NumberSet<N> merged;
 	private final NumberSet<N> resizable;
 	private final NumberSet<N> moveable;
 	private final NumberSet<N> hideable;
@@ -74,6 +75,7 @@ class SectionCore<N extends Number> implements Section<N> {
 		count = math.ZERO_VALUE();
 
 		order = new NumberOrder<N>(math);
+//		merged = new NumberSet<N>(math, true);
 		hidden = new NumberSet<N>(math, true);
 		resizable = new NumberSet<N>(math, true);
 		moveable = new NumberSet<N>(math, true);
@@ -767,6 +769,12 @@ class SectionCore<N extends Number> implements Section<N> {
 	static <N2 extends Number> SectionCore<N2> from(Section<N2> section) {
 	  return (SectionCore<N2>) section.getUnchecked();
 	}
+
+
+//	@Override
+//  public boolean isMerged(N index) {
+//    return merged.contains(index);
+//  }
 
 
 }

@@ -1029,6 +1029,7 @@ class AxisLayout<N extends Number> {
 
 	public void freezeTail(AxisItem<N> item) {
 		int count = 0;
+    @SuppressWarnings("unchecked")
     List<Cache> list = (List<Cache>) caches.clone();
 		Collections.reverse(list);
 		for (Cache cache: list) {

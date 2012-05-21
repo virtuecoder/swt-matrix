@@ -221,6 +221,9 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	}
 
 	@Override public BigInteger getSelectedCount() {
+	  if (!selectionEnabled) {
+      return BigInteger.ZERO;
+    }
 		return cellSelection.getCount().getValue();
 	}
 
@@ -235,11 +238,9 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	}
 */
 
+	@Deprecated
 	@Override public BigInteger getSelectionCount() {
-		if (!selectionEnabled) {
-			return BigInteger.ZERO;
-		}
-		return cellSelection.getCount().value;
+		return getSelectedCount();
 	}
 
 
@@ -330,10 +331,10 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 
 	@Override
-	public boolean setMerged(X startX, X endX, Y startY, Y endY) {
-	  boolean removed = cellMerging.removeContaining(startX, endX, startY, endY);
-    if (!removed && (sectionX.math.compare(startX, endX) != 0 || sectionY.math.compare(startY, endY) != 0)) {
-	    cellMerging.add(startX, endX, startY, endY);
+	public boolean setMerged(X indexX, X countX, Y indexY, Y countY) {
+	  boolean removed = cellMerging.removeContaining(indexX, countX, indexY, countY);
+    if (!removed && (sectionX.math.compare(indexX, countX) != 0 || sectionY.math.compare(indexY, countY) != 0)) {
+	    cellMerging.add(indexX, countX, indexY, countY);
 	  }
     return !removed;
 	}

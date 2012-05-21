@@ -96,13 +96,17 @@ public interface Zone<X extends Number, Y extends Number> {
    * <code>indexX</code> and <code>indexY</code> refer to the model,
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations.
+   * <p>
+   * If one the parameters is <code>null</code> then the method returns
+   * <code>true</code> if any cell with the other index is selected
+   *
    * @param indexX cell index on the horizontal axis
    * @param indexY cell index on the vertical axis
    *
    * @return the selection state of the specified cell
    *
-   * @throws IllegalArgumentException if <code>indexX</code> or
-   *         <code>indexY</code> is null.
+   * @throws IllegalArgumentException only if both <code>indexX</code> and
+   *         <code>indexY</code> are null.
    * @throws IndexOutOfBoundsException if <code>indexX</code> is out of
    *         0 ... this.getSectionY().getCount() bounds
    * @throws IndexOutOfBoundsException if <code>indexY</code> is out of
@@ -142,29 +146,29 @@ public interface Zone<X extends Number, Y extends Number> {
    * merged cells the merging will be removed for all of those cells. Otherwise the
    * cells will be merged.
    * <p>
-   * <code>startX</code>,<code>endX</code>, <code>startY</code> and
-   * <code>endY</code> numbers are item indexes in the model,
+   * <code>indexX</code>,<code>countX</code>, <code>indexY</code> and
+   * <code>countY</code> numbers are item indexes in the model,
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations.
    *
-   * @param startX first index of the range of column items
-   * @param endX last index of the range of column items
-   * @param startY first index of the range of row items
-   * @param endY last index of the range of row items
+   * @param indexX index of the column item from which the merging starts
+   * @param countX quantity of column items being merged 
+   * @param indexY index of the row item from which the merging starts
+   * @param countY quantity of row items being merged 
    * @return true if the cell become merged, false if the merging has been removed
    *
-   * @throws IllegalArgumentException if <code>startX</code> or <code>endX</code>
-   *           or <code>startY</code> or <code>endY</code> is null.
-   * @throws IllegalArgumentException if <code>startX</code> is greater then <code>endX</code>
-   *           or <code>startY</code> is greater then <code>endY</code>.
-   * @throws IndexOutOfBoundsException if <code>startX</code> or
-   *           <code>endX</code> is out of 0 ... this.getSectionX().getCount()
+   * @throws IllegalArgumentException if <code>indexX</code> or <code>countX</code>
+   *           or <code>indexY</code> or <code>countY</code> is null.
+   * @throws IllegalArgumentException if <code>indexX</code> is greater then <code>countX</code>
+   *           or <code>indexY</code> is greater then <code>countY</code>.
+   * @throws IndexOutOfBoundsException if <code>indexX</code> or
+   *           <code>countX</code> is out of 0 ... this.getSectionX().getCount()
    *           bounds
-   * @throws IndexOutOfBoundsException if <code>startY</code> or
-   *           <code>endY</code> is out of 0 ... this.getSectionY().getCount()
+   * @throws IndexOutOfBoundsException if <code>indexY</code> or
+   *           <code>countY</code> is out of 0 ... this.getSectionY().getCount()
    *           bounds
    */
-  boolean setMerged(X startX, X endX, Y startY, Y endY);
+  boolean setMerged(X indexX, X countX, Y indexY, Y countY);
 
   /**
    * Returns <code>true</code> if the cell at given indexes is merged.
@@ -231,9 +235,10 @@ public interface Zone<X extends Number, Y extends Number> {
    * <p>
    * If the cell selection is disabled the it always returns a
    * {@link BigIntegerNumber} with zero value.
-   *
+   * @deprecated use {@link #getSelectedCount()} instead
    * @return {@link BigIntegerNumber} with the count of selected cells
    */
+  @Deprecated
   BigInteger getSelectionCount();
 
   /**

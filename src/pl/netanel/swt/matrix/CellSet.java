@@ -43,13 +43,29 @@ class CellSet<X extends Number, Y extends Number> {
 		return sb.toString();
 	}
 
+
+	/**
+	 * If one of the arguments is null only the containment of the other one is checked.
+	 * @param indexX
+	 * @param indexY
+	 * @return
+	 */
 	public boolean contains(X indexX, Y indexY) {
-		int size = itemsY.size();
+		int size = itemsX.size();
 		for (int i = 0; i < size; i++) {
-			MutableExtent<Y> e1 = itemsY.get(i);
-			MutableExtent<X> e2 = itemsX.get(i);
-			if (mathY.contains(e1.start(), e1.end(), indexY) &&
-				mathX.contains(e2.start(), e2.end(), indexX))
+			MutableExtent<X> ex = itemsX.get(i);
+			MutableExtent<Y> ey = itemsY.get(i);
+
+			boolean containsX = false, containsY = false;
+			if (indexY != null) {
+        containsY = mathY.contains(ey.start(), ey.end(), indexY);
+			}
+			if (indexX != null) {
+			  containsX = mathX.contains(ex.start(), ex.end(), indexX);
+			}
+			if (indexX == null && containsY ||
+			    indexY == null && containsX ||
+	        containsX && containsY)
 			{
 				return true;
 			}

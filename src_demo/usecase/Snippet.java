@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
+import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.ZoneEditor;
 
@@ -19,7 +20,10 @@ public class Snippet
 
         Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
 
-        matrix.getAxisX().getBody().setCount(100);
+        Section<Integer> bodyX = matrix.getAxisX().getBody();
+        bodyX.setCount(100);
+        bodyX.setDefaultMoveable(true);
+
         matrix.getAxisY().getBody().setCount(100);
         matrix.getAxisY().getHeader().setVisible(true);
 
@@ -27,12 +31,13 @@ public class Snippet
 
 
         Zone<Integer, Integer> body = matrix.getBody();
-        body.setMerged(5, 10, 5, 10);
+//        body.setSelected(5, 10, 5, 10, true);
+        bodyX.setOrder(6, 1);
 
         Painter<Integer, Integer> painter = body.getPainter(Painter.NAME_CELLS);
         painter.style.textAlignX = SWT.CENTER;
 
-        new ZoneEditor(body);
+        new ZoneEditor<Integer, Integer>(body);
 
 
         shell.setBounds(400, 200, 600, 400);

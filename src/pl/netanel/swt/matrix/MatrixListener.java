@@ -867,7 +867,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         if (stateY.lastFocus != null && stateX.lastFocus != null) {
           ZoneCore<X, Y> zone = matrix.layout.getZone(
               stateX.lastFocus.section, stateY.lastFocus.section);
-          if (BigInteger.ZERO.equals(zone.getSelectionCount())) {
+          if (BigInteger.ZERO.equals(zone.getSelectedCount())) {
             X indexX = stateX.lastFocus.getIndex();
             Y indexY = stateY.lastFocus.getIndex();
             zone.setSelected(indexX, indexX, indexY, indexY, true);
