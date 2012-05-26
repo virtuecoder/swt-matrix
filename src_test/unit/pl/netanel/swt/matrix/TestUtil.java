@@ -8,6 +8,8 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
+
 @SuppressWarnings({"rawtypes", "unchecked"})
 class TestUtil {
 	static MutableNumber number(int n) {
@@ -149,5 +151,15 @@ class TestUtil {
     }
     System.out.println();
     System.out.flush();
+  }
+
+  public static String seq(SectionCore section) {
+    StringBuilder sb = new StringBuilder();
+    Forward seq = new DirectionIndexSequence.Forward(section);
+    for (seq.init(); seq.next();) {
+      if (sb.length() > 0) sb.append(", ");
+      sb.append(seq.index());
+    }
+    return sb.toString();
   }
 }

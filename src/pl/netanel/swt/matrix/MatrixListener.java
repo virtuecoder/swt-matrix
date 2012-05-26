@@ -277,7 +277,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
           int len = axis.sections.size();
           for (int i = 0; i < len; i++) {
             SectionCore<N> section = axisLayout.sections.get(i);
-            ExtentSequence<N> seq = section.getSelectedExtentResizableSequence();
+            ExtentSequence<N> seq = section.getSelectedExtentSequence();
             for (seq.init(); seq.next();) {
 
               if (item.section.equals(section) &&

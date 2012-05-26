@@ -87,7 +87,7 @@ public class MatrixLayoutSequenceTest {
     seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
     seq.init();
     assertTrue(seq.next());
-    assertCell(0, 0, 1, 1, 50, 50);
+    assertCell(0, 0, 1, 1, 33, 33);
     assertFalse(seq.next());
   }
 

@@ -2,6 +2,7 @@ package pl.netanel.swt.matrix;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static pl.netanel.swt.matrix.TestUtil.seq;
 
 import java.util.Arrays;
 
@@ -9,8 +10,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 @RunWith(JUnit4.class)
@@ -51,7 +50,7 @@ public class SectionCoreTest {
     section.setSelected(0, 2, true);
     section.setDefaultResizable(true);
     section.setResizable(1, 1, false);
-    ExtentSequence seq = section.getSelectedExtentResizableSequence();
+    ExtentSequence seq = section.getSelectedExtentSequence();
     seq.init();
     seq.next();
     assertEquals("0 0", "" + seq.start + " " + seq.end);
@@ -65,7 +64,7 @@ public class SectionCoreTest {
     section.setCount(5);
     section.setSelected(1, 1, true);
     section.moveSelected(1, 1);
-    assertEquals("0, 1, 2, 3, 4", toString(section));
+    assertEquals("0, 1, 2, 3, 4", seq(section));
   }
 
   @Test
@@ -74,7 +73,7 @@ public class SectionCoreTest {
     section.setCount(5);
     section.setSelected(1, 1, true);
     section.moveSelected(1, 0);
-    assertEquals("1, 0, 2, 3, 4", toString(section));
+    assertEquals("1, 0, 2, 3, 4", seq(section));
   }
 
   @Test
@@ -83,7 +82,7 @@ public class SectionCoreTest {
     section.setCount(5);
     section.setSelected(1, 1, true);
     section.moveSelected(1, 2);
-    assertEquals("0, 2, 1, 3, 4", toString(section));
+    assertEquals("0, 2, 1, 3, 4", seq(section));
   }
 
   @Test
@@ -92,7 +91,7 @@ public class SectionCoreTest {
     section.setCount(5);
     section.setSelected(1, 1, true);
     section.moveSelected(1, 4);
-    assertEquals("0, 2, 3, 4, 1", toString(section));
+    assertEquals("0, 2, 3, 4, 1", seq(section));
   }
 
   @Test
@@ -101,7 +100,7 @@ public class SectionCoreTest {
     section.setCount(5);
     section.setSelected(1, 3, true);
     section.moveSelected(1, 1);
-    assertEquals("0, 1, 2, 3, 4", toString(section));
+    assertEquals("0, 1, 2, 3, 4", seq(section));
   }
 
   @Test
@@ -110,7 +109,7 @@ public class SectionCoreTest {
     section.setCount(5);
     section.setSelected(1, 3, true);
     section.moveSelected(1, 2);
-    assertEquals("0, 1, 2, 3, 4", toString(section));
+    assertEquals("0, 1, 2, 3, 4", seq(section));
   }
 
   @Test
@@ -119,7 +118,7 @@ public class SectionCoreTest {
     section.setCount(5);
     section.setSelected(1, 3, true);
     section.moveSelected(1, 3);
-    assertEquals("0, 1, 2, 3, 4", toString(section));
+    assertEquals("0, 1, 2, 3, 4", seq(section));
   }
 
   @Test
@@ -128,7 +127,7 @@ public class SectionCoreTest {
     section.setCount(5);
     section.setSelected(1, 3, true);
     section.moveSelected(1, 0);
-    assertEquals("1, 2, 3, 0, 4", toString(section));
+    assertEquals("1, 2, 3, 0, 4", seq(section));
   }
 
   @Test
@@ -137,7 +136,7 @@ public class SectionCoreTest {
     section.setCount(5);
     section.setSelected(1, 3, true);
     section.moveSelected(3, 4);
-    assertEquals("0, 4, 1, 2, 3", toString(section));
+    assertEquals("0, 4, 1, 2, 3", seq(section));
   }
 
   @Test
@@ -146,7 +145,7 @@ public class SectionCoreTest {
     section.setCount(5);
     section.setSelected(1, 3, true);
     section.moveSelected(3, 0);
-    assertEquals("1, 2, 3, 0, 4", toString(section));
+    assertEquals("1, 2, 3, 0, 4", seq(section));
   }
 
   @Test
@@ -156,7 +155,7 @@ public class SectionCoreTest {
     section.setSelected(1, 1, true);
     section.setSelected(3, 3, true);
     section.moveSelected(1, 0);
-    assertEquals("1, 3, 0, 2, 4", toString(section));
+    assertEquals("1, 3, 0, 2, 4", seq(section));
   }
 
   @Test
@@ -166,7 +165,7 @@ public class SectionCoreTest {
     section.setSelected(1, 1, true);
     section.setSelected(3, 3, true);
     section.moveSelected(3, 0);
-    assertEquals("1, 3, 0, 2, 4", toString(section));
+    assertEquals("1, 3, 0, 2, 4", seq(section));
   }
 
   @Test
@@ -176,7 +175,7 @@ public class SectionCoreTest {
     section.setSelected(1, 1, true);
     section.setSelected(3, 3, true);
     section.moveSelected(1, 2);
-    assertEquals("0, 2, 1, 3, 4", toString(section));
+    assertEquals("0, 2, 1, 3, 4", seq(section));
   }
 
   @Test
@@ -186,7 +185,7 @@ public class SectionCoreTest {
     section.setSelected(1, 1, true);
     section.setSelected(3, 3, true);
     section.moveSelected(3, 2);
-    assertEquals("0, 1, 3, 2, 4", toString(section));
+    assertEquals("0, 1, 3, 2, 4", seq(section));
   }
 
   @Test
@@ -196,7 +195,7 @@ public class SectionCoreTest {
     section.setSelected(1, 1, true);
     section.setSelected(3, 3, true);
     section.moveSelected(3, 1);
-    assertEquals("0, 1, 2, 3, 4", toString(section));
+    assertEquals("0, 1, 2, 3, 4", seq(section));
   }
 
   public void delete() throws Exception {
@@ -223,7 +222,7 @@ public class SectionCoreTest {
     SectionCore section = new SectionCore(int.class);
     section.setCount(5);
     section.setOrder(Arrays.asList(new Integer[] { 1, 2, 0, 3, 4 }).iterator());
-    assertEquals("1, 2, 0, 3, 4", toString(section));
+    assertEquals("1, 2, 0, 3, 4", seq(section));
   }
 
   @Test
@@ -233,7 +232,7 @@ public class SectionCoreTest {
     section.setOrderExtents(Arrays.asList(
       new Extent[] { Extent.create(1, 2), Extent.create(0, 0),
         Extent.create(3, 4) }).iterator());
-    assertEquals("1, 2, 0, 3, 4", toString(section));
+    assertEquals("1, 2, 0, 3, 4", seq(section));
   }
 
   // private static String moveSelected(SectionUnchecked section, int source,
@@ -248,14 +247,14 @@ public class SectionCoreTest {
   // return section;
   // }
 
-  static String toString(SectionCore section) {
-    StringBuilder sb = new StringBuilder();
-    Forward seq = new DirectionIndexSequence.Forward(section);
-    for (seq.init(); seq.next();) {
-      if (sb.length() > 0) sb.append(", ");
-      sb.append(seq.index());
-    }
-    return sb.toString();
-  }
+//  static String seq(SectionCore section) {
+//    StringBuilder sb = new StringBuilder();
+//    Forward seq = new DirectionIndexSequence.Forward(section);
+//    for (seq.init(); seq.next();) {
+//      if (sb.length() > 0) sb.append(", ");
+//      sb.append(seq.index());
+//    }
+//    return sb.toString();
+//  }
 
 }

@@ -677,10 +677,6 @@ class SectionCore<N extends Number> implements Section<N> {
 		return new ExtentSequence<N>(selection.items);
 	}
 
-	ExtentSequence<N> getSelectedExtentResizableSequence() {
-		return new ExtentSequence<N>(selection.items);
-	}
-
 	class IndexIterator extends ImmutableIterator<N> {
 
 		private final NumberSequence<N> seq;

@@ -4,23 +4,21 @@ import java.util.List;
 
 /**
  * Iterates over section items in their order and skipping the hidden ones.
- * Iteration yields nothing if the section is not visible. 
+ * Iteration yields nothing if the section is not visible.
  */
 abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 	protected final SectionCore<N> section;
-	protected Math<N> math;
 	public MutableNumber<N> number, number2, lastInExtent, last, d;
 	protected int i, h;
 	public int level;
 	protected int sign;
 	protected MutableExtent<N> extent, he;
 	public boolean moved;
-	
-	
+
+
 	public DirectionIndexSequence(SectionCore<N> section) {
 		super();
 		this.section = section;
-		this.math = section.math;
 		number = this.section.math.create(0);
 		number2 = this.section.math.create(0);
 		lastInExtent = this.section.math.create(0);
@@ -31,7 +29,7 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 	public void init() {
 		i = firstIndex(this.section.order.items);
 	}
-	
+
 	boolean next(MutableNumber<N> index) {
 		moved = false;
 		while (true) {
@@ -49,7 +47,7 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 					return false;
 				}
 				break;
-				
+
 			case 1: // numbers
 				if (hasNextNumber()) {
 					if (nextNumber(index)) return true;
@@ -59,7 +57,7 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 			}
 		}
 	}
-	
+
 
 	private boolean nextNumber(MutableNumber<N> count) {
 		MutableNumber<N> limit = null;
@@ -72,9 +70,9 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 			// If inside of hidden move beyond
 			if (he != null && this.section.math.contains(he, number2)) {
 				if (!skipHidden(count, lastInExtent)) return false;
-			} 
+			}
 			else {
-				limit = he == null || this.section.math.contains(he, number2) ? 
+				limit = he == null || this.section.math.contains(he, number2) ?
 						lastInExtent : start(he);
 				d.set(this.section.math.min(subtract(limit, number2), count));
 				add(number2, d.getValue());
@@ -82,22 +80,22 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 			}
 			if (he != null && this.section.math.contains(he, number2)) {
 				if (!skipHidden(count, lastInExtent)) return false;
-			}			
+			}
 			moved = this.section.math.compare(number2, last) != 0;
 			number.set(number2);
 			last.set(number);
-			
-			if (this.section.math.compare(count, this.section.math.ZERO()) <= 0) return true; 
+
+			if (this.section.math.compare(count, this.section.math.ZERO()) <= 0) return true;
 		}
-		return false; 
+		return false;
 	}
-	
+
 
 	private void nextHidden(MutableNumber<N> lastIndex) {
 		while (true) {
 			if (he != null) {
 				MutableNumber<N> start = start(he), end = end(he);
-				if (compare(start, number2) <= 0 && compare(number2, end) <= 0 || 
+				if (compare(start, number2) <= 0 && compare(number2, end) <= 0 ||
 					compare(start, number2) > 0 && compare(start, lastIndex) <= 0) break;
 			}
 			if (hasNextHidden()) {
@@ -108,7 +106,7 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 			}
 		}
 	}
-	
+
 	private boolean skipHidden(MutableNumber<N> count, MutableNumber<N> lastIndex) {
 		number2.set(end(he)).add(sign);
 		if (compare(number2, lastIndex) > 0) {
@@ -118,10 +116,10 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 		}
 		return true;
 	}
-	
+
 
 	protected boolean hasNextNumber() {
-		return extent != null && compare(number, lastInExtent) < 0;// && compare(index, nullIndex) != 0; 
+		return extent != null && compare(number, lastInExtent) < 0;// && compare(index, nullIndex) != 0;
 	}
 
 	protected abstract int compare(MutableNumber<N> x, MutableNumber<N> y);
@@ -154,9 +152,9 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 		he = null;
 		return true;
 	}
-	
+
 	static class Forward<N extends Number> extends DirectionIndexSequence<N> {
-		
+
 		public Forward(SectionCore<N> section) {
 			super(section);
 			sign = 1;
@@ -164,19 +162,19 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 
 		@Override
 		protected int compare(MutableNumber<N> x, MutableNumber<N> y) {
-			return math.compare(x, y);
+			return section.math.compare(x, y);
 		}
-		
+
 		@Override
 		protected void add(MutableNumber<N> x, N y) {
 			x.add(y);
 		}
-		
+
 		@Override
 		protected MutableNumber<N> subtract(MutableNumber<N> x, MutableNumber<N> y) {
-			return math.create(x).subtract(y);
+			return section.math.create(x).subtract(y);
 		}
-		
+
 		@Override
 		protected boolean hasNextExtent() {
 			return i < section.order.items.size() - 1;
@@ -186,12 +184,12 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 		protected boolean hasNextHidden() {
 			return h < section.hidden.items.size() - 1;
 		}
-		
+
 		@Override
 		protected int firstIndex(List<MutableExtent<N>> items) {
 			return -1;
 		}
-		
+
 		@Override
 		protected MutableNumber<N> start(MutableExtent<N> e) {
 			return e.start;
@@ -202,51 +200,51 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 			return e.end;
 		}
 	}
-	
+
 	static class Backward<N extends Number> extends DirectionIndexSequence<N> {
-		
+
 		public Backward(SectionCore<N> section) {
 			super(section);
 			sign = -1;
 		}
-		
+
 		@Override
 		protected int compare(MutableNumber<N> x, MutableNumber<N> y) {
-			return math.compare(y, x);
+			return section.math.compare(y, x);
 		}
-		
+
 		@Override
 		protected void add(MutableNumber<N> x, N y) {
 			x.subtract(y);
 		}
-		
+
 
 		@Override
 		protected MutableNumber<N> subtract(MutableNumber<N> x, MutableNumber<N> y) {
-			return math.create(y).subtract(x);
+			return section.math.create(y).subtract(x);
 		}
-		
-		
+
+
 		@Override
 		protected boolean hasNextExtent() {
 			return i > 0;
 		}
-		
+
 		@Override
 		protected boolean hasNextHidden() {
 			return h > 0;
 		}
-		
+
 		@Override
 		protected int firstIndex(List<MutableExtent<N>> items) {
 			return items.size();
 		}
-		
+
 		@Override
 		protected MutableNumber<N> start(MutableExtent<N> e) {
 			return e.end;
 		}
-		
+
 		@Override
 		protected MutableNumber<N> end(MutableExtent<N> e) {
 			return e.start;

@@ -130,6 +130,11 @@ abstract class Math<N extends Number> {
     else                                          return BEFORE;
 	}
 
+
+	public MutableNumber<N> count(MutableExtent<N> e) {
+	  return create(e.end).subtract(e.start).increment();
+	}
+
 	public boolean contains(N start, N end, N n) {
 		return compare(start, n) <= 0 && compare(n, end) <= 0;
 	}

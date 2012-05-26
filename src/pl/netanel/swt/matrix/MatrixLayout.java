@@ -381,6 +381,7 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
           for (int j = 0; j < itemsY.size() - 1; j++) {
             AxisItem<X> itemX = itemsX.get(i);
             AxisItem<Y> itemY = itemsY.get(j);
+            
             CellExtent<X, Y> extent =
                 getZone(itemX.section, itemY.section).cellMerging.getExtent(itemX.index, itemY.index);
 

@@ -38,7 +38,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	final SectionCore<Y> sectionY;
 	CellSet<X, Y> cellSelection;
 	CellSet<X, Y> lastSelection; // For adding selection
-	CellSet<X, Y> cellMerging;
+	SpanSet<X, Y> cellMerging;
 
 	ZoneEditor<X, Y> editor;
 
@@ -68,7 +68,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		Math<Y> mathY = SectionCore.from(sectionY).math;
 		cellSelection = new CellSet<X, Y>(mathX, mathY);
 		lastSelection = new CellSet<X, Y>(mathX, mathY);
-		cellMerging = new CellSet<X, Y>(mathX, mathY);
+		cellMerging = new SpanSet<X, Y>(mathX, mathY);
 
 //		foreground = new MapValueToCellSet<X, Y, Color>(mathX, mathY);
 //		text = new MapValueToCellSet(this.sectionY.math, this.sectionX.math);
