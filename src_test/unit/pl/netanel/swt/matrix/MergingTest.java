@@ -43,9 +43,9 @@ public class MergingTest {
 
   @Test
   public void mergeTwoX() throws Exception {
-    zone.setMerged(1, 2, 1, 1);
-    assertTrue(zone.isMerged(1, 1));
-    assertTrue(zone.isMerged(2, 1));
+    zone.setMerged(3, 2, 1, 1);
+    assertTrue(zone.isMerged(3, 1));
+    assertTrue(zone.isMerged(4, 1));
   }
 
   @Test

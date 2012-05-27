@@ -44,6 +44,8 @@ class SectionCore<N extends Number> implements Section<N> {
 
 	final NumberOrder<N> order;
 	final NumberSet<N> hidden;
+	NumberOrder<N> finale;
+
 //	private final NumberSet<N> merged;
 	private final NumberSet<N> resizable;
 	private final NumberSet<N> moveable;
@@ -77,6 +79,8 @@ class SectionCore<N extends Number> implements Section<N> {
 		order = new NumberOrder<N>(math);
 //		merged = new NumberSet<N>(math, true);
 		hidden = new NumberSet<N>(math, true);
+		finale = new NumberOrder<N>(math);
+
 		resizable = new NumberSet<N>(math, true);
 		moveable = new NumberSet<N>(math, true);
 		hideable = new NumberSet<N>(math, true);
@@ -113,6 +117,7 @@ class SectionCore<N extends Number> implements Section<N> {
 	@Override public void setCount(N count) {
 		this.count = count;
 		order.setCount(count);
+		refreshFinale();
 	}
 
 	@Override public N getCount() {
@@ -375,11 +380,13 @@ class SectionCore<N extends Number> implements Section<N> {
   @Override
   public void setHidden(N start, N end, boolean state) {
     hidden.change(start, end, state);
+    refreshFinale();
   }
 
   @Override
   public void setHidden(N index, boolean state) {
     hidden.change(index, index, state);
+    refreshFinale();
   }
 
   @Override
@@ -557,10 +564,12 @@ class SectionCore<N extends Number> implements Section<N> {
 
 	@Override public void setOrder(N start, N end, N target) {
 		order.move(start, end, target);
+		refreshFinale();
 	}
 
 	@Override public void setOrder(N index, N target) {
 	  order.move(index, index, target);
+	  refreshFinale();
 	}
 
 	@Override public void setOrder(Iterator<N> iterator) {
@@ -569,6 +578,7 @@ class SectionCore<N extends Number> implements Section<N> {
 	    N next = iterator.next();
 	    order.add(next);
 	  }
+	  refreshFinale();
 	}
 
 	@Override public void setOrderExtents(Iterator<Extent<N>> iterator) {
@@ -577,6 +587,7 @@ class SectionCore<N extends Number> implements Section<N> {
 	    Extent<N> next = iterator.next();
 	    order.add(next.start, next.end);
 	  }
+	  refreshFinale();
 	}
 
 	@Override public void delete(N start, N end) {
@@ -591,6 +602,7 @@ class SectionCore<N extends Number> implements Section<N> {
 		selection.delete(start, end);
 		lastSelection.delete(start, end);
 		count = math.create(count).subtract(end).add(start).decrement().getValue();
+		refreshFinale();
 
 		if (axis != null) {
 			axis.deleteInZones(this, start, end);
@@ -609,6 +621,7 @@ class SectionCore<N extends Number> implements Section<N> {
 		selection.insert(target, count);
 		lastSelection.insert(target, count);
 		this.count = math.create(this.count).add(count).getValue();
+		refreshFinale();
 
 		if (axis != null) {
 		  axis.insertInZones(this, target, count);
@@ -757,6 +770,14 @@ class SectionCore<N extends Number> implements Section<N> {
     event.widget = axis.matrix;
     listeners.add(event);
   }
+
+	private void refreshFinale() {
+	  finale = order.copy();
+	  for (MutableExtent<N> extent: hidden.items) {
+	    finale.remove(extent);
+	  }
+	}
+
 
 	static <N2 extends Number> SectionCore<N2> from(AxisItem<N2> item) {
 	  return item.section;

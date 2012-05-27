@@ -5,7 +5,7 @@ import static pl.netanel.swt.matrix.Math.*;
 
 class NumberOrder<N extends Number> extends NumberSet<N> {
 
-	private N count; 
+	private N count;
 
 	public NumberOrder(Math<N> math) {
 		super(math);
@@ -17,7 +17,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 		N last = math.decrement(count);
 		if (compare < 0) {
 			remove(newCount, last);
-		} 
+		}
 		else if (compare > 0) {
 			MutableNumber<N> newLast = math.create(newCount).decrement();
 			if (items.isEmpty()) {
@@ -35,7 +35,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 		}
 		count = newCount;
 	}
-	
+
 	/**
 	 * Adds indexes in a sequential order
 	 */
@@ -46,12 +46,12 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	    if (math.compare(index, math.increment(e.end())) == 0) {
 	      e.end.set(index);
 	      return true;
-	    } 
+	    }
 	  }
     items.add(new MutableExtent<N>(math.create(index), math.create(index)));
 	  return true;
 	}
-	
+
 	/**
 	 * Adds extents in a sequential order
 	 */
@@ -66,13 +66,13 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 		if (math.compare(start, target) <= 0 && math.compare(target, end) <= 0) {
 //			target = math.increment(end);
 			return;
-		} 
+		}
 //		else {
 //			target = math.create(target);
 //		}
-		
+
 		remove(start, end);
-		
+
 		// Find the position i to insert
 		int i = 0;
 		for (; i < items.size(); i++) {
@@ -80,7 +80,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 			if (math.contains(e.start(), e.end(), target)) {
 				if (math.compare(target, e.start()) == 0) {
 					break;
-				} 
+				}
 				else {
 					MutableNumber<N> end2 = math.create(e.end);
 					e.end.set(target).decrement();
@@ -93,7 +93,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 		items.add(i, new MutableExtent<N>(math.create(start), math.create(end)));
 		mergeAdjacentExtents();
 	}
-	
+
 	/**
 	 * Moves the given set of numbers before the given index
 	 * order: 0 1 2 3 4, move(set(1 3), 1) -> 0 1 3 2 4
@@ -102,10 +102,10 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	 */
 	public void move(NumberSet<N>set, N target) {
 		N target2 = set.firstExcluded(target);
-		assert !set.contains(target2); 
-		
+		assert !set.contains(target2);
+
 		removeAll(set);
-		
+
 		// Find the position i to insert
 		int i = 0;
 		for (; i < items.size(); i++) {
@@ -113,7 +113,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 			if (math.contains(e.start(), e.end(), target2)) {
 				if (math.compare(target2, e.start()) == 0) {
 					break;
-				} 
+				}
 				else {
 					MutableNumber<N> end2 = math.create(e.end);
 					e.end.set(target2).decrement();
@@ -142,10 +142,10 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 
 	public N indexOf(N modelIndex) {
 //		System.out.println(modelIndex.getClass());
-		if (math.compare(modelIndex, count) >= 0 || 
+		if (math.compare(modelIndex, count) >= 0 ||
 			math.compare(modelIndex, math.ZERO_VALUE()) < 0) return modelIndex;
-			
-		MutableNumber<N> sum = math.create(0);	
+
+		MutableNumber<N> sum = math.create(0);
 		for (MutableExtent<N> e: items) {
 			if (math.contains(e.start(), e.end(), modelIndex)) {
 				return sum.add(modelIndex).subtract(e.start).getValue();
@@ -178,7 +178,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 //			items.add(position, new Extent(math.create(target), math.create(target).add(count).decrement()));
 //		}
 	};
-	
+
 	public void insert2(N target, N count) {
 		MutableNumber<N> mutableEnd = math.create(target).add(count).decrement();
 		N tstart = target;
@@ -220,4 +220,12 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 		}
 	};
 
+	@Override
+  public NumberOrder<N> copy() {
+    NumberOrder<N> copy = new NumberOrder<N>(math);
+    for (MutableExtent<N> e: items) {
+      copy.items.add(new MutableExtent<N>(math.create(e.start()), math.create(e.end())));
+    }
+    return copy;
+  }
 }
