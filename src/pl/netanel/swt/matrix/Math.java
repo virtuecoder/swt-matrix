@@ -111,6 +111,11 @@ abstract class Math<N extends Number> {
 		else 											                    return INSIDE;
 	}
 
+	public boolean areExclusive(MutableExtent<N> x, MutableExtent<N> y) {
+    int compare = compare(x.start.getValue(), x.end.getValue(), y.start.getValue(), y.end.getValue());
+    return compare == ADJACENT_AFTER || compare == ADJACENT_BEFORE || compare == AFTER || compare == BEFORE;
+	}
+
 	/**
 	 * Return Math constant
 	 * @param start

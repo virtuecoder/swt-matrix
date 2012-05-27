@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class SpanSetTest {
-  private SpanSet<Integer, Integer> set;
+  private CellSpanSet<Integer, Integer> set;
   private NumberOrder<Integer> orderX;
   private NumberOrder<Integer> orderY;
 
@@ -15,7 +15,7 @@ public class SpanSetTest {
     Math<Integer> math = Math.getInstance(int.class);
     orderX = new NumberOrder<Integer>(math);
     orderY = new NumberOrder<Integer>(math);
-    set = new SpanSet<Integer, Integer>(orderX, orderY);
+    set = new CellSpanSet<Integer, Integer>(orderX, orderY);
   }
 
   @Test
@@ -45,6 +45,14 @@ public class SpanSetTest {
     assertFalse(set.contains(7, 0));
   }
 
+  @Test
+  public void removeContaining() throws Exception {
+    orderX.add(0, 9);
+    orderY.add(0, 9);
+    set.add(3, 5, 0, 2);
+    set.removeContaining(0, 5, 0, 2);
+    assertEquals("", set.toString());
+  }
 
 
 }

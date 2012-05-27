@@ -772,7 +772,10 @@ class SectionCore<N extends Number> implements Section<N> {
   }
 
 	private void refreshFinale() {
-	  finale = order.copy();
+	  finale.clear();
+	  for (MutableExtent<N> extent: order.items) {
+	    finale.items.add(extent.copy());
+	  }
 	  for (MutableExtent<N> extent: hidden.items) {
 	    finale.remove(extent);
 	  }

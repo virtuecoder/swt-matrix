@@ -21,18 +21,37 @@ public class MergingTest {
   }
 
   @Test
-  public void setMerged() {
-
-    zone.setMerged(1, 3, 1, 2);
+  public void setMergedInclusive() {
+    zone.sectionX.setOrder(5, 7, 1);
+    zone.setMerged(5, 3, 1, 2);
     assertFalse(zone.isMerged(0, 0));
-    assertTrue(zone.isMerged(1, 1));
+    assertTrue(zone.isMerged(5, 1));
 
-    // Merge inside
-    zone.setMerged(2, 2, 2, 2);
+    // Merge part of another merge removes the other merge
+    zone.setMerged(0, 2, 5, 1);
     assertFalse(zone.isMerged(1, 1));
     assertFalse(zone.isMerged(1, 3));
     assertFalse(zone.isMerged(2, 1));
     assertFalse(zone.isMerged(2, 2));
+  }
+
+  @Test
+  public void setMergedExclusive() {
+    zone.setMerged(1, 2, 1, 2);
+    zone.setMerged(4, 2, 4, 2);
+
+    // Both are merged
+    assertTrue(zone.isMerged(1, 1));
+    assertTrue(zone.isMerged(2, 2));
+    assertTrue(zone.isMerged(4, 4));
+    assertTrue(zone.isMerged(5, 5));
+
+    // Remove only second by merging part of it
+    assertFalse(zone.setMerged(4, 1, 4, 1));
+    assertTrue(zone.isMerged(1, 1));
+    assertTrue(zone.isMerged(2, 2));
+    assertFalse(zone.isMerged(4, 4));
+    assertFalse(zone.isMerged(5, 5));
   }
 
   @Test

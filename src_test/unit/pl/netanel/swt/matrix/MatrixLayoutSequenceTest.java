@@ -95,7 +95,7 @@ public class MatrixLayoutSequenceTest {
   public void cellSequence3x3Merge2x2() throws Exception {
     layoutX.body.setCount(3);
     layoutY.body.setCount(3);
-    zone.setMerged(0, 1, 0, 1);
+    zone.setMerged(0, 2, 0, 2);
     layout.compute();
     seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
     seq.init();
@@ -118,8 +118,8 @@ public class MatrixLayoutSequenceTest {
   public void cellSequence3x3Merge0101_2212() throws Exception {
     layoutX.body.setCount(3);
     layoutY.body.setCount(3);
-    zone.setMerged(0, 1, 0, 1);
-    zone.setMerged(2, 2, 1, 2);
+    zone.setMerged(0, 2, 0, 2);
+    zone.setMerged(2, 1, 1, 2);
     layout.compute();
     seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
     seq.init();
@@ -140,8 +140,8 @@ public class MatrixLayoutSequenceTest {
   public void cellSequence3x3Merge0101_0222() throws Exception {
     layoutX.body.setCount(3);
     layoutY.body.setCount(3);
-    zone.setMerged(0, 1, 0, 1);
-    zone.setMerged(0, 2, 2, 2);
+    zone.setMerged(0, 2, 0, 2);
+    zone.setMerged(0, 3, 2, 1);
     layout.compute();
     seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
     seq.init();
@@ -160,8 +160,8 @@ public class MatrixLayoutSequenceTest {
   public void cellSequence3x3Merge0122_2201() throws Exception {
     layoutX.body.setCount(3);
     layoutY.body.setCount(3);
-    zone.setMerged(0, 1, 2, 2);
-    zone.setMerged(2, 2, 0, 1);
+    zone.setMerged(0, 2, 2, 1);
+    zone.setMerged(2, 1, 0, 2);
     layout.compute();
     seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
     seq.init();

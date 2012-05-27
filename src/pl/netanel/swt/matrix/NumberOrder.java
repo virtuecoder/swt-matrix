@@ -6,10 +6,12 @@ import static pl.netanel.swt.matrix.Math.*;
 class NumberOrder<N extends Number> extends NumberSet<N> {
 
 	private N count;
+  SpanExtentSequence spanExtents;
 
 	public NumberOrder(Math<N> math) {
 		super(math);
 		count = math.ZERO_VALUE();
+		spanExtents = new SpanExtentSequence();
 	}
 
 	public void setCount(N newCount) {
@@ -228,4 +230,88 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
     }
     return copy;
   }
+
+
+	public SpanExtentSequence getSpanExtents(MutableExtent<N> extent) {
+	  spanExtents.configure(extent.start.getValue(), extent.end.getValue());
+	  return spanExtents;
+	}
+
+	class SpanExtentSequence implements Sequence {
+	  N start;
+	  N limit;
+	  MutableExtent<N> current;
+
+	  private boolean over;
+	  private int i0, i;
+	  private MutableExtent<N> extent;
+	  private MutableNumber<N> remain;
+
+	  public SpanExtentSequence configure(N start, N limit) {
+	    this.start = start;
+	    this.limit = limit;
+
+	    current = new MutableExtent<N>(math.create(0), math.create(0));
+	    remain = math.create(limit);
+	    return this;
+	  }
+
+	  @Override
+	  public void init() {
+	    over = true;
+	    //  limit is <= 0
+	    if (math.compare(limit, math.ZERO_VALUE()) <= 0) return;
+
+	    i0 = i = getExtentIndex(start);
+	    if (i != -1) over = false;
+	  }
+
+	  @Override
+	  public boolean next() {
+	    if (over) return false;
+
+	    extent = items.get(i);
+	    current.start.set(i==i0 ? start : extent.start.getValue());
+	    current.end.set(extent.end);
+
+	    MutableNumber<N> c = math.count(current);
+	    if (math.compare(remain, c) < 0) {
+	      current.end.set(remain.add(current.start).decrement());
+	      remain.set(math.ZERO_VALUE());
+	    } else {
+	      remain.subtract(c);
+	    }
+	    i++;
+	    boolean isEnd = i >= items.size();
+	    boolean hasRemaining = math.compare(remain, math.ZERO()) > 0;
+//	    if (isEnd && hasRemaining) {
+//	      throw new IllegalArgumentException(MessageFormat.format("Cannot get remaining {0}", remain));
+//	    }
+	    over = isEnd || !hasRemaining;
+	    return true;
+//	    return i++ < items.size() && math.compare(remain, zero) == 0;
+	  }
+
+	  public boolean over() {
+      return over;
+    }
+
+    public boolean contains(N index) {
+	    for (init(); next();) {
+	      if (math.contains(current.start(), current.end(), index)) return true;
+	    }
+	    return false;
+	  }
+
+    public boolean contains(N start, N count) {
+      SpanExtentSequence seq = new SpanExtentSequence();
+      seq.configure(start, count);
+      for (init(); next();) {
+        for (seq.init(); seq.next();) {
+          if (!math.areExclusive(current, seq.current)) return true;
+        }
+      }
+      return false;
+    }
+	}
 }

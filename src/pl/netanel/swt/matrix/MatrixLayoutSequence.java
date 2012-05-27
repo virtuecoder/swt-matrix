@@ -57,7 +57,7 @@ public class MatrixLayoutSequence<X extends Number, Y extends Number> implements
   private boolean setState() {
     CellExtent<X, Y> extent;
     do {
-      extent = zone.cellMerging.getExtent(seqX.getIndex(), seqY.getIndex());
+      extent = zone.cellMerging.getSpan(seqX.getIndex(), seqY.getIndex());
       if (extent == null) {
         indexX = seqX.index;
         indexY = seqY.index;

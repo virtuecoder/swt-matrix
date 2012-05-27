@@ -381,26 +381,26 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
           for (int j = 0; j < itemsY.size() - 1; j++) {
             AxisItem<X> itemX = itemsX.get(i);
             AxisItem<Y> itemY = itemsY.get(j);
-            
-            CellExtent<X, Y> extent =
-                getZone(itemX.section, itemY.section).cellMerging.getExtent(itemX.index, itemY.index);
+
+            CellExtent<X, Y> span =
+                getZone(itemX.section, itemY.section).cellMerging.getSpan(itemX.index, itemY.index);
 
             // If cell is not merged then continue
-            if (extent == null) continue;
+            if (span == null) continue;
 
             // Otherwise compute the merged bounds
             Bound boundX = null, boundY = null;
-            Bound[] bounds = cache.get(extent);
+            Bound[] bounds = cache.get(span);
             if (bounds == null) {
               boundX = new Bound();
               boundY = new Bound();
-              cache.put(extent, new Bound[] {boundX, boundY});
+              cache.put(span, new Bound[] {boundX, boundY});
 
               boundX.distance = cacheX.cells.get(i).distance;
               boundY.distance = cacheY.cells.get(j).distance;
 
               // If extent is beyond viewport
-              if (mathX.compare(extent.endX, itemsX.get(itemsX.size() - 2).index) > 0) {
+              if (mathX.compare(span.endX, itemsX.get(itemsX.size() - 2).index) > 0) {
 
               }
             }
@@ -409,8 +409,8 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
               boundY = bounds[1];
             }
 
-            int compareX = mathX.compare(extent.startX, itemX.index);
-            int compareY = mathY.compare(extent.startY, itemY.index);
+            int compareX = mathX.compare(span.startX, itemX.index);
+            int compareY = mathY.compare(span.startY, itemY.index);
 
             if (compareX == 0) {
               boundY.width += cacheY.cells.get(j).width;
