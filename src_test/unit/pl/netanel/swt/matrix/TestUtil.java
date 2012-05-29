@@ -24,7 +24,7 @@ class TestUtil {
 		return new MutableExtent(number(n), number(n));
 	}
 
-	public static AxisItem item(Section section, int index) {
+	public static AxisItem<Integer> item(Section section, int index) {
 	  if (section instanceof SectionCore) {
 	    section = new SectionClient((SectionCore) section);
 	  }

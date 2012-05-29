@@ -184,6 +184,22 @@ public class MatrixLayoutSequenceTest {
     assertFalse(seq.next());
   }
 
+  @Test
+  public void _10_0_2_before() throws Exception {
+    layoutX.body.setCount(10);
+    layoutY.body.setCount(10);
+    layoutX.setViewportSize(60);
+    layoutX.scrollTo(TestUtil.item(layoutX.body, 2));
+    zone.setMerged(0, 5, 0, 5);
+    layout.compute();
+    seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
+    seq.init();
+    assertTrue(seq.next());
+    assertCell(2, 0, 1, 1, 51, 16);
+  }
+
+
+
   private void assertCell(int indexX, int indexY, int distanceX, int distanceY, int widthX, int widthY) {
     try {
       assertEquals(indexX, seq.indexX.intValue());

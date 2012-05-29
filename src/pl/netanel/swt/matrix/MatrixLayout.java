@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
+
 import pl.netanel.util.ImmutableIterator;
 
 class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneCore<X, Y>> {
@@ -368,22 +371,24 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
     for (int i1 = 0; i1 < frozenCount; i1++) {
       AxisLayout<X>.Cache cacheX = layoutX.getCache(Frozen.values()[i1]);
       ArrayList<AxisItem<X>> itemsX = cacheX.items;
+      if (itemsX.isEmpty()) continue;
+
       List<MergeCache<X, Y>> mergeX = mergingCache.get(i1);
       for (int j1 = 0; j1 < frozenCount; j1++) {
         AxisLayout<Y>.Cache cacheY = layoutY.getCache(Frozen.values()[j1]);
         ArrayList<AxisItem<Y>> itemsY = cacheY.items;
+        if (itemsY.isEmpty()) continue;
 
         Map<CellExtent<X, Y>, Bound[]> cache = mergeX.get(j1).bounds;
-        if (itemsX.isEmpty()) continue;
 
-        // Check each cell for merging
+        // Check each cell in the viewport cache
         for (int i = 0; i < itemsX.size() - 1; i++) {
           for (int j = 0; j < itemsY.size() - 1; j++) {
             AxisItem<X> itemX = itemsX.get(i);
             AxisItem<Y> itemY = itemsY.get(j);
 
-            CellExtent<X, Y> span =
-                getZone(itemX.section, itemY.section).cellMerging.getSpan(itemX.index, itemY.index);
+            ZoneCore<X, Y> zone = getZone(itemX.section, itemY.section);
+            CellExtent<X, Y> span = zone.cellMerging.getSpan(itemX.index, itemY.index);
 
             // If cell is not merged then continue
             if (span == null) continue;
@@ -399,10 +404,17 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
               boundX.distance = cacheX.cells.get(i).distance;
               boundY.distance = cacheY.cells.get(j).distance;
 
-              // If extent is beyond viewport
-              if (mathX.compare(span.endX, itemsX.get(itemsX.size() - 2).index) > 0) {
+              // If extent starts before the viewport
+              if (mathX.compare(span.startX, itemsX.get(0).index) < 0) {
+                Point size = zone.painters.computeSize(itemX.index, itemY.index, SWT.DEFAULT, SWT.DEFAULT);
+                // Compute length until span start or the maximum size of the cell is reached
+                int x = boundX.distance;
+                seq = SectionItemSequence(Direction.Backward);
+                for (int x = ; mathX.compare(indexX, span.startX) == 0 || x > -size.x; ) {
 
+                }
               }
+              boolean endsAfter = mathX.compare(span.endX, itemsX.get(itemsX.size() - 2).index) > 0;
             }
             else {
               boundX = bounds[0];
