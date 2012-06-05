@@ -4,17 +4,11 @@ package pl.netanel.swt.matrix;
 /**
  * Iterate over a set of numbers.
  * <p>
- * Two modes of iteration are possible by single numbers and by extents of numbers.
- * <p>
  * Example usage: <pre>
  * NumberSequence seq = section.getSelected();
  * // single number iteration
  * for (seq.init(); seq.next();) {
- *     System.out.println(seq.indexY());
- * }
- * // number extents iteration
- * for (seq.init(); seq.nextExtent();) {
- *     System.out.println(seq.start() + " : " + seq.end());
+ *     System.out.println(seq.index());
  * }
  * </pre>
  *
