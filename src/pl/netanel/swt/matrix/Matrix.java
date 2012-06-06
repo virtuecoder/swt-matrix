@@ -209,6 +209,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
    * Value is 1&lt;&lt;9
    */
 	static final int STATE_IS_SELECTED = 1 << 9;
+  private static final int MAX_VIEWPORT_SIZE = 10000;
 
 	/*------------------------------------------------------------------------
 	 * Mouse event modifiers, cannot collide with SWT state masks or mouse button numbers
@@ -1081,35 +1082,25 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	  return computeSize(wHint, hHint);
 	}
 
-	@Override
-	public Point computeSize(int wHint, int hHint) {
-	  area = getClientArea();
-	  if (wHint == SWT.DEFAULT) {
-	    if (area.width == 0) {
-	      wHint = 0;
-	    } else {
-	      Bound x = layoutX.getLineBound(layoutX.indexOf(axisX.getLastItem()) + 1);
-	      if (x == null) {
-	        wHint = 0;
-	      } else {
-	        wHint = x.distance + x.width;
-	      }
-	    }
-	  }
-	  if (hHint == SWT.DEFAULT) {
-	    if (area.width == 0) {
-	      wHint = 0;
-	    } else {
-	      Bound y = layoutY.getLineBound(layoutY.indexOf(axisY.getLastItem()) + 1);
-	      if (y == null) {
-	        hHint = 0;
-	      } else {
-	        hHint = y.distance + y.width;
-	      }
-	    }
-	  }
+  @Override
+  public Point computeSize(int wHint, int hHint) {
+    area = getClientArea();
+    if (wHint == SWT.DEFAULT) {
+      layoutX.setViewportSize(MAX_VIEWPORT_SIZE);
+      layoutX.compute();
+      wHint = layoutX.computeSize();
+//      layoutX.setViewportSize(area.width);
+//      layoutX.compute();
+    }
+    if (hHint == SWT.DEFAULT) {
+      layoutY.setViewportSize(MAX_VIEWPORT_SIZE);
+      layoutY.compute();
+      hHint = layoutY.computeSize();
+//      layoutY.setViewportSize(area.height);
+//      layoutY.compute();
+    }
     return new Point(wHint, hHint);
-	}
+  }
 
 	@SuppressWarnings("unchecked")
 	<N extends Number> void insertInZonesX(SectionCore<N> section, N target, N count) {

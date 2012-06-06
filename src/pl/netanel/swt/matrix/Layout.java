@@ -17,7 +17,7 @@ class Layout<N extends Number> {
 	final CountCache head, tail;
 	final DistanceCache main;
 	final ArrayList<Cache> caches;
-	
+
 	final MutableNumber<N> total, maxInteger, maxScroll, scrollTotal;
 	final MutableNumber<N> scrollPosition; // for head and tail it stores min and max scroll position
 	AxisItem<N> start, end, endNoTrim, current, zeroItem;
@@ -36,7 +36,7 @@ class Layout<N extends Number> {
 
   private final MutableNumber<N> maxIntegerLessOne;
 
-	
+
 	public Layout(Axis<N> axis) {
 		Preconditions.checkArgument(axis.getSectionCount() > 0, "Layout must have at least one section");
 		this.axis = axis;
@@ -50,18 +50,18 @@ class Layout<N extends Number> {
 //		if (sections.length == 0) {
 //		sections.add(new Section(numberClass)); // header
 //		sections.add(new Section(numberClass)); // body
-		
+
 		forward = new Direction.Forward<N>(math, sections, false);
 		backward = new Direction.Backward<N>(math, sections, false);
 		forwardNavigator = new Direction.Forward<N>(math, sections, true);
 		backwardNavigator = new Direction.Backward<N>(math, sections, true);
-		
+
 		head = new CountCache(forward);
 		main = new DistanceCache();
 		tail = new CountCache(backward);
 		caches = new ArrayList<Cache>();
 		caches.add(head); caches.add(main); caches.add(tail);
-		
+
 		SectionCore<N> section = sections.get(0);
 		start = AxisItem.createInternal(section, math.ZERO_VALUE());
 		zeroItem = AxisItem.createInternal(section, math.ZERO_VALUE());
@@ -73,7 +73,7 @@ class Layout<N extends Number> {
 		maxScroll = math.create(0);
 		scrollTotal = math.create(0);
 		scrollPosition = math.create(0);
-		
+
 		callbacks = new ArrayList<Runnable>();
 		isComputingRequired = true;
 		isFocusItemEnabled = true;
@@ -98,7 +98,7 @@ class Layout<N extends Number> {
 	public void compute() {
 		compute(start, forward);
 	}
-	
+
 	/**
 	 * Computes the layout.
 	 * @param origin
@@ -107,35 +107,35 @@ class Layout<N extends Number> {
 	protected void compute(AxisItem<N> start, Direction<N> direction) {
 //		Preconditions.checkState(viewportSize > 0, "Cannot compute for viewport size 0");
 		this.start = start;
-		
+
 		// Compute total and check if body exists
-		total.set(math.ZERO_VALUE()); 
+		total.set(math.ZERO_VALUE());
 		for (SectionCore<N> section: sections) {
 			if (section.isVisible()) {
 				total.add(section.getVisibleCount());
 			}
 		}
-		
+
 		computeCache(start, direction);
-		
+
 		if (current == null) {
 			current = forwardNavigator.first();
 		}
 		ensureCurrentIsValid();
-		
+
 		isComputingRequired = false;
-		
+
 		for (Runnable r: callbacks) {
 			r.run();
 		}
-		
+
 	}
-	
+
 	public void computeCache(AxisItem<N> origin, Direction<N> dir) {
 		// Frozen
 		head.compute(viewportSize);
 		tail.compute(viewportSize - head.innerWidth);
-		
+
 		if (origin != null) {
 			if (!head.isEmpty() && axis.comparePosition(origin, forward.min) < 0) {
 				origin = forward.getItem();
@@ -144,7 +144,7 @@ class Layout<N extends Number> {
 			}
 			dir.set(origin);
 		}
-		
+
 		// Main
 		int mainMaxWidth = viewportSize - head.innerWidth - tail.innerWidth;
 		main.compute(dir, mainMaxWidth);
@@ -156,7 +156,7 @@ class Layout<N extends Number> {
 			dir.set(origin2);
 			main.compute(dir, mainMaxWidth);
 		}
-		
+
 		// Set distances
 		head.setDistances(0);
 		main.setDistances(head.innerWidth);
@@ -166,7 +166,7 @@ class Layout<N extends Number> {
 				head.innerWidth + main.outerWidth - tail.lastLineWidth
 		);
 	}
-	
+
 	public void computeIfRequired() {
 		if (isComputingRequired) {
 			compute();
@@ -181,22 +181,22 @@ class Layout<N extends Number> {
 		compute();
 		return newSize;
 	}
-	
+
 	/**
 	 * Avoid current to be hidden or out of scope.
-	 * 
+	 *
 	 */
 	public void ensureCurrentIsValid() {
 		if (current == null) return;
 		SectionCore<N> currentSection = SectionCore.from(current);
-		
+
 		// Out of scope
 		N count = currentSection.getCount();
 		if (math.compare(current.getIndex(), count) >= 0) {
-			current = math.compare(count, math.ZERO_VALUE()) == 0 ? null : 
+			current = math.compare(count, math.ZERO_VALUE()) == 0 ? null :
 				AxisItem.createInternal(currentSection, math.decrement(current.getIndex()));
 		}
-		
+
 		// Hidden
 		if (current != null && currentSection.hidden.contains(current.getIndex())) {
 			AxisItem<N> item2 = forwardNavigator.nextItem(current);
@@ -206,25 +206,25 @@ class Layout<N extends Number> {
 			current = item2;
 		}
 	}
-	
+
 	private Direction<N> opposite(Direction<N> direction) {
 		return direction instanceof Forward ? backward : forward;
 	}
-	
+
 	int compare(AxisItem<N> item1, AxisItem<N> item2) {
 	  SectionCore<N> section1 = SectionCore.from(item1);
 	  SectionCore<N> section2 = SectionCore.from(item2);
 		int diff = section1.index - section2.index;
 		if (diff != 0) return diff;
 		return math.compare(
-				section1.getOrder(item1.getIndex()), 
+				section1.getOrder(item1.getIndex()),
 				section2.getOrder(item2.getIndex()));
 	}
-	
-	
-	
+
+
+
 	/*------------------------------------------------------------------------
-	 * Navigation 
+	 * Navigation
 	 */
 
 	public boolean setFocusItem(AxisItem<N> item) {
@@ -232,7 +232,7 @@ class Layout<N extends Number> {
 
 	  if (isComputingRequired) compute();
 
-	  AxisItem<N> current2 = 
+	  AxisItem<N> current2 =
 	    forwardNavigator.set(item) ? forwardNavigator.getItem() :
       backwardNavigator.set(item) ? backwardNavigator.getItem() : null;
 
@@ -241,7 +241,7 @@ class Layout<N extends Number> {
     current = current2;
     return result;
 	}
-	
+
 	/**
 	 * Return true if the current item has changed.
 	 * @param move
@@ -250,7 +250,7 @@ class Layout<N extends Number> {
 	// TODO Performance: prevent computation if current does not change
 	public boolean moveFocusItem(Move move) {
 	  if (!isFocusItemEnabled) return false;
-	  
+
   	AxisItem<N> current2 = null;
 		switch (move) {
 		case HOME: 				current2 = forwardNavigator.first(); break;
@@ -266,27 +266,27 @@ class Layout<N extends Number> {
 		}
 		return result;
 	}
-	
+
 	/*------------------------------------------------------------------------
-	 * Scroll 
+	 * Scroll
 	 */
 
 	public boolean show(AxisItem<N> item) {
 		if (item == null) return false;
 		if (isComputingRequired) compute();
-		
+
 		if (axis.comparePosition(item, endNoTrim) > 0) {
 			compute(item, backward);
 			return true;
-		} 
+		}
 		else if (axis.comparePosition(item, start) < 0) {
 			compute(item, forward);
 			return true;
-		} 
+		}
 		// else it is visible already
 		return false;
 	}
-	
+
 	AxisItem<N> scroll(MutableNumber<N> itemCount, Direction<N> direction) {
 		if (isComputingRequired) compute();
 		AxisItem<N> start2 = nextItem(start, itemCount, direction);
@@ -311,22 +311,22 @@ class Layout<N extends Number> {
 	}
 
 	public int getScrollMax() {
-		return math.compare(maxScroll, maxInteger) <= 0 ? 
-				maxScroll.intValue() : maxInteger.intValue(); 
+		return math.compare(maxScroll, maxInteger) <= 0 ?
+				maxScroll.intValue() : maxInteger.intValue();
 	}
 
 	public int getScrollThumb() {
 	  int thumb = main.cells.size() - trim;
     if (isIntegerTooSmall()) {
-      MutableNumber<N> index = math.create(thumb); 
+      MutableNumber<N> index = math.create(thumb);
       index.multiply(maxInteger).divide(scrollTotal);
       thumb = index.compareTo(math.ZERO_VALUE()) == 0 ? 1 : index.intValue();
-	  } 
+	  }
     return thumb;
 	}
 
 	public int getScrollPosition() {
-		MutableNumber<N> index = math.create(scrollPosition); 
+		MutableNumber<N> index = math.create(scrollPosition);
 		if (isIntegerTooSmall()) {
 			index.set(scrollPosition).multiply(maxInteger).divide(scrollTotal);
 			if (math.compare(index, maxIntegerLessOne) == 0) {
@@ -339,7 +339,7 @@ class Layout<N extends Number> {
 		return index.intValue();
 	}
 
-	
+
 	/**
 	 * Moves the scroll position to given position or by the given move amount.
 	 * When the move value is given then position is ignored.
@@ -349,47 +349,47 @@ class Layout<N extends Number> {
 	public boolean setScrollPosition(int position, Move move) {
     //		if (main.scroll == position) return;
 		switch (move) {
-		case NEXT: 			     
+		case NEXT:
 		  if (compare(endNoTrim, backward.min) == 0) return false;
-		  compute(nextItem(start, forward), forward); 
+		  compute(nextItem(start, forward), forward);
 		  return true;
-		  
-		case PREVIOUS: 		   
+
+		case PREVIOUS:
 		  if (compare(start, forward.min) == 0) return false;
-		  compute(nextItem(start, backward), forward); 
+		  compute(nextItem(start, backward), forward);
 		  return true;
-		
-		case NEXT_PAGE: 	   
+
+		case NEXT_PAGE:
 		  if (compare(endNoTrim, backward.min) == 0) return false;
-		  compute(nextItem(backward.start, forward), forward); 
+		  compute(nextItem(backward.start, forward), forward);
 		  return true;
-		  
-		case PREVIOUS_PAGE:  
+
+		case PREVIOUS_PAGE:
 		  if (compare(start, forward.min) == 0) return false;
-		  compute(nextItem(forward.start, backward), backward); 
+		  compute(nextItem(forward.start, backward), backward);
 		  return true;
-		
-		case HOME:  
+
+		case HOME:
 		  if (compare(start, forward.min) == 0) return false;
 		  compute(forward.min, forward);
 		  return true;
 
-		case END:  
+		case END:
 		  if (compare(endNoTrim, backward.min) == 0) return false;
 		  compute(backward.min, backward);
 		  return true;
-			
+
 		default:
 			MutableNumber<N> index = math.create(position);
 			AxisItem<N> item;
 			if (isIntegerTooSmall()) {
 				if (position >= getScrollMax() - getScrollMin() - getScrollThumb()) {
-					/* Enforce going to the end by dragging, 
+					/* Enforce going to the end by dragging,
 						since the thumb number of items will not fit in the viewport */
 					item = backward.min;
 				}
 				else if (position <= head.count) {
-				  // Enforce going to the start 
+				  // Enforce going to the start
 				  item = forward.min;
 				}
 				else {
@@ -417,9 +417,9 @@ class Layout<N extends Number> {
 //		if (axis.symbol == 'X') {
 //		  System.out.println("is required " + (compare(start, forward.min) != 0 || compare(endNoTrim, backward.min) != 0));
 //		}
-		return compare(start, forward.min) != 0 || compare(endNoTrim, backward.min) != 0; 
+		return compare(start, forward.min) != 0 || compare(endNoTrim, backward.min) != 0;
 	}
-	
+
 	public boolean autoScroll(int diff) {
 		if (diff > 0) {
 			if (compare(endNoTrim, backward.min) >= 0 ) return false;
@@ -435,7 +435,7 @@ class Layout<N extends Number> {
 
 	public int getAutoScrollOffset(int lastDistance, int distance) {
 		if (lastDistance < main.distance || lastDistance > main.distance + main.outerWidth) return 0;
-		
+
 		int margin = axis.getAutoScrollOffset();
 		int offset = distance - (tail.distance - margin);
 		if (offset > 0 && lastDistance < distance && compare(endNoTrim, backward.min) < 0) {
@@ -447,7 +447,7 @@ class Layout<N extends Number> {
 		}
 		return 0;
 	}
-	
+
 	AxisItem<N> nextItem(AxisItem<N> item, Direction<N> direction) {
 		if (item == null) item = direction.first();
 		if (item == null) return null;
@@ -461,7 +461,7 @@ class Layout<N extends Number> {
 		direction.set(item);
 		return direction.next(math.create(itemCount));
 	}
-	
+
 	private AxisItem<N> nextPage(AxisItem<N> item, Direction<N> direction) {
 		if (item == null) item = direction.first();
 		if (item == null) return null;
@@ -469,7 +469,7 @@ class Layout<N extends Number> {
 		if (direction instanceof Forward) {
 			direction.set(endNoTrim);
 			if (compare(item, endNoTrim) < 0) {
-				item2 = direction.getItem();				
+				item2 = direction.getItem();
 			} else {
 				item2 = direction.next();
 				if (item2 != null) {
@@ -480,7 +480,7 @@ class Layout<N extends Number> {
 		} else {
 			if (direction.set(start)) {
 				if (compare(item, start) > 0) {
-					item2 = direction.getItem();				
+					item2 = direction.getItem();
 				} else {
 					item2 = direction.next();
 					if (item2 != null) {
@@ -495,46 +495,46 @@ class Layout<N extends Number> {
 		isComputingRequired = true;
 		return item2;
 	}
-	
+
 	/**
-	 * Returns item that can be resized due to the distance in the viewport 
+	 * Returns item that can be resized due to the distance in the viewport
 	 * or null if distance does not imply resizing or the item is not resizable.
-	 * 
+	 *
 	 * @param distance
 	 * @return
 	 */
 	public AxisItem<N> getResizeItem(int distance) {
 		int resizeOffset = axis.getResizeOffset();
 		Cache cache = getCache(distance - resizeOffset);
-			
+
 		for (int i = 1; i < cache.lines.size(); i++) {
 			Bound bound = cache.lines.get(i);
 			int left = bound.distance - resizeOffset;
 			int right = bound.distance + bound.width + resizeOffset;
 			if (left <= distance && distance <= right) {
 				AxisItem<N> item = cache.items.get(i - 1);
-				return item.section.isResizable(item.getIndex()) ? item : null;		
+				return item.section.isResizable(item.getIndex()) ? item : null;
 			}
 		}
-		return null; 
+		return null;
 	}
 	/**
-	 * Override this method to throw IndexOutOfBoundsException 
-	 * in case index is not lower then the section count.  
+	 * Override this method to throw IndexOutOfBoundsException
+	 * in case index is not lower then the section count.
 	 */
 	protected boolean isOutOfBounds(AxisItem<N> item) {
 		return math.compare(item.getIndex(), item.section.getCount()) >= 0;
 	}
 
-	
-	
+
+
 	/*------------------------------------------------------------------------
-	 * Cache 
+	 * Cache
 	 */
 
 	/**
 	 * Stores index data for a frozen area of an <code>AxisLayout</code>.
-	 * 
+	 *
 	 * @author Jacek created 08-12-2010
 	 */
 	abstract class Cache {
@@ -556,7 +556,7 @@ class Layout<N extends Number> {
 		}
 
 		/**
-		 * 
+		 *
 		 * @param cache
 		 * @param maxWidth
 		 * @param count if count <= 0 then it is ignored in the loop
@@ -586,7 +586,7 @@ class Layout<N extends Number> {
 				lines.add(bound1);
 				cells.add(bound2);
 				if (!sections.contains(dir.section)) {
-//					TODO Decide from which section line at the edge is to be drawn.  
+//					TODO Decide from which section line at the edge is to be drawn.
 //					if (!sections.isEmpty()) {
 //						Section lastSection = sections.get(sections.size() - 1);
 //						if (model.getZIndex(lastSection) > model.getZIndex(item.section)) {
@@ -613,7 +613,7 @@ class Layout<N extends Number> {
 			outerWidth = innerWidth;
 			Bound lastLine = null;
 			if (!isEmpty()) {
-				if (dir instanceof Forward) { 
+				if (dir instanceof Forward) {
 					AxisItem<N> item2 = items.get(items.size() - 1);
 					lastLine = lastLine(SectionCore.from(item2), item2.getIndex());
 				} else {
@@ -628,7 +628,7 @@ class Layout<N extends Number> {
 					outerWidth += diff;
 					lastLine.width = freezeLineWidth;
 				}
-			} 
+			}
 		}
 
 		Bound lastLine(SectionCore<N> section, N index) {
@@ -672,15 +672,15 @@ class Layout<N extends Number> {
 		protected boolean condition() { return true; }
 		boolean isEmpty() { return cells.isEmpty(); }
 	}
-	
+
 	/**
-	 * Computes given amount of items. Used for frozen areas.  
-	 * 
+	 * Computes given amount of items. Used for frozen areas.
+	 *
 	 * @author Jacek created 08-12-2010
 	 */
 	class CountCache extends Cache {
 		int count;
-		
+
 		public CountCache(Direction<N> direction) {
 			this.direction = direction;
 		}
@@ -689,21 +689,21 @@ class Layout<N extends Number> {
 		protected boolean condition() {
 			return cells.size() < count;
 		}
-		
+
 		public void compute(int maxWidth) {
 			clear();
 			if (!direction.init()) return;
 			super.compute(direction, maxWidth, count, false);
-			
+
 //			iterator.min = iterator.item;
 //			iterator.freeze = iterator.last;
 		}
 	}
 
 	/**
-	 * Computes items to fit in the given distance range. 
+	 * Computes items to fit in the given distance range.
 	 * Start distance is passed to the compute method.
-	 * 
+	 *
 	 * @author Jacek created 08-12-2010
 	 */
 	class DistanceCache extends Cache {
@@ -711,16 +711,16 @@ class Layout<N extends Number> {
 		protected boolean condition() {
 			return item == null || !item.equals(forward.freeze) && !item.equals(backward.freeze);
 		}
-		
+
     public void compute(Direction<N> direction, int maxWidth) {
 			clear();
-			
+
 			super.compute(direction, maxWidth, -1, direction == forward);
 
 			start = Util.notNull(super.isEmpty() ? forward.min : items.get(0), zeroItem);
 			end = Util.notNull(super.isEmpty() ? forward.min: items.get(items.size() - 2), zeroItem);
-			
-			// Compute last index that is fully visible (not trimmed) 
+
+			// Compute last index that is fully visible (not trimmed)
 			endNoTrim = end;
 			isTrimmed = false;
 			trim = 0;
@@ -729,7 +729,7 @@ class Layout<N extends Number> {
 					endNoTrim = items.get(items.size() - 3);
 					if (outerWidth != maxWidth +
             cells.get(cells.size() - 1).width +
-            lines.get(lines.size() - 2).width) 
+            lines.get(lines.size() - 2).width)
 					{
 					  isTrimmed = true;
 					}
@@ -739,10 +739,10 @@ class Layout<N extends Number> {
 //			if (start.section.index == 1) {
 //			  TestUtil.log(axis.matrix.getDisplay().getCursorLocation().x, endNoTrim, end, isTrimmed);
 //			}
-      
+
 			forward.start = start;
 			backward.start = endNoTrim;
-			
+
 			maxScroll.set(total).add(-tail.count);
 			scrollTotal.set(maxScroll).add(-head.count);
 			if (!super.isEmpty()) {
@@ -755,15 +755,15 @@ class Layout<N extends Number> {
 	}
 
 	private Cache getCache(Frozen frozen) {
-		return 	frozen == Frozen.NONE ? main : 
+		return 	frozen == Frozen.NONE ? main :
 				frozen == Frozen.HEAD ? head : tail;
 	}
-	
+
 	private Cache getCache(int distance) {
 		return distance < main.distance && !head.isEmpty() ? head :
 			   distance > tail.distance && !tail.isEmpty() ? tail : main;
 	}
-	
+
 	private Cache getCache(Section<N> section, N index) {
 		for (Cache cache: caches) {
 			int len = cache.cells.size();
@@ -791,11 +791,11 @@ class Layout<N extends Number> {
 		}
 		return null;
 	}
-	
+
 	AxisItem<N> getItemByPosition(MutableNumber<N> position) {
 		MutableNumber<N> pos1 = math.create(0);
 		MutableNumber<N> pos2 = math.create(0);
-		
+
 		for (int i = 0, size = sections.size(); i < size; i++) {
 			SectionCore<N> section = sections.get(i);
 			if (!section.isVisible()) continue;
@@ -818,7 +818,7 @@ class Layout<N extends Number> {
 		Cache cache = getCache(distance);
 		if (cache.cells.isEmpty()) return null;
 		if (distance < cache.cells.get(0).distance) return cache.items.get(0);
-		
+
 		AxisItem<N> item = null;
 		for (int i = 0; i < cache.cells.size(); i++) {
 			Bound bounds = cache.cells.get(i);
@@ -833,19 +833,19 @@ class Layout<N extends Number> {
 //		return getBeyond && !cache.isEmpty() ? cache.items.get(cache.items.size() - 2) : null;
 	}
 
-	
+
 	public LayoutSequence<N> cellSequence(Frozen frozen, SectionCore<N> section) {
 		if (isComputingRequired) compute();
 		Cache cache = getCache(frozen);
 		return new LayoutSequence<N>(cache.items, cache.cells, section);
 	}
-	
+
 	public LayoutSequence<N> lineSequence(Frozen frozen, SectionCore<N> section) {
 		if (isComputingRequired) compute();
 		Cache cache = getCache(frozen);
 		return new LayoutSequence<N>(cache.items, cache.lines, section);
 	}
-	
+
 //	public LayoutSequence<N> singleSequence(int distance, int width) {
 //		LayoutSequence<N> seq = new LayoutSequence<N>(null, null, null) {
 //			private boolean started;
@@ -863,8 +863,8 @@ class Layout<N extends Number> {
 //		return seq;
 //	}
 
-	
-	
+
+
 	public boolean contains(Frozen frozen, SectionCore<N> section) {
 		List<SectionCore<N>> sections = getCache(frozen).sections;
 		if (sections.contains(section)) {
@@ -872,19 +872,19 @@ class Layout<N extends Number> {
 		}
 		return false;
 	}
-	
+
 	public boolean contains(AxisItem<N> item) {
-	  return getCache(item.section, item.index) != null; 
+	  return getCache(item.section, item.index) != null;
 	}
 
 	public Bound getBound(Frozen frozen) {
 		Cache cache = getCache(frozen);
-		return new Bound(cache.distance, cache == main 
+		return new Bound(cache.distance, cache == main
 				? viewportSize - head.innerWidth - tail.innerWidth
 				: cache.outerWidth);
 	}
-	
-	// TODO cache the section bonds in a frozen 
+
+	// TODO cache the section bonds in a frozen
 	public Bound getBound(Frozen frozen, SectionCore<N> section) {
 		Cache cache = getCache(frozen);
 		int first = -1, last = -1;
@@ -912,10 +912,10 @@ class Layout<N extends Number> {
 			Bound b = cache.lines.get(last == -1 ? cache.items.size() - 1 : last);
 			int distance = cache.lines.get(first).distance;
 			return new Bound(distance, b.distance + b.width - distance);
-			
+
 		}
 	}
-	
+
 	public Bound getCellBound(AxisItem<N> item) {
 		Cache cache = getCache(item.section, item.getIndex());
 		if (cache == null) return null;
@@ -926,7 +926,7 @@ class Layout<N extends Number> {
 		}
 		return null;
 	}
-	
+
 	public Bound getLineBound(AxisItem<N> item) {
 		Cache cache = getCache(item.section, item.getIndex());
 		if (cache == null) return null;
@@ -937,12 +937,12 @@ class Layout<N extends Number> {
 		}
 		return null;
 	}
-	
+
 	public boolean isEmpty() {
 		return head.isEmpty() && main.isEmpty() && tail.isEmpty();
 	}
 
-	
+
 	public void freezeHead(int freezeItemCount) {
 		isComputingRequired = head.count != freezeItemCount;
 		head.count = freezeItemCount;
@@ -952,21 +952,21 @@ class Layout<N extends Number> {
 		isComputingRequired = tail.count != freezeItemCount;
 		tail.count = freezeItemCount;
 	}
-	
+
 	public void freezeHead(AxisItem<N> item) {
 		int count = 0;
 		for (Cache cache: caches) {
 			for (int i = 0, imax = cache.cells.size(); i < imax; i++, count++) {
 				AxisItem<N> item2 = cache.items.get(i);
-				if (item2.section.equals(item.section) && 
+				if (item2.section.equals(item.section) &&
 						math.compare(item2.getIndex(), item.getIndex()) == 0) {
 					freezeHead(count);
 					return;
-				} 
+				}
 			}
 		}
 	}
-	
+
 	public void freezeTail(AxisItem<N> item) {
 		int count = 0;
 		@SuppressWarnings("unchecked")
@@ -975,11 +975,11 @@ class Layout<N extends Number> {
 		for (Cache cache: list) {
 			for (int i = cache.cells.size(); i-- > 0; count++) {
 				AxisItem<N> item2 = cache.items.get(i);
-				if (item2.section.equals(item.section) && 
+				if (item2.section.equals(item.section) &&
 						math.compare(item2.getIndex(), item.getIndex()) == 0) {
 					freezeTail(count);
 					return;
-				} 
+				}
 			}
 		}
 	}
@@ -989,15 +989,15 @@ class Layout<N extends Number> {
 		for (Cache cache: caches) {
 			for (int i = 0, imax = cache.cells.size(); i < imax; i++, count++) {
 				AxisItem<N> item2 = cache.items.get(i);
-				if (item2.section.equals(item.section) && 
+				if (item2.section.equals(item.section) &&
 						math.compare(item2.getIndex(), item.getIndex()) == 0) {
 					return count;
-				} 
+				}
 			}
 		}
 		return -1;
 	}
-	
+
 	public AxisItem<N> getIndexAt(int index) {
 		if (index < head.count) return head.items.get(index);
 		index -= head.count;
@@ -1006,7 +1006,7 @@ class Layout<N extends Number> {
 		if (index < tail.count) return tail.items.get(index);
 		return null;
 	}
-	
+
 	public Bound getCellBound(int index) {
 		if (index < head.count) return head.cells.get(index);
 		index -= head.count;
@@ -1028,23 +1028,41 @@ class Layout<N extends Number> {
 		SectionCore<N> sourceSection = SectionCore.from(source);
 		SectionCore<N> targetSection = SectionCore.from(target);
     if (!sourceSection.equals(targetSection)) return false;
-		
+
 		int position = compare(target, start);
-		
+
 		if (!sourceSection.moveSelected(source.getIndex(), target.getIndex())) return false;
-		
+
 		// Adjust the scroll position if moving before the start
 		if (position <= 0) {
 			NumberSequence<N> selected = sourceSection.getSelectedSequence();
 			selected.init(); selected.next();
 			start = AxisItem.createInternal(sourceSection, selected.index());
-		} 
+		}
 		// Adjust the scroll position if moving the start
 		else if (sourceSection.isSelected(start.getIndex())) {
 			start = AxisItem.createInternal(sourceSection, target.getIndex());
 		}
-		
+
 		compute();
 		return true;
 	}
+
+  public int computeSize() {
+    int w = 0;
+    if (!tail.lines.isEmpty()) {
+      Bound bound = tail.lines.get(tail.lines.size() - 1);
+      w += bound.distance;
+    }
+    if (!main.lines.isEmpty()) {
+      Bound bound = main.lines.get(main.lines.size() - 1);
+      w += bound.distance + bound.width;
+    }
+    if (!head.lines.isEmpty()) {
+      Bound bound = head.lines.get(head.lines.size() - 1);
+      w += bound.distance;
+    }
+
+    return w;
+  }
 }
