@@ -48,6 +48,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 	private Matrix<X, Y> matrix;
 	final Rectangle bounds;
+	X cellMergeLimitX;
+	Y cellMergeLimitY;
 
 
   /**
@@ -69,6 +71,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		cellSelection = new CellSet<X, Y>(mathX, mathY);
 		lastSelection = new CellSet<X, Y>(mathX, mathY);
 		cellMerging = new CellSpanSet<X, Y>(sectionX.finale, sectionY.finale);
+		cellMergeLimitX = mathX.create(1000).getValue();
+		cellMergeLimitY = mathY.create(1000).getValue();
 
 //		foreground = new MapValueToCellSet<X, Y, Color>(mathX, mathY);
 //		text = new MapValueToCellSet(this.sectionY.math, this.sectionX.math);
@@ -341,8 +345,19 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 	@Override
 	public boolean isMerged(X indexX, Y indexY) {
-    return cellMerging.contains(indexX, indexY);
-  }
+	  return cellMerging.contains(indexX, indexY);
+	}
+
+	@Override
+	public void setMergeLimit(X limitX, Y limitY) {
+	  cellMergeLimitX = limitX;
+	  cellMergeLimitY = limitY;
+	};
+
+	@Override
+	public Cell<X, Y> getMergeLimit() {
+	  return Cell.createUnchecked(cellMergeLimitX, cellMergeLimitY);
+	}
 
 
 	/*------------------------------------------------------------------------
@@ -436,8 +451,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
       switch (p.scope) {
 
 			case Painter.SCOPE_CELLS_X:
-			  MatrixLayoutSequence<X, Y> seq =
-			    new MatrixLayoutSequence<X, Y>(matrix.layout, frozenX, frozenY, this, Matrix.TYPE_CELLS);
+			  MatrixLayoutCellSequence<X, Y> seq =
+			    new MatrixLayoutCellSequence<X, Y>(matrix.layout, frozenX, frozenY, this);
 
 //			  LayoutSequence2<X, Y> seqXY = new LayoutSequence2<X, Y>(
 //			      layoutX.cellSequence(frozenX, sectionX),

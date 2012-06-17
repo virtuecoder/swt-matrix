@@ -66,22 +66,6 @@ public class CellExtent<X extends Number, Y extends Number> {
   }
 
   /**
-   * Constructs the cell from the start indexes and end indexes.
-   *
-   * @param startX start cell index on the horizontal axis
-   * @param endX end cell index on the horizontal axis
-   * @param startY start cell index on the vertical axis
-   * @param endY end cell index on the vertical axis
-   */
-  private CellExtent(X startX, X endX, Y startY, Y endY) {
-    this.startX = startX;
-    this.endX = endX;
-    this.startY = startY;
-    this.endY = endY;
-  }
-
-
-  /**
    * Creates a new instance of CellExtent from start and end cells. Arguments are validated.
    *
    * @param start the top left corner of the range of cells
@@ -116,6 +100,56 @@ public class CellExtent<X extends Number, Y extends Number> {
     createUnchecked(Cell<X, Y> start, Cell<X, Y> end)
   {
     return new CellExtent<X, Y>(start, end);
+  }
+
+  /**
+   * Creates a new instance of CellExtent from X and Y extents. Arguments are validated.
+   *
+   * @param start the top left corner of the range of cells
+   * @param end the bottom right corner of the range of cells
+   * @return a new instance of this class
+   *
+   * @throws IllegalArgumentException if <code>start</code> or <code>end</code> is null.
+   * @throws IndexOutOfBoundsException indexX or indexY of <code>start</code> or
+   *           <code>end</code> is negative.
+   * @throws IllegalArgumentException if
+   *           indexX of <code>start</code> is greater then indexX of <code>end</code> or
+   *           indexY of <code>start</code> is greater then indexY of <code>end</code>
+   */
+  public static <X extends Number, Y extends Number> CellExtent<X, Y>
+  create(Extent<X> extentX, Extent<Y> extentY)
+  {
+    Preconditions.checkNotNullWithName(extentX, "extentX");
+    Preconditions.checkNotNullWithName(extentY, "extentY");
+    return new CellExtent<X, Y>(extentX.start, extentX.end, extentY.start, extentY.end);
+  }
+
+  /**
+   * Creates a new instance of CellExtent from X and Y extents without checking arguments validity.
+   *
+   * @param start the top left corner of the range of cells
+   * @param end the bottom right corner of the range of cells
+   * @return a new instance of this class
+   */
+  public static <X extends Number, Y extends Number> CellExtent<X, Y>
+  createUnchecked(Extent<X> extentX, Extent<Y> extentY)
+  {
+    return new CellExtent<X, Y>(extentX.start, extentX.end, extentY.start, extentY.end);
+  }
+
+  /**
+   * Constructs the cell from the start indexes and end indexes.
+   *
+   * @param startX start cell index on the horizontal axis
+   * @param endX end cell index on the horizontal axis
+   * @param startY start cell index on the vertical axis
+   * @param endY end cell index on the vertical axis
+   */
+  private CellExtent(X startX, X endX, Y startY, Y endY) {
+    this.startX = startX;
+    this.endX = endX;
+    this.startY = startY;
+    this.endY = endY;
   }
 
   /**

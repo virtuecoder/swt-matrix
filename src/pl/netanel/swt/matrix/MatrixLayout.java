@@ -21,6 +21,7 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
   private ExtentPairSequence seq;
   private Matrix<X, Y> matrix;
   List<List<MergeCache<X, Y>>> mergingCache;
+  private boolean isComputingRequired;
 
 
   public MatrixLayout(AxisLayout<X> layoutX, AxisLayout<Y> layoutY) {
@@ -355,9 +356,15 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
     computeMerging();
   }
 
-   public void computeMerging() {
-     Math<X> mathX = layoutX.math;
-     Math<Y> mathY = layoutY.math;
+  public void computeMergingIfRequired() {
+    if (isComputingRequired) {
+      computeMerging();
+    }
+  }
+
+  public void computeMerging() {
+    Math<X> mathX = layoutX.math;
+    Math<Y> mathY = layoutY.math;
 
     // Clear merging cache
     int frozenCount = Frozen.values().length;
@@ -397,45 +404,30 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
             Bound boundX = null, boundY = null;
             Bound[] bounds = cache.get(span);
             if (bounds == null) {
-              boundX = new Bound();
-              boundY = new Bound();
+              boundX = layoutX.getBound(itemX, span.startX, span.endX, cacheX.cells.get(i).distance);
+              boundY = layoutY.getBound(itemY, span.startY, span.endY, cacheY.cells.get(j).distance);
               cache.put(span, new Bound[] {boundX, boundY});
-
-              boundX.distance = cacheX.cells.get(i).distance;
-              boundY.distance = cacheY.cells.get(j).distance;
-
-              // If extent starts before the viewport
-              if (mathX.compare(span.startX, itemsX.get(0).index) < 0) {
-                Point size = zone.painters.computeSize(itemX.index, itemY.index, SWT.DEFAULT, SWT.DEFAULT);
-                // Compute length until span start or the maximum size of the cell is reached
-                int x = boundX.distance;
-                seq = SectionItemSequence(Direction.Backward);
-                for (int x = ; mathX.compare(indexX, span.startX) == 0 || x > -size.x; ) {
-
-                }
-              }
-              boolean endsAfter = mathX.compare(span.endX, itemsX.get(itemsX.size() - 2).index) > 0;
             }
             else {
               boundX = bounds[0];
               boundY = bounds[1];
             }
 
-            int compareX = mathX.compare(span.startX, itemX.index);
-            int compareY = mathY.compare(span.startY, itemY.index);
-
-            if (compareX == 0) {
-              boundY.width += cacheY.cells.get(j).width;
-              if (compareY < 0) {
-                boundY.width += cacheY.lines.get(j).width;
-              }
-            }
-            if (compareY == 0) {
-              boundX.width += cacheX.cells.get(i).width;
-              if (compareX < 0) {
-                boundX.width += cacheX.lines.get(i).width;
-              }
-            }
+//            int compareX = mathX.compare(span.startX, itemX.index);
+//            int compareY = mathY.compare(span.startY, itemY.index);
+//
+//            if (compareX == 0) {
+//              boundY.width += cacheY.cells.get(j).width;
+//              if (compareY < 0) {
+//                boundY.width += cacheY.lines.get(j).width;
+//              }
+//            }
+//            if (compareY == 0) {
+//              boundX.width += cacheX.cells.get(i).width;
+//              if (compareX < 0) {
+//                boundX.width += cacheX.lines.get(i).width;
+//              }
+//            }
             //if (itemY.index.equals(extent.endY) && itemX.index.equals(extent.endX)) continue;
           }
         }

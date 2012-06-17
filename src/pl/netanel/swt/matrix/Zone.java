@@ -152,9 +152,9 @@ public interface Zone<X extends Number, Y extends Number> {
    * which can be altered by move and hide operations.
    *
    * @param indexX index of the column item from which the merging starts
-   * @param countX quantity of column items being merged 
+   * @param countX quantity of column items being merged
    * @param indexY index of the row item from which the merging starts
-   * @param countY quantity of row items being merged 
+   * @param countY quantity of row items being merged
    * @return true if the cell become merged, false if the merging has been removed
    *
    * @throws IllegalArgumentException if <code>indexX</code> or <code>countX</code>
@@ -190,6 +190,10 @@ public interface Zone<X extends Number, Y extends Number> {
    *         0 ... this.getSectionX().getCount() bounds
    */
   boolean isMerged(X indexX, Y indexY);
+
+  Cell<X, Y> getMergeLimit();
+
+  void setMergeLimit(X limitX, Y limitY);
 
 
   /**
@@ -525,5 +529,6 @@ public interface Zone<X extends Number, Y extends Number> {
   Matrix<X, Y> getMatrix();
 
   boolean contains(CellExtent<X, Y> cellExtent, X indexX, Y indexY);
+
 
 }

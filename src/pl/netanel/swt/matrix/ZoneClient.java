@@ -1,6 +1,7 @@
 package pl.netanel.swt.matrix;
 
 import java.math.BigInteger;
+import java.text.MessageFormat;
 import java.util.Iterator;
 
 import org.eclipse.swt.events.SelectionListener;
@@ -131,10 +132,14 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 
   @Override
-  public boolean setMerged(X startX, X endX, Y startY, Y endY) {
-    sectionX.checkRange(startX, endX, sectionX.getCount());
-    sectionY.checkRange(startY, endY, sectionY.getCount());
-    return core.setMerged(startX, endX, startY, endY);
+  public boolean setMerged(X indexX, X countX, Y indexY, Y countY) {
+    sectionX.checkCellIndex(indexX, "indexX");
+    sectionY.checkCellIndex(indexY, "indexY");
+    Preconditions.checkArgument(core.sectionX.math.compare(countX, core.cellMergeLimitX) > 0,
+        MessageFormat.format("count{0} {1} is beyond merge limit extended {2}", "X", countX, core.cellMergeLimitX));
+    Preconditions.checkArgument(core.sectionY.math.compare(countY, core.cellMergeLimitY) > 0,
+        MessageFormat.format("count{0} {1} is beyond merge limit extended {2}", "Y", countY, core.cellMergeLimitY));
+    return core.setMerged(indexX, countX, indexY, countY);
   }
 
   @Override
@@ -144,6 +149,17 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     return core.isMerged(indexX, indexY);
   }
 
+  @Override
+  public void setMergeLimit(X limitX, Y limitY) {
+    sectionX.checkCellIndex(limitX, "limitX");
+    sectionY.checkCellIndex(limitY, "limitY");
+    core.setMergeLimit(limitX, limitY);
+  };
+
+  @Override
+  public Cell<X, Y> getMergeLimit() {
+    return core.getMergeLimit();
+  }
 
   @Override
   public void addPainter(Painter<X, Y> painter) {

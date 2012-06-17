@@ -465,13 +465,16 @@ public class Axis<N extends Number>  {
 		layout.autoScrollOffset = offset;
 	}
 
-	/**
+
+  /**
 	 * Returns the offset from the dividing line within which dragging changes the width of the axis item.
 	 * The default value is 3 for horizontal and 2 for vertical axis.
 	 */
 	public int getResizeOffset() {
 		return layout.resizeOffset;
 	}
+
+
 
 	/**
 	 * Sets the offset from the dividing line within which dragging changes the axis item width.

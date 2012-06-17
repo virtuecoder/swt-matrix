@@ -12,7 +12,7 @@ public class MatrixLayoutSequenceTest {
   private AxisLayout<Integer> layoutX;
   private AxisLayout<Integer> layoutY;
   private MatrixLayout<Integer, Integer> layout;
-  private MatrixLayoutSequence<Integer, Integer> seq;
+  private MatrixLayoutCellSequence<Integer, Integer> seq;
 
   @Before
   public void setUp() {
@@ -25,7 +25,7 @@ public class MatrixLayoutSequenceTest {
   @Test
   public void cellSequence0x0() throws Exception {
     layout.compute();
-    seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
+    seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
     assertFalse(seq.next());
   }
@@ -33,7 +33,7 @@ public class MatrixLayoutSequenceTest {
   @Test
   public void cellSequence1x0() throws Exception {
     layout.compute();
-    seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
+    seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
     assertFalse(seq.next());
   }
@@ -41,7 +41,7 @@ public class MatrixLayoutSequenceTest {
   @Test
   public void cellSequence0x1() throws Exception {
     layout.compute();
-    seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
+    seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
     assertFalse(seq.next());
   }
@@ -51,7 +51,7 @@ public class MatrixLayoutSequenceTest {
     layoutX.body.setCount(1);
     layoutY.body.setCount(1);
     layout.compute();
-    seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
+    seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
     assertTrue(seq.next());
     assertCell(0, 0, 1, 1, 16, 16);
@@ -63,7 +63,7 @@ public class MatrixLayoutSequenceTest {
     layoutX.body.setCount(2);
     layoutY.body.setCount(2);
     layout.compute();
-    seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
+    seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
     assertTrue(seq.next());
     assertCell(0, 0, 1, 1, 16, 16);
@@ -84,7 +84,7 @@ public class MatrixLayoutSequenceTest {
     layoutY.body.setCount(3);
     zone.setMerged(0, 2, 0, 2);
     layout.compute();
-    seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
+    seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
     assertTrue(seq.next());
     assertCell(0, 0, 1, 1, 33, 33);
@@ -97,7 +97,7 @@ public class MatrixLayoutSequenceTest {
     layoutY.body.setCount(3);
     zone.setMerged(0, 2, 0, 2);
     layout.compute();
-    seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
+    seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
     assertTrue(seq.next());
     assertCell(0, 0, 1, 1, 33, 33);
@@ -121,7 +121,7 @@ public class MatrixLayoutSequenceTest {
     zone.setMerged(0, 2, 0, 2);
     zone.setMerged(2, 1, 1, 2);
     layout.compute();
-    seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
+    seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
     assertTrue(seq.next());
     assertCell(0, 0, 1, 1, 33, 33);
@@ -143,7 +143,7 @@ public class MatrixLayoutSequenceTest {
     zone.setMerged(0, 2, 0, 2);
     zone.setMerged(0, 3, 2, 1);
     layout.compute();
-    seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
+    seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
     assertTrue(seq.next());
     assertCell(0, 0, 1, 1, 33, 33);
@@ -163,7 +163,7 @@ public class MatrixLayoutSequenceTest {
     zone.setMerged(0, 2, 2, 1);
     zone.setMerged(2, 1, 0, 2);
     layout.compute();
-    seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
+    seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
     assertTrue(seq.next());
     assertCell(0, 0, 1, 1, 16, 16);
@@ -192,10 +192,10 @@ public class MatrixLayoutSequenceTest {
     layoutX.scrollTo(TestUtil.item(layoutX.body, 2));
     zone.setMerged(0, 5, 0, 5);
     layout.compute();
-    seq = new MatrixLayoutSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone, Matrix.TYPE_CELLS);
+    seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
     assertTrue(seq.next());
-    assertCell(2, 0, 1, 1, 51, 16);
+    assertCell(0, 0, -33, 1, 84, 84);
   }
 
 

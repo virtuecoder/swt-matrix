@@ -187,6 +187,45 @@ class CellSpanSet<X extends Number, Y extends Number> {
 	  return null;
 	}
 
+	public CellExtent<X, Y> getSpanSequence(X x, Y y) {
+	  for (int i = 0; i < itemsX.size(); i++) {
+	    MutableExtent<X> spanX = itemsX.get(i);
+	    MutableExtent<Y> spanY = itemsY.get(i);
+
+	    if (orderX.getSpanExtents(spanX).contains(x) &&
+	        orderY.getSpanExtents(spanY).contains(y))
+	    {
+	      return CellExtent.createUnchecked(
+	          spanX.start.getValue(), spanX.end.getValue(),
+	          spanY.start.getValue(), spanY.end.getValue());
+	    }
+	  }
+	  return null;
+	}
+
+	public class SpanSequence implements Sequence {
+	  X indexX;
+	  Y indexY;
+    private int i;
+
+    public SpanSequence(X indexX, Y indexY) {
+      super();
+      this.indexX = indexX;
+      this.indexY = indexY;
+    }
+
+    @Override
+    public void init() {
+      i = 0;
+    }
+
+    @Override
+    public boolean next() {
+      if (i == size()) return false;
+      return false;
+    }
+
+	}
 
 //	int intersect(MutableNumber startY, MutableNumber endY, MutableNumber startX, MutableNumber endX,
 //			MutableNumber startYb, MutableNumber endYb, MutableNumber startXb, MutableNumber endXb)

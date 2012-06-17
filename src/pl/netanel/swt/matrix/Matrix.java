@@ -55,7 +55,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
 	static final int TYPE_CELLS = 1;
 	static final int TYPE_LINES = 2;
-	
+
 	static final int FORWARD = -1;
 	static final int BACKWARD = 1;
 

@@ -2,14 +2,13 @@ package pl.netanel.swt.matrix;
 
 import java.util.Map;
 
-public class MatrixLayoutSequence<X extends Number, Y extends Number> implements Sequence {
+public class MatrixLayoutLineSequenceX<X extends Number, Y extends Number> implements Sequence {
   // Sequence current state
   X indexX;
   Y indexY;
   public Bound boundX, boundY;
 
   // Private
-//  private final MatrixLayout<X, Y> layout;
   private final ZoneCore<X, Y> zone;
   private AxisLayoutSequence<X> seqX;
   private AxisLayoutSequence<Y> seqY;
@@ -23,12 +22,12 @@ public class MatrixLayoutSequence<X extends Number, Y extends Number> implements
    * @param layout
    * @param frozen
    * @param zone
-   * @param type Matrix.TYPE_CELLS or Matrix.TYPE_LINES
    */
-  public MatrixLayoutSequence(MatrixLayout<X, Y> layout, Frozen frozenX, Frozen frozenY, ZoneCore<X, Y> zone, int type) {
+  public MatrixLayoutLineSequenceX(MatrixLayout<X, Y> layout, Frozen frozenX, Frozen frozenY,
+      ZoneCore<X, Y> zone) {
     this.zone = zone;
-    seqX = layout.layoutX.sequence(frozenX, zone.sectionX, type);
-    seqY = layout.layoutY.sequence(frozenY, zone.sectionY, type);
+    seqX = layout.layoutX.lineSequence(frozenX, zone.sectionX);
+    seqY = layout.layoutY.lineSequence(frozenY, zone.sectionY);
     cache = layout.mergingCache.get(frozenX.ordinal()).get(frozenY.ordinal()).bounds;
   }
 
@@ -41,7 +40,10 @@ public class MatrixLayoutSequence<X extends Number, Y extends Number> implements
 
   @Override
   public boolean next() {
-    if (empty) return false;
+    boolean next = seqX.next();
+    if (!next) return false;
+    zone.cellMerging.getSpanSequence(seqX.index, null);
+
     if (seqX.next()) {
       return setState();
     }

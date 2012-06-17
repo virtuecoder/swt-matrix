@@ -103,7 +103,7 @@ class AxisLayout<N extends Number> {
 		SectionCore<N> section = this.sections.get(0);
 		start = AxisItem.createInternal(section, math.ZERO_VALUE());
 		zeroItem = AxisItem.createInternal(section, math.ZERO_VALUE());
-		forwardNavigator.init();
+		forwardNavigator.initNotEmpty();
 		current = forwardNavigator.getItem();
 		total = math.create(0);
 		maxInteger = math.create(Integer.MAX_VALUE);
@@ -186,7 +186,7 @@ class AxisLayout<N extends Number> {
 			} else if (!tail.isEmpty() && comparePosition(origin, backward.min) > 0) {
 				origin = backward.getItem();
 			}
-			dir.set(origin);
+			dir.setHasMore(origin);
 		}
 
 		// Main
@@ -197,7 +197,7 @@ class AxisLayout<N extends Number> {
 		{
 			AxisItem<N> origin2 = opposite.start;
 			dir = opposite(dir);
-			dir.set(origin2);
+			dir.setHasMore(origin2);
 			main.compute(dir, mainMaxWidth);
 		}
 
@@ -288,8 +288,8 @@ class AxisLayout<N extends Number> {
 	  if (isComputingRequired) compute();
 
 	  AxisItem<N> current2 =
-	    forwardNavigator.set(item) ? forwardNavigator.getItem() :
-      backwardNavigator.set(item) ? backwardNavigator.getItem() : null;
+	    forwardNavigator.setHasMore(item) ? forwardNavigator.getItem() :
+      backwardNavigator.setHasMore(item) ? backwardNavigator.getItem() : null;
 
     if (current2 == null) return false;
     boolean result = compare(current, current2) != 0;
@@ -353,7 +353,7 @@ class AxisLayout<N extends Number> {
 
 	public void scrollTo(AxisItem<N> item) {
 		if (item.equals(start) || isOutOfBounds(item)) return;
-		if (forward.set(start = item)) {
+		if (forward.setHasMore(start = item)) {
 			start = forward.getItem();
 		}
 //		if (forward.hasNext()) {
@@ -505,14 +505,14 @@ class AxisLayout<N extends Number> {
 	AxisItem<N> nextItem(AxisItem<N> item, Direction<N> direction) {
 		if (item == null) item = direction.first();
 		if (item == null) return null;
-		direction.set(item);
-		return direction.next();
+		direction.setHasMore(item);
+		return direction.nextItem();
 	}
 
 	AxisItem<N> nextItem(AxisItem<N> item, MutableNumber<N> itemCount, Direction<N> direction) {
 		// TODO skip the hidden items
-		if (!direction.init()) return item;
-		direction.set(item);
+		if (!direction.initNotEmpty()) return item;
+		direction.setHasMore(item);
 		return direction.next(math.create(itemCount));
 	}
 
@@ -521,22 +521,22 @@ class AxisLayout<N extends Number> {
 		if (item == null) return null;
 		AxisItem<N> item2;
 		if (direction instanceof Forward) {
-			direction.set(endNoTrim);
+			direction.setHasMore(endNoTrim);
 			if (compare(item, endNoTrim) < 0) {
 				item2 = direction.getItem();
 			} else {
-				item2 = direction.next();
+				item2 = direction.nextItem();
 				if (item2 != null) {
 					compute(item2, direction);
 					item2 = endNoTrim;
 				}
 			}
 		} else {
-			if (direction.set(start)) {
+			if (direction.setHasMore(start)) {
 				if (compare(item, start) > 0) {
 					item2 = direction.getItem();
 				} else {
-					item2 = direction.next();
+					item2 = direction.nextItem();
 					if (item2 != null) {
 						compute(item2, direction);
 						item2 = start;
@@ -652,7 +652,7 @@ class AxisLayout<N extends Number> {
 				}
 
 				if (canTrim && innerWidth > maxWidth) break;
-				item = dir.next();
+				item = dir.nextItem();
 			}
 
 			if (count >= 0) {
@@ -745,7 +745,7 @@ class AxisLayout<N extends Number> {
 
 		public void compute(int maxWidth) {
 			clear();
-			if (!direction.init()) return;
+			if (!direction.initNotEmpty()) return;
 			super.compute(direction, maxWidth, count, false);
 
 //			iterator.min = iterator.item;
@@ -1106,5 +1106,35 @@ class AxisLayout<N extends Number> {
 
 		compute();
 		return true;
+	}
+
+	public Bound getBound(AxisItem<N> item, N start, N count, int distance) {
+	  Section<N> section = item.section;
+
+    // Point size = zone.painters.computeSize(itemX.index, itemY.index, SWT.DEFAULT, SWT.DEFAULT);
+    // Compute length until span start or the maximum size of the cell is reached
+    int w = 0;
+    MutableNumber<N> c = math.create(0);
+
+    Direction<N> seq = backward;
+    for (seq.init(item); seq.next();) {
+      N index = seq.getItem().index;
+      if (math.compare(index, start) <= 0) break;
+      w += section.getCellWidth(index) + section.getLineWidth(index);
+      c.increment();
+    }
+    distance -= w;
+
+    int lineWidth = 0;
+    seq = forward;
+    for (seq.init(item); seq.next();) {
+      if (math.compare(c, count) == 0) break;
+      N index = seq.getItem().index;
+      lineWidth = section.getLineWidth(index);
+      w += section.getCellWidth(index) + lineWidth;
+      c.increment();
+    }
+
+    return new Bound(distance, w - lineWidth);
 	}
 }

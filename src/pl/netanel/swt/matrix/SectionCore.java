@@ -233,7 +233,58 @@ class SectionCore<N extends Number> implements Section<N> {
 		return isNavigationEnabled;
 	}
 
-
+//	/**
+//   * Returns the maximum number of cells that can be merged along this axis.
+//   * Merging higher number of cells will throws an exception.
+//   * The reason for limitation of merged cells is to avoid performance degradation
+//   * when summing sizes of large merged extents during layout computation.
+//   * @return the maxSpan
+//   * @see {@link #setMaxSpan(Number)}
+//   */
+//  public N getMaxSpan() {
+//    return maxSpan;
+//  }
+//
+//  public void setMaxSpan(N maxSpan) {
+//    this.maxSpan = maxSpan;
+//  }
+//
+//  /**
+//   * Sets the maximum number of cells that can be merged along this axis.
+//   * Merging higher number of cells will throws an exception.
+//   * The reason for limitation of merged cells is to avoid performance degradation
+//   * when summing sizes of large merged extents during layout computation.
+//   * <p>
+//   * The default number is 1000.
+//   * @param maxSpan the maximum number of cells that can be merged.
+//   * @param force forces removal of merging that exceeds the given <code>maxSpan</code>
+//   * @throws IllegalArgumentException if some merged cells of higher number then maxSpan exist
+//   * and <code>force</code> equals false.
+//   * @see {@link #getMaxSpan()}
+//   */
+//  @SuppressWarnings({ "rawtypes", "unchecked" }) // Generics is not always helpful
+//  void setMaxSpan2(N maxSpan, boolean force) {
+//    ArrayList<Integer> exceeding = new ArrayList<Integer>();
+//    for (ZoneCore zone: axis.matrix.layout.zones) {
+//      if (this.equals(zone.sectionX)) {
+//        for (int i = 0; i < zone.cellMerging.itemsX.size(); i++) {
+//          MutableExtent extentX = ((ArrayList<MutableExtent>) zone.cellMerging.itemsX).get(i);
+//          MutableExtent extentY = ((ArrayList<MutableExtent>) zone.cellMerging.itemsY).get(i);
+//          if (math.compare(math.count(extentX), maxSpan) > 0) {
+//            exceeding.add(CellExtent.createUnchecked(
+//                extentX.start.getValue(), extentX.end.getValue(),
+//                extentY.start.getValue(), extentY.end.getValue()));
+//          }
+//        }
+//      }
+//    }
+//    if (force) {
+//      for (int i = exceeding.length; i++) {
+//
+//      }
+//    }
+//    this.maxSpan = maxSpan;
+//  }
 
 	/*------------------------------------------------------------------------
 	 * Default values

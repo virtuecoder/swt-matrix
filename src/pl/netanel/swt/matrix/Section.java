@@ -108,6 +108,29 @@ public interface Section<N extends Number> {
    */
   boolean isFocusItemEnabled();
 
+//  /**
+//  * Returns the maximum number of cells that can be merged along this axis.
+//  * Merging higher number of cells will throws an exception.
+//  * The reason for limitation of merged cells is to avoid performance degradation
+//  * when summing sizes of large merged extents during layout computation.
+//  * @return the maxSpan
+//  * @see {@link #setMaxSpan(Number)}
+//  */
+// public N getMaxSpan();
+//
+// /**
+//  * Sets the maximum number of cells that can be merged along this axis.
+//  * The reason for limitation of merged cells is to avoid performance degradation
+//  * when summing sizes of large merged extents during layout computation.
+//  * <p>
+//  * The default number is 1000.
+//  * @param maxSpan the maximum number of cells that can be merged.
+//  * @see {@link #getMaxSpan()}
+//  */
+// public void setMaxSpan(N maxSpan);
+
+
+
   /**
    * Sets the default width of cells in this section to the given value. Cell
    * width excludes the width of lines. Negative argument values are ignored.
