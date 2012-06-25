@@ -2,7 +2,59 @@ package pl.netanel.swt.matrix;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
-import static pl.netanel.swt.matrix.Matrix.*;
+import static pl.netanel.swt.matrix.Matrix.CMD_COPY;
+import static pl.netanel.swt.matrix.Matrix.CMD_CUT;
+import static pl.netanel.swt.matrix.Matrix.CMD_DELETE;
+import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_ACTIVATE;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_DOWN_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_UP_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_ITEM_HIDE;
+import static pl.netanel.swt.matrix.Matrix.CMD_ITEM_SHOW;
+import static pl.netanel.swt.matrix.Matrix.CMD_PASTE;
+import static pl.netanel.swt.matrix.Matrix.CMD_RESIZE_PACK;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ALL;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_COLUMN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_COLUMN_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_DOWN_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_UP_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ROW;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ROW_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_COLUMN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_COLUMN_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_TRAVERSE_TAB_NEXT;
+import static pl.netanel.swt.matrix.Matrix.CMD_TRAVERSE_TAB_PREVIOUS;
+import static pl.netanel.swt.matrix.Matrix.isBodySelect;
+import static pl.netanel.swt.matrix.Matrix.isExtendingSelect;
 
 import java.math.BigInteger;
 import java.util.concurrent.ScheduledFuture;
@@ -59,6 +111,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
   Event mouseMoveEvent;
   Point imageOffset;
   private Move mY, mX;
+
+  private CellExtent<X, Y> span;
 
   public MatrixListener(final Matrix<X, Y> matrix) {
     this.matrix = matrix;
@@ -388,9 +442,20 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       return axisLayout.setFocusItem(item);
     }
 
-    public void moveFocusItem(Move move) {
+    public void moveFocusItem(Move move, N start, N count) {
       if (item != null)  {
         //				matrix.model.setSelected(false, false);
+
+        if (start != null) {
+          switch (move) {
+          case HOME: case PREVIOUS: case PREVIOUS_PAGE:
+            axisLayout.setFocusItem(AxisItem.create(axisLayout.current.section, start)); break;
+          case END: case NEXT: case NEXT_PAGE:
+            N end = axisLayout.current.section.order.getIndexByOffset(start, count);
+            axisLayout.setFocusItem(AxisItem.create(axisLayout.current.section, axisLayout.math.decrement(end))); break;
+          }
+        }
+
         focusMoved = axisLayout.moveFocusItem(move);
         if (focusMoved) {
           axis.scroll();
@@ -819,12 +884,37 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       stateY.setFocusItem();
     }
 
-    if (mY != null) stateY.moveFocusItem(mY);
-    if (mX != null) stateX.moveFocusItem(mX);
-    if (mY != null || mX != null) {
-      stateY.item = stateY.axisLayout.current;
-      stateX.item = stateX.axisLayout.current;
+    // Handle merging
+    AxisItem<X> currentX = stateX.axisLayout.current;
+    AxisItem<Y> currentY = stateY.axisLayout.current;
+    span = matrix.layout.getZone(currentX.section, currentY.section).
+          cellMerging.getSpan(currentX.index, currentY.index);
+    X startX = null, countX = null;
+    Y startY = null, countY = null;
+    if (span != null) {
+      startX = span.startX; countX = span.endX;
+      startY = span.startY; countY = span.endY;
     }
+
+    if (mY != null) stateY.moveFocusItem(mY, startY, countY);
+    if (mX != null) stateX.moveFocusItem(mX, startX, countX);
+    if (mY != null || mX != null) {
+      stateY.item = currentY;
+      stateX.item = currentX;
+    }
+
+    // Set current to the start of the merged cell
+    currentX = stateX.axisLayout.current;
+    currentY = stateY.axisLayout.current;
+    span = matrix.layout.getZone(currentX.section, currentY.section).
+        cellMerging.getSpan(currentX.index, currentY.index);
+
+    if (span != null) {
+      stateX.axisLayout.setFocusItem(AxisItem.createInternal(currentX.section, span.startX));
+      stateY.axisLayout.setFocusItem(AxisItem.createInternal(currentY.section, span.startY));
+    }
+
+
     return stateY.focusMoved && stateX.focusMoved;
   }
 

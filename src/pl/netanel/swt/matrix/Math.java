@@ -57,6 +57,7 @@ abstract class Math<N extends Number> {
 	public abstract N increment(Number n);
 	public abstract N add(Number x, Number y);
 	public abstract N subtract(Number x, Number y);
+	public abstract N negate(Number n);
 
 	/*------------------------------------------------------------------------
 	 * Comparison

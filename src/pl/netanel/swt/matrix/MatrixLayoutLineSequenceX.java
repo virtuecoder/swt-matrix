@@ -17,6 +17,7 @@ public class MatrixLayoutLineSequenceX<X extends Number, Y extends Number> imple
   private Map<CellExtent<X, Y>, Bound[]> cache;
 
   private CellExtent<X, Y> lastExtent;
+  private CellExtent<X, Y> spanSequence;
 
   /**
    * @param layout
@@ -28,7 +29,7 @@ public class MatrixLayoutLineSequenceX<X extends Number, Y extends Number> imple
     this.zone = zone;
     seqX = layout.layoutX.lineSequence(frozenX, zone.sectionX);
     seqY = layout.layoutY.lineSequence(frozenY, zone.sectionY);
-    cache = layout.mergingCache.get(frozenX.ordinal()).get(frozenY.ordinal()).bounds;
+    cache = layout.cellMergingCache.get(frozenX.ordinal()).get(frozenY.ordinal()).bounds;
   }
 
   @Override
@@ -42,7 +43,7 @@ public class MatrixLayoutLineSequenceX<X extends Number, Y extends Number> imple
   public boolean next() {
     boolean next = seqX.next();
     if (!next) return false;
-    zone.cellMerging.getSpanSequence(seqX.index, null);
+    spanSequence = zone.cellMerging.getSpanSequence(seqX.index, null);
 
     if (seqX.next()) {
       return setState();

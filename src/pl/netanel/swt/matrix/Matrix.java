@@ -488,7 +488,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 				  gc.setClipping(bbX.distance, bbY.distance, bbX.width, bbY.width);
 
 				  // Paint cells
-				  zone.paint(gc, layoutX, layoutY, dockX, dockY);
+				  zone.paint(gc, layout, dockX, dockY);
 				}
 			}
 		}

@@ -30,7 +30,7 @@ public class MatrixLayoutCellSequence<X extends Number, Y extends Number> implem
     this.zone = zone;
     seqX = layout.layoutX.cellSequence(frozenX, zone.sectionX);
     seqY = layout.layoutY.cellSequence(frozenY, zone.sectionY);
-    cache = layout.mergingCache.get(frozenX.ordinal()).get(frozenY.ordinal()).bounds;
+    cache = layout.cellMergingCache.get(frozenX.ordinal()).get(frozenY.ordinal()).bounds;
   }
 
   @Override
@@ -58,6 +58,7 @@ public class MatrixLayoutCellSequence<X extends Number, Y extends Number> implem
   private boolean setState() {
     CellExtent<X, Y> extent;
     do {
+
       extent = zone.cellMerging.getSpan(seqX.getIndex(), seqY.getIndex());
       if (extent == null) {
         indexX = seqX.index;

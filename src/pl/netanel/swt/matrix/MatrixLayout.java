@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Region;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import pl.netanel.util.ImmutableIterator;
 
@@ -20,7 +23,11 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
   int[] paintOrder;
   private ExtentPairSequence seq;
   private Matrix<X, Y> matrix;
-  List<List<MergeCache<X, Y>>> mergingCache;
+  List<List<MergeCache<X, Y>>> cellMergingCache;
+//  List<Rectangle> mergingCacheLineX;
+//  List<Rectangle> mergingCacheLineY;
+  Region region;
+
   private boolean isComputingRequired;
 
 
@@ -36,15 +43,23 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
     }
 
     int frozenCount = Frozen.values().length;
-    mergingCache = new ArrayList<List<MergeCache<X, Y>>>(frozenCount);
+    cellMergingCache = new ArrayList<List<MergeCache<X, Y>>>(frozenCount);
     for (int i = 0; i < frozenCount; i++) {
       ArrayList<MergeCache<X, Y>> row = new ArrayList<MergeCache<X, Y>>(frozenCount);
-      mergingCache.add(row);
+      cellMergingCache.add(row);
       for (int j = 0; j < frozenCount; j++) {
         row.add(new MergeCache<X, Y>());
       }
     }
 
+    Display.getDefault().addListener(SWT.Dispose, new Listener() {
+      @Override
+      public void handleEvent(Event event) {
+        if (region != null && !region.isDisposed()) {
+          region.dispose();
+        }
+      }
+    });
   }
 
   void setMatrix(Matrix<X, Y> matrix) {
@@ -363,16 +378,21 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
   }
 
   public void computeMerging() {
-    Math<X> mathX = layoutX.math;
-    Math<Y> mathY = layoutY.math;
 
     // Clear merging cache
     int frozenCount = Frozen.values().length;
     for (int i = 0; i < frozenCount; i++) {
       for (int j = 0; j < frozenCount; j++) {
-        mergingCache.get(i).get(j).bounds.clear();
+        cellMergingCache.get(i).get(j).bounds.clear();
       }
     }
+
+    // Clear region
+    if (region != null && !region.isDisposed()) {
+      region.dispose();
+    }
+    region = new Region();
+    region.add(0, 0, layoutX.getViewportSize(), layoutY.getViewportSize());
 
     // For each frozen area
     for (int i1 = 0; i1 < frozenCount; i1++) {
@@ -380,13 +400,27 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
       ArrayList<AxisItem<X>> itemsX = cacheX.items;
       if (itemsX.isEmpty()) continue;
 
-      List<MergeCache<X, Y>> mergeX = mergingCache.get(i1);
+      List<MergeCache<X, Y>> mergeX = cellMergingCache.get(i1);
       for (int j1 = 0; j1 < frozenCount; j1++) {
         AxisLayout<Y>.Cache cacheY = layoutY.getCache(Frozen.values()[j1]);
         ArrayList<AxisItem<Y>> itemsY = cacheY.items;
         if (itemsY.isEmpty()) continue;
 
-        Map<CellExtent<X, Y>, Bound[]> cache = mergeX.get(j1).bounds;
+        Map<CellExtent<X, Y>, Bound[]> boundsCache = mergeX.get(j1).bounds;
+
+        // Line cache
+//        for (SectionCore<X> sectionX: cacheX.sections) {
+//          for (SectionCore<Y> sectionY: cacheY.sections) {
+//            ZoneCore<X, Y> zone = getZone(sectionX, sectionY);
+//            int size = zone.cellMerging.itemsX.size();
+//            for (int i = 0; i < size; i++) {
+//              MutableExtent<X> extentX = zone.cellMerging.itemsX.get(i);
+//              MutableExtent<Y> extentY = zone.cellMerging.itemsY.get(i);
+//
+//            }
+//          }
+//        }
+
 
         // Check each cell in the viewport cache
         for (int i = 0; i < itemsX.size() - 1; i++) {
@@ -402,11 +436,14 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
 
             // Otherwise compute the merged bounds
             Bound boundX = null, boundY = null;
-            Bound[] bounds = cache.get(span);
+            Bound[] bounds = boundsCache.get(span);
             if (bounds == null) {
-              boundX = layoutX.getBound(itemX, span.startX, span.endX, cacheX.cells.get(i).distance);
-              boundY = layoutY.getBound(itemY, span.startY, span.endY, cacheY.cells.get(j).distance);
-              cache.put(span, new Bound[] {boundX, boundY});
+              X endX = itemX.section.order.getIndexByOffset(span.startX, span.endX);
+              Y endY = itemY.section.order.getIndexByOffset(span.startY, span.endY);
+              boundX = layoutX.getBound(itemX, span.startX, endX, cacheX.cells.get(i).distance);
+              boundY = layoutY.getBound(itemY, span.startY, endY, cacheY.cells.get(j).distance);
+              boundsCache.put(span, new Bound[] {boundX, boundY});
+              region.subtract(boundX.distance, boundY.distance, boundX.width, boundY.width);
             }
             else {
               boundX = bounds[0];
@@ -435,6 +472,31 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
     }
   }
 
+
+  Bound[] getMergedBounds(ZoneCore<X, Y> zone, X indexX, Y indexY) {
+    if (!zone.cellMerging.contains(indexX, indexY)) return null;
+
+    int frozenCount = Frozen.values().length;
+
+    // For each frozen area
+    for (int i1 = 0; i1 < frozenCount; i1++) {
+      AxisLayout<X>.Cache cacheX = layoutX.getCache(Frozen.values()[i1]);
+      ArrayList<AxisItem<X>> itemsX = cacheX.items;
+      if (itemsX.isEmpty()) continue;
+
+      List<MergeCache<X, Y>> mergeX = cellMergingCache.get(i1);
+      for (int j1 = 0; j1 < frozenCount; j1++) {
+        AxisLayout<Y>.Cache cacheY = layoutY.getCache(Frozen.values()[j1]);
+        ArrayList<AxisItem<Y>> itemsY = cacheY.items;
+        if (itemsY.isEmpty()) continue;
+
+        Map<CellExtent<X, Y>, Bound[]> cache = mergeX.get(j1).bounds;
+        CellExtent<X, Y> span = zone.cellMerging.getSpan(indexX, indexY);
+        return cache.get(span);
+      }
+    }
+    return null;
+  }
 
   static class MergeCache<X extends Number, Y extends Number> {
     Map<CellExtent<X, Y>, Bound[]> bounds = new HashMap<CellExtent<X, Y>, Bound[]>();

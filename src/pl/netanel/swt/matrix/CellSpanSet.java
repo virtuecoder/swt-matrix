@@ -188,18 +188,19 @@ class CellSpanSet<X extends Number, Y extends Number> {
 	}
 
 	public CellExtent<X, Y> getSpanSequence(X x, Y y) {
-	  for (int i = 0; i < itemsX.size(); i++) {
-	    MutableExtent<X> spanX = itemsX.get(i);
-	    MutableExtent<Y> spanY = itemsY.get(i);
-
-	    if (orderX.getSpanExtents(spanX).contains(x) &&
-	        orderY.getSpanExtents(spanY).contains(y))
-	    {
-	      return CellExtent.createUnchecked(
-	          spanX.start.getValue(), spanX.end.getValue(),
-	          spanY.start.getValue(), spanY.end.getValue());
-	    }
-	  }
+//	  if (x == null && y == null) return ;
+//	  for (int i = 0; i < itemsX.size(); i++) {
+//	    MutableExtent<X> spanX = itemsX.get(i);
+//	    MutableExtent<Y> spanY = itemsY.get(i);
+//
+//	    if (orderX.getSpanExtents(spanX).contains(x) &&
+//	        orderY.getSpanExtents(spanY).contains(y))
+//	    {
+//	      return CellExtent.createUnchecked(
+//	          spanX.start.getValue(), spanX.end.getValue(),
+//	          spanY.start.getValue(), spanY.end.getValue());
+//	    }
+//	  }
 	  return null;
 	}
 

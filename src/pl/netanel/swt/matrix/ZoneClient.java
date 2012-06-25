@@ -135,10 +135,10 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   public boolean setMerged(X indexX, X countX, Y indexY, Y countY) {
     sectionX.checkCellIndex(indexX, "indexX");
     sectionY.checkCellIndex(indexY, "indexY");
-    Preconditions.checkArgument(core.sectionX.math.compare(countX, core.cellMergeLimitX) > 0,
-        MessageFormat.format("count{0} {1} is beyond merge limit extended {2}", "X", countX, core.cellMergeLimitX));
-    Preconditions.checkArgument(core.sectionY.math.compare(countY, core.cellMergeLimitY) > 0,
-        MessageFormat.format("count{0} {1} is beyond merge limit extended {2}", "Y", countY, core.cellMergeLimitY));
+    Preconditions.checkArgument(core.sectionX.math.compare(countX, core.cellMergeLimitX) <= 0,
+        MessageFormat.format("count{0} {1} is beyond merge limit {2}", "X", countX, core.cellMergeLimitX));
+    Preconditions.checkArgument(core.sectionY.math.compare(countY, core.cellMergeLimitY) <= 0,
+        MessageFormat.format("count{0} {1} is beyond merge limit {2}", "Y", countY, core.cellMergeLimitY));
     return core.setMerged(indexX, countX, indexY, countY);
   }
 

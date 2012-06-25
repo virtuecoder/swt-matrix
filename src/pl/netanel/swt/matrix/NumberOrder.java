@@ -1,17 +1,23 @@
 package pl.netanel.swt.matrix;
 
-import static pl.netanel.swt.matrix.Math.*;
+import static pl.netanel.swt.matrix.Math.ADJACENT_BEFORE;
+import static pl.netanel.swt.matrix.Math.BEFORE;
+import static pl.netanel.swt.matrix.Math.CROSS_AFTER;
+import static pl.netanel.swt.matrix.Math.CROSS_BEFORE;
 
 
 class NumberOrder<N extends Number> extends NumberSet<N> {
 
 	private N count;
   SpanExtentSequence spanExtents;
+  private ExtentCountSequence countForward, countBackward;
 
 	public NumberOrder(Math<N> math) {
 		super(math);
 		count = math.ZERO_VALUE();
 		spanExtents = new SpanExtentSequence();
+		countForward = new ExtentCountForwardSequence();
+		countBackward = new ExtentCountBackwardSequence();
 	}
 
 	public void setCount(N newCount) {
@@ -313,5 +319,88 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
       }
       return false;
     }
+	}
+
+	public N getIndexByOffset(N start, N count) {
+	  ExtentCountSequence seq;
+    if (math.compare(count, math.ZERO_VALUE()) >= 0) {
+      seq = countForward;
+      seq.count = count;
+    } else {
+      seq = countBackward;
+      seq.count = math.negate(count);
+    }
+    seq.start = start;
+	  for (seq.init(); seq.next(););
+	  return seq.index == null ? null : seq.index.getValue();
+	}
+
+	public abstract class ExtentCountSequence implements Sequence {
+    N start, count;
+    int i;
+    MutableExtent<N> extent;
+    MutableNumber<N> index;
+    MutableNumber<N> remaining = math.create(0);
+
+    @Override
+    public void init() {
+      index = math.create(0);
+      i = 0;
+      for (int size = items.size(); i < size; i++) {
+        extent = items.get(i);
+        if (math.contains(extent, start)) break;
+      }
+      index.set(start);
+    }
+	}
+
+	public class ExtentCountForwardSequence extends ExtentCountSequence {
+	  @Override
+    public void init() {
+      super.init();
+      remaining.set(count).add(start).subtract(extent.end);
+    }
+    @Override
+    public boolean next() {
+      if (math.compare(remaining, math.ZERO_VALUE()) <= 0) {
+        index.set(extent.end).add(remaining).getValue();
+        if (math.compare(index, NumberOrder.this.count) >= 0) {
+          index = null;
+        }
+        return false;
+      }
+      if (i >= items.size() - 1) {
+        index = null;
+        return false;
+      }
+      extent = items.get(++i);
+      remaining.add(extent.start).subtract(extent.end).decrement();
+      return true;
+    }
+	}
+	public class ExtentCountBackwardSequence extends ExtentCountSequence {
+	   @Override
+	    public void init() {
+	      super.init();
+	      remaining.set(count).add(extent.start).subtract(start);
+	    }
+
+	  @Override
+	  public boolean next() {
+	    if (math.compare(remaining, math.ZERO_VALUE()) <= 0) {
+	      index.set(extent.start).subtract(remaining).getValue();
+	      if (math.compare(index, math.ZERO_VALUE()) < 0) {
+	        index = null;
+	      }
+	      return false;
+	    }
+	    if (i <= 0) {
+	      index = null;
+	      return false;
+	    }
+	    extent = items.get(--i);
+	    remaining.add(extent.start).subtract(extent.end).decrement();
+	    return true;
+	  }
 	}
 }

@@ -12,7 +12,7 @@ import org.junit.runners.JUnit4;
 //	@Test
 //	public void getInnerIndexes() throws Exception {
 //		NumberOrder order = new NumberOrder(extent(2, 3), extent(1, 1), extent(4, 9), extent(0, 0));
-//		
+//
 //		assertEquals("3, 1, 4, 6, 7", order.getModelIndexes(indexes(1,2,3,5,6)).toString());
 //	}
 
@@ -22,38 +22,38 @@ import org.junit.runners.JUnit4;
 		move(model, 1, 2, 3);
 		assertEquals("1-2", model.toString());
 	}
-	
+
 	@Test
 	public void moveEdgeCases() throws Exception {
 		assertEquals("0-9", move(10, 0, 0, 0));
 		assertEquals("0-9", move(10, 0, 0, 1));
-		
+
 		assertEquals("0-9", move(10, 9, 9, 9));
 		assertEquals("0-9", move(10, 9, 9, 10));
-		
+
 		assertEquals("0-9", move(10, 0, 9, 0));
 		assertEquals("0-9", move(10, 0, 9, 9));
 		assertEquals("0-9", move(10, 0, 9, 10));
 		assertEquals("0-9", move(10, 0, 9, 5));
-		
+
 		assertEquals("0-9", move(10, 0, 5, 2));
 		assertEquals("0-9", move(10, 0, 5, 5));
 		assertEquals("0-9", move(10, 0, 5, 6));
-		
+
 		assertEquals("0-9", move(10, 5, 9, 5));
 		assertEquals("0-9", move(10, 5, 9, 9));
 		assertEquals("0-9", move(10, 5, 9, 10));
-		
+
 		assertEquals("0-9", move(10, 3, 3, 3));
 	}
-	
+
 	@Test
 	public void moveTheSame() throws Exception {
 		NumberOrder model = numberOrder(10);
 		move(model, 2, 2, 2);
 		assertEquals("0-9", model.toString());
 	}
-	
+
 //	@Test
 //	public void moveFragmented1() throws Exception {
 //		NumberOrder model = numberOrder(10);
@@ -61,7 +61,7 @@ import org.junit.runners.JUnit4;
 //		move(model, 6, 6, 2);
 //		assertEquals("0-2, 6, 3-5, 7-9", model.toString());
 //	}
-	
+
 	@Test
 	public void moveFragmented2() throws Exception {
 		NumberOrder model = numberOrder(10);
@@ -69,7 +69,7 @@ import org.junit.runners.JUnit4;
 		move(model, 6, 6, 3);
 		assertEquals("0-2, 6, 3-5, 7-9", model.toString());
 	}
-	
+
 	@Test
 	public void moveFragmented3() throws Exception {
 		NumberOrder model = numberOrder(10);
@@ -77,7 +77,7 @@ import org.junit.runners.JUnit4;
 		move(model, 6, 6, 4);
 		assertEquals("0-1, 3, 2, 6, 4-5, 7-9", model.toString());
 	}
-	
+
 	@Test
 	public void moveFragmented4() throws Exception {
 		NumberOrder model = numberOrder(10);
@@ -93,7 +93,7 @@ import org.junit.runners.JUnit4;
 		move(model, 6, 6, 7);
 		assertEquals("0-1, 3-5, 2, 6-9", model.toString());
 	}
-	
+
 	@Test
 	public void moveFragmentedEnd() throws Exception {
 		NumberOrder model = numberOrder(10);
@@ -101,7 +101,7 @@ import org.junit.runners.JUnit4;
 		move(model, 9, 9, 9);
 		assertEquals("0-1, 3-8, 2, 9", model.toString());
 	}
-	
+
 	@Test
 	public void moveFragmentedEnd2() throws Exception {
 		NumberOrder model = numberOrder(10);
@@ -109,7 +109,7 @@ import org.junit.runners.JUnit4;
 		move(model, 9, 9, 10);
 		assertEquals("0-1, 3-8, 2, 9", model.toString());
 	}
-	
+
 	@Test
 	public void moveFragmentedDescending() throws Exception {
 		NumberOrder model = numberOrder(10);
@@ -117,7 +117,7 @@ import org.junit.runners.JUnit4;
 		move(model, 2, 2, 3);
 		assertEquals("0-1, 9, 2-8", model.toString());
 	}
-	
+
 //	@Test
 //	public void move() throws Exception {
 //		NumberOrder order;
@@ -125,23 +125,23 @@ import org.junit.runners.JUnit4;
 //		assertEquals("1-8, 0, 9", move(10, 0, 0, 9));
 //		assertEquals("9, 0-8", move(10, 9, 9, 0));
 //		assertEquals("0, 9, 1-8", move(10, 9, 9, 1));
-//		
+//
 //		order = numberOrder(10);
 //		assertEquals("0-2, 6-9, 3-5", move(order, 3, 5, 10));
 //		order.move(
-//				order.getModelIndexes(indexList(extent(2, 4))), 
+//				order.getModelIndexes(indexList(extent(2, 4))),
 //				order.getModelIndex(index(8)));
 //		assertEquals("0-1, 8-9, 3, 2, 6-7, 4-5", order.toString());
-//		
+//
 //		order = numberOrder(10);
 //		assertEquals("0-1, 3, 2, 4-9", move(order, 2, 2, 4));
 //		assertEquals("0-1, 3-4, 2, 5-9", move(order, 2, 2, 5));
-//		
+//
 //		order = numberOrder(10);
 //		assertEquals("0-3, 5-6, 4, 7-9", move(order, 4, 4, 7));
 //		assertEquals("0-3, 5, 4, 6-9", move(order, 4, 4, 6));
 //	}
-	
+
 	@Test
 	public void recorderManyAtOnce() throws Exception {
 		NumberOrder order = numberOrder(10);
@@ -150,25 +150,25 @@ import org.junit.runners.JUnit4;
 		move(order, 3, 3, 7);
 		assertEquals("0-2, 4, 6, 5, 3, 7-9", order.toString());
 	}
-	
+
 	@Test
 	public void backAndForth() throws Exception {
 		NumberOrder model = numberOrder(2);
 		assertEquals("1, 0", move(model, 1, 1, 0));
 		assertEquals("0-1", move(model, 1, 1, 2));
 	}
-	
+
 	@Test
 	public void setTotal() throws Exception {
 		NumberOrder model = numberOrder(5);
 		assertEquals("0-4", model.toString());
-		
+
 		model.setCount(12);
 		assertEquals("0-11", model.toString());
-		
+
 		model.setCount(10);
 		assertEquals("0-9", model.toString());
-		
+
 		// move and set total
 		assertEquals("0-1, 7-9, 2-6", move(model, 7, 9, 2));
 		model.setCount(12);
@@ -185,7 +185,7 @@ import org.junit.runners.JUnit4;
 		assertIndexOf(order, 0, 0);
 		assertIndexOf(order, 1, 1);
 		assertIndexOf(order, 9, 9);
-		
+
 		assertEquals("0-2, 6-7, 3-5, 8-9", move(order, 3, 5, 8));
 		assertIndexOf(order, 0, 0);
 		assertIndexOf(order, 2, 2);
@@ -196,7 +196,7 @@ import org.junit.runners.JUnit4;
 		assertIndexOf(order, 5, 7);
 		assertIndexOf(order, 9, 9);
 	}
-	
+
 	@Test
 	public void insertBefore() throws Exception {
 		NumberOrder order = numberOrder(5);
@@ -237,9 +237,61 @@ import org.junit.runners.JUnit4;
 		order.insert(1, 2);
 		assertEquals("5, 0-4, 6", order.toString());
 	}
-	
+
+	@Test
+	public void getIndexByOfftset_simple_forward() throws Exception {
+	  NumberOrder order = numberOrder(5);
+	  assertEquals(1, order.getIndexByOffset(1, 0));
+	  assertEquals(2, order.getIndexByOffset(1, 1));
+	  assertEquals(3, order.getIndexByOffset(1, 2));
+	  assertEquals(4, order.getIndexByOffset(1, 3));
+	  assertEquals(null, order.getIndexByOffset(1, 4));
+	  assertEquals(null, order.getIndexByOffset(1, 10));
+	}
+
+	@Test
+	public void getIndexByOffset_forward() throws Exception {
+	  NumberOrder order = numberOrder(5);
+	  order.move(3, 3, 0);
+	  assertEquals("3, 0-2, 4", order.toString());
+	  assertEquals(3, order.getIndexByOffset(3, 0));
+	  assertEquals(0, order.getIndexByOffset(3, 1));
+	  assertEquals(1, order.getIndexByOffset(3, 2));
+	  assertEquals(2, order.getIndexByOffset(3, 3));
+	  assertEquals(4, order.getIndexByOffset(3, 4));
+	  assertEquals(null, order.getIndexByOffset(3, 5));
+	  assertEquals(null, order.getIndexByOffset(3, 10));
+	}
+
+	@Test
+  public void getIndexByOfftset_simple_backward() throws Exception {
+    NumberOrder order = numberOrder(5);
+    assertEquals(3, order.getIndexByOffset(3, 0));
+    assertEquals(2, order.getIndexByOffset(3, -1));
+    assertEquals(1, order.getIndexByOffset(3, -2));
+    assertEquals(0, order.getIndexByOffset(3, -3));
+    assertEquals(null, order.getIndexByOffset(3, -4));
+    assertEquals(null, order.getIndexByOffset(3, -10));
+  }
+
+	 @Test
+   public void getIndexByOffset_backward() throws Exception {
+	    NumberOrder order = numberOrder(5);
+	    order.move(3, 3, 0);
+	    assertEquals("3, 0-2, 4", order.toString());
+	    assertEquals(4, order.getIndexByOffset(4, 0));
+	    assertEquals(2, order.getIndexByOffset(4, -1));
+	    assertEquals(1, order.getIndexByOffset(4, -2));
+	    assertEquals(0, order.getIndexByOffset(4, -3));
+	    assertEquals(3, order.getIndexByOffset(4, -4));
+	    assertEquals(null, order.getIndexByOffset(4, -5));
+	    assertEquals(null, order.getIndexByOffset(4, -10));
+	  }
+
+
+
 	// Helper test methods
-	
+
 	private static NumberOrder numberOrder(int n) {
 		NumberOrder order = new NumberOrder(IntMath.getInstance());
 		order.setCount(n);
@@ -254,7 +306,7 @@ import org.junit.runners.JUnit4;
 	private static String move(int count, int start, int end, int destination) {
 		return move(numberOrder(count), start, end, destination);
 	}
-	
+
 	private void assertIndexOf(NumberOrder order, int x, int y) {
 		assertEquals(y, order.indexOf(x).intValue());
 	}

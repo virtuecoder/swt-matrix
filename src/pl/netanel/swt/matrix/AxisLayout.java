@@ -1108,7 +1108,7 @@ class AxisLayout<N extends Number> {
 		return true;
 	}
 
-	public Bound getBound(AxisItem<N> item, N start, N count, int distance) {
+	public Bound getBound(AxisItem<N> item, N start, N end, int distance) {
 	  Section<N> section = item.section;
 
     // Point size = zone.painters.computeSize(itemX.index, itemY.index, SWT.DEFAULT, SWT.DEFAULT);
@@ -1121,18 +1121,16 @@ class AxisLayout<N extends Number> {
       N index = seq.getItem().index;
       if (math.compare(index, start) <= 0) break;
       w += section.getCellWidth(index) + section.getLineWidth(index);
-      c.increment();
     }
     distance -= w;
 
     int lineWidth = 0;
     seq = forward;
     for (seq.init(item); seq.next();) {
-      if (math.compare(c, count) == 0) break;
       N index = seq.getItem().index;
+      if (math.compare(index, end) >= 0) break;
       lineWidth = section.getLineWidth(index);
       w += section.getCellWidth(index) + lineWidth;
-      c.increment();
     }
 
     return new Bound(distance, w - lineWidth);

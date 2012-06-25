@@ -6,12 +6,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
-import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
-import pl.netanel.swt.matrix.ZoneEditor;
 
 public class SnippetMerge
 {
@@ -25,12 +23,12 @@ public class SnippetMerge
         Section<Integer> bodyX = axisX.getBody();
         bodyX.setCount(100);
         bodyX.setDefaultMoveable(true);
+        bodyX.setHidden(2, true);
 
         matrix.getAxisY().getBody().setCount(100);
-//        matrix.getAxisY().getHeader().setVisible(true);
+        matrix.getAxisY().getHeader().setVisible(true);
 
 //        bodyX.setSelected(bodyX.getIndex(1); bodyX.getIndex(2));
-
 
         Zone<Integer, Integer> body = matrix.getBody();
 //        body.setSelected(5, 10, 5, 10, true);
@@ -39,7 +37,7 @@ public class SnippetMerge
         Painter<Integer, Integer> painter = body.getPainter(Painter.NAME_CELLS);
         painter.style.textAlignX = SWT.CENTER;
 
-        body.setMerged(0, 10, 0, 5);
+        body.setMerged(0, 4, 0, 5);
 
         shell.setBounds(400, 200, 600, 400);
         shell.open();

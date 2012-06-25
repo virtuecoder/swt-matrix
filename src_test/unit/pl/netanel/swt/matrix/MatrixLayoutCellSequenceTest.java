@@ -1,13 +1,15 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.text.MessageFormat;
 
 import org.junit.Before;
 import org.junit.Test;
 
-public class MatrixLayoutSequenceTest {
+public class MatrixLayoutCellSequenceTest {
   private ZoneCore<Integer, Integer> zone;
   private AxisLayout<Integer> layoutX;
   private AxisLayout<Integer> layoutY;
@@ -16,6 +18,7 @@ public class MatrixLayoutSequenceTest {
 
   @Before
   public void setUp() {
+
     layoutX = new AxisLayout<Integer>(); layoutX.setViewportSize(100000);
     layoutY = new AxisLayout<Integer>(); layoutY.setViewportSize(100000);
     layout = new MatrixLayout<Integer, Integer>(layoutX, layoutY);
@@ -32,6 +35,7 @@ public class MatrixLayoutSequenceTest {
 
   @Test
   public void cellSequence1x0() throws Exception {
+    layoutX.body.setCount(1);
     layout.compute();
     seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
@@ -40,6 +44,7 @@ public class MatrixLayoutSequenceTest {
 
   @Test
   public void cellSequence0x1() throws Exception {
+    layoutY.body.setCount(1);
     layout.compute();
     seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();

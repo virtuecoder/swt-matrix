@@ -148,6 +148,11 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	}
 
 	@Override public Rectangle getCellBounds(X indexX, Y indexY) {
+	  Bound[] bounds = matrix.layout.getMergedBounds(this, indexX, indexY);
+	  if (bounds != null) {
+	    return new Rectangle(bounds[0].distance, bounds[1].distance, bounds[0].width, bounds[1].width);
+	  }
+
 		Bound b0 = sectionY.axis.getCellBound(sectionY, indexY);
 		Bound b1 = sectionX.axis.getCellBound(sectionX, indexX);
 		if (b0 != null && b1 != null) {
@@ -433,10 +438,11 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	 * Painting
 	 */
 
-	void paint(final GC gc,
-	  final AxisLayout<X> layoutX, final AxisLayout<Y> layoutY,
-	  final Frozen frozenX, final Frozen frozenY)
+	void paint(final GC gc, MatrixLayout<X, Y> layout, final Frozen frozenX, final Frozen frozenY)
 	{
+	  final AxisLayout<X> layoutX = layout.layoutX;
+	  final AxisLayout<Y> layoutY = layout.layoutY;
+
 		Painter<X, Y> embedded = null;
 		for (Painter<X, Y> p: painters) {
 			if (p instanceof EmbeddedControlsPainter) {
@@ -448,6 +454,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 			int distance = 0, width = 0;
 			AxisLayoutSequence<Y> seqY;
       AxisLayoutSequence<X> seqX;
+
+      gc.setClipping((Rectangle) null);
       switch (p.scope) {
 
 			case Painter.SCOPE_CELLS_X:
@@ -507,6 +515,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				break;
 
 			case Painter.SCOPE_LINES_X:
+			  gc.setClipping(layout.region);
 				seqY = layoutY.lineSequence(frozenY, sectionY);
 				distance = bounds.x;
 				width = bounds.width;
@@ -517,6 +526,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				break;
 
 			case Painter.SCOPE_LINES_Y:
+			  gc.setClipping(layout.region);
 				seqX = layoutX.lineSequence(frozenX, sectionX);
 				distance = bounds.y;
 				width = bounds.height;
