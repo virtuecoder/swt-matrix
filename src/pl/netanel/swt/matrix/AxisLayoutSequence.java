@@ -10,6 +10,7 @@ class AxisLayoutSequence<N extends Number> implements Sequence {
 	private int i;
 	Bound bound;
 	N index;
+  private boolean more;
 
 	public AxisLayoutSequence(List<AxisItem<N>> items, List<Bound> bounds, SectionCore<N> section) {
     this.items = items;
@@ -24,7 +25,7 @@ class AxisLayoutSequence<N extends Number> implements Sequence {
 	}
 
 	public boolean next() {
-		if (i >= bounds.size()) return false;
+		if (i >= bounds.size()) return more = false;
 		Section<N> section2 = items.get(i).section;
 		if (section2 != section) {
 			// Make sure last line is included between sections
@@ -34,13 +35,17 @@ class AxisLayoutSequence<N extends Number> implements Sequence {
 				index = section.math.increment(index);
 				bound = bounds.get(i);
 				i = bounds.size();
-				return true;
+				return more = true;
 			}
-			return false;
+			return more = false;
 		}
 		bound = bounds.get(i);
 		index = items.get(i++).index;
-		return true;
+		return more = true;
+	}
+
+	public boolean over() {
+	  return !more;
 	}
 
 	public int getDistance() {

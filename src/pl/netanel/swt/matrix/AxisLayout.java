@@ -1108,13 +1108,14 @@ class AxisLayout<N extends Number> {
 		return true;
 	}
 
-	public Bound getBound(AxisItem<N> item, N start, N end, int distance) {
-	  Section<N> section = item.section;
+	public Bound getBound(AxisItem<N> item, MutableExtent<N>span, int distance) {
+	  SectionCore<N> section = item.section;
+	  N start = span.start.getValue();
+	  N end = section.order.getIndexByOffset(span.start.getValue(), span.end.getValue());
 
     // Point size = zone.painters.computeSize(itemX.index, itemY.index, SWT.DEFAULT, SWT.DEFAULT);
     // Compute length until span start or the maximum size of the cell is reached
     int w = 0;
-    MutableNumber<N> c = math.create(0);
 
     Direction<N> seq = backward;
     for (seq.init(item); seq.next();) {

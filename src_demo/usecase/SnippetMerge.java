@@ -21,11 +21,11 @@ public class SnippetMerge
 
         Axis<Integer> axisX = matrix.getAxisX();
         Section<Integer> bodyX = axisX.getBody();
-        bodyX.setCount(100);
+        bodyX.setCount(10);
         bodyX.setDefaultMoveable(true);
         bodyX.setHidden(2, true);
 
-        matrix.getAxisY().getBody().setCount(100);
+        matrix.getAxisY().getBody().setCount(10);
         matrix.getAxisY().getHeader().setVisible(true);
 
 //        bodyX.setSelected(bodyX.getIndex(1); bodyX.getIndex(2));

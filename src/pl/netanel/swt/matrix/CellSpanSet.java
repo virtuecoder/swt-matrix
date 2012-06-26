@@ -76,6 +76,29 @@ class CellSpanSet<X extends Number, Y extends Number> {
 		return false;
 	}
 
+	/**
+	 * Returns the index of span containing the given cell
+	 * in the internal list of spans or -1 if such span does not exist.
+	 * @param indexX must be not null
+	 * @param indexY must be not null
+	 * @return
+	 */
+	int indexOf(X indexX, Y indexY) {
+	  int size = itemsX.size();
+	  for (int i = 0; i < size; i++) {
+	    MutableExtent<X> ex = itemsX.get(i);
+	    MutableExtent<Y> ey = itemsY.get(i);
+
+	    boolean containsX = orderX.getSpanExtents(ex).contains(indexX);
+      boolean containsY = orderY.getSpanExtents(ey).contains(indexY);
+	    if (containsX && containsY) {
+	      return i;
+	    }
+	  }
+	  return -1;
+	}
+
+
 
 	/**
 	 * Removes cell groups that contain any cell from the given range.

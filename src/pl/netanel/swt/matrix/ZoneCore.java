@@ -70,7 +70,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		Math<Y> mathY = SectionCore.from(sectionY).math;
 		cellSelection = new CellSet<X, Y>(mathX, mathY);
 		lastSelection = new CellSet<X, Y>(mathX, mathY);
-		cellMerging = new CellSpanSet<X, Y>(sectionX.finale, sectionY.finale);
+		cellMerging = new CellSpanSet<X, Y>(sectionX.order, sectionY.order);
 		cellMergeLimitX = mathX.create(1000).getValue();
 		cellMergeLimitY = mathY.create(1000).getValue();
 
@@ -148,9 +148,9 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	}
 
 	@Override public Rectangle getCellBounds(X indexX, Y indexY) {
-	  Bound[] bounds = matrix.layout.getMergedBounds(this, indexX, indexY);
+	  Rectangle bounds = matrix.layout.getMergedBounds(this, indexX, indexY);
 	  if (bounds != null) {
-	    return new Rectangle(bounds[0].distance, bounds[1].distance, bounds[0].width, bounds[1].width);
+	    return bounds;
 	  }
 
 		Bound b0 = sectionY.axis.getCellBound(sectionY, indexY);
@@ -459,40 +459,25 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
       switch (p.scope) {
 
 			case Painter.SCOPE_CELLS_X:
+			case Painter.SCOPE_CELLS_Y:
 			  MatrixLayoutCellSequence<X, Y> seq =
 			    new MatrixLayoutCellSequence<X, Y>(matrix.layout, frozenX, frozenY, this);
-
-//			  LayoutSequence2<X, Y> seqXY = new LayoutSequence2<X, Y>(
-//			      layoutX.cellSequence(frozenX, sectionX),
-//			      layoutY.cellSequence(frozenY, sectionY));
 				for (seq.init(); seq.next();) {
 				  p.setup(seq.indexX, seq.indexY);
 					p.paint(seq.boundX.distance, seq.boundY.distance, seq.boundX.width, seq.boundY.width);
 				}
 				break;
 
-			case Painter.SCOPE_CELLS_Y:
-			  LayoutSequence2<Y, X> seqYX = new LayoutSequence2<Y, X>(
-			      layoutY.cellSequence(frozenY, sectionY),
-			      layoutX.cellSequence(frozenX, sectionX)
-            );
-        for (seqYX.init(); seqYX.next();) {
-          p.setup(seqYX.seq2.getIndex(), seqYX.seq1.getIndex());
-          p.paint(seqYX.seq2.getDistance(), seqYX.seq1.getDistance(), seqYX.seq2.getWidth(), seqYX.seq1.getWidth());
-        }
-
-//				seqY = layoutY.cellSequence(frozenY, sectionY);
-//				seqX = layoutX.cellSequence(frozenX, sectionX);
-//				for (seqX.init(); seqX.next();) {
-//					distance = seqX.getDistance();
-//					width = seqX.getWidth();
-//					X indexX = seqX.item.getIndex();
-//					for (seqY.init(); seqY.next();) {
-//					  p.setup(indexX, seqY.item.getIndex());
-//						p.paint(distance, seqY.getDistance(), width, seqY.getWidth());
-//					}
-//				}
-				break;
+//			case Painter.SCOPE_CELLS_Y:
+//			  LayoutSequence2<Y, X> seqYX = new LayoutSequence2<Y, X>(
+//			      layoutY.cellSequence(frozenY, sectionY),
+//			      layoutX.cellSequence(frozenX, sectionX)
+//            );
+//        for (seqYX.init(); seqYX.next();) {
+//          p.setup(seqYX.seq2.getIndex(), seqYX.seq1.getIndex());
+//          p.paint(seqYX.seq2.getDistance(), seqYX.seq1.getDistance(), seqYX.seq2.getWidth(), seqYX.seq1.getWidth());
+//        }
+//				break;
 
 			case Painter.SCOPE_CELLS_ITEM_Y:
 				seqY = layoutY.cellSequence(frozenY, sectionY);

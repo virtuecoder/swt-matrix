@@ -1,23 +1,30 @@
 package pl.netanel.swt.matrix;
 
-import java.util.Map;
+import pl.netanel.swt.matrix.MatrixLayout.MergeCache;
 
-public class MatrixLayoutCellSequence<X extends Number, Y extends Number> implements Sequence {
+
+/**
+ * Iterates over cells of a matrix considering the merged ones.
+ * <p>
+ * Cells that are merged are marked beforehand by {@link MatrixLayout#computeMerging()}.
+ *
+ * @author jacek.p.kolodziejczyk@gmail.com
+ * @created 25-06-2012
+ */
+class MatrixLayoutCellSequence<X extends Number, Y extends Number> implements Sequence {
   // Sequence current state
   X indexX;
   Y indexY;
-  public Bound boundX, boundY;
+  Bound boundY;
+  Bound boundX;
 
   // Private
 //  private final MatrixLayout<X, Y> layout;
+  private MergeCache<X, Y> cache;
+  private int i;
   private final ZoneCore<X, Y> zone;
-  private AxisLayoutSequence<X> seqX;
-  private AxisLayoutSequence<Y> seqY;
-  private boolean empty;
-
-  private Map<CellExtent<X, Y>, Bound[]> cache;
-
-  private CellExtent<X, Y> lastExtent;
+  private AxisItem<X> itemX;
+  private AxisItem<Y> itemY;
 
   /**
    * @param layout
@@ -28,60 +35,32 @@ public class MatrixLayoutCellSequence<X extends Number, Y extends Number> implem
   public MatrixLayoutCellSequence(MatrixLayout<X, Y> layout, Frozen frozenX, Frozen frozenY,
       ZoneCore<X, Y> zone) {
     this.zone = zone;
-    seqX = layout.layoutX.cellSequence(frozenX, zone.sectionX);
-    seqY = layout.layoutY.cellSequence(frozenY, zone.sectionY);
-    cache = layout.cellMergingCache.get(frozenX.ordinal()).get(frozenY.ordinal()).bounds;
+//    seqX = layout.layoutX.cellSequence(frozenX, zone.sectionX);
+//    seqY = layout.layoutY.cellSequence(frozenY, zone.sectionY);
+    cache = layout.mergeCache.get(Frozen.getIndex(frozenX, frozenY));
   }
 
   @Override
   public void init() {
-    seqX.init();
-    seqY.init();
-    empty = !seqY.next();
+    i = -1;
   }
 
   @Override
   public boolean next() {
-    if (empty) return false;
-    if (seqX.next()) {
-      return setState();
+    while (++i < cache.itemsX.size()) {
+      itemX = cache.itemsX.get(i);
+      itemY = cache.itemsY.get(i);
+      if (
+          itemX.section.equals(zone.sectionX) &&
+          itemY.section.equals(zone.sectionY) ) break;
     }
-    if (seqY.next()) {
-      seqX.init();
-      if (seqX.next()) {
-        return setState();
-      }
-    }
-    return false;
-  }
 
-  private boolean setState() {
-    CellExtent<X, Y> extent;
-    do {
+    if (i == cache.itemsX.size()) return false;
 
-      extent = zone.cellMerging.getSpan(seqX.getIndex(), seqY.getIndex());
-      if (extent == null) {
-        indexX = seqX.index;
-        indexY = seqY.index;
-        boundX = seqX.bound;
-        boundY = seqY.bound;
-        return true;
-      }
-      if (!seqX.next()) {
-        if (!seqY.next()) return false;
-        seqX.init();
-        continue;
-      }
-    }
-    while (extent.equals(lastExtent));
-    lastExtent = extent;
-    //int compareX = zone.sectionX.math.compare(mergeExtent.startX, mergeExtent.endX, seqX.getIndex());
-    indexX = extent.startX;
-    indexY = extent.startY;
-    Bound[] bounds = cache.get(extent);
-    boundX = bounds[0];
-    boundY = bounds[1];
+    indexX = itemX.index;
+    indexY = itemY.index;
+    boundX = cache.boundsX.get(i);
+    boundY = cache.boundsY.get(i);
     return true;
   }
-
 }

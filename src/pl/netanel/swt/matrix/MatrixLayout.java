@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import pl.netanel.swt.matrix.Frozen.PairSequence;
 import pl.netanel.util.ImmutableIterator;
 
 class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneCore<X, Y>> {
@@ -23,12 +24,13 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
   int[] paintOrder;
   private ExtentPairSequence seq;
   private Matrix<X, Y> matrix;
-  List<List<MergeCache<X, Y>>> cellMergingCache;
+  List<MergeCache<X, Y>> mergeCache;
 //  List<Rectangle> mergingCacheLineX;
 //  List<Rectangle> mergingCacheLineY;
   Region region;
 
   private boolean isComputingRequired;
+  private PairSequence frozenSeq;
 
 
   public MatrixLayout(AxisLayout<X> layoutX, AxisLayout<Y> layoutY) {
@@ -42,14 +44,11 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
       }
     }
 
-    int frozenCount = Frozen.values().length;
-    cellMergingCache = new ArrayList<List<MergeCache<X, Y>>>(frozenCount);
-    for (int i = 0; i < frozenCount; i++) {
-      ArrayList<MergeCache<X, Y>> row = new ArrayList<MergeCache<X, Y>>(frozenCount);
-      cellMergingCache.add(row);
-      for (int j = 0; j < frozenCount; j++) {
-        row.add(new MergeCache<X, Y>());
-      }
+    // Initialize merge cache
+    mergeCache = new ArrayList<MergeCache<X, Y>>();
+    frozenSeq = new Frozen.PairSequence();
+    for (frozenSeq.init(); frozenSeq.next();) {
+      mergeCache.add(new MergeCache<X, Y>());
     }
 
     Display.getDefault().addListener(SWT.Dispose, new Listener() {
@@ -377,15 +376,11 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
     }
   }
 
-  public void computeMerging() {
 
-    // Clear merging cache
-    int frozenCount = Frozen.values().length;
-    for (int i = 0; i < frozenCount; i++) {
-      for (int j = 0; j < frozenCount; j++) {
-        cellMergingCache.get(i).get(j).bounds.clear();
-      }
-    }
+  /*
+   * Each frozen area contains a
+   */
+  public void computeMerging() {
 
     // Clear region
     if (region != null && !region.isDisposed()) {
@@ -395,77 +390,43 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
     region.add(0, 0, layoutX.getViewportSize(), layoutY.getViewportSize());
 
     // For each frozen area
-    for (int i1 = 0; i1 < frozenCount; i1++) {
-      AxisLayout<X>.Cache cacheX = layoutX.getCache(Frozen.values()[i1]);
+    for (frozenSeq.init(); frozenSeq.next();) {
+      AxisLayout<X>.Cache cacheX = layoutX.getCache(frozenSeq.frozenX);
+      AxisLayout<Y>.Cache cacheY = layoutY.getCache(frozenSeq.frozenY);
       ArrayList<AxisItem<X>> itemsX = cacheX.items;
-      if (itemsX.isEmpty()) continue;
+      ArrayList<AxisItem<Y>> itemsY = cacheY.items;
+      if (itemsX.isEmpty() || itemsY.isEmpty()) continue;
 
-      List<MergeCache<X, Y>> mergeX = cellMergingCache.get(i1);
-      for (int j1 = 0; j1 < frozenCount; j1++) {
-        AxisLayout<Y>.Cache cacheY = layoutY.getCache(Frozen.values()[j1]);
-        ArrayList<AxisItem<Y>> itemsY = cacheY.items;
-        if (itemsY.isEmpty()) continue;
+      MergeCache<X, Y> cache = mergeCache.get(frozenSeq.index);
+      cache.clear();
 
-        Map<CellExtent<X, Y>, Bound[]> boundsCache = mergeX.get(j1).bounds;
+      // Check each cell in the viewport cache
+      int sizeX = itemsX.size();
+      int sizeY = itemsY.size();
+      for (int i = 0; i < sizeX - 1; i++) {
+        for (int j = 0; j < sizeY - 1; j++) {
+          AxisItem<X> itemX = itemsX.get(i);
+          AxisItem<Y> itemY = itemsY.get(j);
 
-        // Line cache
-//        for (SectionCore<X> sectionX: cacheX.sections) {
-//          for (SectionCore<Y> sectionY: cacheY.sections) {
-//            ZoneCore<X, Y> zone = getZone(sectionX, sectionY);
-//            int size = zone.cellMerging.itemsX.size();
-//            for (int i = 0; i < size; i++) {
-//              MutableExtent<X> extentX = zone.cellMerging.itemsX.get(i);
-//              MutableExtent<Y> extentY = zone.cellMerging.itemsY.get(i);
-//
-//            }
-//          }
-//        }
+          ZoneCore<X, Y> zone = getZone(itemX.section, itemY.section);
+          int spanIndex = zone.cellMerging.indexOf(itemX.index, itemY.index);
 
+          Bound boundX, boundY;
 
-        // Check each cell in the viewport cache
-        for (int i = 0; i < itemsX.size() - 1; i++) {
-          for (int j = 0; j < itemsY.size() - 1; j++) {
-            AxisItem<X> itemX = itemsX.get(i);
-            AxisItem<Y> itemY = itemsY.get(j);
+          // If cell is not merged then continue
+          if (spanIndex == -1) {
+            boundX = cacheX.cells.get(i);
+            boundY = cacheY.cells.get(j);
+            cache.add(itemX, itemY, boundX, boundY);
+            continue;
+          }
 
-            ZoneCore<X, Y> zone = getZone(itemX.section, itemY.section);
-            CellExtent<X, Y> span = zone.cellMerging.getSpan(itemX.index, itemY.index);
-
-            // If cell is not merged then continue
-            if (span == null) continue;
-
-            // Otherwise compute the merged bounds
-            Bound boundX = null, boundY = null;
-            Bound[] bounds = boundsCache.get(span);
-            if (bounds == null) {
-              X endX = itemX.section.order.getIndexByOffset(span.startX, span.endX);
-              Y endY = itemY.section.order.getIndexByOffset(span.startY, span.endY);
-              boundX = layoutX.getBound(itemX, span.startX, endX, cacheX.cells.get(i).distance);
-              boundY = layoutY.getBound(itemY, span.startY, endY, cacheY.cells.get(j).distance);
-              boundsCache.put(span, new Bound[] {boundX, boundY});
-              region.subtract(boundX.distance, boundY.distance, boundX.width, boundY.width);
-            }
-            else {
-              boundX = bounds[0];
-              boundY = bounds[1];
-            }
-
-//            int compareX = mathX.compare(span.startX, itemX.index);
-//            int compareY = mathY.compare(span.startY, itemY.index);
-//
-//            if (compareX == 0) {
-//              boundY.width += cacheY.cells.get(j).width;
-//              if (compareY < 0) {
-//                boundY.width += cacheY.lines.get(j).width;
-//              }
-//            }
-//            if (compareY == 0) {
-//              boundX.width += cacheX.cells.get(i).width;
-//              if (compareX < 0) {
-//                boundX.width += cacheX.lines.get(i).width;
-//              }
-//            }
-            //if (itemY.index.equals(extent.endY) && itemX.index.equals(extent.endX)) continue;
+          // Otherwise compute the merged bounds
+          if (!cache.spans.containsKey(spanIndex)) {
+            boundX = layoutX.getBound(itemX, zone.cellMerging.itemsX.get(spanIndex), cacheX.cells.get(i).distance);
+            boundY = layoutY.getBound(itemY, zone.cellMerging.itemsY.get(spanIndex), cacheY.cells.get(j).distance);
+            cache.add(spanIndex, itemX, itemY, boundX, boundY);
+            region.subtract(boundX.distance, boundY.distance, boundX.width, boundY.width);
           }
         }
       }
@@ -473,32 +434,63 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
   }
 
 
-  Bound[] getMergedBounds(ZoneCore<X, Y> zone, X indexX, Y indexY) {
-    if (!zone.cellMerging.contains(indexX, indexY)) return null;
-
-    int frozenCount = Frozen.values().length;
+  Rectangle getMergedBounds(ZoneCore<X, Y> zone, X indexX, Y indexY) {
+    int spanIndex = zone.cellMerging.indexOf(indexX, indexY);
+    if (spanIndex == -1) return null;
 
     // For each frozen area
-    for (int i1 = 0; i1 < frozenCount; i1++) {
-      AxisLayout<X>.Cache cacheX = layoutX.getCache(Frozen.values()[i1]);
-      ArrayList<AxisItem<X>> itemsX = cacheX.items;
-      if (itemsX.isEmpty()) continue;
-
-      List<MergeCache<X, Y>> mergeX = cellMergingCache.get(i1);
-      for (int j1 = 0; j1 < frozenCount; j1++) {
-        AxisLayout<Y>.Cache cacheY = layoutY.getCache(Frozen.values()[j1]);
-        ArrayList<AxisItem<Y>> itemsY = cacheY.items;
-        if (itemsY.isEmpty()) continue;
-
-        Map<CellExtent<X, Y>, Bound[]> cache = mergeX.get(j1).bounds;
-        CellExtent<X, Y> span = zone.cellMerging.getSpan(indexX, indexY);
-        return cache.get(span);
-      }
+    for (frozenSeq.init(); frozenSeq.next();) {
+      MergeCache<X, Y> cache = mergeCache.get(frozenSeq.index);
+      Integer boundIndex = cache.spans.get(spanIndex);
+      if (boundIndex == null) continue;
+      Bound boundX = cache.boundsX.get(boundIndex);
+      Bound boundY = cache.boundsY.get(boundIndex);
+      return new Rectangle(boundX.distance, boundY.distance, boundX.width, boundY.width);
     }
+
     return null;
   }
 
+  /**
+   * Caches layout data for a single frozen area.
+   * <p>
+   * If a value in the bounds is null it should be skipped in the sequence,
+   * because the cell is part of merged cell and it's area has been draw already.
+   *
+   * @author jacek.p.kolodziejczyk@gmail.com
+   * @created 25-06-2012
+   */
   static class MergeCache<X extends Number, Y extends Number> {
-    Map<CellExtent<X, Y>, Bound[]> bounds = new HashMap<CellExtent<X, Y>, Bound[]>();
+    ArrayList<AxisItem<X>> itemsX = new ArrayList<AxisItem<X>>();
+    ArrayList<AxisItem<Y>> itemsY = new ArrayList<AxisItem<Y>>();
+    ArrayList<Bound> boundsX = new ArrayList<Bound>();
+    ArrayList<Bound> boundsY = new ArrayList<Bound>();
+
+    HashMap<Integer, Integer> spans = new HashMap<Integer, Integer>(); // maps span index to bound index
+
+    public void clear() {
+      itemsX.clear();
+      itemsY.clear();
+      boundsX.clear();
+      boundsY.clear();
+      spans.clear();
+    }
+
+    public void add(int spanIndex, AxisItem<X> itemX, AxisItem<Y> itemY, Bound boundX, Bound boundY) {
+      int boundIndex = this.boundsX.size();
+      this.itemsX.add(itemX);
+      this.itemsY.add(itemY);
+      this.boundsX.add(boundX);
+      this.boundsY.add(boundY);
+      this.spans.put(spanIndex, boundIndex);
+    }
+
+    public void add(AxisItem<X> itemX, AxisItem<Y> itemY, Bound boundX, Bound boundY) {
+      this.itemsX.add(itemX);
+      this.itemsY.add(itemY);
+      this.boundsX.add(boundX);
+      this.boundsY.add(boundY);
+
+    }
   }
 }
