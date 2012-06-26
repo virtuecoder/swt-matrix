@@ -105,7 +105,7 @@ public class CellExtent<X extends Number, Y extends Number> {
   /**
    * Creates a new instance of CellExtent from X and Y extents. Arguments are validated.
    *
-   * @param start the top left corner of the range of cells
+   * @param origin the top left corner of the range of cells
    * @param end the bottom right corner of the range of cells
    * @return a new instance of this class
    *
@@ -127,7 +127,7 @@ public class CellExtent<X extends Number, Y extends Number> {
   /**
    * Creates a new instance of CellExtent from X and Y extents without checking arguments validity.
    *
-   * @param start the top left corner of the range of cells
+   * @param origin the top left corner of the range of cells
    * @param end the bottom right corner of the range of cells
    * @return a new instance of this class
    */

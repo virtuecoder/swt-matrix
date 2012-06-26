@@ -1112,6 +1112,7 @@ class AxisLayout<N extends Number> {
 	  SectionCore<N> section = item.section;
 	  N start = span.start.getValue();
 	  N end = section.order.getIndexByOffset(span.start.getValue(), span.end.getValue());
+	  if (end == null) end = section.order.items.get(section.order.items.size()-1).end.getValue();
 
     // Point size = zone.painters.computeSize(itemX.index, itemY.index, SWT.DEFAULT, SWT.DEFAULT);
     // Compute length until span start or the maximum size of the cell is reached

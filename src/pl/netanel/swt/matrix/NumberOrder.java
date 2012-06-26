@@ -325,32 +325,30 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	  ExtentCountSequence seq;
     if (math.compare(count, math.ZERO_VALUE()) >= 0) {
       seq = countForward;
-      seq.count = count;
+      seq.limit = count;
     } else {
       seq = countBackward;
-      seq.count = math.negate(count);
+      seq.limit = math.negate(count);
     }
-    seq.start = start;
+    seq.origin = start;
 	  for (seq.init(); seq.next(););
 	  return seq.index == null ? null : seq.index.getValue();
 	}
 
 	public abstract class ExtentCountSequence implements Sequence {
-    N start, count;
+    N origin, limit;
     int i;
     MutableExtent<N> extent;
     MutableNumber<N> index;
-    MutableNumber<N> remaining = math.create(0);
+    MutableNumber<N> remain = math.create(0);
+    MutableNumber<N> diff = math.create(0);
 
     @Override
     public void init() {
-      index = math.create(0);
-      i = 0;
-      for (int size = items.size(); i < size; i++) {
-        extent = items.get(i);
-        if (math.contains(extent, start)) break;
-      }
-      index.set(start);
+      index = math.create(origin);
+      remain.set(limit);
+      i = getExtentIndex(origin);
+      extent = items.get(i);
     }
 	}
 
@@ -358,37 +356,42 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	  @Override
     public void init() {
       super.init();
-      remaining.set(count).add(start).subtract(extent.end);
+      //remaining.set(limit).add(origin).subtract(extent.start);
     }
     @Override
     public boolean next() {
-      if (math.compare(remaining, math.ZERO_VALUE()) <= 0) {
-        index.set(extent.end).add(remaining).getValue();
-        if (math.compare(index, NumberOrder.this.count) >= 0) {
-          index = null;
-        }
+      if (math.compare(remain, math.ZERO()) <= 0) {
         return false;
       }
-      if (i >= items.size() - 1) {
+
+      diff.set(extent.end).subtract(index);
+      if (math.compare(diff, remain) >= 0) {
+        index.add(remain);
+        remain.set(math.ZERO_VALUE());
+        return true;
+      }
+      if (++i >= items.size()) {
         index = null;
         return false;
       }
-      extent = items.get(++i);
-      remaining.add(extent.start).subtract(extent.end).decrement();
+      extent = items.get(i);
+      index.set(extent.start);
+      remain.subtract(diff).decrement();
       return true;
     }
 	}
+
 	public class ExtentCountBackwardSequence extends ExtentCountSequence {
 	   @Override
 	    public void init() {
 	      super.init();
-	      remaining.set(count).add(extent.start).subtract(start);
+	      remain.set(limit).add(extent.start).subtract(origin);
 	    }
 
 	  @Override
 	  public boolean next() {
-	    if (math.compare(remaining, math.ZERO_VALUE()) <= 0) {
-	      index.set(extent.start).subtract(remaining).getValue();
+	    if (math.compare(remain, math.ZERO_VALUE()) <= 0) {
+	      index.set(extent.start).subtract(remain).getValue();
 	      if (math.compare(index, math.ZERO_VALUE()) < 0) {
 	        index = null;
 	      }
@@ -399,7 +402,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	      return false;
 	    }
 	    extent = items.get(--i);
-	    remaining.add(extent.start).subtract(extent.end).decrement();
+	    remain.add(extent.start).subtract(extent.end).decrement();
 	    return true;
 	  }
 	}

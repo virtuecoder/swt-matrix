@@ -73,9 +73,9 @@ public class MatrixLayoutCellSequenceTest {
     assertTrue(seq.next());
     assertCell(0, 0, 1, 1, 16, 16);
     assertTrue(seq.next());
-    assertCell(1, 0, 18, 1, 16, 16);
-    assertTrue(seq.next());
     assertCell(0, 1, 1, 18, 16, 16);
+    assertTrue(seq.next());
+    assertCell(1, 0, 18, 1, 16, 16);
     assertTrue(seq.next());
     assertCell(1, 1, 18, 18, 16, 16);
     assertFalse(seq.next());
@@ -107,13 +107,13 @@ public class MatrixLayoutCellSequenceTest {
     assertTrue(seq.next());
     assertCell(0, 0, 1, 1, 33, 33);
     assertTrue(seq.next());
-    assertCell(2, 0, 35, 1, 16, 16);
-    assertTrue(seq.next());
-    assertCell(2, 1, 35, 18, 16, 16);
-    assertTrue(seq.next());
     assertCell(0, 2, 1, 35, 16, 16);
     assertTrue(seq.next());
     assertCell(1, 2, 18, 35, 16, 16);
+    assertTrue(seq.next());
+    assertCell(2, 0, 35, 1, 16, 16);
+    assertTrue(seq.next());
+    assertCell(2, 1, 35, 18, 16, 16);
     assertTrue(seq.next());
     assertCell(2, 2, 35, 35, 16, 16);
     assertFalse(seq.next());
@@ -131,13 +131,13 @@ public class MatrixLayoutCellSequenceTest {
     assertTrue(seq.next());
     assertCell(0, 0, 1, 1, 33, 33);
     assertTrue(seq.next());
-    assertCell(2, 0, 35, 1, 16, 16);
-    assertTrue(seq.next());
-    assertCell(2, 1, 35, 18, 16, 33);
-    assertTrue(seq.next());
     assertCell(0, 2, 1, 35, 16, 16);
     assertTrue(seq.next());
     assertCell(1, 2, 18, 35, 16, 16);
+    assertTrue(seq.next());
+    assertCell(2, 0, 35, 1, 16, 16);
+    assertTrue(seq.next());
+    assertCell(2, 1, 35, 18, 16, 33);
     assertFalse(seq.next());
   }
 

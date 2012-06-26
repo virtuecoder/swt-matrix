@@ -261,6 +261,7 @@ import org.junit.runners.JUnit4;
 	  assertEquals(4, order.getIndexByOffset(3, 4));
 	  assertEquals(null, order.getIndexByOffset(3, 5));
 	  assertEquals(null, order.getIndexByOffset(3, 10));
+	  assertEquals(4, order.getIndexByOffset(4, 0));
 	}
 
 	@Test

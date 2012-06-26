@@ -471,14 +471,12 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       if (last == null || item == null) return;
       if (!last.section.equals(item.section)) return;
 
-
       boolean ctrlSelection =
           commandId == CMD_SELECT_COLUMN_ALTER || commandId == CMD_SELECT_TO_COLUMN_ALTER ||
           commandId == CMD_SELECT_ROW_ALTER || commandId == CMD_SELECT_TO_ROW_ALTER;
 
       selectState = ctrlSelection
-          ? prev == null ? !isSelected(last) : selectState
-              : true;
+          ? prev == null ? !isSelected(last) : selectState : true;
 
       //      TestUtil.log(last, item, isSelected(last), prev, selectState);
 

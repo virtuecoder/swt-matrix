@@ -721,7 +721,7 @@ public class  SwtTestCase {
   /**
    * Imitates drag and drop from the start point to the end point.
    * 
-   * @param start
+   * @param origin
    * @param end
    */
   public void dragAndDrop(int code, Point ...p) {
