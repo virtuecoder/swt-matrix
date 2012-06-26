@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import pl.netanel.swt.matrix.NumberSet.NumberSequence;
+
 
 @SuppressWarnings({"rawtypes", "unchecked"}) @RunWith(JUnit4.class) public class  NumberSetTest {
 
@@ -321,6 +323,43 @@ import org.junit.runners.JUnit4;
 		// arguments:  1
 		assertEquals("0-1", subtract(0, 2, 1, 1));
 	}
+
+	@Test
+  public void forward0() throws Exception {
+	  NumberSet set = numberSet();
+	  NumberSequence seq = set.new ForwardNumberSequence();
+	  seq.init();
+	  assertFalse(seq.next());
+	}
+
+	@Test
+	public void forward1() throws Exception {
+	  NumberSet set = numberSet();
+	  set.add(0, 0);
+	  NumberSequence seq = set.new ForwardNumberSequence();
+	  seq.init();
+	  assertTrue(seq.next());
+	  assertEquals(0, seq.index.getValue());
+	  assertFalse(seq.next());
+	}
+
+	@Test
+	public void forward2() throws Exception {
+	  NumberSet set = numberSet();
+	  set.add(0, 0);
+	  set.add(1, 2);
+	  NumberSequence seq = set.new ForwardNumberSequence();
+	  seq.init();
+	  assertTrue(seq.next());
+	  assertEquals(0, seq.index.getValue());
+	  assertTrue(seq.next());
+	  assertEquals(1, seq.index.getValue());
+	  assertTrue(seq.next());
+	  assertEquals(2, seq.index.getValue());
+	  assertFalse(seq.next());
+	}
+
+
 
 	static private String subtract(int estart, int eend, int astart, int aend) {
 		NumberSet set = new NumberSet(IntMath.getInstance(), false);

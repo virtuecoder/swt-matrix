@@ -1110,31 +1110,17 @@ class AxisLayout<N extends Number> {
 
 	public Bound getBound(AxisItem<N> item, MutableExtent<N>span, int distance) {
 	  SectionCore<N> section = item.section;
-	  N start = span.start.getValue();
-	  N end = section.order.getIndexByOffset(span.start.getValue(), span.end.getValue());
-	  if (end == null) end = section.order.items.get(section.order.items.size()-1).end.getValue();
 
-    // Point size = zone.painters.computeSize(itemX.index, itemY.index, SWT.DEFAULT, SWT.DEFAULT);
-    // Compute length until span start or the maximum size of the cell is reached
-    int w = 0;
+    NumberSet<N>.ForwardNumberCountSequence seq = section.order.new ForwardNumberCountSequence();
+	  seq.origin = span.start.getValue();
+	  seq.limit = span.end.getValue();
+	  int w = 0;
+	  for (seq.init(); seq.next();) {
+	    N index = seq.index.getValue();
+	    if (section.isHidden(index)) continue;
+	    w += section.getLineWidth(index) + section.getCellWidth(index);
+	  }
 
-    Direction<N> seq = backward;
-    for (seq.init(item); seq.next();) {
-      N index = seq.getItem().index;
-      if (math.compare(index, start) <= 0) break;
-      w += section.getCellWidth(index) + section.getLineWidth(index);
-    }
-    distance -= w;
-
-    int lineWidth = 0;
-    seq = forward;
-    for (seq.init(item); seq.next();) {
-      N index = seq.getItem().index;
-      if (math.compare(index, end) >= 0) break;
-      lineWidth = section.getLineWidth(index);
-      w += section.getCellWidth(index) + lineWidth;
-    }
-
-    return new Bound(distance, w - lineWidth);
+    return new Bound(distance, w - section.getLineWidth(seq.origin));
 	}
 }

@@ -325,4 +325,76 @@ class NumberSet<N extends Number> {
 	public void insert(N target, N count) {
 		MutableExtent.insert(math, items, target, count);
 	}
+
+
+
+	abstract class NumberSequence implements Sequence {
+	  private int i, size;
+	  MutableExtent<N> e;
+	  MutableNumber<N> index;
+
+	  public void init() {
+	    i = 0;
+	    size = items.size();
+	    if (size == 0) return;
+	    e = items.get(i);
+	    index = math.create(e.start);
+	    index.decrement();
+	  }
+
+	  public boolean next() {
+	    if (size == 0) return false;
+	    if (math.compare(index.increment(), e.end) > 0) {
+	      if (++i >= size) return false;
+	      e = items.get(i);
+	      index.set(e.start);
+	    }
+	    return true;
+	  }
+
+	  boolean over() {
+	    return i >= size - 1 && math.compare(index.increment(), e.end) >= 0;
+	  }
+	}
+
+	class ForwardNumberSequence extends NumberSequence {
+	}
+
+	abstract class NumberCountSequence implements Sequence {
+	  N origin, limit;
+    private int i, size;
+    MutableExtent<N> e;
+    MutableNumber<N> index, remain = math.create(0);
+
+    public void init() {
+      size = items.size();
+      if (size == 0) return;
+      i = getExtentIndex(origin);
+      e = items.get(i);
+      index = math.create(origin);
+      index.decrement();
+      remain.set(limit) ;
+    }
+
+    public boolean next() {
+      if (size == 0) return false;
+      if (math.compare(remain, math.ZERO_VALUE()) == 0) return false;
+      remain.decrement();
+      if (math.compare(index.increment(), e.end) > 0) {
+        if (++i >= size) return false;
+        e = items.get(i);
+        index.set(e.start);
+      }
+      return true;
+    }
+
+    boolean over() {
+      return i >= size - 1 && math.compare(index.increment(), e.end) >= 0;
+    }
+  }
+
+  class ForwardNumberCountSequence extends NumberCountSequence {
+
+  }
+
 }

@@ -449,10 +449,12 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         if (start != null) {
           switch (move) {
           case HOME: case PREVIOUS: case PREVIOUS_PAGE:
-            axisLayout.setFocusItem(AxisItem.create(axisLayout.current.section, start)); break;
+            axisLayout.current = AxisItem.create(axisLayout.current.section, start);
+            break;
           case END: case NEXT: case NEXT_PAGE:
-            N end = axisLayout.current.section.order.getIndexByOffset(start, count);
-            axisLayout.setFocusItem(AxisItem.create(axisLayout.current.section, axisLayout.math.decrement(end))); break;
+            N end = axisLayout.current.section.order.getIndexByOffset(start, axisLayout.math.decrement(count));
+            axisLayout.current = AxisItem.create(axisLayout.current.section, end);
+            break;
           }
         }
 
@@ -885,33 +887,36 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     // Handle merging
     AxisItem<X> currentX = stateX.axisLayout.current;
     AxisItem<Y> currentY = stateY.axisLayout.current;
-    span = matrix.layout.getZone(currentX.section, currentY.section).
-          cellMerging.getSpan(currentX.index, currentY.index);
     X startX = null, countX = null;
     Y startY = null, countY = null;
-    if (span != null) {
-      startX = span.startX; countX = span.endX;
-      startY = span.startY; countY = span.endY;
-    }
+    if (currentX != null && currentY != null) {
+      span = matrix.layout.getZone(currentX.section, currentY.section).
+          cellMerging.getSpan(currentX.index, currentY.index);
+      if (span != null) {
+        startX = span.startX; countX = span.endX;
+        startY = span.startY; countY = span.endY;
+      }
 
-    if (mY != null) stateY.moveFocusItem(mY, startY, countY);
-    if (mX != null) stateX.moveFocusItem(mX, startX, countX);
-    if (mY != null || mX != null) {
-      stateY.item = currentY;
-      stateX.item = currentX;
+      if (mY != null) stateY.moveFocusItem(mY, startY, countY);
+      if (mX != null) stateX.moveFocusItem(mX, startX, countX);
+      if (mY != null || mX != null) {
+        stateY.item = currentY;
+        stateX.item = currentX;
+      }
     }
 
     // Set current to the start of the merged cell
-    currentX = stateX.axisLayout.current;
-    currentY = stateY.axisLayout.current;
-    span = matrix.layout.getZone(currentX.section, currentY.section).
-        cellMerging.getSpan(currentX.index, currentY.index);
+    if (currentX != null && currentY != null) {
+      currentX = stateX.axisLayout.current;
+      currentY = stateY.axisLayout.current;
+      span = matrix.layout.getZone(currentX.section, currentY.section).
+          cellMerging.getSpan(currentX.index, currentY.index);
 
-    if (span != null) {
-      stateX.axisLayout.setFocusItem(AxisItem.createInternal(currentX.section, span.startX));
-      stateY.axisLayout.setFocusItem(AxisItem.createInternal(currentY.section, span.startY));
+      if (span != null) {
+        stateX.axisLayout.setFocusItem(AxisItem.createInternal(currentX.section, span.startX));
+        stateY.axisLayout.setFocusItem(AxisItem.createInternal(currentY.section, span.startY));
+      }
     }
-
 
     return stateY.focusMoved && stateX.focusMoved;
   }

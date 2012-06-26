@@ -153,11 +153,11 @@ public class MatrixLayoutCellSequenceTest {
     assertTrue(seq.next());
     assertCell(0, 0, 1, 1, 33, 33);
     assertTrue(seq.next());
+    assertCell(0, 2, 1, 35, 50, 16);
+    assertTrue(seq.next());
     assertCell(2, 0, 35, 1, 16, 16);
     assertTrue(seq.next());
     assertCell(2, 1, 35, 18, 16, 16);
-    assertTrue(seq.next());
-    assertCell(0, 2, 1, 35, 50, 16);
     assertFalse(seq.next());
   }
 
@@ -173,17 +173,15 @@ public class MatrixLayoutCellSequenceTest {
     assertTrue(seq.next());
     assertCell(0, 0, 1, 1, 16, 16);
     assertTrue(seq.next());
-    assertCell(1, 0, 18, 1, 16, 16);
-    assertTrue(seq.next());
-    assertCell(2, 0, 35, 1, 16, 33);
-    assertTrue(seq.next());
     assertCell(0, 1, 1, 18, 16, 16);
+    assertTrue(seq.next());
+    assertCell(0, 2, 1, 35, 33, 16);
+    assertTrue(seq.next());
+    assertCell(1, 0, 18, 1, 16, 16);
     assertTrue(seq.next());
     assertCell(1, 1, 18, 18, 16, 16);
     assertTrue(seq.next());
-    assertCell(2, 2, 35, 35, 16, 16);
-    assertTrue(seq.next());
-    assertCell(0, 2, 1, 35, 33, 16);
+    assertCell(2, 0, 35, 1, 16, 33);
     assertTrue(seq.next());
     assertCell(2, 2, 35, 35, 16, 16);
     assertFalse(seq.next());
@@ -194,13 +192,13 @@ public class MatrixLayoutCellSequenceTest {
     layoutX.body.setCount(10);
     layoutY.body.setCount(10);
     layoutX.setViewportSize(60);
-    layoutX.scrollTo(TestUtil.item(layoutX.body, 2));
+    layoutX.setFocusItem(TestUtil.item(layoutX.body, 2));
     zone.setMerged(0, 5, 0, 5);
     layout.compute();
     seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
     assertTrue(seq.next());
-    assertCell(0, 0, -33, 1, 84, 84);
+    assertCell(0, 0, 1, 1, 84, 84);
   }
 
 

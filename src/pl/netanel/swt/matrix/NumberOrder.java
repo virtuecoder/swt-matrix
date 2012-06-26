@@ -16,8 +16,8 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 		super(math);
 		count = math.ZERO_VALUE();
 		spanExtents = new SpanExtentSequence();
-		countForward = new ExtentCountForwardSequence();
-		countBackward = new ExtentCountBackwardSequence();
+		countForward = new ForwardExtentCountSequence();
+		countBackward = new BackwardExtentCountSequence();
 	}
 
 	public void setCount(N newCount) {
@@ -352,7 +352,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
     }
 	}
 
-	public class ExtentCountForwardSequence extends ExtentCountSequence {
+	public class ForwardExtentCountSequence extends ExtentCountSequence {
 	  @Override
     public void init() {
       super.init();
@@ -381,7 +381,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
     }
 	}
 
-	public class ExtentCountBackwardSequence extends ExtentCountSequence {
+	public class BackwardExtentCountSequence extends ExtentCountSequence {
 	   @Override
 	    public void init() {
 	      super.init();

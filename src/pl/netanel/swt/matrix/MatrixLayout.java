@@ -426,7 +426,9 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
             boundX = layoutX.getBound(itemX, zone.cellMerging.itemsX.get(spanIndex), cacheX.cells.get(i).distance);
             boundY = layoutY.getBound(itemY, zone.cellMerging.itemsY.get(spanIndex), cacheY.cells.get(j).distance);
             cache.add(spanIndex, itemX, itemY, boundX, boundY);
-            region.subtract(boundX.distance, boundY.distance, boundX.width, boundY.width);
+            region.subtract(
+                java.lang.Math.max(boundX.distance, 0),
+                java.lang.Math.max(boundY.distance, 0), boundX.width, boundY.width);
           }
         }
       }
