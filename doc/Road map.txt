@@ -1,3 +1,5 @@
+Zone.addControlListener to get notification when an item is resized or moved.
+
 Axis.setSelected(from position, to position) ?
 
 

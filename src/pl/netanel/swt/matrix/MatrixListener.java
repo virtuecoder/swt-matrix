@@ -447,14 +447,17 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         //				matrix.model.setSelected(false, false);
 
         if (start != null) {
+          N index = null;
           switch (move) {
           case HOME: case PREVIOUS: case PREVIOUS_PAGE:
-            axisLayout.current = AxisItem.create(axisLayout.current.section, start);
+            index = start;
             break;
           case END: case NEXT: case NEXT_PAGE:
-            N end = axisLayout.current.section.order.getIndexByOffset(start, axisLayout.math.decrement(count));
-            axisLayout.current = AxisItem.create(axisLayout.current.section, end);
+            index = axisLayout.current.section.order.getIndexByOffset(start, axisLayout.math.decrement(count));
             break;
+          }
+          if (index != null) {
+            axisLayout.current = AxisItem.create(axisLayout.current.section, index);
           }
         }
 

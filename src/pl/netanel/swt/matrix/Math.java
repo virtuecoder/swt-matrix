@@ -204,6 +204,9 @@ abstract class Math<N extends Number> {
 	public MutableNumber<N> min(MutableNumber<N> x, MutableNumber<N> y) {
 		return x.min(y);
 	}
+	public MutableNumber<N> max(MutableNumber<N> x, MutableNumber<N> y) {
+	  return x.max(y);
+	}
 
 	N getCount(MutableExtent<N> e) {
 		return create(e.end).subtract(e.start).increment().getValue();

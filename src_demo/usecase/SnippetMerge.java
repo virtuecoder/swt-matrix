@@ -7,7 +7,6 @@ import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.Matrix;
-import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 
@@ -20,32 +19,21 @@ public class SnippetMerge
         Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.H_SCROLL | SWT.V_SCROLL);
 
         Axis<Integer> axisX = matrix.getAxisX();
+        Axis<Integer> axisY = matrix.getAxisY();
+        
         Section<Integer> bodyX = axisX.getBody();
         bodyX.setCount(10);
         bodyX.setDefaultMoveable(true);
-        bodyX.setHidden(2, true);
+        axisX.getHeader().setVisible(true);
 
-        matrix.getAxisY().getBody().setCount(10);
-        matrix.getAxisY().getHeader().setVisible(true);
-
-//        bodyX.setSelected(bodyX.getIndex(1); bodyX.getIndex(2));
+        axisY.getBody().setCount(10);
+        axisY.getHeader().setVisible(true);
 
         Zone<Integer, Integer> body = matrix.getBody();
-//        body.setSelected(5, 10, 5, 10, true);
-//        bodyX.setOrder(6, 1);
-
-        Painter<Integer, Integer> painter = body.getPainter(Painter.NAME_CELLS);
-        painter.style.textAlignX = SWT.CENTER;
-
-        body.setMerged(0, 4, 0, 5);
+        body.setMerged(2, 4, 2, 4);
 
         shell.setBounds(400, 200, 600, 400);
         shell.open();
-
-//        matrix.execute(Matrix.CMD_FOCUS_PAGE_RIGHT);
-//        matrix.execute(Matrix.CMD_FOCUS_RIGHT);
-//        axisX.showItem(AxisItem.createUnchecked(bodyX, 11));
-
 
         Display display = shell.getDisplay();
         while (!shell.isDisposed())

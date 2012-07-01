@@ -1,6 +1,7 @@
 package pl.netanel.swt.matrix;
 
 import java.util.ArrayList;
+
 import pl.netanel.util.IntArray;
 
 
@@ -9,6 +10,11 @@ import pl.netanel.util.IntArray;
  *
  * @author Jacek
  * @created 15-11-2010
+ */
+/**
+ *
+ * @author Jacek
+ * @created 30-06-2012
  */
 class CellSpanSet<X extends Number, Y extends Number> {
   private final NumberOrder<X> orderX;
@@ -75,6 +81,33 @@ class CellSpanSet<X extends Number, Y extends Number> {
 		}
 		return false;
 	}
+	
+	 /**
+   * @param extent accumulates computation, visitor pattern
+   */
+  public void maximize(X startX, X endX, Y startY, Y endY, CellExtent<X, Y> extent) {
+    int size = itemsX.size();
+    for (int i = 0; i < size; i++) {
+      MutableExtent<X> ex = itemsX.get(i);
+      MutableExtent<Y> ey = itemsY.get(i);
+
+      boolean containsX = false, containsY = false;
+      if (startY != null) {
+        containsY = orderY.getSpanExtents(ey).contains(indexY);
+      }
+      if (indexX != null) {
+        containsX = orderX.getSpanExtents(ex).contains(indexX);
+      }
+      if (indexX == null && containsY ||
+          indexY == null && containsX ||
+          containsX && containsY)
+      {
+        return true;
+      }
+    }
+  }
+
+
 
 	/**
 	 * Returns the index of span containing the given cell
@@ -110,9 +143,7 @@ class CellSpanSet<X extends Number, Y extends Number> {
 	 */
 	public boolean removeContaining(X startX, X countX, Y startY, Y countY) {
 	  IntArray toRemove = new IntArray();
-	  int i = 0;
-	  int size = itemsY.size();
-	  for (;i < size; i++) {
+	  for (int i = 0, size = itemsY.size(); i < size; i++) {
       MutableExtent<X> spanX = itemsX.get(i);
       MutableExtent<Y> spanY = itemsY.get(i);
 
@@ -131,18 +162,6 @@ class CellSpanSet<X extends Number, Y extends Number> {
     return removed;
 	}
 
-
-
-
-//	public void change(MutableNumber startY, MutableNumber endY,
-//			MutableNumber startX, MutableNumber endX, boolean add)
-//	{
-//		if (add) {
-//			add(startY, endY, startX, endX);
-//		} else {
-//			remove(startY, endY, startX, endX);
-//		}
-//	}
 
 	public boolean isEmpty() {
 		return itemsY.isEmpty();
@@ -169,29 +188,22 @@ class CellSpanSet<X extends Number, Y extends Number> {
 		return copy;
 	}
 
+	
 
 	public void deleteY(Y start, Y end) {
-		for (int i = 0, imax = itemsY.size(); i < imax; i++) {
-			MutableExtent.delete(mathY, itemsY, start, end);
-		}
+		MutableExtent.deleteSpan(mathY, itemsY, start, end);
 	}
 
 	public void deleteX(X start, X end) {
-		for (int i = 0, imax = itemsY.size(); i < imax; i++) {
-			MutableExtent.delete(mathX, itemsX, start, end);
-		}
+		MutableExtent.deleteSpan(mathX, itemsX, start, end);
 	}
 
 	public void insertY(Y target, Y count) {
-		for (int i = 0, imax = itemsY.size(); i < imax; i++) {
-			MutableExtent.insert(mathY, itemsY, target, count);
-		}
+	  MutableExtent.insertSpan(mathY, itemsY, target, count);
 	}
 
 	public void insertX(X target, X count) {
-		for (int i = 0, imax = itemsY.size(); i < imax; i++) {
-			MutableExtent.insert(mathX, itemsX, target, count);
-		}
+		MutableExtent.insertSpan(mathX, itemsX, target, count);
 	}
 
 	public CellExtent<X, Y> getSpan(X x, Y y) {
@@ -207,23 +219,6 @@ class CellSpanSet<X extends Number, Y extends Number> {
 	        spanY.start.getValue(), spanY.end.getValue());
 	    }
 	  }
-	  return null;
-	}
-
-	public CellExtent<X, Y> getSpanSequence(X x, Y y) {
-//	  if (x == null && y == null) return ;
-//	  for (int i = 0; i < itemsX.size(); i++) {
-//	    MutableExtent<X> spanX = itemsX.get(i);
-//	    MutableExtent<Y> spanY = itemsY.get(i);
-//
-//	    if (orderX.getSpanExtents(spanX).contains(x) &&
-//	        orderY.getSpanExtents(spanY).contains(y))
-//	    {
-//	      return CellExtent.createUnchecked(
-//	          spanX.start.getValue(), spanX.end.getValue(),
-//	          spanY.start.getValue(), spanY.end.getValue());
-//	    }
-//	  }
 	  return null;
 	}
 

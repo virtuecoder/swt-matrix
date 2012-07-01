@@ -244,7 +244,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	}
 
 	class SpanExtentSequence implements Sequence {
-	  N start;
+	  N origin;
 	  N limit;
 	  MutableExtent<N> current;
 
@@ -253,8 +253,8 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	  private MutableExtent<N> extent;
 	  private MutableNumber<N> remain;
 
-	  public SpanExtentSequence configure(N start, N limit) {
-	    this.start = start;
+	  public SpanExtentSequence configure(N origin, N limit) {
+	    this.origin = origin;;
 	    this.limit = limit;
 
 	    current = new MutableExtent<N>(math.create(0), math.create(0));
@@ -268,7 +268,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	    //  limit is <= 0
 	    if (math.compare(limit, math.ZERO_VALUE()) <= 0) return;
 
-	    i0 = i = getExtentIndex(start);
+	    i0 = i = getExtentIndex(origin);
 	    if (i != -1) over = false;
 	  }
 
@@ -277,7 +277,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	    if (over) return false;
 
 	    extent = items.get(i);
-	    current.start.set(i==i0 ? start : extent.start.getValue());
+	    current.start.set(i==i0 ? origin : extent.start.getValue());
 	    current.end.set(extent.end);
 
 	    MutableNumber<N> c = math.count(current);
@@ -334,6 +334,16 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	  for (seq.init(); seq.next(););
 	  return seq.index == null ? null : seq.index.getValue();
 	}
+
+	public void overlap(N origin, N limit, MutableExtent<N> extent) {
+//    ExtentCountSequence seq = countForward;
+//    seq.origin = origin;
+//    seq.limit = limit;
+//    for (seq.init(); seq.next();) {
+//      extent.start.set(math.min(extent.start, seq.start));
+//      extent.end.set(math.max(extent.end, seq.end));
+//    }
+  }
 
 	public abstract class ExtentCountSequence implements Sequence {
     N origin, limit;

@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MergingTest {
+public class MergeTest {
 
   private SectionCore<Integer> sectionX;
   private SectionCore<Integer> sectionY;

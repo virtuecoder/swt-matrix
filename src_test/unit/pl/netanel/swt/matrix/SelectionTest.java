@@ -1,5 +1,6 @@
 package pl.netanel.swt.matrix;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigInteger;
 
@@ -38,9 +39,9 @@ import org.junit.runners.JUnit4;
 	public void selectItemSelectsCells() throws Exception {
 		Matrix matrix = new Matrix(new Shell(), SWT.None);
 		matrix.getAxisY().getBody().setCount(10);
-		Section body = matrix.getAxisX().getBody();
-		body.setCount(4);
-		body.setSelected(0, 0, true);
+		Section bodyX = matrix.getAxisX().getBody();
+		bodyX.setCount(4);
+		bodyX.setSelected(0, 0, true);
 		assertEquals(10, matrix.getBody().getSelectedCount().intValue());
 	}
 	
@@ -55,5 +56,50 @@ import org.junit.runners.JUnit4;
     matrix.getAxisY().getBody().setCount(new BigInteger("123456789012345678901234567890"));
     
     matrix.getBody().setSelected(0, BigInteger.ZERO, true);
+  }
+	
+	@Test public void selectMergedEnd() throws Exception {
+    Matrix matrix = new Matrix(new Shell(), SWT.None);
+    matrix.getAxisX().getBody().setCount(10);
+    matrix.getAxisY().getBody().setCount(10);
+	  Zone body = matrix.getBody();
+    body.setMerged(2, 3, 2, 3);
+	  body.setSelected(4, 6, 4, 6, true);
+//	  TestUtil.showMatrix(matrix);
+	  assertTrue(body.isSelected(2, 2));
+	  assertTrue(body.isSelected(3, 3));
+	  assertTrue(body.isSelected(4, 4));
+	  assertTrue(body.isSelected(5, 5));
+	  assertTrue(body.isSelected(2, 6));
+	}
+	
+	@Test public void selectMergedStart() throws Exception {
+	  Matrix matrix = new Matrix(new Shell(), SWT.None);
+	  matrix.getAxisX().getBody().setCount(10);
+	  matrix.getAxisY().getBody().setCount(10);
+	  Zone body = matrix.getBody();
+	  body.setMerged(2, 3, 2, 3);
+	  body.setSelected(1, 2, 1, 2, true);
+//	  TestUtil.showMatrix(matrix);
+	  assertTrue(body.isSelected(1, 1));
+	  assertTrue(body.isSelected(2, 2));
+	  assertTrue(body.isSelected(3, 3));
+	  assertTrue(body.isSelected(4, 4));
+	  assertTrue(body.isSelected(1, 4));
+	}
+	
+	@Test public void selectMergedStartXBeyondY() throws Exception {
+    Matrix matrix = new Matrix(new Shell(), SWT.None);
+    matrix.getAxisX().getBody().setCount(10);
+    matrix.getAxisY().getBody().setCount(10);
+    Zone body = matrix.getBody();
+    body.setMerged(2, 3, 2, 3);
+    body.setSelected(1, 2, 1, 6, true);
+//    TestUtil.showMatrix(matrix);
+    assertTrue(body.isSelected(1, 1));
+    assertTrue(body.isSelected(2, 2));
+    assertTrue(body.isSelected(3, 3));
+    assertTrue(body.isSelected(4, 4));
+    assertTrue(body.isSelected(4, 6));
   }
 }

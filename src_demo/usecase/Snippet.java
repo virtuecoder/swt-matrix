@@ -5,6 +5,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
@@ -26,6 +27,9 @@ public class Snippet
 
         matrix.getAxisY().getBody().setCount(100);
         matrix.getAxisY().getHeader().setVisible(true);
+        
+        matrix.getAxisX().getBody().setHidden(2, true);
+        matrix.getAxisX().showItem(AxisItem.create(matrix.getAxisX().getBody(), 3));
 
 //        bodyX.setSelected(bodyX.getIndex(1); bodyX.getIndex(2));
 

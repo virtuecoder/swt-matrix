@@ -1119,6 +1119,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    if (zone.sectionX.equals(section)) {
 	      zone.cellSelection.insertX((X) target, (X) count);
 	      zone.lastSelection.insertX((X) target, (X) count);
+	      zone.cellMerging.insertX((X) target, (X) count);
 	    }
 	  }
 	}
@@ -1129,6 +1130,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    if (zone.sectionY.equals(section)) {
 	      zone.cellSelection.insertY((Y) target, (Y) count);
 	      zone.lastSelection.insertY((Y) target, (Y) count);
+	      zone.cellMerging.insertY((Y) target, (Y) count);
 	    }
 	  }
 	}
@@ -1139,6 +1141,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    if (zone.sectionX.equals(section)) {
 	      zone.cellSelection.deleteX((X) target, (X) count);
 	      zone.lastSelection.deleteX((X) target, (X) count);
+	      zone.cellMerging.deleteX((X) target, (X) count);
 	    }
 	  }
 	}
@@ -1149,6 +1152,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    if (zone.sectionY.equals(section)) {
 	      zone.cellSelection.deleteY((Y) target, (Y) count);
 	      zone.lastSelection.deleteY((Y) target, (Y) count);
+	      zone.cellMerging.deleteY((Y) target, (Y) count);
 	    }
 	  }
 	}

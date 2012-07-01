@@ -280,7 +280,9 @@ public interface Section<N extends Number> {
   void setCellWidth(N index, int width);
 
   /**
-   * Sets the cell width that best fits its content.
+   * Sets the cell width that best fits its content. <br>
+   * Warning: for a large number of items it may take a long time to compute, 
+   * because of the necessity to iterate over all items.
    * <p>
    * <code>index</code> is the item index in the model,
    * not the visual position of the item on the screen

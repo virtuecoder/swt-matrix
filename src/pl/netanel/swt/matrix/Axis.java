@@ -354,12 +354,14 @@ public class Axis<N extends Number>  {
 
 
 
-	  /**
+  /**
    * Sets the focus marker to the given item.
    * <p>
    * If section has the focus item disabled (see
    * {@link SectionCore#setFocusItemEnabled(boolean)}) then this method does
    * nothing.
+   * 
+   * deprecated Use {@link #setFocusItem(Section, Number)} instead
    *
    * @param item the item to set the focus for
    * @throws IllegalArgumentException if item is <code>null</code> or item's
@@ -367,11 +369,33 @@ public class Axis<N extends Number>  {
    * @throws IndexOutOfBoundsException if item's index is out of 0 ...
    *           {@link SectionCore#getCount()}-1 bounds
    */
-	public void setFocusItem(AxisItem<N> item) {
+  public void setFocusItem(AxisItem<N> item) {
 	  checkItem(item, "item");
 		layout.setFocusItem(item);
 		if (matrix != null) matrix.redraw();
 	}
+	
+  /**
+   * Sets the focus marker to the given item.
+   * <p>
+   * If section has the focus item disabled (see
+   * {@link SectionCore#setFocusItemEnabled(boolean)}) then this method does
+   * nothing.
+   * 
+   * @param section of the item to set the focus for
+   * @param index of the item to set the focus for
+   * @throws IllegalArgumentException if item is <code>null</code> or item's
+   *           section does not belong to this axis.
+   * @throws IndexOutOfBoundsException if item's index is out of 0 ...
+   *           {@link SectionCore#getCount()}-1 bounds
+   */
+	 public void setFocusItem(Section<N> section, N index) {
+	    AxisItem<N> item = AxisItem.create(section, index);
+	    checkItem(item, "item");
+      layout.setFocusItem(item);
+	    if (matrix != null) matrix.redraw();
+	  }
+
 
 	/**
 	 * Scrolls to the given making it visible in the viewport.
@@ -385,9 +409,35 @@ public class Axis<N extends Number>  {
    * @throws IndexOutOfBoundsException if item's index is out of 0 ...
    *           {@link SectionCore#getCount()}-1 bounds
 	 */
+	
 	public void showItem(AxisItem<N> item) {
 	  checkItem(item, "item");
 
+	  if (layout.show(item)) {
+	    scroll();
+	    if (matrix != null) matrix.redraw();
+	  }
+	}
+	
+	
+	/**
+	 * Scrolls to the given making it visible in the viewport.
+	 * <p>
+	 * It works only when the matrix size has been set, which usually happens
+	 * when the shell to which the matrix belongs gets open.
+	 *
+	 * @param section section of the item to show
+	 * @param index index of the item to show
+	 * @throws IllegalArgumentException if item is <code>null</code> or item's
+	 *           section does not belong to this axis.
+	 * @throws IndexOutOfBoundsException if item's index is out of 0 ...
+	 *           {@link SectionCore#getCount()}-1 bounds
+	 */
+	
+	public void showItem(Section<N> section, N index) {
+	  AxisItem<N> item = AxisItem.create(section, index);
+	  checkItem(item, "item"); 
+	  
 	  if (layout.show(item)) {
 	    scroll();
 	    if (matrix != null) matrix.redraw();
@@ -832,6 +882,8 @@ public class Axis<N extends Number>  {
 	void checkItem(AxisItem<N> item, String name) {
 	  Preconditions.checkNotNullWithName(item, name);
 	  checkSection(item.section, "item section");
+    item.section.getUnchecked().checkCellIndex(item.index, "index");
+
 	}
 
 	SectionClient<N> sectionClient(Section<N> section) {

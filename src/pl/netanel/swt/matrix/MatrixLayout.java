@@ -452,6 +452,24 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
 
     return null;
   }
+  
+  CellExtent<X, Y> getSurroundingExtent(X startX, X endX, Y startY, Y endY) {
+    for (int i = 0, size = itemsY.size(); i < size; i++) {
+      MutableExtent<X> spanX = itemsX.get(i);
+      MutableExtent<Y> spanY = itemsY.get(i);
+
+      boolean containsX = orderX.getSpanExtents(spanX).contains(startX, countX);
+      boolean containsY = orderY.getSpanExtents(spanY).contains(startY, countY);
+
+      if (containsX && containsY) {
+        startX.set(mathX.min(startX, spanX.start));
+        startY.set(mathY.min(startY, spanY.));
+        endX.set(mathX.min(endX, spanX));
+        endY.set(mathY.min(endY, spanY));
+      }
+    }
+  }
+
 
   /**
    * Caches layout data for a single frozen area.

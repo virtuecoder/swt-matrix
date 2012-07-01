@@ -1,6 +1,12 @@
 package pl.netanel.swt.matrix;
 
-import static pl.netanel.swt.matrix.Math.*;
+import static pl.netanel.swt.matrix.Math.ADJACENT_AFTER;
+import static pl.netanel.swt.matrix.Math.AFTER;
+import static pl.netanel.swt.matrix.Math.CROSS_AFTER;
+import static pl.netanel.swt.matrix.Math.CROSS_BEFORE;
+import static pl.netanel.swt.matrix.Math.EQUAL;
+import static pl.netanel.swt.matrix.Math.INSIDE;
+import static pl.netanel.swt.matrix.Math.OVERLAP;
 
 import java.util.ArrayList;
 
@@ -56,7 +62,7 @@ class MutableExtent<N extends Number> {
 				break;
 
 			case CROSS_AFTER:
-				e.start.subtract(math.create(e.start).subtract(start));
+				e.start.set(start);
 				e.end.set(end).subtract(e.start).add(start).decrement();
 				break;
 
@@ -76,6 +82,40 @@ class MutableExtent<N extends Number> {
 		}
 		return toRemove;
 	}
+	
+	static <N extends Number> IntArray deleteSpan(Math<N> math, ArrayList<MutableExtent<N>> list, N start, N end) {
+	  IntArray toRemove = new IntArray();
+	  for (int i = 0, imax = list.size(); i < imax; i++) {
+	    MutableExtent<N> e = list.get(i);
+	    int compare = math.compare(e.start(), e.end(), start, end);
+	    switch (compare) {
+	    case AFTER:
+	    case ADJACENT_AFTER:
+	      MutableNumber<N> count = math.create(end).subtract(start).increment();
+	      e.start.subtract(count);
+	      break;
+	      
+	    case CROSS_AFTER:
+	      e.start.subtract(math.create(e.start).subtract(start));
+	      e.end.set(end).subtract(e.start).add(start).decrement();
+	      break;
+	      
+	    case CROSS_BEFORE:
+	    case OVERLAP:
+	      e.end.subtract(math.min(end, e.end())).add(start).decrement();
+	      break;
+	      
+	    case INSIDE:
+	    case EQUAL:
+	      toRemove.add(i); break;
+	    }
+	  }
+	  toRemove.sortDescending();
+	  for (int i = 0, imax = toRemove.size(); i < imax; i++) {
+	    list.remove(toRemove.get(i));
+	  }
+	  return toRemove;
+	}
 
 	static <N extends Number> void insert(Math<N> math, ArrayList<MutableExtent<N>> list, N target, N count) {
 		for (int i = 0, imax = list.size(); i < imax; i++) {
@@ -89,6 +129,16 @@ class MutableExtent<N extends Number> {
 				e.end.add(count);
 			}
 		}
+	}
+	
+	static <N extends Number> void insertSpan(Math<N> math, ArrayList<MutableExtent<N>> list, N target, N count) {
+	  for (int i = 0, imax = list.size(); i < imax; i++) {
+	    MutableExtent<N> e = list.get(i);
+	    
+	    if (math.compare(target, e.start()) <= 0) {
+	      e.start.add(count);
+	    }
+	  }
 	}
 
   public MutableExtent<N> copy() {

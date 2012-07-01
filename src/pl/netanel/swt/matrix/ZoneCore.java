@@ -31,6 +31,11 @@ import pl.netanel.util.Preconditions;
  * @author Jacek
  * @created 13-10-2010
  */
+/**
+ *
+ * @author Jacek
+ * @created 30-06-2012
+ */
 class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 	final Painters<X, Y> painters;
@@ -50,6 +55,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	final Rectangle bounds;
 	X cellMergeLimitX;
 	Y cellMergeLimitY;
+  private Math<X> mathX;
+  private Math<Y> mathY;
 
 
   /**
@@ -60,6 +67,9 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	public ZoneCore(SectionCore<X> sectionX, SectionCore<Y> sectionY) {
 		this.sectionY = sectionY;
 		this.sectionX = sectionX;
+		mathX = sectionX.math;
+		mathY = sectionY.math;
+		
 		painters = new Painters<X, Y>();
     listeners = new Listeners();
     bindings = new ArrayList<GestureBinding>();
@@ -199,8 +209,22 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 	@Override
 	public void setSelected(X startX, X endX, Y startY, Y endY, boolean state) {
-
+	  // assert startX <= endX, startY <= endY
 		if (!selectionEnabled) return;
+		CellExtent<X, Y> span = cellMerging.getSpan(startX, startY);
+		if (span != null) {
+		  startX = span.startX;
+		  startY = span.startY;		  
+		} else {
+		  span = cellMerging.getSpan(endX, endY);
+		  if (span != null) {
+		    endX = sectionX.order.getIndexByOffset(span.startX, mathX.decrement(span.endX));;
+		    endY = sectionY.order.getIndexByOffset(span.startY, mathY.decrement(span.endY));;
+		  } 
+//		  else if (mathX.contains(startX, endX, span.startX) &&
+//		             mathY.contains(startY, endY, span.startY)) {
+//		  }		  
+		}
 		if (state) {
 			cellSelection.add(startX, endX, startY, endY);
 		} else {
@@ -342,7 +366,9 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	@Override
 	public boolean setMerged(X indexX, X countX, Y indexY, Y countY) {
 	  boolean removed = cellMerging.removeContaining(indexX, countX, indexY, countY);
-    if (!removed && (sectionX.math.compare(indexX, countX) != 0 || sectionY.math.compare(indexY, countY) != 0)) {
+    
+    if (!removed && 
+      (mathX.compare(countX, mathX.ONE_VALUE()) > 0 || mathY.compare(countY, mathY.ONE_VALUE()) > 0)) {
 	    cellMerging.add(indexX, countX, indexY, countY);
 	  }
     return !removed;

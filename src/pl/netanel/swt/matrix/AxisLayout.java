@@ -1121,6 +1121,6 @@ class AxisLayout<N extends Number> {
 	    w += section.getLineWidth(index) + section.getCellWidth(index);
 	  }
 
-    return new Bound(distance, w - section.getLineWidth(seq.origin));
+    return new Bound(distance, java.lang.Math.max(w - section.getLineWidth(seq.origin), 0));
 	}
 }

@@ -163,6 +163,8 @@ import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 		section.moveSelected(3, 0);
 		assertEquals("1, 3, 0, 2, 4", toString(section));
 	}
+	
+	
 
 	@Test
 	public void moveSelectedScattered3() throws Exception {
