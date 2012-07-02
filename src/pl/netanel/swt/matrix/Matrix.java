@@ -713,7 +713,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	      zone.setSelected(
 	        start, end,
 	        mathY.ZERO_VALUE(), mathY.decrement(zone.sectionY.getCount()),
-	        state);
+	        state, false);
 
 	      if (notify) {
 	        zone.addSelectionEvent();
@@ -729,7 +729,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	      zone.setSelected(
 	        mathX.ZERO_VALUE(), mathX.decrement(zone.sectionX.getCount()),
 	        start, end,
-	        state);
+	        state, false);
 
 	      if (notify) {
 	        zone.addSelectionEvent();

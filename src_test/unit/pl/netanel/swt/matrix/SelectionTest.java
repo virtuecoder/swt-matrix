@@ -1,5 +1,6 @@
 package pl.netanel.swt.matrix;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigInteger;
@@ -86,6 +87,7 @@ import org.junit.runners.JUnit4;
 	  assertTrue(body.isSelected(3, 3));
 	  assertTrue(body.isSelected(4, 4));
 	  assertTrue(body.isSelected(1, 4));
+	  assertFalse(body.isSelected(5, 5));
 	}
 	
 	@Test public void selectMergedStartXBeyondY() throws Exception {
@@ -102,4 +104,18 @@ import org.junit.runners.JUnit4;
     assertTrue(body.isSelected(4, 4));
     assertTrue(body.isSelected(4, 6));
   }
+	
+	@Test public void selectMerged2() throws Exception {
+	  Matrix matrix = new Matrix(new Shell(), SWT.None);
+	  matrix.getAxisX().getBody().setCount(10);
+	  matrix.getAxisY().getBody().setCount(10);
+	  Zone body = matrix.getBody();
+	  body.setMerged(2, 1, 2, 2);
+	  body.setSelected(1, 2, 2, 2, true);
+//    TestUtil.showMatrix(matrix);
+	  assertTrue(body.isSelected(1, 2));
+	  assertTrue(body.isSelected(1, 3));
+	  assertTrue(body.isSelected(2, 2));
+	  assertTrue(body.isSelected(2, 3));
+	}
 }

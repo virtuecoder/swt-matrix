@@ -57,7 +57,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	Y cellMergeLimitY;
   private Math<X> mathX;
   private Math<Y> mathY;
-
+  
 
   /**
 	 * Constructs zone at intersection of the specified sections.
@@ -83,7 +83,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		cellMerging = new CellSpanSet<X, Y>(sectionX.order, sectionY.order);
 		cellMergeLimitX = mathX.create(1000).getValue();
 		cellMergeLimitY = mathY.create(1000).getValue();
-
+		
 //		foreground = new MapValueToCellSet<X, Y, Color>(mathX, mathY);
 //		text = new MapValueToCellSet(this.sectionY.math, this.sectionX.math);
 //		image = new MapValueToCellSet(this.sectionY.math, this.sectionX.math);
@@ -209,27 +209,25 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 	@Override
 	public void setSelected(X startX, X endX, Y startY, Y endY, boolean state) {
+		setSelected(startX, endX, startY, endY, state, true);
+	}
+	
+	void setSelected(X startX, X endX, Y startY, Y endY, boolean state, boolean withMerged) {
+	  if (!selectionEnabled) return;
 	  // assert startX <= endX, startY <= endY
-		if (!selectionEnabled) return;
-		CellExtent<X, Y> span = cellMerging.getSpan(startX, startY);
-		if (span != null) {
-		  startX = span.startX;
-		  startY = span.startY;		  
-		} else {
-		  span = cellMerging.getSpan(endX, endY);
-		  if (span != null) {
-		    endX = sectionX.order.getIndexByOffset(span.startX, mathX.decrement(span.endX));;
-		    endY = sectionY.order.getIndexByOffset(span.startY, mathY.decrement(span.endY));;
-		  } 
-//		  else if (mathX.contains(startX, endX, span.startX) &&
-//		             mathY.contains(startY, endY, span.startY)) {
-//		  }		  
-		}
-		if (state) {
-			cellSelection.add(startX, endX, startY, endY);
-		} else {
-			cellSelection.remove(startX, endX, startY, endY);
-		}
+
+	  if (withMerged) {
+	    CellExtent<X, Y> overlap = cellMerging.overlap(startX, endX, startY, endY);
+	    startX = overlap.startX;
+	    endX = overlap.endX;
+	    startY = overlap.startY;
+	    endY = overlap.endY;
+	  }
+	  if (state) {
+	    cellSelection.add(startX, endX, startY, endY);
+	  } else {
+	    cellSelection.remove(startX, endX, startY, endY);
+	  }
 	}
 
 	@Override

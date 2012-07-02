@@ -1,13 +1,13 @@
 <project name="swt-matrix" default="local website" basedir=".">
-	<property name="version" value="0.5.9" />
-	<property name="local_website" value="d:\dev\wamp\www\netanel15" />
+	<property name="version" value="0.6.0" />
+	<property name="local_website" value="c:\dev\wamp\www\netanel15" />
 
 	<property name="db.username" value="root"/>
 	<property name="db.password" value=""/>
 	<property name="db.name" value="netanel15"/>
 	<!-- The name of the database to backup. -->
 	<property name="db.export.file" value="..\website\joomla-1.5.sql"/>
-	<property name="mysqldump" value="d:\Dev\wamp\bin\mysql\mysql5.0.51a\bin\mysqldump"/>
+	<property name="mysqldump" value="c:\Dev\wamp\bin\mysql\mysql5.0.51a\bin\mysqldump"/>
 
 
 	<target name="clean">
@@ -56,7 +56,7 @@
 
 		<!-- obfuscate and optimize by ProGuard -->
 		<taskdef resource="proguard/ant/task.properties" 
-			classpath="d:/dev/Java/java_lib/proguard4.3/lib/proguard.jar" />
+			classpath="c:/dev/Java/java_lib/proguard4.3/lib/proguard.jar" />
 		<proguard configuration="proguard.cfg"/>
 
 		<rename src="obfuscated.${ant.project.name}.jar" dest="${ant.project.name}-${version}.jar"/>
@@ -117,7 +117,7 @@
   	    url="jdbd:mysql://localhost:3306/netanel15"
   	    userid="root"
   	    password=""
-        classpath="d:\Dev\Java\java_lib\mysql-connector-java-5.1.8\mysql-connector-java-5.1.8-bin.jar"
+        classpath="c:\Dev\Java\java_lib\mysql-connector-java-5.1.8\mysql-connector-java-5.1.8-bin.jar"
   		  print="true"
   		  src="snippets.sql"
   		>
@@ -160,7 +160,7 @@
 
 	<java classname="JoomlaMysqlUpdate" dir=".." fork="true">
 		<classpath>
-			<pathelement location="d:\Dev\Java\java_lib\mysql-connector-java-5.1.8\mysql-connector-java-5.1.8-bin.jar" />
+			<pathelement location="c:\Dev\Java\java_lib\mysql-connector-java-5.1.8\mysql-connector-java-5.1.8-bin.jar" />
 			<pathelement path="../bin" />
 		</classpath>
 	</java>

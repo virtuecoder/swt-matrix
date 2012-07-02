@@ -82,29 +82,40 @@ class CellSpanSet<X extends Number, Y extends Number> {
 		return false;
 	}
 	
-	 /**
+	/**
+	 * Goes over each span and extends the given bounds if any of the merged cells
+	 * is included in the given bouds 
    * @param extent accumulates computation, visitor pattern
    */
-  public void maximize(X startX, X endX, Y startY, Y endY, CellExtent<X, Y> extent) {
+  public CellExtent<X, Y> overlap(X startX, X endX, Y startY, Y endY) {
+    // assert startX, endX, startY, endY != null
+    MutableExtent<X> maxX = new MutableExtent<X>(mathX.create(startX), mathX.create(endX));
+    MutableExtent<Y> maxY = new MutableExtent<Y>(mathY.create(startY), mathY.create(endY));
+    X startIndexX = orderX.indexOf(startX);
+    X endIndexX = orderX.indexOf(endX);
+    Y startIndexY = orderY.indexOf(startY);
+    Y endIndexY = orderY.indexOf(endY);
+    
     int size = itemsX.size();
     for (int i = 0; i < size; i++) {
       MutableExtent<X> ex = itemsX.get(i);
       MutableExtent<Y> ey = itemsY.get(i);
+      MutableExtent<X> extentX = new MutableExtent<X>(mathX.create(startIndexX), mathX.create(endIndexX));
+      MutableExtent<Y> extentY = new MutableExtent<Y>(mathY.create(startIndexY), mathY.create(endIndexY));
 
-      boolean containsX = false, containsY = false;
-      if (startY != null) {
-        containsY = orderY.getSpanExtents(ey).contains(indexY);
-      }
-      if (indexX != null) {
-        containsX = orderX.getSpanExtents(ex).contains(indexX);
-      }
-      if (indexX == null && containsY ||
-          indexY == null && containsX ||
-          containsX && containsY)
+      if (
+        orderX.overlap(ex.start.getValue(), ex.end.getValue(), extentX) &&
+        orderY.overlap(ey.start.getValue(), ey.end.getValue(), extentY)) 
       {
-        return true;
+        maxX.start.set(mathX.min(maxX.start, extentX.start));
+        maxX.end.set(mathX.max(maxX.end, extentX.end));
+        maxY.start.set(mathY.min(maxY.start, extentY.start));
+        maxY.end.set(mathY.max(maxY.end, extentY.end));
       }
     }
+    return CellExtent.createUnchecked(
+      maxX.start.getValue(), maxX.end.getValue(), 
+      maxY.start.getValue(), maxY.end.getValue());
   }
 
 

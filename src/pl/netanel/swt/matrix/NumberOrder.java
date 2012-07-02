@@ -325,43 +325,62 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	  ExtentCountSequence seq;
     if (math.compare(count, math.ZERO_VALUE()) >= 0) {
       seq = countForward;
-      seq.limit = count;
+      seq.limit = math.increment(count);
     } else {
       seq = countBackward;
-      seq.limit = math.negate(count);
+      seq.limit = math.negate(math.increment(count));
     }
     seq.origin = start;
 	  for (seq.init(); seq.next(););
-	  return seq.index == null ? null : seq.index.getValue();
+	  return seq.end == null ? null : seq.end.getValue();
 	}
 
-	public void overlap(N origin, N limit, MutableExtent<N> extent) {
-//    ExtentCountSequence seq = countForward;
-//    seq.origin = origin;
-//    seq.limit = limit;
-//    for (seq.init(); seq.next();) {
-//      extent.start.set(math.min(extent.start, seq.start));
-//      extent.end.set(math.max(extent.end, seq.end));
-//    }
+	public boolean overlap(N origin, N limit, MutableExtent<N> extent) {
+    ExtentCountSequence seq = countForward;
+    seq.origin = origin;
+    seq.limit = limit;
+    boolean notExclusive = false;
+    for (seq.init(); seq.next();) {
+      if (!math.areExclusive(extent.start, extent.end, seq.start, seq.end)) {
+        notExclusive = true;
+        // don't break to catch seq.end
+      }
+    }
+    if (notExclusive) {
+      if (math.compare(indexOf(seq.start.getValue()), extent.start.getValue()) < 0) {
+        extent.start.set(seq.start.getValue());        
+      }
+      if (math.compare(indexOf(seq.end.getValue()), extent.end.getValue()) > 0) {
+        extent.end.set(seq.end.getValue());        
+      }
+    }
+    return notExclusive;
   }
 
 	public abstract class ExtentCountSequence implements Sequence {
     N origin, limit;
     int i;
     MutableExtent<N> extent;
-    MutableNumber<N> index;
+    MutableNumber<N> start, end;
     MutableNumber<N> remain = math.create(0);
     MutableNumber<N> diff = math.create(0);
 
     @Override
     public void init() {
-      index = math.create(origin);
-      remain.set(limit);
+      start = math.create(origin);
+      remain.set(limit).decrement();
       i = getExtentIndex(origin);
       extent = items.get(i);
+      end = math.create(origin);
     }
 	}
 
+	/*
+   * Sequence sample:
+   * origin end1
+   * start2 end2
+   * start3 limit
+   */
 	public class ForwardExtentCountSequence extends ExtentCountSequence {
 	  @Override
     public void init() {
@@ -370,48 +389,59 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
     }
     @Override
     public boolean next() {
-      if (math.compare(remain, math.ZERO()) <= 0) {
+      if (math.compare(remain, math.ZERO()) < 0) {
         return false;
       }
 
-      diff.set(extent.end).subtract(index);
+      end.set(extent.end);
+      diff.set(end).subtract(start);
       if (math.compare(diff, remain) >= 0) {
-        index.add(remain);
-        remain.set(math.ZERO_VALUE());
+        end.set(start).add(remain);
+        remain.set(math.ZERO_VALUE()).decrement();
         return true;
       }
       if (++i >= items.size()) {
-        index = null;
+        start = null;
+        end = null;
         return false;
       }
       extent = items.get(i);
-      index.set(extent.start);
+      start.set(extent.start);
+      end.set(extent.start);
       remain.subtract(diff).decrement();
       return true;
     }
 	}
 
+	/**
+	 * Does not work
+	 */
 	public class BackwardExtentCountSequence extends ExtentCountSequence {
 	   @Override
 	    public void init() {
 	      super.init();
-	      remain.set(limit).add(extent.start).subtract(origin);
+	      throw new UnsupportedOperationException("Not completed yet");
+//	      remain.set(limit).add(extent.start).subtract(origin);
 	    }
 
 	  @Override
 	  public boolean next() {
+	    end.set(extent.end);
 	    if (math.compare(remain, math.ZERO_VALUE()) <= 0) {
-	      index.set(extent.start).subtract(remain).getValue();
-	      if (math.compare(index, math.ZERO_VALUE()) < 0) {
-	        index = null;
+	      start.set(extent.start).subtract(remain).getValue();
+	      if (math.compare(start, math.ZERO_VALUE()) < 0) {
+	        start = null;
 	      }
 	      return false;
 	    }
 	    if (i <= 0) {
-	      index = null;
+	      start = null;
+	      end = null;
 	      return false;
 	    }
 	    extent = items.get(--i);
+	    start.set(extent.start);
+	    end.set(extent.start);
 	    remain.add(extent.start).subtract(extent.end).decrement();
 	    return true;
 	  }

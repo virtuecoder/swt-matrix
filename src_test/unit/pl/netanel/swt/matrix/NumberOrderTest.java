@@ -2,6 +2,7 @@ package pl.netanel.swt.matrix;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -264,6 +265,7 @@ import org.junit.runners.JUnit4;
 	  assertEquals(4, order.getIndexByOffset(4, 0));
 	}
 
+	@Ignore
 	@Test
   public void getIndexByOfftset_simple_backward() throws Exception {
     NumberOrder order = numberOrder(5);
@@ -275,6 +277,7 @@ import org.junit.runners.JUnit4;
     assertEquals(null, order.getIndexByOffset(3, -10));
   }
 
+	 @Ignore
 	 @Test
    public void getIndexByOffset_backward() throws Exception {
 	    NumberOrder order = numberOrder(5);

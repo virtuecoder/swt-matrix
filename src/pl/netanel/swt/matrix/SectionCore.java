@@ -492,7 +492,7 @@ class SectionCore<N extends Number> implements Section<N> {
 
 
   @Override public void setSelected(N index, boolean state) {
-  	hidden.change(index, index, state);
+  	selection.change(index, index, state);
   }
 
 

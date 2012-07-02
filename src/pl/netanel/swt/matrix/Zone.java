@@ -146,8 +146,8 @@ public interface Zone<X extends Number, Y extends Number> {
    * merged cells the merging will be removed for all of those cells. Otherwise the
    * cells will be merged.
    * <p>
-   * <code>indexX</code>,<code>countX</code>, <code>indexY</code> and
-   * <code>countY</code> numbers are item indexes in the model,
+   * <code>indexX</code> and <code>indexY</code> numbers 
+   * are item indexes in the model,
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations.
    *
