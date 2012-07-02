@@ -1,11 +1,13 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import pl.netanel.swt.matrix.NumberOrder.ExtentCountSequence;
 
 
 @SuppressWarnings({"rawtypes", "unchecked"}) @RunWith(JUnit4.class) public class  NumberOrderTest  {
@@ -292,11 +294,30 @@ import org.junit.runners.JUnit4;
 	    assertEquals(null, order.getIndexByOffset(4, -10));
 	  }
 
+	 @Test
+	 public void forwardExtentCountSequence() throws Exception {
+     NumberOrder<Integer> order = numberOrder(5);
+     ExtentCountSequence seq = order.countForward;
+     
+     order.move(3, 3, 2);
+     assertEquals("0-1, 3, 2, 4", order.toString());
+     seq.init(1, 3);
+     assertStep(seq, true, 1, 1);
+     assertStep(seq, true, 3, 3);
+     assertStep(seq, true, 2, 2);
+     assertFalse(seq.next());
+	 }
 
 
-	// Helper test methods
+  // Helper test methods
 
-	private static NumberOrder numberOrder(int n) {
+	private void assertStep(ExtentCountSequence seq, boolean next, Integer start, Integer end) {
+	  assertEquals(next, seq.next());
+	  assertEquals(start, seq.start == null ? null : seq.start.getValue());
+	  assertEquals(end, seq.end == null ? null : seq.end.getValue());
+	}
+
+  private static NumberOrder numberOrder(int n) {
 		NumberOrder order = new NumberOrder(IntMath.getInstance());
 		order.setCount(n);
 		return order;

@@ -118,4 +118,20 @@ import org.junit.runners.JUnit4;
 	  assertTrue(body.isSelected(2, 2));
 	  assertTrue(body.isSelected(2, 3));
 	}
+	
+	@Test public void selectMoved() throws Exception {
+    Matrix matrix = new Matrix(new Shell(), SWT.None);
+    matrix.getAxisX().getBody().setCount(10);
+    matrix.getAxisY().getBody().setCount(10);
+    Zone body = matrix.getBody();
+    body.getSectionX().setOrder(4, 3);
+    body.setMerged(2, 3, 2, 2);
+    body.setSelected(1, 2, 2, 4, true);
+//    TestUtil.showMatrix(matrix);
+    assertTrue(body.isSelected(1, 2));
+    assertTrue(body.isSelected(1, 3));
+    assertTrue(body.isSelected(2, 2));
+    assertTrue(body.isSelected(2, 3));
+    assertTrue(body.isSelected(4, 4));
+  }
 }

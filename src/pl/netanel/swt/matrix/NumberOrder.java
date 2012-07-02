@@ -10,7 +10,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 
 	private N count;
   SpanExtentSequence spanExtents;
-  private ExtentCountSequence countForward, countBackward;
+  ExtentCountSequence countForward, countBackward;
 
 	public NumberOrder(Math<N> math) {
 		super(math);
@@ -331,8 +331,9 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
       seq.limit = math.negate(math.increment(count));
     }
     seq.origin = start;
-	  for (seq.init(); seq.next(););
-	  return seq.end == null ? null : seq.end.getValue();
+    N last = null;
+	  for (seq.init(); seq.next();) last = seq.end == null ? null : seq.end.getValue();
+	  return math.compare(seq.remain, math.ZERO_VALUE()) >= 0 ? null : last;
 	}
 
 	public boolean overlap(N origin, N limit, MutableExtent<N> extent) {
@@ -364,14 +365,26 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
     MutableNumber<N> start, end;
     MutableNumber<N> remain = math.create(0);
     MutableNumber<N> diff = math.create(0);
+    boolean isStarted, isEnded;
 
     @Override
     public void init() {
-      start = math.create(origin);
-      remain.set(limit).decrement();
+      isStarted = isEnded = false;
       i = getExtentIndex(origin);
-      extent = items.get(i);
+      if (i == -1) {
+        isEnded = true;
+        return;
+      }
+      remain.set(limit).decrement();
+      start = math.create(origin);
       end = math.create(origin);
+      i--;
+    }
+
+    public void init(N origin, N limit) {
+      this.origin = origin;
+      this.limit = limit;
+      init();
     }
 	}
 
@@ -389,25 +402,27 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
     }
     @Override
     public boolean next() {
-      if (math.compare(remain, math.ZERO()) < 0) {
-        return false;
-      }
-
-      end.set(extent.end);
-      diff.set(end).subtract(start);
-      if (math.compare(diff, remain) >= 0) {
-        end.set(start).add(remain);
-        remain.set(math.ZERO_VALUE()).decrement();
-        return true;
-      }
-      if (++i >= items.size()) {
-        start = null;
-        end = null;
+      if (isEnded || ++i >= items.size()) {
         return false;
       }
       extent = items.get(i);
-      start.set(extent.start);
-      end.set(extent.start);
+
+      if (isStarted) {
+        start.set(extent.start);        
+      }
+      else {
+        isStarted = true;
+      }
+      
+      diff.set(extent.end).subtract(start);
+      
+      if (math.compare(diff, remain) >= 0) {
+        end.set(start).add(remain);
+        isEnded = true;
+      } else {
+        end.set(extent.end);
+      }
+      
       remain.subtract(diff).decrement();
       return true;
     }

@@ -107,10 +107,18 @@ class CellSpanSet<X extends Number, Y extends Number> {
         orderX.overlap(ex.start.getValue(), ex.end.getValue(), extentX) &&
         orderY.overlap(ey.start.getValue(), ey.end.getValue(), extentY)) 
       {
-        maxX.start.set(mathX.min(maxX.start, extentX.start));
-        maxX.end.set(mathX.max(maxX.end, extentX.end));
-        maxY.start.set(mathY.min(maxY.start, extentY.start));
-        maxY.end.set(mathY.max(maxY.end, extentY.end));
+        if (mathX.compare(startIndexX, orderX.indexOf(extentX.start.getValue())) > 0) {
+          maxX.start.set(extentX.start);          
+        }
+        if (mathX.compare(endIndexX, orderX.indexOf(extentX.end.getValue())) < 0) {
+          maxX.end.set(extentX.end);          
+        }
+        if (mathY.compare(startIndexY, orderY.indexOf(extentY.start.getValue())) > 0) {
+          maxY.start.set(extentY.start);          
+        }
+        if (mathY.compare(endIndexY, orderY.indexOf(extentY.end.getValue())) < 0) {
+          maxY.end.set(extentY.end);          
+        }
       }
     }
     return CellExtent.createUnchecked(
