@@ -217,7 +217,6 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
    * Value is 1&lt;&lt;9
    */
 	static final int STATE_IS_SELECTED = 1 << 9;
-  private static final int MAX_VIEWPORT_SIZE = 10000;
 
 	/*------------------------------------------------------------------------
 	 * Mouse event modifiers, cannot collide with SWT state masks or mouse button numbers
@@ -1103,8 +1102,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    }
     }
     if (hHint == SWT.DEFAULT) {
-	    if (area.width == 0) {
-	      wHint = 0;
+	    if (area.height == 0) {
+	      hHint = 0;
 	    } else {
 	      int index = layoutY.indexOf(axisY.getLastItem());
 	      if (index != -1) {

@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public class MatrixListenerTest extends SwtTestCase {
 	@Test
 	@Ignore
