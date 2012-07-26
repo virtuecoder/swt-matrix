@@ -73,7 +73,7 @@ public class SelectTest extends SwtTestCase {
   }
 
   @Test
-  public void selectBodyAptpend() throws Exception {
+  public void selectBodyAppend() throws Exception {
     Matrix matrix = createMatrix();
     Zone body = matrix.getBody();
     Rectangle bounds = matrix.getBody().getCellBounds(2, 2);

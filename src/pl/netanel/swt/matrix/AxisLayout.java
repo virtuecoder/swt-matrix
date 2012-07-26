@@ -268,7 +268,7 @@ class AxisLayout<N extends Number> {
   int comparePosition(AxisItem<N> item1, AxisItem<N> item2) {
     return comparePosition(item1.section, item1.index, item2.section, item2.index);
   }
-  
+
   int comparePosition(SectionCore<N> section1, N index1, SectionCore<N> section2, N index2) {
     int compareSections = comparePosition(section1, section2);
     if (compareSections != 0) return compareSections;
@@ -1126,5 +1126,22 @@ class AxisLayout<N extends Number> {
     }
 
     return new Bound(distance, java.lang.Math.max(w - section.getLineWidth(seq.origin), 0));
+  }
+
+  public int computeSize() {
+    int w = 0;
+    if (!tail.lines.isEmpty()) {
+      Bound bound = tail.lines.get(tail.lines.size() - 1);
+      w += bound.distance;
+    }
+    if (!main.lines.isEmpty()) {
+      Bound bound = main.lines.get(main.lines.size() - 1);
+      w += bound.distance + bound.width;
+    }
+    if (!head.lines.isEmpty()) {
+      Bound bound = head.lines.get(head.lines.size() - 1);
+      w += bound.distance;
+    }
+    return w;
   }
 }

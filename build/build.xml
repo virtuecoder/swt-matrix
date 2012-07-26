@@ -2,7 +2,7 @@
 	<property file="local.properties" />
 	<property file="build.properties" />
 	
-	<property name="version" value="0.6.2" />
+	<property name="version" value="0.6.3" />
 	
 	<property name="jdk.dir" value="C:\Program Files\Java\jdk1.6.0_32" />
 	<property name="java.lib.dir" value="D:\Dev\Java\java_lib" />

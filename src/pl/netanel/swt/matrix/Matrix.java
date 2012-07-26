@@ -218,6 +218,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
    */
 	static final int STATE_IS_SELECTED = 1 << 9;
 
+  private static final int MAX_VIEWPORT_SIZE = 100000;
+
 	/*------------------------------------------------------------------------
 	 * Mouse event modifiers, cannot collide with SWT state masks or mouse button numbers
 	 */
@@ -1087,34 +1089,18 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
   public Point computeSize(int wHint, int hHint) {
     area = getClientArea();
     if (wHint == SWT.DEFAULT) {
-	    if (area.width == 0) {
-	      wHint = 0;
-	    } else {
-	      int index = layoutX.indexOf(axisX.getLastItem());
-	      if (index != -1) {
-	        Bound x = layoutX.getLineBound(index + 1);
-	        if (x == null) {
-	          wHint = 0;
-	        } else {
-	          wHint = x.distance + x.width;
-	        }
-	      }
-	    }
+      layoutX.setViewportSize(MAX_VIEWPORT_SIZE);
+      layoutX.compute();
+      wHint = layoutX.computeSize();
+      // layoutX.setViewportSize(area.width);
+      // layoutX.compute();
     }
     if (hHint == SWT.DEFAULT) {
-	    if (area.height == 0) {
-	      hHint = 0;
-	    } else {
-	      int index = layoutY.indexOf(axisY.getLastItem());
-	      if (index != -1) {
-	        Bound y = layoutY.getLineBound(index + 1);
-	        if (y == null) {
-	          hHint = 0;
-	        } else {
-	          hHint = y.distance + y.width;
-	        }
-	      }
-	    }
+      layoutY.setViewportSize(MAX_VIEWPORT_SIZE);
+      layoutY.compute();
+      hHint = layoutY.computeSize();
+      // layoutY.setViewportSize(area.height);
+      // layoutY.compute();
     }
     return new Point(wHint, hHint);
   }
