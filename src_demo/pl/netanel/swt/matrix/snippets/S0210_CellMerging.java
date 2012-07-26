@@ -1,4 +1,4 @@
-package usecase;
+package pl.netanel.swt.matrix.snippets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -15,7 +15,7 @@ import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 
-public class SnippetMerge
+public class S0210_CellMerging
 {
     private static Matrix<Integer, Integer> matrix;
 
@@ -23,7 +23,7 @@ public class SnippetMerge
         final Shell shell = new Shell();
         shell.setLayout(new GridLayout(1, false));
 //        shell.setLayout(new FillLayout());
-        
+
         Button button = new Button(shell, SWT.PUSH);
         button.setText("Merge");
         button.addSelectionListener(new SelectionAdapter() {
@@ -33,21 +33,21 @@ public class SnippetMerge
             CellExtent<Integer, Integer> extent = body.getSelectedExtent();
             if (extent == null) return;
             body.setMerged(
-              extent.getStartX(), 
+              extent.getStartX(),
               extent.getEndX() - extent.getStartX() + 1,
               extent.getStartY(),
               extent.getEndY() - extent.getStartY() + 1);
             matrix.refresh();
           }
         });
-        
+
         matrix = new Matrix<Integer, Integer>(shell, SWT.H_SCROLL | SWT.V_SCROLL);
         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         matrix.setLayoutData(gd);
-        
+
         Axis<Integer> axisX = matrix.getAxisX();
         Axis<Integer> axisY = matrix.getAxisY();
-        
+
         Section<Integer> bodyX = axisX.getBody();
         bodyX.setCount(10);
         bodyX.setDefaultMoveable(true);
@@ -71,4 +71,9 @@ public class SnippetMerge
             }
         }
     }
+
+ // Meta data
+    static final String title = "Cell merging";
+    static final String instructions = "";
+    static final String code = "0210";
 }

@@ -1,5 +1,26 @@
 -------------------------------------------------------------------------------
+Version 0.6.2
+
+Bug fixes:
+- IndexOutOfBoundsException in Matrix.computeSize in case of 0 cells
+
+-------------------------------------------------------------------------------
+Version 0.6.1
+
+Bug fixes:
+- Everything was obfuscated
+
+API changes:
+- Util.equals
+
+Snippets:
+- Added S0904_Tooltip
+
+-------------------------------------------------------------------------------
 Version 0.6.0
+
+New features:
+- Cell merging
 
 Behavior change:
 - Zone.getSelectedExtent returns null instead of (0,0,0,0) when nothing is selected.
@@ -7,8 +28,6 @@ Behavior change:
 
 API changes:
 - Deprecated Zone.getSelectionCount. Use Zone.getSelectedCount instead.
-- Deprecated Section.setFocusItem. Use Section.setFocusItem(Section, Number) instead.
-- Deprecated Section.showItem. Use Section.showItem(Section, Number) instead.
 - Added Zone.setMerged
 - Added Zone.isMerged
 

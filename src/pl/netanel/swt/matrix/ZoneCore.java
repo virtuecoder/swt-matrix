@@ -222,11 +222,31 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	    endX = overlap.endX;
 	    startY = overlap.startY;
 	    endY = overlap.endY;
+	    NumberOrder<X>.ForwardExtentFirstLastSequence seqX = sectionX.order.untilForward;
+	    NumberOrder<Y>.ForwardExtentFirstLastSequence seqY = sectionY.order.untilForward;
+	    for (seqX.init(startX, endX); seqX.next();) {
+	      for (seqY.init(startY, endY); seqY.next();) {
+	        if (state) {
+//	          System.out.println(String.format("%s %s %s %s", 
+//	            seqX.start.getValue(), seqX.end.getValue(), 
+//              seqY.start.getValue(), seqY.end.getValue()));
+	          cellSelection.add(
+	            seqX.start.getValue(), seqX.end.getValue(), 
+	            seqY.start.getValue(), seqY.end.getValue());
+	        } else {
+	          cellSelection.remove(
+	            seqX.start.getValue(), seqX.end.getValue(), 
+              seqY.start.getValue(), seqY.end.getValue());
+	        }	        
+	      }
+	    }
 	  }
-	  if (state) {
-	    cellSelection.add(startX, endX, startY, endY);
-	  } else {
-	    cellSelection.remove(startX, endX, startY, endY);
+	  else {
+	    if (state) {
+	      cellSelection.add(startX, endX, startY, endY);
+	    } else {
+	      cellSelection.remove(startX, endX, startY, endY);
+	    }
 	  }
 	}
 

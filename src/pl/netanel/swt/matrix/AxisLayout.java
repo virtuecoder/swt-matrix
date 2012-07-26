@@ -266,11 +266,15 @@ class AxisLayout<N extends Number> {
 	}
 
   int comparePosition(AxisItem<N> item1, AxisItem<N> item2) {
-    int compareSections = comparePosition(item1.section, item2.section);
+    return comparePosition(item1.section, item1.index, item2.section, item2.index);
+  }
+  
+  int comparePosition(SectionCore<N> section1, N index1, SectionCore<N> section2, N index2) {
+    int compareSections = comparePosition(section1, section2);
     if (compareSections != 0) return compareSections;
     return math.compare(
-        item1.section.getOrder(item1.getIndex()),
-        item2.section.getOrder(item2.getIndex()));
+      section1.getOrder(index1),
+      section2.getOrder(index2));
   }
 
   int comparePosition(SectionCore<N> section1, SectionCore<N> section2) {

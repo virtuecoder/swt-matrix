@@ -1,7 +1,8 @@
 Zone.addControlListener to get notification when an item is resized or moved.
 Move selection logic from listener to section. Section.setSelected should highlight the cells in matrix.
 Fix drag and drop of a group of items just before or after one of the selected one.
-Fix matrix not visible on other layouts then filllayout.
+Fix matrix not visible on other layouts then FillLayout.
+Does not refresh on shell.open without shell.setBounds.
 
 Axis.setSelected(from position, to position) ?
 

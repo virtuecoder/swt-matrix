@@ -81,10 +81,10 @@ class CellSpanSet<X extends Number, Y extends Number> {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Goes over each span and extends the given bounds if any of the merged cells
-	 * is included in the given bouds 
+	 * is included in the given bouds
    * @param extent accumulates computation, visitor pattern
    */
   public CellExtent<X, Y> overlap(X startX, X endX, Y startY, Y endY) {
@@ -95,34 +95,34 @@ class CellSpanSet<X extends Number, Y extends Number> {
     X endIndexX = orderX.indexOf(endX);
     Y startIndexY = orderY.indexOf(startY);
     Y endIndexY = orderY.indexOf(endY);
-    
+
     int size = itemsX.size();
     for (int i = 0; i < size; i++) {
       MutableExtent<X> ex = itemsX.get(i);
       MutableExtent<Y> ey = itemsY.get(i);
-      MutableExtent<X> extentX = new MutableExtent<X>(mathX.create(startIndexX), mathX.create(endIndexX));
-      MutableExtent<Y> extentY = new MutableExtent<Y>(mathY.create(startIndexY), mathY.create(endIndexY));
+      MutableExtent<X> extentX = new MutableExtent<X>(mathX.create(startX), mathX.create(endX));
+      MutableExtent<Y> extentY = new MutableExtent<Y>(mathY.create(startY), mathY.create(endY));
 
       if (
         orderX.overlap(ex.start.getValue(), ex.end.getValue(), extentX) &&
-        orderY.overlap(ey.start.getValue(), ey.end.getValue(), extentY)) 
+        orderY.overlap(ey.start.getValue(), ey.end.getValue(), extentY))
       {
         if (mathX.compare(startIndexX, orderX.indexOf(extentX.start.getValue())) > 0) {
-          maxX.start.set(extentX.start);          
+          maxX.start.set(extentX.start);
         }
         if (mathX.compare(endIndexX, orderX.indexOf(extentX.end.getValue())) < 0) {
-          maxX.end.set(extentX.end);          
+          maxX.end.set(extentX.end);
         }
         if (mathY.compare(startIndexY, orderY.indexOf(extentY.start.getValue())) > 0) {
-          maxY.start.set(extentY.start);          
+          maxY.start.set(extentY.start);
         }
         if (mathY.compare(endIndexY, orderY.indexOf(extentY.end.getValue())) < 0) {
-          maxY.end.set(extentY.end);          
+          maxY.end.set(extentY.end);
         }
       }
     }
     return CellExtent.createUnchecked(
-      maxX.start.getValue(), maxX.end.getValue(), 
+      maxX.start.getValue(), maxX.end.getValue(),
       maxY.start.getValue(), maxY.end.getValue());
   }
 
@@ -207,7 +207,7 @@ class CellSpanSet<X extends Number, Y extends Number> {
 		return copy;
 	}
 
-	
+
 
 	public void deleteY(Y start, Y end) {
 		MutableExtent.deleteSpan(mathY, itemsY, start, end);

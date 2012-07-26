@@ -119,7 +119,7 @@ import org.junit.runners.JUnit4;
 	  assertTrue(body.isSelected(2, 3));
 	}
 	
-	@Test public void selectMoved() throws Exception {
+	@Test public void selectMovedStart() throws Exception {
     Matrix matrix = new Matrix(new Shell(), SWT.None);
     matrix.getAxisX().getBody().setCount(10);
     matrix.getAxisY().getBody().setCount(10);
@@ -134,4 +134,16 @@ import org.junit.runners.JUnit4;
     assertTrue(body.isSelected(2, 3));
     assertTrue(body.isSelected(4, 4));
   }
+	
+	@Test public void selectMovedEnd() throws Exception {
+	  Matrix matrix = new Matrix(new Shell(), SWT.None);
+	  matrix.getAxisX().getBody().setCount(10);
+	  matrix.getAxisY().getBody().setCount(10);
+	  Zone body = matrix.getBody();
+	  body.getSectionX().setOrder(4, 3);
+	  body.setMerged(2, 3, 2, 2);
+	  body.setSelected(3, 5, 3, 4, true);
+//    TestUtil.showMatrix(matrix);
+	  assertTrue(body.isSelected(2, 2));
+	}
 }

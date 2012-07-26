@@ -132,7 +132,6 @@ public class  DragTest extends SwtTestCase {
 //    postEvent(event);
     
 //    move(SWT.BUTTON1, middle(bounds2));
-    show();
 //    Assert.assertEquals(0, matrix.getAxisX().getBody().getIndex(0).intValue());
   }
 }

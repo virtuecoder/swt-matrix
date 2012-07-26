@@ -146,7 +146,7 @@ public interface Zone<X extends Number, Y extends Number> {
    * merged cells the merging will be removed for all of those cells. Otherwise the
    * cells will be merged.
    * <p>
-   * <code>indexX</code> and <code>indexY</code> numbers 
+   * <code>indexX</code> and <code>indexY</code> numbers
    * are item indexes in the model,
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations.
@@ -191,8 +191,22 @@ public interface Zone<X extends Number, Y extends Number> {
    */
   boolean isMerged(X indexX, Y indexY);
 
+  /**
+   * Returns the maximum number of cells that can merged on both horizontal and vertical axis.
+   *
+   * @return the maximum number of cells that can merged on both horizontal and vertical axis
+   */
   Cell<X, Y> getMergeLimit();
 
+  /**
+   * Sets the maximum number of cells that can merged on both horizontal and vertical axis.
+   * <p>
+   * It is introduced to prevent performance problems with layout calculation
+   * which in case of merged cells must go beyond viewport area.
+   *
+   * @param limitX maximum number of cells that can be merged on horizontal axis
+   * @param limitY maximum number of cells that can be merged on vertical axis
+   */
   void setMergeLimit(X limitX, Y limitY);
 
 

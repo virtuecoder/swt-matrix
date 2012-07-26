@@ -38,11 +38,11 @@ import pl.netanel.util.Util;
 
 /**
  * Facilitates testing GUI code that uses SWT.
- * 
+ *
  * @author jacek.p.kolodziejczyk@gmail.com
  * @created Apr 29, 2008
  */
-@SuppressWarnings({"unchecked", "rawtypes"}) 
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class  SwtTestCase {
   public static boolean breakFlag = false;
   public static boolean runManual = false;
@@ -83,10 +83,10 @@ public class  SwtTestCase {
       }
     }
   }
-  
+
   /**
-   * Imitates pressing a key that is not a character
-   * 
+   * Pressg a key that is not a character
+   *
    * @param key
    */
   public void press(final int key) {
@@ -97,7 +97,7 @@ public class  SwtTestCase {
 
   /**
    * Press keys matching characters in s and hit enter.
-   * 
+   *
    * @param s
    */
   public void enter(String s) {
@@ -111,14 +111,11 @@ public class  SwtTestCase {
   // }
 
   /**
-   * Clears the control value before entering the new text
+   * Clears the current control value before entering the new text
    */
   public void clearEnterCR(String s) {
     Control control = display.getFocusControl();
     if (control instanceof Text) ((Text) control).setText("");
-    // press(SWT.HOME);
-    // press(SWT.SHIFT, SWT.END);
-    // press(SWT.DEL);
     enter(s);
   }
 
@@ -133,7 +130,7 @@ public class  SwtTestCase {
   /**
    * Imitates pressing a key that is not a character, with modifier keys like
    * SWT.CONTROL, SWT.SHIFT, SWT.ALT, which can be joind by <code>|</code>
-   * 
+   *
    * @param stateMask
    * @param keyCode
    */
@@ -162,7 +159,7 @@ public class  SwtTestCase {
   /**
    * Imitates pressing a key that is not a character, with modifier keys like
    * SWT.CONTROL, SWT.SHIFT, SWT.ALT, which can be joind by <code>|</code>
-   * 
+   *
    * @param stateMask
    * @param keyCode
    */
@@ -206,7 +203,7 @@ public class  SwtTestCase {
 
   /**
    * Posts key event, for keys that are not characters
-   * 
+   *
    * @param key
    * @param type SWT.KeyDown or SWT.KeyUp
    */
@@ -219,7 +216,7 @@ public class  SwtTestCase {
 
   /**
    * Posts a character event
-   * 
+   *
    * @param ch
    * @param type SWT.KeyDown or SWT.KeyUp
    */
@@ -246,7 +243,7 @@ public class  SwtTestCase {
 
   /**
    * Puts the event in the system event queue
-   * 
+   *
    * @param event
    * @return
    */
@@ -283,7 +280,7 @@ public class  SwtTestCase {
 
   /**
    * Imitates typing a text on the keyboard
-   * 
+   *
    * @param s
    */
   public void type(String s) {
@@ -309,7 +306,7 @@ public class  SwtTestCase {
 
   /**
    * Recognizes whether a keyCode is an upper case
-   * 
+   *
    * @param keyCode
    * @return
    */
@@ -327,7 +324,7 @@ public class  SwtTestCase {
 
   /**
    * Imitates clicking on the middle of the control with left mouse button
-   * 
+   *
    * @param control
    */
   public void click(Control control) {
@@ -337,7 +334,7 @@ public class  SwtTestCase {
 
   /**
    * Imitates clicking on the middle of the control with right mouse button
-   * 
+   *
    * @param control
    */
   public void clickRight(Control control) {
@@ -349,14 +346,14 @@ public class  SwtTestCase {
    * Imitates clicking with left mouse button on the middle of rectangle
    * positioned relatively to the control. Useful for instanace to click on the
    * specific cell of the table control.
-   * 
+   *
    * @param control
    * @param rect
    */
   public void click(Control control, Rectangle rect) {
     postClick(middle(control, rect), SWT.BUTTON1);
     processEvents();
-    
+
 //    Event event = new Event();
 //    event.type = SWT.MouseMove;
 //    event.x = -1;
@@ -364,7 +361,7 @@ public class  SwtTestCase {
 //    postEvent(event);
 //    processEvents();
   }
-  
+
   public void click(Control control, Rectangle rect, int code) {
     postClick(middle(control, rect), code);
     processEvents();
@@ -374,7 +371,7 @@ public class  SwtTestCase {
    * Imitates clicking with right mouse button on the middle of rectangle
    * positioned relatively to the control. Useful for instanace to click on the
    * specific cell of the table control.
-   * 
+   *
    * @param control
    * @param rect
    */
@@ -387,7 +384,7 @@ public class  SwtTestCase {
    * Imitates clicking with left mouse button on the middle of rectangle
    * positioned relatively to the current focus control. Useful for instanace to
    * click on the specific cell of the table control.
-   * 
+   *
    * @param rect
    */
   public void click(Rectangle rect) {
@@ -399,7 +396,7 @@ public class  SwtTestCase {
     postClick(p, SWT.BUTTON1);
     processEvents();
   }
-  
+
   public void click(int x, int y) {
     click(new Point(x, y));
   }
@@ -407,7 +404,7 @@ public class  SwtTestCase {
   /**
    * Imitates double clicking on the middle of the control with left mouse
    * button
-   * 
+   *
    * @param control
    */
   public void dblclick(Control control) {
@@ -418,7 +415,7 @@ public class  SwtTestCase {
    * Imitates double clicking with left mouse button on the middle of rectangle
    * positioned relatively to the control. Useful for instanace to click on the
    * specific cell of the table control.
-   * 
+   *
    * @param control
    * @param rect
    */
@@ -430,7 +427,7 @@ public class  SwtTestCase {
    * Imitates double clicking with left mouse button on the middle of rectangle
    * positioned relatively to the current focus control. Useful for instanace to
    * click on the specific cell of the table control.
-   * 
+   *
    * @param rect
    */
   public void dblclick(Rectangle rect) {
@@ -440,7 +437,7 @@ public class  SwtTestCase {
   /**
    * Imitates double click with left mouse button in the given absolute point of
    * screen.
-   * 
+   *
    * @param pt
    */
   public void dblclick(Point pt) {
@@ -498,10 +495,10 @@ public class  SwtTestCase {
   /**
    * Imitates double click with given mouse button in the given absolute point
    * of screen.
-   * 
+   *
    * @param pt
    * @param button 1-left, 2-middle, 3-right
-   * @param stateMask 
+   * @param stateMask
    */
   public void postClick(final Point pt, final int code) {
     if (Thread.currentThread() != display.getThread()) {
@@ -533,7 +530,7 @@ public class  SwtTestCase {
     event.x = pt.x;
     event.y = pt.y;
     postEvent(event);
-    
+
     int decodedButton = decodeButton(code);
     if (decodedButton < 1 || 3 < decodedButton) {
       throw new IllegalArgumentException("Mouse button must be between 1 and 3");
@@ -541,7 +538,7 @@ public class  SwtTestCase {
     if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyDown);
     if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyDown);
     if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyDown);
-    
+
     event = new Event();
     event.type = SWT.MouseDown;
     event.x = pt.x;
@@ -549,7 +546,7 @@ public class  SwtTestCase {
     event.button = decodedButton;
 //    event.stateMask = code;
     postEvent(event);
-    
+
     event = new Event();
     event.type = SWT.MouseUp;
     event.x = pt.x;
@@ -557,27 +554,27 @@ public class  SwtTestCase {
     event.button = decodedButton;
 //    event.stateMask = code;
     postEvent(event);
-    
+
     if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyUp);
     if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyUp);
     if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyUp);
 
     setLastClick(pt);
-    
-//    // To avoid hovering over a text box before exit, which causes typing 
-//    // with modifier keys in a next test to fail 
+
+//    // To avoid hovering over a text box before exit, which causes typing
+//    // with modifier keys in a next test to fail
 //    event = new Event();
 //    event.type = SWT.MouseMove;
 //    event.x = -1;
 //    event.y = -1;
 //    postEvent(event);
-    
+
     processEvents();
-    
+
   }
-  
+
   private int decodeButton(int button) {
-    return 
+    return
       (button & SWT.BUTTON1) != 0 ? 1 :
         (button & SWT.BUTTON2) != 0 ? 2 :
           (button & SWT.BUTTON3) != 0 ? 3 :
@@ -588,7 +585,7 @@ public class  SwtTestCase {
   /**
    * Imitates drag and drop from the middle of the start rectangle to the middle
    * of the end rectangle.
-   * 
+   *
    * @param start
    * @param end
    */
@@ -596,7 +593,7 @@ public class  SwtTestCase {
     dragAndDrop(0, middle(focusControl, start), middle(focusControl, end));
     processEvents();
   }
-  
+
   public void dragAndDrop(int code, Rectangle ...r) {
     Point[] p = new Point[r.length];
     for (int i = 0; i < p.length; i++) {
@@ -674,7 +671,7 @@ public class  SwtTestCase {
 
   /**
    * For the grid
-   * 
+   *
    * @param startR
    * @param endR
    */
@@ -720,17 +717,17 @@ public class  SwtTestCase {
 
   /**
    * Imitates drag and drop from the start point to the end point.
-   * 
+   *
    * @param origin
    * @param end
    */
   public void dragAndDrop(int code, Point ...p) {
     checkShellVisible();
     if (p.length == 0) return;
-    
+
     Point start = p[0];
     Point end = p[p.length - 1];
-    
+
     long duration = System.currentTimeMillis() - lastClickTime;
     if (duration < display.getDoubleClickTime() && start.equals(lastClickPoint)) {
       try {
@@ -738,14 +735,14 @@ public class  SwtTestCase {
       }
       catch (InterruptedException e) {}
     }
-    
+
     Event event = new Event();
     event.type = SWT.MouseMove;
     event.x = start.x;
     event.y = start.y;
     postEvent(event);
     processEvents();
-    
+
     int decodedButton = decodeButton(code);
     if (decodedButton < 1 || 3 < decodedButton) {
       throw new IllegalArgumentException("Mouse button must be between 1 and 3");
@@ -753,7 +750,7 @@ public class  SwtTestCase {
     if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyDown);
     if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyDown);
     if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyDown);
-    
+
     event = new Event();
     event.type = SWT.MouseDown;
     event.x = start.x;
@@ -761,7 +758,7 @@ public class  SwtTestCase {
     event.button = decodedButton;
     postEvent(event);
     processEvents();
-    
+
     event = new Event();
     event.type = SWT.DragDetect;
     event.x = start.x;
@@ -788,18 +785,18 @@ public class  SwtTestCase {
     event.button = decodedButton;
     postEvent(event);
     processEvents();
-    
+
     if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyUp);
     if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyUp);
     if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyUp);
-    
+
     setLastClick(start);
   }
-  
+
   public void move(int code, Point ...p) {
     checkShellVisible();
     if (p.length == 0) return;
-    
+
     int decodedButton = decodeButton(code);
     if (decodedButton < 1 || 3 < decodedButton) {
       throw new IllegalArgumentException("Mouse button must be between 1 and 3");
@@ -807,7 +804,7 @@ public class  SwtTestCase {
     if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyDown);
     if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyDown);
     if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyDown);
-    
+
     Point start = p[0];
     Event event = new Event();
     event.type = SWT.DragDetect;
@@ -817,7 +814,7 @@ public class  SwtTestCase {
     event.stateMask = code;
     postEvent(event);
     processEvents();
-    
+
     for (int i = 0; i < p.length; i++) {
       event = new Event();
       event.type = SWT.MouseMove;
@@ -827,14 +824,14 @@ public class  SwtTestCase {
       postEvent(event);
       processEvents();
     }
-    
+
     if ((code & SWT.ALT) != 0) postKey(SWT.ALT, SWT.KeyUp);
     if ((code & SWT.SHIFT) != 0) postKey(SWT.SHIFT, SWT.KeyUp);
     if ((code & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyUp);
-    
+
     setLastClick(start);
   }
-  
+
   public void selfDragAndDrop(Rectangle rect) {
     Point start = middle(focusControl, rect);
 
@@ -881,7 +878,7 @@ public class  SwtTestCase {
   /**
    * Calculates the point in the middle of the rectangle, which is relative to
    * the control and then translates it the coordinates of the screen.
-   * 
+   *
    * @param control
    * @param rect
    * @return
@@ -890,32 +887,32 @@ public class  SwtTestCase {
     return display.map(control, null, rect.x + rect.width / 2, rect.y
       + rect.height / 2);
   }
-  
+
   public Point middle(Rectangle rect) {
     return display.getFocusControl().toDisplay(
       rect.x + rect.width / 2, rect.y + rect.height / 2);
   }
-  
+
   public Point offset(Point p, int dx, int dy) {
     return new Point(p.x + dx, p.y + dy);
   }
-  
+
   public Point toDisplay(Point p) {
     return display.getFocusControl().toDisplay(p);
   }
-  
+
   public Rectangle toDisplay(Rectangle r) {
     Point p = display.getFocusControl().toDisplay(r.x, r.y);
     return new Rectangle(p.x, p.y, r.width, r.height);
   }
-  
+
   public Point toDisplay(int x, int y) {
     return display.getFocusControl().toDisplay(x, y);
   }
 
   /**
    * Makes the current Thread to sleep delay milliseconds
-   * 
+   *
    * @param aDelay
    */
   public void sleep(Integer delay) {
@@ -929,7 +926,7 @@ public class  SwtTestCase {
 
   /**
    * Slows down the imitated event flow to allow observing the action by a human
-   * 
+   *
    * @param delay
    */
   public void slow(int delay) {
@@ -938,7 +935,7 @@ public class  SwtTestCase {
 
   /**
    * Sets the current focus control that will receive the events
-   * 
+   *
    * @param control
    */
   public void setFocus(final Control control) {
@@ -1072,7 +1069,7 @@ public class  SwtTestCase {
 
   /**
    * The index of remedy command that will be called when the exception happens
-   * 
+   *
    * @param i
    */
   public void setRemedyCommand(int i) {
@@ -1082,13 +1079,13 @@ public class  SwtTestCase {
   public static void br() {
     breakFlag = true;
   }
-  
-  
+
+
 
   public void assertColor(Color color, int x, int y) {
     RGB rgb = getRGB(x, y);
-    
-    if (color.getBlue() != rgb.blue || 
+
+    if (color.getBlue() != rgb.blue ||
         color.getGreen() != rgb.green ||
         color.getRed() != rgb.red) {
       fail(String.format("Wrong color, expected %s, actual %s", color.toString(), rgb.toString()));
@@ -1098,7 +1095,7 @@ public class  SwtTestCase {
   public RGB getRGB(Rectangle r, int offset) {
     return getRGB(r.x + offset, r.y + offset);
   }
-  
+
   public RGB getRGB(int x, int y) {
     GC gc = new GC(display);
     Rectangle bounds = shell.getClientArea();
@@ -1109,15 +1106,15 @@ public class  SwtTestCase {
 //    ImageLoader loader = new ImageLoader();
 //    loader.data = new ImageData[] { data };
 //    loader.save(new File("image.png").getAbsolutePath(), SWT.IMAGE_PNG);
-    
+
     RGB rgb = data.palette.getRGB(data.getPixel(x, y));
     gc.dispose();
     return rgb;
   }
-  
-  
-  
-  
+
+
+
+
   public static void listenToAll(Control control) {
     listenToAll(control, new Listener() {
       @Override public void handleEvent(Event event) {
@@ -1125,7 +1122,7 @@ public class  SwtTestCase {
       }
     });
   }
-  
+
   public static void listenToAll(Control control, Listener listener) {
     control.addListener(SWT.KeyDown, listener);
     control.addListener(SWT.KeyUp, listener);
@@ -1171,7 +1168,7 @@ public class  SwtTestCase {
     control.addListener(SWT.ImeComposition, listener);
   }
 
-  
+
   static String getCommandName(int x) {
     return
     x == Matrix.CMD_FOCUS_UP ? "CMD_FOCUS_UP" :
@@ -1230,7 +1227,7 @@ public class  SwtTestCase {
     x == Matrix.CMD_TRAVERSE_TAB_PREVIOUS ? "CMD_TRAVERSE_TAB_PREVIOUS" : "";
 
   }
-  
+
   public static String getTypeName(int x) {
     return x == 1 ? "KeyDown" :
       x == 2 ? "KeyUp" :
@@ -1275,9 +1272,9 @@ public class  SwtTestCase {
       x == 42 ? "PaintItem" :
       x == 43 ? "ImeComposition" : "";
   }
-  
+
   public static String getTraverseName(int x) {
-    return 
+    return
       x == SWT.TRAVERSE_NONE ? "TRAVERSE_NONE" :
       x == SWT.TRAVERSE_ESCAPE ? "TRAVERSE_ESCAPE" :
       x == SWT.TRAVERSE_RETURN ? "TRAVERSE_RETURN" :
@@ -1289,11 +1286,11 @@ public class  SwtTestCase {
       x == SWT.TRAVERSE_PAGE_PREVIOUS ? "TRAVERSE_PAGE_PREVIOUS" :
       x == SWT.TRAVERSE_PAGE_NEXT ? "TRAVERSE_PAGE_NEXT" : "";
   }
-  
+
   public static String getStateMaskName(int x) {
-    int[] mask = new int[] 
+    int[] mask = new int[]
       {SWT.MOD1, SWT.MOD2, SWT.MOD3, SWT.BUTTON1, SWT.BUTTON2, SWT.BUTTON3};
-    String[] name= new String[] 
+    String[] name= new String[]
       {"SWT.MOD1", "SWT.MOD2", "SWT.MOD3", "SWT.BUTTON1", "SWT.BUTTON2", "SWT.BUTTON3"};
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < mask.length; i++) {
@@ -1304,7 +1301,7 @@ public class  SwtTestCase {
     }
     return sb.toString();
   }
-  
+
   public static void log(Event e) {
     StringBuilder sb = new StringBuilder();
     sb.append(getTypeName(e.type));
@@ -1320,9 +1317,9 @@ public class  SwtTestCase {
     sb.append(e.button + e.keyCode);
     TestUtil.log(sb);
   }
-  
+
   /**
-   * Creates 5x5 matrix indexed by Integer with visible headers 
+   * Creates 5x5 matrix indexed by Integer with visible headers
    * and opens the shell with it.
    * @return matrix
    */
@@ -1338,7 +1335,7 @@ public class  SwtTestCase {
     processEvents();
     return matrix;
   }
-  
+
   public void runBinding(GestureBinding b) {
 	  switch (b.eventType) {
 	  case SWT.MouseDown:
@@ -1377,7 +1374,7 @@ public class  SwtTestCase {
     });
     return image;
   }
-  
+
   void assertEqualImage(Image expected, Image actual) {
     GC gc = new GC(display);
     ImageData data1 = expected.getImageData();
@@ -1389,13 +1386,13 @@ public class  SwtTestCase {
         Assert.assertTrue(MessageFormat.format("Wrong pixel at {0}, {1}", x, y),
 //          data1.getPixel(x, y), data2.getPixel(x, y));
           compareRGB(
-            data1.palette.getRGB(data1.getPixel(x, y)), 
-            data2.palette.getRGB(data2.getPixel(x, y)))); 
+            data1.palette.getRGB(data1.getPixel(x, y)),
+            data2.palette.getRGB(data2.getPixel(x, y))));
       }
     }
     gc.dispose();
   }
-  
+
   boolean compareRGB(RGB rgb1, RGB rgb2) {
     return abs(rgb1.red - rgb2.red) +
       abs(rgb1.green - rgb2.green) +

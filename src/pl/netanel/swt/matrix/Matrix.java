@@ -1090,11 +1090,14 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    if (area.width == 0) {
 	      wHint = 0;
 	    } else {
-	      Bound x = layoutX.getLineBound(layoutX.indexOf(axisX.getLastItem()) + 1);
-	      if (x == null) {
-	        wHint = 0;
-	      } else {
-	        wHint = x.distance + x.width;
+	      int index = layoutX.indexOf(axisX.getLastItem());
+	      if (index != -1) {
+	        Bound x = layoutX.getLineBound(index + 1);
+	        if (x == null) {
+	          wHint = 0;
+	        } else {
+	          wHint = x.distance + x.width;
+	        }
 	      }
 	    }
 	  }
@@ -1102,11 +1105,14 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	    if (area.width == 0) {
 	      wHint = 0;
 	    } else {
-	      Bound y = layoutY.getLineBound(layoutY.indexOf(axisY.getLastItem()) + 1);
-	      if (y == null) {
-	        hHint = 0;
-	      } else {
-	        hHint = y.distance + y.width;
+	      int index = layoutY.indexOf(axisY.getLastItem());
+	      if (index != -1) {
+	        Bound y = layoutY.getLineBound(index + 1);
+	        if (y == null) {
+	          hHint = 0;
+	        } else {
+	          hHint = y.distance + y.width;
+	        }
 	      }
 	    }
 	  }

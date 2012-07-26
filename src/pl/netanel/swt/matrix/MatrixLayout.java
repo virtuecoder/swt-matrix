@@ -228,6 +228,10 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
       AxisItem<X> startX, AxisItem<X> endX,
       AxisItem<Y> startY, AxisItem<Y> endY, boolean selected) {
 
+//    System.out.println(String.format("%s %s %s %s",
+//      startX.index, endX.index,
+//      startY.index, endY.index));
+
     // Make sure start < end
     if (matrix.layoutX.comparePosition(startX, endX) > 0) {
       AxisItem<X> tmp;
@@ -238,10 +242,37 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
       tmp = startY; startY = endY; endY = tmp;
     }
 
+    // Check merged cells
+    seq.init(startX, endX, startY, endY);
+    while (seq.next()) {
+      ZoneCore<X, Y> zone = getZone(seq.sectionX, seq.sectionY);
+      CellExtent<X, Y> overlap = zone.cellMerging.overlap(
+        seq.startX.getValue(), seq.endX.getValue(),
+        seq.startY.getValue(), seq.endY.getValue());
+      if (seq.sectionX.equals(startX.section) &&
+        layoutX.comparePosition(startX.section, startX.index, seq.sectionX, overlap.startX) > 0) {
+        startX = AxisItem.createUnchecked(seq.sectionX, overlap.startX);
+      }
+      if (seq.sectionX.equals(endX.section) &&
+        layoutX.comparePosition(endX.section, endX.index, seq.sectionX, overlap.endX) < 0) {
+        endX = AxisItem.createUnchecked(seq.sectionX, overlap.endX);
+      }
+      if (seq.sectionY.equals(startY.section) &&
+        layoutY.comparePosition(startY.section, startY.index, seq.sectionY, overlap.startY) > 0) {
+        startY = AxisItem.createUnchecked(seq.sectionY, overlap.startY);
+      }
+      if (seq.sectionY.equals(endY.section) &&
+        layoutY.comparePosition(endY.section, endY.index, seq.sectionY, overlap.endY) < 0) {
+        endY = AxisItem.createUnchecked(seq.sectionY, overlap.endY);
+      }
+    }
+
+
     ZoneCore<X, Y> lastZone = null;
     seq.init(startX, endX, startY, endY);
     while (seq.next()) {
       ZoneCore<X, Y> zone = getZone(seq.sectionX, seq.sectionY);
+
       if (zone.isSelectionEnabled()) {
         zone.setSelected(
           seq.startX.getValue(), seq.endX.getValue(),
@@ -327,7 +358,6 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
     }
 
     public void init(AxisItem<X> startX, AxisItem<X> endX, AxisItem<Y> startY, AxisItem<Y> endY) {
-
       startItem1 = startX;
       endItem1 = endX;
       seqX.init(startX, endX);
@@ -359,8 +389,8 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
   }
 
   public void compute() {
-    layoutX.computeIfRequired();
-    layoutY.computeIfRequired();
+    layoutX.compute();
+    layoutY.compute();
     computeMerging();
   }
 
@@ -375,7 +405,6 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
       computeMerging();
     }
   }
-
 
   /*
    * Each frozen area contains a
@@ -452,7 +481,7 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
 
     return null;
   }
-  
+
   /**
    * Caches layout data for a single frozen area.
    * <p>

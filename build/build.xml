@@ -1,13 +1,22 @@
 <project name="swt-matrix" default="local website" basedir=".">
-	<property name="version" value="0.6.0" />
-	<property name="local_website" value="c:\dev\wamp\www\netanel15" />
+	<property file="local.properties" />
+	<property file="build.properties" />
+	
+	<property name="version" value="0.6.2" />
+	
+	<property name="jdk.dir" value="C:\Program Files\Java\jdk1.6.0_32" />
+	<property name="java.lib.dir" value="D:\Dev\Java\java_lib" />
+	<property name="eclipse.swt.file" value="D:\Dev\Java\eclipse\plugins\org.eclipse.swt_3.7.2.v3740f.jar" />
+	<property name="eclipse.swt.win32.file" value="D:\Dev\Java\eclipse\plugins\org.eclipse.swt.win32.win32.x86_3.7.2.v3740f.jar" />
+	<property name="wamp.dir" value="D:\dev\wamp" />
+	<property name="local.website.dir" value="${wamp.dir}\www\netanel15" />
 
 	<property name="db.username" value="root"/>
 	<property name="db.password" value=""/>
 	<property name="db.name" value="netanel15"/>
 	<!-- The name of the database to backup. -->
 	<property name="db.export.file" value="..\website\joomla-1.5.sql"/>
-	<property name="mysqldump" value="c:\Dev\wamp\bin\mysql\mysql5.0.51a\bin\mysqldump"/>
+	<property name="mysqldump" value="${wamp.dir}\bin\mysql\mysql5.0.51a\bin\mysqldump"/>
 
 
 	<target name="clean">
@@ -56,8 +65,51 @@
 
 		<!-- obfuscate and optimize by ProGuard -->
 		<taskdef resource="proguard/ant/task.properties" 
-			classpath="c:/dev/Java/java_lib/proguard4.3/lib/proguard.jar" />
-		<proguard configuration="proguard.cfg"/>
+			classpath="${java.lib.dir}/proguard4.3/lib/proguard.jar" />
+		<proguard>
+			-libraryjars "${jdk.dir}\jre\lib\rt.jar"
+			-libraryjars "${eclipse.swt.file}" 
+			-libraryjars "${eclipse.swt.win32.file}"
+			-injars      swt-matrix.jar
+			-outjars     obfuscated.swt-matrix.jar
+			-printmapping out.map
+
+			-dontoptimize
+			-dontshrink
+
+			-keepattributes Exceptions,InnerClasses,Signature,Deprecated,
+			                SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
+
+			-keep public class * {
+			    public protected *;
+			}
+
+			-keepclassmembers enum * {
+			    public static **[] values();
+			    public static ** valueOf(java.lang.String);
+			}
+
+			-keepclassmembers class * {
+			    java.lang.Object clone();
+			}
+
+			-keepclassmembers class ** {
+			    public static &lt;fields&gt;;
+			}
+
+
+			-keepnames class * implements java.io.Serializable
+
+
+			-keepclassmembers class * implements java.io.Serializable {
+			    static final long serialVersionUID;
+			    private void writeObject(java.io.ObjectOutputStream);
+			    private void readObject(java.io.ObjectInputStream);
+			    java.lang.Object writeReplace();
+			    java.lang.Object readResolve();
+			    !transient &lt;fields&gt;;
+			}
+		</proguard>
 
 		<rename src="obfuscated.${ant.project.name}.jar" dest="${ant.project.name}-${version}.jar"/>
 		<rename src="out.map" dest="obfuscation-${version}.map"/>
@@ -125,11 +177,11 @@
   	
 	</target-->
 <target name="local website" depends="jar, javadoc, snippets">
-	<sync todir="${local_website}\swt-matrix\snippets">
+	<sync todir="${local.website.dir}\swt-matrix\snippets">
 		<fileset dir="../src_demo/pl/netanel/swt/matrix/snippets"/>
 	</sync>
 
-	<sync todir="${local_website}\swt-matrix\javadoc">
+	<sync todir="${local.website.dir}\swt-matrix\javadoc">
 		<fileset dir="../javadoc"/>
 	</sync>
 	
@@ -151,21 +203,21 @@
 		<fileset dir="../doc" includes="Change-log.txt"/>
   </zip>
 	
-	<copy todir="${local_website}\swt-matrix">
+	<copy todir="${local.website.dir}\swt-matrix">
 		<fileset dir="../doc" includes="EULA.txt"/>
 	</copy>
 	
-	<copy todir="${local_website}\swt-matrix" file="swt-matrix-${version}.zip" />
-	<copy todir="${local_website}\swt-matrix" file="../doc/Change-log.txt" />
+	<copy todir="${local.website.dir}\swt-matrix" file="swt-matrix-${version}.zip" />
+	<copy todir="${local.website.dir}\swt-matrix" file="../doc/Change-log.txt" />
 
 	<java classname="JoomlaMysqlUpdate" dir=".." fork="true">
 		<classpath>
-			<pathelement location="c:\Dev\Java\java_lib\mysql-connector-java-5.1.8\mysql-connector-java-5.1.8-bin.jar" />
+			<pathelement location="${java.lib.dir}\mysql-connector-java-5.1.8\mysql-connector-java-5.1.8-bin.jar" />
 			<pathelement path="../bin" />
 		</classpath>
 	</java>
 	
-  <replaceregexp file="${local_website}\media\system\js\netanel.js"
+  <replaceregexp file="${local.website.dir}\media\system\js\netanel.js"
         match="var current_version = (.+);"
           replace='var current_version = "${version}";'
           byline="true" />
@@ -198,8 +250,8 @@
 	<ftp 
        server="www.netanel.pl"
        remotedir="git"
-       userid="u60772810"
-       password="jackolo">
+       userid="${ftp.user}"
+       password="${ftp.password}">
 
 		<fileset dir=".\" includes="matrix-project.zip"/>
 	</ftp>
@@ -211,16 +263,16 @@
 <target name="publish" description="update the offical website" depends="local website">
 	<ftp 
 	  server="www.netanel.pl"
-    remotedir="wsb6077281001"
-    userid="u60772810"
-	  password="jackolo"
+    remotedir="ftp.remote.dir"
+    userid="$ftp.user}"
+	  password="${ftp.password}"
 	  depends="true"
 		verbose="yes"
 	>
 
-		<fileset dir="${local_website}/swt-matrix"/>
-		<fileset dir="${local_website}/templates"/>
-		<fileset dir="${local_website}/media"/>
+		<fileset dir="${local.website.dir}/swt-matrix"/>
+		<fileset dir="${local.website.dir}/templates"/>
+		<fileset dir="${local.website.dir}/media"/>
 	</ftp>
 
 </target>

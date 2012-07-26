@@ -7,7 +7,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import pl.netanel.swt.matrix.NumberOrder.ExtentCountSequence;
+import pl.netanel.swt.matrix.NumberOrder.ExtentOriginLimitSequence;
+import pl.netanel.swt.matrix.NumberOrder.ForwardExtentFirstLastSequence;
 
 
 @SuppressWarnings({"rawtypes", "unchecked"}) @RunWith(JUnit4.class) public class  NumberOrderTest  {
@@ -295,9 +296,9 @@ import pl.netanel.swt.matrix.NumberOrder.ExtentCountSequence;
 	  }
 
 	 @Test
-	 public void forwardExtentCountSequence() throws Exception {
+	 public void forwardExtentOriginLimitSequence() throws Exception {
      NumberOrder<Integer> order = numberOrder(5);
-     ExtentCountSequence seq = order.countForward;
+     ExtentOriginLimitSequence seq = order.countForward;
      
      order.move(3, 3, 2);
      assertEquals("0-1, 3, 2, 4", order.toString());
@@ -307,11 +308,31 @@ import pl.netanel.swt.matrix.NumberOrder.ExtentCountSequence;
      assertStep(seq, true, 2, 2);
      assertFalse(seq.next());
 	 }
+	 
+	 @Test
+	 public void forwardExtentFirstLastSequence() throws Exception {
+	   NumberOrder<Integer> order = numberOrder(5);
+	   ForwardExtentFirstLastSequence seq = order.untilForward;
+	   
+	   order.move(3, 3, 2);
+	   assertEquals("0-1, 3, 2, 4", order.toString());
+	   seq.init(1, 2);
+	   assertStep(seq, true, 1, 1);
+	   assertStep(seq, true, 3, 3);
+	   assertStep(seq, true, 2, 2);
+	   assertFalse(seq.next());
+	 }
 
 
   // Helper test methods
 
-	private void assertStep(ExtentCountSequence seq, boolean next, Integer start, Integer end) {
+	private void assertStep(ExtentOriginLimitSequence seq, boolean next, Integer start, Integer end) {
+	  assertEquals(next, seq.next());
+	  assertEquals(start, seq.start == null ? null : seq.start.getValue());
+	  assertEquals(end, seq.end == null ? null : seq.end.getValue());
+	}
+	
+	private void assertStep(ForwardExtentFirstLastSequence seq, boolean next, Integer start, Integer end) {
 	  assertEquals(next, seq.next());
 	  assertEquals(start, seq.start == null ? null : seq.start.getValue());
 	  assertEquals(end, seq.end == null ? null : seq.end.getValue());

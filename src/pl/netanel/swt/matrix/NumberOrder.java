@@ -10,14 +10,16 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 
 	private N count;
   SpanExtentSequence spanExtents;
-  ExtentCountSequence countForward, countBackward;
+  ExtentOriginLimitSequence countForward, countBackward;
+  ForwardExtentFirstLastSequence untilForward;
 
 	public NumberOrder(Math<N> math) {
 		super(math);
 		count = math.ZERO_VALUE();
 		spanExtents = new SpanExtentSequence();
-		countForward = new ForwardExtentCountSequence();
-		countBackward = new BackwardExtentCountSequence();
+		countForward = new ForwardExtentOriginLimitSequence();
+		countBackward = new BackwardExtentOriginLimitSequence();
+		untilForward = new ForwardExtentFirstLastSequence();
 	}
 
 	public void setCount(N newCount) {
@@ -322,7 +324,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	}
 
 	public N getIndexByOffset(N start, N count) {
-	  ExtentCountSequence seq;
+	  ExtentOriginLimitSequence seq;
     if (math.compare(count, math.ZERO_VALUE()) >= 0) {
       seq = countForward;
       seq.limit = math.increment(count);
@@ -337,7 +339,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	}
 
 	public boolean overlap(N origin, N limit, MutableExtent<N> extent) {
-    ExtentCountSequence seq = countForward;
+    ExtentOriginLimitSequence seq = countForward;
     seq.origin = origin;
     seq.limit = limit;
     boolean notExclusive = false;
@@ -348,8 +350,8 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
       }
     }
     if (notExclusive) {
-      if (math.compare(indexOf(seq.start.getValue()), extent.start.getValue()) < 0) {
-        extent.start.set(seq.start.getValue());        
+      if (math.compare(indexOf(origin), extent.start.getValue()) < 0) {
+        extent.start.set(origin);        
       }
       if (math.compare(indexOf(seq.end.getValue()), extent.end.getValue()) > 0) {
         extent.end.set(seq.end.getValue());        
@@ -358,7 +360,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
     return notExclusive;
   }
 
-	public abstract class ExtentCountSequence implements Sequence {
+	public abstract class ExtentOriginLimitSequence implements Sequence {
     N origin, limit;
     int i;
     MutableExtent<N> extent;
@@ -394,12 +396,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
    * start2 end2
    * start3 limit
    */
-	public class ForwardExtentCountSequence extends ExtentCountSequence {
-	  @Override
-    public void init() {
-      super.init();
-      //remaining.set(limit).add(origin).subtract(extent.start);
-    }
+	public class ForwardExtentOriginLimitSequence extends ExtentOriginLimitSequence {
     @Override
     public boolean next() {
       if (isEnded || ++i >= items.size()) {
@@ -431,7 +428,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	/**
 	 * Does not work
 	 */
-	public class BackwardExtentCountSequence extends ExtentCountSequence {
+	public class BackwardExtentOriginLimitSequence extends ExtentOriginLimitSequence {
 	   @Override
 	    public void init() {
 	      super.init();
@@ -461,4 +458,62 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	    return true;
 	  }
 	}
+
+
+	/*
+   * Sequence sample:
+   * origin end1
+   * start2 end2
+   * start3 limit
+   */
+  public class ForwardExtentFirstLastSequence implements Sequence {
+    N first, last;
+    int i;
+    MutableExtent<N> extent;
+    MutableNumber<N> start, end;
+    boolean isStarted, isEnded;
+
+    @Override
+    public void init() {
+      isStarted = isEnded = false;
+      i = getExtentIndex(first);
+      if (i == -1) {
+        isEnded = true;
+        return;
+      }
+      start = math.create(first);
+      end = math.create(first);
+      i--;
+    }
+
+    public void init(N first, N last) {
+      this.first = first;
+      this.last = last;
+      init();
+    }
+
+    @Override
+    public boolean next() {
+      if (isEnded || ++i >= items.size()) {
+        return false;
+      }
+      extent = items.get(i);
+
+      if (isStarted) {
+        start.set(extent.start);        
+      }
+      else {
+        isStarted = true;
+      }
+      
+      if (math.contains(extent, last)) {
+        end.set(last);
+        isEnded = true;
+      } else {
+        end.set(extent.end);
+      }
+      
+      return true;
+    }
+  }
 }

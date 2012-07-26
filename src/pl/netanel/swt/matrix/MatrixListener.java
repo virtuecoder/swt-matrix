@@ -794,7 +794,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
   protected void executeCommand(GestureBinding b) {
     int commandId = b.commandId;
 
-    //		System.out.println("execute " + commandId);
+		//System.out.println("execute " + commandId + " last item " + stateY.last);
     switch (commandId) {
     //case CMD_DND_SELECT_START:		 state &= STATE_SELECTING; break;
     //case CMD_DND_SELECT_STOP:		   state &= ~STATE_SELECTING; break;
