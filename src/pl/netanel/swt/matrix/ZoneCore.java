@@ -31,6 +31,11 @@ import pl.netanel.util.Preconditions;
  * @author Jacek
  * @created 13-10-2010
  */
+/**
+ *
+ * @author Jacek
+ * @created 30-06-2012
+ */
 class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 	final Painters<X, Y> painters;
@@ -38,6 +43,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	final SectionCore<Y> sectionY;
 	CellSet<X, Y> cellSelection;
 	CellSet<X, Y> lastSelection; // For adding selection
+	CellSpanSet<X, Y> cellMerging;
+
 	ZoneEditor<X, Y> editor;
 
 	private final Listeners listeners;
@@ -46,7 +53,11 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 	private Matrix<X, Y> matrix;
 	final Rectangle bounds;
-
+	X cellMergeLimitX;
+	Y cellMergeLimitY;
+  private Math<X> mathX;
+  private Math<Y> mathY;
+  
 
   /**
 	 * Constructs zone at intersection of the specified sections.
@@ -56,6 +67,9 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	public ZoneCore(SectionCore<X> sectionX, SectionCore<Y> sectionY) {
 		this.sectionY = sectionY;
 		this.sectionX = sectionX;
+		mathX = sectionX.math;
+		mathY = sectionY.math;
+		
 		painters = new Painters<X, Y>();
     listeners = new Listeners();
     bindings = new ArrayList<GestureBinding>();
@@ -66,7 +80,10 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		Math<Y> mathY = SectionCore.from(sectionY).math;
 		cellSelection = new CellSet<X, Y>(mathX, mathY);
 		lastSelection = new CellSet<X, Y>(mathX, mathY);
-
+		cellMerging = new CellSpanSet<X, Y>(sectionX.order, sectionY.order);
+		cellMergeLimitX = mathX.create(1000).getValue();
+		cellMergeLimitY = mathY.create(1000).getValue();
+		
 //		foreground = new MapValueToCellSet<X, Y, Color>(mathX, mathY);
 //		text = new MapValueToCellSet(this.sectionY.math, this.sectionX.math);
 //		image = new MapValueToCellSet(this.sectionY.math, this.sectionX.math);
@@ -141,6 +158,11 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	}
 
 	@Override public Rectangle getCellBounds(X indexX, Y indexY) {
+	  Rectangle bounds = matrix.layout.getMergedBounds(this, indexX, indexY);
+	  if (bounds != null) {
+	    return bounds;
+	  }
+
 		Bound b0 = sectionY.axis.getCellBound(sectionY, indexY);
 		Bound b1 = sectionX.axis.getCellBound(sectionX, indexX);
 		if (b0 != null && b1 != null) {
@@ -187,13 +209,45 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 	@Override
 	public void setSelected(X startX, X endX, Y startY, Y endY, boolean state) {
+		setSelected(startX, endX, startY, endY, state, true);
+	}
+	
+	void setSelected(X startX, X endX, Y startY, Y endY, boolean state, boolean withMerged) {
+	  if (!selectionEnabled) return;
+	  // assert startX <= endX, startY <= endY
 
-		if (!selectionEnabled) return;
-		if (state) {
-			cellSelection.add(startX, endX, startY, endY);
-		} else {
-			cellSelection.remove(startX, endX, startY, endY);
-		}
+	  if (withMerged) {
+	    CellExtent<X, Y> overlap = cellMerging.overlap(startX, endX, startY, endY);
+	    startX = overlap.startX;
+	    endX = overlap.endX;
+	    startY = overlap.startY;
+	    endY = overlap.endY;
+	    NumberOrder<X>.ForwardExtentFirstLastSequence seqX = sectionX.order.untilForward;
+	    NumberOrder<Y>.ForwardExtentFirstLastSequence seqY = sectionY.order.untilForward;
+	    for (seqX.init(startX, endX); seqX.next();) {
+	      for (seqY.init(startY, endY); seqY.next();) {
+	        if (state) {
+//	          System.out.println(String.format("%s %s %s %s", 
+//	            seqX.start.getValue(), seqX.end.getValue(), 
+//              seqY.start.getValue(), seqY.end.getValue()));
+	          cellSelection.add(
+	            seqX.start.getValue(), seqX.end.getValue(), 
+	            seqY.start.getValue(), seqY.end.getValue());
+	        } else {
+	          cellSelection.remove(
+	            seqX.start.getValue(), seqX.end.getValue(), 
+              seqY.start.getValue(), seqY.end.getValue());
+	        }	        
+	      }
+	    }
+	  }
+	  else {
+	    if (state) {
+	      cellSelection.add(startX, endX, startY, endY);
+	    } else {
+	      cellSelection.remove(startX, endX, startY, endY);
+	    }
+	  }
 	}
 
 	@Override
@@ -218,6 +272,9 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	}
 
 	@Override public BigInteger getSelectedCount() {
+	  if (!selectionEnabled) {
+      return BigInteger.ZERO;
+    }
 		return cellSelection.getCount().getValue();
 	}
 
@@ -232,11 +289,9 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	}
 */
 
+	@Deprecated
 	@Override public BigInteger getSelectionCount() {
-		if (!selectionEnabled) {
-			return BigInteger.ZERO;
-		}
-		return cellSelection.getCount().value;
+		return getSelectedCount();
 	}
 
 
@@ -326,6 +381,34 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	}
 
 
+	@Override
+	public boolean setMerged(X indexX, X countX, Y indexY, Y countY) {
+	  boolean removed = cellMerging.removeContaining(indexX, countX, indexY, countY);
+    
+    if (!removed && 
+      (mathX.compare(countX, mathX.ONE_VALUE()) > 0 || mathY.compare(countY, mathY.ONE_VALUE()) > 0)) {
+	    cellMerging.add(indexX, countX, indexY, countY);
+	  }
+    return !removed;
+	}
+
+	@Override
+	public boolean isMerged(X indexX, Y indexY) {
+	  return cellMerging.contains(indexX, indexY);
+	}
+
+	@Override
+	public void setMergeLimit(X limitX, Y limitY) {
+	  cellMergeLimitX = limitX;
+	  cellMergeLimitY = limitY;
+	};
+
+	@Override
+	public Cell<X, Y> getMergeLimit() {
+	  return Cell.createUnchecked(cellMergeLimitX, cellMergeLimitY);
+	}
+
+
 	/*------------------------------------------------------------------------
 	 * Gesture
 	 */
@@ -386,7 +469,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 			  AxisItem<X> itemX = matrix.getAxisX().getItemByViewportDistance(e.x);
 				AxisItem<Y> itemY = matrix.getAxisY().getItemByViewportDistance(e.y);
 				if (itemX != null && itemY != null && ZoneCore.this ==
-						matrix.model.getZone(itemX.section, itemY.section))
+						matrix.layout.getZone(itemX.section, itemY.section))
 				{
 					listener.handleEvent(e);
 				}
@@ -399,10 +482,11 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	 * Painting
 	 */
 
-	void paint(final GC gc,
-	  final Layout<X> layoutX, final Layout<Y> layoutY,
-	  final Frozen frozenX, final Frozen frozenY)
+	void paint(final GC gc, MatrixLayout<X, Y> layout, final Frozen frozenX, final Frozen frozenY)
 	{
+	  final AxisLayout<X> layoutX = layout.layoutX;
+	  final AxisLayout<Y> layoutY = layout.layoutY;
+
 		Painter<X, Y> embedded = null;
 		for (Painter<X, Y> p: painters) {
 			if (p instanceof EmbeddedControlsPainter) {
@@ -412,42 +496,39 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 			if (!p.isEnabled() || !p.init(gc)) continue;
 
 			int distance = 0, width = 0;
-			switch (p.scope) {
+			AxisLayoutSequence<Y> seqY;
+      AxisLayoutSequence<X> seqX;
+
+      gc.setClipping((Rectangle) null);
+      switch (p.scope) {
 
 			case Painter.SCOPE_CELLS_X:
-			  LayoutSequence<X> seqX = layoutX.cellSequence(frozenX, sectionX);
-				LayoutSequence<Y> seqY = layoutY.cellSequence(frozenY, sectionY);
-				for (seqY.init(); seqY.next();) {
-					distance = seqY.getDistance();
-					width = seqY.getWidth();
-					Y indexX = seqY.item.getIndex();
-					for (seqX.init(); seqX.next();) {
-					  p.setup(seqX.item.getIndex(), indexX);
-						p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
-					}
+			case Painter.SCOPE_CELLS_Y:
+			  MatrixLayoutCellSequence<X, Y> seq =
+			    new MatrixLayoutCellSequence<X, Y>(matrix.layout, frozenX, frozenY, this);
+				for (seq.init(); seq.next();) {
+				  p.setup(seq.indexX, seq.indexY);
+					p.paint(seq.boundX.distance, seq.boundY.distance, seq.boundX.width, seq.boundY.width);
 				}
 				break;
 
-			case Painter.SCOPE_CELLS_Y:
-				seqY = layoutY.cellSequence(frozenY, sectionY);
-				seqX = layoutX.cellSequence(frozenX, sectionX);
-				for (seqX.init(); seqX.next();) {
-					distance = seqX.getDistance();
-					width = seqX.getWidth();
-					X indexX = seqX.item.getIndex();
-					for (seqY.init(); seqY.next();) {
-					  p.setup(indexX, seqY.item.getIndex());
-						p.paint(distance, seqY.getDistance(), width, seqY.getWidth());
-					}
-				}
-				break;
+//			case Painter.SCOPE_CELLS_Y:
+//			  LayoutSequence2<Y, X> seqYX = new LayoutSequence2<Y, X>(
+//			      layoutY.cellSequence(frozenY, sectionY),
+//			      layoutX.cellSequence(frozenX, sectionX)
+//            );
+//        for (seqYX.init(); seqYX.next();) {
+//          p.setup(seqYX.seq2.getIndex(), seqYX.seq1.getIndex());
+//          p.paint(seqYX.seq2.getDistance(), seqYX.seq1.getDistance(), seqYX.seq2.getWidth(), seqYX.seq1.getWidth());
+//        }
+//				break;
 
 			case Painter.SCOPE_CELLS_ITEM_Y:
 				seqY = layoutY.cellSequence(frozenY, sectionY);
 				distance = bounds.x;
 				width = bounds.width;
 				for (seqY.init(); seqY.next();) {
-				  p.setup(sectionX.math.ZERO_VALUE(), seqY.item.getIndex());
+				  p.setup(sectionX.math.ZERO_VALUE(), seqY.getIndex());
 					p.paint(distance, seqY.getDistance(), width, seqY.getWidth());
 				}
 				break;
@@ -457,27 +538,29 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				distance = bounds.y;
 				width = bounds.height;
 				for (seqX.init(); seqX.next();) {
-				  p.setup(seqX.item.getIndex(), sectionY.math.ZERO_VALUE());
+				  p.setup(seqX.getIndex(), sectionY.math.ZERO_VALUE());
 					p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
 				}
 				break;
 
 			case Painter.SCOPE_LINES_X:
+			  gc.setClipping(layout.region);
 				seqY = layoutY.lineSequence(frozenY, sectionY);
 				distance = bounds.x;
 				width = bounds.width;
 				for (seqY.init(); seqY.next();) {
-				  p.setup(sectionX.math.ZERO_VALUE(), seqY.item.getIndex());
+				  p.setup(sectionX.math.ZERO_VALUE(), seqY.getIndex());
 					p.paint(distance, seqY.getDistance(), width, seqY.getWidth());
 				}
 				break;
 
 			case Painter.SCOPE_LINES_Y:
+			  gc.setClipping(layout.region);
 				seqX = layoutX.lineSequence(frozenX, sectionX);
 				distance = bounds.y;
 				width = bounds.height;
 				for (seqX.init(); seqX.next();) {
-				  p.setup(seqX.item.getIndex(), sectionY.math.ZERO_VALUE());
+				  p.setup(seqX.getIndex(), sectionY.math.ZERO_VALUE());
 					p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
 				}
 				break;
@@ -504,14 +587,14 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 //				  }
 					if (!p.isEnabled() || !p.init(gc)) return;
 
-					LayoutSequence<Y> seqY = layoutY.cellSequence(frozenY, sectionY);
-					LayoutSequence<X> seqX = layoutX.cellSequence(frozenX, sectionX);
+					AxisLayoutSequence<Y> seqY = layoutY.cellSequence(frozenY, sectionY);
+					AxisLayoutSequence<X> seqX = layoutX.cellSequence(frozenX, sectionX);
 					for (seqY.init(); seqY.next();) {
 						int distance = seqY.getDistance();
 						int width = seqY.getWidth();
-						Y index = seqY.item.getIndex();
+						Y index = seqY.getIndex();
 						for (seqX.init(); seqX.next();) {
-						  p.setup(seqX.item.getIndex(), index);
+						  p.setup(seqX.getIndex(), index);
 							p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
 						}
 					}
@@ -641,6 +724,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
     return sectionX.math.contains(cellExtent.startX, cellExtent.getEndX(), indexX) &&
       sectionY.math.contains(cellExtent.startY, cellExtent.getEndY(), indexY);
   }
+
+
 
 
 }

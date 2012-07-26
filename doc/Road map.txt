@@ -1,3 +1,10 @@
+Zone.addControlListener to get notification when an item is resized or moved.
+Move selection logic from listener to section. Section.setSelected should highlight the cells in matrix.
+Fix drag and drop of a group of items just before or after one of the selected one.
+Fix matrix not visible on other layouts then FillLayout.
+Does not refresh on shell.open without shell.setBounds.
+
+Axis.setSelected(from position, to position) ?
 
 
 Samples:
@@ -30,15 +37,12 @@ From nebula forum
 - Nebula CompositeTable, flexible row layout
 
 To do:
-! Matrix.computeSize()
 - multi column sorting
 - draw button cell selected as pushed
 - freeze line painters are by default
-- rename snippets
 - partial redraw/paint cell, zone, row column
 - painter top, bottom, left, right margins for text and image instead of x, y margins
 - add to Zone and Section @see #getListeners(int)   * @see #removeListener(int, Listener)   * @see #notifyListeners
-- snippet with selection background and custom foreground
 - scroll to focus on resizing
 - Replace refresh() with layout() and redraw()
 - various matrix layouts?
@@ -46,11 +50,10 @@ To do:
 - snippet hide control instead of dispose
 - sample on different editor in for edit then display
 - asynchronous mode in GestureBinding for command processing, cancel.
-- readme.txt for snippets and individual snippet files comment about images
 - compile snippets to demo
 - make the matrix composable in the WindowBuilder
 - avoid flickering when rezizing with embedded controls
-- multiline text, text wraping
+
 - MatrixView to support ContentProvider, LabelProvider, Column, etc
 
 - snippet to swap axises

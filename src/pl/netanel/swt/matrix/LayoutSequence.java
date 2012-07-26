@@ -2,7 +2,7 @@ package pl.netanel.swt.matrix;
 
 import java.util.List;
 
-class LayoutSequence<N extends Number> {
+class LayoutSequence<N extends Number> implements Sequence {
 
   private final List<AxisItem<N>> items;
 	private final List<Bound> bounds;
@@ -11,7 +11,7 @@ class LayoutSequence<N extends Number> {
 	Bound bound;
 	AxisItem<N> item;
 
-	public LayoutSequence(List<AxisItem<N>> items, List<Bound> bounds, SectionCore<N> section) { 
+	public LayoutSequence(List<AxisItem<N>> items, List<Bound> bounds, SectionCore<N> section) {
     this.items = items;
 		this.bounds = bounds;
 		this.section = section;
@@ -22,14 +22,14 @@ class LayoutSequence<N extends Number> {
 			if (items.get(i).section.equals(section)) break;
 		}
 	}
-	
+
 	public boolean next() {
 		if (i >= bounds.size()) return false;
 		Section<N> section2 = items.get(i).section;
 		if (section2 != section) {
-			// Make sure last line is included between sections  
-			if (items.size() == bounds.size() /*&& 
-				axis.getZIndex(section2) < axis.getZIndex(item.section)*/) 
+			// Make sure last line is included between sections
+			if (items.size() == bounds.size() /*&&
+				axis.getZIndex(section2) < axis.getZIndex(item.section)*/)
 			{
 				item = AxisItem.createInternal(item.section, section.math.increment(item.getIndex()));
 				bound = bounds.get(i);
@@ -42,15 +42,15 @@ class LayoutSequence<N extends Number> {
 		item = items.get(i++);
 		return true;
 	}
-	
+
 	public AxisItem<N> getItem() {
 		return item;
 	}
-	
+
 	public int getDistance() {
 		return bound.distance;
 	}
-	
+
 	public int getWidth() {
 		return bound.width;
 	}

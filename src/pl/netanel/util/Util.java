@@ -1,10 +1,10 @@
 package pl.netanel.util;
 
 public class Util {
-	
+
 	/**
 	 * Returns the first value that is not null
-	 * 
+	 *
 	 * @param <T> generic type
 	 * @param value value to inspect
 	 * @param defaltValue default value
@@ -19,8 +19,20 @@ public class Util {
 		}
 		return null;
 	}
-	
+
 	public static <T> T notNull(T v1, T v2) {
 	  return v1 != null ? v1 : v2;
+	}
+
+	/**
+	 * Null safe object equality check.
+	 * Returns false if any object is null, otherwise returns <code>o1.equals(o2)</code>
+	 * @param o1 first object to compare
+	 * @param o2 second object to compare
+	 * @return object equality
+	 */
+	public static boolean equals(Object o1, Object o2) {
+	  if (o1 == null || o2 == null) return false;
+	  return o1.equals(o2);
 	}
 }

@@ -1,6 +1,12 @@
 package pl.netanel.swt.matrix;
 
-import static pl.netanel.swt.matrix.Math.*;
+import static pl.netanel.swt.matrix.Math.ADJACENT_AFTER;
+import static pl.netanel.swt.matrix.Math.AFTER;
+import static pl.netanel.swt.matrix.Math.CROSS_AFTER;
+import static pl.netanel.swt.matrix.Math.CROSS_BEFORE;
+import static pl.netanel.swt.matrix.Math.EQUAL;
+import static pl.netanel.swt.matrix.Math.INSIDE;
+import static pl.netanel.swt.matrix.Math.OVERLAP;
 
 import java.util.ArrayList;
 
@@ -20,27 +26,27 @@ class MutableExtent<N extends Number> {
 	public String toString() {
 		return start.toString() + "-" + end.toString();
 	}
-	
+
 	public N start() {
 		return start.getValue();
 	}
-	
+
 	public N end() {
 		return end.getValue();
 	}
 
 	/**
 	 * arguments: 0 2
-	 * extent:        4 6 -> e.start -= p.count; e.end -= p.count  
+	 * extent:        4 6 -> e.start -= p.count; e.end -= p.count
 	 * arguments: 0 2
-	 * extent:      2 4   -> e.start = end + 1;   
+	 * extent:      2 4   -> e.start = end + 1;
 	 * arguments: 0 2
-	 * extent:      2 4   -> e.start = end + 1;   
+	 * extent:      2 4   -> e.start = end + 1;
 	 * arguments:  12
-	 * extent:    0  3    -> add(end+1, e.end); e.end = end + 1;    
+	 * extent:    0  3    -> add(end+1, e.end); e.end = end + 1;
 	 * arguments:  1 3
-	 * extent:    0 2     -> e.end = start - 1;  
-	 * @return 
+	 * extent:    0 2     -> e.end = start - 1;
+	 * @return
 	 * */
 	static <N extends Number> IntArray delete(Math<N> math, ArrayList<MutableExtent<N>> list, N start, N end) {
 		IntArray toRemove = new IntArray();
@@ -48,23 +54,23 @@ class MutableExtent<N extends Number> {
 			MutableExtent<N> e = list.get(i);
 			int compare = math.compare(e.start(), e.end(), start, end);
 			switch (compare) {
-			case AFTER:		
-			case ADJACENT_AFTER:		
+			case AFTER:
+			case ADJACENT_AFTER:
 				MutableNumber<N> count = math.create(end).subtract(start).increment();
 				e.start.subtract(count);
 				e.end.subtract(count);
 				break;
-				
+
 			case CROSS_AFTER:
-				e.start.subtract(math.create(e.start).subtract(start));
+				e.start.set(start);
 				e.end.set(end).subtract(e.start).add(start).decrement();
 				break;
-				
+
 			case CROSS_BEFORE:
 			case OVERLAP:
 				e.end.subtract(math.min(end, e.end())).add(start).decrement();
 				break;
-				
+
 			case INSIDE:
 			case EQUAL:
 				toRemove.add(i); break;
@@ -75,6 +81,40 @@ class MutableExtent<N extends Number> {
 			list.remove(toRemove.get(i));
 		}
 		return toRemove;
+	}
+	
+	static <N extends Number> IntArray deleteSpan(Math<N> math, ArrayList<MutableExtent<N>> list, N start, N end) {
+	  IntArray toRemove = new IntArray();
+	  for (int i = 0, imax = list.size(); i < imax; i++) {
+	    MutableExtent<N> e = list.get(i);
+	    int compare = math.compare(e.start(), e.end(), start, end);
+	    switch (compare) {
+	    case AFTER:
+	    case ADJACENT_AFTER:
+	      MutableNumber<N> count = math.create(end).subtract(start).increment();
+	      e.start.subtract(count);
+	      break;
+	      
+	    case CROSS_AFTER:
+	      e.start.subtract(math.create(e.start).subtract(start));
+	      e.end.set(end).subtract(e.start).add(start).decrement();
+	      break;
+	      
+	    case CROSS_BEFORE:
+	    case OVERLAP:
+	      e.end.subtract(math.min(end, e.end())).add(start).decrement();
+	      break;
+	      
+	    case INSIDE:
+	    case EQUAL:
+	      toRemove.add(i); break;
+	    }
+	  }
+	  toRemove.sortDescending();
+	  for (int i = 0, imax = toRemove.size(); i < imax; i++) {
+	    list.remove(toRemove.get(i));
+	  }
+	  return toRemove;
 	}
 
 	static <N extends Number> void insert(Math<N> math, ArrayList<MutableExtent<N>> list, N target, N count) {
@@ -91,4 +131,18 @@ class MutableExtent<N extends Number> {
 		}
 	}
 	
+	static <N extends Number> void insertSpan(Math<N> math, ArrayList<MutableExtent<N>> list, N target, N count) {
+	  for (int i = 0, imax = list.size(); i < imax; i++) {
+	    MutableExtent<N> e = list.get(i);
+	    
+	    if (math.compare(target, e.start()) <= 0) {
+	      e.start.add(count);
+	    }
+	  }
+	}
+
+  public MutableExtent<N> copy() {
+    return new MutableExtent<N>(start.copy(), end.copy());
+  }
+
 }

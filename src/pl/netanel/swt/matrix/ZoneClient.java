@@ -1,6 +1,7 @@
 package pl.netanel.swt.matrix;
 
 import java.math.BigInteger;
+import java.text.MessageFormat;
 import java.util.Iterator;
 
 import org.eclipse.swt.events.SelectionListener;
@@ -21,13 +22,19 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     this.sectionY = sectionY;
     this.core = new ZoneCore<X, Y>(sectionX.getUnchecked(), sectionY.getUnchecked());
   }
-  
+
 //  public ZoneClient(ZoneCore<X, Y> zone) {
 //    Preconditions.checkNotNullWithName(zone, "zone");
 //    core = zone;
 //  }
 
-  
+
+  ZoneClient(ZoneCore<X, Y> zone) {
+    this.sectionX = zone.sectionX.client;
+    this.sectionY = zone.sectionY.client;
+    this.core = zone;
+  }
+
   @Override
   public String toString() {
     return core.toString();
@@ -42,12 +49,12 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   public Section<X> getSectionX() {
     return sectionX;
   }
-  
+
   @Override
   public Section<Y> getSectionY() {
     return sectionY;
   }
-  
+
   @Override
   public Rectangle getBounds(Frozen frozenX, Frozen frozenY) {
     return core.getBounds(frozenX, frozenY);
@@ -84,7 +91,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     sectionX.checkCellIndex(indexX, "indexX");
     core.setSelected(indexX, indexY, state);
   }
-  
+
   @Override
   public void setSelected(X startX, X endX, Y startY, Y endY, boolean state) {
     sectionX.checkRange(startX, endX, sectionX.getCount());
@@ -98,8 +105,9 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   }
 
   @Override
+  @Deprecated
   public BigInteger getSelectionCount() {
-    return core.getSelectionCount();
+    return getSelectedCount();
   }
 
   @Override
@@ -116,12 +124,42 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   public Iterator<Cell<X, Y>> getSelectedIterator() {
     return core.getSelectedIterator();
   }
-  
+
   @Override
   public CellExtent<X, Y> getSelectedExtent() {
     return core.getSelectedExtent();
   }
 
+
+  @Override
+  public boolean setMerged(X indexX, X countX, Y indexY, Y countY) {
+    sectionX.checkCellIndex(indexX, "indexX");
+    sectionY.checkCellIndex(indexY, "indexY");
+    Preconditions.checkArgument(core.sectionX.math.compare(countX, core.cellMergeLimitX) <= 0,
+        MessageFormat.format("count{0} {1} is beyond merge limit {2}", "X", countX, core.cellMergeLimitX));
+    Preconditions.checkArgument(core.sectionY.math.compare(countY, core.cellMergeLimitY) <= 0,
+        MessageFormat.format("count{0} {1} is beyond merge limit {2}", "Y", countY, core.cellMergeLimitY));
+    return core.setMerged(indexX, countX, indexY, countY);
+  }
+
+  @Override
+  public boolean isMerged(X indexX, Y indexY) {
+    sectionX.checkCellIndex(indexX, "indexX");
+    sectionY.checkCellIndex(indexY, "indexY");
+    return core.isMerged(indexX, indexY);
+  }
+
+  @Override
+  public void setMergeLimit(X limitX, Y limitY) {
+    sectionX.checkCellIndex(limitX, "limitX");
+    sectionY.checkCellIndex(limitY, "limitY");
+    core.setMergeLimit(limitX, limitY);
+  };
+
+  @Override
+  public Cell<X, Y> getMergeLimit() {
+    return core.getMergeLimit();
+  }
 
   @Override
   public void addPainter(Painter<X, Y> painter) {
@@ -148,7 +186,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     checkPainter(painter);
     core.replacePainterPreserveStyle(painter);
   }
-  
+
   @Override
   public void replacePainterPreserveStyle(Painter<X, Y> painter) {
     checkPainter(painter);
@@ -166,7 +204,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     checkPainter(painter);
     return core.removePainter(painter);
   }
-  
+
   @Override
   public boolean removePainter(String name) {
     Preconditions.checkNotNullWithName(name, "name");
@@ -184,7 +222,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     Preconditions.checkNotNullWithName(name, "name");
     return core.getPainter(name);
   }
-  
+
   @Override
   public Painter<X, Y> getPainter(int index) {
     Preconditions.checkPositionIndex(index, core.getPainterCount());
@@ -212,7 +250,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     Preconditions.checkNotNullWithName(listener, "listener");
     core.addListener(eventType, listener);
   }
-  
+
   @Override
   public void addSelectionListener(SelectionListener listener) {
     Preconditions.checkNotNullWithName(listener, "listener");
@@ -225,22 +263,22 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     core.removeSelectionListener(listener);
   }
 
-  
+
   @Override
   public Matrix<X, Y> getMatrix() {
     return core.getMatrix();
   }
 
-  
+
   private void checkPainter(Painter<X, Y> painter) {
     Preconditions.checkNotNullWithName(painter, "painter");
-    
-    Preconditions.checkArgument(painter.zone == null || this.equals(painter.zone), 
+
+    Preconditions.checkArgument(painter.zone == null || this.equals(painter.zone),
       "The painter belongs to a different zone: %s", painter.zone);
-    
+
     Matrix<X, Y> matrix2 = getMatrix();
     if (matrix2 != null) {
-      Preconditions.checkArgument(painter.matrix == null || matrix2.equals(painter.matrix), 
+      Preconditions.checkArgument(painter.matrix == null || matrix2.equals(painter.matrix),
         "The painter belongs to a different matrix: %s", painter.matrix);
     }
   }
@@ -250,5 +288,4 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     return core.contains(cellExtent, indexX, indexY);
   }
 
-  
 }

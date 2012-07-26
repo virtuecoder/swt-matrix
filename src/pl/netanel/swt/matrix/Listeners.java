@@ -13,7 +13,7 @@ import pl.netanel.util.Preconditions;
 class Listeners {
 	final private HashMapArrayList<Integer, Listener> listeners;
 	final private ArrayList<Event> events;
-	
+
 	public Listeners() {
 		events = new ArrayList<Event>();
 		listeners = new HashMapArrayList<Integer, Listener>();
@@ -23,12 +23,12 @@ class Listeners {
 		Preconditions.checkNotNullWithName(listener, "listener");
 		listeners.add(type, listener);
 	}
-	
+
 	public void remove(int type, Object listener) {
 		Preconditions.checkNotNullWithName(listener, "listener");
 		List<Listener> list = listeners.get(type);
 		for (int i = list.size(); i-- > 0;) {
-			Listener listener2 = list.get(i); 
+			Listener listener2 = list.get(i);
 			if (listener2 != listener && listener2 instanceof TypedListener) {
 				listener2 = (Listener) ((TypedListener) listener2).getEventListener();
 			}
@@ -42,9 +42,9 @@ class Listeners {
 	public void add(Event event) {
 		events.add(event);
 	}
-	
+
 	public void sendEvents() {
-		@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     ArrayList<Event> copy = (ArrayList<Event>) events.clone();
 		events.clear();
 		for (Event e: copy) {

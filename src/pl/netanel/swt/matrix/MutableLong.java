@@ -133,6 +133,10 @@ class MutableLong extends MutableNumber<Long> {
 	MutableNumber<Long> min(MutableNumber<Long> n) {
 		return value <= n.longValue() ? this : n; 
 	}
+	@Override
+	MutableNumber<Long> max(MutableNumber<Long> n) {
+	  return value >= n.longValue() ? this : n; 
+	}
 
 
 	@Override

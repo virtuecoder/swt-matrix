@@ -240,7 +240,7 @@ public class Painter<X extends Number, Y extends Number> {
 	ZoneCore<X, Y> zone;
 	Rectangle zoneBounds;
 
-	private Color lastForeground, lastBackground, defaultBackground, defaultForeground;
+	private Color lastForeground, lastBackground, defaultForeground;
 
 	private Font lastFont;
 	private int[] extentCache;
@@ -340,7 +340,7 @@ public class Painter<X extends Number, Y extends Number> {
 		  defaultForeground = matrix.getForeground();
 		}
 		lastForeground = defaultForeground;
-		lastBackground = defaultBackground = style.background;
+		lastBackground = style.background;
 
 		gc.setForeground(lastForeground);
 		if (style.background != null) {
@@ -407,9 +407,9 @@ public class Painter<X extends Number, Y extends Number> {
 				gc.setBackground(lastBackground = background2);
 			}
 			// Needed in calculated background scenario
-			if (!background2.equals(defaultBackground)) {
+			//if (!background2.equals(defaultBackground)) {
 				gc.fillRectangle(x, y, width, height);
-			}
+			//}
 		}
 
 		int x2 = x, y2 = y;

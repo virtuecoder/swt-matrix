@@ -20,7 +20,7 @@ public class LayoutScrollTest {
     matrix.axisY.getBody().setCount(10);
     matrix.axisX.getBody().setCount(4);
     matrix.axisX.getBody().setCellWidth(0, 300);
-    Layout layout = matrix.layoutX;
+    AxisLayout layout = matrix.layoutX;
     layout.setViewportSize(300);
     layout.compute();
     assertEquals(0, layout.getScrollMin());
@@ -37,7 +37,7 @@ public class LayoutScrollTest {
     matrix.axisY.getBody().setCount(10);
     matrix.axisX.getBody().setCount(4);
     matrix.axisX.getBody().setCellWidth(0, 300);
-    Layout layout = matrix.layoutX;
+    AxisLayout layout = matrix.layoutX;
     layout.setViewportSize(300);
     layout.compute();
     
@@ -58,7 +58,7 @@ public class LayoutScrollTest {
     matrix.axisX.getBody().setCount(10);
     matrix.axisY.getBody().setCount(1);
     matrix.axisX.getBody().setDefaultCellWidth(100);
-    Layout layout = matrix.layoutX;
+    AxisLayout layout = matrix.layoutX;
     
     layout.setViewportSize(303);
     layout.compute();
@@ -84,7 +84,7 @@ public class LayoutScrollTest {
     matrix.axisY.getBody().setCount(1);
     matrix.axisX.getBody().setDefaultCellWidth(100);
     matrix.axisX.getBody().setLineWidth(3, 5);
-    Layout layout = matrix.layoutX;
+    AxisLayout layout = matrix.layoutX;
     
     layout.setViewportSize(303);
     layout.compute();

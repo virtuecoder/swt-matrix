@@ -569,9 +569,8 @@ public class S1001_CompoundExample {
   }
 
   private void afterOpen() {
-    AxisItem<BigInteger> item = AxisItem.create(bodyY, indexY0);
-    axisY.setFocusItem(AxisItem.create(bodyY, indexYY[12]));
-    axisY.showItem(item);
+    axisY.setFocusItem(bodyY, indexYY[12]);
+    axisY.showItem(AxisItem.create(bodyY, indexY0));
     highlightHeaders();
     highlightStyledText();
   }

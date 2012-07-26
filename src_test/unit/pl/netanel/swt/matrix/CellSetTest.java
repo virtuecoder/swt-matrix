@@ -17,7 +17,7 @@ import pl.netanel.util.Arrays;
 
 /**
  * ANSII graphics the best viewed with the Consolas font.
- * 
+ *
  * @author Jacek created 15-02-2011
  */
 @SuppressWarnings({"rawtypes", "unchecked"}) @RunWith(JUnit4.class) public class  CellSetTest {
@@ -32,41 +32,41 @@ import pl.netanel.util.Arrays;
 	public void _afterEach() {
 		set = null;
 	}
-	
+
 	@Test
 	public void testOfTest1() throws Exception {
 		insert(	"■■" 	,
 				"■■" 	);
 		assertEquals("[0-1, 0-1]", set.toString());
 	}
-	
+
 	@Test
 	public void testOfTest2() throws Exception {
 		insert(	"∟∟" 	,
 				"∟■" 	);
 		assertEquals("[1-1, 1-1]", set.toString());
 	}
-	
+
 	@Test
 	public void testOfTest3() throws Exception {
 		insert(	"■∟" 	,
 				"∟∟" 	);
 		assertEquals("[0-0, 0-0]", set.toString());
 	}
-	
+
 	@Test
 	public void testOfTest4() throws Exception {
 		insert(	"■∟■" );
 		assertEquals("[0-0, 0-0], [0-0, 2-2]", set.toString());
 	}
-	
+
 	@Test
 	public void testOfTest5() throws Exception {
 		set.add(1, 1, 1, 1);
-		result(	"∟∟"	, 
+		result(	"∟∟"	,
 				"∟■"	);
 	}
-	
+
 	@Test
 	public void addTheSame() throws Exception {
 		insert(	"■"		);
@@ -74,17 +74,17 @@ import pl.netanel.util.Arrays;
 		result(	"■"		);
 		count(1);
 	}
-	
+
 	@Test
 	public void addApart() throws Exception {
 		insert(	"■∟"	);
-		insert(	"∟∟"	, 
+		insert(	"∟∟"	,
 				"∟■"	);
 		result(	"■∟" 	,
 				"∟■" 	);
 		count(2);
 	}
-	
+
 	@Test
 	public void addApart2() throws Exception {
 		insert(	"■∟∟"		);
@@ -92,7 +92,7 @@ import pl.netanel.util.Arrays;
 		result(	"■∟■" );
 		count(2);
 	}
-	
+
 	@Test
 	public void addExtendAfterSimetric() throws Exception {
 		insert(	"■∟"   );
@@ -102,40 +102,40 @@ import pl.netanel.util.Arrays;
 				"■■" 	);
 		count(4);
 	}
-	
+
 	@Test
 	public void addExtendBeforeSimetric() throws Exception {
 		insert(	"∟∟" 	,
 				"∟■" 	);
 		insert(	"■■" 	,
 				"■■" 	);
-		result(	"■■" 	, 
+		result(	"■■" 	,
 				"■■" 	);
 		count(4);
 	}
-	
+
 	@Test
 	public void addInside() throws Exception {
 		insert(	"■■" 	,
 				"■■" 	);
 		insert(	"■∟" 	,
 				"∟∟" 	);
-		result(	"■■" 	, 
+		result(	"■■" 	,
 				"■■" 	);
 		count(4);
 	}
-	
+
 	@Test
 	public void addInside2() throws Exception {
 		insert( "■■" 	,
 		    	"■■" 	);
 		insert(	"∟∟" 	,
 		    	"∟■" 	);
-		result( "■■" 	, 
+		result( "■■" 	,
 		        "■■" 	);
 		count(4);
 	}
-	
+
 	@Test
 	public void addInside3() throws Exception {
 		insert( "■■■" 	,
@@ -148,7 +148,7 @@ import pl.netanel.util.Arrays;
 				"■■■" 	);
 		count(9);
 	}
-	
+
 	@Test
 	public void addOverlap() throws Exception {
 		insert(	"∟∟∟" 	,
@@ -161,7 +161,7 @@ import pl.netanel.util.Arrays;
 				"■■■" 	);
 		count(9);
 	}
-	
+
 	@Test
 	public void addCrossAfterSimetric() throws Exception {
 		insert(	"■■∟" 	,
@@ -174,7 +174,7 @@ import pl.netanel.util.Arrays;
 				"∟■■" 	);
 		count(7);
 	}
-	
+
 	@Test
 	public void addCrossBeforeSimetric() throws Exception {
 		insert( "∟∟∟" 	,
@@ -188,7 +188,7 @@ import pl.netanel.util.Arrays;
 				"∟■■" 	);
 		count(7);
 	}
-	
+
 	@Test
 	public void addCrossBeforeBig() throws Exception {
 		insert( "∟∟∟∟" 	,
@@ -205,7 +205,7 @@ import pl.netanel.util.Arrays;
 				"∟∟■■" 	);
 		count(12);
 	}
-	
+
 	@Test
 	public void addCrossLeft() throws Exception {
 		insert( "∟∟∟" 	,
@@ -219,7 +219,7 @@ import pl.netanel.util.Arrays;
 				"■∟∟" 	);
 		count(5);
 	}
-	
+
 	@Test
 	public void addCrossMiddle() throws Exception {
 		insert( "∟■∟" 	,
@@ -233,7 +233,7 @@ import pl.netanel.util.Arrays;
 				"∟■∟" 	);
 		count(5);
 	}
-	
+
 	@Test
 	public void addColumnAfter() throws Exception {
 		insert( "■" 	,
@@ -244,7 +244,7 @@ import pl.netanel.util.Arrays;
 				"■■" 	);
 		count(4);
 	}
-	
+
 	@Test
 	public void addCoumnBefore() throws Exception {
 		insert( "∟■" 	,
@@ -255,7 +255,7 @@ import pl.netanel.util.Arrays;
 				"■■" 	);
 		count(4);
 	}
-	
+
 	@Test
 	public void addRowAfter() throws Exception {
 		insert( "■■" 	,
@@ -266,7 +266,7 @@ import pl.netanel.util.Arrays;
 				"■■" 	);
 		count(4);
 	}
-	
+
 	@Test
 	public void addRowBefore() throws Exception {
 		insert( "∟∟" 	,
@@ -277,7 +277,7 @@ import pl.netanel.util.Arrays;
 				"■■" 	);
 		count(4);
 	}
-	
+
 	@Test
 	public void addAdjacentRight() throws Exception {
 		insert( "■■" 	,
@@ -287,13 +287,13 @@ import pl.netanel.util.Arrays;
 				"■■∟"	);
 		count(5);
 	}
-	
-	
-	
+
+
+
 	/*------------------------------------------------------------------------
-	 * Remove 
+	 * Remove
 	 */
-	
+
 	@Test
 	public void removeFromEmpty() throws Exception {
 		remove( "■" 	);
@@ -308,7 +308,7 @@ import pl.netanel.util.Arrays;
 		result( ""		);
 		count(0);
 	}
-	
+
 	@Test
 	public void removeNothing1() throws Exception {
 		insert( "■" 	);
@@ -316,7 +316,7 @@ import pl.netanel.util.Arrays;
 		result( "■"		);
 		count(1);
 	}
-	
+
 	@Test
 	public void removeNothing2() throws Exception {
 		insert( "∟■∟" 	);
@@ -324,7 +324,7 @@ import pl.netanel.util.Arrays;
 		result( "∟■∟"		);
 		count(1);
 	}
-	
+
 	@Test
 	public void removeTheSame2() throws Exception {
 		insert( "■■" 	,
@@ -334,7 +334,7 @@ import pl.netanel.util.Arrays;
 		result( ""		);
 		count(0);
 	}
-	
+
 	@Test
 	public void removeOverlap() throws Exception {
 		insert( "■"		);
@@ -342,7 +342,7 @@ import pl.netanel.util.Arrays;
 		result( ""		);
 		count(0);
 	}
-	
+
 	@Test
 	public void removePart1() throws Exception {
 		insert( "■■" 	,
@@ -353,7 +353,7 @@ import pl.netanel.util.Arrays;
 				"■■"	);
 		count(3);
 	}
-	
+
 	@Test
 	public void removePart2() throws Exception {
 		insert( "■■" 	,
@@ -364,7 +364,7 @@ import pl.netanel.util.Arrays;
 				"■■"	);
 		count(3);
 	}
-	
+
 	@Test
 	public void removePart3() throws Exception {
 		insert( "■■" 	,
@@ -375,7 +375,7 @@ import pl.netanel.util.Arrays;
 				"∟■"	);
 		count(3);
 	}
-	
+
 	@Test
 	public void removePart4() throws Exception {
 		insert( "■■" 	,
@@ -386,7 +386,7 @@ import pl.netanel.util.Arrays;
 				"■∟"	);
 		count(3);
 	}
-	
+
 	@Test
 	public void removeCrossing() throws Exception {
 		insert( "■■" 	,
@@ -398,7 +398,7 @@ import pl.netanel.util.Arrays;
 				"■∟"	);
 		count(3);
 	}
-	
+
 	@Test
 	public void removeInside1() throws Exception {
 		insert( "■■■" );
@@ -406,7 +406,7 @@ import pl.netanel.util.Arrays;
 		result( "■∟■"	);
 		count(2);
 	}
-	
+
 	@Test
 	public void removeInside2() throws Exception {
 		insert( "■■■" ,
@@ -420,7 +420,7 @@ import pl.netanel.util.Arrays;
 				"■■■"	);
 		count(8);
 	}
-	
+
 	@Test
 	public void removeCrossMiddle() throws Exception {
 		insert( "∟■∟" ,
@@ -434,7 +434,7 @@ import pl.netanel.util.Arrays;
 				"∟■∟"	);
 		count(4);
 	}
-	
+
 	@Test
 	public void removeCorner() throws Exception {
 		insert( "∟■■" ,
@@ -446,7 +446,7 @@ import pl.netanel.util.Arrays;
 				"∟∟■"	);
 		count(3);
 	}
-	
+
 	@Test
 	public void removeCorner1() throws Exception {
 		insert( "■■" 	,
@@ -456,7 +456,7 @@ import pl.netanel.util.Arrays;
 		result( "■∟"	,
 				"∟∟"	);
 	}
-	
+
 	@Test
 	public void removeCorner2() throws Exception {
 		set.add(2, 3, 0, 2);
@@ -466,32 +466,32 @@ import pl.netanel.util.Arrays;
 				"∟∟∟■" 	);
 		count(5);
 	}
-	
+
 //	@Test
 //	public void subsetEmpty() throws Exception {
 //		insert( "∟■" ,
 //				"■■"	);
 //		subset(0, 0, 0, 0, "");
 //	}
-//	
+//
 //	@Test
 //	public void subsetTheSame() throws Exception {
 //		insert( "∟■" ,
 //				"■■"	);
-//		subset(0, 1, 0, 1, 
+//		subset(0, 1, 0, 1,
 //				"∟■" ,
 //				"■■"	);
 //	}
-//	
+//
 //	@Test
 //	public void subsetMore() throws Exception {
 //		insert( "∟■" ,
 //				"■■"	);
-//		subset(0, 10, 0, 10, 
+//		subset(0, 10, 0, 10,
 //				"∟■" ,
 //				"■■"	);
 //	}
-//	
+//
 //	@Test
 //	public void subset() throws Exception {
 //		insert( "∟■∟" ,
@@ -501,25 +501,25 @@ import pl.netanel.util.Arrays;
 //				"∟■" ,
 //				"■■");
 //	}
-	
+
 	@Test
 	public void cellSequenceEmpty() throws Exception {
 		assertInSequence("");
 	}
-	
+
 	@Test
 	public void cellSequenceSingle() throws Exception {
 		insert( "■" );
 		assertInSequence("0:0");
 	}
-	
+
 	@Test
 	public void cellSequence() throws Exception {
 		insert( "∟■"   ,
 				"■■"	);
 		assertInSequence("0:1, 1:0, 1:1");
 	}
-	
+
 	@Test
 	public void cellSequence2() throws Exception {
 		insert( "■■"   ,
@@ -529,15 +529,15 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void getExtentEmpty() throws Exception {
-		assertExtent(0, 0, 0, 0);
+		assertEquals(null, set.getExtent());
 	}
-	
+
 	@Test
 	public void getExtentOne() throws Exception {
 		insert( "∟■" );
 		assertExtent(0, 0, 1, 1);
 	}
-	
+
 	@Test
 	public void getExtent() throws Exception {
 		insert( "∟■∟"	,
@@ -545,16 +545,16 @@ import pl.netanel.util.Arrays;
 				"∟■∟"	);
 		assertExtent(0, 2, 0, 2);
 	}
-	
+
 	private void assertExtent(int startY, int endY, int startX, int endX) {
 		CellExtent e = set.getExtent();
-		assertEquals(startY + " " + endY + " " + startX + " " + endX, 
+		assertEquals(startY + " " + endY + " " + startX + " " + endX,
 				e.startY + " " + e.endY + " " + e.startX + " " + e.endX);
 	}
-	
+
 	private void assertInSequence(String expected) {
 		String[] cells = expected.split(", "); if (cells[0].equals("")) cells = new String[0];
-		
+
 		NumberPairSequence seq = new NumberPairSequence(set);
 		int count = 0;
 		for (seq.init(); seq.next(); count++) {
@@ -563,8 +563,8 @@ import pl.netanel.util.Arrays;
 		}
 		assertEquals("Wrong count, ", cells.length, count);
 	}
-	
-	
+
+
 //	@Ignore
 //	@Test
 //	public void apply() throws Exception {
@@ -572,7 +572,7 @@ import pl.netanel.util.Arrays;
 //		int[][] data = new int[] [] {
 //				new int[] {0, 2, 2, 3},
 //				new int[] {4, 2, 2, 0}};
-//		
+//
 //		int len = data.length;
 //		for (int i = 0; i < len; i++) {
 ////			Index startY = number(random.nextInt(5));
@@ -591,14 +591,14 @@ import pl.netanel.util.Arrays;
 //			assertTrue("Number of items should not be more then 25", set.size() <= 25);
 //		}
 //	}
-	
+
 //	private void subset(int startY, int endY, int startX, int endX, String ...expected) {
 //		Math f = IntMath.getInstance();
 //		CellSet subset = new CellSet(f, f);
 //		set.subset(startY, endY, startX, endX, subset);
 //		result(subset, expected);
 //	}
-	
+
 	private void count(int i) {
 		assertEquals("Wrong count for: "+set, i, set.getCount().intValue());
 	}
@@ -606,25 +606,25 @@ import pl.netanel.util.Arrays;
 	void add(int startY, int endY, int startX, int endX) {
 		set.add(startX, endX, startY, endY);
 	}
-	
+
 	private void insert(String ...lines) {
 		operation(true, lines);
 	}
-	
+
 	private void remove(String ...lines) {
 		operation(false, lines);
 	}
-	
+
 	private void operation(boolean insert, String ...lines) {
 		for (int i = 0; i < lines.length; i++) {
 			String s = lines[i];
 			int startX = -1, endX = -1, x1 = -1, x2 = -1;
-			
+
 			// Find the block on x axis
 			while (endX < s.length() - 1) {
 				startX = s.indexOf('■', endX + 1);
 				if (startX == -1) break;
-				endX = s.indexOf('∟', startX) - 1; 
+				endX = s.indexOf('∟', startX) - 1;
 				if (endX < 0) endX = s.length() - 1;
 
 				int j = i+1;
@@ -632,7 +632,7 @@ import pl.netanel.util.Arrays;
 					String s2 = lines[j];
 					x1 = s2.indexOf('■', x1);
 					if (x1 != startX) break;
-					x2 = s2.indexOf('∟', x1) - 1; 
+					x2 = s2.indexOf('∟', x1) - 1;
 					if (x2 < 0) x2 = s2.length() - 1;
 					if (x2 != endX) break;
 				}
@@ -646,10 +646,10 @@ import pl.netanel.util.Arrays;
 			int endX) {
 		if (insert)
 			set.add(startX, endX, startY, endY);
-		else 
+		else
 			set.remove(startX, endX, startY, endY);
 	}
-	
+
 	private void result(String ...expected) {
 		result(set, expected);
 	}
@@ -657,7 +657,7 @@ import pl.netanel.util.Arrays;
 		ArrayList<ArrayList<Boolean>> data = new ArrayList<ArrayList<Boolean>>();
 		int size = set.itemsY.size();
 		int max = 0;
-		
+
 		for (int i = 0; i < size; i++) {
 		  MutableExtent itemX = (MutableExtent) set.itemsX.get(i);
 			MutableExtent itemY = (MutableExtent) set.itemsY.get(i);
@@ -665,7 +665,7 @@ import pl.netanel.util.Arrays;
 				ArrayList<Boolean> line;
 				if (j >= data.size()) {
 					data.add(line = new ArrayList<Boolean>());
-				}	
+				}
 				if (j < itemY.start.intValue()) {
 					continue;
 				} else {
@@ -679,7 +679,7 @@ import pl.netanel.util.Arrays;
 						if (k >= line.size()) {
 							line.add(false);
 						}
-					} 
+					}
 					else {
 						if (k >= line.size()) {
 							line.add(true);

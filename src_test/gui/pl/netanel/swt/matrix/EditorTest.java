@@ -146,7 +146,6 @@ public class  EditorTest extends SwtTestCase {
     //listenToAll(matrix);
     
     processEvents();
-    show();
 //    press(SWT.CTRL, 'c');
 //    press(SWT.CTRL, 'v');
   }

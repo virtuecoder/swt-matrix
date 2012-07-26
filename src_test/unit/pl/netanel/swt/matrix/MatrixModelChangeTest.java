@@ -12,7 +12,7 @@ import org.junit.runners.JUnit4;
 	public void insert() throws Exception {
 		Matrix matrix = new Matrix(new Shell(), SWT.NONE);
 		Axis axis = matrix.getAxisY();
-		Layout layout = axis.layout;
+		AxisLayout layout = axis.layout;
 		layout.setViewportSize(1000);
 		
 		Section section = axis.getBody();

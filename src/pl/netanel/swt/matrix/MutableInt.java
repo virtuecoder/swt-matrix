@@ -128,6 +128,10 @@ class MutableInt extends MutableNumber<Integer> {
 	MutableNumber<Integer> min(MutableNumber<Integer> n) {
 		return value <= n.intValue() ? this : n; 
 	}
+	@Override
+	MutableNumber<Integer> max(MutableNumber<Integer> n) {
+	  return value >= n.intValue() ? this : n; 
+	}
 
 
 	@Override
@@ -137,7 +141,7 @@ class MutableInt extends MutableNumber<Integer> {
 	}
 
   @Override long longValue() {
-    return (long) value;
+    return value;
   }
 
 }

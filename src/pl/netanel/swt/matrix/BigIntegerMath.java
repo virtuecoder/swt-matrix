@@ -21,7 +21,7 @@ class BigIntegerMath extends Math<BigInteger> {
 	public MutableBigInteger create(BigInteger n) {
 		return new MutableBigInteger(n);
 	}
-	
+
 	@Override
 	public MutableBigInteger create(MutableNumber<BigInteger> mn) {
 		return new MutableBigInteger(mn.toBigInteger());
@@ -37,22 +37,23 @@ class BigIntegerMath extends Math<BigInteger> {
 	public BigInteger ONE_VALUE() {
 		return BigInteger.ONE;
 	}
-	
+
 	@Override
 	public MutableBigInteger ZERO() {
 		return ZERO;
 	}
-	
+
 	@Override
 	public MutableBigInteger ONE() {
 		return ONE;
 	}
-	
-	public int compare(BigInteger x, BigInteger y) {
+
+	@Override
+  public int compare(BigInteger x, BigInteger y) {
 		return x.compareTo(y);
 //		return ((BigInteger) x).compareTo((BigInteger) y);
 	}
-	
+
 //	@Override
 //	public int compare(BigIntger x, Number y) {
 //		return ((BigInteger) getValue(x)).compareTo(((BigInteger) getValue(y)));
@@ -73,10 +74,15 @@ class BigIntegerMath extends Math<BigInteger> {
 	public BigInteger subtract(Number x, Number y) {
 		return ((BigInteger) x).subtract((BigInteger) y);
 	}
-	
+
 	@Override
 	public BigInteger add(Number x, Number y) {
 		return ((BigInteger) x).add((BigInteger) y);
+	}
+
+	@Override
+	public BigInteger negate(Number n) {
+	  return ((BigInteger) n).negate();
 	}
 
 	@Override

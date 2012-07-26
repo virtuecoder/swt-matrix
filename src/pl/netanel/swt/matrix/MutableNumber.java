@@ -26,6 +26,7 @@ abstract class MutableNumber<N extends Number> {
 	
 	abstract int compareTo(N n);
 	abstract MutableNumber<N> min(MutableNumber<N> n);
+	abstract MutableNumber<N> max(MutableNumber<N> n);
 
 	abstract int intValue();
 	abstract long longValue();

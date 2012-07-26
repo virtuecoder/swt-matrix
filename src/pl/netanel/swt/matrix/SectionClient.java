@@ -15,7 +15,7 @@ class SectionClient<N extends Number> implements Section<N> {
 
   /**
    * Constructs a section indexed by the given sub-class of {@link Number}.
-   * 
+   *
    * @param numberClass defines the class used for indexing
    */
   public SectionClient(Class<N> numberClass) {
@@ -60,25 +60,25 @@ class SectionClient<N extends Number> implements Section<N> {
   @Override public Class<N> getIndexClass() {
     return core.getIndexClass();
   };
-	
+
 	/**
 	 * Specifies the number of section items.
-	 * 
+	 *
 	 * @param count the new count of the receiver's items
 	 * @see #getCount()
 	 */
 	@Override public void setCount(N count) {
 	  Preconditions.checkNotNullWithName(count, "count");
-	  Preconditions.checkArgument(core.math.compare(count, core.math.ZERO_VALUE()) >= 0, 
+	  Preconditions.checkArgument(core.math.compare(count, core.math.ZERO_VALUE()) >= 0,
 	    "count must be lower then 0");
 		core.setCount(count);
 	}
 
-	
+
 
   /**
 	 * Returns the number of sections items.
-	 * 
+	 *
 	 * @return the number of sections items.
 	 * @see #setCount(Number)
 	 */
@@ -89,7 +89,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	/**
 	 * Returns <code>true</code> if the receiver contains contains no items.
 	 * Otherwise <code>false</code> is returned.
-	 * 
+	 *
 	 * @return <code>true</code> if the receiver contains contains no items
 	 */
 	@Override public boolean isEmpty() {
@@ -103,7 +103,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	/**
 	 * Marks the receiver as visible if the argument is <code>true</code>, and
 	 * marks it invisible otherwise.
-	 * 
+	 *
 	 * @param visible the new visibility state
 	 */
 	@Override public void setVisible(boolean visible) {
@@ -113,7 +113,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	/**
 	 * Returns <code>true</code> if the receiver is visible. Otherwise,
 	 * <code>false</code> is returned.
-	 * 
+	 *
 	 * @return the receiver's visibility state
 	 */
 	@Override public boolean isVisible() {
@@ -123,7 +123,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	/**
 	 * Enables current item navigation in the receiver if the argument is
 	 * <code>true</code>, and disables it invisible otherwise.
-	 * 
+	 *
 	 * @param enabled
 	 *            the new visibility state
 	 */
@@ -134,28 +134,28 @@ class SectionClient<N extends Number> implements Section<N> {
 	/**
 	 * Returns <code>true</code> if the current item navigation is enabled in
 	 * the receiver. Otherwise, <code>false</code> is returned.
-	 * 
+	 *
 	 * @return the receiver's visibility state
 	 */
 	@Override public boolean isFocusItemEnabled() {
 		return core.isFocusItemEnabled();
 	}
 
-	
+
 	/*------------------------------------------------------------------------
-	 * Default values 
+	 * Default values
 	 */
 
 	@Override public void setDefaultCellWidth(int width) {
 		if (width < 0) return;
-		Preconditions.checkArgument(core.axis.getMinimalCellWidth() <= width, 
-		  "Default cell width cannot be lower then the minimal cell width of the axis"); 
+		Preconditions.checkArgument(core.axis.getMinimalCellWidth() <= width,
+		  "Default cell width cannot be lower then the minimal cell width of the axis");
 		core.setDefaultCellWidth(width);
 	}
 
 	/**
 	 * Returns the default cell width of the receiver's items.
-	 * 
+	 *
 	 * @return default width of cells in this section.
 	 */
 	@Override public int getDefaultCellWidth() {
@@ -196,7 +196,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	}
 
 	/*------------------------------------------------------------------------
-	 * Item properties 
+	 * Item properties
 	 */
 
 	@Override public void setLineWidth(N start, N end, int width) {
@@ -204,10 +204,10 @@ class SectionClient<N extends Number> implements Section<N> {
 		checkRange(start, end, core.math.increment(core.count));
 		core.setLineWidth(start, end, width);
 	}
-	
+
   @Override public void setLineWidth(N index, int width) {
     if (width < 0) return;
-    checkLineIndex(index, "index");    
+    checkLineIndex(index, "index");
     core.setLineWidth(index, width);
   }
 
@@ -226,7 +226,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	  checkCellIndex(index, "index");
     core.setCellWidth(index);
   }
-	
+
 	@Override public int getCellWidth(N index) {
 		checkCellIndex(index, "index");
 		return core.getCellWidth(index);
@@ -236,7 +236,7 @@ class SectionClient<N extends Number> implements Section<N> {
 		checkRange(start, end, core.count);
 		core.setMoveable(start, end, enabled);
 	}
-	
+
   @Override public void setMoveable(N index, boolean enabled) {
     checkCellIndex(index, "index");
     core.setMoveable(index, enabled);
@@ -268,7 +268,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	}
 
 	/*------------------------------------------------------------------------
-	 * Hiding 
+	 * Hiding
 	 */
 
 
@@ -296,12 +296,12 @@ class SectionClient<N extends Number> implements Section<N> {
 	}
 
 
-	
+
 	/*------------------------------------------------------------------------
-	 * Selection 
+	 * Selection
 	 */
 
-	
+
 	@Override public void setSelected(N start, N end, boolean state) {
 		checkRange(start, end, core.count);
 		core.setSelected(start, end, state);
@@ -310,7 +310,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	@Override public void setSelected(boolean state) {
     core.setSelected(state);
   }
-	
+
 	@Override public boolean isSelected(N index) {
 		checkCellIndex(index, "index");
 		return core.isSelected(index);
@@ -355,7 +355,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	}
 
 	/*------------------------------------------------------------------------
-	 * Moving 
+	 * Moving
 	 */
 
 	@Override public void setOrder(N start, N end, N target) {
@@ -363,39 +363,39 @@ class SectionClient<N extends Number> implements Section<N> {
 		checkLineIndex(target, "target");
 		core.setOrder(start, end, target);
 	}
-	
+
 	@Override public void setOrder(N index, N target) {
 	  checkCellIndex(index, "index");
 	  checkLineIndex(target, "target");
 	  core.setOrder(index, index, target);
 	}
-	
+
 	@Override public void setOrder(Iterator<N> iterator) {
-	  @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     ArrayList<MutableExtent<N>> copy = (ArrayList<MutableExtent<N>>) core.order.items.clone();
-    
+
 	  core.setOrder(iterator);
-    
+
     MutableNumber<N> iteratorCount = core.order.getCount();
     if (core.math.compare(iteratorCount, core.getCount()) != 0) {
       core.order.items = copy;
       throw new IllegalArgumentException(MessageFormat.format(
-        "The number of items in the iterator {0} must be equal to the item count of the section {1}", 
+        "The number of items in the iterator {0} must be equal to the item count of the section {1}",
         iteratorCount, core.getCount()));
     }
   }
-  
+
   @Override public void setOrderExtents(Iterator<Extent<N>> iterator) {
     @SuppressWarnings("unchecked")
     ArrayList<MutableExtent<N>> copy = (ArrayList<MutableExtent<N>>) core.order.items.clone();
-    
+
     core.setOrderExtents(iterator);
-    
+
     MutableNumber<N> iteratorCount = core.order.getCount();
     if (core.math.compare(iteratorCount, core.getCount()) != 0) {
       core.order.items = copy;
       throw new IllegalArgumentException(MessageFormat.format(
-        "The number of items in the iterator {0} must be equal to the item count of the section {1}", 
+        "The number of items in the iterator {0} must be equal to the item count of the section {1}",
         iteratorCount, core.getCount()));
     }
   }
@@ -404,7 +404,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	  checkCellIndex(index, "index");
 	  return core.getOrder(index);
 	}
-	
+
 	@Override public Iterator<N> getOrder() {
     return core.getOrder();
   }
@@ -452,7 +452,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	}
 
 	/*------------------------------------------------------------------------
-	 * Non public methods 
+	 * Non public methods
 	 */
 
 	 @Override public void insert(N target, N count) {
@@ -469,7 +469,7 @@ class SectionClient<N extends Number> implements Section<N> {
   /**
    * Checks the validity of the given cell index using the name to indicate
    * which parameter is wrong.
-   * 
+   *
    * @param index index to validate
    * @param name indicates the parameter
    * @throws IllegalArgumentException if the index is lower the 0 or greater
@@ -482,7 +482,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	 /**
    * Checks the validity of the given line index using the name to indicate
    * which parameter is wrong.
-   * 
+   *
    * @param index index to validate
    * @param name indicates the parameter
    * @throws IllegalArgumentException if the index is lower the 0 or greater
@@ -494,6 +494,10 @@ class SectionClient<N extends Number> implements Section<N> {
 
 	protected void checkRange(N start, N end, N limit) {
 		core.checkRange(start, end, limit);
-	};
-	
+	}
+
+  public boolean isMerged(N index) {
+    return false;
+  };
+
 }

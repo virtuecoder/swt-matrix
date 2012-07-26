@@ -89,13 +89,13 @@ class MutableBigInteger extends MutableNumber<BigInteger> {
 	
 	@Override
 	MutableBigInteger add(BigInteger n) {
-		value = value.add((BigInteger) n);
+		value = value.add(n);
 		return this;
 	}
 
 	@Override
 	MutableBigInteger subtract(BigInteger n) {
-		value = value.subtract((BigInteger) n);
+		value = value.subtract(n);
 		return this;
 	}
 
@@ -125,6 +125,10 @@ class MutableBigInteger extends MutableNumber<BigInteger> {
 	@Override
 	MutableNumber<BigInteger> min(MutableNumber<BigInteger> n) {
 		return value.compareTo(n.toBigInteger()) <= 0 ? this : n; 
+	}
+	@Override
+	MutableNumber<BigInteger> max(MutableNumber<BigInteger> n) {
+	  return value.compareTo(n.toBigInteger()) >= 0 ? this : n; 
 	}
 
 	@Override
