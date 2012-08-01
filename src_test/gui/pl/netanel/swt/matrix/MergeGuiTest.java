@@ -48,10 +48,11 @@ public class MergeGuiTest
     body.setMerged(0, 3, 0, 3);
     body.setMerged(6, 3, 6, 3);
     body.getSectionX().setOrder(2, 2, 1);
+    matrix.refresh();
     body.getSectionY().setOrder(7, 7, 2);
     matrix.refresh();
     dragAndDrop(body.getCellBounds(2, 2), body.getCellBounds(3, 3));
     assertTrue(body.isSelected(3, 3));
-    assertTrue(body.isSelected(3, 0));
+    assertFalse(body.isSelected(3, 0));
   }
 }

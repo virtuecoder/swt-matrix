@@ -41,11 +41,11 @@ public class PainterTest extends SwtTestCase {
         gc.setAdvanced(true);
         if (gc.getAdvanced()) gc.setAlpha(127);
         matrixWidth = matrix.getClientArea().width;
-        
+
         // Get the focus item
         Axis axisY = matrix.getAxisY();
         focusItem = axisY.getFocusItem();
-        
+
         return true;
       }
 
@@ -60,7 +60,7 @@ public class PainterTest extends SwtTestCase {
           isCurrent = body.getSectionY().equals(focusItem.getSection())
             && indexY.equals(focusItem.getIndex());
         }
-      
+
       @Override
       public void paint(int x, int y, int width, int height) {
         if (isCurrent) {
@@ -150,7 +150,7 @@ public class PainterTest extends SwtTestCase {
     });
     return image;
   }
-  
+
   static class TestPainter extends Painter {
     Painter painter;
 
@@ -188,11 +188,11 @@ public class PainterTest extends SwtTestCase {
     public void setupSpatial(Number indexX, Number indexY) {
       painter.setupSpatial(indexX, indexY);
     }
-    
+
     public void test(int x, int y, int width, int height) {
       painter.paint(x, y, width, height);
     }
-    
+
     @Override
     public void setData(Object data) {
       painter.setData(data);

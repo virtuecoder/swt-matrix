@@ -240,12 +240,14 @@ public class Painter<X extends Number, Y extends Number> {
 	ZoneCore<X, Y> zone;
 	Rectangle zoneBounds;
 
+	protected Point textSize;
+
 	private Color lastForeground, lastBackground, defaultForeground;
 
 	private Font lastFont;
 	private int[] extentCache;
 	private Point extent;
-  private TextLayout textLayout;
+  protected TextLayout textLayout;
   Rectangle clipping;
   private Object data;
 
@@ -352,6 +354,8 @@ public class Painter<X extends Number, Y extends Number> {
     gc.setFont(font);
 		extentCache = FontWidthCache.get(gc, font);
 		extent = new Point(-1, gc.stringExtent("ty").y);
+		textSize = new Point(-1, extent.y);
+		textLayout = new TextLayout(gc.getDevice());
 		clipping = gc.getClipping();
 		return true;
 	}
@@ -363,6 +367,7 @@ public class Painter<X extends Number, Y extends Number> {
 	 * @see <code>init()</code>
 	 */
 	public void clean() {
+	  if (textLayout != null) textLayout.dispose();
 	  //gc.setClipping(clipping);
 	}
 
@@ -447,59 +452,38 @@ public class Painter<X extends Number, Y extends Number> {
 		  if (fontChange) {
 		    Font font = style.font == null ? matrix.getDisplay().getSystemFont() : style.font;
         gc.setFont(font);
+        if (style.hasWordWraping) {
+          textLayout.setFont(gc.getFont());
+        }
 		    extentCache = FontWidthCache.get(gc, font);
 		    lastFont = font;
 		  }
 
-		  if (!style.hasWordWraping) {
-		    // Compute extent only when font changes or text horizontal align is center or right
-//		    if (fontChange ||
-//          Arrays.contains(EXTENT_ALIGN, style.textAlignX)) {
-//          extent = gc.stringExtent(text);
-//        }
-        extent = gc.stringExtent(text);
-
-		    if (style.textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
-//		      text = shortenTextMiddle(text, width - style.textMarginX * 2);
-		      text = FontWidthCache.shortenTextMiddle(
-		        text, width - style.textMarginX * 2, extent, extentCache);
-		    }
-//		    else if (style.textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
-//		      text = FontWidthCache.shortenTextEnd(
-//		        text, width - style.textMarginX * 2, extent, extentCache);
-//		    }
-		  }
+		  textSize.x = width - 2 * style.textMarginX;
+		  textSize.y = height - 2 * style.textMarginY;
+		  clipText();
 
 		  switch (style.textAlignX) {
       case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP:
         x3 += style.textMarginX; break;
       case SWT.CENTER:
-        x3 += (width - extent.x) / 2; break;
+        x3 += (width - textSize.x) / 2; break;
       case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
-        x3 += width - extent.x - style.textMarginX; break;
+        x3 += width - textSize.x - style.textMarginX; break;
       }
       switch (style.textAlignY) {
       case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
         y3 += style.textMarginY; break;
       case SWT.CENTER:
-        y3 += (height - extent.y) / 2; break;
+        y3 += (height - textSize.y) / 2; break;
       case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
-        y3 += height - extent.y - style.textMarginY; break;
+        y3 += height - textSize.y - style.textMarginY; break;
       }
 
 		  if (style.hasWordWraping) {
-		    if (textLayout == null) {
-		      textLayout = new TextLayout(gc.getDevice());
-		      getMatrix().addDisposeListener(new DisposeListener() {
-		        @Override public void widgetDisposed(DisposeEvent e) {
-		          textLayout.dispose();
-		        }
-		      });
-		    }
-		    textLayout.setFont(gc.getFont());
 		    textLayout.setText(text);
 		    textLayout.setAlignment(style.textAlignX);
-		    textLayout.setWidth(width < 1 ? 1 : width - style.textMarginX);
+		    textLayout.setWidth(width < 1 ? 1 : textSize.x);
 
 //		    Rectangle clipping2 = gc.getClipping();
 		    textLayout.draw(gc, x3, y3);
@@ -519,43 +503,80 @@ public class Painter<X extends Number, Y extends Number> {
 		}
 	}
 
-	public String shortenTextMiddle(String s, int width) {
-    if (s == null) return s;
+	/**
+  * Called by paint method to adjust the text to be painted
+  * in case the text does not fit the allotted area.
+  * <p>
+  * The size of allotted area for text is contained in <code>textSize</code>field.
+  * After the method determines new text to display it should modify the textSize properties
+  * to match the size of the new text. It is needed for text alignment other then {@link SWT.LEFT}.
+  */
+  protected void clipText() {
+    extent = gc.stringExtent(text);
+    if (!style.hasWordWraping) {
+      // Compute extent only when font changes or text horizontal align is center or right
+//		    if (fontChange ||
+//          Arrays.contains(EXTENT_ALIGN, style.textAlignX)) {
+//          extent = gc.stringExtent(text);
+//        }
 
-    int len = s.length();
-    int w = 0;
-    int i = 0;
-    if (extent.x > width) {
-      int dot = gc.stringExtent(".").x;
-      int dot2 = gc.stringExtent("..").x;
-      int pivot = i / 2;
-      int pos1 = pivot;
-      int pos2 = len - pivot;
-      int len1 = gc.stringExtent(s.substring(0, pos1)).x;
-      int len2 = gc.stringExtent(s.substring(pos2, len)).x;
-      int last = len - 1;
-      while (pos1 > 0 && pos2 < last) {
-        if ((w = len1 + dot2 + len2) <= width) break;
-        else if (pos1 <= 1 && (w = len1 + dot2) <= width) {
-          pos2 = len; break;
-        }
-        int w2 = gc.stringExtent(Character.toString(s.charAt(--pos1))).x;
-        len1 -= w2;
-        if (w - w2 > width) {
-          len2 -= gc.stringExtent(Character.toString(s.charAt(++pos2))).x;
-        }
+      if (style.textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
+//		      text = shortenTextMiddle(text, width - style.textMarginX * 2);
+        text = FontWidthCache.shortenTextMiddle(
+          text, textSize.x, extent, extentCache);
       }
-      if (w <= width) {
-        s = s.substring(0, pos1) + ".." + s.substring(pos2, len);
-      }
-      else {
-        w = dot2 <= width ? dot2 : dot <= width ? dot : 0;
-        s = dot2 <= width ? ".." : dot <= width ? "." : "";
-      }
+      textSize.x = extent.x;
+//		    else if (style.textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
+//		      text = FontWidthCache.shortenTextEnd(
+//		        text, width - style.textMarginX * 2, extent, extentCache);
+//		    }
     }
-    extent.x = w;
-    return s;
+    else {
+//      int spacing = textLayout.getSpacing();
+//      int lineCount = (textSize.y + spacing) / (extent.y + spacing) ;
+//      text = FontWidthCache.shortenTextMiddle(
+//          text, textSize.x, lineCount, extent, extentCache);
+      textLayout.setText(text);
+    }
   }
+
+//	public String shortenTextMiddle(String s, int width) {
+//    if (s == null) return s;
+//
+//    int len = s.length();
+//    int w = 0;
+//    int i = 0;
+//    if (extent.x > width) {
+//      int dot = gc.stringExtent(".").x;
+//      int dot2 = gc.stringExtent("..").x;
+//      int pivot = i / 2;
+//      int pos1 = pivot;
+//      int pos2 = len - pivot;
+//      int len1 = gc.stringExtent(s.substring(0, pos1)).x;
+//      int len2 = gc.stringExtent(s.substring(pos2, len)).x;
+//      int last = len - 1;
+//      while (pos1 > 0 && pos2 < last) {
+//        if ((w = len1 + dot2 + len2) <= width) break;
+//        else if (pos1 <= 1 && (w = len1 + dot2) <= width) {
+//          pos2 = len; break;
+//        }
+//        int w2 = gc.stringExtent(Character.toString(s.charAt(--pos1))).x;
+//        len1 -= w2;
+//        if (w - w2 > width) {
+//          len2 -= gc.stringExtent(Character.toString(s.charAt(++pos2))).x;
+//        }
+//      }
+//      if (w <= width) {
+//        s = s.substring(0, pos1) + ".." + s.substring(pos2, len);
+//      }
+//      else {
+//        w = dot2 <= width ? dot2 : dot <= width ? dot : 0;
+//        s = dot2 <= width ? ".." : dot <= width ? "." : "";
+//      }
+//    }
+//    extent.x = w;
+//    return s;
+//  }
 
 
 	/**

@@ -3,7 +3,6 @@
 	<classpathentry excluding="pl/netanel/swt/matrix/custom/MatrixDropTargetEffect.java|pl/netanel/swt/matrix/MatrixDragSourceEffect.java" kind="src" path="src"/>
 	<classpathentry kind="src" path="src_demo"/>
 	<classpathentry kind="src" path="src_test/unit"/>
-	<classpathentry kind="src" path="src_test/spec"/>
 	<classpathentry kind="src" path="src_test/gui"/>
 	<classpathentry kind="src" path="website"/>
 	<classpathentry kind="var" path="ECLIPSE_SWT" sourcepath="/ECLIPSE_HOME/plugins/org.eclipse.swt.win32.win32.x86.source_3.7.0.v3735b.jar"/>

@@ -15,9 +15,9 @@ class FontWidthCache {
         97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,
         115,116,117,118,119,120,121,122,123,124,125,126,211,243,260,261,262,
         263,280,281,321,322,323,324,346,347,377,378,379,380,8364,61440,61441};
-	
+
 	static HashMap<Font, int[]> cache = new HashMap<Font, int[]>();
-	
+
 	public static int[] get(GC gc, Font font) {
 		int[] a = cache.get(font);
 		if (a == null) {
@@ -29,7 +29,7 @@ class FontWidthCache {
 		}
 		return a;
 	}
-	
+
 	public static int getWidth(String s, GC gc, int[] cache) {
 		int extent = 0;
 		for (int i = 0; i < s.length(); i++) {
@@ -43,11 +43,11 @@ class FontWidthCache {
 		}
 		return extent;
 	}
-	
+
 	// TODO unit test it!
 	public static String shortenTextMiddle(String s, int width, Point extent, int[] cache) {
 		if (s == null) return s;
-		
+
 		int len = s.length();
 		int w = 0;
 		int i = 0;
@@ -65,8 +65,8 @@ class FontWidthCache {
 			int last = len - 1;
 			while (pos1 > 0 && pos2 < last) {
 				if ((w = len1 + dot2 + len2) <= width) break;
-				else if (pos1 <= 1 && (w = len1 + dot2) <= width) { 
-					pos2 = len; break; 
+				else if (pos1 <= 1 && (w = len1 + dot2) <= width) {
+					pos2 = len; break;
 				}
 				int w2 = cache[s.charAt(--pos1)];
         len1 -= w2;
@@ -86,6 +86,59 @@ class FontWidthCache {
 		return s;
 	}
 
+	public static String shortenTextMiddle(String s, int width, int lineCount, Point extent, int[] cache) {
+	  if (s == null) return s;
+
+	  int len = s.length();
+	  boolean isEven = lineCount % 2 == 0;
+	  int dotLine = (lineCount - 1) / 2;
+	  StringBuilder sb = new StringBuilder();
+
+	  // Fill lines before dot line
+	  int iBefore = 0;
+	  for (int line = 0; line < dotLine; line++) {
+	    int w = 0;
+	    while (iBefore < len) {
+	      char c = s.charAt(iBefore);
+	      int w2 = w + cache[c];
+	      if (w2 > width) break;
+        w = w2;
+        iBefore++;
+	    }
+    }
+
+	  // Fill lines after dot line
+	  int iAfter = s.length()-1;
+    for (int line = lineCount-1; line > dotLine; line--) {
+      int w = 0;
+      while (iAfter > iBefore) {
+        char c = s.charAt(iAfter);
+        int w2 = w + cache[c];
+        if (w2 > width) break;
+        w = w2;
+        iAfter--;
+      }
+    }
+
+    if (iBefore < iAfter) {
+      iAfter++;
+      sb.append(s.substring(0, iBefore));
+
+      if (isEven) {
+        sb.append(shortenTextEnd(s.substring(iBefore, iAfter), width, extent, cache));
+      }
+      else {
+        sb.append(shortenTextMiddle(s.substring(iBefore, iAfter), width, extent, cache));
+      }
+
+      sb.append(s.substring(iAfter));
+      return sb.toString();
+    }
+    else {
+      return s;
+    }
+	}
+
 	public static String shortenTextEnd(String s, int width, Point extent, int[] cache) {
 		int len = s.length();
 		if (len < 2) return s;
@@ -94,20 +147,23 @@ class FontWidthCache {
 		while (i < len && w <= width) {
 			w += cache[s.charAt(i++)];
 		}
-//		int dot = cache['.'];
-//		if (width < dot * 2) return s.substring(0, 1);
-//		if (i < len-- || w > width) {
-//			int dots3 = dot * 3;
-//			int dots = width < 2 * dot ? dot ?
-//			while (dots < width && dots < dots3) dots += dot;
-//			width -= dots;
-//			do {
-//				w -= cache[s.charAt(len--)];
-//			} 
-//			while (w > width && len > 1);
-//			w += dots;
-//		}
-//		extent.x = w;
+		if (i < len || w > width) {
+		  int dot = cache['.'];
+      int dot2 = 2 * dot;
+      int w2 = 0;
+      while(i-- >= 0) {
+        w2 += cache[s.charAt(i)];
+        if (w2 >= dot2) break;
+      }
+      w -= w2;
+
+      s = s.substring(0, i) + (
+//          w + dot3 <= width ? "..." :
+          w + dot2 <= width ? ".." :
+          w + dot <= width ? "." : "");
+		}
+
+		extent.x = w;
 		return s;
 	}
 
