@@ -1,3 +1,4 @@
+Painter cache for shortenned text
 Zone.addControlListener to get notification when an item is resized or moved.
 Move selection logic from listener to section. Section.setSelected should highlight the cells in matrix.
 Fix drag and drop of a group of items just before or after one of the selected one.

@@ -126,6 +126,7 @@ class FontWidthCache {
 
       if (isEven) {
         sb.append(shortenTextEnd(s.substring(iBefore, iAfter), width, extent, cache));
+        sb.append("\n");
       }
       else {
         sb.append(shortenTextMiddle(s.substring(iBefore, iAfter), width, extent, cache));
@@ -150,17 +151,16 @@ class FontWidthCache {
 		if (i < len || w > width) {
 		  int dot = cache['.'];
       int dot2 = 2 * dot;
-      int w2 = 0;
+      int w2 = width - dot2;
       while(i-- >= 0) {
-        w2 += cache[s.charAt(i)];
-        if (w2 >= dot2) break;
+        w -= cache[s.charAt(i)];
+        if (w <= w2) break;
       }
-      w -= w2;
 
       s = s.substring(0, i) + (
 //          w + dot3 <= width ? "..." :
-          w + dot2 <= width ? ".." :
-          w + dot <= width ? "." : "");
+          w >= 0 ? ".." :
+          w + dot >= 0 ? "." : "");
 		}
 
 		extent.x = w;

@@ -532,11 +532,10 @@ public class Painter<X extends Number, Y extends Number> {
 //		    }
     }
     else {
-//      int spacing = textLayout.getSpacing();
-//      int lineCount = (textSize.y + spacing) / (extent.y + spacing) ;
-//      text = FontWidthCache.shortenTextMiddle(
-//          text, textSize.x, lineCount, extent, extentCache);
-      textLayout.setText(text);
+      int spacing = textLayout.getSpacing();
+      int lineCount = (textSize.y + spacing) / (extent.y + spacing) ;
+      text = FontWidthCache.shortenTextMiddle(
+          text, textSize.x, lineCount, extent, extentCache);
     }
   }
 
