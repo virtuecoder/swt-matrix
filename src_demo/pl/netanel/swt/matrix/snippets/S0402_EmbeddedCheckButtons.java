@@ -70,15 +70,17 @@ public class S0402_EmbeddedCheckButtons {
 
       @Override
       public boolean hasEmbeddedControl(Integer indexX, Integer indexY) {
-        Object value = data.get(indexY.intValue())[indexX.intValue()];
-        return value instanceof Boolean;
+//        Object value = data.get(indexY.intValue())[indexX.intValue()];
+//        return value instanceof Boolean;
+        return true;
       }
 
       @Override
       protected Control createControl(Integer indexX, Integer indexY) {
         Object value = data.get(indexY.intValue())[indexX.intValue()];
         if (value instanceof Boolean) { return new Button(matrix, SWT.CHECK); }
-        return super.createControl(indexX, indexY);
+//        return super.createControl(indexX, indexY);
+        return null;
       }
     };
 

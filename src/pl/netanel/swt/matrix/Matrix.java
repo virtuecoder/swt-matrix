@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2011 netanel.pl.
+ * All rights reserved. This source code and the accompanying materials
+ * are made available under the terms of the EULA v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.netanel.pl/swt-matrix/EULA_v1.0.html
+ ******************************************************************************/
 package pl.netanel.swt.matrix;
 
 import java.util.ArrayList;
@@ -241,8 +248,9 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	private ScheduledExecutorService executor;
 
 	/**
-	 * Calls the {@link #Matrix(Composite, int, Axis, Axis, ZoneCore...)} constructor
-	 * with <code>null</code> values for <code>axisY</code> and <code>axisX</code>.
+	 * Calls the {@link #Matrix(Composite, int, Axis, Axis)} constructor
+	 * with <code>null</code> values for <code>axisY</code> and <code>axisX</code>
+	 * which makes it to creates the default Integer axises with two sections.
 	 * @see #Matrix(Composite, int, Axis, Axis, ZoneCore...)
 	 */
 	public Matrix(Composite parent, int style) {

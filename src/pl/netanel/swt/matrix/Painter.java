@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2011 netanel.pl.
+ * All rights reserved. This source code and the accompanying materials
+ * are made available under the terms of the EULA v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.netanel.pl/swt-matrix/EULA_v1.0.html
+ ******************************************************************************/
 package pl.netanel.swt.matrix;
 
 import static java.lang.Math.max;
@@ -22,12 +29,12 @@ import pl.netanel.util.Preconditions;
  * This class draws everything that appears on the matrix canvas: background, images, text, lines.
  *
  * <h3>Optimization</h3>
- * Because the {@link #paint(Number, Number, int, int, int, int)} method is called in the loop to paint cells and lines
+ * Because the {@link #paint(int, int, int, int)} method is called in the loop to paint cells and lines
  * then it is recommended to take as many operations out of it as possible in order to improve the
  * the graphics performance. All the repetitive operations that are common to all elements,
  * like setting a font or a background color can be done in the {@link #init()} method, which is called only once.
  * <p>
- * It's also a good practice to restore any of the GC attributes modified by in {@link #init()} or {@link #paint(Number, Number, int, int, int, int)}
+ * It's also a good practice to restore any of the GC attributes modified by in {@link #init()} or {@link #paint(int, int, int, int)}
  * back to the default value to provide a clean start for a next painter.
  * It can be done in the {@link #clean()} method.
  * <p>
@@ -37,7 +44,6 @@ import pl.netanel.util.Preconditions;
  *
  *
  * @author jacek.p.kolodziejczyk@gmail.com
- * @created 2010-06-13
  */
 
 public class Painter<X extends Number, Y extends Number> {
@@ -197,7 +203,7 @@ public class Painter<X extends Number, Y extends Number> {
 
 	/**
 	 * Provides graphic to the {@link #init()}, {@link #clean()},
-	 * {@link #paint(Number, Number, int, int, int, int)} methods.
+	 * {@link #paint(int, int, int, int)} methods.
 	 * It is not safe to use it inside of other methods.
 	 */
 	protected GC gc;
@@ -213,13 +219,13 @@ public class Painter<X extends Number, Y extends Number> {
 	private boolean enabled = true;
 
 	/**
-	 * Text to be painted. The placement of the text depends on the {@link #textAlignX},
-	 * {@link #textAlignY}, {@link #textMarginX}, {@link #textMarginY} properties.
+	 * Text to be painted. The placement of the text depends on the {@link Style#textAlignX},
+	 * {@link Style#textAlignY}, {@link Style#textMarginX}, {@link Style#textMarginY} properties.
 	 */
 	public String text;
 	/**
-	 * Image to be painted. The placement of the image depends on the {@link #imageAlignX},
-	 * {@link #imageAlignY}, {@link #imageMarginX}, {@link #imageMarginY} properties.
+	 * Image to be painted. The placement of the image depends on the {@link Style#imageAlignX},
+	 * {@link Style#imageAlignY}, {@link Style#imageMarginX}, {@link Style#imageMarginY} properties.
 	 */
 	public Image image;
 
@@ -280,7 +286,7 @@ public class Painter<X extends Number, Y extends Number> {
 	 *
 	 * @param name the name of the painter, must be unique in the collection to which it is added
 	 * @param scope the scope of the painter deciding on the order and size of the boundaries
-	 * the {@link #paint(Number, Number, int, int, int, int)} method receives.
+	 * the {@link #paint(int, int, int, int)} method receives.
 	 * The value must be one of the Painter constants prefixed with <code>SCOPE_</code>.
 	 */
 	public Painter(String name, int scope) {
@@ -324,7 +330,7 @@ public class Painter<X extends Number, Y extends Number> {
    * of the cell painting loop.
    * <p>
    * If this method returns false the
-   * {@link #paint(Number, Number, int, int, int, int)} and {@link #clean()}
+   * {@link #paint(int, int, int, int)} and {@link #clean()}
    * methods will not be executed.
    *
    * @return true if the initialization succeeded or false otherwise.
@@ -363,7 +369,7 @@ public class Painter<X extends Number, Y extends Number> {
 
 	/**
 	 * Restores the default {@link GC} settings modified by modified by in {@link #init()}
-	 * or {@link #paint(Number, Number, int, int, int, int)}.
+	 * or {@link #paint(int, int, int, int)}.
 	 * @see <code>init()</code>
 	 */
 	public void clean() {
@@ -509,7 +515,7 @@ public class Painter<X extends Number, Y extends Number> {
   * <p>
   * The size of allotted area for text is contained in <code>textSize</code>field.
   * After the method determines new text to display it should modify the textSize properties
-  * to match the size of the new text. It is needed for text alignment other then {@link SWT.LEFT}.
+  * to match the size of the new text. It is needed for text alignment other then {@link SWT#LEFT}.
   */
   protected void clipText() {
     extent = gc.stringExtent(text);
@@ -746,7 +752,7 @@ public class Painter<X extends Number, Y extends Number> {
 	 * @param margin the number of pixels from the edge to which to align, does not matter with {@link SWT#CENTER}
 	 * @param width the width of the element
 	 * @param bound the width of the cell
-	 * @return
+	 * @return the distance of a graphical element based on the align mode and the padding margin
 	 */
 	public static int align(int align, int margin, int width, int bound) {
 		switch (align) {

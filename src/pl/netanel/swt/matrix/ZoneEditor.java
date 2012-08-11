@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2011 netanel.pl.
+ * All rights reserved. This source code and the accompanying materials
+ * are made available under the terms of the EULA v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.netanel.pl/swt-matrix/EULA_v1.0.html
+ ******************************************************************************/
 package pl.netanel.swt.matrix;
 
 import static pl.netanel.swt.matrix.Matrix.CMD_COPY;
@@ -37,7 +44,7 @@ import org.eclipse.swt.widgets.Widget;
  */
 public class ZoneEditor<X extends Number, Y extends Number> {
 
-	private static final String ZONE_EDITOR_DATA = "edited cell";
+	private static final String ZONE_EDITOR_DATA = "swt matrix edited cell";
 	private static final String DEFAULT_TRUE_TEXT = "\u2713";
 	private static final String NEW_LINE = System.getProperty("line.separator");
 
@@ -171,7 +178,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 * Returns value from the model.
 	 * <p>
 	 * This method is usually overridden, since the default implementation returns
-	 * the result of the {@link Painter#getText(Number, Number)} method of the
+	 * the {@link Painter#text} after calling {@link Painter#setupSpatial(Number, Number)} method of the
 	 * zone's Painter.NAME_CELLS painter, which is always {@link String}, while some edit
 	 * controls require other types, like {@link Boolean} or {@link Date}.
 	 * If the Painter.NAME_CELLS painter does not exist in the zone it always returns null.
@@ -245,7 +252,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 * </ul>
 	 * @param control to set the value for
 	 * @param value to set in the control
-	 * @see {@link #getEditorValue(Control)}
+	 * @see #getEditorValue(Control)
 	 */
 	protected void setEditorValue(Control control, Object value) {
 		if (control == null || control.isDisposed()) return;
@@ -299,7 +306,8 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	}
 
 	private void cancel(Control control) {
-		if (control != null && !getData(control).isEmbedded) {
+	  ZoneEditorData<X, Y> data = getData(control);
+		if (control != null && data != null && data.isEmbedded == false) {
 			disposeControl(control);
 		}
 		getMatrix().forceFocus();
@@ -372,7 +380,6 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 * from receiving focus and thus any key or mouse events.
 	 * @param indexX cell index on the horizontal axis
 	 * @param indexY cell index on the vertical axis
-	 * @param parent composite to create the control in
 	 *
 	 * @return control to edit the value of the specified cell
 	 * @see #createControl(Number, Number)
@@ -432,7 +439,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 * @param indexX cell index on the horizontal axis
 	 * @param indexY cell index on the vertical axis
 	 *
-	 * @return
+	 * @return embedded state of the cell editor
 	 */
 	protected boolean hasEmbeddedControl(X indexX, Y indexY) {
 		return false;
@@ -591,11 +598,13 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	/**
 	 * Returns the label for the specified cell to be included
 	 * in the clipboard copying. By default it returns a value from
-	 * the {@link Painter#getText(Number, Number)} method call.
+	 * the {@link Painter#text} field after calling {@link Painter#setupSpatial(Number, Number)}.
+	 *
 	 * @param indexX cell index on the horizontal axis
 	 * @param indexY cell index on the vertical axis
 	 *
-	 * @return
+	 * @return the label for the specified cell to be included
+   * in the clipboard copying
 	 */
 	protected String format(X indexX, Y indexY) {
 	   if (cellsPainter == null) return null;
@@ -614,7 +623,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 * @param indexY cell index on the vertical axis
 	 * @param s text to parse from
 	 *
-	 * @return
+	 * @return parsed text of specified cell during paste operation
 	 */
 	protected Object parse(X indexX, Y indexY, String s) {
 		return s;
@@ -704,7 +713,6 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 *
 	 * @return default labels to emulate check boxes.
 	 * @see #getCheckboxEmulation(Number, Number)
-	 * @see #setImagePath(String)
 	 */
 	protected final Object[] getDefaultCheckboxLabels() {
 	  return new Object[] {DEFAULT_TRUE_TEXT, null};

@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2011 netanel.pl.
+ * All rights reserved. This source code and the accompanying materials
+ * are made available under the terms of the EULA v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.netanel.pl/swt-matrix/EULA_v1.0.html
+ ******************************************************************************/
 package pl.netanel.swt.matrix;
 
 import java.util.HashMap;
@@ -13,8 +20,8 @@ import org.eclipse.swt.widgets.Listener;
 import pl.netanel.swt.matrix.ZoneEditor.ZoneEditorData;
 
 /**
- * Creates embedded controls rather then drawing directly if the layout has been modified. 
- * 
+ * Creates embedded controls rather then drawing directly if the layout has been modified.
+ *
  * @author Jacek Kolodziejczyk created 14-06-2011
  */
 class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painter<X, Y> {
@@ -28,20 +35,20 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 		super(Painter.NAME_EMBEDDED_CONTROLS);
 		this.editor = editor;
 		controls = new HashMap<Number, HashMap<Number, Control>>();
-		
-		// Set the focus cell in the matrix when the cell control gets focus  
+
+		// Set the focus cell in the matrix when the cell control gets focus
 		focusInListener = new Listener() {
 			@Override
 			public void handleEvent(Event e) {
 				Matrix<X, Y> matrix = getMatrix();
 				ZoneEditorData<X, Y> data = editor.getData(e.widget);
-				matrix.layout.setSelected(false, true); 
+				matrix.layout.setSelected(false, true);
 				matrix.axisY.setFocusItem(AxisItem.createInternal(editor.zone.sectionY, data.indexY));
 				matrix.axisX.setFocusItem(AxisItem.createInternal(editor.zone.sectionX, data.indexX));
 				matrix.redraw();
 			}
 		};
-		
+
 		// Set the repainting flag when the axis item gets resized or moved
 		controlListener = new ControlListener() {
 			@Override
@@ -56,8 +63,8 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 		editor.zone.getSectionY().addControlListener(controlListener);
 		editor.zone.getSectionX().addControlListener(controlListener);
 	}
-	
-	
+
+
 	@Override
 	protected boolean init() {
 		if (!needsPainting) return false;
@@ -71,21 +78,23 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 			for (Control control: entry.getValue().values()) {
 				control.dispose();
 			}
-		}	
+		}
 		controls.clear();
   }
-	
+
 	@Override
 	public void setup(X indexX, Y indexY) {
 		if (editor.hasEmbeddedControl(indexX, indexY)) {
 			Control control = editor.addControl(indexX, indexY);
-			control.addListener(SWT.FocusIn, focusInListener );
-			control.addListener(SWT.Selection, new Listener() {
-        @Override public void handleEvent(Event event) {
-          getMatrix().forceFocus();
-        }
-      });
-			
+			if (control != null) {
+			  control.addListener(SWT.FocusIn, focusInListener );
+			  control.addListener(SWT.Selection, new Listener() {
+			    @Override public void handleEvent(Event event) {
+			      getMatrix().forceFocus();
+			    }
+			  });
+			}
+
 //			control.addListener(SWT.Selection, listener );
 			HashMap<Number, Control> row = controls.get(indexY);
 			if (row == null) {
@@ -94,7 +103,7 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 			row.put(indexX, control);
 		}
 	}
-	
+
 	@Override
 	public void clean() {
 		if (needsPainting) {
@@ -102,7 +111,7 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 		needsPainting = false;
 		}
 	}
-	
+
 	public Control getControl(X indexX, Y indexY) {
 		HashMap<Number, Control> row = controls.get(indexY);
 		if (row == null) {
@@ -112,7 +121,7 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 			return row.get(indexX);
 		}
 	}
-	
+
 	@Override
 	protected void setMatrix(final Matrix<X, Y> matrix) {
 		Runnable r = new Runnable() {
@@ -123,7 +132,7 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 		};
 		matrix.layoutY.callbacks.add(r);
 		matrix.layoutX.callbacks.add(r);
-		
+
 		super.setMatrix(matrix);
 	}
 }

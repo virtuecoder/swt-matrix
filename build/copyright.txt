@@ -5,6 +5,3 @@
  * which accompanies this distribution, and is available at
  * http://www.netanel.pl/swt-matrix/EULA_v1.0.html
  ******************************************************************************/
-<html><head></head><body>
-Contains Matrix - a tabular SWT widget with unlimited capacity and instant rendering.  
-</body></html>

@@ -1,1 +1,0 @@
-java -jar D:\Dev\Java\java_lib\proguard4.3\lib\retrace.jar obfuscation-0.6.1.map trace.txt

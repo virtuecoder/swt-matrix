@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2011 netanel.pl.
+ * All rights reserved. This source code and the accompanying materials
+ * are made available under the terms of the EULA v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.netanel.pl/swt-matrix/EULA_v1.0.html
+ ******************************************************************************/
 package pl.netanel.swt.matrix;
 
 import java.util.Iterator;
@@ -47,7 +54,7 @@ public interface Section<N extends Number> {
   /**
    * Returns a no argument checking implementation for this section.
    * It may be useful for loop optimization, for example inside of
-   * {@link Painter#paint(Number, Number, int, int, int, int)}
+   * {@link Painter#paint(int, int, int, int)}
    * method.
    * @return a no argument checking implementation for this section
    */
@@ -252,7 +259,7 @@ public interface Section<N extends Number> {
    * @throws IllegalArgumentException if start or end is <code>null</code>
    * @throws IllegalArgumentException if start is greater then end
    * @throws IndexOutOfBoundsException if start or end is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    *
    * @see #setHideable(Number, Number, boolean)
    */
@@ -274,14 +281,14 @@ public interface Section<N extends Number> {
    * @param width the new cell width
    * @throws IllegalArgumentException if index is <code>null</code>
    * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *           {@link #getCount()-1} bounds
+   *           {@link #getCount()}-1 bounds
    * @see #setCellWidth(Number, Number, int)
    */
   void setCellWidth(N index, int width);
 
   /**
    * Sets the cell width that best fits its content. <br>
-   * Warning: for a large number of items it may take a long time to compute, 
+   * Warning: for a large number of items it may take a long time to compute,
    * because of the necessity to iterate over all items.
    * <p>
    * <code>index</code> is the item index in the model,
@@ -296,7 +303,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if index is <code>null</code>
    * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    */
   void setCellWidth(N index);
 
@@ -315,7 +322,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if index is <code>null</code>
    * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    */
   int getCellWidth(N index);
 
@@ -363,23 +370,24 @@ public interface Section<N extends Number> {
   void setLineWidth(N index, int width);
 
   /**
-   * Returns the line width of the item with the given index in the model.
-   * If the width has not been set at this index by {@link #setLineWidth(Number)}
-   * method then the default line width is returned.
+   * Returns the line width of the item with the given index in the model. If
+   * the width has not been set at this index by one of the <code>setLineWidth</code>
+   * methods then the default line width is returned.
    * <p>
-   * Line at index i is on the left side of the cell at index i.
-   * Last line to the right is at index equal to section item count.
-   * <code>index</code> is the item index in the model,
-   * not the visual position of the item on the screen
-   * which can be altered by move and hide operations.
+   * Line at index i is on the left side of the cell at index i. Last line to
+   * the right is at index equal to section item count. <code>index</code> is
+   * the item index in the model, not the visual position of the item on the
+   * screen which can be altered by move and hide operations.
    * <p>
    *
-   * @param index the item index
+   * @param index
+   *          the item index
    * @return the line width at the given item index in the receiver
    *
-   * @throws IllegalArgumentException if index is <code>null</code>
-   * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *         {@link #getCount()} bounds
+   * @throws IllegalArgumentException
+   *           if index is <code>null</code>
+   * @throws IndexOutOfBoundsException
+   *           if index is out of 0 ... {@link #getCount()} bounds
    */
   int getLineWidth(N index);
 
@@ -399,7 +407,7 @@ public interface Section<N extends Number> {
    * @param enabled the new move ability state
    * @throws IllegalArgumentException if start or end is <code>null</code>
    * @throws IndexOutOfBoundsException if start or end is out of 0 ...
-   *           {@link #getCount()-1} bounds
+   *           {@link #getCount()}-1 bounds
    * @throws IllegalArgumentException if start is greater then end
    */
   void setMoveable(N start, N end, boolean enabled);
@@ -419,7 +427,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if index is <code>null</code>
    * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    *
    * @see #setMoveable(Number, Number, boolean)
    */
@@ -431,7 +439,7 @@ public interface Section<N extends Number> {
    * An item that is moveable can be reordered by the user by dragging the header.
    * An item that is not moveable cannot be dragged by the user but may be reordered by the programmer.
    * <p>
-   * If the move ability has not been set at this index by {@link #setMoveable(Number)}
+   * If the move ability has not been set at this index by <code>setMoveable</code>
    * method then the default cell width is returned.
    * <p>
    * <code>index</code> is the item index in the model,
@@ -444,7 +452,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if index is <code>null</code>
    * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    *
    */
   boolean isMoveable(N index);
@@ -464,7 +472,7 @@ public interface Section<N extends Number> {
    * @param enabled the new resize ability state
    * @throws IllegalArgumentException if start or end is <code>null</code>
    * @throws IndexOutOfBoundsException if start or end is out of 0 ...
-   *           {@link #getCount()-1} bounds
+   *           {@link #getCount()}-1 bounds
    * @throws IllegalArgumentException if start is greater then end
    */
   void setResizable(N start, N end, boolean enabled);
@@ -484,7 +492,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if index is <code>null</code>
    * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    *
    * @see #setResizable(Number, Number, boolean)
    */
@@ -508,7 +516,7 @@ public interface Section<N extends Number> {
    * @param index the item index
    * @throws IllegalArgumentException if index is <code>null</code>
    * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *           {@link #getCount()-1} bounds
+   *           {@link #getCount()}-1 bounds
    * @return the move ability state at the given index
    */
   boolean isResizable(N index);
@@ -529,7 +537,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if start or end is <code>null</code>
    * @throws IndexOutOfBoundsException if start or end is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    * @throws IllegalArgumentException if start is greater then end
    *
    */
@@ -551,7 +559,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if index is <code>null</code>
    * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    *
    * @see #setHideable(Number, Number, boolean)
    */
@@ -576,7 +584,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if index is <code>null</code>
    * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    *
    */
   boolean isHideable(N index);
@@ -595,7 +603,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if start or end is <code>null</code>
    * @throws IndexOutOfBoundsException if start or end is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    * @throws IllegalArgumentException if start is greater then end
    *
    */
@@ -616,7 +624,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if index is <code>null</code>
    * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    *
    */
   void setHidden(N index, boolean state);
@@ -635,7 +643,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if index is <code>null</code>
    * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    *
    */
   boolean isHidden(N index);
@@ -684,7 +692,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if start or end is <code>null</code>
    * @throws IndexOutOfBoundsException if start or end is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    * @throws IllegalArgumentException if start is greater then end
    *
    */
@@ -705,7 +713,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if index is <code>null</code>
    * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    *
    * @see #setSelected(Number, Number, boolean)
    */
@@ -731,7 +739,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if index is <code>null</code>
    * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    *
    */
   boolean isSelected(N index);
@@ -782,7 +790,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if start or end is <code>null</code>
    * @throws IndexOutOfBoundsException if start or end is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    * @throws IndexOutOfBoundsException if target is out of 0 ...
    *         {@link #getCount()} bounds
    * @throws IllegalArgumentException if start is greater then end
@@ -797,7 +805,7 @@ public interface Section<N extends Number> {
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations.
    * <p>
-   * Ranges of items should be set moved by {@link #setOrder(Number, Number, boolean)}
+   * Ranges of items should be set moved by one of the <code>setOrder</code> methods.
    * to achieve the best efficiency.
    *
    * @param index index of the item to move
@@ -805,7 +813,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if index or target is <code>null</code>
    * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    * @throws IndexOutOfBoundsException if target is out of 0 ...
    *         {@link #getCount()} bounds
    *
@@ -822,12 +830,12 @@ public interface Section<N extends Number> {
    * It is calculated according to the current order including the hidden items.
    * If the index is null or out of scope then the method returns null.
    *
-   * @param item to get the position for
+   * @param index to get the position for
    * @return order index of the item with the given index in the model
    *
    * @throws IllegalArgumentException if index is <code>null</code>
    * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    */
   N getOrder(N index);
 
@@ -867,7 +875,7 @@ public interface Section<N extends Number> {
    *
    * @throws IllegalArgumentException if position is <code>null</code>
    * @throws IndexOutOfBoundsException if position is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    * @see #getOrder(Number)
    */
   N getIndex(N position);
@@ -878,12 +886,12 @@ public interface Section<N extends Number> {
    * <p>
    * If the <code>index</code> is out of range null value is returned.
    *
-   * @param position visual index of given item
+   * @param index index of the given item
    * @return item at the given position
    *
    * @throws IllegalArgumentException if position is <code>null</code>
    * @throws IndexOutOfBoundsException if position is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    * @see #getOrder(Number)
    */
   N getPosition(N index);
@@ -905,7 +913,7 @@ public interface Section<N extends Number> {
    *
    * @throws IndexOutOfBoundsException if start or end is <code>null</code>
    * @throws IndexOutOfBoundsException if start or end is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   *         {@link #getCount()}-1 bounds
    * @throws IllegalArgumentException if start is greater then end
    *
    */
@@ -928,9 +936,7 @@ public interface Section<N extends Number> {
    * @param target the index before which items are inserted
    * @param count the number of items to insert
    *
-   * @throws IndexOutOfBoundsException if start, end or target is <code>null</code>
-   * @throws IndexOutOfBoundsException if start or end is out of 0 ...
-   *         {@link #getCount()-1} bounds
+   * @throws IndexOutOfBoundsException if target or count is <code>null</code>
    * @throws IndexOutOfBoundsException if target is out of 0 ...
    *         {@link #getCount()} bounds
    * @throws IllegalArgumentException if start is greater then end
@@ -945,8 +951,8 @@ public interface Section<N extends Number> {
    * interface.
    * <p> The data property of the {@link ControlEvent} contains the item being resized
    * or the target item for the moved items. In order to get moved items or a set of
-   * resized items (if more then one is resized) {@link #getSelectedExtents()} or
-   * {@link #getSelectedExtentResizableSequence()} can be utilized.
+   * resized items (if more then one is resized) {@link #getSelectedExtents()}
+   * can be utilized.
    *
    * @param listener the listener which should be notified
    *

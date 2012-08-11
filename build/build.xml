@@ -1,78 +1,52 @@
-<project name="swt-matrix" default="local website" basedir=".">
-	<property file="local.properties" />
-	<property file="build.properties" />
-	
-	<property name="version" value="0.6.4" />
-	
-	<property name="jdk.dir" value="C:\Program Files\Java\jdk1.6.0_32" />
-	<property name="java.lib.dir" value="D:\Dev\Java\java_lib" />
-	<property name="eclipse.swt.file" value="D:\Dev\Java\eclipse\plugins\org.eclipse.swt_3.7.2.v3740f.jar" />
-	<property name="eclipse.swt.win32.file" value="D:\Dev\Java\eclipse\plugins\org.eclipse.swt.win32.win32.x86_3.7.2.v3740f.jar" />
-	<property name="wamp.dir" value="D:\dev\wamp" />
-	<property name="local.website.dir" value="${wamp.dir}\www\netanel15" />
-
-	<property name="db.username" value="root"/>
-	<property name="db.password" value=""/>
-	<property name="db.name" value="netanel15"/>
-	<!-- The name of the database to backup. -->
-	<property name="db.export.file" value="..\website\joomla-1.5.sql"/>
-	<property name="mysqldump" value="${wamp.dir}\bin\mysql\mysql5.0.51a\bin\mysqldump"/>
-
+<!--
+  The external dependencies are located in build.properties 
+-->
+<project name="swt-matrix" default="dist" basedir="..">
+	<property file="build/build.properties" />
+	<property file="build/version.properties" />
+		
+	<property name="output.dir" location="dist" />
+	<property name="project.dir" location="${output.dir}/project" />
 
 	<target name="clean">
 		<tstamp />
-		<delete dir="." includes="*.jar" />
+		<delete dir="${output.dir}" /> 
 	</target>
 
-	<target name="proguard/check">
-	    <uptodate property="proguard.uptodate" targetfile="${ant.project.name}-${version}.jar">
-	        <srcfiles dir="../src" includes="**/*"/>
-	        <srcfiles dir="." includes="proguard.cfg"/>
-	        <!--mapper type="merge" to="${ant.project.name}-${version}.jar"/-->
-	    </uptodate>
-	    <echo message="${proguard.uptodate}"/>
+	<target name="-jar/check">
+		<uptodate property="jar.uptodate" targetfile="${output.dir}/${ant.project.name}-${version}.jar">
+			<srcfiles dir="src" includes="**/*" />
+			<srcfiles dir="build" includes="build.xml" />
+			<!--mapper type="merge" to="${ant.project.name}-${version}.jar"/-->
+		</uptodate>
 	</target>
-
-	<target name="jar" description="create the jar" depends="proguard/check" unless="proguard.uptodate">
-
-		<!-- swt-matrix.jar-->
-		<jar jarfile="${ant.project.name}.jar">
-			<fileset dir="../bin">
+	
+	<!-- Assumes the java classes are already compiled in bin folder, 
+	     which a default behavior when project is open in eclipse --> 
+	<target name="jar" description="create the jar" depends="-jar/check" unless="jar.uptodate">
+		<!-- Create jar -->
+		<jar jarfile="${output.dir}\swt-matrix-dont-distribute.jar">
+			<fileset dir="bin">
 				<include name="pl/netanel/swt/matrix/*.class" />
 				<include name="pl/netanel/util/*.class" />
-				<include name="../doc/EULA.txt" />
+				<include name="../doc/EULA_v1.0.html" />
 				<exclude name="**/*Test*.class" />
 			</fileset>
-			<!--fileset dir="${lib}" includes="**/*" /-->
 			<manifest>
-				<!--attribute name="Main-Class" value="app.DataMate" /-->
 				<attribute name="Class-Path" value="." />
-			</manifest>
-		</jar>
-		
-		<!-- swt-matrix-custom.jar-->
-		<jar jarfile="${ant.project.name}-custom-${version}.jar">
-			<fileset dir="../bin">
-				<include name="pl/netanel/swt/matrix/custom/*.class" />
-				<exclude name="**/*Test*.class" />
-			</fileset>
-			<!--fileset dir="${lib}" includes="**/*" /-->
-			<manifest>
-				<!--attribute name="Main-Class" value="app.DataMate" /-->
-				<attribute name="Class-Path" value="." />
+				<attribute name="Version" value="${version}" />
 			</manifest>
 		</jar>
 
-		<!-- obfuscate and optimize by ProGuard -->
-		<taskdef resource="proguard/ant/task.properties" 
-			classpath="${java.lib.dir}/proguard4.3/lib/proguard.jar" />
+		<!-- Obfuscate and optimize by ProGuard -->
+		<taskdef resource="proguard/ant/task.properties" classpath="${proguard.dir}/proguard.jar" />
 		<proguard>
 			-libraryjars "${jdk.dir}\jre\lib\rt.jar"
 			-libraryjars "${eclipse.swt.file}" 
 			-libraryjars "${eclipse.swt.win32.file}"
-			-injars      swt-matrix.jar
-			-outjars     obfuscated.swt-matrix.jar
-			-printmapping out.map
+			-injars       ${output.dir}\swt-matrix-dont-distribute.jar
+			-outjars      ${output.dir}\${ant.project.name}-${version}.jar
+			-printmapping ${output.dir}\obfuscation-${version}.map
 
 			-dontoptimize
 			-dontshrink
@@ -97,9 +71,7 @@
 			    public static &lt;fields&gt;;
 			}
 
-
 			-keepnames class * implements java.io.Serializable
-
 
 			-keepclassmembers class * implements java.io.Serializable {
 			    static final long serialVersionUID;
@@ -110,172 +82,56 @@
 			    !transient &lt;fields&gt;;
 			}
 		</proguard>
-
-		<rename src="obfuscated.${ant.project.name}.jar" dest="${ant.project.name}-${version}.jar"/>
-		<rename src="out.map" dest="obfuscation-${version}.map"/>
-
-		<touch file="proguard.done"/>
-
+	</target>
+	
+	<!-- Specify trace file in command line: -Dstack.trace=<your.file> -->
+	<target name="retrace" depends="jar">
+		<exec executable="java">
+			<arg line="-jar ${proguard.dir}/retrace.jar ${output.dir}\obfuscation-${version}.map ${stack.trace}"/>
+		</exec>
 	</target>
 
 	<target name="snippets">
-		<zip destfile="${ant.project.name}-snippets-${version}.zip">
-			<zipfileset dir="../src_demo" includes="pl/netanel/swt/matrix/snippets/*.java"/>
-			<zipfileset dir=".." includes="*.png" />
+		<zip destfile="${output.dir}/${ant.project.name}-snippets-${version}.zip">
+			<zipfileset dir="src_demo" includes="pl/netanel/swt/matrix/snippets/*.java" />
 		</zip>
 	</target>
 
-	
-	<target name="javadoc/check">
-      <uptodate property="javadoc.uptodate" targetfile="../javadoc/index.html">
-          <srcfiles dir="../src"/>
-      </uptodate>
+
+	<target name="-javadoc/check">
+		<uptodate property="javadoc.uptodate" targetfile="${output.dir}/javadoc/index.html">
+			<srcfiles dir="src" />
+		</uptodate>
 	</target>
-	
-	<target name="javadoc" depends="javadoc/check" unless="javadoc.uptodate">
-		<javadoc 
-	      access="protected" 
-	      author="false" 
-	      sourcepath="../src"
-	      excludepackagenames="pl.netanel.swt, pl.netanel.util, pl.netanel.swt.matrix.painter, pl.netanel.swt.matrix.custom"
-	      destdir="../javadoc"
-	      splitindex="true" 
-	      use="true" 
-	      version="false" 
-	      windowtitle="SWT Matrix - API javadoc" 
-	      doctitle="SWT Matrix ${version} API">
+
+	<target name="javadoc" depends="-javadoc/check" unless="javadoc.uptodate">
+		<javadoc access="protected" author="false" sourcepath="src" 
+			excludepackagenames="pl.netanel.swt, pl.netanel.util, pl.netanel.swt.matrix.custom" 
+			destdir="${output.dir}/javadoc" splitindex="true" use="true" version="false" 
+			windowtitle="SWT Matrix - API javadoc" doctitle="SWT Matrix ${version} API">
 
 			<bottom>
-				<![CDATA[<i>Copyright &#169; 2012 netanel. All Rights Reserved.</i>]]>
+				<![CDATA[<i>Copyright &#169; 2011 netanel.pl. All Rights Reserved.</i>]]>
 			</bottom>
-  	</javadoc>
-  	
-  	<touch file="javadoc.done"/>
-  </target>
+	</javadoc>
 
-<!--target name="mysql" description="update joomla backend">
-  	<loadfile srcfile="${src.file}" property="${src.file.contents}">
-  	  <filterchain>
-  	    <filterreader classname="org.apache.tools.ant.filters.StripLineBreaks"/>
-  	  </filterchain>
-  	</loadfile>
-  	
-  	<echo file="snippets.sql">
-  		update jos_content set introtext = "fasfas" where id = 11; 
-      commit;
-		</echo>
-  	<sql 
-  		  driver="com.mysql.jdbc.Driver"
-  	    url="jdbd:mysql://localhost:3306/netanel15"
-  	    userid="root"
-  	    password=""
-        classpath="c:\Dev\Java\java_lib\mysql-connector-java-5.1.8\mysql-connector-java-5.1.8-bin.jar"
-  		  print="true"
-  		  src="snippets.sql"
-  		>
-  	</sql>
-  	
-	</target-->
-<target name="local website" depends="jar, javadoc, snippets">
-	<sync todir="${local.website.dir}\swt-matrix\snippets">
-		<fileset dir="../src_demo/pl/netanel/swt/matrix/snippets"/>
-	</sync>
+	<touch file="${output.dir}/javadoc/index.html/" />
+</target>
 
-	<sync todir="${local.website.dir}\swt-matrix\javadoc">
-		<fileset dir="../javadoc"/>
-	</sync>
-	
-	<!-- zip the whole project directory including .git-->
-  <zip destfile="swt-matrix-javadoc-${version}.zip"
-      basedir="../javadoc"
-      includes="**"
-    />
-	
-	<!-- zip the whole project directory including .git-->
-  <zip destfile="swt-matrix-${version}.zip">
-  	<zipfileset dir="../javadoc" prefix="javadoc"/>
-  	<zipfileset dir="../src_demo" includes="pl/netanel/swt/matrix/snippets/*.java" prefix="snippets"/>
-  	<zipfileset dir=".." includes="*.png" prefix="snippets"/>
-  	<!--zipfileset dir="../src" includes="pl/netanel/swt/matrix/custom/*.java" prefix="custom"/-->
-  	<zipfileset dir="." includes="swt-matrix-${version}.jar"/>
-  	<!--zipfileset dir="." includes="swt-matrix-custom-${version}.jar"/-->
-		<fileset dir="../doc" includes="EULA.txt"/>
-		<fileset dir="../doc" includes="Change-log.txt"/>
-  </zip>
-	
-	<copy todir="${local.website.dir}\swt-matrix">
-		<fileset dir="../doc" includes="EULA.txt"/>
-	</copy>
-	
-	<copy todir="${local.website.dir}\swt-matrix" file="swt-matrix-${version}.zip" />
-	<copy todir="${local.website.dir}\swt-matrix" file="../doc/Change-log.txt" />
+<!-- Creates distribition of jar file allowed by EULA + public information --> 
+<target name="dist" depends="clean, jar, javadoc, snippets">
+	<zip destfile="${output.dir}/swt-matrix-${version}.zip">
+		<!-- Binaries -->
+		<fileset dir="${output.dir}" includes="swt-matrix-${version}.jar" />
 
-	<java classname="JoomlaMysqlUpdate" dir=".." fork="true">
-		<classpath>
-			<pathelement location="${java.lib.dir}\mysql-connector-java-5.1.8\mysql-connector-java-5.1.8-bin.jar" />
-			<pathelement path="../bin" />
-		</classpath>
-	</java>
-	
-  <replaceregexp file="${local.website.dir}\media\system\js\netanel.js"
-        match="var current_version = (.+);"
-          replace='var current_version = "${version}";'
-          byline="true" />
+		<!-- Docs -->
+		<fileset dir="doc" includes="EULA_v1.0.html" />
+		<fileset dir="doc" includes="Change-log.txt" />
+		<zipfileset dir="${output.dir}/javadoc" prefix="javadoc" />
 
-
-</target> 
-
-<target name="backup" description="copy all project files to ftp site">
-	<!-- Command to dump the database to *.sql file.-->
-	<exec executable="${mysqldump}" output="${db.export.file}">
-		<arg value="--extended-insert=false"/>
-		<arg value="--complete-insert=true"/>
-		<arg value="--add-drop-table"/>
-		<arg value="--user=${db.username}"/>
-		<arg value="--password=${db.password}"/>
-		<arg value="${db.name}"/>
-	</exec>
-
-	<!-- zip the whole project directory including .git-->
-	<zip destfile="matrix-project.zip"
-      basedir=".."
-      includes="**" 
-      defaultexcludes="no"
-      excludes="build\matrix-project.zip">
-	 
-	  <fileset dir="." includes="examples*.zip"/>
+		<!-- Snippets -->
+		<zipfileset dir="src_demo" includes="pl/netanel/swt/matrix/snippets/*.java" prefix="snippets" />
 	</zip>
-
-	<!-- ftp to backup  file to server -->
-	<ftp 
-       server="www.netanel.pl"
-       remotedir="git"
-       userid="${ftp.user}"
-       password="${ftp.password}">
-
-		<fileset dir=".\" includes="matrix-project.zip"/>
-	</ftp>
-
-	<delete file="matrix.zip"/>
 </target>
-
-
-<target name="publish" description="update the offical website" depends="local website">
-	<ftp 
-	  server="www.netanel.pl"
-    remotedir="ftp.remote.dir"
-    userid="$ftp.user}"
-	  password="${ftp.password}"
-	  depends="true"
-		verbose="yes"
-	>
-
-		<fileset dir="${local.website.dir}/swt-matrix"/>
-		<fileset dir="${local.website.dir}/templates"/>
-		<fileset dir="${local.website.dir}/media"/>
-	</ftp>
-
-</target>
-
 
 </project>
