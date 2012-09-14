@@ -15,7 +15,7 @@ public class MergeGuiTest
   @Test public void merge() throws Exception {
     Matrix matrix = createMatrix();
     Zone body = matrix.getBody();
-    body.setMerged(0, 3, 0, 3);
+    body.setMerged(0, 3, 0, 3, true);
     body.getSectionX().setOrder(2, 2, 1);
     matrix.refresh();
     dragAndDrop(body.getCellBounds(2, 2), body.getCellBounds(3, 3));
@@ -26,7 +26,7 @@ public class MergeGuiTest
   @Test public void merge2() throws Exception {
     Matrix matrix = createMatrix();
     Zone body = matrix.getBody();
-    body.setMerged(0, 3, 0, 3);
+    body.setMerged(0, 3, 0, 3, true);
     body.getSectionY().setOrder(4, 4, 1);
     matrix.refresh();
 
@@ -45,8 +45,8 @@ public class MergeGuiTest
     matrix.refresh();
 
     Zone body = matrix.getBody();
-    body.setMerged(0, 3, 0, 3);
-    body.setMerged(6, 3, 6, 3);
+    body.setMerged(0, 3, 0, 3, true);
+    body.setMerged(6, 3, 6, 3, true);
     body.getSectionX().setOrder(2, 2, 1);
     matrix.refresh();
     body.getSectionY().setOrder(7, 7, 2);

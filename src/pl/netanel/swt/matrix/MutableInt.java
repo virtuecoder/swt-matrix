@@ -10,9 +10,10 @@ package pl.netanel.swt.matrix;
 import java.math.BigInteger;
 
 class MutableInt extends MutableNumber<Integer> {
-	
-	int value;
-	
+  private static final long serialVersionUID = 1L;
+
+  int value;
+
 	public MutableInt(int value) {
 		this.value = value;
 	}
@@ -21,23 +22,23 @@ class MutableInt extends MutableNumber<Integer> {
 	public String toString() {
 		return Integer.toString(value);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof MutableInt)) return false;
 		return ((MutableInt) obj).value == value;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return value;
 	}
-	
+
 	@Override
 	public MutableInt copy() {
 		return new MutableInt(value);
 	}
-	
+
 	@Override
 	public Integer getValue() {
 		return value;
@@ -48,12 +49,12 @@ class MutableInt extends MutableNumber<Integer> {
 		value = n.intValue();
 		return this;
 	}
-	
+
 	public MutableInt set(int n) {
 		value = n;
 		return this;
 	}
-	
+
 	@Override
 	MutableNumber<Integer> set(MutableNumber<Integer> n) {
 		value = n.intValue();
@@ -71,7 +72,7 @@ class MutableInt extends MutableNumber<Integer> {
 		value--;
 		return this;
 	}
-	
+
 	@Override
 	public MutableInt negate() {
 		value = -value;
@@ -102,7 +103,7 @@ class MutableInt extends MutableNumber<Integer> {
 		return this;
 	}
 
-	
+
 	@Override
 	public MutableInt add(int n) {
 		value += n;
@@ -127,17 +128,17 @@ class MutableInt extends MutableNumber<Integer> {
 	}
 
 	@Override
-	int intValue() {
+	public int intValue() {
 		return value;
 	}
 
 	@Override
 	MutableNumber<Integer> min(MutableNumber<Integer> n) {
-		return value <= n.intValue() ? this : n; 
+		return value <= n.intValue() ? this : n;
 	}
 	@Override
 	MutableNumber<Integer> max(MutableNumber<Integer> n) {
-	  return value >= n.intValue() ? this : n; 
+	  return value >= n.intValue() ? this : n;
 	}
 
 
@@ -147,8 +148,18 @@ class MutableInt extends MutableNumber<Integer> {
 		return value == x ? 0 : value > x ? 1 : -1;
 	}
 
-  @Override long longValue() {
+  @Override
+  public long longValue() {
     return value;
   }
 
+  @Override
+  public float floatValue() {
+    return value;
+  }
+
+  @Override
+  public double doubleValue() {
+    return value;
+  }
 }

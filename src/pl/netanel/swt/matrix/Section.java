@@ -1039,6 +1039,28 @@ public interface Section<N extends Number> {
    */
   void removeSelectionListener(SelectionListener listener);
 
+  public abstract boolean isExpanded(N index);
+
+  public abstract void setExpanded(N start, N end, boolean state);
+
+  public abstract void setExpanded(N parent, boolean state);
+
+  public abstract N getLevelInTree(N index);
+
+  public abstract N getParent(N index);
+
+  public abstract N getChildrenCount(N parent);
+
+  public abstract Iterator<N> getChildren(N parent);
+
+  public abstract Iterator<Extent<N>> getChildrenExtents(N parent);
+
+  public abstract void setParent(N start, N end, N parent);
+
+  public abstract void setParent(N child, N parent);
+
+  boolean hasChildren(N parent);
+
 //  /**
 //   * Returns <code>true</code> if the item with the given index in the model is merged be moved by end user.
 //   * Otherwise, <code>false</code> is returned.

@@ -21,14 +21,14 @@ public class DirectionIndexSequenceTest {
 		SectionCore section = new SectionCore(int.class);
 		Forward seq = new Forward(section);
 		assertSequence("", seq);
-		
+
 		section.setCount(1);
 		assertSequence("0", seq);
-		
+
 		section.setCount(5);
 		assertSequence("0, 1, 2, 3, 4", seq);
 	}
-	
+
 	@Test
 	public void sequenceHiddenMoved() throws Exception {
 		SectionCore section = new SectionCore(int.class);
@@ -47,7 +47,7 @@ public class DirectionIndexSequenceTest {
 		section.setHidden(3, 3, true);
 		assertSequence("", seq);
 	}
-	
+
 	@Test
 	public void sequenceHiddenMovedBackward() throws Exception {
 		SectionCore section = new SectionCore(int.class);
@@ -66,7 +66,7 @@ public class DirectionIndexSequenceTest {
 		section.setHidden(3, 3, true);
 		assertSequence("", seq);
 	}
-	
+
 	@Test
 	public void sequenceNextCount() throws Exception {
 		SectionCore section = new SectionCore(int.class);
@@ -76,7 +76,7 @@ public class DirectionIndexSequenceTest {
 		assertSequence("0, 3, 1, 2, 4", seq);
 
 		section.setHidden(2, 2, true);
-		
+
 		seq.init();
 		assertTrue(seq.next(number(4)));
 		assertEquals(4, seq.index().intValue());
@@ -85,7 +85,7 @@ public class DirectionIndexSequenceTest {
 		seq.next(number(10));
 		assertEquals(4, seq.index().intValue());
 	}
-	
+
 	@Test
 	public void sequenceNextCountBackward() throws Exception {
 		SectionCore section = new SectionCore(int.class);
@@ -95,17 +95,17 @@ public class DirectionIndexSequenceTest {
 		assertSequence("4, 2, 1, 3, 0", seq);
 
 		section.setHidden(2, 2, true);
-		
+
 		seq.init();
 		assertTrue(seq.next(number(4)));
 		assertEquals(0, seq.index().intValue());
-		
+
 		seq.init();
 		seq.next(number(10));
 		assertEquals(0, seq.index().intValue());
 	}
-	
-	
+
+
 	@Test
 	public void getPosition() throws Exception {
 		SectionCore section = new SectionCore(int.class);
@@ -113,7 +113,7 @@ public class DirectionIndexSequenceTest {
 		section.setHidden(2, 4, true);
 		section.setOrder(6, 9, 3);
 		assertSequence("0, 1, 6, 7, 8, 9, 5", new Forward(section));
-		
+
 		assertEquals("0", section.getPosition(0).toString());
 		assertEquals("1", section.getPosition(1).toString());
 		assertEquals("2", section.getPosition(6).toString());
@@ -125,19 +125,19 @@ public class DirectionIndexSequenceTest {
 		assertEquals(null, section.getPosition(3));
 		assertEquals(null, section.getPosition(4));
 		assertEquals(null, section.getPosition(20));
-		
+
 		// Hide first
 		section.setHidden(0, 0, true);
 		assertEquals(null, section.getPosition(0));
 		assertEquals("0", section.getPosition(1).toString());
-		
+
 		// Hide last
 		section.setHidden(5, 5, true);
 		assertEquals(null, section.getPosition(5));
 		assertEquals("4", section.getPosition(9).toString());
-		
+
 	}
-	
+
 	@Test
 	public void getIndex() throws Exception {
 		SectionCore section = new SectionCore(int.class);
@@ -145,7 +145,7 @@ public class DirectionIndexSequenceTest {
 		section.setHidden(2, 4, true);
 		section.setOrder(6, 9, 3);
 		assertSequence("0, 1, 6, 7, 8, 9, 5", new Forward(section));
-		
+
 		assertEquals("0", section.getIndex(0).toString());
 		assertEquals("1", section.getIndex(1).toString());
 		assertEquals("6", section.getIndex(2).toString());
@@ -154,16 +154,16 @@ public class DirectionIndexSequenceTest {
 		assertEquals("9", section.getIndex(5).toString());
 		assertEquals("5", section.getIndex(6).toString());
 		assertEquals(null, section.getIndex(20));
-		
+
 		// Hide first
 		section.setHidden(0, 0, true);
 		assertEquals("1", section.getIndex(0).toString());
-		
+
 		// Hide last
 		section.setHidden(5, 5, true);
 		assertEquals("9", section.getIndex(4).toString());
 	}
-	
+
 	@Test
 	public void getOrder() throws Exception {
 	  SectionCore section = new SectionCore(int.class);
@@ -171,11 +171,11 @@ public class DirectionIndexSequenceTest {
 	  section.setHidden(2, 4, true);
 	  section.setOrder(6, 9, 3);
 	  assertSequence("0, 1, 6, 7, 8, 9, 5", new Forward(section));
-	  
-	  assertArrayEquals(new Integer[] {0, 1, 2, 6, 7, 8, 9, 3, 4, 5}, 
+
+	  assertArrayEquals(new Integer[] {0, 1, 2, 6, 7, 8, 9, 3, 4, 5},
 	    TestUtil.getList(section.getOrder()).toArray(new Integer[] {}));
 	}
-	
+
 	@Test
 	public void getOrderExtents() throws Exception {
 	  SectionCore section = new SectionCore(int.class);
@@ -183,28 +183,28 @@ public class DirectionIndexSequenceTest {
 	  section.setHidden(2, 4, true);
 	  section.setOrder(6, 9, 3);
 	  assertSequence("0, 1, 6, 7, 8, 9, 5", new Forward(section));
-	  
-	  assertArrayEquals(new Extent[] {Extent.create(0, 2), Extent.create(6, 9), Extent.create(3, 5)}, 
+
+	  assertArrayEquals(new Extent[] {Extent.create(0, 2), Extent.create(6, 9), Extent.create(3, 5)},
 	    TestUtil.getList(section.getOrderExtents()).toArray(new Extent[] {}));
 	}
-	
+
 	@Test
 	public void hide() throws Exception {
 		SectionCore section = new SectionCore(int.class);
 		section.setHidden(1, 2, true);
-		
+
 		assertFalse(section.isHidden(0));
 		assertTrue(section.isHidden(1));
 		assertTrue(section.isHidden(2));
 		assertFalse(section.isHidden(3));
-		
+
 		section.setHidden(1, 1, false);
 		assertFalse(section.isHidden(1));
 		assertTrue(section.isHidden(2));
 	}
-	
-	
-	
+
+
+
 	private static void assertSequence(String expected, DirectionIndexSequence seq) {
 		StringBuilder sb = new StringBuilder();
 		for (seq.init(); seq.next();) {

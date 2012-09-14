@@ -341,8 +341,20 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
     }
     seq.origin = start;
     N last = null;
-	  for (seq.init(); seq.next();) last = seq.end == null ? null : seq.end.getValue();
+	  for (seq.init(); seq.next();) {
+	    last = seq.end == null ? null : seq.end.getValue();
+	  }
 	  return math.compare(seq.remain, math.ZERO_VALUE()) >= 0 ? null : last;
+	}
+
+	public N getIndex(N position) {
+	  ExtentOriginLimitSequence seq = countForward;
+	  seq.limit = math.increment(count);
+	  N last = null;
+    for (seq.init(); seq.next();) {
+      last = seq.end == null ? null : seq.end.getValue();
+    }
+    return math.compare(seq.remain, math.ZERO_VALUE()) >= 0 ? null : last;
 	}
 
 	public boolean overlap(N origin, N limit, MutableExtent<N> extent) {
@@ -358,10 +370,10 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
     }
     if (notExclusive) {
       if (math.compare(indexOf(origin), extent.start.getValue()) < 0) {
-        extent.start.set(origin);        
+        extent.start.set(origin);
       }
       if (math.compare(indexOf(seq.end.getValue()), extent.end.getValue()) > 0) {
-        extent.end.set(seq.end.getValue());        
+        extent.end.set(seq.end.getValue());
       }
     }
     return notExclusive;
@@ -412,21 +424,21 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
       extent = items.get(i);
 
       if (isStarted) {
-        start.set(extent.start);        
+        start.set(extent.start);
       }
       else {
         isStarted = true;
       }
-      
+
       diff.set(extent.end).subtract(start);
-      
+
       if (math.compare(diff, remain) >= 0) {
         end.set(start).add(remain);
         isEnded = true;
       } else {
         end.set(extent.end);
       }
-      
+
       remain.subtract(diff).decrement();
       return true;
     }
@@ -507,19 +519,19 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
       extent = items.get(i);
 
       if (isStarted) {
-        start.set(extent.start);        
+        start.set(extent.start);
       }
       else {
         isStarted = true;
       }
-      
+
       if (math.contains(extent, last)) {
         end.set(last);
         isEnded = true;
       } else {
         end.set(extent.end);
       }
-      
+
       return true;
     }
   }

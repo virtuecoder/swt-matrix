@@ -10,9 +10,10 @@ package pl.netanel.swt.matrix;
 import java.math.BigInteger;
 
 class MutableBigInteger extends MutableNumber<BigInteger> {
-	
-	BigInteger value;
-	
+  private static final long serialVersionUID = 1L;
+
+  BigInteger value;
+
 	public MutableBigInteger(BigInteger value) {
 		this.value = value;
 	}
@@ -27,13 +28,13 @@ class MutableBigInteger extends MutableNumber<BigInteger> {
 		if (!(obj instanceof MutableBigInteger)) return false;
 		return value.equals(((MutableBigInteger) obj).value);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return value.hashCode();
 	}
-	
-	
+
+
 	@Override
 	public MutableBigInteger copy() {
 		return new MutableBigInteger(value);
@@ -49,7 +50,7 @@ class MutableBigInteger extends MutableNumber<BigInteger> {
 		value = n;
 		return this;
 	}
-	
+
 	@Override
 	MutableNumber<BigInteger> set(MutableNumber<BigInteger> n) {
 		value = n.toBigInteger();
@@ -93,7 +94,7 @@ class MutableBigInteger extends MutableNumber<BigInteger> {
 		return value;
 	}
 
-	
+
 	@Override
 	MutableBigInteger add(BigInteger n) {
 		value = value.add(n);
@@ -107,7 +108,7 @@ class MutableBigInteger extends MutableNumber<BigInteger> {
 	}
 
 	@Override
-	int intValue() {
+  public int intValue() {
 		return value.intValue();
 	}
 
@@ -131,11 +132,11 @@ class MutableBigInteger extends MutableNumber<BigInteger> {
 
 	@Override
 	MutableNumber<BigInteger> min(MutableNumber<BigInteger> n) {
-		return value.compareTo(n.toBigInteger()) <= 0 ? this : n; 
+		return value.compareTo(n.toBigInteger()) <= 0 ? this : n;
 	}
 	@Override
 	MutableNumber<BigInteger> max(MutableNumber<BigInteger> n) {
-	  return value.compareTo(n.toBigInteger()) >= 0 ? this : n; 
+	  return value.compareTo(n.toBigInteger()) >= 0 ? this : n;
 	}
 
 	@Override
@@ -143,8 +144,19 @@ class MutableBigInteger extends MutableNumber<BigInteger> {
 		return value.compareTo(n);
 	}
 
-  @Override long longValue() {
+  @Override
+  public long longValue() {
     return value.longValue();
+  }
+
+  @Override
+  public float floatValue() {
+    return value.floatValue();
+  }
+
+  @Override
+  public double doubleValue() {
+    return value.doubleValue();
   }
 
 }

@@ -11,9 +11,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import pl.netanel.swt.matrix.Direction.Backward;
-import pl.netanel.swt.matrix.Direction.Forward;
-import pl.netanel.util.Preconditions;
+import pl.netanel.swt.matrix.AxisSequence.Backward;
+import pl.netanel.swt.matrix.AxisSequence.Forward;
 import pl.netanel.util.Util;
 
 
@@ -39,24 +38,10 @@ class AxisLayout<N extends Number> {
 	boolean isComputingRequired;
 	boolean isFocusItemEnabled;
 
-	public Direction<N> forward, backward, forwardNavigator, backwardNavigator;
-
+	public AxisSequence<N> forward, backward, forwardNavigator, backwardNavigator;
 
   private MutableNumber<N> maxIntegerLessOne;
-
-
-	public AxisLayout(List<SectionClient<N>> sections) {
-	  Preconditions.checkArgument(sections.size() > 0, "Layout must have at least one section");
-	  this.sections = new ArrayList<SectionCore<N>>(sections.size());
-    for (int i = 0, imax = sections.size(); i < imax; i++) {
-      SectionCore<N> section2 = SectionCore.from(sections.get(i));
-			section2.index = i;
-      this.sections.add(section2);
-    }
-    math = this.sections.get(0).math;
-
-		init();
-	}
+  private SpanSequence<N> spanSeq;
 
   @SuppressWarnings("unchecked")
   public AxisLayout() {
@@ -68,6 +53,18 @@ class AxisLayout<N extends Number> {
     createSections(numberClass, sectionCount, headerIndex, bodyIndex);
   }
 
+  public AxisLayout(int headerIndex, int bodyIndex, SectionCore<N>... sections) {
+    assert sections.length > 0;
+    this.sections = new ArrayList<SectionCore<N>>(sections.length);
+    math = sections[0].math;
+    for (int i = 0; i < sections.length; i++) {
+      SectionCore<N> section = sections[i];
+      section.index = i;
+      this.sections.add(section);
+    }
+    init(headerIndex, bodyIndex);
+  }
+
   private void createSections(Class<N> numberClass, int sectionCount, int headerIndex, int bodyIndex) {
     math = Math.getInstance(numberClass);
     sections = new ArrayList<SectionCore<N>>(sectionCount);
@@ -77,29 +74,32 @@ class AxisLayout<N extends Number> {
       sections.add(section);
     }
 
-    if (headerIndex < sectionCount) {
+    init(headerIndex, bodyIndex);
+	}
+
+  private void init(int headerIndex, int bodyIndex) {
+
+    if (headerIndex < sections.size()) {
       header = sections.get(headerIndex);
       header.setCount(math.ONE_VALUE());
       header.setFocusItemEnabled(false);
       header.setVisible(false);
     }
 
-    if (bodyIndex < sectionCount) {
+    if (bodyIndex < sections.size()) {
       body = sections.get(bodyIndex);
     }
-    init();
-		}
-
-  private void init() {
 
 //		if (sections.length == 0) {
 //		sections.add(new Section(numberClass)); // header
 //		sections.add(new Section(numberClass)); // body
 
-		forward = new Direction.Forward<N>(math, this.sections, false);
-		backward = new Direction.Backward<N>(math, this.sections, false);
-		forwardNavigator = new Direction.Forward<N>(math, this.sections, true);
-		backwardNavigator = new Direction.Backward<N>(math, this.sections, true);
+		forward = new AxisSequence.Forward<N>(sections);
+		backward = new AxisSequence.Backward<N>(sections);
+		forwardNavigator = new AxisNavigationSequence.Forward<N>(sections);
+		backwardNavigator = new AxisNavigationSequence.Backward<N>(sections);
+
+		spanSeq = new SpanSequence<N>(sections);
 
 		head = new CountCache(forward);
 		main = new DistanceCache();
@@ -110,8 +110,7 @@ class AxisLayout<N extends Number> {
 		SectionCore<N> section = this.sections.get(0);
 		start = AxisItem.createInternal(section, math.ZERO_VALUE());
 		zeroItem = AxisItem.createInternal(section, math.ZERO_VALUE());
-		forwardNavigator.initNotEmpty();
-		current = forwardNavigator.getItem();
+		current = forwardNavigator.first();
 		total = math.create(0);
 		maxInteger = math.create(Integer.MAX_VALUE);
 		maxIntegerLessOne = math.create(maxInteger).decrement();
@@ -155,7 +154,7 @@ class AxisLayout<N extends Number> {
 	 * @param origin
 	 * @param sign
 	 */
-	protected void compute(AxisItem<N> start, Direction<N> direction) {
+	protected void compute(AxisItem<N> start, AxisSequence<N> AxisSequence) {
 //		Preconditions.checkState(viewportSize > 0, "Cannot compute for viewport size 0");
 		this.start = start;
 
@@ -167,7 +166,7 @@ class AxisLayout<N extends Number> {
 			}
 		}
 
-		computeCache(start, direction);
+		computeCache(start, AxisSequence);
 
 		if (current == null) {
 			current = forwardNavigator.first();
@@ -182,8 +181,10 @@ class AxisLayout<N extends Number> {
 
 	}
 
-	public void computeCache(AxisItem<N> origin, Direction<N> dir) {
+	public void computeCache(AxisItem<N> origin, AxisSequence<N> dir) {
 		// Frozen
+	  forward.rewind(); forward.init(); forward.next();
+	  backward.rewind(); backward.init(); backward.next();
 		head.compute(viewportSize);
 		tail.compute(viewportSize - head.innerWidth);
 
@@ -193,18 +194,20 @@ class AxisLayout<N extends Number> {
 			} else if (!tail.isEmpty() && comparePosition(origin, backward.min) > 0) {
 				origin = backward.getItem();
 			}
-			dir.setHasMore(origin);
+			dir.init(origin);
+			dir.next();
 		}
 
 		// Main
 		int mainMaxWidth = viewportSize - head.innerWidth - tail.innerWidth;
 		main.compute(dir, mainMaxWidth);
-		Direction<N> opposite = opposite(dir);
+		AxisSequence<N> opposite = opposite(dir);
 		if (main.outerWidth < mainMaxWidth && (dir.min == null || !dir.start.equals(dir.min)))
 		{
 			AxisItem<N> origin2 = opposite.start;
 			dir = opposite(dir);
-			dir.setHasMore(origin2);
+			dir.init(origin2);
+			dir.next();
 			main.compute(dir, mainMaxWidth);
 		}
 
@@ -258,8 +261,8 @@ class AxisLayout<N extends Number> {
 		}
 	}
 
-	private Direction<N> opposite(Direction<N> direction) {
-		return direction instanceof Forward ? backward : forward;
+	private AxisSequence<N> opposite(AxisSequence<N> AxisSequence) {
+		return AxisSequence instanceof Forward ? backward : forward;
 	}
 
 	int compare(AxisItem<N> item1, AxisItem<N> item2) {
@@ -298,9 +301,17 @@ class AxisLayout<N extends Number> {
 
 	  if (isComputingRequired) compute();
 
-	  AxisItem<N> current2 =
-	    forwardNavigator.setHasMore(item) ? forwardNavigator.getItem() :
-      backwardNavigator.setHasMore(item) ? backwardNavigator.getItem() : null;
+	  AxisItem<N> current2 = null;
+	  forwardNavigator.init(item);
+	  if (forwardNavigator.next()) {
+	    current2 = forwardNavigator.getItem();
+	  }
+	  else {
+	    backwardNavigator.init(item);
+	    if (backwardNavigator.next()) {
+	      current2 = backwardNavigator.getItem();
+	    }
+	  }
 
     if (current2 == null) return false;
     boolean result = compare(current, current2) != 0;
@@ -353,13 +364,13 @@ class AxisLayout<N extends Number> {
 		return false;
 	}
 
-	AxisItem<N> scroll(MutableNumber<N> itemCount, Direction<N> direction) {
+	AxisItem<N> scroll(MutableNumber<N> itemCount, AxisSequence<N> AxisSequence) {
 		if (isComputingRequired) compute();
-		AxisItem<N> start2 = nextItem(start, itemCount, direction);
+		AxisItem<N> start2 = nextItem(start, itemCount, AxisSequence);
 		if (start2 == null || compare(start2, start) == 0) return null;
 		start = start2;
 		compute();
-		return direction instanceof Forward ? end : start;
+		return AxisSequence instanceof Forward ? end : start;
 	}
 
 	public void scrollTo(AxisItem<N> item) {
@@ -513,43 +524,47 @@ class AxisLayout<N extends Number> {
 		return 0;
 	}
 
-	AxisItem<N> nextItem(AxisItem<N> item, Direction<N> direction) {
-		if (item == null) item = direction.first();
+	AxisItem<N> nextItem(AxisItem<N> item, AxisSequence<N> AxisSequence) {
+		if (item == null) item = AxisSequence.first();
 		if (item == null) return null;
-		direction.setHasMore(item);
-		return direction.nextItem();
+		AxisSequence.setHasMore(item);
+		return AxisSequence.nextItem();
 	}
 
-	AxisItem<N> nextItem(AxisItem<N> item, MutableNumber<N> itemCount, Direction<N> direction) {
-		// TODO skip the hidden items
-		if (!direction.initNotEmpty()) return item;
-		direction.setHasMore(item);
-		return direction.next(math.create(itemCount));
+	AxisItem<N> nextItem(AxisItem<N> item, MutableNumber<N> itemCount, AxisSequence<N> seq) {
+	  MutableNumber<N> counter = math.create(0);
+	  seq.init(item);
+	  for (seq.init(); seq.next();) {
+	    itemCount.increment();
+	    if (math.compare(counter, itemCount) >= 0) break;
+	  }
+	  return seq.getItem();
 	}
 
-	private AxisItem<N> nextPage(AxisItem<N> item, Direction<N> direction) {
-		if (item == null) item = direction.first();
+	private AxisItem<N> nextPage(AxisItem<N> item, AxisSequence<N> dir) {
+		if (item == null) item = dir.first();
 		if (item == null) return null;
 		AxisItem<N> item2;
-		if (direction instanceof Forward) {
-			direction.setHasMore(endNoTrim);
+		if (dir instanceof Forward) {
+			dir.init(endNoTrim);
+			dir.next();
 			if (compare(item, endNoTrim) < 0) {
-				item2 = direction.getItem();
+				item2 = dir.getItem();
 			} else {
-				item2 = direction.nextItem();
+				item2 = dir.nextItem();
 				if (item2 != null) {
-					compute(item2, direction);
+					compute(item2, dir);
 					item2 = endNoTrim;
 				}
 			}
 		} else {
-			if (direction.setHasMore(start)) {
+			if (dir.init(start)) {
 				if (compare(item, start) > 0) {
-					item2 = direction.getItem();
+					item2 = dir.getItem();
 				} else {
-					item2 = direction.nextItem();
+					item2 = dir.nextItem();
 					if (item2 != null) {
-						compute(item2, direction);
+						compute(item2, dir);
 						item2 = start;
 					}
 				}
@@ -606,7 +621,7 @@ class AxisLayout<N extends Number> {
 		ArrayList<Bound> cells, lines;
 		ArrayList<SectionCore<N>> sections;
 		int distance, innerWidth, outerWidth, freezeLineWidth, lastLineWidth;
-		Direction<N> direction;
+		AxisSequence<N> seq;
 
 		AxisItem<N> item;
 
@@ -627,20 +642,20 @@ class AxisLayout<N extends Number> {
 		 * @param canTrim
 		 * @return
 		 */
-		void compute(Direction<N> dir, int maxWidth, int count, boolean canTrim) {
+		void compute(AxisSequence<N> dir, int maxWidth, int count, boolean canTrim) {
 			item = dir.getItem();
 			if (item == null || maxWidth <= 0) return;
 
-			this.direction = dir;
+			this.seq = dir;
 			innerWidth = 0;
 			Bound bound1, bound2;
 
 			if (dir instanceof Backward) {
-				lastLine(dir.section, dir.seq.index().getValue());
+				lastLine(dir.section, dir.getIndex());
 			}
 			while (condition() && item != null) {
-				bound1 = new Bound(0, dir.section.getLineWidth(dir.seq.index().getValue()));
-				bound2 = new Bound(0, dir.section.getCellWidth(dir.seq.index().getValue()));
+				bound1 = new Bound(0, dir.section.getLineWidth(dir.getIndex()));
+				bound2 = new Bound(0, dir.section.getCellWidth(dir.getIndex()));
 				int width = bound1.width + bound2.width;
 
 				if (!canTrim && innerWidth + width > maxWidth || innerWidth == maxWidth) break;
@@ -668,9 +683,9 @@ class AxisLayout<N extends Number> {
 
 			if (count >= 0) {
 				// It is needed for distance cache limits
-				direction.freeze = isEmpty() ? null : items.get(items.size() - 1);
-				//direction.min = (direction == forward ? forwardNavigator : backwardNavigator).first();
-				direction.min = item == null ? direction.first() : item;
+				seq.freeze = isEmpty() ? null : items.get(items.size() - 1);
+				//seq.min = (seq == forward ? forwardNavigator : backwardNavigator).first();
+				seq.min = item == null ? seq.first() : item;
 			}
 			if (dir instanceof Backward) reverse();
 
@@ -686,7 +701,7 @@ class AxisLayout<N extends Number> {
 				outerWidth += lastLineWidth = lastLine.width;
 
 				if (freezeLineWidth >= 0) {
-					//				int sign = direction instanceof Forward ? 1 : -1;
+					//				int sign = seq instanceof Forward ? 1 : -1;
 					int diff = freezeLineWidth - lastLine.width;// * sign;
 					innerWidth += diff;
 					outerWidth += diff;
@@ -739,14 +754,12 @@ class AxisLayout<N extends Number> {
 
 	/**
 	 * Computes given amount of items. Used for frozen areas.
-	 *
-	 * @author Jacek created 08-12-2010
 	 */
 	class CountCache extends Cache {
 		int count;
 
-		public CountCache(Direction<N> direction) {
-			this.direction = direction;
+		public CountCache(AxisSequence<N> AxisSequence) {
+			this.seq = AxisSequence;
 		}
 
 		@Override
@@ -756,11 +769,8 @@ class AxisLayout<N extends Number> {
 
 		public void compute(int maxWidth) {
 			clear();
-			if (!direction.initNotEmpty()) return;
-			super.compute(direction, maxWidth, count, false);
-
-//			iterator.min = iterator.item;
-//			iterator.freeze = iterator.last;
+//			if (!AxisSequence.initNotEmpty()) return;
+			super.compute(seq, maxWidth, count, false);
 		}
 	}
 
@@ -776,7 +786,7 @@ class AxisLayout<N extends Number> {
 			return item == null || !item.equals(forward.freeze) && !item.equals(backward.freeze);
 		}
 
-    public void compute(Direction<N> direction, int maxWidth) {
+    public void compute(AxisSequence<N> direction, int maxWidth) {
 			clear();
 
 			super.compute(direction, maxWidth, -1, direction == forward);
@@ -1121,18 +1131,14 @@ class AxisLayout<N extends Number> {
 
 	public Bound getBound(AxisItem<N> item, MutableExtent<N>span, int distance) {
 	  SectionCore<N> section = item.section;
-
-    NumberSet<N>.ForwardNumberCountSequence seq = section.order.new ForwardNumberCountSequence();
-	  seq.origin = span.start.getValue();
-	  seq.limit = span.end.getValue();
+	  spanSeq.set(item, span.end.getValue());
     int w = 0;
-	  for (seq.init(); seq.next();) {
-	    N index = seq.index.getValue();
-	    if (section.isHidden(index)) continue;
+	  for (spanSeq.init(); spanSeq.next();) {
+	    N index = spanSeq.index.getValue();
 	    w += section.getLineWidth(index) + section.getCellWidth(index);
     }
 
-    return new Bound(distance, java.lang.Math.max(w - section.getLineWidth(seq.origin), 0));
+    return new Bound(distance, java.lang.Math.max(w - section.getLineWidth(item.getIndex()), 0));
   }
 
   public int computeSize() {

@@ -87,7 +87,7 @@ public class MatrixLayoutCellSequenceTest {
     layoutY.setViewportSize(20);
     layoutX.body.setCount(3);
     layoutY.body.setCount(3);
-    zone.setMerged(0, 2, 0, 2);
+    zone.setMerged(0, 2, 0, 2, true);
     layout.compute();
     seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
@@ -100,7 +100,7 @@ public class MatrixLayoutCellSequenceTest {
   public void cellSequence3x3Merge2x2() throws Exception {
     layoutX.body.setCount(3);
     layoutY.body.setCount(3);
-    zone.setMerged(0, 2, 0, 2);
+    zone.setMerged(0, 2, 0, 2, true);
     layout.compute();
     seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
@@ -123,8 +123,8 @@ public class MatrixLayoutCellSequenceTest {
   public void cellSequence3x3Merge0101_2212() throws Exception {
     layoutX.body.setCount(3);
     layoutY.body.setCount(3);
-    zone.setMerged(0, 2, 0, 2);
-    zone.setMerged(2, 1, 1, 2);
+    zone.setMerged(0, 2, 0, 2, true);
+    zone.setMerged(2, 1, 1, 2, true);
     layout.compute();
     seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
@@ -145,8 +145,8 @@ public class MatrixLayoutCellSequenceTest {
   public void cellSequence3x3Merge0101_0222() throws Exception {
     layoutX.body.setCount(3);
     layoutY.body.setCount(3);
-    zone.setMerged(0, 2, 0, 2);
-    zone.setMerged(0, 3, 2, 1);
+    zone.setMerged(0, 2, 0, 2, true);
+    zone.setMerged(0, 3, 2, 1, true);
     layout.compute();
     seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
@@ -165,8 +165,8 @@ public class MatrixLayoutCellSequenceTest {
   public void cellSequence3x3Merge0122_2201() throws Exception {
     layoutX.body.setCount(3);
     layoutY.body.setCount(3);
-    zone.setMerged(0, 2, 2, 1);
-    zone.setMerged(2, 1, 0, 2);
+    zone.setMerged(0, 2, 2, 1, true);
+    zone.setMerged(2, 1, 0, 2, true);
     layout.compute();
     seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();
@@ -193,7 +193,7 @@ public class MatrixLayoutCellSequenceTest {
     layoutY.body.setCount(10);
     layoutX.setViewportSize(60);
     layoutX.setFocusItem(TestUtil.item(layoutX.body, 2));
-    zone.setMerged(0, 5, 0, 5);
+    zone.setMerged(0, 5, 0, 5, true);
     layout.compute();
     seq = new MatrixLayoutCellSequence<Integer, Integer>(layout, Frozen.NONE, Frozen.NONE, zone);
     seq.init();

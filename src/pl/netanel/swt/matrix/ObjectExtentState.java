@@ -7,23 +7,26 @@
  ******************************************************************************/
 package pl.netanel.swt.matrix;
 
-import pl.netanel.util.IntArray;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
-class IntAxisState<N extends Number> extends ExtentState<N> {
-	private final IntArray values;
-	private int defaultValue, value;
-	
-	public IntAxisState(Math<N> math, int defaultValue) {
+
+class ObjectExtentState<N extends Number, T> extends ExtentState<N> {
+	T defaultValue, value;
+	ArrayList<T> values;
+
+	public ObjectExtentState(Math<N> math, T defaultValue) {
 		super(math);
 		this.defaultValue = defaultValue;
-		values = new IntArray();
+		values = new ArrayList<T>();
 	}
-	
+
 	@Override
 	public boolean equalValue(int i) {
 		return values.get(i) == value;
 	}
-	
+
 	@Override
 	public void addValue(int i) {
 		values.add(i, value);
@@ -49,26 +52,32 @@ class IntAxisState<N extends Number> extends ExtentState<N> {
 		return values.get(i) == values.get(j);
 	}
 
-	
-	public int getValue(N index) {
+
+	public T getValue(N index) {
 		int i = indexOf(index);
 		return i == -1 ? defaultValue : values.get(i);
 	}
-	
-	public void setValue(MutableExtent<N> extent, int value) {
+
+	public T getValueNullable(N index) {
+		int i = indexOf(index);
+		return i == -1 ? null: values.get(i);
+	}
+
+	public void setValue(MutableExtent<N> extent, T value) {
 		setValue(extent.start(), extent.end(), value);
 	}
-	
-	public void setValue(N from, N to, int value) {
-		if (value == defaultValue) {
-			// TODO remove value if it is default
-		}
+
+	public void setValue(N from, N to, T value) {
 		this.value = value;
 		doSetValue(from, to);
 	}
 
+	public void setValue(N index, T value) {
+		setValue(index, index, value);
+	}
 
-	
+
+
 	/**
 	 * Gets the size of the values collection.
 	 * For testing purposes mainly
@@ -77,24 +86,36 @@ class IntAxisState<N extends Number> extends ExtentState<N> {
 	public int getCount() {
 		return values.size();
 	}
-	
-	
-	public int getDefault() {
+
+
+	public T getDefault() {
 		return defaultValue;
 	}
-	
-	public void setDefault(int value) {
+
+	public void setDefault(T value) {
 		defaultValue = value;
 	}
-	
-	
-	@Override
-	public IntArray delete(N start, N end) {
-		IntArray a = super.delete(start, end);
-		for (int i = 0, imax = a.size(); i < imax; i++) {
-			int index = a.get(i);
-			values.remove(index);
-		}
-		return a;
+
+	public N getValueIndexCount(T value) {
+	  int i = values.indexOf(value);
+    if (i == -1) {
+      return math.ZERO_VALUE();
+    } else {
+      return null;
+    }
 	}
+
+	public Collection<Extent<N>> getValueExtents(T value) {
+	  int i = values.indexOf(value);
+	  if (i == -1) {
+	    return Collections.emptyList();
+	  } else {
+	    ArrayList<Extent<N>> list = new ArrayList<Extent<N>>();
+	    for (MutableExtent<N> extent: extents) {
+	      list.add(Extent.createUnchecked(extent.start.getValue(), extent.end.getValue()));
+	    }
+	    return list;
+	  }
+	}
+
 }

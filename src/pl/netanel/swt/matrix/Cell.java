@@ -10,23 +10,21 @@ package pl.netanel.swt.matrix;
 /**
  * Pair of indexes representing cell coordinates.
  * Instances of this class are immutable.
- * 
+ *
  * @param <X> indexing type for horizontal axis
  * @param <Y> indexing type for vertical axis
- * 
- * @author Jacek Kolodziejczyk created 25-07-2011
  */
 public class Cell<X extends Number, Y extends Number> {
   final X indexX;
   final Y indexY;
-  
+
   /**
    * Creates a new instance of cell. Arguments are validated.
-   *  
-   * @param indexX cell index on the horizontal axis 
-   * @param indexY cell index on the vertical axis  
-   * @return a new instance of this class 
-   * 
+   *
+   * @param indexX cell index on the horizontal axis
+   * @param indexY cell index on the vertical axis
+   * @return a new instance of this class
+   *
    * @throws IllegalArgumentException if indexX or indexY is <code>null</code>
    * @throws IndexOutOfBoundsException if indexX or IndexY is negative
    */
@@ -35,32 +33,32 @@ public class Cell<X extends Number, Y extends Number> {
     Math.checkIndexStatic(indexY, "indexY");
     return new Cell<X, Y>(indexX, indexY);
   }
-  
+
   /**
    * Creates a new instance of cell without checking arguments validity.
-   *  
-   * @param indexX cell index on the horizontal axis 
-   * @param indexY cell index on the vertical axis  
-   * @return a new instance of this class 
+   *
+   * @param indexX cell index on the horizontal axis
+   * @param indexY cell index on the vertical axis
+   * @return a new instance of this class
    */
   public static <X extends Number, Y extends Number> Cell<X, Y> createUnchecked(X indexX, Y indexY) {
     return new Cell<X, Y>(indexX, indexY);
   }
-  
+
   private Cell(X indexX, Y indexY) {
     this.indexX = indexX;
     this.indexY = indexY;
   }
-  
+
   /**
-   * Returns cell index on the horizontal axis. 
+   * Returns cell index on the horizontal axis.
    * @return cell index on the horizontal axis
    */
   public X getIndexX() {
     return indexX;
   }
   /**
-   * Returns cell index on the vertical axis. 
+   * Returns cell index on the vertical axis.
    * @return cell index on the vertical axis
    */
   public Y getIndexY() {
@@ -94,7 +92,7 @@ public class Cell<X extends Number, Y extends Number> {
   public String toString() {
     return "[" + indexX + ", " + indexY + "]";
   }
-  
-  
-  
+
+
+
 }

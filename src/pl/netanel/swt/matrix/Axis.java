@@ -68,14 +68,25 @@ public class Axis<N extends Number>  {
    * @throws IllegalArgumentException if the headerIndex equals bodyIndex
    */
 	public Axis(Class<N> numberClass, int sectionCount, int headerIndex, int bodyIndex) {
-	  Preconditions.checkNotNullWithName(numberClass, "numberClass");
-	  Preconditions.checkArgument(sectionCount > 1, "sectionCount must be greater then 1");
-	  Preconditions.checkPositionIndex(headerIndex, sectionCount, "headerIndex");
-	  Preconditions.checkPositionIndex(bodyIndex, sectionCount, "bodyIndex");
-	  Preconditions.checkArgument(bodyIndex != headerIndex, "headerIndex cannot equal bodyIndex");
-
+	  checkPreconditions(numberClass, headerIndex, bodyIndex, sectionCount);
 	  init(numberClass, sectionCount, headerIndex, bodyIndex);
 	}
+
+	public Axis(int headerIndex, int bodyIndex, SectionCore<N> ...sections) {
+	  Class<N> numberClass = sections.length > 0 ? sections[0].getIndexClass() : null;
+	  checkPreconditions(numberClass, headerIndex, bodyIndex, sections.length);
+	  init(numberClass, headerIndex, bodyIndex, sections);
+	}
+
+  private void checkPreconditions(Class<N> numberClass, int headerIndex, int bodyIndex,
+      int sectionCount) {
+    Preconditions.checkArgument(sectionCount > 0, "sectionCount must be greater then 0");
+    Preconditions.checkPositionIndex(headerIndex, sectionCount, "headerIndex");
+    Preconditions.checkPositionIndex(bodyIndex, sectionCount, "bodyIndex");
+    Preconditions.checkArgument(bodyIndex != headerIndex, "headerIndex cannot equal bodyIndex");
+    Preconditions.checkNotNullWithName(numberClass, "numberClass");
+  }
+
 
 	/**
 	 * Needed only for test!
@@ -92,7 +103,7 @@ public class Axis<N extends Number>  {
 
     layout = new AxisLayout<N>(numberClass, sectionCount, headerIndex, bodyIndex);
 
-
+    // Create section clients
 	  sections = new ArrayList<SectionClient<N>>(sectionCount);
 	  for (int i = 0; i < sectionCount; i++) {
 	    SectionCore<N> section = layout.sections.get(i);
@@ -106,6 +117,27 @@ public class Axis<N extends Number>  {
       section.axis = this;
       sections.add(new SectionClient<N>(section));
 	  }
+  }
+
+  private void init(Class<N> numberClass, int headerIndex, int bodyIndex, SectionCore<N>... sections) {
+    math = Math.getInstance(numberClass);
+
+    layout = new AxisLayout<N>(headerIndex, bodyIndex, sections);
+
+    // Create section clients
+    this.sections = new ArrayList<SectionClient<N>>(sections.length);
+    for (int i = 0; i < sections.length; i++) {
+      SectionCore<N> section = layout.sections.get(i);
+//	    Preconditions.checkArgument(
+//	      section.getIndexClass().equals(numberClass),
+//	      "Section at %s position is indexed by a different Number subclass " +
+//	        "then the first section: %s != %s",
+//	        i, section.getIndexClass(), numberClass);
+
+      section.index = i;
+      section.axis = this;
+      this.sections.add(new SectionClient<N>(section));
+    }
   }
 
 
@@ -349,6 +381,15 @@ public class Axis<N extends Number>  {
 		return layout.current;
 	}
 
+	/**
+	 * Returns the last item the mouse was over. Or <code>null</code> if no such item.
+	 * @return the last item the mouse was over
+	 */
+	@SuppressWarnings("unchecked")
+  public AxisItem<N> getMouseOverItem() {
+	  return matrix.listener.getAxisState(symbol).mouseOverItem;
+	}
+
 //	/**
 //	 * Returns the item at which a SWT.MouseDown event happened.
 //	 * Or <code>null</code> if no item has been clicked on.
@@ -367,7 +408,7 @@ public class Axis<N extends Number>  {
    * If section has the focus item disabled (see
    * {@link SectionCore#setFocusItemEnabled(boolean)}) then this method does
    * nothing.
-   * 
+   *
    * deprecated Use {@link #setFocusItem(Section, Number)} instead
    *
    * @param item the item to set the focus for
@@ -381,14 +422,14 @@ public class Axis<N extends Number>  {
 		layout.setFocusItem(item);
 		if (matrix != null) matrix.redraw();
 	}
-	
+
   /**
    * Sets the focus marker to the given item.
    * <p>
    * If section has the focus item disabled (see
    * {@link SectionCore#setFocusItemEnabled(boolean)}) then this method does
    * nothing.
-   * 
+   *
    * @param section of the item to set the focus for
    * @param index of the item to set the focus for
    * @throws IllegalArgumentException if item is <code>null</code> or item's
@@ -416,7 +457,7 @@ public class Axis<N extends Number>  {
    * @throws IndexOutOfBoundsException if item's index is out of 0 ...
    *           {@link SectionCore#getCount()}-1 bounds
 	 */
-	
+
 	public void showItem(AxisItem<N> item) {
 	  checkItem(item, "item");
 
@@ -425,8 +466,8 @@ public class Axis<N extends Number>  {
 	    if (matrix != null) matrix.redraw();
 	  }
 	}
-	
-	
+
+
 	/**
 	 * Scrolls to the given making it visible in the viewport.
 	 * <p>
@@ -440,11 +481,11 @@ public class Axis<N extends Number>  {
 	 * @throws IndexOutOfBoundsException if item's index is out of 0 ...
 	 *           {@link SectionCore#getCount()}-1 bounds
 	 */
-	
+
 	public void showItem(Section<N> section, N index) {
 	  AxisItem<N> item = AxisItem.create(section, index);
-	  checkItem(item, "item"); 
-	  
+	  checkItem(item, "item");
+
 	  if (layout.show(item)) {
 	    scroll();
 	    if (matrix != null) matrix.redraw();
@@ -833,8 +874,10 @@ public class Axis<N extends Number>  {
 	}
 
 
-
-	int[] getZOrder() {
+	/**
+	 * Paints body first, then next sections, then previous sections in reverse order.
+	 */
+	int[] getPaintOrder() {
 		// Calculate z-order
 		int[] order = new int[sections.size()];
 		int j = 0;

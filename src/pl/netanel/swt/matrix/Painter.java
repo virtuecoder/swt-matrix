@@ -21,6 +21,9 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.TextLayout;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import pl.netanel.util.Preconditions;
 
@@ -248,6 +251,7 @@ public class Painter<X extends Number, Y extends Number> {
 
 	protected Point textSize;
 
+	private Display display;
 	private Color lastForeground, lastBackground, defaultForeground;
 
 	private Font lastFont;
@@ -257,8 +261,21 @@ public class Painter<X extends Number, Y extends Number> {
   Rectangle clipping;
   private Object data;
 
+  private boolean isTreeEnabled;
+  private boolean hasTreeLinesVisible;
+  protected Image collapsedImage;
+  protected Image expandedImage;
+  protected Point nodeImageSize;
+  private X firstIndexX;
+  protected boolean hasChildren;
+  protected boolean expanded;
+  private int level;
+  private int indent;
+  private SectionCore<X> bodyX;
+  private SectionCore<Y> bodyY;
 
-	/**
+
+  /**
 	 * Constructs a painter with the given name.
 	 * <p>
 	 * The scope of the painter is determined according to the following rules:<br>
@@ -294,6 +311,16 @@ public class Painter<X extends Number, Y extends Number> {
 		this.name = name;
 		this.scope = scope;
 		this.style = new Style();
+		nodeImageSize = new Point(0, 0);
+
+    display = Display.getDefault();
+    display.addListener(SWT.Dispose, new Listener() {
+      @Override
+      public void handleEvent(Event e) {
+        if (collapsedImage != null) collapsedImage.dispose();
+        if (expandedImage != null) expandedImage.dispose();
+      }
+    });
 	}
 
 	/**
@@ -363,6 +390,13 @@ public class Painter<X extends Number, Y extends Number> {
 		textSize = new Point(-1, extent.y);
 		textLayout = new TextLayout(gc.getDevice());
 		clipping = gc.getClipping();
+
+		bodyX = zone.sectionX;
+		bodyY = zone.sectionY;
+		if (isTreeEnabled) {
+	    firstIndexX = bodyX.getOrder().next();
+		}
+		indent = 0;
 		return true;
 	}
 
@@ -423,8 +457,17 @@ public class Painter<X extends Number, Y extends Number> {
 			//}
 		}
 
+		x += indent;
+		width -= indent;
+		if (hasChildren) {
+		  gc.drawImage(expanded ? expandedImage : collapsedImage,
+		      x - nodeImageSize.x,
+		      y + (height - nodeImageSize.y)/2);
+		}
+
 		int x2 = x, y2 = y;
 		int x3 = x, y3 = y;
+
 
 		if (image != null) {
 			Rectangle bounds = image.getBounds();
@@ -588,7 +631,8 @@ public class Painter<X extends Number, Y extends Number> {
    * Configures the painter properties according to the given indexes.
    * <p>
    * Default implementation invokes {@link #setupSpatial(Number, Number)}
-   * and determines if the cell is selected.
+   * and determines if the cell is selected, therefore when overridden should
+   * call <code>super.setup</code>.
    *
    * @param indexX cell index on the horizontal axis
    * @param indexY cell index on the vertical axis
@@ -603,10 +647,13 @@ public class Painter<X extends Number, Y extends Number> {
    * Spatial properties are the ones that effect the space of the cell and
    * include: text, image, text and image margins, text wrapping.
    * <p>
+   * Default implementation computes space of in first column when tree is enabled,
+   * therefore when overridden should call <code>super.setupSpatial</code>.
+   * <p>
    * It is utilized by both painting mechanism as well as
    * {@link #computeSize(Number, Number, int, int)} routine.
    * The reason to separate it from {@link #setup(Number, Number)} method
-   * was to improve performance of size computing by eliminating unnecessary
+   * is to improve performance of size computing by eliminating unnecessary
    * processing, like setting colors, determining whether the cell is selected, etc.
    * <p>
    * The most common usage is to set the text to display:
@@ -618,7 +665,22 @@ public class Painter<X extends Number, Y extends Number> {
    * @param indexX cell index on the horizontal axis
    * @param indexY cell index on the vertical axis
    */
-	public void setupSpatial(X indexX, Y indexY) {}
+	public void setupSpatial(X indexX, Y indexY) {
+    if (isTreeEnabled) {
+      if (indexX.equals(firstIndexX)) {
+        hasChildren = bodyY.hasChildren(indexY);
+        expanded = hasChildren ? zone.sectionY.isExpanded(indexY) : false;
+        level = bodyY.getLevelInTree(indexY).intValue() + 1;
+        indent = level * (style.textMarginX + nodeImageSize.x);
+      }
+      else {
+        hasChildren = false;
+        expanded = false;
+        level = 0;
+        indent = style.textMarginX + nodeImageSize.x;
+      }
+    }
+	}
 
   /**
    * Set the style of the painter.
@@ -679,6 +741,86 @@ public class Painter<X extends Number, Y extends Number> {
 	}
 
 	/**
+	 * Enables a vertical tree in the first column with node icons indicating
+	 * expanded/collapsed state. The icons are created if are null.
+	 * @param state <code>true</code> to enable tree painting or <code>false</code> to disable it.
+	 */
+	public void setTreeVisible(boolean state) {
+	  isTreeEnabled = state;
+	  createDefaultNodeIcons();
+	}
+
+
+	/**
+	 * Returns <code>true</code> if the tree painting is enabled, or
+	 * <code>false</code> otherwise.
+	 * @return <code>true</code> if the tree painting is enabled, or
+   * <code>false</code> otherwise
+	 */
+	public boolean isTreeEnabled() {
+	  return isTreeEnabled;
+	}
+
+	/**
+	 * Makes the tree lines connecting nodes visible if set to <code>true</code>,
+	 * or hidden otherwise.
+	 * @param state <code>true</code> to make the tree lines visible,
+	 * or <code>false</code> otherwise.
+	 */
+	public void setTreeLinesVisible(boolean state) {
+	  this.hasTreeLinesVisible = state;
+	}
+
+  /**
+   * Returns <code>true</code> if the tree lines are visible, or
+   * <code>false</code> otherwise.
+   * @param state
+   */
+	public boolean hasTreeLinesVisible() {
+	  return hasTreeLinesVisible;
+	}
+
+	/**
+	 * Returns true if the given coordinates are within the node icon bounds.
+	 * @return
+	 */
+	boolean isOverNodeIcon(int x, int y) {
+	  AxisItem<X> itemX = matrix.getAxisX().getMouseOverItem();
+	  AxisItem<Y> itemY = matrix.getAxisY().getMouseOverItem();
+    if (itemX == null || itemY == null ||
+        !itemX.getIndex().equals(bodyX.getIndex(bodyX.math.ZERO_VALUE())) ||
+        !bodyY.hasChildren(itemY.getIndex()))
+        return false;
+
+    int level = bodyY.getLevelInTree(itemY.getIndex()).intValue();
+    int indent = (level+1) * style.textMarginX + level * nodeImageSize.x;
+    int[] bound = matrix.axisX.getCellBound(itemX);
+    int x0 = bound[0] + indent;
+    bound = matrix.axisY.getCellBound(itemY);
+    int y0 = bound[0] + (bound[1] - nodeImageSize.y) / 2;
+
+    return x0 <= x && x <= x0 + nodeImageSize.x &&
+        y0 <= y && y < y0 + nodeImageSize.y;
+	}
+
+	/**
+   * Sets the icons to represent collapsed/expanded state of a tree node.
+   * <p>
+   * The image can be null and then no icon is displayed.
+   * @param collapsedImage image representing collapsed state.
+   * @param expandedImage image representing expanded state.
+   */
+  public void setNodeImages(Image collapsedImage, Image expandedImage) {
+    this.collapsedImage = collapsedImage;
+    this.expandedImage = expandedImage;
+
+     Rectangle r1 = collapsedImage.getBounds();
+     Rectangle r2 = expandedImage.getBounds();
+     nodeImageSize.x = java.lang.Math.max(r1.width, r2.width);
+     nodeImageSize.y = java.lang.Math.max(r1.height, r2.height);
+  }
+
+	/**
 	 * Returns the preferred size of the receiver.
    * @param indexX cell index on the horizontal axis
    * @param indexY cell index on the vertical axis
@@ -733,10 +875,35 @@ public class Painter<X extends Number, Y extends Number> {
         y = max(y, extent.y + 2 * style.textMarginY);
       }
     }
+    x += indent;
 
 	  return new Point(max(x, wHint), max(y, hHint));
 	}
 
+
+	/**
+   * Creates default node icons
+   */
+  private void createDefaultNodeIcons() {
+    Image image1 = new Image(display, 9, 9);
+    gc = new GC(image1);
+    gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
+    gc.drawRectangle(0, 0, 8, 8);
+    gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
+    gc.drawLine(2, 4, 6, 4);
+    gc.drawLine(4, 2, 4, 6);
+    gc.dispose();
+
+    Image image2 = new Image(display, 9, 9);
+    GC gc = new GC(image2);
+    gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
+    gc.drawRectangle(0, 0, 8, 8);
+    gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
+    gc.drawLine(2, 4, 6, 4);
+    gc.dispose();
+
+    setNodeImages(image1, image2);
+  }
 
 
 	/*------------------------------------------------------------------------
@@ -793,6 +960,7 @@ public class Painter<X extends Number, Y extends Number> {
 
 	void setMatrix(Matrix<X, Y> matrix) {
 		this.matrix = matrix;
+
 	}
 
 	/**
@@ -808,13 +976,29 @@ public class Painter<X extends Number, Y extends Number> {
 		return matrix;
 	}
 
-  Zone<X, Y> getZone() {
+	/**
+	 * Returns the zone to which the painter is attached or null if it is attached to matrix.
+	 * @return the zone to which the painter is attached or null if it is attached to matrix
+	 */
+  public Zone<X, Y> getZone() {
     return zone;
   }
 
   void setZone(ZoneCore<X, Y> zone) {
     this.zone = zone;
     this.matrix = zone.getMatrix();
+    zone.addListener(SWT.MouseDown, new Listener() {
+      @Override
+      public void handleEvent(Event e) {
+        if (isTreeEnabled && isOverNodeIcon(e.x, e.y)) {
+          AxisItem<Y> itemY = matrix.axisY.getMouseOverItem();
+          if (itemY == null) return;
+          Y indexY = itemY.getIndex();
+          bodyY.setExpanded(indexY, !bodyY.isExpanded(indexY));
+          matrix.refresh();
+        }
+      }
+    });
   }
 
 

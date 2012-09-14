@@ -10,13 +10,12 @@ package pl.netanel.swt.matrix;
 import static pl.netanel.swt.matrix.Math.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
+import pl.netanel.util.ImmutableIterator;
 
 /**
- * Stores number extents ensuring they are continuous as much as possible and do not overlap.
- *
- * @author Jacek
- * @created 09-11-2010
+ * Stores number extents of numbers ensuring they are continuous as much as possible and do not overlap.
  */
 class NumberSet<N extends Number> {
 	protected Math<N> math;
@@ -335,7 +334,7 @@ class NumberSet<N extends Number> {
 
 
 
-	abstract class NumberSequence implements Sequence {
+	class NumberSequence implements Sequence {
 	  private int i, size;
 	  MutableExtent<N> e;
 	  MutableNumber<N> index;
@@ -362,10 +361,21 @@ class NumberSet<N extends Number> {
 	  boolean over() {
 	    return i >= size - 1 && math.compare(index.increment(), e.end) >= 0;
 	  }
+
+	  /**
+	   * Returns index of the current item.
+	   *
+	   * @return vertical axis index
+	   */
+	  public N index() {
+	    return index.getValue();
+	  }
+
+	  boolean hasNext() {
+	    return i < size - 1 || math.compare(index.increment(), e.end) < 0;
+	  }
 	}
 
-	class ForwardNumberSequence extends NumberSequence {
-	}
 
 	abstract class NumberCountSequence implements Sequence {
 	  N origin, limit;
@@ -404,4 +414,48 @@ class NumberSet<N extends Number> {
 
   }
 
+  public Iterator<N> numberIterator() {
+    return new ImmutableIterator<N>() {
+      NumberSequence seq = new NumberSequence();
+      private boolean hasNext;
+      {
+        seq.init();
+        hasNext = seq.next();
+      }
+      @Override
+      public boolean hasNext() {
+        return hasNext;
+      }
+
+      @Override
+      public N next() {
+        N next = hasNext ? seq.index() : null;
+        hasNext = seq.next();
+        return next;
+      }
+    };
+  }
+
+  public Iterator<Extent<N>> extentIterator() {
+    return new ImmutableIterator<Extent<N>>() {
+      ExtentSequence<N> seq = new ExtentSequence<N>(items);
+      private Extent<N> next;
+      private boolean hasNext;
+      {
+        seq.init();
+        hasNext = seq.next();
+      }
+      @Override
+      public boolean hasNext() {
+        return hasNext;
+      }
+
+      @Override
+      public Extent<N> next() {
+        next = hasNext ? Extent.create(seq.start, seq.end) : null;
+        hasNext = seq.next();
+        return next;
+      }
+    };
+  }
 }

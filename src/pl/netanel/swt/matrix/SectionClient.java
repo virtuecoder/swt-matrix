@@ -503,8 +503,48 @@ class SectionClient<N extends Number> implements Section<N> {
 		core.checkRange(start, end, limit);
 	}
 
-  public boolean isMerged(N index) {
-    return false;
-  };
+  public void setParent(N child, N parent) {
+    core.setParent(child, parent);
+  }
+
+  public void setParent(N start, N end, N parent) {
+    core.setParent(start, end, parent);
+  }
+
+  public Iterator<Extent<N>> getChildrenExtents(N parent) {
+    return core.getChildrenExtents(parent);
+  }
+
+  public Iterator<N> getChildren(N parent) {
+    return core.getChildren(parent);
+  }
+
+  public N getChildrenCount(N parent) {
+    return core.getChildrenCount(parent);
+  }
+
+  public N getParent(N index) {
+    return core.getParent(index);
+  }
+
+  public N getLevelInTree(N index) {
+    return core.getLevelInTree(index);
+  }
+
+  public void setExpanded(N parent, boolean state) {
+    core.setExpanded(parent, state);
+  }
+
+  public void setExpanded(N start, N end, boolean state) {
+    core.setExpanded(start, end, state);
+  }
+
+  public boolean isExpanded(N index) {
+    return core.isExpanded(index);
+  }
+
+  public boolean hasChildren(N parent) {
+    return core.hasChildren(parent);
+  }
 
 }

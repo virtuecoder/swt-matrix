@@ -7,6 +7,8 @@
  ******************************************************************************/
 package pl.netanel.swt.matrix;
 
+import java.util.List;
+
 
 /**
  * Iterate over a set of numbers.
@@ -22,22 +24,29 @@ package pl.netanel.swt.matrix;
  * @author Jacek created 21-02-2011
  */
 class NumberSequence<N extends Number> implements Sequence {
-	NumberSet<N> set;
 	int i, size;
 	MutableExtent<N> e;
 	MutableNumber<N> index;
+  private final Math<N> math;
+  private final List<MutableExtent<N>> items;
 
 
 	NumberSequence(NumberSet<N> set) {
-		this.set = set;
+		this(set.math, set.items);
 	}
 
-	public void init() {
+	public NumberSequence(Math<N> math, List<MutableExtent<N>> items) {
+    this.math = math;
+    this.items = items;
+
+  }
+
+  public void init() {
 		i = 0;
-		size = set.items.size();
+		size = items.size();
 		if (size == 0) return;
-		e = set.items.get(i);
-		index = set.math.create(e.start);
+		e = items.get(i);
+		index = math.create(e.start);
 		index.decrement();
 	}
 
@@ -48,9 +57,9 @@ class NumberSequence<N extends Number> implements Sequence {
 	 */
 	public boolean next() {
 		if (size == 0) return false;
-		if (set.math.compare(index.increment(), e.end) > 0) {
+		if (math.compare(index.increment(), e.end) > 0) {
 			if (++i >= size) return false;
-			e = set.items.get(i);
+			e = items.get(i);
 			index.set(e.start);
 		}
 		return true;
@@ -66,6 +75,6 @@ class NumberSequence<N extends Number> implements Sequence {
 	}
 
 	boolean hasNext() {
-		return i < size - 1 || set.math.compare(index.increment(), e.end) < 0;
+		return i < size - 1 || math.compare(index.increment(), e.end) < 0;
 	}
 }

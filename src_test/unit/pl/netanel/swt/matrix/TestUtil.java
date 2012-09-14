@@ -84,12 +84,10 @@ class TestUtil {
 		    section.setFocusItemEnabled(false);
 		  }
 		  section.setCount(count[i]);
+		  section.setVisible(true);
 		}
-		for (int i = 0; i < count.length; i++) {
-			Section section = layout.getSection(i);
-			section.setVisible(true);
-//			section.setFocusItemEnabled(true);
-		}
+		layout.backward.rewind();
+		layout.backwardNavigator.rewind();
 		return layout;
 	}
 

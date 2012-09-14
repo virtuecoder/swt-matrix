@@ -23,6 +23,8 @@
 
 package pl.netanel.util;
 
+import static pl.netanel.util.Util.format;
+
 import java.util.NoSuchElementException;
 
 //import com.sun.istack.internal.Nullable;
@@ -63,8 +65,8 @@ import java.util.NoSuchElementException;
  * @author Kevin Bourrillion
  */
 public final class Preconditions {
-  public final static String NOT_NULL_MESSAGE = "%s cannot be null"; 
-  
+  public final static String NOT_NULL_MESSAGE = "%s cannot be null";
+
   private Preconditions() {}
 
   /**
@@ -208,7 +210,7 @@ public final class Preconditions {
     }
     return reference;
   }
-  
+
   public static <T> T checkNotNullWithName(T reference, String name) {
 	  if (reference == null) {
 		  // If either of these parameters is null, the right thing happens anyway
@@ -354,49 +356,7 @@ public final class Preconditions {
     }
   }
 
-  /**
-   * Substitutes each {@code %s} in {@code template} with an argument. These
-   * are matched by position - the first {@code %s} gets {@code args[0]}, etc.
-   * If there are more arguments than placeholders, the unmatched arguments will
-   * be appended to the end of the formatted message in square braces.
-   *
-   * @param template a non-null string containing 0 or more {@code %s}
-   *     placeholders.
-   * @param args the arguments to be substituted into the message
-   *     template. Arguments are converted to strings using
-   *     {@link String#valueOf(Object)}. Arguments can be null.
-   */
-  public static String format(String template, Object... args) {
-    // start substituting the arguments into the '%s' place holders
-    StringBuilder builder = new StringBuilder(
-        template.length() + 16 * args.length);
-    int templateStart = 0;
-    int i = 0;
-    while (i < args.length) {
-      int placeholderStart = template.indexOf("%s", templateStart);
-      if (placeholderStart == -1) {
-        break;
-      }
-      builder.append(template.substring(templateStart, placeholderStart));
-      builder.append(args[i++]);
-      templateStart = placeholderStart + 2;
-    }
-    builder.append(template.substring(templateStart));
 
-    // if we run out of placeholders, append the extra args in square braces
-    if (i < args.length) {
-      builder.append(" [");
-      builder.append(args[i++]);
-      while (i < args.length) {
-        builder.append(", ");
-        builder.append(args[i++]);
-      }
-      builder.append("]");
-    }
-
-    return builder.toString();
-  }
-  
   public static void checkEventType(int type) {
     if (type < 1 || 50 < type) {
       throw new IllegalArgumentException(

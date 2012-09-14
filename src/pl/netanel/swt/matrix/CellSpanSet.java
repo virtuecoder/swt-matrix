@@ -14,14 +14,6 @@ import pl.netanel.util.IntArray;
 
 /**
  * Manages a set of exclusive cell spans.
- *
- * @author Jacek
- * @created 15-11-2010
- */
-/**
- *
- * @author Jacek
- * @created 30-06-2012
  */
 class CellSpanSet<X extends Number, Y extends Number> {
   private final NumberOrder<X> orderX;
@@ -87,6 +79,35 @@ class CellSpanSet<X extends Number, Y extends Number> {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * If one of the arguments is null only the containment of the other one is checked.
+	 * @param indexX
+	 * @param indexY
+	 * @return
+	 */
+	public boolean contains(X indexX, X countX, Y indexY, Y countY) {
+	  int size = itemsX.size();
+	  for (int i = 0; i < size; i++) {
+	    MutableExtent<X> ex = itemsX.get(i);
+	    MutableExtent<Y> ey = itemsY.get(i);
+
+	    boolean containsX = false, containsY = false;
+	    if (indexY != null) {
+	      containsY = orderY.getSpanExtents(ey).contains(indexY, countY);
+	    }
+	    if (indexX != null) {
+	      containsX = orderX.getSpanExtents(ex).contains(indexX, countX);
+	    }
+	    if (indexX == null && containsY ||
+	        indexY == null && containsX ||
+	        containsX && containsY)
+	    {
+	      return true;
+	    }
+	  }
+	  return false;
 	}
 
 	/**
@@ -232,6 +253,12 @@ class CellSpanSet<X extends Number, Y extends Number> {
 		MutableExtent.insertSpan(mathX, itemsX, target, count);
 	}
 
+	/**
+	 * Returns extents with start and count or null if does not exist.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public CellExtent<X, Y> getSpan(X x, Y y) {
 	  for (int i = 0; i < itemsX.size(); i++) {
 	    MutableExtent<X> spanX = itemsX.get(i);

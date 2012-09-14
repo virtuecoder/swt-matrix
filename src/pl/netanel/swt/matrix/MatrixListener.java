@@ -240,6 +240,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     boolean focusMoved = true;
     private int resizeEvent;
     private boolean selectState;
+    AxisItem<N> mouseOverItem;
 
     public AxisListener(Axis<N> axis) {
       this.axis = axis;
@@ -260,17 +261,17 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       }
       else if (e.type == SWT.MouseMove) {
         distance = axis.symbol == 'X' ? e.x : e.y;
-        AxisItem<N> item2 = autoScroll.future != null && autoScroll.item != null
+        mouseOverItem = autoScroll.future != null && autoScroll.item != null
             ? autoScroll.item
                 : axisLayout.getItemByDistance(distance);
 
-        if (item2 != null) {
+        if (mouseOverItem != null) {
           if (item != null) {
-            itemModified = axisLayout.compare(item, item2) != 0;
+            itemModified = axisLayout.compare(item, mouseOverItem) != 0;
           }
           //					last = item;
-          item = item2;
-          if (last == null) last = item2;
+          item = mouseOverItem;
+          if (last == null) last = mouseOverItem;
         }
         mouseMoveEvent = e;
       }
@@ -1212,6 +1213,12 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       }
       super.paint(x, y, width, height);
     }
+  }
+
+
+  @SuppressWarnings("rawtypes")
+  public AxisListener getAxisState(char symbol) {
+    return symbol == 'X' ? stateX : stateY;
   }
 }
 

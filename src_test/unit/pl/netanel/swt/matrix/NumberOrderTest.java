@@ -58,13 +58,20 @@ import pl.netanel.swt.matrix.NumberOrder.ForwardExtentFirstLastSequence;
 		assertEquals("0-9", model.toString());
 	}
 
-//	@Test
-//	public void moveFragmented1() throws Exception {
-//		NumberOrder model = numberOrder(10);
-//		move(model, 2, 2, 2);
-//		move(model, 6, 6, 2);
-//		assertEquals("0-2, 6, 3-5, 7-9", model.toString());
-//	}
+	@Test
+  public void moveToTheEnd() throws Exception {
+    NumberOrder model = numberOrder(10);
+    move(model, 2, 2, 10);
+    assertEquals("0-1, 3-9, 2", model.toString());
+  }
+
+	@Test
+	public void moveFragmented1() throws Exception {
+		NumberOrder model = numberOrder(10);
+		move(model, 2, 2, 2);
+		move(model, 6, 6, 2);
+		assertEquals("0-1, 6, 2-5, 7-9", model.toString());
+	}
 
 	@Test
 	public void moveFragmented2() throws Exception {
@@ -299,7 +306,7 @@ import pl.netanel.swt.matrix.NumberOrder.ForwardExtentFirstLastSequence;
 	 public void forwardExtentOriginLimitSequence() throws Exception {
      NumberOrder<Integer> order = numberOrder(5);
      ExtentOriginLimitSequence seq = order.countForward;
-     
+
      order.move(3, 3, 2);
      assertEquals("0-1, 3, 2, 4", order.toString());
      seq.init(1, 3);
@@ -308,12 +315,12 @@ import pl.netanel.swt.matrix.NumberOrder.ForwardExtentFirstLastSequence;
      assertStep(seq, true, 2, 2);
      assertFalse(seq.next());
 	 }
-	 
+
 	 @Test
 	 public void forwardExtentFirstLastSequence() throws Exception {
 	   NumberOrder<Integer> order = numberOrder(5);
 	   ForwardExtentFirstLastSequence seq = order.untilForward;
-	   
+
 	   order.move(3, 3, 2);
 	   assertEquals("0-1, 3, 2, 4", order.toString());
 	   seq.init(1, 2);
@@ -331,7 +338,7 @@ import pl.netanel.swt.matrix.NumberOrder.ForwardExtentFirstLastSequence;
 	  assertEquals(start, seq.start == null ? null : seq.start.getValue());
 	  assertEquals(end, seq.end == null ? null : seq.end.getValue());
 	}
-	
+
 	private void assertStep(ForwardExtentFirstLastSequence seq, boolean next, Integer start, Integer end) {
 	  assertEquals(next, seq.next());
 	  assertEquals(start, seq.start == null ? null : seq.start.getValue());

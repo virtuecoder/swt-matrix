@@ -89,6 +89,7 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
               @Override
               public void setupSpatial(X indexX, Y indexY) {
                   text = indexY.toString() + ", " + indexX.toString();
+                  super.setupSpatial(indexX, indexY);
               }
             };
             zone.addPainter(painter);
@@ -99,6 +100,7 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
               @Override
               public void setupSpatial(X indexX, Y indexY) {
                 text = indexX.toString();
+                super.setupSpatial(indexX, indexY);
               }
             });
             zone.setHeaderStyle();
@@ -106,8 +108,9 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
           else if (sectionX.equals(headerX) && sectionY.equals(bodyY)) {
             zone.addPainter(new Painter<X, Y>(Painter.NAME_CELLS, Painter.SCOPE_CELLS_X) {
               @Override
-              public void setupSpatial(Number indexX, Number indexY) {
+              public void setupSpatial(X indexX, Y indexY) {
                 text = indexY.toString();
+                super.setupSpatial(indexX, indexY);
               }
             });
             zone.setHeaderStyle();
@@ -127,8 +130,8 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
 
   private void calculatePaintOrder() {
     paintOrder = new int[zones.size()];
-    int[] orderY = matrix.axisY.getZOrder();
-    int[] orderX = matrix.axisX.getZOrder();
+    int[] orderY = matrix.axisY.getPaintOrder();
+    int[] orderX = matrix.axisX.getPaintOrder();
     int k = 0;
     for (int i = 0, imax = orderY.length; i < imax; i++) {
       for (int j = 0, jmax = orderX.length; j < jmax; j++) {
@@ -417,7 +420,6 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
    * Each frozen area contains a
    */
   public void computeMerging() {
-
     // Clear region
     if (region != null && !region.isDisposed()) {
       region.dispose();

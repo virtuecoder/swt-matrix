@@ -64,7 +64,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	Y cellMergeLimitY;
   private Math<X> mathX;
   private Math<Y> mathY;
-  
+
 
   /**
 	 * Constructs zone at intersection of the specified sections.
@@ -76,7 +76,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		this.sectionX = sectionX;
 		mathX = sectionX.math;
 		mathY = sectionY.math;
-		
+
 		painters = new Painters<X, Y>();
     listeners = new Listeners();
     bindings = new ArrayList<GestureBinding>();
@@ -90,7 +90,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		cellMerging = new CellSpanSet<X, Y>(sectionX.order, sectionY.order);
 		cellMergeLimitX = mathX.create(1000).getValue();
 		cellMergeLimitY = mathY.create(1000).getValue();
-		
+
 //		foreground = new MapValueToCellSet<X, Y, Color>(mathX, mathY);
 //		text = new MapValueToCellSet(this.sectionY.math, this.sectionX.math);
 //		image = new MapValueToCellSet(this.sectionY.math, this.sectionX.math);
@@ -218,7 +218,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	public void setSelected(X startX, X endX, Y startY, Y endY, boolean state) {
 		setSelected(startX, endX, startY, endY, state, true);
 	}
-	
+
 	void setSelected(X startX, X endX, Y startY, Y endY, boolean state, boolean withMerged) {
 	  if (!selectionEnabled) return;
 	  // assert startX <= endX, startY <= endY
@@ -234,17 +234,17 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	    for (seqX.init(startX, endX); seqX.next();) {
 	      for (seqY.init(startY, endY); seqY.next();) {
 	        if (state) {
-//	          System.out.println(String.format("%s %s %s %s", 
-//	            seqX.start.getValue(), seqX.end.getValue(), 
+//	          System.out.println(String.format("%s %s %s %s",
+//	            seqX.start.getValue(), seqX.end.getValue(),
 //              seqY.start.getValue(), seqY.end.getValue()));
 	          cellSelection.add(
-	            seqX.start.getValue(), seqX.end.getValue(), 
+	            seqX.start.getValue(), seqX.end.getValue(),
 	            seqY.start.getValue(), seqY.end.getValue());
 	        } else {
 	          cellSelection.remove(
-	            seqX.start.getValue(), seqX.end.getValue(), 
+	            seqX.start.getValue(), seqX.end.getValue(),
               seqY.start.getValue(), seqY.end.getValue());
-	        }	        
+	        }
 	      }
 	    }
 	  }
@@ -389,19 +389,31 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 
 	@Override
-	public boolean setMerged(X indexX, X countX, Y indexY, Y countY) {
+	public boolean setMerged(X indexX, X countX, Y indexY, Y countY, boolean state) {
 	  boolean removed = cellMerging.removeContaining(indexX, countX, indexY, countY);
-    
-    if (!removed && 
+
+    if (state &&
       (mathX.compare(countX, mathX.ONE_VALUE()) > 0 || mathY.compare(countY, mathY.ONE_VALUE()) > 0)) {
 	    cellMerging.add(indexX, countX, indexY, countY);
 	  }
     return !removed;
 	}
 
+	public Cell<X, Y> getMergeOrigin(X indexX, Y indexY) {
+	  CellExtent<X, Y> span = cellMerging.getSpan(indexX, indexY);
+	  return span == null ?
+      Cell.create(indexX, indexY) :
+	    Cell.create(span.startX, span.startY);
+	}
+
 	@Override
 	public boolean isMerged(X indexX, Y indexY) {
 	  return cellMerging.contains(indexX, indexY);
+	}
+
+	@Override
+	public boolean isMerged(X indexX, X countX, Y indexY, Y countY) {
+	  return cellMerging.contains(indexX, countX, indexY, countY);
 	}
 
 	@Override

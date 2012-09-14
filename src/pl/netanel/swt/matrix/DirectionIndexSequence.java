@@ -12,11 +12,13 @@ import java.util.List;
 /**
  * Iterates over section items in their order and skipping the hidden ones.
  * Iteration yields nothing if the section is not visible.
+ * <p>
+ * Singlethreaded.
  */
 abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 	protected final SectionCore<N> section;
 	public MutableNumber<N> number, number2, lastInExtent, last, d;
-	protected int i, h;
+	protected int i, h, b;
 	public int level;
 	protected int sign;
 	protected MutableExtent<N> extent, he;
@@ -142,7 +144,6 @@ abstract class DirectionIndexSequence<N extends Number> implements Sequence {
 	public MutableNumber<N> index() {
 		return number;
 	}
-
 
 	@Override
 	public boolean next() {

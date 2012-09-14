@@ -260,7 +260,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
 	public Matrix(Shell parent, int style, Class<X> classX, Class<Y> classY) {
 	  this(parent, style, new Axis<X>(classX, 2), new Axis<Y>(classY, 2));
-	  configureAxises(true, true);
+	  configureAxises();
 	}
 
 
@@ -274,10 +274,14 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 * (that is, using the <code>int</code> "|" operator) two or more
 	 * of those <code>SWT</code> style constants. The class description
 	 * lists the style constants that are applicable to the class.
-	 * Style bits are also inherited from superclasses.
+	 * Style bits are also inherited from super classes.
 	 * </p><p>
 	 * It the <code>axisY</code> or <code>axisX</code> is null then
 	 * the axis is created with the {@link Axis#Axis()} constructor.
+	 * </p><p>
+	 * The axises will be configured with default cell width for X axis
+	 * and scroll/resize offsets, so any changes to those values
+	 * should be done after matrix is constructed.
 	 * </p><p>
 	 * If any of <code>zones</code> has zero painters then default painters are attached.
 	 * </p><p>
@@ -308,7 +312,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	  this.layoutX = this.axisX.layout;
 	  this.layoutY = this.axisY.layout;
 
-		configureAxises(axisX == null, axisY == null);
+		configureAxises();
 
 		layout = new MatrixLayout<X, Y>(layoutX, layoutY);
 
@@ -359,17 +363,14 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 //    });
 	}
 
-	private void configureAxises(boolean x, boolean y) {
-	  if (x) {
-      axisX.getHeader().setDefaultCellWidth(40);
-      axisX.getBody().setDefaultCellWidth(50);
-      axisX.setAutoScrollOffset(Matrix.AUTOSCROLL_OFFSET_X);
-      axisX.setResizeOffset(Matrix.RESIZE_OFFSET_X);
-    }
-    if (y) {
-      axisY.setAutoScrollOffset(Matrix.AUTOSCROLL_OFFSET_Y);
-      axisY.setResizeOffset(Matrix.RESIZE_OFFSET_Y);
-    }
+	private void configureAxises() {
+    axisX.getHeader().setDefaultCellWidth(40);
+    axisX.getBody().setDefaultCellWidth(50);
+    axisX.setAutoScrollOffset(Matrix.AUTOSCROLL_OFFSET_X);
+    axisX.setResizeOffset(Matrix.RESIZE_OFFSET_X);
+
+    axisY.setAutoScrollOffset(Matrix.AUTOSCROLL_OFFSET_Y);
+    axisY.setResizeOffset(Matrix.RESIZE_OFFSET_Y);
 	}
 
   private void setLayout(MatrixLayout<X, Y> model) {
@@ -667,7 +668,6 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	  } else {
 	    painter.setEnabled(false);
 	  }
-
 	}
 
 

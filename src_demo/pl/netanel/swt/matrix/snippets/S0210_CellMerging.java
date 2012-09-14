@@ -32,11 +32,12 @@ public class S0210_CellMerging
             Zone<Integer, Integer> body = matrix.getBody();
             CellExtent<Integer, Integer> extent = body.getSelectedExtent();
             if (extent == null) return;
-            body.setMerged(
-              extent.getStartX(),
-              extent.getEndX() - extent.getStartX() + 1,
-              extent.getStartY(),
-              extent.getEndY() - extent.getStartY() + 1);
+            Integer startX = extent.getStartX();
+            Integer countX = extent.getEndX() - startX + 1;
+            Integer startY = extent.getStartY();
+            Integer countY = extent.getEndY() - startY + 1;
+            body.setMerged(startX, countX, startY, countY,
+                !body.isMerged(startX, countX, startY, countY));
             matrix.refresh();
           }
         });

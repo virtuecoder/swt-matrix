@@ -37,11 +37,8 @@ import pl.netanel.util.Preconditions;
  * values. An example of such function: setDefaultCellWidth(width).
  * <p>
  * Section has boolean flags for visibility and navigation enablement.
- *
- *
- * @author Jacek Kolodziejczyk created 02-03-2011
  */
-class SectionCore<N extends Number> implements Section<N> {
+public class SectionCore<N extends Number> implements Section<N> {
 
 	static final int DEFAULT_CELL_WIDTH = 16;
 	static final int DEFAULT_LINE_WIDTH = 1;
@@ -51,18 +48,20 @@ class SectionCore<N extends Number> implements Section<N> {
 
 	final NumberOrder<N> order;
 	final NumberSet<N> hidden;
-	NumberOrder<N> finale;
+	final NumberSet<N> buried;
+	final ValueNumberSetMap<N, N> parents;
 
-//	private final NumberSet<N> merged;
+//	NumberOrder<N> finale;
+
+	private final NumberSet<N> expanded;
 	private final NumberSet<N> resizable;
 	private final NumberSet<N> moveable;
 	private final NumberSet<N> hideable;
 	private final IntAxisState<N> cellWidth;
 	private final IntAxisState<N> lineWidth;
-	private final ObjectAxisState<N, N> cellSpan;
 
-	final NumberQueueSet<N> selection;
-	private final NumberQueueSet<N> lastSelection;
+	final NumberList<N> selection;
+	private final NumberList<N> lastSelection;
 
 	private boolean defaultResizable, defaultMoveable, defaultHideable;
 	private boolean isNavigationEnabled, isVisible;
@@ -86,18 +85,22 @@ class SectionCore<N extends Number> implements Section<N> {
 		order = new NumberOrder<N>(math);
 //		merged = new NumberSet<N>(math, true);
 		hidden = new NumberSet<N>(math, true);
-		finale = new NumberOrder<N>(math);
+    buried = new NumberSet<N>(math);
+    expanded = new NumberSet<N>(math);
+    parents = new ValueNumberSetMap<N, N>(math, null);
+
+//		finale = new NumberOrder<N>(math);
 
 		resizable = new NumberSet<N>(math, true);
 		moveable = new NumberSet<N>(math, true);
 		hideable = new NumberSet<N>(math, true);
 
+
 		cellWidth = new IntAxisState<N>(math, DEFAULT_CELL_WIDTH);
 		lineWidth = new IntAxisState<N>(math, DEFAULT_LINE_WIDTH);
-		cellSpan = new ObjectAxisState<N, N>(math, math.ONE_VALUE());
 
-		selection = new NumberQueueSet<N>(math);
-		lastSelection = new NumberQueueSet<N>(math);
+		selection = new NumberList<N>(math);
+		lastSelection = new NumberList<N>(math);
 
 		defaultResizable = true;
 		isNavigationEnabled = isVisible = true;
@@ -117,13 +120,20 @@ class SectionCore<N extends Number> implements Section<N> {
 	@Override public Class<N> getIndexClass() {
 	  return indexClass;
 	}
+
 	/*------------------------------------------------------------------------
 	 * Collection like
 	 */
 
 	@Override public void setCount(N count) {
-		this.count = count;
+	  if (math.compare(count, this.count) > 0) {
+	    parents.setValue(this.count, count, null);
+	  }
+	  else {
+	    parents.unsetValue(count, this.count, null);
+	  }
 		order.setCount(count);
+		this.count = count;
 		refreshFinale();
 	}
 
@@ -180,44 +190,12 @@ class SectionCore<N extends Number> implements Section<N> {
 
 	@Override
 	public Iterator<N> getOrder() {
-	  return new ImmutableIterator<N>() {
-      NumberSequence<N> seq = new NumberSequence<N>(order.copy());
-      private boolean next;
-      {
-        seq.init();
-      }
-      @Override
-      public boolean hasNext() {
-        next = seq.next();
-        return next;
-      }
-
-      @Override
-      public N next() {
-        return next ? seq.index() : null;
-      }
-    };
+	  return order.numberIterator();
 	}
 
 	@Override
 	public Iterator<Extent<N>> getOrderExtents() {
-	  return new ImmutableIterator<Extent<N>>() {
-	    ExtentSequence<N> seq = new ExtentSequence<N>(order.items);
-	    private boolean next;
-	    {
-	      seq.init();
-	    }
-	    @Override
-	    public boolean hasNext() {
-	      next = seq.next();
-	      return next;
-	    }
-
-	    @Override
-	    public Extent<N> next() {
-	      return next ? Extent.createUnchecked(seq.start, seq.end) : null;
-	    }
-	  };
+	  return order.extentIterator();
 	}
 
 	/*------------------------------------------------------------------------
@@ -464,24 +442,7 @@ class SectionCore<N extends Number> implements Section<N> {
 
   @Override
   public Iterator<Extent<N>> getHiddenExtents() {
-    return new ImmutableIterator<Extent<N>>() {
-      ExtentSequence<N> seq = new ExtentSequence<N>(hidden.items);
-      private boolean next;
-      {
-        seq.init();
-      }
-
-      @Override
-      public boolean hasNext() {
-        next = seq.next();
-        return next;
-      }
-
-      @Override
-      public Extent<N> next() {
-        return next ? Extent.createUnchecked(seq.start, seq.end) : null;
-      }
-    };
+    return hidden.extentIterator();
   }
 
 
@@ -563,47 +524,15 @@ class SectionCore<N extends Number> implements Section<N> {
 	 * @return a sequence of indexes of selected items
 	 */
 	NumberSequence<N> getSelectedSequence() {
-		return new NumberSequence<N>(selection);
+		return new NumberSequence<N>(math, selection.items);
 	}
 
 	@Override public Iterator<N> getSelected() {
-	  return new ImmutableIterator<N>() {
-			NumberSequence<N> seq = new NumberSequence<N>(selection.copy());
-			private boolean next;
-			{
-				seq.init();
-			}
-			@Override
-			public boolean hasNext() {
-				next = seq.next();
-				return next;
-			}
-
-			@Override
-			public N next() {
-				return next ? seq.index() : null;
-			}
-		};
+	  return selection.numberIterator();
 	}
 
 	@Override public Iterator<Extent<N>> getSelectedExtents() {
-		return new ImmutableIterator<Extent<N>>() {
-			ExtentSequence<N> seq = new ExtentSequence<N>(selection.items);
-			private boolean next;
-			{
-				seq.init();
-			}
-			@Override
-			public boolean hasNext() {
-				next = seq.next();
-				return next;
-			}
-
-			@Override
-			public Extent<N> next() {
-				return next ? Extent.create(seq.start, seq.end) : null;
-			}
-		};
+		return selection.extentIterator();
 	}
 
 	void backupSelection() {
@@ -621,13 +550,13 @@ class SectionCore<N extends Number> implements Section<N> {
 	 */
 
 	@Override public void setOrder(N start, N end, N target) {
+	  parents.setValue(start, end, getParent(target));
 		order.move(start, end, target);
 		refreshFinale();
 	}
 
 	@Override public void setOrder(N index, N target) {
-	  order.move(index, index, target);
-	  refreshFinale();
+	  setOrder(index, index, target);
 	}
 
 	@Override public void setOrder(Iterator<N> iterator) {
@@ -648,10 +577,43 @@ class SectionCore<N extends Number> implements Section<N> {
 	  refreshFinale();
 	}
 
-	@Override public void delete(N start, N end) {
+	boolean moveSelected(N source, N target) {
+  	assert selection.contains(source);
+  	if (selection.isEmpty() || selection.contains(target)) return false;
+
+  	N targetRank = getOrder(target);
+    N sourceRank = getOrder(source);
+    int compareRank = math.compare(targetRank, sourceRank);
+  	if (compareRank == 0) return false;
+  	N index = compareRank < 0 ? target :
+  	  math.compare(targetRank, math.decrement(count)) == 0 ? count :
+  	    getIndex(math.increment(targetRank));
+
+  	order.move(selection, index);
+
+//  	N parent = getParent(target);
+//  	if (parent != null) {
+//  	  for (int i = 0; i < selection.items.size(); i++) {
+//  	    MutableExtent<N> extent = selection.items.get(i);
+//  	    N item = isInTree(parent, extent.start, extent.end);
+//  	    if (item != null) {
+//  	      throw new RuntimeException(Util.format("Item is in tree of ", parent, ));
+//  	    }
+//  	  }
+//  	}
+
+  	return true;
+  }
+
+//
+//  private N isInTree(N parent, MutableNumber<N> start, MutableNumber<N> end) {
+//    return false;
+//  }
+
+
+  @Override public void delete(N start, N end) {
 		cellWidth.delete(start, end);
 		lineWidth.delete(start, end);
-		cellSpan.delete(start, end);
 		resizable.delete(start, end);
 		moveable.delete(start, end);
 		hideable.delete(start, end);
@@ -670,7 +632,6 @@ class SectionCore<N extends Number> implements Section<N> {
 	@Override public void insert(N target, N count) {
 		cellWidth.insert(target, count);
 		lineWidth.insert(target, count);
-		cellSpan.insert(target, count);
 		resizable.insert(target, count);
 		moveable.insert(target, count);
 		hideable.insert(target, count);
@@ -720,10 +681,6 @@ class SectionCore<N extends Number> implements Section<N> {
 		return math.create(count).subtract(hidden.getCount()).getValue();
 	}
 
-	N getCellSpan(N index) {
-		return cellSpan.getValue(index);
-	}
-
 	N nextNotHiddenIndex(N index, int direction) {
 		for (MutableExtent<N> e: hidden.items) {
 			if (math.contains(e, index)) {
@@ -748,6 +705,7 @@ class SectionCore<N extends Number> implements Section<N> {
 		return new ExtentSequence<N>(selection.items);
 	}
 
+
 	class IndexIterator extends ImmutableIterator<N> {
 
 		private final NumberSequence<N> seq;
@@ -771,22 +729,6 @@ class SectionCore<N extends Number> implements Section<N> {
 
 	}
 
-	boolean moveSelected(N source, N target) {
-		assert selection.contains(source);
-		if (selection.isEmpty() || selection.contains(target)) return false;
-
-		N targetRank = getOrder(target);
-    N sourceRank = getOrder(source);
-    int compareRank = math.compare(targetRank, sourceRank);
-		if (compareRank == 0) return false;
-		N index = compareRank < 0 ? target :
-		  math.compare(targetRank, math.decrement(count)) == 0 ? count :
-		    getIndex(math.increment(targetRank));
-
-		order.move(selection, index);
-		return true;
-	}
-
 	protected void checkRange(N start, N end, N limit) {
 		checkIndex(start, limit, "start");
 		checkIndex(end, limit, "end");
@@ -804,6 +746,131 @@ class SectionCore<N extends Number> implements Section<N> {
 	public void checkLineIndex(N index, String name) {
 	  checkIndex(index, math.increment(count), name);
 	}
+
+
+
+	@Override
+  public void setParent(N child, N parent) {
+	  setParent(child, child, parent);
+	}
+
+	@Override
+  public void setParent(N start, N end, N parent) {
+	  if (parent != null) {
+      N next = order.getIndexByOffset(parent, math.increment(parents.getValueIndexCount(parent)));
+      if (next == null) next = getCount();
+      order.move(start, end, next);
+	  }
+    parents.setValue(start, end, parent);
+    collapse(parent, parent);
+  }
+
+	/**
+   * Can return null
+   * @param parent
+   * @return
+   */
+  @Override
+  public Iterator<Extent<N>> getChildrenExtents(N parent) {
+    final Iterator<MutableExtent<N>> it = parents.getValueExtents(parent).iterator();
+    return new ImmutableIterator<Extent<N>>() {
+      @Override
+      public boolean hasNext() {
+        return it.hasNext();
+      }
+
+      @Override
+      public Extent<N> next() {
+        MutableExtent<N> next = it.next();
+        return Extent.createUnchecked(next.start.getValue(), next.end.getValue());
+      }
+    };
+  }
+
+  @Override
+  public Iterator<N> getChildren(N parent) {
+    return Extent.numberIterator(math, parents.getValueExtents(parent));
+  }
+
+  @Override
+  public boolean hasChildren(N parent) {
+    return !parents.getValueExtents(parent).isEmpty();
+  }
+
+  @Override
+  public N getChildrenCount(N parent) {
+    return parents.getValueIndexCount(parent);
+  }
+  @Override
+  public N getParent(N index) {
+    return parents.getValue(index);
+  }
+
+  @Override
+  public N getLevelInTree(N index) {
+    MutableNumber<N> count = math.create(-1);
+    N parent = index;
+    do {
+      parent = getParent(parent);
+      count.increment();
+    }
+    while (parent != null);
+
+    return count.getValue();
+  }
+
+  @Override
+  public void setExpanded(N parent, boolean state) {
+    if (parent == null) {
+      for (Iterator<Extent<N>> it = getChildrenExtents(null); it.hasNext();) {
+        Extent<N> extent = it.next();
+        setExpanded(extent.start, extent.end, state);
+      }
+    }
+    else {
+      setExpanded(parent, parent, state);
+    }
+  }
+
+  @Override
+  public void setExpanded(N start, N end, boolean state) {
+    if (state == true) {
+      expanded.add(start, end);
+    }
+    else {
+      expanded.remove(start, end);
+    }
+
+    collapse(start, end);
+  }
+
+  private void collapse(N start, N end) {
+    MutableNumber<N> index = math.create(start);
+    for (; math.compare(index, end) <= 0; index.increment()) {
+      N parent = index.getValue();
+      boolean isExpanded = expanded.contains(parent);
+      boolean isBurried = buried.contains(parent);
+      for (Iterator<Extent<N>> it = getChildrenExtents(parent); it.hasNext();) {
+        Extent<N> extent = it.next();
+        if (isExpanded && !isBurried) {
+            buried.remove(extent.start, extent.end);
+          }
+        else {
+          buried.add(extent.start, extent.end);
+        }
+        collapse(extent.start, extent.end);
+      }
+    }
+  }
+
+  @Override
+  public boolean isExpanded(N index) {
+    return expanded.contains(index);
+  }
+
+  boolean isBuried(N index) {
+    return buried.contains(index);
+  }
 
 	private void checkIndex(N index, N limit, String name) {
 		Preconditions.checkNotNullWithName(index, name);
@@ -830,13 +897,13 @@ class SectionCore<N extends Number> implements Section<N> {
   }
 
 	private void refreshFinale() {
-	  finale.clear();
-	  for (MutableExtent<N> extent: order.items) {
-	    finale.items.add(extent.copy());
-	  }
-	  for (MutableExtent<N> extent: hidden.items) {
-	    finale.remove(extent);
-	  }
+//	  finale.clear();
+//	  for (MutableExtent<N> extent: order.items) {
+//	    finale.items.add(extent.copy());
+//	  }
+//	  for (MutableExtent<N> extent: hidden.items) {
+//	    finale.remove(extent);
+//	  }
 	}
 
 
@@ -847,6 +914,7 @@ class SectionCore<N extends Number> implements Section<N> {
 	static <N2 extends Number> SectionCore<N2> from(Section<N2> section) {
 	  return (SectionCore<N2>) section.getUnchecked();
 	}
+
 
 
 //	@Override

@@ -139,14 +139,14 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 
   @Override
-  public boolean setMerged(X indexX, X countX, Y indexY, Y countY) {
+  public boolean setMerged(X indexX, X countX, Y indexY, Y countY, boolean state) {
     sectionX.checkCellIndex(indexX, "indexX");
     sectionY.checkCellIndex(indexY, "indexY");
     Preconditions.checkArgument(core.sectionX.math.compare(countX, core.cellMergeLimitX) <= 0,
         MessageFormat.format("count{0} {1} is beyond merge limit {2}", "X", countX, core.cellMergeLimitX));
     Preconditions.checkArgument(core.sectionY.math.compare(countY, core.cellMergeLimitY) <= 0,
         MessageFormat.format("count{0} {1} is beyond merge limit {2}", "Y", countY, core.cellMergeLimitY));
-    return core.setMerged(indexX, countX, indexY, countY);
+    return core.setMerged(indexX, countX, indexY, countY, state);
   }
 
   @Override
@@ -154,6 +154,17 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     sectionX.checkCellIndex(indexX, "indexX");
     sectionY.checkCellIndex(indexY, "indexY");
     return core.isMerged(indexX, indexY);
+  }
+
+  @Override
+  public boolean isMerged(X indexX, X countX, Y indexY, Y countY) {
+    sectionX.checkCellIndex(indexX, "indexX");
+    sectionY.checkCellIndex(indexY, "indexY");
+    Preconditions.checkArgument(core.sectionX.math.compare(countX, core.cellMergeLimitX) <= 0,
+        MessageFormat.format("count{0} {1} is beyond merge limit {2}", "X", countX, core.cellMergeLimitX));
+    Preconditions.checkArgument(core.sectionY.math.compare(countY, core.cellMergeLimitY) <= 0,
+        MessageFormat.format("count{0} {1} is beyond merge limit {2}", "Y", countY, core.cellMergeLimitY));
+    return core.isMerged(indexX, countX, indexY, countY);
   }
 
   @Override

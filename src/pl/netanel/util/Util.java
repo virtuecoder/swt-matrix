@@ -7,6 +7,7 @@
  ******************************************************************************/
 package pl.netanel.util;
 
+
 public class Util {
 
 	/**
@@ -42,4 +43,58 @@ public class Util {
 	  if (o1 == null || o2 == null) return false;
 	  return o1.equals(o2);
 	}
+
+	/**
+	 * Null safe conversion to string using standard {@link Object#toString()} method.
+	 * @param o object to convert
+	 * @return string representation of object
+	 */
+	public static String toString(Object o) {
+	  if (o == null) return "";
+	  return o.toString();
+	}
+
+
+  /**
+   * Substitutes each {@code %s} in {@code template} with an argument. These
+   * are matched by position - the first {@code %s} gets {@code args[0]}, etc.
+   * If there are more arguments than placeholders, the unmatched arguments will
+   * be appended to the end of the formatted message in square braces.
+   *
+   * @param template a non-null string containing 0 or more {@code %s}
+   *     placeholders.
+   * @param args the arguments to be substituted into the message
+   *     template. Arguments are converted to strings using
+   *     {@link String#valueOf(Object)}. Arguments can be null.
+   */
+  public static String format(String template, Object... args) {
+    // start substituting the arguments into the '%s' place holders
+    StringBuilder builder = new StringBuilder(
+        template.length() + 16 * args.length);
+    int templateStart = 0;
+    int i = 0;
+    while (i < args.length) {
+      int placeholderStart = template.indexOf("%s", templateStart);
+      if (placeholderStart == -1) {
+        break;
+      }
+      builder.append(template.substring(templateStart, placeholderStart));
+      builder.append(args[i++]);
+      templateStart = placeholderStart + 2;
+    }
+    builder.append(template.substring(templateStart));
+
+    // if we run out of placeholders, append the extra args in square braces
+    if (i < args.length) {
+      builder.append(" [");
+      builder.append(args[i++]);
+      while (i < args.length) {
+        builder.append(", ");
+        builder.append(args[i++]);
+      }
+      builder.append("]");
+    }
+
+    return builder.toString();
+  }
 }

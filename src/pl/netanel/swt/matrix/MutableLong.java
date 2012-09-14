@@ -10,9 +10,10 @@ package pl.netanel.swt.matrix;
 import java.math.BigInteger;
 
 class MutableLong extends MutableNumber<Long> {
-	
-	long value;
-	
+  private static final long serialVersionUID = 1L;
+
+  long value;
+
 	public MutableLong(long value) {
 		this.value = value;
 	}
@@ -21,23 +22,23 @@ class MutableLong extends MutableNumber<Long> {
 	public String toString() {
 		return Long.toString(value);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof MutableLong)) return false;
 		return ((MutableLong) obj).value == value;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return ((Long) value).hashCode();
 	}
-	
+
 	@Override
 	public MutableLong copy() {
 		return new MutableLong(value);
 	}
-	
+
 	@Override
 	public Long getValue() {
 		return value;
@@ -48,12 +49,12 @@ class MutableLong extends MutableNumber<Long> {
 		value = n.longValue();
 		return this;
 	}
-	
+
 	public MutableLong set(long n) {
 		value = n;
 		return this;
 	}
-	
+
 	@Override
 	MutableNumber<Long> set(MutableNumber<Long> n) {
 		value = n.longValue();
@@ -71,7 +72,7 @@ class MutableLong extends MutableNumber<Long> {
 		value--;
 		return this;
 	}
-	
+
 	@Override
 	public MutableLong negate() {
 		value = -value;
@@ -102,7 +103,7 @@ class MutableLong extends MutableNumber<Long> {
 		return this;
 	}
 
-	
+
 	@Override
 	public MutableLong add(int n) {
 		value += n;
@@ -127,22 +128,32 @@ class MutableLong extends MutableNumber<Long> {
 	}
 
 	@Override
-	int intValue() {
+	public int intValue() {
 		return ((Long) value).intValue();
 	}
-	
+
 	@Override
-	long longValue() {
-	  return ((Long) value).longValue();
+	public long longValue() {
+	  return value;
+	}
+
+	@Override
+	public float floatValue() {
+	  return value;
+	}
+
+	@Override
+	public double doubleValue() {
+	  return value;
 	}
 
 	@Override
 	MutableNumber<Long> min(MutableNumber<Long> n) {
-		return value <= n.longValue() ? this : n; 
+		return value <= n.longValue() ? this : n;
 	}
 	@Override
 	MutableNumber<Long> max(MutableNumber<Long> n) {
-	  return value >= n.longValue() ? this : n; 
+	  return value >= n.longValue() ? this : n;
 	}
 
 

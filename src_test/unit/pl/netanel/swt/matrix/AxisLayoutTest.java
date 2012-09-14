@@ -18,11 +18,6 @@ import pl.netanel.swt.matrix.SectionCore;
 @RunWith(JUnit4.class)
 public class AxisLayoutTest {
 
-	@Test(expected = NullPointerException.class)
-	public void constructorNull() throws Exception {
-		new AxisLayout(null);
-	}
-
 	@Test
 	public void empty() throws Exception {
 		AxisLayout layout = new AxisLayout();

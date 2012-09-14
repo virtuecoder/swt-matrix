@@ -327,7 +327,7 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence;
 	@Test
   public void forward0() throws Exception {
 	  NumberSet set = numberSet();
-	  NumberSequence seq = set.new ForwardNumberSequence();
+	  NumberSequence seq = set.new NumberSequence();
 	  seq.init();
 	  assertFalse(seq.next());
 	}
@@ -336,7 +336,7 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence;
 	public void forward1() throws Exception {
 	  NumberSet set = numberSet();
 	  set.add(0, 0);
-	  NumberSequence seq = set.new ForwardNumberSequence();
+	  NumberSequence seq = set.new NumberSequence();
 	  seq.init();
 	  assertTrue(seq.next());
 	  assertEquals(0, seq.index.getValue());
@@ -348,7 +348,7 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence;
 	  NumberSet set = numberSet();
 	  set.add(0, 0);
 	  set.add(1, 2);
-	  NumberSequence seq = set.new ForwardNumberSequence();
+	  NumberSequence seq = set.new NumberSequence();
 	  seq.init();
 	  assertTrue(seq.next());
 	  assertEquals(0, seq.index.getValue());

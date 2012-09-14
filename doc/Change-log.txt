@@ -1,4 +1,14 @@
 -------------------------------------------------------------------------------
+Version 0.7.0
+
+API changes:
+- Added tree methods in Section
+- Added ColumnGrouping experimental class
+- Added Zone.isMerged(X, X, Y, Y) to check if any cell in the given range is merged
+- Modified Zone.setMerged has state flag which ensures the merging is removed or added, and not work as a toggle.
+- Extent implements Iterable
+
+-------------------------------------------------------------------------------
 Version 0.6.5
 
 Bug fixes:

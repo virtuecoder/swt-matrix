@@ -14,9 +14,6 @@ import pl.netanel.swt.matrix.MatrixLayout.MergeCache;
  * Iterates over cells of a matrix considering the merged ones.
  * <p>
  * Cells that are merged are marked beforehand by {@link MatrixLayout#computeMerging()}.
- *
- * @author jacek.p.kolodziejczyk@gmail.com
- * @created 25-06-2012
  */
 class MatrixLayoutCellSequence<X extends Number, Y extends Number> implements Sequence {
   // Sequence current state

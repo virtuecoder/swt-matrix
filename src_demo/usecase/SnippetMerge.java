@@ -23,7 +23,7 @@ public class SnippetMerge
         final Shell shell = new Shell();
         shell.setLayout(new GridLayout(1, false));
 //        shell.setLayout(new FillLayout());
-        
+
         Button button = new Button(shell, SWT.PUSH);
         button.setText("Merge");
         button.addSelectionListener(new SelectionAdapter() {
@@ -33,21 +33,21 @@ public class SnippetMerge
             CellExtent<Integer, Integer> extent = body.getSelectedExtent();
             if (extent == null) return;
             body.setMerged(
-              extent.getStartX(), 
+              extent.getStartX(),
               extent.getEndX() - extent.getStartX() + 1,
               extent.getStartY(),
-              extent.getEndY() - extent.getStartY() + 1);
+              extent.getEndY() - extent.getStartY() + 1, true);
             matrix.refresh();
           }
         });
-        
+
         matrix = new Matrix<Integer, Integer>(shell, SWT.H_SCROLL | SWT.V_SCROLL);
         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         matrix.setLayoutData(gd);
-        
+
         Axis<Integer> axisX = matrix.getAxisX();
         Axis<Integer> axisY = matrix.getAxisY();
-        
+
         Section<Integer> bodyX = axisX.getBody();
         bodyX.setCount(10);
         bodyX.setDefaultMoveable(true);

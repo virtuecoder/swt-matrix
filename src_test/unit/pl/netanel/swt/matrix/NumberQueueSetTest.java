@@ -12,11 +12,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @SuppressWarnings({"rawtypes", "unchecked"}) @RunWith(JUnit4.class) public class  NumberQueueSetTest {
-	private NumberQueueSet list;
+	private NumberList list;
 
 	@Before
 	public void _beforeEach() {
-		list = new NumberQueueSet(IntMath.getInstance());
+		list = new NumberList(IntMath.getInstance());
 	}
 	@After
 	public void _afterEach() {

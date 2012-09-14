@@ -23,12 +23,12 @@ public class MergeTest {
   @Test
   public void setMergedInclusive() {
     zone.sectionX.setOrder(5, 7, 1);
-    zone.setMerged(5, 3, 1, 2);
+    zone.setMerged(5, 3, 1, 2, true);
     assertFalse(zone.isMerged(0, 0));
     assertTrue(zone.isMerged(5, 1));
 
     // Merge part of another merge removes the other merge
-    zone.setMerged(0, 2, 5, 1);
+    zone.setMerged(0, 2, 5, 1, true);
     assertFalse(zone.isMerged(1, 1));
     assertFalse(zone.isMerged(1, 3));
     assertFalse(zone.isMerged(2, 1));
@@ -37,8 +37,8 @@ public class MergeTest {
 
   @Test
   public void setMergedExclusive() {
-    zone.setMerged(1, 2, 1, 2);
-    zone.setMerged(4, 2, 4, 2);
+    zone.setMerged(1, 2, 1, 2, true);
+    zone.setMerged(4, 2, 4, 2, true);
 
     // Both are merged
     assertTrue(zone.isMerged(1, 1));
@@ -47,7 +47,7 @@ public class MergeTest {
     assertTrue(zone.isMerged(5, 5));
 
     // Remove only second by merging part of it
-    assertFalse(zone.setMerged(4, 1, 4, 1));
+    assertFalse(zone.setMerged(4, 1, 4, 1, true));
     assertTrue(zone.isMerged(1, 1));
     assertTrue(zone.isMerged(2, 2));
     assertFalse(zone.isMerged(4, 4));
@@ -56,27 +56,27 @@ public class MergeTest {
 
   @Test
   public void mergeSingle() throws Exception {
-    zone.setMerged(1, 1, 1, 1);
+    zone.setMerged(1, 1, 1, 1, true);
     assertFalse(zone.isMerged(1, 1));
   }
 
   @Test
   public void mergeTwoX() throws Exception {
-    zone.setMerged(3, 2, 1, 1);
+    zone.setMerged(3, 2, 1, 1, true);
     assertTrue(zone.isMerged(3, 1));
     assertTrue(zone.isMerged(4, 1));
   }
 
   @Test
   public void mergeTwoY() throws Exception {
-    zone.setMerged(1, 1, 1, 2);
+    zone.setMerged(1, 1, 1, 2, true);
     assertTrue(zone.isMerged(1, 1));
     assertTrue(zone.isMerged(1, 2));
   }
 
   @Test
   public void isMergedAxisItem() throws Exception {
-    zone.setMerged(1, 1, 1, 2);
+    zone.setMerged(1, 1, 1, 2, true);
     assertTrue(zone.isMerged(1, null));
     assertTrue(zone.isMerged(null, 2));
   }

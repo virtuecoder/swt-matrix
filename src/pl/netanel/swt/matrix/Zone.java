@@ -162,12 +162,11 @@ public interface Zone<X extends Number, Y extends Number> {
    * @param countX quantity of column items being merged
    * @param indexY index of the row item from which the merging starts
    * @param countY quantity of row items being merged
-   * @return true if the cell become merged, false if the merging has been removed
+   * @param state the new merging state
+   * @return false if overlapping merging has been removed, true if merged without conflict
    *
    * @throws IllegalArgumentException if <code>indexX</code> or <code>countX</code>
    *           or <code>indexY</code> or <code>countY</code> is null.
-   * @throws IllegalArgumentException if <code>indexX</code> is greater then <code>countX</code>
-   *           or <code>indexY</code> is greater then <code>countY</code>.
    * @throws IndexOutOfBoundsException if <code>indexX</code> or
    *           <code>countX</code> is out of 0 ... this.getSectionX().getCount()
    *           bounds
@@ -175,7 +174,7 @@ public interface Zone<X extends Number, Y extends Number> {
    *           <code>countY</code> is out of 0 ... this.getSectionY().getCount()
    *           bounds
    */
-  boolean setMerged(X indexX, X countX, Y indexY, Y countY);
+  boolean setMerged(X indexX, X countX, Y indexY, Y countY, boolean state);
 
   /**
    * Returns <code>true</code> if the cell at given indexes is merged.
@@ -187,16 +186,43 @@ public interface Zone<X extends Number, Y extends Number> {
    * @param indexX cell index on the horizontal axis
    * @param indexY cell index on the vertical axis
    *
-   * @return the selection state of the specified cell
+   * @return the merge state of the specified cell
    *
-   * @throws IllegalArgumentException if <code>indexX</code> or
-   *         <code>indexY</code> is null.
-   * @throws IndexOutOfBoundsException if <code>indexX</code> is out of
-   *         0 ... this.getSectionY().getCount() bounds
-   * @throws IndexOutOfBoundsException if <code>indexY</code> is out of
-   *         0 ... this.getSectionX().getCount() bounds
+   * @throws IllegalArgumentException if <code>indexX</code> or <code>countX</code>
+   *           or <code>indexY</code> or <code>countY</code> is null.
+   * @throws IndexOutOfBoundsException if <code>indexX</code> or
+   *           <code>countX</code> is out of 0 ... this.getSectionX().getCount()
+   *           bounds
+   * @throws IndexOutOfBoundsException if <code>indexY</code> or
+   *           <code>countY</code> is out of 0 ... this.getSectionY().getCount()
+   *           bounds
    */
   boolean isMerged(X indexX, Y indexY);
+
+
+  /**
+   * Returns <code>true</code> if any cell in the given range is merged.
+   * Otherwise, <code>false</code> is returned.
+   * <p>
+   * <code>indexX</code> and <code>indexY</code> refer to the model,
+   * not the visual position of the item on the screen
+   * which can be altered by move and hide operations.
+   * @param indexX index of the column item from which the merging starts
+   * @param countX quantity of column items being merged
+   * @param indexY index of the row item from which the merging starts
+   * @param countY quantity of row items being merged
+   *
+   * @return <code>true</code> if any cell in the given range is merged.
+   *
+   * @throws IndexOutOfBoundsException if <code>startX</code> or
+   *           <code>endX</code> is out of 0 ... this.getSectionX().getCount()
+   *           bounds
+   * @throws IndexOutOfBoundsException if <code>startY</code> or
+   *           <code>endY</code> is out of 0 ... this.getSectionY().getCount()
+   *           bounds
+   */
+  boolean isMerged(X indexX, X countX, Y indexY, Y countY);
+
 
   /**
    * Returns the maximum number of cells that can merged on both horizontal and vertical axis.
