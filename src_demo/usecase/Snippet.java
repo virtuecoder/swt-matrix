@@ -7,23 +7,20 @@ import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Matrix;
 
-public class Snippet
-{
+public class Snippet {
   public static void main(String[] args) {
-        final Shell shell = new Shell();
-		shell.setLayout(new FillLayout());
+    final Shell shell = new Shell();
+    shell.setLayout(new FillLayout());
 
-        new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
+    new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
 
-        shell.setBounds(400, 200, 600, 400);
-		shell.open();
-		Display display = shell.getDisplay();
-        while (!shell.isDisposed())
-        {
-            if (!display.readAndDispatch())
-            {
-				display.sleep();
-			}
-		}
-	}
+    shell.setBounds(400, 200, 600, 400);
+    shell.open();
+    Display display = shell.getDisplay();
+    while (!shell.isDisposed()) {
+      if (!display.readAndDispatch()) {
+        display.sleep();
+      }
+    }
+  }
 }

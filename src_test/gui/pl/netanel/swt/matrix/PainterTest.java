@@ -137,7 +137,7 @@ public class PainterTest extends SwtTestCase {
 
     final Image image = new Image(display, clientArea.width, clientArea.height);
     GC gc = new GC(matrix);
-    painter.init(gc);
+    painter.init(gc, Frozen.NONE, Frozen.NONE);
     painter.setup(0, 0);
     painter.paint(r.x, r.y, r.width, r.height);
     gc.copyArea(image, 0, 0);

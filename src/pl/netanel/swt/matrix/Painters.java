@@ -136,7 +136,7 @@ class Painters<X extends Number, Y extends Number> implements Iterable<Painter<X
     Point result = new Point(0, 0);
     GC gc = new GC(Display.getDefault());
     for (Painter<X, Y> painter: items) {
-      painter.init(gc);
+      painter.init(gc, Frozen.NONE, Frozen.NONE);
       Point size = painter.computeSize( x, y, wHint, hHint);
       result.x = java.lang.Math.max(result.x, size.x);
       result.y = java.lang.Math.max(result.y, size.y);

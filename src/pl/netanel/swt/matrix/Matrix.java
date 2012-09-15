@@ -519,7 +519,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		layout.computeMerging();
 
 		for (Painter<X, Y> p: painters) {
-			if (!p.isEnabled() || !p.init(gc)) continue;
+			if (!p.isEnabled() || !p.init(gc, Frozen.NONE, Frozen.NONE)) continue;
 			p.paint(area.x, area.y, area.width, area.height);
 			p.clean();
 		}
@@ -1033,7 +1033,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	        zone.sectionY.math.ZERO_VALUE(), zone.sectionY.math.decrement(zone.sectionY.getCount()));
 	      NumberPairSequence<X, Y> seq = new NumberPairSequence<X, Y>(set);
 	      for (Painter<X, Y> painter: zone.painters) {
-	        painter.init(gc);
+	        painter.init(gc, Frozen.NONE, Frozen.NONE);
 	        for (seq.init(); seq.next();) {
 	          w = java.lang.Math.max(w, painter.computeSize(
 	            seq.indexX(), seq.indexY(),
@@ -1065,7 +1065,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	          index);
 	        NumberPairSequence<X, Y> seq = new NumberPairSequence<X, Y>(set);
 	        for (Painter<X, Y> painter: zone.painters) {
-	          painter.init(gc);
+	          painter.init(gc, Frozen.NONE, Frozen.NONE);
 	          for (seq.init(); seq.next();) {
 	            w = java.lang.Math.max(w, painter.computeSize(
 	              seq.indexX(), seq.indexY(),

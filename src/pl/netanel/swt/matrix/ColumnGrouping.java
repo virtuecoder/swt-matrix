@@ -108,7 +108,7 @@ public class ColumnGrouping<X extends Number, Y extends Number> {
       @Override
       protected boolean init() {
         merge();
-        return painter.init(gc);
+        return painter.init(gc, Frozen.NONE, Frozen.NONE);
       }
 
       @Override
@@ -140,8 +140,8 @@ public class ColumnGrouping<X extends Number, Y extends Number> {
 
       @Override
       public void handleEvent(Event e) {
-        AxisItem<X> itemX = matrix.getAxisX().getMouseOverItem();
-        AxisItem<Y> itemY = matrix.getAxisY().getMouseOverItem();
+        AxisItem<X> itemX = matrix.getAxisX().getMouseItem();
+        AxisItem<Y> itemY = matrix.getAxisY().getMouseItem();
         if (itemX == null || itemY == null) return;
         Cell<X, Y> cell = headerX.getMergeOrigin(itemX.index, itemY.index);
         indexX = cell.indexX;

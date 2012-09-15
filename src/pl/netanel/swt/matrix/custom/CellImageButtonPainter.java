@@ -1,0 +1,110 @@
+/*******************************************************************************
+ * Copyright (c) 2011 netanel.pl.
+ * All rights reserved. This source code and the accompanying materials
+ * are made available under the terms of the EULA v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.netanel.pl/swt-matrix/EULA_v1.0.html
+ ******************************************************************************/
+package pl.netanel.swt.matrix.custom;
+
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+
+import pl.netanel.swt.matrix.Axis;
+import pl.netanel.swt.matrix.AxisItem;
+import pl.netanel.swt.matrix.Painter;
+import pl.netanel.swt.matrix.Zone;
+import pl.netanel.util.Preconditions;
+
+/**
+ * Paints an image in the cell.
+ * Get cell indexes when given coordinates are inside the cell image.
+ * Toggle image
+ */
+public abstract class CellImageButtonPainter<X extends Number, Y extends Number> extends Painter<X, Y> {
+
+  private final Image trueImage;
+  private final Image falseImage;
+  private Rectangle imageBounds;
+  private Rectangle zoneBounds;
+
+  public CellImageButtonPainter(Image trueImage, Image falseImage) {
+    super(CellImageButtonPainter.class.getName(), Painter.SCOPE_CELLS);
+
+    Preconditions.checkNotNullWithName(trueImage, "image0");
+    // Images must have the same sizes
+
+    this.trueImage = trueImage;
+    this.falseImage = falseImage;
+
+    image = trueImage == null ? falseImage : trueImage;
+    imageBounds = image.getBounds();
+  }
+
+  /**
+   * Returns a three state toggle status of the given cell with the following consequences:
+   * <li> null - no image displayed
+   * <li> true - trueImage displayed
+   * <li> false - falseImage displayed
+   * @param indexX
+   * @param indexY
+   * @return
+   */
+  public abstract Boolean getToggleState(X indexX, Y indexY);
+
+  @Override
+  protected boolean init() {
+    // Get matrix absolute position
+    Rectangle matrixBounds = getZone().getMatrix().getBounds();
+    Point matrixPosition = getZone().getMatrix().toDisplay(matrixBounds.x, matrixBounds.y);
+
+    // Get zone bounds within matrix
+    zoneBounds = getZone().getBounds(frozenX, frozenY);
+
+    // Make the zone position absolute
+    zoneBounds.x += matrixPosition.x;
+    zoneBounds.y += matrixPosition.y;
+
+    return super.init();
+  }
+
+  @Override
+  public void setupSpatial(X indexX, Y indexY) {
+    super.setupSpatial(indexX, indexY);
+    Boolean toggle = getToggleState(indexX, indexY);
+    image =
+      toggle == null         ? null :
+      toggle == Boolean.TRUE ? trueImage :
+                               falseImage;
+  };
+
+  /**
+   * Returns true if coordinates are over the image of drawn by this painter,
+   * or false otherwise.
+   * It is assumed the coordinates are within the last cell the mouse was over,
+   * i.e. come from the mouse event (see {@link Axis#getMouseItem()})
+   *
+   * @param x x coordinate relative to the display
+   * @param y y coordinate relative to the display
+   * @return true if coordinates are over the image of drawn by this painter
+   */
+  public boolean isOverImage(int x, int y) {
+    // Get cell bounds
+    Zone<X, Y> zone = getZone();
+    AxisItem<X> itemX = zone.getMatrix().getAxisX().getMouseItem();
+    if (itemX == null) return false;
+    AxisItem<Y> itemY = zone.getMatrix().getAxisY().getMouseItem();
+    if (itemY == null) return false;
+    Rectangle cellBounds = zone.getCellBounds(itemX.getIndex(), itemY.getIndex());
+
+    // Compute image position
+    int imageX = align(style.imageAlignX, style.imageMarginX, imageBounds.width, cellBounds.width);
+    int imageY = align(style.imageAlignX, style.imageMarginX, imageBounds.width, cellBounds.height);
+    imageX += zoneBounds.x;
+    imageY += zoneBounds.y;
+
+    return x <= imageX && imageX <= x + imageBounds.width &&
+        y <= imageY && imageY <= y + imageBounds.height;
+  }
+}

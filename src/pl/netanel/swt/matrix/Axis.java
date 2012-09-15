@@ -386,7 +386,7 @@ public class Axis<N extends Number>  {
 	 * @return the last item the mouse was over
 	 */
 	@SuppressWarnings("unchecked")
-  public AxisItem<N> getMouseOverItem() {
+  public AxisItem<N> getMouseItem() {
 	  return matrix.listener.getAxisState(symbol).mouseOverItem;
 	}
 

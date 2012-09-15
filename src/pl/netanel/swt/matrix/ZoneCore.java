@@ -512,7 +512,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				embedded = p;
 				continue;
 			}
-			if (!p.isEnabled() || !p.init(gc)) continue;
+			if (!p.isEnabled() || !p.init(gc, frozenX, frozenY)) continue;
 
 			int distance = 0, width = 0;
 			AxisLayoutSequence<Y> seqY;
@@ -604,7 +604,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 //				  if (gc2.isDisposed()) {
 //				    gc2 = new GC(matrix.getDisplay());
 //				  }
-					if (!p.isEnabled() || !p.init(gc)) return;
+					if (!p.isEnabled() || !p.init(gc, frozenX, frozenY)) return;
 
 					AxisLayoutSequence<Y> seqY = layoutY.cellSequence(frozenY, sectionY);
 					AxisLayoutSequence<X> seqX = layoutX.cellSequence(frozenX, sectionX);

@@ -273,6 +273,8 @@ public class Painter<X extends Number, Y extends Number> {
   private int indent;
   private SectionCore<X> bodyX;
   private SectionCore<Y> bodyY;
+  protected Frozen frozenX;
+  protected Frozen frozenY;
 
 
   /**
@@ -347,8 +349,10 @@ public class Painter<X extends Number, Y extends Number> {
 	 * @param gc
 	 * @return true if the initialization succeeded or false otherwise.
 	 */
-	final boolean init(GC gc) {
+	final boolean init(GC gc, Frozen frozenX, Frozen frozenY) {
 		this.gc = gc;
+    this.frozenX = frozenX;
+    this.frozenY = frozenY;
 		return init();
 	};
 
@@ -785,8 +789,8 @@ public class Painter<X extends Number, Y extends Number> {
 	 * @return
 	 */
 	boolean isOverNodeIcon(int x, int y) {
-	  AxisItem<X> itemX = matrix.getAxisX().getMouseOverItem();
-	  AxisItem<Y> itemY = matrix.getAxisY().getMouseOverItem();
+	  AxisItem<X> itemX = matrix.getAxisX().getMouseItem();
+	  AxisItem<Y> itemY = matrix.getAxisY().getMouseItem();
     if (itemX == null || itemY == null ||
         !itemX.getIndex().equals(bodyX.getIndex(bodyX.math.ZERO_VALUE())) ||
         !bodyY.hasChildren(itemY.getIndex()))
@@ -991,7 +995,7 @@ public class Painter<X extends Number, Y extends Number> {
       @Override
       public void handleEvent(Event e) {
         if (isTreeEnabled && isOverNodeIcon(e.x, e.y)) {
-          AxisItem<Y> itemY = matrix.axisY.getMouseOverItem();
+          AxisItem<Y> itemY = matrix.axisY.getMouseItem();
           if (itemY == null) return;
           Y indexY = itemY.getIndex();
           bodyY.setExpanded(indexY, !bodyY.isExpanded(indexY));
