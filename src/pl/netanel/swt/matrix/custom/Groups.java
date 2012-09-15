@@ -26,6 +26,7 @@ public class Groups {
   private final Zone<Integer, Integer> zone;
   private final String[][] text;
   private Extent<Integer>[][] children;
+//  private Extent<Integer>[][] groupExtents;
   Image trueImage, falseImage;
 
   public Groups(Zone<Integer, Integer> zone, int axisDirection, String[][] text) {
@@ -35,7 +36,6 @@ public class Groups {
     zone.getSectionY().setCount(text.length);
     initChildren();
     createImages(axisDirection);
-    merge();
 
     // Replace cell painter
     zone.replacePainter(new Painter<Integer, Integer> (Painter.NAME_CELLS) {
@@ -50,6 +50,12 @@ public class Groups {
     CellImageButtonPainter<Integer, Integer> painter =
         new CellImageButtonPainter<Integer, Integer>(trueImage, falseImage)
     {
+
+      @Override
+      protected boolean init() {
+        boolean result = super.init();
+        return result;
+      }
       @Override
       public Boolean getToggleState(Integer indexX, Integer indexY) {
         // Return true if is expanded
@@ -90,10 +96,36 @@ public class Groups {
     }
   }
 
-  private void merge() {
-
+  public void layout() {
+    for (int level = children.length; level-- > 0;) {
+      Extent<Integer>[] extents = children[level];
+      for (int index = 0; index < extents.length; index++) {
+        Extent<Integer> extent = getAbsoluteExtent(level, index);
+        boolean hasMultipleChildren = extent.getEnd() - extent.getStart() > 0;
+        if (hasMultipleChildren) {
+          zone.setMerged(extent.getStart(), extent.getEnd() - extent.getStart() + 1,
+              level, 1, true);
+        }
+      }
+    }
   }
 
+  private Extent<Integer> getAbsoluteExtent(int level, int index) {
+    if (level == text.length - 1) {
+      return Extent.create(index, index);
+    }
+    else {
+      Extent<Integer> extent = children[level][index];
+      if (level == text.length - 2) {
+        return extent;
+      }
+      else {
+        Extent<Integer> extent1 = getAbsoluteExtent(level+1, extent.getStart());
+        Extent<Integer> extent2 = getAbsoluteExtent(level+1, extent.getEnd());
+        return Extent.create(extent1.getStart(), extent2.getEnd());
+      }
+    }
+  }
 
   private void createImages(int axisDirection) {
     Display display = zone.getMatrix().getDisplay();
@@ -146,6 +178,17 @@ public class Groups {
       String[] levelText = text[level];
       children[level] = new Extent[levelText.length];
     }
+
+//    // Map group index to its first column index
+//    groupExtents = new Extent[text.length][];
+//    for (int level = text.length - 1; level-- > 0;) {
+//      String[] levelText = text[level];
+//      groupExtents[level] = new Extent[levelText.length];
+//    }
+//
+//    for (int level = groupExtents.length - 1; level-- > 0;) {
+//      groupExtents[level]
+//    }
   }
 
   public class Group {

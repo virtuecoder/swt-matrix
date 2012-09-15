@@ -42,6 +42,7 @@ public class SnippetGroups {
     groups.get(1, 3).addChildren(5, 8);
     groups.get(1, 4).addChildren(9, 11);
 
+    groups.layout();
     pack();
   }
 
