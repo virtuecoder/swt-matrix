@@ -66,7 +66,7 @@ public class Groups {
         // Return true if is expanded
         int index = getChildrenIndex(indexX, indexY);
         Extent<Integer> extent = getAbsoluteExtent(indexY, index);
-        return collapse != SWT.None && indexX == extent.getStart() && extent.getEnd() - extent.getStart() > 0 ?
+        return collapse != SWT.NONE && indexX == extent.getStart() && extent.getEnd() - extent.getStart() > 0 ?
             !collapsed[indexY][index] : null;
       }
     };
@@ -97,14 +97,16 @@ public class Groups {
         if (itemX != null && itemY != null && togglePainter.isOverImage(e.x, e.y)) {
           Integer indexX = itemX.getIndex();
           Integer indexY = itemY.getIndex();
+
           int index = getChildrenIndex(indexX, indexY);
           Extent<Integer> extent = getAbsoluteExtent(indexY, index);
           if (extent.getEnd() - extent.getStart() > 0) {
             boolean isCollapsed = collapsed[indexY][index];
             if (isCollapsed) {
-              zone.getSectionX().setHidden(extent.getStart(), extent.getEnd(), false);
+              expand(indexY+1, children[indexY][index]);
             }
             else {
+              // Collapse
               zone.getSectionX().setHidden(extent.getStart() + 1, extent.getEnd(), true);
             }
             collapsed[indexY][index] = !isCollapsed;
@@ -112,8 +114,53 @@ public class Groups {
           }
         }
       }
+
+      private void expand(int startLevel,  Extent<Integer> extent) {
+        if (startLevel == children.length) {
+          zone.getSectionX().setHidden(extent.getStart(), extent.getEnd(), false);
+        }
+        else {
+          for (int level = startLevel; level < children.length; level++) {
+            for (int index = extent.getStart(); index <= extent.getEnd(); index++) {
+              Extent<Integer> extent2 = children[level][index];
+              if (extent2.getEnd() - extent2.getStart() == 0) continue;
+              if (collapsed[level][index]) {
+                zone.getSectionX().setHidden(extent2.getStart(), false);
+              }
+              else {
+                zone.getSectionX().setHidden(extent2.getStart(), extent2.getEnd(), false);
+              }
+            }
+          }
+        }
+      }
     });
   }
+
+  @SuppressWarnings("unchecked")
+  private void initChildren() {
+ // Initialize children collections
+    children = new Extent[text.length-1][];
+    collapsed = new boolean[text.length-1][];
+    for (int level = 0; level < text.length - 1; level++) {
+      String[] levelText = text[level];
+      children[level] = new Extent[levelText.length];
+      collapsed[level] = new boolean[levelText.length];
+    }
+
+
+//    // Map group index to its first column index
+//    groupExtents = new Extent[text.length][];
+//    for (int level = text.length - 1; level-- > 0;) {
+//      String[] levelText = text[level];
+//      groupExtents[level] = new Extent[levelText.length];
+//    }
+//
+//    for (int level = groupExtents.length - 1; level-- > 0;) {
+//      groupExtents[level]
+//    }
+  }
+
 
   public void setCollapse(int collapse) {
     this.collapse = collapse;
@@ -194,21 +241,15 @@ public class Groups {
       gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
       // Draw <
       gc.fillPolygon(new int[] {0, y/2, x, 0, x, y});
-      ImageData imageData = trueImage.getImageData();
-      int whitePixel = imageData.palette.getPixel(new RGB(255,255,255));
-      imageData.transparentPixel = whitePixel;
-      trueImage = new Image(display, imageData);
+      trueImage = setWhiteAsTransparent(trueImage);
       gc.dispose();
 
       gc = new GC(falseImage);
       gc.setAntialias(SWT.ON);
       gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
-      // Draw >>
+      // Draw >
       gc.fillPolygon(new int[] {0, 0, 0, y, x, y/2});
-      imageData = falseImage.getImageData();
-      whitePixel = imageData.palette.getPixel(new RGB(255,255,255));
-      imageData.transparentPixel = whitePixel;
-      falseImage = new Image(display, imageData);
+      falseImage = setWhiteAsTransparent(falseImage);
       gc.dispose();
     }
     else {
@@ -251,29 +292,13 @@ public class Groups {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  private void initChildren() {
- // Initialize children collections
-    children = new Extent[text.length-1][];
-    collapsed = new boolean[text.length-1][];
-    for (int level = 0; level < text.length - 1; level++) {
-      String[] levelText = text[level];
-      children[level] = new Extent[levelText.length];
-      collapsed[level] = new boolean[levelText.length];
-    }
-
-
-//    // Map group index to its first column index
-//    groupExtents = new Extent[text.length][];
-//    for (int level = text.length - 1; level-- > 0;) {
-//      String[] levelText = text[level];
-//      groupExtents[level] = new Extent[levelText.length];
-//    }
-//
-//    for (int level = groupExtents.length - 1; level-- > 0;) {
-//      groupExtents[level]
-//    }
+  private Image setWhiteAsTransparent(Image image) {
+    ImageData imageData = image.getImageData();
+    int whitePixel = imageData.palette.getPixel(new RGB(255,255,255));
+    imageData.transparentPixel = whitePixel;
+    return new Image(zone.getMatrix().getDisplay(), imageData);
   }
+
 
   public class Group {
     int level, index;
