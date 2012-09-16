@@ -10,6 +10,8 @@ package pl.netanel.swt.matrix.custom;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -39,7 +41,15 @@ public class Groups {
 
     zone.getSectionY().setCount(text.length);
     initChildren();
+
     createImages(axisDirection);
+    zone.getMatrix().addListener(SWT.Dispose, new Listener() {
+      @Override
+      public void handleEvent(Event e) {
+        if (trueImage != null) trueImage.dispose();
+        if (falseImage != null) falseImage.dispose();
+      }
+    });
 
     // Create toggle image button painter
     final CellImageButtonPainter<Integer, Integer> togglePainter =
@@ -174,6 +184,40 @@ public class Groups {
 
   private void createImages(int axisDirection) {
     Display display = zone.getMatrix().getDisplay();
+    int x = 6, y = 8;
+    trueImage = new Image(display, x, y);
+    falseImage = new Image(display, x, y);
+
+    if (axisDirection == SWT.HORIZONTAL) {
+      GC gc = new GC(trueImage);
+      gc.setAntialias(SWT.ON);
+      gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
+      // Draw <
+      gc.fillPolygon(new int[] {0, y/2, x, 0, x, y});
+      ImageData imageData = trueImage.getImageData();
+      int whitePixel = imageData.palette.getPixel(new RGB(255,255,255));
+      imageData.transparentPixel = whitePixel;
+      trueImage = new Image(display, imageData);
+      gc.dispose();
+
+      gc = new GC(falseImage);
+      gc.setAntialias(SWT.ON);
+      gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
+      // Draw >>
+      gc.fillPolygon(new int[] {0, 0, 0, y, x, y/2});
+      imageData = falseImage.getImageData();
+      whitePixel = imageData.palette.getPixel(new RGB(255,255,255));
+      imageData.transparentPixel = whitePixel;
+      falseImage = new Image(display, imageData);
+      gc.dispose();
+    }
+    else {
+
+    }
+  }
+
+  void createImages2(int axisDirection) {
+    Display display = zone.getMatrix().getDisplay();
     trueImage = new Image(display, 9, 9);
     falseImage = new Image(display, 9, 9);
 
@@ -205,14 +249,6 @@ public class Groups {
     else {
 
     }
-
-    zone.getMatrix().addListener(SWT.Dispose, new Listener() {
-      @Override
-      public void handleEvent(Event e) {
-        if (trueImage != null) trueImage.dispose();
-        if (falseImage != null) falseImage.dispose();
-      }
-    });
   }
 
   @SuppressWarnings("unchecked")
