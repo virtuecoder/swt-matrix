@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Shell;
 import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.AxisLayoutSequence;
-import pl.netanel.swt.matrix.Cell;
 import pl.netanel.swt.matrix.Frozen;
 import pl.netanel.swt.matrix.Math;
 import pl.netanel.swt.matrix.Matrix;
@@ -143,9 +142,15 @@ public class ColumnGrouping<X extends Number, Y extends Number> {
         AxisItem<X> itemX = matrix.getAxisX().getMouseItem();
         AxisItem<Y> itemY = matrix.getAxisY().getMouseItem();
         if (itemX == null || itemY == null) return;
-        Cell<X, Y> cell = headerX.getMergeOrigin(itemX.index, itemY.index);
-        indexX = cell.indexX;
-        indexY = cell.indexY;
+        CellExtent<X, Y> extent = headerX.getMerged(itemX.index, itemY.index);
+        if (extent == null) {
+          indexX = itemX.index;
+          indexY = itemY.index;
+        }
+        else {
+          indexX = extent.startX;
+          indexY = extent.startY;
+        }
         if (isOverToggleImage(e.x, e.y)) {
           bodyX.setExpanded(indexX, !bodyX.isExpanded(indexX));
 //          Y level = mathY.create(bodyX.getLevelInTree(indexX).intValue()).getValue();

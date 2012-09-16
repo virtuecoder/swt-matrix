@@ -2,7 +2,9 @@
 Version 0.7.1
 
 API changes:
-- Renamed Axis.getMouseOverItem  to Axis.getMouseItem
+- Renamed Axis.getMouseOverItem to Axis.getMouseItem()
+- Removed Zone.getMergeOrigin(Number, Number):Cell
+- Added Zone.getMerged(Number, Number):CellExtent
 
 -------------------------------------------------------------------------------
 Version 0.7.0

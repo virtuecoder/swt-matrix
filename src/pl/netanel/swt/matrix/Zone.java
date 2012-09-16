@@ -176,6 +176,8 @@ public interface Zone<X extends Number, Y extends Number> {
    */
   boolean setMerged(X indexX, X countX, Y indexY, Y countY, boolean state);
 
+  CellExtent<X, Y> getMerged(X indexX, Y indexY);
+
   /**
    * Returns <code>true</code> if the cell at given indexes is merged.
    * Otherwise, <code>false</code> is returned.
@@ -576,6 +578,7 @@ public interface Zone<X extends Number, Y extends Number> {
   Matrix<X, Y> getMatrix();
 
   boolean contains(CellExtent<X, Y> cellExtent, X indexX, Y indexY);
+
 
 
 }

@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Extent;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Zone;
@@ -26,10 +27,13 @@ public class Groups {
   private final Zone<Integer, Integer> zone;
   private final String[][] text;
   private Extent<Integer>[][] children;
+  private boolean[][] collapsed;
+
 //  private Extent<Integer>[][] groupExtents;
   Image trueImage, falseImage;
+  private int collapse;
 
-  public Groups(Zone<Integer, Integer> zone, int axisDirection, String[][] text) {
+  public Groups(final Zone<Integer, Integer> zone, int axisDirection, String[][] text) {
     this.zone = zone;
     this.text = text;
 
@@ -37,17 +41,8 @@ public class Groups {
     initChildren();
     createImages(axisDirection);
 
-    // Replace cell painter
-    zone.replacePainter(new Painter<Integer, Integer> (Painter.NAME_CELLS) {
-      @Override
-      public void setupSpatial(Integer indexX, Integer indexY) {
-        super.setupSpatial(indexX, indexY);
-        text = getText(indexX, indexY);
-      }
-    });
-
     // Create toggle image button painter
-    CellImageButtonPainter<Integer, Integer> painter =
+    final CellImageButtonPainter<Integer, Integer> togglePainter =
         new CellImageButtonPainter<Integer, Integer>(trueImage, falseImage)
     {
 
@@ -59,15 +54,59 @@ public class Groups {
       @Override
       public Boolean getToggleState(Integer indexX, Integer indexY) {
         // Return true if is expanded
-        return null;
+        int index = getChildrenIndex(indexX, indexY);
+        Extent<Integer> extent = getAbsoluteExtent(indexY, index);
+        return collapse != SWT.None && indexX == extent.getStart() && extent.getEnd() - extent.getStart() > 0 ?
+            !collapsed[indexY][index] : null;
       }
     };
-    painter.style.imageAlignX = SWT.END;
-    painter.style.imageAlignY = SWT.CENTER;
-    zone.addPainter(painter);
+    zone.addPainter(togglePainter);
+
+    // Replace cell painter
+    Painter<Integer, Integer> cellPainter = new Painter<Integer, Integer> (Painter.NAME_CELLS) {
+      @Override
+      public void setupSpatial(Integer indexX, Integer indexY) {
+        super.setupSpatial(indexX, indexY);
+        text = getText(indexX, indexY);
+        togglePainter.setupSpatial(indexX, indexY);
+        image = togglePainter.image;
+      }
+    };
+    zone.replacePainter(cellPainter);
+
+    cellPainter.style.imageAlignX = togglePainter.style.imageAlignX = SWT.END;
+    cellPainter.style.imageAlignY = togglePainter.style.imageAlignY = SWT.CENTER;
+    cellPainter.style.imageMarginX = togglePainter.style.imageMarginX = 2;
+
+    // Create toggle listener
+    zone.addListener(SWT.MouseDown, new Listener() {
+      @Override
+      public void handleEvent(Event e) {
+        AxisItem<Integer> itemX = zone.getMatrix().getAxisX().getMouseItem();
+        AxisItem<Integer> itemY = zone.getMatrix().getAxisY().getMouseItem();
+        if (itemX != null && itemY != null && togglePainter.isOverImage(e.x, e.y)) {
+          Integer indexX = itemX.getIndex();
+          Integer indexY = itemY.getIndex();
+          int index = getChildrenIndex(indexX, indexY);
+          Extent<Integer> extent = getAbsoluteExtent(indexY, index);
+          if (extent.getEnd() - extent.getStart() > 0) {
+            boolean isCollapsed = collapsed[indexY][index];
+            if (isCollapsed) {
+              zone.getSectionX().setHidden(extent.getStart(), extent.getEnd(), false);
+            }
+            else {
+              zone.getSectionX().setHidden(extent.getStart() + 1, extent.getEnd(), true);
+            }
+            collapsed[indexY][index] = !isCollapsed;
+            zone.getMatrix().refresh();
+          }
+        }
+      }
+    });
   }
 
-  public void setCollapse(int beginning) {
+  public void setCollapse(int collapse) {
+    this.collapse = collapse;
   }
 
 
@@ -76,8 +115,28 @@ public class Groups {
   }
 
   public String getText(Integer indexX, Integer indexY) {
+    int index = getChildrenIndex(indexX, indexY);
+    Extent<Integer> extent = getAbsoluteExtent(indexY, index);
+    return indexX == extent.getStart() ? text[indexY][index] : null;
+  }
+
+  public void layout() {
+    for (int level = children.length; level-- > 0;) {
+      Extent<Integer>[] extents = children[level];
+      for (int index = 0; index < extents.length; index++) {
+        Extent<Integer> extent = getAbsoluteExtent(level, index);
+        boolean hasMultipleChildren = extent.getEnd() - extent.getStart() > 0;
+        if (hasMultipleChildren) {
+          zone.setMerged(extent.getStart(), extent.getEnd() - extent.getStart() + 1,
+              level, 1, true);
+        }
+      }
+    }
+  }
+
+  private int getChildrenIndex(int indexX, int indexY) {
     if (indexY == text.length - 1) {
-      return text[indexY][indexX];
+      return indexX;
     }
     else {
       int x = indexX;
@@ -92,21 +151,7 @@ public class Groups {
           //x += extent.getEnd() - extent.getStart() + 1;
         }
       }
-      return text[indexY][x];
-    }
-  }
-
-  public void layout() {
-    for (int level = children.length; level-- > 0;) {
-      Extent<Integer>[] extents = children[level];
-      for (int index = 0; index < extents.length; index++) {
-        Extent<Integer> extent = getAbsoluteExtent(level, index);
-        boolean hasMultipleChildren = extent.getEnd() - extent.getStart() > 0;
-        if (hasMultipleChildren) {
-          zone.setMerged(extent.getStart(), extent.getEnd() - extent.getStart() + 1,
-              level, 1, true);
-        }
-      }
+      return x;
     }
   }
 
@@ -174,10 +219,13 @@ public class Groups {
   private void initChildren() {
  // Initialize children collections
     children = new Extent[text.length-1][];
+    collapsed = new boolean[text.length-1][];
     for (int level = 0; level < text.length - 1; level++) {
       String[] levelText = text[level];
       children[level] = new Extent[levelText.length];
+      collapsed[level] = new boolean[levelText.length];
     }
+
 
 //    // Map group index to its first column index
 //    groupExtents = new Extent[text.length][];

@@ -278,7 +278,6 @@ class SectionClient<N extends Number> implements Section<N> {
 	 * Hiding
 	 */
 
-
 	@Override public void setHidden(N start, N end, boolean state) {
 		checkRange(start, end, core.count);
 		core.setHidden(start, end, state);
@@ -307,7 +306,6 @@ class SectionClient<N extends Number> implements Section<N> {
 	/*------------------------------------------------------------------------
 	 * Selection
 	 */
-
 
 	@Override public void setSelected(N start, N end, boolean state) {
 		checkRange(start, end, core.count);

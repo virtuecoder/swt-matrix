@@ -43,7 +43,7 @@ public class SnippetGroups {
     groups.get(1, 4).addChildren(9, 11);
 
     groups.layout();
-    pack();
+    //pack();
   }
 
   void pack() {
@@ -57,10 +57,11 @@ public class SnippetGroups {
     final Shell shell = new Shell();
     shell.setLayout(new FillLayout());
 
-    new SnippetGroups(shell);
+    SnippetGroups snippet = new SnippetGroups(shell);
 
     shell.setBounds(400, 200, 900, 400);
     shell.open();
+    snippet.pack();
     Display display = shell.getDisplay();
     while (!shell.isDisposed()) {
       if (!display.readAndDispatch()) {

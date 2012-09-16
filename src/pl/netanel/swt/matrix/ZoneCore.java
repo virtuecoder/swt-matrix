@@ -399,11 +399,9 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
     return !removed;
 	}
 
-	public Cell<X, Y> getMergeOrigin(X indexX, Y indexY) {
-	  CellExtent<X, Y> span = cellMerging.getSpan(indexX, indexY);
-	  return span == null ?
-      Cell.create(indexX, indexY) :
-	    Cell.create(span.startX, span.startY);
+	@Override
+	public CellExtent<X, Y> getMerged(X indexX, Y indexY) {
+	  return cellMerging.getSpan(indexX, indexY);
 	}
 
 	@Override

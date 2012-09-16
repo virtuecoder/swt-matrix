@@ -1035,6 +1035,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	      for (Painter<X, Y> painter: zone.painters) {
 	        painter.init(gc, Frozen.NONE, Frozen.NONE);
 	        for (seq.init(); seq.next();) {
+	          // if (zone.isMerged(seq.indexX.getValue(), seq.indexY.getValue())) continue;
 	          w = java.lang.Math.max(w, painter.computeSize(
 	            seq.indexX(), seq.indexY(),
 	            SWT.DEFAULT, zone.sectionY.getCellWidth(seq.indexY.getValue())).x);

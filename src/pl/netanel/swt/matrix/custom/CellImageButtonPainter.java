@@ -8,7 +8,6 @@
 package pl.netanel.swt.matrix.custom;
 
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
 import pl.netanel.swt.matrix.Axis;
@@ -27,7 +26,6 @@ public abstract class CellImageButtonPainter<X extends Number, Y extends Number>
   private final Image trueImage;
   private final Image falseImage;
   private Rectangle imageBounds;
-  private Rectangle zoneBounds;
 
   public CellImageButtonPainter(Image trueImage, Image falseImage) {
     super(CellImageButtonPainter.class.getName(), Painter.SCOPE_CELLS);
@@ -52,22 +50,6 @@ public abstract class CellImageButtonPainter<X extends Number, Y extends Number>
    * @return
    */
   public abstract Boolean getToggleState(X indexX, Y indexY);
-
-  @Override
-  protected boolean init() {
-    // Get matrix absolute position
-    Rectangle matrixBounds = getZone().getMatrix().getBounds();
-    Point matrixPosition = getZone().getMatrix().toDisplay(matrixBounds.x, matrixBounds.y);
-
-    // Get zone bounds within matrix
-    zoneBounds = getZone().getBounds(frozenX, frozenY);
-
-    // Make the zone position absolute
-    zoneBounds.x += matrixPosition.x;
-    zoneBounds.y += matrixPosition.y;
-
-    return super.init();
-  }
 
   @Override
   public void setupSpatial(X indexX, Y indexY) {
@@ -100,11 +82,11 @@ public abstract class CellImageButtonPainter<X extends Number, Y extends Number>
 
     // Compute image position
     int imageX = align(style.imageAlignX, style.imageMarginX, imageBounds.width, cellBounds.width);
-    int imageY = align(style.imageAlignX, style.imageMarginX, imageBounds.width, cellBounds.height);
-    imageX += zoneBounds.x;
-    imageY += zoneBounds.y;
+    int imageY = align(style.imageAlignY, style.imageMarginY, imageBounds.height, cellBounds.height);
+    imageX += cellBounds.x;
+    imageY += cellBounds.y;
 
-    return x <= imageX && imageX <= x + imageBounds.width &&
-        y <= imageY && imageY <= y + imageBounds.height;
+    return imageX <= x  && x <= imageX + imageBounds.width &&
+        imageY <= y && y <= imageY + imageBounds.height;
   }
 }

@@ -150,6 +150,14 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   }
 
   @Override
+  public CellExtent<X, Y> getMerged(X indexX, Y indexY) {
+    sectionX.checkCellIndex(indexX, "indexX");
+    sectionY.checkCellIndex(indexY, "indexY");
+    return core.getMerged(indexX, indexY);
+  }
+
+
+  @Override
   public boolean isMerged(X indexX, Y indexY) {
     sectionX.checkCellIndex(indexX, "indexX");
     sectionY.checkCellIndex(indexY, "indexY");
@@ -305,5 +313,6 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   public boolean contains(CellExtent<X, Y> cellExtent, X indexX, Y indexY) {
     return core.contains(cellExtent, indexX, indexY);
   }
+
 
 }
