@@ -528,7 +528,7 @@ public class Painter<X extends Number, Y extends Number> {
       case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
         y3 += style.textMarginY; break;
       case SWT.CENTER:
-        y3 += (height - textSize.y) / 2; break;
+        y3 += (height - extent.y) / 2; break;
       case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
         y3 += height - textSize.y - style.textMarginY; break;
       }

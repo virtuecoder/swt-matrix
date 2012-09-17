@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.netanel.pl/swt-matrix/EULA_v1.0.html
  ******************************************************************************/
-package pl.netanel.swt.matrix.custom;
+package pl.netanel.swt.matrix.reloaded;
 
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetAdapter;

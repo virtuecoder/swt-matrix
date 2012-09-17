@@ -256,7 +256,7 @@
     <copy tofile="${project.dir}/.classpath" file=".classpath.dist"/>
     <copy todir="${project.dir}/src">
       <fileset dir="src">
-        <exclude name="pl/netanel/swt/matrix/custom/**"/> 
+        <!--exclude name="pl/netanel/swt/matrix/reloaded/**"/--> 
       </fileset>
     </copy>
     <copy todir="${project.dir}/src_demo">

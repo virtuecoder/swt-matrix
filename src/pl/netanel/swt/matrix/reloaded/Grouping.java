@@ -5,9 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.netanel.pl/swt-matrix/EULA_v1.0.html
  ******************************************************************************/
-package pl.netanel.swt.matrix.custom;
-
-import java.util.Iterator;
+package pl.netanel.swt.matrix.reloaded;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
@@ -18,10 +16,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Extent;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
+import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 
 /**
@@ -30,17 +30,33 @@ import pl.netanel.swt.matrix.Zone;
  */
 public class Grouping {
   private final Zone<Integer, Integer> zone;
+  private final Matrix<Integer, Integer> matrix;
   private final Node root;
+  private final int axisDirection;
 
-//  private Extent<Integer>[][] groupExtents;
+  // private Extent<Integer>[][] groupExtents;
   Image trueImage, falseImage;
   private int collapse;
   private int levelCount;
+  private Axis<Integer> axis;
+  private Section<Integer> section, section2;
 
   public Grouping(final Zone<Integer, Integer> zone, int axisDirection, Node root) {
     this.zone = zone;
+    this.axisDirection = axisDirection;
     this.root = root;
     collapse = SWT.BEGINNING;
+    matrix = zone.getMatrix();
+    if (axisDirection == SWT.HORIZONTAL) {
+      axis = matrix.getAxisX();
+      section = zone.getSectionX();
+      section2 = zone.getSectionY();
+    } else {
+      axis = matrix.getAxisY();
+      section = zone.getSectionY();
+      section2 = zone.getSectionX();
+    }
+
     initNodes();
     layout();
 
@@ -67,7 +83,7 @@ public class Grouping {
       public Boolean getToggleState(Integer indexX, Integer indexY) {
         // Return true if is expanded
         Node node = getNode(indexX, indexY);
-        return collapse != SWT.NONE && node != null && indexX == node.extent.getStart() &&
+        return collapse != SWT.NONE && isFirstItem(node, indexX, indexY) &&
             node.children != null && node.children.length > 1 ?
             !node.collapsed : null;
       }
@@ -86,13 +102,15 @@ public class Grouping {
     };
     zone.replacePainter(cellPainter);
 
+    cellPainter.style.textAlignY = SWT.CENTER;
     cellPainter.style.imageAlignX = togglePainter.style.imageAlignX = SWT.END;
     cellPainter.style.imageAlignY = togglePainter.style.imageAlignY = SWT.CENTER;
     cellPainter.style.imageMarginX = togglePainter.style.imageMarginX = 2;
 
     // Create toggle listener
     zone.unbind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
-    zone.unbind(Matrix.CMD_SELECT_COLUMN, SWT.MouseDown, 1);
+    final int commandId = axisDirection == SWT.HORIZONTAL ? Matrix.CMD_SELECT_COLUMN : Matrix.CMD_SELECT_ROW;
+    zone.unbind(commandId, SWT.MouseDown, 1);
     zone.addListener(SWT.MouseDown, new Listener() {
       @Override
       public void handleEvent(Event e) {
@@ -105,21 +123,21 @@ public class Grouping {
 
           Node node = getNode(indexX, indexY);
           if (node.hasChildren()) {
-            AxisItem<Integer> focusItem = zone.getMatrix().getAxisX().getFocusItem();
+            AxisItem<Integer> focusItem = axis.getFocusItem();
             if (node.collapsed) {
               expand(indexY+1, node);
             }
             else {
               // Collapse
-              zone.getSectionX().setHidden(node.extent.getStart() + 1, node.extent.getEnd(), true);
+              section.setHidden(node.extent.getStart() + 1, node.extent.getEnd(), true);
             }
             node.collapsed = !node.collapsed;
             zone.getMatrix().refresh();
-            zone.getMatrix().getAxisX().setFocusItem(focusItem);
+            axis.setFocusItem(focusItem);
           }
         }
         else {
-          zone.getMatrix().execute(Matrix.CMD_SELECT_COLUMN);
+          zone.getMatrix().execute(commandId);
         }
       }
 
@@ -127,15 +145,15 @@ public class Grouping {
         if (node.hasChildren()) {
           for (Node child: node.children) {
             if (child.collapsed) {
-              zone.getSectionX().setHidden(child.extent.getStart(), false);
+              section.setHidden(child.extent.getStart(), false);
             }
             else {
-              zone.getSectionX().setHidden(child.extent.getStart(), child.extent.getEnd(), false);
+              section.setHidden(child.extent.getStart(), child.extent.getEnd(), false);
             }
           }
         }
         else {
-          zone.getSectionX().setHidden(node.index, node.index, false);
+          section.setHidden(node.index, node.index, false);
         }
       }
     });
@@ -175,8 +193,8 @@ public class Grouping {
 
     }.traverse(root);
 
-    zone.getSectionY().setCount(levelCount = maxLevel[0]+1);
-    zone.getSectionX().setCount(index[0]);
+    section.setCount(index[0]);
+    section2.setCount(levelCount = maxLevel[0]+1);
   }
 
   public void setCollapse(int collapse) {
@@ -185,18 +203,30 @@ public class Grouping {
 
   public String getText(Integer indexX, Integer indexY) {
     Node node = getNode(indexX, indexY);
-    return node != null && node.extent.getStart() == indexX ? node.caption : null;
+    return node != null && isFirstItem(node, indexX, indexY) ?
+        node.caption : null;
   }
 
   public void layout() {
     new NodeVisitor() {
       @Override void visit(Node node) {
-        if (node.hasChildren()) {
-          zone.setMerged(node.extent.getStart(), node.extent.getEnd() - node.extent.getStart() + 1,
-              node.level, 1, true);
+        if (axisDirection == SWT.HORIZONTAL) {
+          if (node.hasChildren()) {
+            zone.setMerged(node.extent.getStart(), node.extent.getEnd() - node.extent.getStart() + 1,
+                node.level, 1, true);
+          }
+          else if (node.level < levelCount - 1) {
+            zone.setMerged(node.index, 1, node.level, levelCount - node.level, true);
+          }
         }
-        else if (node.level < levelCount - 1) {
-          zone.setMerged(node.index, 1, node.level, levelCount - node.level, true);
+        else {
+          if (node.hasChildren()) {
+            zone.setMerged( node.level, 1,
+                node.extent.getStart(), node.extent.getEnd() - node.extent.getStart() + 1, true);
+          }
+          else if (node.level < levelCount - 1) {
+            zone.setMerged(node.level, levelCount - node.level, node.index, 1, true);
+          }
         }
       }
 
@@ -206,13 +236,18 @@ public class Grouping {
     }.traverse(root.children);
   }
 
-  private void createImages(int axisDirection) {
+  private boolean isFirstItem(Node node, int indexX, int indexY) {
+    if (node == null) return false;
+    return node.extent.getStart() == (axisDirection == SWT.HORIZONTAL ? indexX : indexY);
+  }
+
+  void createImages(int axisDirection) {
     Display display = zone.getMatrix().getDisplay();
     int x = 6, y = 8;
-    trueImage = new Image(display, x, y);
-    falseImage = new Image(display, x, y);
 
     if (axisDirection == SWT.HORIZONTAL) {
+      trueImage = new Image(display, x, y);
+      falseImage = new Image(display, x, y);
       GC gc = new GC(trueImage);
       gc.setAntialias(SWT.ON);
       gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
@@ -230,7 +265,23 @@ public class Grouping {
       gc.dispose();
     }
     else {
+      trueImage = new Image(display, y, x);
+      falseImage = new Image(display, y, x);
+      GC gc = new GC(trueImage);
+      gc.setAntialias(SWT.ON);
+      gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
+      // Draw ^
+      gc.fillPolygon(new int[] {y/2, 0, 0, x, y, x});
+      trueImage = setWhiteAsTransparent(trueImage);
+      gc.dispose();
 
+      gc = new GC(falseImage);
+      gc.setAntialias(SWT.ON);
+      gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
+      // Draw v
+      gc.fillPolygon(new int[] {y/2, x, 0, 0, y, 0});
+      falseImage = setWhiteAsTransparent(falseImage);
+      gc.dispose();
     }
   }
 
@@ -277,11 +328,19 @@ public class Grouping {
   }
 
   public Node getNode(int indexX, int indexY) {
+    int level, index;
+    if (axisDirection == SWT.HORIZONTAL) {
+      level = indexY;
+      index = indexX;
+    } else {
+      level = indexX;
+      index = indexY;
+    }
     Node node = root;
-    for (int level = 0; level < levelCount; level++) {
+    for (int i = 0; i < levelCount; i++) {
       for (Node child: node.children) {
-        if (child.extent.getStart() <= indexX && indexX <= child.extent.getEnd()) {
-          if (child.level == indexY) {
+        if (child.extent.getStart() <= index && index <= child.extent.getEnd()) {
+          if (child.level == level) {
             return child;
           }
           else if (child.children == null) {
@@ -316,37 +375,6 @@ public class Grouping {
     public boolean hasChildren() {
       return children != null;
     }
-
-    public Iterator<Node>getChildrenRecursiveIterator() {
-      return null;
-//      return new Iterator<Node>() {
-//        boolean hasNext;
-//        Node node;
-//        {
-//          if (children != null && children.length > 0) {
-//            node = children[0];
-//            hasNext = true;
-//          }
-//        }
-//        @Override
-//        public boolean hasNext() {
-//          return hasNext;
-//        }
-//
-//        @Override
-//        public Node next() {
-//          Node current = node;
-//
-//          return current;
-//        }
-//
-//        @Override
-//        public void remove() {
-//        }
-//
-//      };
-    }
-
   }
 
   public static abstract class NodeVisitor {

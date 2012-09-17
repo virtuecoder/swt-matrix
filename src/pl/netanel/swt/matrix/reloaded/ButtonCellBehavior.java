@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.netanel.pl/swt-matrix/EULA_v1.0.html
  ******************************************************************************/
-package pl.netanel.swt.matrix.custom;
+package pl.netanel.swt.matrix.reloaded;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -26,10 +26,10 @@ import pl.netanel.swt.matrix.Painter;
  * <p>
  * When the cell is clicked the look of the cell becomes flat.
  * <p>
- * Only 2 pixel wide edge of cells is painted so the majority of the output 
+ * Only 2 pixel wide edge of cells is painted so the majority of the output
  * of the underlying Painter.NAME_CELLS painter remains visible. Colors used are
  * SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW, SWT.COLOR_WIDGET_LIGHT_SHADOW and
- * SWT.COLOR_WIDGET_NORMAL_SHADOW. 
+ * SWT.COLOR_WIDGET_NORMAL_SHADOW.
  * <p>
  * Cells in the zone become not selectable.
  * <p>
@@ -37,21 +37,19 @@ import pl.netanel.swt.matrix.Painter;
  * <pre>
  * new ButtonCellPainter<Integer, Integer>(matrix.getColumnHeader());
  * </pre>
- * 
+ *
  * @param <Y> indexing type for vertical axis
  * @param <X> indexing type for horizontal axis
- * @author Jacek Kolodziejczyk created 16-07-2011
- * @created 13-10-2010
  */
-public class ButtonCellBehavior<X extends Number, Y extends Number> 
-  extends Painter<X, Y> implements Listener 
+public class ButtonCellBehavior<X extends Number, Y extends Number>
+  extends Painter<X, Y> implements Listener
 {
   private final Color highlightShadow, lightShadow, normalShadow;
   private final Zone<X, Y> zone;
   private AxisItem<X> pushedX;
   private AxisItem<Y> pushedY;
   private boolean isPushed;
-  
+
   public ButtonCellBehavior(Zone<X, Y> zone) {
     super("button cells", SCOPE_CELLS);
     this.zone = zone;
@@ -61,7 +59,7 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
     highlightShadow = display.getSystemColor(SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW);
     lightShadow = display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
     normalShadow = display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW);
-    
+
     zone.setSelectionEnabled(false);
     zone.addListener(SWT.MouseDown, this);
     zone.addListener(SWT.MouseUp, this);
@@ -72,33 +70,33 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
     Matrix<X, Y> matrix = zone.getMatrix();
 
     switch (e.type) {
-    
+
     case SWT.MouseDown:
       pushedX = zone.getMatrix().getAxisX().getItemByViewportDistance(e.x);
       pushedY = zone.getMatrix().getAxisY().getItemByViewportDistance(e.y);
       break;
-      
+
     case SWT.MouseUp:
       pushedY = null;
       pushedX = null;
       break;
     }
-    
+
     matrix.redraw();
     matrix.update();
   }
-  
+
   @Override protected boolean init() {
-    // Prevent setting background by the default super.init(); 
+    // Prevent setting background by the default super.init();
     return true;
   }
-  
+
   @Override
   public void setup(X indexX, Y indexY) {
     super.setup(indexX, indexY);
-    isPushed = isPushed(indexX, indexY); 
+    isPushed = isPushed(indexX, indexY);
   };
-  
+
   @Override public void paint(int x, int y, int width, int height) {
     if (isPushed || isSelected) {
       paintPushed(x, y, width, height);
@@ -106,25 +104,25 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
       paintIdle(x, y, width, height);
     }
   };
-  
+
   /**
-   * Returns <tt>true</tt> if the cell at the specified location is in pushed state, 
-   * or <tt>false</tt> otherwise. 
-   * @param indexX index of a section item in the horizontal axis 
-   * @param indexY index of a section item in the vertical axis. 
+   * Returns <tt>true</tt> if the cell at the specified location is in pushed state,
+   * or <tt>false</tt> otherwise.
+   * @param indexX index of a section item in the horizontal axis
+   * @param indexY index of a section item in the vertical axis.
    * @return <tt>true</tt> if the cell at the specified location is in pushed state
    */
   protected boolean isPushed(X indexX, Y indexY) {
-    return pushedY != null && pushedX != null && 
+    return pushedY != null && pushedX != null &&
       pushedY.getIndex().equals(indexY) &&
       pushedX.getIndex().equals(indexX);
   }
-  
+
 
   /**
-   * Paints the cell when it is in the pushed state.  
-   * @param itemX index of a section item in the horizontal axis 
-   * @param indexY index of a section item in the vertical axis. 
+   * Paints the cell when it is in the pushed state.
+   * @param itemX index of a section item in the horizontal axis
+   * @param indexY index of a section item in the vertical axis.
    * @param x the x coordinate of the painting boundaries
    * @param y the y coordinate of the painting boundaries
    * @param width the width of the painting boundaries
@@ -136,8 +134,8 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
 
   /**
    * Paints the cell when it is in the idle (not pushed) state.
-   * @param itemX index of a section item in the horizontal axis 
-   * @param indexY index of a section item in the vertical axis. 
+   * @param itemX index of a section item in the horizontal axis
+   * @param indexY index of a section item in the vertical axis.
    * @param x the x coordinate of the painting boundaries
    * @param y the y coordinate of the painting boundaries
    * @param width the width of the painting boundaries
@@ -161,21 +159,21 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
     super.clean();
     gc.setForeground(zone.getMatrix().getForeground());
   }
-  
-  
-  
+
+
+
   public static void main(String[] args) {
     Shell shell = new Shell();
     shell.setLayout(new FillLayout());
 
-    
+
     final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.NONE);
     matrix.getAxisX().getBody().setCount(4);
     matrix.getAxisY().getBody().setCount(10);
     matrix.getAxisY().getHeader().setVisible(true);
 
     new ButtonCellBehavior<Integer, Integer>(matrix.getHeaderX());
-    
+
     shell.setBounds(400, 200, 400, 300);
     shell.open();
     Display display = shell.getDisplay();

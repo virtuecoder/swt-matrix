@@ -6,8 +6,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Matrix;
-import pl.netanel.swt.matrix.custom.Grouping;
-import pl.netanel.swt.matrix.custom.Grouping.Node;
+import pl.netanel.swt.matrix.Section;
+import pl.netanel.swt.matrix.Zone;
+import pl.netanel.swt.matrix.reloaded.Grouping;
+import pl.netanel.swt.matrix.reloaded.Grouping.Node;
 
 public class SnippetGrouping {
 
@@ -35,22 +37,28 @@ public class SnippetGrouping {
     )
   );
   private Matrix<Integer, Integer> matrix;
+  private final int axisDirection;
 
-  public SnippetGrouping(Shell shell) {
+  public SnippetGrouping(Shell shell, int axisDirection) {
+    this.axisDirection = axisDirection;
     matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL | SWT.H_SCROLL);
+    matrix.getAxisX().getBody().setCount(2);
     matrix.getAxisY().getBody().setCount(2);
     matrix.getAxisX().getHeader().setVisible(true);
     matrix.getAxisY().getHeader().setVisible(true);
 
     /* Create class holding the API and all the logic to achieve grouping effect
        in the given zone and along the given direction */
-    new Grouping(matrix.getHeaderX(), SWT.HORIZONTAL, structure);
+    Zone<Integer, Integer> zone = axisDirection == SWT.HORIZONTAL ? matrix.getHeaderX() : matrix.getHeaderY();
+    new Grouping(zone, axisDirection, structure);
   }
 
   void pack() {
     // Optimize the column width
-    for (int i = 0; i < matrix.getAxisX().getBody().getCount(); i++) {
-      matrix.getAxisX().getBody().setCellWidth(i);
+    Section<Integer> section = axisDirection == SWT.HORIZONTAL ?
+        matrix.getAxisX().getBody() : matrix.getAxisX().getHeader();
+    for (int i = 0; i < section.getCount(); i++) {
+      section.setCellWidth(i);
     }
   }
 
@@ -58,7 +66,7 @@ public class SnippetGrouping {
     final Shell shell = new Shell();
     shell.setLayout(new FillLayout());
 
-    SnippetGrouping snippet = new SnippetGrouping(shell);
+    SnippetGrouping snippet = new SnippetGrouping(shell, SWT.VERTICAL);
 
     shell.setBounds(400, 200, 900, 400);
     shell.open();

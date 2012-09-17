@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Matrix;
-import pl.netanel.swt.matrix.custom.Groups;
+import pl.netanel.swt.matrix.reloaded.Groups;
 
 public class SnippetGroups {
   static final String[][] headers = new String[][] {
