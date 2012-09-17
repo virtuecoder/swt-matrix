@@ -1,4 +1,4 @@
-package usecase;
+package pl.netanel.swt.matrix.snippets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -11,7 +11,7 @@ import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.reloaded.ints.Grouping;
 import pl.netanel.swt.matrix.reloaded.ints.Grouping.Node;
 
-public class SnippetGrouping {
+public class S0008_Gruping {
 
   static final Node structure = new Node("root",
     new Node("Group1",
@@ -39,7 +39,7 @@ public class SnippetGrouping {
   private Matrix<Integer, Integer> matrix;
   private final int axisDirection;
 
-  public SnippetGrouping(Shell shell, int axisDirection) {
+  public S0008_Gruping(Shell shell, int axisDirection) {
     this.axisDirection = axisDirection;
     matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL | SWT.H_SCROLL);
     matrix.getAxisX().getBody().setCount(2);
@@ -66,7 +66,7 @@ public class SnippetGrouping {
     final Shell shell = new Shell();
     shell.setLayout(new FillLayout());
 
-    SnippetGrouping snippet = new SnippetGrouping(shell, SWT.VERTICAL);
+    S0008_Gruping snippet = new S0008_Gruping(shell, SWT.VERTICAL);
 
     shell.setBounds(400, 200, 900, 400);
     shell.open();
@@ -78,4 +78,8 @@ public class SnippetGrouping {
       }
     }
   }
+
+  static final String title = "ColumnGoruping";
+  static final String instructions = "";
+  static final String code = "0008";
 }

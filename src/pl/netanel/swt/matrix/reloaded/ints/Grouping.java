@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.netanel.pl/swt-matrix/EULA_v1.0.html
  ******************************************************************************/
-package pl.netanel.swt.matrix.reloaded;
+package pl.netanel.swt.matrix.reloaded.ints;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
@@ -23,6 +23,7 @@ import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
+import pl.netanel.swt.matrix.reloaded.CellImageButtonPainter;
 
 /**
  * Groups items with parent header merged across its children.
