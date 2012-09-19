@@ -1,10 +1,41 @@
 -------------------------------------------------------------------------------
+Version 0.7.3
+
+Bug fixes:
+- Merging cache not working correctly if more then one zone had merging.
+
+-------------------------------------------------------------------------------
+Version 0.7.2
+
+Bug fixes:
+- Incomplete javadoc for Grouping class
+- Distribution file for retail version did not have pl.netanel.swt.matrix.reloaded package
+  
+
+API changes:
+- Added Grouping.getRoot() : Node
+- Added Grouping.Node.getParent() : Node
+- Added Grouping.Node.getCaption() : String
+- Added Grouping.Node.setCollapsed(boolean) : Node
+- Added Grouping.Node.setCollapsedAll(boolean) : Node
+- Added Grouping.Node.setCollapseDirectoin(int) : Node
+- Added Grouping.Node.setCollapseDirectionAll(int) : Node
+- Added Grouping.getNodeByTreeIndex(int, int) : Node
+- Renamed Grouping.getNode(int, int) : Node to Grouping.getNodeByCellIndex(Number, Number) : Node  
+- Added Grouping.NodeVisitor class
+- Added Grouping.setToggleImages(Image, Image)
+
+-------------------------------------------------------------------------------
 Version 0.7.1
 
 API changes:
 - Renamed Axis.getMouseOverItem to Axis.getMouseItem()
 - Removed Zone.getMergeOrigin(Number, Number):Cell
 - Added Zone.getMerged(Number, Number):CellExtent
+- Added Grouping class
+
+New snippets:
+- S0008_Grouping
 
 -------------------------------------------------------------------------------
 Version 0.7.0

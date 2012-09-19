@@ -455,15 +455,15 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
           if (spanIndex == -1) {
             boundX = cacheX.cells.get(i);
             boundY = cacheY.cells.get(j);
-            cache.add(itemX, itemY, boundX, boundY);
+            cache.add(zone, itemX, itemY, boundX, boundY);
             continue;
           }
 
           // Otherwise compute the merged bounds
-          if (!cache.spans.containsKey(spanIndex)) {
+          if (!cache.contains(zone, spanIndex)) {
             boundX = layoutX.getBound(itemX, zone.cellMerging.itemsX.get(spanIndex), cacheX.cells.get(i).distance);
             boundY = layoutY.getBound(itemY, zone.cellMerging.itemsY.get(spanIndex), cacheY.cells.get(j).distance);
-            cache.add(spanIndex, itemX, itemY, boundX, boundY);
+            cache.add(zone, spanIndex, itemX, itemY, boundX, boundY);
             region.subtract(
                 java.lang.Math.max(boundX.distance, 0),
                 java.lang.Math.max(boundY.distance, 0), boundX.width, boundY.width);
@@ -481,7 +481,7 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
     // For each frozen area
     for (frozenSeq.init(); frozenSeq.next();) {
       MergeCache<X, Y> cache = mergeCache.get(frozenSeq.index);
-      Integer boundIndex = cache.spans.get(spanIndex);
+      Integer boundIndex = cache.get(zone, spanIndex);
       if (boundIndex == null) continue;
       Bound boundX = cache.boundsX.get(boundIndex);
       Bound boundY = cache.boundsY.get(boundIndex);
@@ -506,7 +506,9 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
     ArrayList<Bound> boundsX = new ArrayList<Bound>();
     ArrayList<Bound> boundsY = new ArrayList<Bound>();
 
-    HashMap<Integer, Integer> spans = new HashMap<Integer, Integer>(); // maps span index to bound index
+    // maps span index to bound index
+    private HashMap<Zone<X, Y>, HashMap<Integer, Integer>> spans =
+        new HashMap<Zone<X, Y>, HashMap<Integer, Integer>>();
 
     public void clear() {
       itemsX.clear();
@@ -516,21 +518,36 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
       spans.clear();
     }
 
-    public void add(int spanIndex, AxisItem<X> itemX, AxisItem<Y> itemY, Bound boundX, Bound boundY) {
+    public void add(Zone<X, Y> zone, int spanIndex, AxisItem<X> itemX, AxisItem<Y> itemY, Bound boundX, Bound boundY) {
       int boundIndex = this.boundsX.size();
       this.itemsX.add(itemX);
       this.itemsY.add(itemY);
       this.boundsX.add(boundX);
       this.boundsY.add(boundY);
-      this.spans.put(spanIndex, boundIndex);
+      HashMap<Integer, Integer> map = spans.get(zone);
+      if (map == null) {
+        spans.put(zone, map = new HashMap<Integer, Integer>());
+      }
+      map.put(spanIndex, boundIndex);
     }
 
-    public void add(AxisItem<X> itemX, AxisItem<Y> itemY, Bound boundX, Bound boundY) {
+    public void add(Zone<X, Y> zone, AxisItem<X> itemX, AxisItem<Y> itemY, Bound boundX, Bound boundY) {
       this.itemsX.add(itemX);
       this.itemsY.add(itemY);
       this.boundsX.add(boundX);
       this.boundsY.add(boundY);
+    }
 
+    public boolean contains(ZoneCore<X, Y> zone, int spanIndex) {
+      HashMap<Integer, Integer> map = spans.get(zone);
+      if (map == null) return false;
+      return map.containsKey(spanIndex);
+    }
+
+    public Integer get(Zone<X, Y> zone, Integer spanIndex) {
+      HashMap<Integer, Integer> map = spans.get(zone);
+      if (map == null) return null;
+      return map.get(spanIndex);
     }
   }
 }

@@ -39,9 +39,9 @@ class CellSpanSet<X extends Number, Y extends Number> {
 		for (int i = 0; i < size; i++) {
 			if (i > 0) sb.append(", ");
 			sb.append("[");
-			sb.append(itemsY.get(i));
-			sb.append(", ");
 			sb.append(itemsX.get(i));
+			sb.append(", ");
+			sb.append(itemsY.get(i));
 			sb.append("]");
 		}
 		return sb.toString();

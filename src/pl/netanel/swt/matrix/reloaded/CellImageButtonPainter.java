@@ -23,16 +23,20 @@ import pl.netanel.util.Preconditions;
  */
 public abstract class CellImageButtonPainter<X extends Number, Y extends Number> extends Painter<X, Y> {
 
-  private final Image trueImage;
-  private final Image falseImage;
+  private Image trueImage;
+  private Image falseImage;
   private Rectangle imageBounds;
 
-  public CellImageButtonPainter(Image trueImage, Image falseImage) {
-    super(CellImageButtonPainter.class.getName(), Painter.SCOPE_CELLS);
+  public CellImageButtonPainter(String name, Image trueImage, Image falseImage) {
+    super(name, Painter.SCOPE_CELLS);
 
     Preconditions.checkNotNullWithName(trueImage, "image0");
     // Images must have the same sizes
 
+    setToggleImages(trueImage, falseImage);
+  }
+
+  public void setToggleImages(Image trueImage, Image falseImage) {
     this.trueImage = trueImage;
     this.falseImage = falseImage;
 

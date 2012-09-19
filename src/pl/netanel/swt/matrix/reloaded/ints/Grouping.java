@@ -7,6 +7,10 @@
  ******************************************************************************/
 package pl.netanel.swt.matrix.reloaded.ints;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -37,16 +41,22 @@ public class Grouping {
 
   // private Extent<Integer>[][] groupExtents;
   Image trueImage, falseImage;
-  private int collapse;
   private int levelCount;
   private Axis<Integer> axis;
   private Section<Integer> section, section2;
+  private NodeVisitor layoutVisitor;
+  private CellImageButtonPainter<Integer, Integer> cellPainter;
 
+  /**
+   * Default constructor.
+   * @param zone
+   * @param axisDirection
+   * @param root
+   */
   public Grouping(final Zone<Integer, Integer> zone, int axisDirection, Node root) {
     this.zone = zone;
     this.axisDirection = axisDirection;
     this.root = root;
-    collapse = SWT.BEGINNING;
     matrix = zone.getMatrix();
     if (axisDirection == SWT.HORIZONTAL) {
       axis = matrix.getAxisX();
@@ -58,6 +68,7 @@ public class Grouping {
       section2 = zone.getSectionX();
     }
 
+    createVisitors();
     initNodes();
     layout();
 
@@ -70,9 +81,7 @@ public class Grouping {
       }
     });
 
-    // Create toggle image button painter
-    final CellImageButtonPainter<Integer, Integer> togglePainter =
-        new CellImageButtonPainter<Integer, Integer>(trueImage, falseImage)
+    cellPainter = new CellImageButtonPainter<Integer, Integer>(Painter.NAME_CELLS, trueImage, falseImage)
     {
 
       @Override
@@ -83,30 +92,24 @@ public class Grouping {
       @Override
       public Boolean getToggleState(Integer indexX, Integer indexY) {
         // Return true if is expanded
-        Node node = getNode(indexX, indexY);
-        return collapse != SWT.NONE && isFirstItem(node, indexX, indexY) &&
-            node.children != null && node.children.length > 1 ?
-            !node.collapsed : null;
+        Node node = getNodeByCellIndex(indexX, indexY);
+        return node.collapseDirection != SWT.NONE && isFirstItem(node, indexX, indexY) &&
+            node.children.length > 1 && node.parent.collapsed == false ?
+                !node.collapsed : null;
       }
-    };
-    zone.addPainter(togglePainter);
 
-    // Replace cell painter
-    Painter<Integer, Integer> cellPainter = new Painter<Integer, Integer> (Painter.NAME_CELLS) {
       @Override
       public void setupSpatial(Integer indexX, Integer indexY) {
         super.setupSpatial(indexX, indexY);
         text = getText(indexX, indexY);
-        togglePainter.setupSpatial(indexX, indexY);
-        image = togglePainter.image;
       }
     };
     zone.replacePainter(cellPainter);
 
     cellPainter.style.textAlignY = SWT.CENTER;
-    cellPainter.style.imageAlignX = togglePainter.style.imageAlignX = SWT.END;
-    cellPainter.style.imageAlignY = togglePainter.style.imageAlignY = SWT.CENTER;
-    cellPainter.style.imageMarginX = togglePainter.style.imageMarginX = 2;
+    cellPainter.style.imageAlignX = SWT.END;
+    cellPainter.style.imageAlignY = SWT.CENTER;
+    cellPainter.style.imageMarginX = 2;
 
     // Create toggle listener
     zone.unbind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
@@ -118,43 +121,15 @@ public class Grouping {
         AxisItem<Integer> itemX = zone.getMatrix().getAxisX().getMouseItem();
         AxisItem<Integer> itemY = zone.getMatrix().getAxisY().getMouseItem();
         if (itemX == null || itemY == null) return;
-        if (togglePainter.isOverImage(e.x, e.y)) {
+        if (cellPainter.isOverImage(e.x, e.y)) {
           Integer indexX = itemX.getIndex();
           Integer indexY = itemY.getIndex();
 
-          Node node = getNode(indexX, indexY);
-          if (node.hasChildren()) {
-            AxisItem<Integer> focusItem = axis.getFocusItem();
-            if (node.collapsed) {
-              expand(indexY+1, node);
-            }
-            else {
-              // Collapse
-              section.setHidden(node.extent.getStart() + 1, node.extent.getEnd(), true);
-            }
-            node.collapsed = !node.collapsed;
-            zone.getMatrix().refresh();
-            axis.setFocusItem(focusItem);
-          }
+          Node node = getNodeByCellIndex(indexX, indexY);
+          node.setCollapsed(!node.collapsed);
         }
         else {
           zone.getMatrix().execute(commandId);
-        }
-      }
-
-      private void expand(int startLevel, Node node) {
-        if (node.hasChildren()) {
-          for (Node child: node.children) {
-            if (child.collapsed) {
-              section.setHidden(child.extent.getStart(), false);
-            }
-            else {
-              section.setHidden(child.extent.getStart(), child.extent.getEnd(), false);
-            }
-          }
-        }
-        else {
-          section.setHidden(node.index, node.index, false);
         }
       }
     });
@@ -166,26 +141,27 @@ public class Grouping {
 
     new NodeVisitor() {
       int level = -1;
+      Node parent = root;
 
       @Override
-      void beforeChildren(Node node) {
+      protected void visitBefore() {
+        if (!node.hasChildren()) {
+          node.extent = Extent.createUnchecked(index[0], index[0]);
+          node.index = index[0]++;
+        }
+        node.parent = parent;
+        node.level = level;
+        node.grouping = Grouping.this;
+        parent = node;
         level++;
       }
 
       @Override
-      void visit(Node node) {
-        if (node.children == null) {
-          node.extent = Extent.createUnchecked(index[0], index[0]);
-          node.index = index[0]++;
-        }
-        node.level = level;
-      }
-
-      @Override
-      void afterChildren(Node node) {
+      protected void visitAfter() {
         maxLevel[0] = java.lang.Math.max(maxLevel[0], level);
+        parent = node.parent;
         level--;
-        if (node.children != null) {
+        if (node.hasChildren()) {
           node.extent = Extent.createUnchecked(
               node.children[0].extent.getStart(),
               node.children[node.children.length-1].extent.getEnd());
@@ -195,22 +171,38 @@ public class Grouping {
     }.traverse(root);
 
     section.setCount(index[0]);
-    section2.setCount(levelCount = maxLevel[0]+1);
-  }
-
-  public void setCollapse(int collapse) {
-    this.collapse = collapse;
+    section2.setCount(levelCount = maxLevel[0]);
   }
 
   public String getText(Integer indexX, Integer indexY) {
-    Node node = getNode(indexX, indexY);
+    Node node = getNodeByCellIndex(indexX, indexY);
     return node != null && isFirstItem(node, indexX, indexY) ?
         node.caption : null;
   }
 
+  /**
+   * Merges cells in the zone according to the grouping structure.
+   */
   public void layout() {
-    new NodeVisitor() {
-      @Override void visit(Node node) {
+    layoutVisitor.traverse();
+  }
+
+  public Node getRoot() {
+    return root;
+  }
+
+  public Matrix<Integer, Integer> getMatrix() {
+    return matrix;
+  }
+
+  private boolean isFirstItem(Node node, int indexX, int indexY) {
+    if (node == null) return false;
+    return node.extent.getStart() == (axisDirection == SWT.HORIZONTAL ? indexX : indexY);
+  }
+
+  void createVisitors() {
+    layoutVisitor = new NodeVisitor() {
+      @Override protected void visitBefore() {
         if (axisDirection == SWT.HORIZONTAL) {
           if (node.hasChildren()) {
             zone.setMerged(node.extent.getStart(), node.extent.getEnd() - node.extent.getStart() + 1,
@@ -229,17 +221,17 @@ public class Grouping {
             zone.setMerged(node.level, levelCount - node.level, node.index, 1, true);
           }
         }
+        if (node.collapsed) {
+          node.collapsed = false;
+          node.setCollapsed(true);
+        }
       }
-
-      @Override void beforeChildren(Node node) {}
-      @Override void afterChildren(Node node) {}
-
-    }.traverse(root.children);
-  }
-
-  private boolean isFirstItem(Node node, int indexX, int indexY) {
-    if (node == null) return false;
-    return node.extent.getStart() == (axisDirection == SWT.HORIZONTAL ? indexX : indexY);
+      @Override
+      public NodeVisitor traverse() {
+        super.traverse(root.children);
+        return this;
+      }
+    };
   }
 
   void createImages(int axisDirection) {
@@ -328,7 +320,13 @@ public class Grouping {
     return new Image(zone.getMatrix().getDisplay(), imageData);
   }
 
-  public Node getNode(int indexX, int indexY) {
+  /**
+   * Returns the grouping node in the given cell.
+   * @param indexX cell index on the horizontal axis
+   * @param indexY cell index on the vertical axis
+   * @return grouping node in the given cell
+   */
+  public Node getNodeByCellIndex(int indexX, int indexY) {
     int level, index;
     if (axisDirection == SWT.HORIZONTAL) {
       level = indexY;
@@ -356,46 +354,272 @@ public class Grouping {
     return null;
   }
 
+  public Node getNodeByTreeIndex(final int ...index) {
+    Node node  = root;
+    for (int i = 0; i < index.length; i++) {
+      node = node.children[index[i]];
+    }
+    return root.equals(node) ? null : node;
+  }
+
+  public void setToggleImages(Image collapseImage, Image expandImage) {
+    cellPainter.setToggleImages(collapseImage, expandImage);
+  }
+
+  /**
+   * Represent a node in the grouping structure.
+   * Implements Builder pattern.
+   */
   public static class Node {
     private final String caption;
     private final Node[] children;
+    private Node parent;
     private int level, index;
     private Extent<Integer> extent;
     private boolean collapsed;
+    Grouping grouping;
+    private int collapseDirection;
 
     public Node(String caption, Node ...children) {
       this.caption = caption;
       this.children = children;
+      this.collapseDirection = SWT.BEGINNING;
     }
 
-    public Node(String caption) {
-      this.caption = caption;
-      this.children = null;
+    @Override
+    public String toString() {
+      return caption;
     }
 
+    /**
+     * Return <code>true</code> if this node has children, or false otherwise.
+     * @return <code>true</code> if this node has children, or false otherwise
+     */
     public boolean hasChildren() {
-      return children != null;
+      return children.length > 0;
     }
-  }
 
-  public static abstract class NodeVisitor {
-    abstract void beforeChildren(Node node);
-    abstract void visit(Node node);
-    abstract void afterChildren(Node node);
-
-    public void traverse(Node node) {
-      visit(node);
-      if (node.children == null) return;
-      beforeChildren(node);
-      for (Node child: node.children) traverse(child);
-      afterChildren(node);
+    /**
+     * Return list of children of this node.
+     * @return list of children of this node
+     */
+    public List<Node> getChildren() {
+      return Arrays.asList(children);
     }
-    public void traverse(Node[] nodes) {
-      for (Node node: nodes) {
-        traverse(node);
+
+    /**
+     * Returns parent of this node.
+     * @return parent of this node
+     */
+    public Node getParent() {
+      return parent;
+    }
+
+    /**
+     * Returns caption of this node.
+     * @return caption of this node
+     */
+    public String getCaption() {
+      return this.caption;
+    }
+    /**
+     * Sets the collapsed state of this node to the given value.
+     * @param state state to set for <code>collapsed</code> property
+     * @return this node
+     */
+    public Node setCollapsed(boolean state) {
+      if (collapseDirection == SWT.NONE || collapsed == state || level == -1) return this;
+      collapsed = !collapsed;
+      if (grouping != null) {
+        AxisItem<Integer> focusItem = grouping.axis.getFocusItem();
+
+        if (state == true && children.length > 1) {
+          // Collapse
+          final ArrayList<Extent<Integer>> extents = new ArrayList<Extent<Integer>>();
+          new NodeVisitor() {
+            @Override
+            protected void visitBefore() {
+              if (node.collapseDirection == SWT.NONE) {
+                stopBranch = true;
+                extents.add(node.extent);
+              }
+            }
+          }.traverse(this);
+
+          int ds = collapseDirection == SWT.END ? 0 : 1;
+          int de = collapseDirection == SWT.END ? 1 : 0;
+          grouping.section.setHidden(extent.getStart() + ds, extent.getEnd() - de, true);
+
+          for (int i = 0; i < extents.size(); i++) {
+            Extent<Integer> extent2 = extents.get(i);
+            grouping.section.setHidden(extent2.getStart(), extent2.getEnd(), false);
+          }
+        }
+        else {
+          if (hasChildren()) {
+            expand(level+1, this);
+          }
+        }
+        grouping.matrix.refresh();
+        grouping.axis.setFocusItem(focusItem);
+      }
+      return this;
+    }
+
+    private void expand(int startLevel, Node node) {
+      if (node.hasChildren()) {
+        for (Node child: node.children) {
+          if (child.collapsed) {
+            grouping.section.setHidden(child.extent.getStart(), false);
+          }
+          else {
+            grouping.section.setHidden(child.extent.getStart(), child.extent.getEnd(), false);
+          }
+        }
+      }
+      else {
+        grouping.section.setHidden(node.index, node.index, false);
       }
     }
 
+    /**
+     * Sets the collapsed state of this node
+     * and all related nodes on the lower level to the given value.
+     *
+     * @param state state to set for <code>collapsed</code> property
+     * @return this node
+     */
+    public Node setCollapsedAll(final boolean state) {
+      new NodeVisitor() {
+        @Override
+        protected void visitAfter() {
+          if (state == true && node.level > 0) {
+            node.collapsed = true;
+          }
+          else {
+            node.setCollapsed(state);
+          }
+        }
+      }.traverse(this);
+      return this;
+    }
+
+    /**
+     * Sets the collapse direction of this node to the given value.
+     * <p>
+     * The possible values are {@link SWT#BEGINNING}, {@link SWT#END} and {@link SWT#NONE}
+     * <li> With {@link SWT#BEGINNING} the first node is shown when node is collapsed
+     * <li> With {@link SWT#END} the last node is shown when node is collapsed (<b>not implemented yet!</b>)
+     * <li> With {@link SWT#NONE} the node cannot be collapsed
+     *
+     * @param direction collapse direction to set
+     * @return this node
+     */
+    public Node setCollapseDirection(int direction) {
+      if (direction == SWT.END) throw new UnsupportedOperationException("Not implemnted yet");
+      collapseDirection = direction;
+      if (grouping != null) {
+        grouping.matrix.redraw();
+      }
+      return this;
+    }
+
+    /**
+     * Sets the collapse direction of this node
+     * and all related nodes in the lower level to the given value.
+     * @param direction collapse direction to set.
+     * @return this node
+     * @see #setCollapseDirection(int)
+     */
+    public Node setCollapseDirectionAll(final int direction) {
+      new NodeVisitor() {
+        @Override
+        protected void visitBefore() {
+          node.setCollapseDirection(direction);
+        }
+      }.traverse(this);
+      return this;
+    }
   }
 
+  /**
+   * Traverses the given node or array of nodes and all the related nodes at the lower levels.
+   * The order of visiting is parent first then children.
+   * <p>
+   * Implements the Visitor pattern.
+   */
+  public static abstract class NodeVisitor {
+    /**
+     * Node being visited
+     */
+    protected Node node;
+    /**
+     * Stops the execution after {@link #visit(Node)} or <code>traverse(child)</code>
+     * if set to <code>true</code>
+     */
+    protected boolean stop;
+
+    /**
+     * Stops processing the current branch and got the one
+     * if set to <code>true</code>
+     */
+    protected boolean stopBranch;
+
+    /**
+     * Method executed before traversing children
+     * @param node parent for the children to traverse
+     */
+    protected void visitBefore() {}
+    /**
+     * Method executed after traversing children
+     * @param node parent for the children to traverse
+     */
+    protected void visitAfter() {}
+
+    /**
+     * Returns the latest visited node.
+     * @return the latest visited node
+     */
+    public Node get() {
+      return node;
+    }
+    /**
+     * Traverses starting from the given node.
+     * @param node node to traverse
+     * @return this object
+     */
+    public NodeVisitor traverse(Node node) {
+      this.node = node;
+      visitBefore();
+      if (stop) return this;
+      for (Node child: node.children) {
+        traverse(child);
+        if (stop || stopBranch) return this;
+      }
+      this.node = node;
+      visitAfter();
+      return this;
+    }
+
+    /**
+     * Traverses starting from the given nodes.
+     * @param nodes nodes to traverse
+     * @return this object
+     */
+    public NodeVisitor traverse(Node[] nodes) {
+      for (Node node: nodes) {
+        traverse(node);
+        if (stop || stopBranch) break;
+      }
+      return this;
+    }
+
+    /**
+     * Can encapsulate the traversal starting node or nodes.
+     * @return this object
+     */
+    public NodeVisitor traverse() {
+      return this;
+    }
+  }
 }

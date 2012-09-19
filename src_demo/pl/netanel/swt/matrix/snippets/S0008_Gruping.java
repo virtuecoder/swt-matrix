@@ -29,11 +29,11 @@ public class S0008_Gruping {
           new Node("currency"),
           new Node("spot"),
           new Node("fwd"),
-          new Node("vol")),
-        new Node("Sub Group 2.1",
+          new Node("vol")).setCollapsed(true),
+        new Node("Sub Group 2.2",
             new Node("value"),
             new Node("currencies"),
-            new Node("expired"))
+            new Node("expired")).setCollapseDirection(SWT.NONE)
     )
   );
   private Matrix<Integer, Integer> matrix;
@@ -50,7 +50,11 @@ public class S0008_Gruping {
     /* Create class holding the API and all the logic to achieve grouping effect
        in the given zone and along the given direction */
     Zone<Integer, Integer> zone = axisDirection == SWT.HORIZONTAL ? matrix.getHeaderX() : matrix.getHeaderY();
-    new Grouping(zone, axisDirection, structure);
+    Grouping grouping = new Grouping(zone, axisDirection, structure);
+    grouping.getRoot().setCollapsedAll(true);
+
+//    grouping.getRoot().setCollapsedAll(false);
+//    System.out.println(grouping.getNodeByTreeIndex(1, 1, 0).getParent());
   }
 
   void pack() {
@@ -66,7 +70,7 @@ public class S0008_Gruping {
     final Shell shell = new Shell();
     shell.setLayout(new FillLayout());
 
-    S0008_Gruping snippet = new S0008_Gruping(shell, SWT.VERTICAL);
+    S0008_Gruping snippet = new S0008_Gruping(shell, SWT.HORIZONTAL);
 
     shell.setBounds(400, 200, 900, 400);
     shell.open();
