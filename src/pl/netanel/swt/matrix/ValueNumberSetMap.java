@@ -121,4 +121,16 @@ class ValueNumberSetMap<N extends Number, T> {
     }
   }
 
+  public void insert(N target, N count) {
+    for (NumberSet<N> set: sets) {
+      set.insert(target, count);
+    }
+  }
+
+  public void delete(N start, N end) {
+    for (NumberSet<N> set: sets) {
+      set.delete(start, end);
+    }
+  }
+
 }

@@ -94,7 +94,7 @@ public class Grouping {
         // Return true if is expanded
         Node node = getNodeByCellIndex(indexX, indexY);
         return node.collapseDirection != SWT.NONE && isFirstItem(node, indexX, indexY) &&
-            node.children.length > 1 && node.parent.collapsed == false ?
+            node.children.length > 1 /*&& node.parent.collapsed == false*/ ?
                 !node.collapsed : null;
       }
 

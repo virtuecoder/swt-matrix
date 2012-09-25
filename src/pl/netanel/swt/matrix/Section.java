@@ -299,13 +299,22 @@ public interface Section<N extends Number> {
    * of the zones to which the section belongs.
    *
    * @param index index of the item to set the cell width for
-   * @param width the new cell width
    *
    * @throws IllegalArgumentException if index is <code>null</code>
    * @throws IndexOutOfBoundsException if index is out of 0 ...
    *         {@link #getCount()}-1 bounds
    */
   void setCellWidth(N index);
+
+  /**
+   * Sets the cell width that best fits its content for all items in this section. <br>
+   * Warning: for a large number of items it may take a long time to compute,
+   * because of the necessity to iterate over all items.
+   * <p>
+   * The width is calculated by {@link Painter#computeSize(Number, Number, int, int)}
+   * of the zones to which the section belongs.
+   */
+  void setCellWidth();
 
   /**
    * Returns the cell width of the item with the given index in the model.

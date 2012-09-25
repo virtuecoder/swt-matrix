@@ -12,18 +12,18 @@ import pl.netanel.util.IntArray;
 class IntAxisState<N extends Number> extends ExtentState<N> {
 	private final IntArray values;
 	private int defaultValue, value;
-	
+
 	public IntAxisState(Math<N> math, int defaultValue) {
 		super(math);
 		this.defaultValue = defaultValue;
 		values = new IntArray();
 	}
-	
+
 	@Override
 	public boolean equalValue(int i) {
 		return values.get(i) == value;
 	}
-	
+
 	@Override
 	public void addValue(int i) {
 		values.add(i, value);
@@ -49,16 +49,16 @@ class IntAxisState<N extends Number> extends ExtentState<N> {
 		return values.get(i) == values.get(j);
 	}
 
-	
+
 	public int getValue(N index) {
 		int i = indexOf(index);
 		return i == -1 ? defaultValue : values.get(i);
 	}
-	
+
 	public void setValue(MutableExtent<N> extent, int value) {
 		setValue(extent.start(), extent.end(), value);
 	}
-	
+
 	public void setValue(N from, N to, int value) {
 		if (value == defaultValue) {
 			// TODO remove value if it is default
@@ -68,7 +68,7 @@ class IntAxisState<N extends Number> extends ExtentState<N> {
 	}
 
 
-	
+
 	/**
 	 * Gets the size of the values collection.
 	 * For testing purposes mainly
@@ -77,17 +77,17 @@ class IntAxisState<N extends Number> extends ExtentState<N> {
 	public int getCount() {
 		return values.size();
 	}
-	
-	
+
+
 	public int getDefault() {
 		return defaultValue;
 	}
-	
+
 	public void setDefault(int value) {
 		defaultValue = value;
 	}
-	
-	
+
+
 	@Override
 	public IntArray delete(N start, N end) {
 		IntArray a = super.delete(start, end);

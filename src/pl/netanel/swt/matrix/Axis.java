@@ -8,6 +8,7 @@
 package pl.netanel.swt.matrix;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
@@ -181,6 +182,17 @@ public class Axis<N extends Number>  {
 	public Section<N> getSection(int sectionIndex) {
 	  Preconditions.checkPositionIndex(sectionIndex, sections.size(), "sectionIndex");
 	  return sections.get(sectionIndex);
+	}
+
+	/**
+	 * Returns index of the given section in the list of this axis sections or
+	 * -1 if the section does not belong to this axis.
+	 *
+	 * @param section section to find the index of
+	 * @return
+	 */
+	public int indexOf(Section<N> section) {
+	  return sections.indexOf(section);
 	}
 
 
@@ -610,6 +622,15 @@ public class Axis<N extends Number>  {
 	  }
 	}
 
+	public void pack() {
+	  for (SectionCore<N> section: layout.sections) {
+	    Iterator<N> it = section.getOrder();
+	    while(it.hasNext()) {
+	      N next = it.next();
+	      matrix.pack(symbol, section, next);
+	    }
+	  }
+	}
 
 	/*------------------------------------------------------------------------
 	 * Non public
@@ -897,7 +918,7 @@ public class Axis<N extends Number>  {
     } else {
       matrix.deleteInZonesY(section, start, end);
     }
-    if (layout.current.section.equals(section) &&
+    if (layout.current != null && layout.current.section.equals(section) &&
       layout.math.contains(start, end, layout.current.getIndex())) {
       layout.ensureCurrentIsValid();
     }

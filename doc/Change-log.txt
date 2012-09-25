@@ -1,4 +1,24 @@
 -------------------------------------------------------------------------------
+Version 0.7.5
+
+API changes:
+- Axis.indexOf(Section)
+
+Bug fixes:
+- Section.delete was incorrect in some cases
+
+-------------------------------------------------------------------------------
+Version 0.7.4
+
+API changes:
+- Added Section.setCellWidth()
+- Added Axis.pack()
+- Added Matrix.transpose()
+
+Bug fixes:
+- Section.insert was incorrect when count of items was 0.
+
+-------------------------------------------------------------------------------
 Version 0.7.3
 
 Bug fixes:

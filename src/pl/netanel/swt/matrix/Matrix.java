@@ -235,7 +235,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
 
 	MatrixLayout<X, Y> layout;
-	final ArrayList<ZoneClient<X, Y>> zones;
+	ArrayList<ZoneClient<X, Y>> zones;
 	Axis<Y> axisY;
 	Axis<X> axisX;
 	AxisLayout<Y> layoutY;
@@ -306,24 +306,9 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		setBackground(Resources.getColor(SWT.COLOR_LIST_BACKGROUND));
 		setForeground(Resources.getColor(SWT.COLOR_LIST_FOREGROUND));
 
-
-		this.axisX = axisX == null ? new Axis<X>() : axisX;
-	  this.axisY = axisY == null ? new Axis<Y>() : axisY;
-	  this.layoutX = this.axisX.layout;
-	  this.layoutY = this.axisY.layout;
-
-		configureAxises();
-
-		layout = new MatrixLayout<X, Y>(layoutX, layoutY);
-
-		zones = new ArrayList<ZoneClient<X, Y>>();
-		for (ZoneCore<X, Y> zone: layout.zones) {
-		  zones.add(new ZoneClient<X, Y>(zone));
-		}
+		setAxises(axisX, axisY);
 
 		painters = new Painters<X, Y>();
-
-		setLayout(layout);
 		setDefaultPainters();
 
 		listener2 = new Listener() {
@@ -362,6 +347,25 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 //      @Override public void controlMoved(ControlEvent e) {}
 //    });
 	}
+
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  private void setAxises(Axis axisX, Axis axisY) {
+    this.axisX = axisX == null ? new Axis<X>() : axisX;
+	  this.axisY = axisY == null ? new Axis<Y>() : axisY;
+	  this.layoutX = this.axisX.layout;
+	  this.layoutY = this.axisY.layout;
+
+		configureAxises();
+
+		layout = new MatrixLayout<X, Y>(layoutX, layoutY);
+
+		zones = new ArrayList<ZoneClient<X, Y>>();
+		for (ZoneCore<X, Y> zone: layout.zones) {
+		  zones.add(new ZoneClient<X, Y>(zone));
+		}
+
+		setLayout(layout);
+  }
 
 	private void configureAxises() {
     axisX.getHeader().setDefaultCellWidth(40);
@@ -1012,15 +1016,15 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
 
 	@SuppressWarnings("unchecked")
-	<N extends Number> void pack(char axisSymbol, Section<N> section, N index) {
+	<N extends Number> void pack(char axisSymbol, SectionCore<N> section, N index) {
 	  if (axisSymbol == 'X') {
-	    packX((Section<X>) section, (X) index);
+	    packX((SectionCore<X>) section, (X) index);
 	  } else {
-	    packY((Section<Y>) section, (Y) index);
+	    packY((SectionCore<Y>) section, (Y) index);
 	  }
 	}
 
-	void packX(Section<X> section, X index) {
+	void packX(SectionCore<X> section, X index) {
 	  Cursor cursor = getCursor();
 	  GC gc = new GC(this);
 	  try {
@@ -1053,7 +1057,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	  redraw();
 	}
 
-	void packY(Section<Y> section, Y index) {
+	void packY(SectionCore<Y> section, Y index) {
 	  Cursor cursor = getCursor();
 	  GC gc = new GC(this);
 	  try {
@@ -1112,6 +1116,17 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
       // layoutY.compute();
     }
     return new Point(wHint, hHint);
+  }
+
+  /**
+   * Switch X and Y axises. Axis state is preserved, but zones are recreated.
+   */
+  public void transpose() {
+    Preconditions.checkState(
+        axisX.math.getNumberClass().equals(axisY.math.getNumberClass()),
+        "Cannot transpose because the X axis has a different indexing class: %0" +
+          " then the Y axis: %1");
+    setAxises(axisY, axisX);
   }
 
 	@SuppressWarnings("unchecked")

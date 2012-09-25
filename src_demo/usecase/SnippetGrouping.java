@@ -66,7 +66,7 @@ public class SnippetGrouping {
     final Shell shell = new Shell();
     shell.setLayout(new FillLayout());
 
-    SnippetGrouping snippet = new SnippetGrouping(shell, SWT.VERTICAL);
+    SnippetGrouping snippet = new SnippetGrouping(shell, SWT.HORIZONTAL);
 
     shell.setBounds(400, 200, 900, 400);
     shell.open();

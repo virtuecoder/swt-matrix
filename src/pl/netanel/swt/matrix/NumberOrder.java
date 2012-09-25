@@ -177,7 +177,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
   public void insert(N target, N count) {
 		int imax = items.size();
 		if (imax == 0) {
-			items.add(new MutableExtent<N>(math.create(0), math.create(0)));
+			items.add(new MutableExtent<N>(math.create(0), math.create(count).decrement()));
 		} else {
 			for (int i = 0; i < imax; i++) {
 				MutableExtent<N> e = items.get(i);

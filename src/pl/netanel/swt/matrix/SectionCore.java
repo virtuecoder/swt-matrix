@@ -357,6 +357,16 @@ public class SectionCore<N extends Number> implements Section<N> {
   }
 
   @Override
+  public void setCellWidth() {
+    if (axis != null) {
+      for (Iterator<N> it = getOrder(); it.hasNext();) {
+        N next = it.next();
+        axis.matrix.pack(axis.symbol, this, next);
+      }
+    }
+  }
+
+  @Override
   public int getCellWidth(N index) {
     return cellWidth.getValue(index);
   }
@@ -460,7 +470,7 @@ public class SectionCore<N extends Number> implements Section<N> {
 
 
   @Override public void setSelected(N index, boolean state) {
-  	selection.change(index, index, state);
+  	setSelected(index, index, true);
   }
 
 
@@ -618,6 +628,7 @@ public class SectionCore<N extends Number> implements Section<N> {
 		moveable.delete(start, end);
 		hideable.delete(start, end);
 		hidden.delete(start, end);
+		buried.delete(start, end);
 		order.delete(start, end);
 		selection.delete(start, end);
 		lastSelection.delete(start, end);
@@ -636,7 +647,10 @@ public class SectionCore<N extends Number> implements Section<N> {
 		moveable.insert(target, count);
 		hideable.insert(target, count);
 		hidden.insert(target, count);
+		buried.insert(target, count);
 		order.insert(target, count);
+		parents.insert(target, count);
+		expanded.insert(target, count);
 		selection.insert(target, count);
 		lastSelection.insert(target, count);
 		this.count = math.create(this.count).add(count).getValue();
@@ -874,11 +888,7 @@ public class SectionCore<N extends Number> implements Section<N> {
 
 	private void checkIndex(N index, N limit, String name) {
 		Preconditions.checkNotNullWithName(index, name);
-		if (getIndexClass() != index.getClass()) {
-		  throw new IndexOutOfBoundsException(MessageFormat.format(
-		    "section indexing class ({0}) must be the same as the class of index ({1})",
-		    getIndexClass(), index.getClass())) ;
-		}
+		checkIndexClass(index, name);
 		if (math.compare(index, math.ZERO_VALUE()) < 0) {
 			throw new IndexOutOfBoundsException(MessageFormat.format(
 					"{0} ({1}) cannot be negative", name, index)) ;
@@ -887,6 +897,14 @@ public class SectionCore<N extends Number> implements Section<N> {
 			throw new IndexOutOfBoundsException(MessageFormat.format(
 					"{0} ({1}) must be lower then limit {2}", name, index, limit))  ;
 		}
+	}
+
+	public void checkIndexClass(N index, String name) {
+	  if (getIndexClass() != index.getClass()) {
+	    throw new IndexOutOfBoundsException(MessageFormat.format(
+	        "section indexing class ({0}) must be the same as the class of {2} ({1})",
+	        getIndexClass(), index.getClass(), name)) ;
+	  }
 	}
 
 	void addSelectionEvent() {

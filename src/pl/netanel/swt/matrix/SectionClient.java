@@ -76,6 +76,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	 */
 	@Override public void setCount(N count) {
 	  Preconditions.checkNotNullWithName(count, "count");
+	  core.checkIndexClass(count, "count");
 	  Preconditions.checkArgument(core.math.compare(count, core.math.ZERO_VALUE()) >= 0,
 	    "count must be lower then 0");
 		core.setCount(count);
@@ -233,6 +234,10 @@ class SectionClient<N extends Number> implements Section<N> {
 	  checkCellIndex(index, "index");
     core.setCellWidth(index);
   }
+
+	@Override public void setCellWidth() {
+	  core.setCellWidth();
+	}
 
 	@Override public int getCellWidth(N index) {
 		checkCellIndex(index, "index");

@@ -163,8 +163,8 @@ import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 		section.moveSelected(3, 0);
 		assertEquals("1, 3, 0, 2, 4", toString(section));
 	}
-	
-	
+
+
 
 	@Test
 	public void moveSelectedScattered3() throws Exception {
@@ -196,6 +196,16 @@ import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 		assertEquals("0, 1, 2, 3, 4", toString(section));
 	}
 
+	@Test
+	public void moveGetOrder() throws Exception {
+	  SectionCore section = new SectionCore(int.class);
+	  section.setCount(5);
+	  section.setOrder(section.getOrder());
+	  section.setOrder(1, 2, 0);
+	  assertEquals("1, 2, 0, 3, 4", toString(section));
+	}
+
+	@Test
 	public void delete() throws Exception {
 		SectionCore section = new SectionCore(int.class);
 		section.setCount(5);
@@ -204,6 +214,66 @@ import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 		section.delete(2, 2);
 		assertEquals(33, section.getCellWidth(3));
 		assertEquals(4, section.getCount());
+	}
+
+	@Test
+	public void deleteAfterOrder() throws Exception {
+    SectionCore section = new SectionCore(int.class);
+    section.setCount(5);
+    section.setOrder(1, 2, 0);
+    section.delete(0, 4);
+    assertEquals(0, section.getCount());
+    assertEquals("", toString(section));
+  }
+
+	@Test
+	public void deleteBefore() throws Exception {
+	  SectionCore section = new SectionCore(int.class);
+	  section.setCount(5);
+	  section.setOrder(1, 2, 0);
+	  section.delete(0, 0);
+	  assertEquals(4, section.getCount());
+	  assertEquals("0, 1, 2, 3", toString(section));
+	}
+
+	@Test
+	public void deleteInside() throws Exception {
+	  SectionCore section = new SectionCore(int.class);
+	  section.setCount(5);
+	  section.setOrder(1, 3, 0);
+	  assertEquals("1, 2, 3, 0, 4", toString(section));
+	  section.delete(2, 2);
+	  assertEquals("1, 2, 0, 3", toString(section));
+	}
+
+	@Test
+	public void deleteCrossBefore() throws Exception {
+	  SectionCore section = new SectionCore(int.class);
+	  section.setCount(5);
+	  section.setOrder(3, 4, 1);
+	  assertEquals("0, 3, 4, 1, 2", toString(section));
+	  section.delete(0, 1);
+	  assertEquals("1, 2, 0", toString(section));
+	}
+
+	@Test
+	public void deleteCrossAfter() throws Exception {
+	  SectionCore section = new SectionCore(int.class);
+	  section.setCount(5);
+	  section.setOrder(0, 1, 3);
+	  assertEquals("2, 0, 1, 3, 4", toString(section));
+	  section.delete(1, 2);
+	  assertEquals("0, 1, 2", toString(section));
+	}
+
+	@Test
+	public void deleteOverlap() throws Exception {
+	  SectionCore section = new SectionCore(int.class);
+	  section.setCount(5);
+	  section.setOrder(0, 1, 3);
+	  assertEquals("2, 0, 1, 3, 4", toString(section));
+	  section.delete(1, 3);
+	  assertEquals("0, 1", toString(section));
 	}
 
 	@Test
