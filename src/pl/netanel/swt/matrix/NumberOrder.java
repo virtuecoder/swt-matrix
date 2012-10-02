@@ -7,22 +7,17 @@
  ******************************************************************************/
 package pl.netanel.swt.matrix;
 
-import static pl.netanel.swt.matrix.Math.ADJACENT_BEFORE;
-import static pl.netanel.swt.matrix.Math.BEFORE;
-import static pl.netanel.swt.matrix.Math.CROSS_AFTER;
-import static pl.netanel.swt.matrix.Math.CROSS_BEFORE;
-
 
 class NumberOrder<N extends Number> extends NumberSet<N> {
 
-	private N count;
+	private MutableNumber<N> count;
   SpanExtentSequence spanExtents;
   ExtentOriginLimitSequence countForward, countBackward;
   ForwardExtentFirstLastSequence untilForward;
 
 	public NumberOrder(Math<N> math) {
 		super(math);
-		count = math.ZERO_VALUE();
+		count = math.create(0);
 		spanExtents = new SpanExtentSequence();
 		countForward = new ForwardExtentOriginLimitSequence();
 		countBackward = new BackwardExtentOriginLimitSequence();
@@ -30,8 +25,8 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	}
 
 	public void setCount(N newCount) {
-		int compare = math.compare(newCount, count);
-		N last = math.decrement(count);
+		int compare = math.compare(newCount, count.getValue());
+		N last = math.decrement(count.getValue());
 		if (compare < 0) {
 			remove(newCount, last);
 		}
@@ -50,7 +45,12 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 		} else {
 			return;
 		}
-		count = newCount;
+		count.set(newCount);
+	}
+
+	@Override
+  public MutableNumber<N> getCount() {
+	  return count;
 	}
 
 	/**
@@ -159,7 +159,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 
 	public N indexOf(N modelIndex) {
 //		System.out.println(modelIndex.getClass());
-		if (math.compare(modelIndex, count) >= 0 ||
+		if (math.compare(modelIndex, count.getValue()) >= 0 ||
 			math.compare(modelIndex, math.ZERO_VALUE()) < 0) return modelIndex;
 
 		MutableNumber<N> sum = math.create(0);
@@ -191,51 +191,52 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 				}
 			}
 		}
+		this.count.add(count);
 //		if (position != -1) {
 //			items.add(position, new Extent(math.create(target), math.create(target).add(count).decrement()));
 //		}
 	};
 
-	public void insert2(N target, N count) {
-		MutableNumber<N> mutableEnd = math.create(target).add(count).decrement();
-		N tstart = target;
-		N tend = mutableEnd.getValue();
-		int i = 0, imax = items.size();
-		for (; i < imax; i++) {
-			MutableExtent<N> e = items.get(i);
-
-			N start = e.start(), end = e.end();
-			int compare = math.compare(tstart, tend, start, end);
-			switch (compare) {
-			case BEFORE: case ADJACENT_BEFORE:
-				e.start.add(count);
-				e.end.add(count);
-				break;
-
-			case CROSS_AFTER:
-				MutableNumber<N> delta = math.create(tend).subtract(start).increment();
-				e.start.add(delta);
-				e.end.add(delta);
-				break;
-
-			case CROSS_BEFORE:
-				delta = math.create(tend).subtract(start).increment();
-				e.start.add(delta);
-				e.end.add(delta);
-				break;
-			}
-			if (math.compare(target, start) <= 0) {
-			}
-			else if (math.compare(target, e.end()) <= 0) {
-				if (math.compare(target, start) == 0) {
-
-					e.start.set(math.increment(target));
-				}
-				e.end.add(count);
-			}
-			items.add(i, new MutableExtent<N>(math.create(target), mutableEnd));
-		}
-	};
+//	public void insert2(N target, N count) {
+//		MutableNumber<N> mutableEnd = math.create(target).add(count).decrement();
+//		N tstart = target;
+//		N tend = mutableEnd.getValue();
+//		int i = 0, imax = items.size();
+//		for (; i < imax; i++) {
+//			MutableExtent<N> e = items.get(i);
+//
+//			N start = e.start(), end = e.end();
+//			int compare = math.compare(tstart, tend, start, end);
+//			switch (compare) {
+//			case BEFORE: case ADJACENT_BEFORE:
+//				e.start.add(count);
+//				e.end.add(count);
+//				break;
+//
+//			case CROSS_AFTER:
+//				MutableNumber<N> delta = math.create(tend).subtract(start).increment();
+//				e.start.add(delta);
+//				e.end.add(delta);
+//				break;
+//
+//			case CROSS_BEFORE:
+//				delta = math.create(tend).subtract(start).increment();
+//				e.start.add(delta);
+//				e.end.add(delta);
+//				break;
+//			}
+//			if (math.compare(target, start) <= 0) {
+//			}
+//			else if (math.compare(target, e.end()) <= 0) {
+//				if (math.compare(target, start) == 0) {
+//
+//					e.start.set(math.increment(target));
+//				}
+//				e.end.add(count);
+//			}
+//			items.add(i, new MutableExtent<N>(math.create(target), mutableEnd));
+//		}
+//	};
 
 	@Override
   public NumberOrder<N> copy() {

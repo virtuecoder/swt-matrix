@@ -50,7 +50,7 @@ public class S0020_Blink {
     // Start blinking
     blinker.run();
 
-    // Stop blinking after 100 seconds
+    // Stop blinking after 10 seconds
     display.timerExec(10 * 1000, new Runnable() {
       @Override
       public void run() {

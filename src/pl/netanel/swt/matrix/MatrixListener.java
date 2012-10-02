@@ -241,6 +241,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     private int resizeEvent;
     private boolean selectState;
     AxisItem<N> mouseOverItem;
+    MutableNumber<N> tmp;
 
     public AxisListener(Axis<N> axis) {
       this.axis = axis;
@@ -251,6 +252,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       else {
         resizeCursor = Resources.getCursor(SWT.CURSOR_SIZENS);
       }
+      tmp = axis.math.create(0);
     }
 
     public void setItem(Event e) {
@@ -288,7 +290,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
           handleDrag(e);
         }
         else {
-          if (isInHeader() && (resizeItem = axisLayout.getResizeItem(distance)) != null) {
+          if (isInHeader() && (resizeItem = axisLayout.getResizeItem(distance)) != null &&
+              !isOverMergedLine(resizeItem)) {
             if (cursor != resizeCursor) {
               matrix.setCursor(cursor = resizeCursor);
             }
@@ -389,6 +392,23 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         prev = null;
         break;
       }
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean isOverMergedLine(AxisItem<N> resizeItem) {
+      CellExtent<X, Y> span2 = null;
+      if (axis.symbol == 'X') {
+        span2 = zone.getMerged((X) resizeItem.index, stateY.item.index);
+        if (span2 == null) return false;
+        tmp.set((N) span2.endX).add((N) span2.startX).decrement();
+      } else {
+        span2 = zone.getMerged(stateX.item.index, (Y) resizeItem.index);
+        if (span2 == null) return false;
+        tmp.set((N) span2.endY).add((N) span2.startY).decrement();
+      }
+//      System.out.println(span2 + " " + tmp + " " + resizeItem.index + " " +
+//       (axis.math.compare(tmp.getValue(), resizeItem.index) != 0));
+      return axis.math.compare(tmp.getValue(), resizeItem.index) != 0;
     }
 
     private void handleDrag(Event e) {

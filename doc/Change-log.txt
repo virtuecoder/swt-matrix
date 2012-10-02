@@ -1,8 +1,21 @@
 -------------------------------------------------------------------------------
+Version 0.7.7
+
+API changes:
+- Removed Matrix.transpose()
+
+-------------------------------------------------------------------------------
+Version 0.7.6
+
+Bug fixes:
+- Resize cursor appeared inside a merged cell
+- Insert to empty section was not working correctly  
+
+-------------------------------------------------------------------------------
 Version 0.7.5
 
 API changes:
-- Axis.indexOf(Section)
+- Added Axis.indexOf(Section)
 
 Bug fixes:
 - Section.delete was incorrect in some cases
@@ -22,7 +35,7 @@ Bug fixes:
 Version 0.7.3
 
 Bug fixes:
-- Merging cache not working correctly if more then one zone had merging.
+- Merging cache was not working correctly if more then one zone had merging.
 
 -------------------------------------------------------------------------------
 Version 0.7.2
@@ -31,7 +44,6 @@ Bug fixes:
 - Incomplete javadoc for Grouping class
 - Distribution file for retail version did not have pl.netanel.swt.matrix.reloaded package
   
-
 API changes:
 - Added Grouping.getRoot() : Node
 - Added Grouping.Node.getParent() : Node

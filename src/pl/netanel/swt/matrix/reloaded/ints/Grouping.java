@@ -71,6 +71,11 @@ public class Grouping {
     createVisitors();
     initNodes();
     layout();
+    matrix.addListener(Matrix.EVENT_LAYOUT, new Listener() {
+      @Override
+      public void handleEvent(Event e) {
+      }
+    });
 
     createImages(axisDirection);
     zone.getMatrix().addListener(SWT.Dispose, new Listener() {

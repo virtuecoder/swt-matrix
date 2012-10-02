@@ -285,6 +285,8 @@ import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 //		assertEquals(2, section.getCount());
 	}
 
+
+
 //	private static String moveSelected(SectionUnchecked section, int source, int target) {
 //		section.moveSelected(source, target);
 //		return toString(section);

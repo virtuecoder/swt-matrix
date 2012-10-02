@@ -1,40 +1,37 @@
-Painter cache for shortenned text
+2012 Q4
+
+Maintenance:
+- Seperate build for retail and free version.
+- Update the web site.
+- Update tutorial/manual
+- Improve unit test coverage, especially grouping and tree
+
+New features:
+- Before/after callbacks for commands with possibility to cancel the command. (Cycle detection)
+- Possibility to stop long running command.
+- Allow bind/unbind for drag and drop gestures
+- Move tree API from Section to a seperate class, similar approach as Grouping.
+- Drag and drop into a tree item besides existing before/after
+- Style.textMarginLeft and Style.textMarginRight. Refactor Style.textMargin into a setter. The same for image margin.
+- Painter cache for shortenned text
+- Text shortening by dots at the end 
+- Introduce events: LAYOUT_CHANGE, ITEM_COUNT_CHANGE.
+- Axis.setFrozenHead(Section) freezes at the end of given section and changes when item count of the proceeding section is altered. The same for setFrozenTail(Section)
+- Axis.setFrozenHead(Axis.getHeader()) is done by default.
+- Add Zone.removeListener(listener)
+
+Bug fixes:
+- Drag and drop of a group of items just before or after one of the selected does not work.
+- Section.setSelected should highlight the cells in matrix.
+
+
 Zone.addControlListener to get notification when an item is resized or moved.
-Move selection logic from listener to section. Section.setSelected should highlight the cells in matrix.
-Fix drag and drop of a group of items just before or after one of the selected one.
 Fix matrix not visible on other layouts then FillLayout.
 Does not refresh on shell.open without shell.setBounds.
-
 Axis.setSelected(from position, to position) ?
-
-
-Samples:
-summary
-reorder
-hide item
-custom background
-push button headers
-alter selection
-variable row height
-variable line width
-freezing
-line color
-text color
-cell background
-text, image aligning 
-text, image margin
-embedded progress bar, checkbox
-combo editor
-zone listener
-
-copy paste
-autoscroll 
-drag indicator
-column width compress
 
 From nebula forum
 - different colors for the fore- and background of cells. If i select one colored cell, the selection "overwrites" the color setting, so that every selected cell looks the same. Is there a way to change the color of selected cells, so that i can still see the differences?
-- I wanted to support the MS Excel features in my RCP app. Features like 'Auto Filter'.
 - Nebula CompositeTable, flexible row layout
 
 To do:
@@ -68,20 +65,16 @@ To do:
 
 - cell editors
 - multicell edit
-- Matrix reloaded
 
 - Typed events, ensure event properties compatibility with SWT Table
 - tooltips
 - styles
 - column chooser
-- tree, item children
-- cell span
-- column grouping
 - CTRL+SHIFT for selection
 - traverse out of the matrix on tab
 - trigger selection event on selection
 - trigger move/resize event on move/resize
-- MCMD.COPY, MCMD.PASTE default cut/copy/paste works against excel
+- default cut/copy/paste works against excel
 - sorting indicator
 - quick search
 
@@ -116,3 +109,26 @@ Less priority
 
 ===============================================================================
 
+Samples:
+summary
+reorder
+hide item
+custom background
+push button headers
+alter selection
+variable row height
+variable line width
+freezing
+line color
+text color
+cell background
+text, image aligning 
+text, image margin
+embedded progress bar, checkbox
+combo editor
+zone listener
+
+copy paste
+autoscroll 
+drag indicator
+column width compress

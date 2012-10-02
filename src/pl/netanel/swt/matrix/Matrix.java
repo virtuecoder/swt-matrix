@@ -227,6 +227,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
   private static final int MAX_VIEWPORT_SIZE = 100000;
 
+  public static final int EVENT_LAYOUT = 1000;
+
 	/*------------------------------------------------------------------------
 	 * Mouse event modifiers, cannot collide with SWT state masks or mouse button numbers
 	 */
@@ -346,6 +348,14 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 //
 //      @Override public void controlMoved(ControlEvent e) {}
 //    });
+	}
+
+	@Override
+	public void addListener(int eventType, Listener listener) {
+	  if (eventType == EVENT_LAYOUT) {
+	      throw new UnsupportedOperationException("EVENT_LAYOUT not supported yet" );
+	  }
+	  super.addListener(eventType, listener);
 	}
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
