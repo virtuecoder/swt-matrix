@@ -776,9 +776,9 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	  layout.compute();
 		updateScrollBars();
 		listener.refresh();
-		for (Zone<X, Y> zone: layout.zones) {
-			zone.setSelectedAll(false);
-		}
+//		for (Zone<X, Y> zone: layout.zones) {
+//			zone.setSelectedAll(false);
+//		}
 		redraw();
 	}
 

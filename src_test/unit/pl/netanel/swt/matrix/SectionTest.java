@@ -1,7 +1,8 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
+
+import java.util.Arrays;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -285,7 +286,14 @@ import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 //		assertEquals(2, section.getCount());
 	}
 
-
+  @Test
+  public void setOrder() throws Exception {
+    SectionCore section = new SectionCore(int.class);
+    section.setCount(5);
+    section.delete(0, 4);
+    section.insert(0, 2);
+    section.setOrder(Arrays.asList(new Integer[] {0,1}).iterator());
+  }
 
 //	private static String moveSelected(SectionUnchecked section, int source, int target) {
 //		section.moveSelected(source, target);

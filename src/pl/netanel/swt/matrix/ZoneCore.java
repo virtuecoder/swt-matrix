@@ -124,15 +124,15 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
   void setBodyStyle() {
 	  Painter<X, Y> painter = getPainter(Painter.NAME_CELLS);
     if (painter != null) {
-      painter.setStyle(Style.createBodyCellStyle());
+      painter.style = Style.createBodyCellStyle();
     }
     painter = getPainter(Painter.NAME_LINES_X);
     if (painter != null) {
-      painter.setStyle(Style.createBodyLineStyle());
+      painter.style = Style.createBodyLineStyle();
     }
     painter = getPainter(Painter.NAME_LINES_Y);
     if (painter != null) {
-      painter.setStyle(Style.createBodyLineStyle());
+      painter.style = Style.createBodyLineStyle();
     }
 	}
 
@@ -146,21 +146,21 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
   void setHeaderStyle() {
 	  Painter<X, Y> painter = getPainter(Painter.NAME_CELLS);
 	  if (painter != null) {
-	    painter.setStyle(Style.createHeaderCellStyle());
+	    painter.style = Style.createHeaderCellStyle();
 	  }
 	  painter = getPainter(Painter.NAME_BACKGORUND);
 	  if (painter != null) {
 	    Style style = new Style();
 	    style.background = Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND);
-	    painter.setStyle(style);
+	    painter.style = style;
 	  }
     painter = getPainter(Painter.NAME_LINES_X);
     if (painter != null) {
-      painter.setStyle(Style.createHeaderLineStyle());
+      painter.style = Style.createHeaderLineStyle();
     }
     painter = getPainter(Painter.NAME_LINES_Y);
     if (painter != null) {
-      painter.setStyle(Style.createHeaderLineStyle());
+      painter.style = Style.createHeaderLineStyle();
     }
 	}
 

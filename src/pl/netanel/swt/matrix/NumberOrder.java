@@ -169,7 +169,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 			}
 			sum.add(e.end).subtract(e.start).increment();
 		}
-		throw new RuntimeException("Cannot find index of " + modelIndex);
+		return null;
 	}
 
 	// TODO Merge inserted extent with the next one
@@ -195,6 +195,12 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 //		if (position != -1) {
 //			items.add(position, new Extent(math.create(target), math.create(target).add(count).decrement()));
 //		}
+	};
+
+	@Override
+  public void delete(N start, N end) {
+	  super.delete(start, end);
+	  count.subtract(end).add(start).decrement();
 	};
 
 //	public void insert2(N target, N count) {

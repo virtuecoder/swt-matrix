@@ -291,7 +291,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         }
         else {
           if (isInHeader() && (resizeItem = axisLayout.getResizeItem(distance)) != null &&
-              !isOverMergedLine(resizeItem)) {
+              !isOverMergedLine()) {
             if (cursor != resizeCursor) {
               matrix.setCursor(cursor = resizeCursor);
             }
@@ -395,7 +395,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     }
 
     @SuppressWarnings("unchecked")
-    private boolean isOverMergedLine(AxisItem<N> resizeItem) {
+    private boolean isOverMergedLine() {
       CellExtent<X, Y> span2 = null;
       if (axis.symbol == 'X') {
         span2 = zone.getMerged((X) resizeItem.index, stateY.item.index);
@@ -408,7 +408,9 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       }
 //      System.out.println(span2 + " " + tmp + " " + resizeItem.index + " " +
 //       (axis.math.compare(tmp.getValue(), resizeItem.index) != 0));
-      return axis.math.compare(tmp.getValue(), resizeItem.index) != 0;
+      boolean result = axis.math.compare(tmp.getValue(), resizeItem.index) != 0;
+      if (result) resizeItem = null;
+      return result;
     }
 
     private void handleDrag(Event e) {

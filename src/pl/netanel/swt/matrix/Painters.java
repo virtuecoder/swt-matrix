@@ -74,7 +74,7 @@ class Painters<X extends Number, Y extends Number> implements Iterable<Painter<X
 	  } else {
 	    Painter<X, Y> painter2 = get(indexOfPainter);
 	    set(indexOfPainter, painter);
-	    painter.setStyle(painter2.style);
+	    painter.style = painter2.style;
 	  }
 	}
 

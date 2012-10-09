@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.Shell;
 import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
-class TestUtil {
+public class TestUtil {
 	static MutableNumber number(int n) {
 		return new MutableInt(n);
 	}

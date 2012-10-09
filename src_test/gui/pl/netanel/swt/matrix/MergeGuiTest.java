@@ -2,6 +2,9 @@ package pl.netanel.swt.matrix;
 
 import static org.junit.Assert.*;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,8 +12,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class MergeGuiTest
-  extends SwtTestCase {
+public class MergeGuiTest extends SwtTestCase {
 
   @Test public void merge() throws Exception {
     Matrix matrix = createMatrix();
@@ -54,5 +56,40 @@ public class MergeGuiTest
     dragAndDrop(body.getCellBounds(2, 2), body.getCellBounds(3, 3));
     assertTrue(body.isSelected(3, 3));
     assertFalse(body.isSelected(3, 0));
+  }
+
+  @Test
+  public void wordWrap() throws Exception {
+    Matrix matrix = createMatrix();
+    shell.setBounds(100, 100, 800, 600);
+    matrix.getAxisY().getBody().setCount(10);
+    matrix.getAxisX().getBody().setCount(10);
+
+    Zone body = matrix.getBody();
+    body.setMerged(0, 1, 0, 2, true);
+    Painter<Integer, Integer> painter = new Painter<Integer, Integer>(Painter.NAME_CELLS) {
+      @Override
+      public void setupSpatial(Integer indexX, Integer indexY) {
+        super.setupSpatial(indexX, indexY);
+        text = "1234 1234 1234 1234";
+      }
+    };
+    body.replacePainterPreserveStyle(painter);
+    painter.style.textAlignY = SWT.CENTER;
+    painter.style.hasWordWraping = true;
+    matrix.refresh();
+    processEvents();
+
+    Rectangle bounds = body.getCellBounds(0, 0);
+    RGB rgb = getRGB(bounds.x + 2, bounds.y + 2);
+
+    Color color = null;
+    try {
+      color = new Color(shell.getDisplay(), rgb);
+      assertNotColor(color, bounds.x + 8, bounds.y + 8);
+    }
+    finally {
+      color.dispose();
+    }
   }
 }

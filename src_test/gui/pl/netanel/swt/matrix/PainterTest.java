@@ -73,13 +73,12 @@ public class PainterTest extends SwtTestCase {
     processEvents();
 
     RGB rgb1 = matrix.getBackground().getRGB();
-    RGB rgb2 = getRGB(body.getCellBounds(0, 0), 2);
+    RGB rgb2 = getRGB(body.getCellBounds(0, 0), 2, 2);
     assertFalse("The background color should be different then default one",
       rgb1.equals(rgb2));
   }
 
   // Ticket #10
-  // @Ignore
   @Test
   public void righAlignWhenAfterScroll() throws Exception {
     Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell,
@@ -104,7 +103,7 @@ public class PainterTest extends SwtTestCase {
     press(SWT.END);
 
     Rectangle r = matrix.getBody().getCellBounds(2, 0);
-    Image actual = getImage(toDisplay(r));
+    Image actual = getImage(r);
 
     Rectangle clientArea = matrix.getClientArea();
     final Image expected = new Image(display, r.width, r.height);
@@ -116,8 +115,8 @@ public class PainterTest extends SwtTestCase {
     int y = r.y + painter.style.textMarginY;
     gc.drawText(text, x, y);
     gc.copyArea(expected, 1, 1);
-//    painter.printGC(gc);
     gc.dispose();
+
     shell.addDisposeListener(new DisposeListener() {
       @Override
       public void widgetDisposed(DisposeEvent e) {

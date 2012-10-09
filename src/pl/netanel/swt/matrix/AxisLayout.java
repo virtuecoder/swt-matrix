@@ -282,9 +282,13 @@ class AxisLayout<N extends Number> {
   int comparePosition(SectionCore<N> section1, N index1, SectionCore<N> section2, N index2) {
     int compareSections = comparePosition(section1, section2);
     if (compareSections != 0) return compareSections;
-    return math.compare(
-      section1.getOrder(index1),
-      section2.getOrder(index2));
+    N position1 = section1.getOrder(index1);
+    N position2 = section2.getOrder(index2);
+    if (position1 == null || position2 == null) {
+      return 0;
+    } else {
+      return math.compare( position1, position2);
+    }
   }
 
   int comparePosition(SectionCore<N> section1, SectionCore<N> section2) {

@@ -25,6 +25,14 @@ Bug fixes:
 - Section.setSelected should highlight the cells in matrix.
 
 
+Commands: undo, record, replay
+Grouping: collapse to end
+Grouping: summary column
+Grouping: moving items
+
+
+Multithreaded compute of x and y axis
+Binary search in sequence.seek
 Zone.addControlListener to get notification when an item is resized or moved.
 Fix matrix not visible on other layouts then FillLayout.
 Does not refresh on shell.open without shell.setBounds.

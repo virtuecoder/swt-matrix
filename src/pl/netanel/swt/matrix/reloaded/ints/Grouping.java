@@ -28,10 +28,12 @@ import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.reloaded.CellImageButtonPainter;
+import pl.netanel.util.Preconditions;
 
 /**
- * Groups items with parent header merged across its children.
- * Toggle button to collapse/expand groups.
+ * Manages collapse-able hierarchy of item groups.
+ * Parent node spans across its children.
+ * There are toggle button to collapse/expand groups.
  */
 public class Grouping {
   private final Zone<Integer, Integer> zone;
@@ -42,28 +44,41 @@ public class Grouping {
   // private Extent<Integer>[][] groupExtents;
   Image trueImage, falseImage;
   private int levelCount;
-  private Axis<Integer> axis;
+  private Axis<Integer> axis, axis2;
   private Section<Integer> section, section2;
   private NodeVisitor layoutVisitor;
   private CellImageButtonPainter<Integer, Integer> cellPainter;
+  private Integer selectLevel = 0;
 
   /**
-   * Default constructor.
-   * @param zone
-   * @param axisDirection
-   * @param root
+   * Creates groups in the given zone that are spanning in the giving direction
+   * according to the given node hierarchy.
+   * <p>
+   * Sets the count of items in the zone sections automatically.
+   *
+   * @param zone zone at which grouping should happen
+   * @param axisDirection direction of grouping: SWT.HORIZONTAL or SWT.VERTICAL
+   * @param root root Node of the grouping hierarchy
    */
-  public Grouping(final Zone<Integer, Integer> zone, int axisDirection, Node root) {
+  public Grouping(final Zone<Integer, Integer> zone, final int axisDirection, Node root) {
+    Preconditions.checkNotNullWithName(zone, "zone");
+    Preconditions.checkNotNullWithName(root, "root");
+    Preconditions.checkArgument(
+        axisDirection == SWT.HORIZONTAL || axisDirection == SWT.VERTICAL,
+        "axisDirection must be either SWT.HORIZONTAL or SWT.VERTICAL");
+
     this.zone = zone;
     this.axisDirection = axisDirection;
     this.root = root;
     matrix = zone.getMatrix();
     if (axisDirection == SWT.HORIZONTAL) {
       axis = matrix.getAxisX();
+      axis2 = matrix.getAxisY();
       section = zone.getSectionX();
       section2 = zone.getSectionY();
     } else {
       axis = matrix.getAxisY();
+      axis2 = matrix.getAxisX();
       section = zone.getSectionY();
       section2 = zone.getSectionX();
     }
@@ -71,11 +86,6 @@ public class Grouping {
     createVisitors();
     initNodes();
     layout();
-    matrix.addListener(Matrix.EVENT_LAYOUT, new Listener() {
-      @Override
-      public void handleEvent(Event e) {
-      }
-    });
 
     createImages(axisDirection);
     zone.getMatrix().addListener(SWT.Dispose, new Listener() {
@@ -108,16 +118,28 @@ public class Grouping {
         super.setupSpatial(indexX, indexY);
         text = getText(indexX, indexY);
       }
+
+      @Override
+      public void setup(Integer indexX, Integer indexY) {
+        super.setup(indexX, indexY);
+        AxisItem<Integer> item = axis2.getMouseItem();
+        if (item != null) {
+          Node node = getNodeByCellIndex(indexX, indexY);
+          if (node.level < selectLevel && isFirstItem(node, indexX, indexY)) {
+            isSelected = false;
+          }
+        }
+      }
     };
-    zone.replacePainter(cellPainter);
+    zone.replacePainterPreserveStyle(cellPainter);
 
     cellPainter.style.textAlignY = SWT.CENTER;
     cellPainter.style.imageAlignX = SWT.END;
     cellPainter.style.imageAlignY = SWT.CENTER;
     cellPainter.style.imageMarginX = 2;
 
-    // Create toggle listener
-    zone.unbind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
+    // Create toggle and selection listener
+    //zone.unbind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
     final int commandId = axisDirection == SWT.HORIZONTAL ? Matrix.CMD_SELECT_COLUMN : Matrix.CMD_SELECT_ROW;
     zone.unbind(commandId, SWT.MouseDown, 1);
     zone.addListener(SWT.MouseDown, new Listener() {
@@ -126,18 +148,28 @@ public class Grouping {
         AxisItem<Integer> itemX = zone.getMatrix().getAxisX().getMouseItem();
         AxisItem<Integer> itemY = zone.getMatrix().getAxisY().getMouseItem();
         if (itemX == null || itemY == null) return;
-        if (cellPainter.isOverImage(e.x, e.y)) {
-          Integer indexX = itemX.getIndex();
-          Integer indexY = itemY.getIndex();
 
-          Node node = getNodeByCellIndex(indexX, indexY);
+        Integer indexX = itemX.getIndex();
+        Integer indexY = itemY.getIndex();
+        Node node = getNodeByCellIndex(indexX, indexY);
+
+        // toggle
+        if (cellPainter.isOverImage(e.x, e.y)) {
           node.setCollapsed(!node.collapsed);
         }
         else {
-          zone.getMatrix().execute(commandId);
+          AxisItem<Integer> item = axis2.getMouseItem();
+          selectLevel = item == null ? levelCount : item.getIndex();
+//          section.setSelected(false);
+//          axis.setFocusItem(axisDirection == SWT.HORIZONTAL ? itemX : itemY);
+          matrix.execute(commandId);
+          section.setSelected(node.extent.getStart(), node.extent.getEnd(), true);
+          matrix.redraw();
         }
       }
     });
+
+
   }
 
   private void initNodes() {
@@ -145,7 +177,7 @@ public class Grouping {
     final int[] index = new int[] {0};
 
     new NodeVisitor() {
-      int level = -1;
+      int level = 0;
       Node parent = root;
 
       @Override
@@ -173,12 +205,24 @@ public class Grouping {
         }
       }
 
-    }.traverse(root);
+    }.traverse(root.children);
 
     section.setCount(index[0]);
     section2.setCount(levelCount = maxLevel[0]);
+    selectLevel = index[0];
+
+    root.grouping = this;
+    root.extent = Extent.createUnchecked(0, section.getCount()-1);
   }
 
+  /**
+   * Returns the text of the cell at the given indexes.
+   * If the cell is merged it will return the text of the first cell from the merged group.
+   *
+   * @param indexX cell index on the horizontal axis
+   * @param indexY cell index on the vertical axis
+   * @return the text of the cell at the given indexes
+   */
   public String getText(Integer indexX, Integer indexY) {
     Node node = getNodeByCellIndex(indexX, indexY);
     return node != null && isFirstItem(node, indexX, indexY) ?
@@ -186,16 +230,24 @@ public class Grouping {
   }
 
   /**
-   * Merges cells in the zone according to the grouping structure.
+   * Merges cells in the zone according to the grouping hierarchy.
    */
   public void layout() {
     layoutVisitor.traverse();
   }
 
+  /**
+   * Return the root of the grouping hierarchy. This node is not visible.
+   * @return
+   */
   public Node getRoot() {
     return root;
   }
 
+  /**
+   * Returns the matrix the grouping is created for.
+   * @return the matrix the grouping is created for
+   */
   public Matrix<Integer, Integer> getMatrix() {
     return matrix;
   }
@@ -372,14 +424,14 @@ public class Grouping {
   }
 
   /**
-   * Represent a node in the grouping structure.
+   * Represent a node in the grouping hierarchy.
    * Implements Builder pattern.
    */
   public static class Node {
     private final String caption;
     private final Node[] children;
     private Node parent;
-    private int level, index;
+    private int level = -1, index;
     private Extent<Integer> extent;
     private boolean collapsed;
     Grouping grouping;
@@ -433,13 +485,14 @@ public class Grouping {
      * @return this node
      */
     public Node setCollapsed(boolean state) {
-      if (collapseDirection == SWT.NONE || collapsed == state || level == -1) return this;
+      if (collapseDirection == SWT.NONE || level == -1) return this;
       collapsed = !collapsed;
       if (grouping != null) {
         AxisItem<Integer> focusItem = grouping.axis.getFocusItem();
 
+        // Collapse
         if (state == true && children.length > 1) {
-          // Collapse
+          // Find the not collapse able extents to exclude
           final ArrayList<Extent<Integer>> extents = new ArrayList<Extent<Integer>>();
           new NodeVisitor() {
             @Override
@@ -451,22 +504,41 @@ public class Grouping {
             }
           }.traverse(this);
 
+          // Hide
           int ds = collapseDirection == SWT.END ? 0 : 1;
           int de = collapseDirection == SWT.END ? 1 : 0;
           grouping.section.setHidden(extent.getStart() + ds, extent.getEnd() - de, true);
 
+          // Unhide the excluded ones
           for (int i = 0; i < extents.size(); i++) {
             Extent<Integer> extent2 = extents.get(i);
             grouping.section.setHidden(extent2.getStart(), extent2.getEnd(), false);
           }
         }
+        // Expand
         else {
           if (hasChildren()) {
             expand(level+1, this);
           }
         }
+
+//        // Fix the collapse state of parents
+//        Node node = this.parent;
+//        while (node != grouping.root) {
+//          boolean allExpanded = true;
+//          for (Node child: node.getChildren()) {
+//            allExpanded = allExpanded && !child.collapsed;
+//          }
+//          if (allExpanded) {
+//            node.collapsed = false;
+//          }
+//          node = node.parent;
+//        }
+
         grouping.matrix.refresh();
-        grouping.axis.setFocusItem(focusItem);
+        if (focusItem != null) {
+          grouping.axis.setFocusItem(focusItem);
+        }
       }
       return this;
     }
@@ -495,33 +567,52 @@ public class Grouping {
      * @return this node
      */
     public Node setCollapsedAll(final boolean state) {
-      new NodeVisitor() {
-        @Override
-        protected void visitAfter() {
-          if (state == true && node.level > 0) {
-            node.collapsed = true;
-          }
-          else {
-            node.setCollapsed(state);
-          }
+
+      if (state == false) {
+        if (grouping != null) {
+          grouping.section.setHidden(extent.getStart(), extent.getEnd(), false);
         }
-      }.traverse(this);
+        new NodeVisitor() {
+          @Override
+          protected void visitBefore() {
+            node.collapsed = false;
+          }
+        }.traverse(this);
+      }
+      else {
+        new NodeVisitor() {
+          @Override
+          protected void visitAfter() {
+            if (state == true && node.level > 0 && node.collapseDirection != SWT.NONE) {
+              node.collapsed = true;
+            }
+            else {
+              node.setCollapsed(state);
+            }
+          }
+        }.traverse(this);
+      }
       return this;
     }
 
     /**
      * Sets the collapse direction of this node to the given value.
+     *
+     * @param direction collapse direction to set
      * <p>
      * The possible values are {@link SWT#BEGINNING}, {@link SWT#END} and {@link SWT#NONE}
      * <li> With {@link SWT#BEGINNING} the first node is shown when node is collapsed
      * <li> With {@link SWT#END} the last node is shown when node is collapsed (<b>not implemented yet!</b>)
      * <li> With {@link SWT#NONE} the node cannot be collapsed
-     *
-     * @param direction collapse direction to set
      * @return this node
      */
     public Node setCollapseDirection(int direction) {
+      checkCollapseDirection(direction);
+
       if (direction == SWT.END) throw new UnsupportedOperationException("Not implemnted yet");
+      if (direction == SWT.NONE) {
+        collapsed = false;
+      }
       collapseDirection = direction;
       if (grouping != null) {
         grouping.matrix.redraw();
@@ -533,10 +624,17 @@ public class Grouping {
      * Sets the collapse direction of this node
      * and all related nodes in the lower level to the given value.
      * @param direction collapse direction to set.
+     * <p>
+     * The possible values are {@link SWT#BEGINNING}, {@link SWT#END} and {@link SWT#NONE}
+     * <li> With {@link SWT#BEGINNING} the first node is shown when node is collapsed
+     * <li> With {@link SWT#END} the last node is shown when node is collapsed (<b>not implemented yet!</b>)
+     * <li> With {@link SWT#NONE} the node cannot be collapsed
      * @return this node
      * @see #setCollapseDirection(int)
      */
     public Node setCollapseDirectionAll(final int direction) {
+      checkCollapseDirection(direction);
+
       new NodeVisitor() {
         @Override
         protected void visitBefore() {
@@ -545,6 +643,13 @@ public class Grouping {
       }.traverse(this);
       return this;
     }
+
+    private void checkCollapseDirection(int direction) {
+      Preconditions.checkArgument(direction == SWT.BEGINNING
+          || direction == SWT.END || direction == SWT.NONE,
+          "direction must be either SWT.BEGINNING or SWT.END or SWT.NONE");
+    }
+
   }
 
   /**

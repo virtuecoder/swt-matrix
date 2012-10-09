@@ -1,8 +1,26 @@
 -------------------------------------------------------------------------------
-Version 0.7.7
+Version 0.7.9
+
+Bug fixes:
+- Merging: wrapped text was displayed incorrectly in merged cells when vertical align was different then default
+- Grouping: Node.setCollapsedAll did not make all items visible when part of the group was hidden by Secton.setHidden beforehand 
+- Grouping: Node.setCollapsedAll could throw NullPointerException
+
+-------------------------------------------------------------------------------
+Version 0.7.8
+
+Bug fixes:
+- Section.delete was incorrect in some cases
 
 API changes:
-- Removed Matrix.transpose()
+- Removed Painter.setStyle(Style), because Painter.style is a public field.
+
+-------------------------------------------------------------------------------
+Version 0.7.7
+
+New  features:
+- Select on group cell selects the whole group
+- The collapse toggle status is calculated based on the children collapse status    
 
 -------------------------------------------------------------------------------
 Version 0.7.6
@@ -14,22 +32,22 @@ Bug fixes:
 -------------------------------------------------------------------------------
 Version 0.7.5
 
-API changes:
-- Added Axis.indexOf(Section)
-
 Bug fixes:
 - Section.delete was incorrect in some cases
 
+API changes:
+- Added Axis.indexOf(Section)
+
 -------------------------------------------------------------------------------
 Version 0.7.4
+
+Bug fixes:
+- Section.insert was incorrect when count of items was 0.
 
 API changes:
 - Added Section.setCellWidth()
 - Added Axis.pack()
 - Added Matrix.transpose()
-
-Bug fixes:
-- Section.insert was incorrect when count of items was 0.
 
 -------------------------------------------------------------------------------
 Version 0.7.3

@@ -3,12 +3,14 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: db16.1and1.pl
--- Generation Time: Aug 18, 2011 at 07:18 PM
--- Server version: 5.0.91
--- PHP Version: 5.3.3-7+squeeze1
+-- Generation Time: Oct 09, 2012 at 08:21 AM
+-- Server version: 5.0.95
+-- PHP Version: 5.3.3-7+squeeze14
 -- 
 -- Database: `db361399687`
 -- 
+CREATE DATABASE `db361399687` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE db361399687;
 
 -- --------------------------------------------------------
 
@@ -16,7 +18,6 @@
 -- Table structure for table `bak_assets`
 -- 
 
-DROP TABLE IF EXISTS `bak_assets`;
 CREATE TABLE `bak_assets` (
   `id` int(10) unsigned NOT NULL auto_increment COMMENT 'Primary Key',
   `parent_id` int(11) NOT NULL default '0' COMMENT 'Nested set parent.',
@@ -74,7 +75,6 @@ INSERT INTO `bak_assets` VALUES (31, 25, 56, 57, 2, 'com_weblinks.category.6', '
 -- Table structure for table `bak_banner_clients`
 -- 
 
-DROP TABLE IF EXISTS `bak_banner_clients`;
 CREATE TABLE `bak_banner_clients` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
@@ -106,7 +106,6 @@ CREATE TABLE `bak_banner_clients` (
 -- Table structure for table `bak_banner_tracks`
 -- 
 
-DROP TABLE IF EXISTS `bak_banner_tracks`;
 CREATE TABLE `bak_banner_tracks` (
   `track_date` datetime NOT NULL,
   `track_type` int(10) unsigned NOT NULL,
@@ -129,7 +128,6 @@ CREATE TABLE `bak_banner_tracks` (
 -- Table structure for table `bak_banners`
 -- 
 
-DROP TABLE IF EXISTS `bak_banners`;
 CREATE TABLE `bak_banners` (
   `id` int(11) NOT NULL auto_increment,
   `cid` int(11) NOT NULL default '0',
@@ -179,7 +177,6 @@ CREATE TABLE `bak_banners` (
 -- Table structure for table `bak_categories`
 -- 
 
-DROP TABLE IF EXISTS `bak_categories`;
 CREATE TABLE `bak_categories` (
   `id` int(11) NOT NULL auto_increment,
   `asset_id` int(10) unsigned NOT NULL default '0' COMMENT 'FK to the #__assets table.',
@@ -234,7 +231,6 @@ INSERT INTO `bak_categories` VALUES (6, 31, 1, 9, 10, 1, 'uncategorised', 'com_w
 -- Table structure for table `bak_contact_details`
 -- 
 
-DROP TABLE IF EXISTS `bak_contact_details`;
 CREATE TABLE `bak_contact_details` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
@@ -300,7 +296,6 @@ CREATE TABLE `bak_contact_details` (
 -- Table structure for table `bak_content`
 -- 
 
-DROP TABLE IF EXISTS `bak_content`;
 CREATE TABLE `bak_content` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `asset_id` int(10) unsigned NOT NULL default '0' COMMENT 'FK to the #__assets table.',
@@ -358,7 +353,6 @@ CREATE TABLE `bak_content` (
 -- Table structure for table `bak_content_frontpage`
 -- 
 
-DROP TABLE IF EXISTS `bak_content_frontpage`;
 CREATE TABLE `bak_content_frontpage` (
   `content_id` int(11) NOT NULL default '0',
   `ordering` int(11) NOT NULL default '0',
@@ -376,7 +370,6 @@ CREATE TABLE `bak_content_frontpage` (
 -- Table structure for table `bak_content_rating`
 -- 
 
-DROP TABLE IF EXISTS `bak_content_rating`;
 CREATE TABLE `bak_content_rating` (
   `content_id` int(11) NOT NULL default '0',
   `rating_sum` int(10) unsigned NOT NULL default '0',
@@ -396,7 +389,6 @@ CREATE TABLE `bak_content_rating` (
 -- Table structure for table `bak_core_log_searches`
 -- 
 
-DROP TABLE IF EXISTS `bak_core_log_searches`;
 CREATE TABLE `bak_core_log_searches` (
   `search_term` varchar(128) NOT NULL default '',
   `hits` int(10) unsigned NOT NULL default '0'
@@ -413,7 +405,6 @@ CREATE TABLE `bak_core_log_searches` (
 -- Table structure for table `bak_extensions`
 -- 
 
-DROP TABLE IF EXISTS `bak_extensions`;
 CREATE TABLE `bak_extensions` (
   `extension_id` int(11) NOT NULL auto_increment,
   `name` varchar(100) NOT NULL,
@@ -558,7 +549,6 @@ INSERT INTO `bak_extensions` VALUES (700, 'Joomla! CMS', 'file', 'joomla', '', 0
 -- Table structure for table `bak_languages`
 -- 
 
-DROP TABLE IF EXISTS `bak_languages`;
 CREATE TABLE `bak_languages` (
   `lang_id` int(11) unsigned NOT NULL auto_increment,
   `lang_code` char(7) NOT NULL,
@@ -586,7 +576,6 @@ INSERT INTO `bak_languages` VALUES (1, 'en-GB', 'English (UK)', 'English (UK)', 
 -- Table structure for table `bak_menu`
 -- 
 
-DROP TABLE IF EXISTS `bak_menu`;
 CREATE TABLE `bak_menu` (
   `id` int(11) NOT NULL auto_increment,
   `menutype` varchar(24) NOT NULL COMMENT 'The type of menu this item belongs to. FK to #__menu_types.menutype',
@@ -655,7 +644,6 @@ INSERT INTO `bak_menu` VALUES (101, 'mainmenu', 'Home', 'home', '', 'home', 'ind
 -- Table structure for table `bak_menu_types`
 -- 
 
-DROP TABLE IF EXISTS `bak_menu_types`;
 CREATE TABLE `bak_menu_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `menutype` varchar(24) NOT NULL,
@@ -677,7 +665,6 @@ INSERT INTO `bak_menu_types` VALUES (1, 'mainmenu', 'Main Menu', 'The main menu 
 -- Table structure for table `bak_messages`
 -- 
 
-DROP TABLE IF EXISTS `bak_messages`;
 CREATE TABLE `bak_messages` (
   `message_id` int(10) unsigned NOT NULL auto_increment,
   `user_id_from` int(10) unsigned NOT NULL default '0',
@@ -703,7 +690,6 @@ CREATE TABLE `bak_messages` (
 -- Table structure for table `bak_messages_cfg`
 -- 
 
-DROP TABLE IF EXISTS `bak_messages_cfg`;
 CREATE TABLE `bak_messages_cfg` (
   `user_id` int(10) unsigned NOT NULL default '0',
   `cfg_name` varchar(100) NOT NULL default '',
@@ -722,7 +708,6 @@ CREATE TABLE `bak_messages_cfg` (
 -- Table structure for table `bak_modules`
 -- 
 
-DROP TABLE IF EXISTS `bak_modules`;
 CREATE TABLE `bak_modules` (
   `id` int(11) NOT NULL auto_increment,
   `title` varchar(100) NOT NULL default '',
@@ -774,7 +759,6 @@ INSERT INTO `bak_modules` VALUES (18, 'Banners', '', '', 1, 'position-5', 0, '00
 -- Table structure for table `bak_modules_menu`
 -- 
 
-DROP TABLE IF EXISTS `bak_modules_menu`;
 CREATE TABLE `bak_modules_menu` (
   `moduleid` int(11) NOT NULL default '0',
   `menuid` int(11) NOT NULL default '0',
@@ -808,7 +792,6 @@ INSERT INTO `bak_modules_menu` VALUES (18, 0);
 -- Table structure for table `bak_newsfeeds`
 -- 
 
-DROP TABLE IF EXISTS `bak_newsfeeds`;
 CREATE TABLE `bak_newsfeeds` (
   `catid` int(11) NOT NULL default '0',
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -858,7 +841,6 @@ CREATE TABLE `bak_newsfeeds` (
 -- Table structure for table `bak_redirect_links`
 -- 
 
-DROP TABLE IF EXISTS `bak_redirect_links`;
 CREATE TABLE `bak_redirect_links` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `old_url` varchar(150) NOT NULL,
@@ -884,7 +866,6 @@ CREATE TABLE `bak_redirect_links` (
 -- Table structure for table `bak_schemas`
 -- 
 
-DROP TABLE IF EXISTS `bak_schemas`;
 CREATE TABLE `bak_schemas` (
   `extension_id` int(11) NOT NULL,
   `version_id` varchar(20) NOT NULL,
@@ -902,7 +883,6 @@ CREATE TABLE `bak_schemas` (
 -- Table structure for table `bak_session`
 -- 
 
-DROP TABLE IF EXISTS `bak_session`;
 CREATE TABLE `bak_session` (
   `session_id` varchar(32) NOT NULL default '',
   `client_id` tinyint(3) unsigned NOT NULL default '0',
@@ -931,7 +911,6 @@ INSERT INTO `bak_session` VALUES ('d2ce8ce940dc22ec66b4df1f43da659f', 0, 1, '130
 -- Table structure for table `bak_template_styles`
 -- 
 
-DROP TABLE IF EXISTS `bak_template_styles`;
 CREATE TABLE `bak_template_styles` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `template` varchar(50) NOT NULL default '',
@@ -960,7 +939,6 @@ INSERT INTO `bak_template_styles` VALUES (6, 'beez5', 0, '0', 'Beez5 - Default-F
 -- Table structure for table `bak_update_categories`
 -- 
 
-DROP TABLE IF EXISTS `bak_update_categories`;
 CREATE TABLE `bak_update_categories` (
   `categoryid` int(11) NOT NULL auto_increment,
   `name` varchar(20) default '',
@@ -981,7 +959,6 @@ CREATE TABLE `bak_update_categories` (
 -- Table structure for table `bak_update_sites`
 -- 
 
-DROP TABLE IF EXISTS `bak_update_sites`;
 CREATE TABLE `bak_update_sites` (
   `update_site_id` int(11) NOT NULL auto_increment,
   `name` varchar(100) default '',
@@ -1004,7 +981,6 @@ INSERT INTO `bak_update_sites` VALUES (2, 'Joomla Extension Directory', 'collect
 -- Table structure for table `bak_update_sites_extensions`
 -- 
 
-DROP TABLE IF EXISTS `bak_update_sites_extensions`;
 CREATE TABLE `bak_update_sites_extensions` (
   `update_site_id` int(11) NOT NULL default '0',
   `extension_id` int(11) NOT NULL default '0',
@@ -1024,7 +1000,6 @@ INSERT INTO `bak_update_sites_extensions` VALUES (2, 700);
 -- Table structure for table `bak_updates`
 -- 
 
-DROP TABLE IF EXISTS `bak_updates`;
 CREATE TABLE `bak_updates` (
   `update_id` int(11) NOT NULL auto_increment,
   `update_site_id` int(11) default '0',
@@ -1053,7 +1028,6 @@ CREATE TABLE `bak_updates` (
 -- Table structure for table `bak_user_profiles`
 -- 
 
-DROP TABLE IF EXISTS `bak_user_profiles`;
 CREATE TABLE `bak_user_profiles` (
   `user_id` int(11) NOT NULL,
   `profile_key` varchar(100) NOT NULL,
@@ -1073,7 +1047,6 @@ CREATE TABLE `bak_user_profiles` (
 -- Table structure for table `bak_user_usergroup_map`
 -- 
 
-DROP TABLE IF EXISTS `bak_user_usergroup_map`;
 CREATE TABLE `bak_user_usergroup_map` (
   `user_id` int(10) unsigned NOT NULL default '0' COMMENT 'Foreign Key to #__users.id',
   `group_id` int(10) unsigned NOT NULL default '0' COMMENT 'Foreign Key to #__usergroups.id',
@@ -1092,7 +1065,6 @@ INSERT INTO `bak_user_usergroup_map` VALUES (42, 8);
 -- Table structure for table `bak_usergroups`
 -- 
 
-DROP TABLE IF EXISTS `bak_usergroups`;
 CREATE TABLE `bak_usergroups` (
   `id` int(10) unsigned NOT NULL auto_increment COMMENT 'Primary Key',
   `parent_id` int(10) unsigned NOT NULL default '0' COMMENT 'Adjacency List Reference Id',
@@ -1125,7 +1097,6 @@ INSERT INTO `bak_usergroups` VALUES (8, 1, 18, 19, 'Super Users');
 -- Table structure for table `bak_users`
 -- 
 
-DROP TABLE IF EXISTS `bak_users`;
 CREATE TABLE `bak_users` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
@@ -1159,7 +1130,6 @@ INSERT INTO `bak_users` VALUES (42, 'Super User', 'admin', 'jacek.p.kolodziejczy
 -- Table structure for table `bak_viewlevels`
 -- 
 
-DROP TABLE IF EXISTS `bak_viewlevels`;
 CREATE TABLE `bak_viewlevels` (
   `id` int(10) unsigned NOT NULL auto_increment COMMENT 'Primary Key',
   `title` varchar(100) NOT NULL default '',
@@ -1183,7 +1153,6 @@ INSERT INTO `bak_viewlevels` VALUES (3, 'Special', 2, '[6,3,8]');
 -- Table structure for table `bak_weblinks`
 -- 
 
-DROP TABLE IF EXISTS `bak_weblinks`;
 CREATE TABLE `bak_weblinks` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `catid` int(11) NOT NULL default '0',
@@ -1237,7 +1206,6 @@ CREATE TABLE `bak_weblinks` (
 -- Table structure for table `jos_advancedmodules`
 -- 
 
-DROP TABLE IF EXISTS `jos_advancedmodules`;
 CREATE TABLE `jos_advancedmodules` (
   `moduleid` int(11) NOT NULL default '0',
   `params` text NOT NULL,
@@ -1255,6 +1223,7 @@ INSERT INTO `jos_advancedmodules` VALUES (18, 'hideempty=0\ntooltip=\ncolor=FFFF
 INSERT INTO `jos_advancedmodules` VALUES (19, 'hideempty=0\ntooltip=\ncolor=FFFFFF\nmirror_module=0\nmatch_method=and\nassignto_menuitems=0\nassignto_menuitems_inc_children=0\nassignto_menuitems_inc_noitemid=0\nassignto_secscats=0\nassignto_secscats_inc=inc_secs|inc_cats|inc_arts|x\nassignto_articles=0\nassignto_articles_selection=\nassignto_articles_keywords=\nassignto_components=0\nassignto_components_selection=x\nassignto_urls=0\nassignto_urls_selection=\nassignto_urls_selection_sef=\nassignto_browsers=0\nassignto_date=0\nassignto_date_publish_up=\nassignto_date_publish_down=\nassignto_seasons=0\nassignto_seasons_selection=x\nassignto_seasons_hemisphere=northern\nassignto_months=0\nassignto_months_selection=x\nassignto_days=0\nassignto_days_selection=x\nassignto_time=0\nassignto_time_publish_up=0:00\nassignto_time_publish_down=0:00\nassignto_usergrouplevels=0\nassignto_usergrouplevels_selection=0\nassignto_users=0\nassignto_users_selection=\nassignto_languages=0\nassignto_templates=0\nassignto_php=0\nassignto_php_selection=\n');
 INSERT INTO `jos_advancedmodules` VALUES (20, 'hideempty=0\ntooltip=\ncolor=FFFFFF\nmirror_module=0\nmatch_method=and\nassignto_menuitems=0\nassignto_menuitems_inc_children=0\nassignto_menuitems_inc_noitemid=0\nassignto_secscats=0\nassignto_secscats_inc=inc_secs|inc_cats|inc_arts|x\nassignto_articles=0\nassignto_articles_selection=\nassignto_articles_keywords=\nassignto_components=0\nassignto_components_selection=x\nassignto_urls=0\nassignto_urls_selection=\nassignto_urls_selection_sef=\nassignto_browsers=0\nassignto_date=0\nassignto_date_publish_up=\nassignto_date_publish_down=\nassignto_seasons=0\nassignto_seasons_selection=x\nassignto_seasons_hemisphere=northern\nassignto_months=0\nassignto_months_selection=x\nassignto_days=0\nassignto_days_selection=x\nassignto_time=0\nassignto_time_publish_up=0:00\nassignto_time_publish_down=0:00\nassignto_usergrouplevels=0\nassignto_usergrouplevels_selection=0\nassignto_users=0\nassignto_users_selection=\nassignto_languages=0\nassignto_templates=0\nassignto_php=0\nassignto_php_selection=\n');
 INSERT INTO `jos_advancedmodules` VALUES (21, 'hideempty=0\ntooltip=\ncolor=FFFFFF\nmirror_module=0\nmatch_method=and\nassignto_menuitems=0\nassignto_menuitems_inc_children=0\nassignto_menuitems_inc_noitemid=0\nassignto_secscats=0\nassignto_secscats_inc=inc_secs|inc_cats|inc_arts|x\nassignto_articles=0\nassignto_articles_selection=\nassignto_articles_keywords=\nassignto_components=0\nassignto_components_selection=x\nassignto_urls=0\nassignto_urls_selection=\nassignto_urls_selection_sef=\nassignto_browsers=0\nassignto_date=0\nassignto_date_publish_up=\nassignto_date_publish_down=\nassignto_seasons=0\nassignto_seasons_selection=x\nassignto_seasons_hemisphere=northern\nassignto_months=0\nassignto_months_selection=x\nassignto_days=0\nassignto_days_selection=x\nassignto_time=0\nassignto_time_publish_up=0:00\nassignto_time_publish_down=0:00\nassignto_usergrouplevels=0\nassignto_usergrouplevels_selection=0\nassignto_users=0\nassignto_users_selection=\nassignto_languages=0\nassignto_templates=0\nassignto_php=0\nassignto_php_selection=\n');
+INSERT INTO `jos_advancedmodules` VALUES (22, 'hideempty=0\ntooltip=\ncolor=FFFFFF\nmirror_module=0\nmatch_method=and\nassignto_menuitems=0\nassignto_menuitems_inc_children=0\nassignto_menuitems_inc_noitemid=0\nassignto_secscats=0\nassignto_secscats_inc=inc_secs|inc_cats|inc_arts|x\nassignto_articles=0\nassignto_articles_selection=\nassignto_articles_keywords=\nassignto_components=0\nassignto_components_selection=x\nassignto_urls=0\nassignto_urls_selection=\nassignto_urls_selection_sef=\nassignto_browsers=0\nassignto_date=0\nassignto_date_publish_up=\nassignto_date_publish_down=\nassignto_seasons=0\nassignto_seasons_selection=x\nassignto_seasons_hemisphere=northern\nassignto_months=0\nassignto_months_selection=x\nassignto_days=0\nassignto_days_selection=x\nassignto_time=0\nassignto_time_publish_up=0:00\nassignto_time_publish_down=0:00\nassignto_usergrouplevels=0\nassignto_usergrouplevels_selection=0\nassignto_users=0\nassignto_users_selection=\nassignto_languages=0\nassignto_templates=0\nassignto_php=0\nassignto_php_selection=\n');
 
 -- --------------------------------------------------------
 
@@ -1262,7 +1231,6 @@ INSERT INTO `jos_advancedmodules` VALUES (21, 'hideempty=0\ntooltip=\ncolor=FFFF
 -- Table structure for table `jos_assets`
 -- 
 
-DROP TABLE IF EXISTS `jos_assets`;
 CREATE TABLE `jos_assets` (
   `id` int(10) unsigned NOT NULL auto_increment COMMENT 'Primary Key',
   `parent_id` int(11) NOT NULL default '0' COMMENT 'Nested set parent.',
@@ -1322,7 +1290,6 @@ INSERT INTO `jos_assets` VALUES (33, 1, 416, 417, 1, 'com_huruhelpdesk', 'huruhe
 -- Table structure for table `jos_banner`
 -- 
 
-DROP TABLE IF EXISTS `jos_banner`;
 CREATE TABLE `jos_banner` (
   `bid` int(11) NOT NULL auto_increment,
   `cid` int(11) NOT NULL default '0',
@@ -1364,7 +1331,6 @@ CREATE TABLE `jos_banner` (
 -- Table structure for table `jos_banner_clients`
 -- 
 
-DROP TABLE IF EXISTS `jos_banner_clients`;
 CREATE TABLE `jos_banner_clients` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
@@ -1396,7 +1362,6 @@ CREATE TABLE `jos_banner_clients` (
 -- Table structure for table `jos_banner_tracks`
 -- 
 
-DROP TABLE IF EXISTS `jos_banner_tracks`;
 CREATE TABLE `jos_banner_tracks` (
   `track_date` datetime NOT NULL,
   `track_type` int(10) unsigned NOT NULL,
@@ -1419,7 +1384,6 @@ CREATE TABLE `jos_banner_tracks` (
 -- Table structure for table `jos_bannerclient`
 -- 
 
-DROP TABLE IF EXISTS `jos_bannerclient`;
 CREATE TABLE `jos_bannerclient` (
   `cid` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
@@ -1443,7 +1407,6 @@ CREATE TABLE `jos_bannerclient` (
 -- Table structure for table `jos_banners`
 -- 
 
-DROP TABLE IF EXISTS `jos_banners`;
 CREATE TABLE `jos_banners` (
   `id` int(11) NOT NULL auto_increment,
   `cid` int(11) NOT NULL default '0',
@@ -1493,7 +1456,6 @@ CREATE TABLE `jos_banners` (
 -- Table structure for table `jos_bannertrack`
 -- 
 
-DROP TABLE IF EXISTS `jos_bannertrack`;
 CREATE TABLE `jos_bannertrack` (
   `track_date` date NOT NULL,
   `track_type` int(10) unsigned NOT NULL,
@@ -1511,7 +1473,6 @@ CREATE TABLE `jos_bannertrack` (
 -- Table structure for table `jos_categories`
 -- 
 
-DROP TABLE IF EXISTS `jos_categories`;
 CREATE TABLE `jos_categories` (
   `id` int(11) NOT NULL auto_increment,
   `parent_id` int(11) NOT NULL default '0',
@@ -1548,7 +1509,6 @@ INSERT INTO `jos_categories` VALUES (1, 0, 'SWT Matrix', '', 'swt-matrix', '', '
 -- Table structure for table `jos_components`
 -- 
 
-DROP TABLE IF EXISTS `jos_components`;
 CREATE TABLE `jos_components` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(50) NOT NULL default '',
@@ -1565,7 +1525,7 @@ CREATE TABLE `jos_components` (
   `enabled` tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (`id`),
   KEY `parent_option` (`parent`,`option`(32))
-) ENGINE=MyISAM AUTO_INCREMENT=55 DEFAULT CHARSET=utf8 AUTO_INCREMENT=55 ;
+) ENGINE=MyISAM AUTO_INCREMENT=67 DEFAULT CHARSET=utf8 AUTO_INCREMENT=67 ;
 
 -- 
 -- Dumping data for table `jos_components`
@@ -1619,6 +1579,15 @@ INSERT INTO `jos_components` VALUES (46, 'Upgrade', '', 0, 35, 'option=com_sef&t
 INSERT INTO `jos_components` VALUES (47, 'Support', '', 0, 35, 'option=com_sef&controller=info&task=help', 'Support', 'com_sef', 11, 'components/com_sef/assets/images/icon-16-help.png', 0, '', 1);
 INSERT INTO `jos_components` VALUES (49, 'Advanced Module Manager', '', 0, 0, '', 'Advanced Module Manager', 'com_advancedmodules', 0, '', 0, '\n', 1);
 INSERT INTO `jos_components` VALUES (54, 'Kunena Forum', 'option=com_kunena', 0, 0, 'option=com_kunena', 'Kunena Forum', 'com_kunena', 0, 'components/com_kunena/images/kunenafavicon.png', 0, '', 1);
+INSERT INTO `jos_components` VALUES (61, 'Info', '', 0, 55, 'option=com_phocadocumentation&view=phocadocumentationin', 'Info', 'com_phocadocumentation', 2, 'components/com_phocadocumentation/assets/images/icon-16-pdoc-info.png', 0, '', 1);
+INSERT INTO `jos_components` VALUES (60, 'Documentation', '', 0, 55, 'option=com_phocadocumentation&view=phocadocumentations', 'Documentation', 'com_phocadocumentation', 1, 'components/com_phocadocumentation/assets/images/icon-16-pdoc-doc.png', 0, '', 1);
+INSERT INTO `jos_components` VALUES (59, 'Control Panel', '', 0, 55, 'option=com_phocadocumentation', 'Control Panel', 'com_phocadocumentation', 0, 'components/com_phocadocumentation/assets/images/icon-16-pdoc-control-panel.png', 0, '', 1);
+INSERT INTO `jos_components` VALUES (55, 'Phoca Documentation', 'option=com_phocadocumentation', 0, 0, 'option=com_phocadocumentation', 'Phoca Documentation', 'com_phocadocumentation', 0, 'components/com_phocadocumentation/assets/images/icon-16-pdoc-menu.png', 0, 'most_viewed_docs_num=5\ndisplay_sections=1\ndisplay_up_icon=1\ndisplay_num_doc_secs=1\ndisplay_num_doc_secs_header=1\narticle_itemid=\n\n', 1);
+INSERT INTO `jos_components` VALUES (62, 'JCE', 'option=com_jce', 0, 0, 'option=com_jce', 'JCE', 'com_jce', 0, 'components/com_jce/media/img/menu/logo.png', 0, '', 1);
+INSERT INTO `jos_components` VALUES (63, 'WF_MENU_CPANEL', '', 0, 62, 'option=com_jce', 'WF_MENU_CPANEL', 'com_jce', 0, 'components/com_jce/media/img/menu/jce-cpanel.png', 0, '', 1);
+INSERT INTO `jos_components` VALUES (64, 'WF_MENU_CONFIG', '', 0, 62, 'option=com_jce&view=config', 'WF_MENU_CONFIG', 'com_jce', 1, 'components/com_jce/media/img/menu/jce-config.png', 0, '', 1);
+INSERT INTO `jos_components` VALUES (65, 'WF_MENU_PROFILES', '', 0, 62, 'option=com_jce&view=profiles', 'WF_MENU_PROFILES', 'com_jce', 2, 'components/com_jce/media/img/menu/jce-profiles.png', 0, '', 1);
+INSERT INTO `jos_components` VALUES (66, 'WF_MENU_INSTALL', '', 0, 62, 'option=com_jce&view=installer', 'WF_MENU_INSTALL', 'com_jce', 3, 'components/com_jce/media/img/menu/jce-install.png', 0, '', 1);
 
 -- --------------------------------------------------------
 
@@ -1626,7 +1595,6 @@ INSERT INTO `jos_components` VALUES (54, 'Kunena Forum', 'option=com_kunena', 0,
 -- Table structure for table `jos_contact_details`
 -- 
 
-DROP TABLE IF EXISTS `jos_contact_details`;
 CREATE TABLE `jos_contact_details` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
@@ -1669,7 +1637,6 @@ CREATE TABLE `jos_contact_details` (
 -- Table structure for table `jos_content`
 -- 
 
-DROP TABLE IF EXISTS `jos_content`;
 CREATE TABLE `jos_content` (
   `id` int(11) unsigned NOT NULL auto_increment,
   `title` varchar(255) NOT NULL default '',
@@ -1708,28 +1675,32 @@ CREATE TABLE `jos_content` (
   KEY `idx_state` (`state`),
   KEY `idx_catid` (`catid`),
   KEY `idx_createdby` (`created_by`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
 
 -- 
 -- Dumping data for table `jos_content`
 -- 
 
-INSERT INTO `jos_content` VALUES (1, 'Welcome', 'welcome', '', '<p>Welcome to SWT Matrix! You must have taken the red pill :-)</p>', '', 1, 0, 0, 0, '2011-03-13 22:10:04', 62, '', '2011-04-28 19:31:59', 62, 0, '0000-00-00 00:00:00', '2011-03-13 22:10:04', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=0\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 9, 0, 5, '', '', 0, 3, 'robots=\nauthor=');
-INSERT INTO `jos_content` VALUES (2, 'Products', 'products', '', '<p>Products</p>', '', 1, 0, 0, 0, '2011-03-14 01:26:16', 62, '', '0000-00-00 00:00:00', 0, 0, '0000-00-00 00:00:00', '2011-03-14 01:26:16', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 1, 0, 4, '', '', 0, 62, 'robots=\nauthor=');
-INSERT INTO `jos_content` VALUES (3, 'SWT Matrix', 'swt-matrix', '', '<p>SWT Matrix is a tabular widget for the SWT Java GUI toolkit. Is is characterized by an unlimited capacity and instant rendering.</p>', '', 1, 1, 0, 1, '2011-03-14 01:58:18', 62, '', '2011-04-29 13:14:35', 62, 0, '0000-00-00 00:00:00', '2011-03-14 01:58:18', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 3, 0, 8, '', '', 0, 180, 'robots=\nauthor=');
-INSERT INTO `jos_content` VALUES (4, 'Download', 'download', '', '<p>Dependencies:</p>\r\n<ul>\r\n<li>Java 1.5 or higher. </li>\r\n<li>SWT 3.4 or higher (the lower versions may work, but have not been tested).</li>\r\n</ul>\r\n<p>By downloading the software below I agree with the <a href="swt-matrix/EULA.txt" target="_blank">End User License Agreement</a>.</p>\r\n<h3>Version 0.4.1 (alpha stage)</h3>\r\n<p><a href="swt-matrix/swt-matrix-0.4.1.zip" style="color: #1b57b1; text-decoration: none; font-weight: normal;">swt-matrix-0.4.1.zip</a> - includes swt-matrix-0.4.1.jar, javadoc, and snippets.</p>\r\n<p><a href="swt-matrix/Change-log.txt">change log</a></p>\r\n<script type="text/javascript">// <![CDATA[\r\neula();\r\n<script>\r\n// ]]></script>', '', 1, 0, 0, 0, '2011-03-14 03:24:20', 62, '', '2011-07-31 16:09:10', 62, 0, '0000-00-00 00:00:00', '2011-03-14 03:24:20', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 32, 0, 3, '', '', 0, 379, 'robots=\nauthor=');
-INSERT INTO `jos_content` VALUES (5, 'Features', 'features', '', '<p class="filters">The list includes both done and planned features. Its also possible to filter features coming only in the next release. Outstanding features are unique or rare compared to similar components. The list is also filterable by somewhat subjective importance of the feature.</p>\r\n<p>Please let us know in the <a href="#comments">comments </a>which features do you miss the most.</p>\r\n<form id="let-us-know" style="display: none"><textarea style="width: 80%; height: 75px;"></textarea><input type="submit" /></form>\r\n<p class="filters">Filters: <a id="filter-all" href="#">all</a> <a id="filter-current" href="#">done</a> <a id="filter-next" href="#">next</a> <a id="filter-future" href="#">planned</a> <input id="filter-outstanding" type="checkbox" /> outstanding <input id="filter-high" type="checkbox" /> high <input id="filter-medium" type="checkbox" /> medium <input id="filter-low" type="checkbox" /> low</p>\r\n<!-- generated start --> \r\n<table class="data" border="0" cellspacing="1">\r\n<tbody>\r\n<tr>\r\n<th style="white-space: nowrap">Feature</th><th>Description</th><th>Version</th><th>Importance</th><th>Outstanding</th><th>References</th>\r\n</tr>\r\n<tr>\r\n<td class="header" colspan="7">\r\n<h3>Layout</h3>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Standard sections</td>\r\n<td>Header and body</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Custom sections</td>\r\n<td>Additional sections like footer or filters can be defined</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td>outstanding</td>\r\n<td><a href="swt-matrix/snippets/Snippet_0003.java">Snippet_0003</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Unlimited number of items</td>\r\n<td>Each section can have an unlimited number of items</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td>outstanding</td>\r\n<td><a href="swt-matrix/snippets/Snippet_0002.java">Snippet_0002</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Virtualization</td>\r\n<td>Results in performance not dependant on the number of items in sections</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td>outstanding</td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Show / hide section</td>\r\n<td>For example it''s common to show / hide the header section</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Default cell width</td>\r\n<td>Any cell that does not have a custom width will have the default width</td>\r\n<td>0.1</td>\r\n<td>medium</td>\r\n<td>outstanding</td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Individual cell width</td>\r\n<td>Each cell can have a different width</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Default line width</td>\r\n<td>Any line that does not have a custom width will have the default width</td>\r\n<td>0.1</td>\r\n<td>medium</td>\r\n<td>outstanding</td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Individual line width</td>\r\n<td>Each line can have a different width</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Spaces between cells</td>\r\n<td>Similar to HTML table cellspacing attribute. It does not effect the cell size and cell painting algorithm.</td>\r\n<td>0.1</td>\r\n<td>medium</td>\r\n<td>outstanding</td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td class="header" colspan="7">\r\n<h3>Zones</h3>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Zone as crossing of sections</td>\r\n<td>Body zone = row axis body section and column axis body section, Column header zone = row axis header section and column axis body section</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td>outstanding</td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Separate painters</td>\r\n<td>Each zone can have separate painters</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Separate event handlers</td>\r\n<td>Each zone can have separate event handlers</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td class="header" colspan="7">\r\n<h3>Selection</h3>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Select axis items</td>\r\n<td>Both full rows and full columns can be selected</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Select cells</td>\r\n<td>Standard cell selection by mouse and keyboard.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Modify selection</td>\r\n<td>Works for both full axis items and cells. It is done by standard CTRL selection gestures.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Header cells highlight</td>\r\n<td>Header cells can be automatically highlighted for the selected cells.</td>\r\n<td>0.1</td>\r\n<td>low</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Enable selection</td>\r\n<td>Cell selection can be enabled/disabled</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td class="header" colspan="7">\r\n<h3>Resize</h3>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Resize rows and columns</td>\r\n<td>Not only columns can be resized but rows as well.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Multiple resize</td>\r\n<td>Resizes all selected items to the same width as the one being resized</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Instant resize</td>\r\n<td>See the item repainted with the new width while dragging, as opposed to repaint after drag finished.</td>\r\n<td>0.1</td>\r\n<td>medium</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Resize in all sections</td>\r\n<td>Not only body items can be resized, but the headers ones as well. For example the row header width can be changed by the user dragging it''s right edge.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Default resize ability</td>\r\n<td>All items in a section can have the resize ability enabled or disabled by default.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Item resize ability</td>\r\n<td>Individual items can have the resize ability enabled or disabled</td>\r\n<td>0.1</td>\r\n<td>medium</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Custom resize offset</td>\r\n<td>Define how far from the line is the resize area</td>\r\n<td>0.1</td>\r\n<td>low</td>\r\n<td>outstanding</td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Auto-resize</td>\r\n<td>Column width and row height can be automatically calculated by double clicking in the resize area</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td class="header" colspan="7">\r\n<h3>Move</h3>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Move rows and columns</td>\r\n<td>Not only columns can be moved but rows as well.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td>outstanding</td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Multiple move</td>\r\n<td>Moves all selected items to the same width as the one being moved</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Instant move</td>\r\n<td>See the items reordered while dragging, as opposed to repaint only after drag finished.</td>\r\n<td>0.1</td>\r\n<td>medium</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Move in selection order</td>\r\n<td>If multiple items are moved then they become ordered according to the sequence they were selected.</td>\r\n<td>0.1</td>\r\n<td>medium</td>\r\n<td>outstanding</td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Move in all sections</td>\r\n<td>Not only body items can be moved, but in other sections as well.</td>\r\n<td>0.1</td>\r\n<td>low</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Default move ability</td>\r\n<td>All items in a section can have the move ability enabled or disabled by default.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Item move ability</td>\r\n<td>Individual items can have the move ability enabled or disabled</td>\r\n<td>0.1</td>\r\n<td>medium</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td class="header" colspan="7">\r\n<h3>Hide</h3>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Hide rows and columns</td>\r\n<td>Not only columns can be hidden but rows as well.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Multiple hide</td>\r\n<td>Hides all selected items to the same width as the one being hidden</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Hide in all sections</td>\r\n<td>Not only body items can be hidden, but in other sections as well.</td>\r\n<td>0.1</td>\r\n<td>low</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Default hide ability</td>\r\n<td>All items in a section can have the hide ability enabled or disabled by default.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Item move ability</td>\r\n<td>Individual items can have the hide ability enabled or disabled</td>\r\n<td>0.1</td>\r\n<td>medium</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td class="header" colspan="7">\r\n<h3>Group</h3>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">TreeTable</td>\r\n<td>A column may display a tree like structure of the row axis items</td>\r\n<td>0.5</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Cell merging</td>\r\n<td>Individual cell merging</td>\r\n<td>0.7</td>\r\n<td>medium</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Item hierarchy as groups</td>\r\n<td>The hierarchy is illustrated by the item in higher level being merged to the extent of its children</td>\r\n<td>0.7</td>\r\n<td>medium</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Collapse hierarchy items</td>\r\n<td>Node collapse/expand typical for tree widgets</td>\r\n<td>0.7</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td class="header" colspan="7">\r\n<h3>Scroll</h3>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Item scrolling</td>\r\n<td>Scroll position is always snapped to the beginning of a first visible item</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Pixel scrolling</td>\r\n<td>Smooth scrolling by pixels</td>\r\n<td>0.6</td>\r\n<td>medium</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Scroll to given item</td>\r\n<td></td>\r\n<td>0.6</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Auto-scroll with acceleration</td>\r\n<td>The content will scroll automatically while a dragging operation reaches the edge of the scrollable area. It is during select, resize and move operations.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td>outstanding</td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Custom auto-scroll offset</td>\r\n<td>Define how far from the edge of scrollable area is the auto-scrolling will start</td>\r\n<td>0.1</td>\r\n<td>low</td>\r\n<td>outstanding</td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Custom auto-scroll acceleration</td>\r\n<td>Define how fast the the auto-scroll will accelerate</td>\r\n<td>1.+</td>\r\n<td>low</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Freeze head</td>\r\n<td>Prevent the first items from scrolling, making them always visible</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_0201.java">Snippet_0201</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Freeze tail</td>\r\n<td>Prevent the last items from scrolling, making them always visible</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td>outstanding</td>\r\n<td><a href="swt-matrix/snippets/Snippet_0201.java">Snippet_0201</a></td>\r\n</tr>\r\n<tr>\r\n<td class="header" colspan="7">\r\n<h3>Paint</h3>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Background, foreground colors</td>\r\n<td>Individual background and foreground color for cells.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_0017.java">Snippet_0017</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Line color, width, style</td>\r\n<td>Drawing lines with individual color, width and style.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_0012.java">Snippet_0012</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Text font, align, padding</td>\r\n<td>Drawing text with padding and aligning horizontally and vertically with custom colors and fonts for each cell.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Automatic numbering in headers</td>\r\n<td>The default header painter draws text as sequential numbers starting from 0.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Image align, padding</td>\r\n<td>Drawing image with padding and aligning horizontally and vertically</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_0018.java">Snippet_0018</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Multiline text</td>\r\n<td>Text wrapping inside of a cell</td>\r\n<td>0.4</td>\r\n<td>medium</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Tilted text</td>\r\n<td>Vertical or rotated</td>\r\n<td>0.9</td>\r\n<td>low</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Custom painter</td>\r\n<td>All that is draw on the canvas can be replaced by a custom painter.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_0014.java">Snippet_0014</a>, <a href="swt-matrix/snippets/Snippet_0015.java">Snippet_0015</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Painters composition</td>\r\n<td>List of matrix and zone painters is fully editable (add, replace, remove)</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td>outstanding</td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Background painter</td>\r\n<td>Custom background painter for the whole matrix, not only the cell. Can be used for current row highlighting</td>\r\n<td>0.1</td>\r\n<td>low</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_0010.java">Snippet_0010</a>, <a href="swt-matrix/snippets/Snippet_0015.java">Snippet_0015</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Focus cell painter</td>\r\n<td>Enables to customize the focus cell painting.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_0011.java">Snippet_0011</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Cell style</td>\r\n<td>Set of attributes that can be named and applied to a number of cells.</td>\r\n<td>&gt;1</td>\r\n<td>medium</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Zoom</td>\r\n<td>Zoom in  and zoom out the view port area.</td>\r\n<td>&gt;1</td>\r\n<td>low</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Shorten text at the end</td>\r\n<td>Three dots at the end of text instead in the middle if the text is to long to fit in a cell.</td>\r\n<td>0.9</td>\r\n<td>medium</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td class="header" colspan="7">\r\n<h3>Data</h3>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Filtering</td>\r\n<td>Filtering can be implemented by simply taking data to paint from a reduced collection of items.</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_003.java">Snippet_003</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Sorting</td>\r\n<td>Sorting marker can be displayed using painter method and sorting cen be triggered by the header zone event listener</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_005.java">Snippet_005</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Add/remove items</td>\r\n<td>Adding or removing items in the model is reflected in the matrix</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_004.java">Snippet_004</a></td>\r\n</tr>\r\n<tr>\r\n<td class="header" colspan="7">\r\n<h3>Gestures</h3>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Command binding</td>\r\n<td>Custom binding many of the user activated commands to key/mouse gestures</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td>outstanding</td>\r\n<td><a href="swt-matrix/snippets/Snippet_0901.java">Snippet_0901</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Cells traversing</td>\r\n<td>Cells can be traversed with the (Shifr+) Tab and Enter keys.</td>\r\n<td>0.3</td>\r\n<td>medium</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_0456.java">Snippet_0456</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">SelectionEvent</td>\r\n<td>Handling of SelectionEvent</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_0902.java">Snippet_0902</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">ControlEvent</td>\r\n<td>Handling of ControlEvent</td>\r\n<td>0.1</td>\r\n<td>high</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_0902.java">Snippet_0902</a></td>\r\n</tr>\r\n<tr>\r\n<td class="header" colspan="7">\r\n<h3>Edit</h3>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Text, combo, date/time</td>\r\n<td>Allow changing the value of a cell using standard SWT controls as pop-ups</td>\r\n<td>0.2</td>\r\n<td>high</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_0404.java">Snippet_0404</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Custom cell editors</td>\r\n<td>Any instance of the Control class descendants can work as a cell editor.</td>\r\n<td>0.2</td>\r\n<td>high</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_0405.java">Snippet_0405</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Embedded native controls</td>\r\n<td>Check buttons or other controls constantly embedded in the cell</td>\r\n<td>0.2</td>\r\n<td>middle</td>\r\n<td>outstanding</td>\r\n<td><a href="swt-matrix/snippets/Snippet_0402.java">Snippet_0402</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Checkbox emulation</td>\r\n<td>For bettern performance then lots of native controls. Support for custom OS themes.</td>\r\n<td>0.2</td>\r\n<td>high</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_0403.java">Snippet_0403</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">In-place inserting</td>\r\n<td>Seperate edit zone to insert new rows</td>\r\n<td>0.3</td>\r\n<td>middle</td>\r\n<td>outstanding</td>\r\n<td><a href="swt-matrix/snippets/Snippet_0410.java">Snippet_0410</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Editor activation by typing</td>\r\n<td>Editor is activated by typing of printable characters. This can be disabled by unbinding of the CMD_EDIT_ACTIVATE from PRINTABLE_CHARS custom event code.</td>\r\n<td>0.3</td>\r\n<td>middle</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Full control over editor activation</td>\r\n<td>The editor activation command can be simply bound to any key or mouse event.</td>\r\n<td>0.3</td>\r\n<td>high</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_0450.java">Snippet_0450</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Cut/copy/paste</td>\r\n<td>Using clipboard tab separated format compatible with Excel</td>\r\n<td>0.2</td>\r\n<td>high</td>\r\n<td></td>\r\n<td><a href="swt-matrix/snippets/Snippet_0490.java">Snippet_0490</a></td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Delete</td>\r\n<td>Delete a cell value</td>\r\n<td>0.2</td>\r\n<td>high</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td class="header" colspan="7">\r\n<h3>Other</h3>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="white-space: nowrap">Tooltips</td>\r\n<td>Tooltips for individual cells</td>\r\n<td>0.8</td>\r\n<td>medium</td>\r\n<td></td>\r\n<td></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<!-- generated end -->\r\n<script type="text/javascript">// <![CDATA[\r\nfilterFeatures();\r\n// ]]></script>\r\n<p><a name="comments"></a></p>', '', 1, 1, 0, 1, '2011-03-14 09:04:13', 62, '', '2011-07-25 22:49:37', 62, 0, '0000-00-00 00:00:00', '2011-03-14 09:04:13', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 92, 0, 9, '', '', 0, 1024, 'robots=\nauthor=');
-INSERT INTO `jos_content` VALUES (6, '404', '404', '', '<h1>404: Not Found</h1>\r\n<h2>Sorry, but the content you requested could not be found</h2>', '', 1, 0, 0, 0, '2004-11-11 12:44:38', 62, '', '2011-03-14 12:01:41', 0, 62, '2011-05-06 16:43:28', '2004-10-17 00:00:00', '0000-00-00 00:00:00', '', '', 'menu_image=-1\nitem_title=0\npageclass_sfx=\nback_button=\nrating=0\nauthor=0\ncreatedate=0\nmodifydate=0\npdf=0\nprint=0\nemail=0', 1, 0, 2, '', '', 0, 750, '');
+INSERT INTO `jos_content` VALUES (1, 'Welcome', 'welcome', '', '<p>Welcome to SWT Matrix! You must have taken the red pill :-)</p>', '', 1, 0, 0, 0, '2011-03-13 22:10:04', 62, '', '2011-04-28 19:31:59', 62, 62, '2011-09-19 20:09:58', '2011-03-13 22:10:04', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=0\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 9, 0, 4, '', '', 0, 3, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (2, 'Products', 'products', '', '<p>Products</p>', '', 1, 0, 0, 0, '2011-03-14 01:26:16', 62, '', '0000-00-00 00:00:00', 0, 0, '0000-00-00 00:00:00', '2011-03-14 01:26:16', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 1, 0, 3, '', '', 0, 62, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (3, 'SWT Matrix', 'swt-matrix', '', '<p>SWT Matrix is a tabular widget for the SWT Java GUI toolkit. Is is characterized by an unlimited capacity and instant rendering.</p>', '', 1, 1, 0, 1, '2011-03-14 01:58:18', 62, '', '2011-04-29 13:14:35', 62, 0, '0000-00-00 00:00:00', '2011-03-14 01:58:18', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 3, 0, 12, '', '', 0, 180, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (4, 'Download', 'download', '', '<p>Dependencies:</p>\r\n<ul>\r\n<li>Java 1.5 or higher. </li>\r\n<li>SWT 3.4 or higher (the lower versions may work, but have not been tested).</li>\r\n</ul>\r\n<p>By downloading the software below I agree with the&nbsp;<a href="swt-matrix/EULA_v1.0.html" mce_href="swt-matrix/EULA_v1.0.html" target="_blank">End User License Agreement</a>.</p>\r\n<h3>Version 0.5.10 (alpha stage)</h3>\r\n<p><a href="swt-matrix/swt-matrix-0.5.10.zip" mce_href="swt-matrix/swt-matrix-0.5.10.zip" style="color: #1b57b1; text-decoration: none; font-weight: normal;" mce_style="color: #1b57b1; text-decoration: none; font-weight: normal;">swt-matrix-0.5.10.zip</a> - includes swt-matrix-0.5.10.jar, javadoc and snippets.</p>\r\n<p><a href="swt-matrix/Change-log.txt" mce_href="swt-matrix/Change-log.txt">change log</a><br mce_bogus="1"></p>\r\n<mce:script type="text/javascript"><!--\r\neula();\r\n<script>\r\n// --></mce:script>', '', 1, 0, 0, 0, '2011-03-14 03:24:20', 62, '', '2012-08-03 06:47:15', 62, 0, '0000-00-00 00:00:00', '2011-03-14 03:24:20', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 46, 0, 2, '', '', 0, 1329, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (5, 'Features', 'features', '', '<p class="filters">The list includes both done and planned features. Its also possible to filter features coming only in the next release. Outstanding features are unique or rare compared to similar components. The list is also filterable by somewhat subjective importance of the feature.</p>\r\n<p>Please let us know in the <a href="#comments">comments </a>which features do you miss the most.</p>\r\n<form id="let-us-know" style="display: none"><textarea style="width: 80%; height: 75px;"></textarea><input type="submit" /></form>\r\n<p class="filters">Filters: <a id="filter-all" href="#">all</a> <a id="filter-current" href="#">done</a> <a id="filter-next" href="#">next</a> <a id="filter-future" href="#">planned</a> <input id="filter-outstanding" type="checkbox" /> outstanding <input id="filter-high" type="checkbox" /> high <input id="filter-medium" type="checkbox" /> medium <input id="filter-low" type="checkbox" /> low</p>\r\n<!-- generated start --><table class=''data'' cellspacing=''1''><tr><th style=''white-space: nowrap''>Feature</th><th>Description</th><th>Version</th><th>Importance</th><th>Outstanding</th><th>References</th></tr><tr><td colspan=''7'' class=''header''><h3>Layout</h3></td></tr><tr><td style=''white-space: nowrap''>Standard sections</td><td>Header and body</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Custom sections</td><td>Additional sections like footer or filters can be defined</td><td>0.1</td><td>high</td><td>outstanding</td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0003.java''>Snippet_0003</a></td></tr><tr><td style=''white-space: nowrap''>Unlimited number of items</td><td>Each section can have an unlimited number of items</td><td>0.1</td><td>high</td><td>outstanding</td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0002.java''>Snippet_0002</a></td></tr><tr><td style=''white-space: nowrap''>Virtualization</td><td>Results in performance not dependant on the number of items in sections</td><td>0.1</td><td>high</td><td>outstanding</td><td></td></tr><tr><td style=''white-space: nowrap''>Show / hide section</td><td>For example it''s common to show / hide the header section</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Default cell width</td><td>Any cell that does not have a custom width will have the default width</td><td>0.1</td><td>medium</td><td>outstanding</td><td></td></tr><tr><td style=''white-space: nowrap''>Individual cell width</td><td>Each cell can have a different width</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Default line width</td><td>Any line that does not have a custom width will have the default width</td><td>0.1</td><td>medium</td><td>outstanding</td><td></td></tr><tr><td style=''white-space: nowrap''>Individual line width</td><td>Each line can have a different width</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Spaces between cells</td><td>Similar to HTML table cellspacing attribute. It does not effect the cell size and cell painting algorithm.</td><td>0.1</td><td>medium</td><td>outstanding</td><td></td></tr><tr><td colspan=''7'' class=''header''><h3>Zones</h3></td></tr><tr><td style=''white-space: nowrap''>Zone as crossing of sections</td><td>Body zone = row axis body section and column axis body section, Column header zone = row axis header section and column axis body section</td><td>0.1</td><td>high</td><td>outstanding</td><td></td></tr><tr><td style=''white-space: nowrap''>Separate painters</td><td>Each zone can have separate painters</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Separate event handlers</td><td>Each zone can have separate event handlers</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td colspan=''7'' class=''header''><h3>Selection</h3></td></tr><tr><td style=''white-space: nowrap''>Select axis items</td><td>Both full rows and full columns can be selected</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Select cells</td><td>Standard cell selection by mouse and keyboard.</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Modify selection</td><td>Works for both full axis items and cells. It is done by standard CTRL selection gestures.</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Header cells highlight</td><td>Header cells can be automatically highlighted for the selected cells.</td><td>0.1</td><td>low</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Enable selection</td><td>Cell selection can be enabled/disabled</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td colspan=''7'' class=''header''><h3>Resize</h3></td></tr><tr><td style=''white-space: nowrap''>Resize rows and columns</td><td>Not only columns can be resized but rows as well.</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Multiple resize</td><td>Resizes all selected items to the same width as the one being resized</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Instant resize</td><td>See the item repainted with the new width while dragging, as opposed to repaint after drag finished.</td><td>0.1</td><td>medium</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Resize in all sections</td><td>Not only body items can be resized, but the headers ones as well. For example the row header width can be changed by the user dragging it''s right edge.</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Default resize ability</td><td>All items in a section can have the resize ability enabled or disabled by default.</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Item resize ability</td><td>Individual items can have the resize ability enabled or disabled</td><td>0.1</td><td>medium</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Custom resize offset</td><td>Define how far from the line is the resize area</td><td>0.1</td><td>low</td><td>outstanding</td><td></td></tr><tr><td style=''white-space: nowrap''>Auto-resize</td><td>Column width and row height can be automatically calculated by double clicking in the resize area</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td colspan=''7'' class=''header''><h3>Move</h3></td></tr><tr><td style=''white-space: nowrap''>Move rows and columns</td><td>Not only columns can be moved but rows as well.</td><td>0.1</td><td>high</td><td>outstanding</td><td></td></tr><tr><td style=''white-space: nowrap''>Multiple move</td><td>Moves all selected items to the same width as the one being moved</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Instant move</td><td>See the items reordered while dragging, as opposed to repaint only after drag finished.</td><td>0.1</td><td>medium</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Move in selection order</td><td>If multiple items are moved then they become ordered according to the sequence they were selected.</td><td>0.1</td><td>medium</td><td>outstanding</td><td></td></tr><tr><td style=''white-space: nowrap''>Move in all sections</td><td>Not only body items can be moved, but in other sections as well. </td><td>0.1</td><td>low</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Default move ability</td><td>All items in a section can have the move ability enabled or disabled by default.</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Item move ability</td><td>Individual items can have the move ability enabled or disabled</td><td>0.1</td><td>medium</td><td></td><td></td></tr><tr><td colspan=''7'' class=''header''><h3>Hide</h3></td></tr><tr><td style=''white-space: nowrap''>Hide rows and columns</td><td>Not only columns can be hidden but rows as well.</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Multiple hide</td><td>Hides all selected items to the same width as the one being hidden</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Hide in all sections</td><td>Not only body items can be hidden, but in other sections as well. </td><td>0.1</td><td>low</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Default hide ability</td><td>All items in a section can have the hide ability enabled or disabled by default.</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Item move ability</td><td>Individual items can have the hide ability enabled or disabled</td><td>0.1</td><td>medium</td><td></td><td></td></tr><tr><td colspan=''7'' class=''header''><h3>Group</h3></td></tr><tr><td style=''white-space: nowrap''>TreeTable</td><td>A column may display a tree like structure of the row axis items</td><td>0.3</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Cell merging</td><td>Individual cell merging</td><td>0.7</td><td>medium</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Item hierarchy as groups</td><td>The hierarchy is illustrated by the item in higher level being merged to the extent of its children</td><td>0.7</td><td>medium</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Collapse hierarchy items</td><td>Node collapse/expand typical for tree widgets</td><td>0.7</td><td>high</td><td></td><td></td></tr><tr><td colspan=''7'' class=''header''><h3>Scroll</h3></td></tr><tr><td style=''white-space: nowrap''>Item scrolling</td><td>Scroll position is always snapped to the beginning of a first visible item</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Pixel scrolling</td><td>Smooth scrolling by pixels</td><td>0.5</td><td>medium</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Scroll to given item</td><td></td><td>0.5</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Auto-scroll with acceleration</td><td>The content will scroll automatically while a dragging operation reaches the edge of the scrollable area. It is during select, resize and move operations.</td><td>0.1</td><td>high</td><td>outstanding</td><td></td></tr><tr><td style=''white-space: nowrap''>Custom auto-scroll offset</td><td>Define how far from the edge of scrollable area is the auto-scrolling will start</td><td>0.1</td><td>low</td><td>outstanding</td><td></td></tr><tr><td style=''white-space: nowrap''>Custom auto-scroll acceleration</td><td>Define how fast the the auto-scroll will accelerate</td><td>1.+</td><td>low</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Freeze head</td><td>Prevent the first items from scrolling, making them always visible</td><td>0.1</td><td>high</td><td></td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0201.java''>Snippet_0201</a></td></tr><tr><td style=''white-space: nowrap''>Freeze tail</td><td>Prevent the last items from scrolling, making them always visible</td><td>0.1</td><td>high</td><td>outstanding</td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0201.java''>Snippet_0201</a></td></tr><tr><td colspan=''7'' class=''header''><h3>Paint</h3></td></tr><tr><td style=''white-space: nowrap''>Background, foreground colors</td><td>Individual background and foreground color for cells.</td><td>0.1</td><td>high</td><td></td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0017.java''>Snippet_0017</a></td></tr><tr><td style=''white-space: nowrap''>Line color, width, style</td><td>Drawing lines with individual color, width and style.</td><td>0.1</td><td>high</td><td></td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0012.java''>Snippet_0012</a></td></tr><tr><td style=''white-space: nowrap''>Text font, align, padding</td><td>Drawing text with padding and aligning horizontally and vertically with custom colors and fonts for each cell.</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Automatic numbering in headers</td><td>The default header painter draws text as sequential numbers starting from 0.</td><td>0.1</td><td>high</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Image align, padding</td><td>Drawing image with padding and aligning horizontally and vertically</td><td>0.1</td><td>high</td><td></td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0018.java''>Snippet_0018</a></td></tr><tr><td style=''white-space: nowrap''>Multiline text</td><td>Text wrapping inside of a cell</td><td>0.3</td><td>medium</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Tilted text</td><td>Vertical or rotated </td><td>0.9</td><td>low</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Custom painter</td><td>All that is draw on the canvas can be replaced by a custom painter.</td><td>0.1</td><td>high</td><td></td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0014.java''>Snippet_0014</a>, <a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0015.java''>Snippet_0015</a></td></tr><tr><td style=''white-space: nowrap''>Painters composition</td><td>List of matrix and zone painters is fully editable (add, replace, remove)</td><td>0.1</td><td>high</td><td>outstanding</td><td></td></tr><tr><td style=''white-space: nowrap''>Background painter</td><td>Custom background painter for the whole matrix, not only the cell. Can be used for current row highlighting</td><td>0.1</td><td>low</td><td></td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0010.java''>Snippet_0010</a>, <a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0015.java''>Snippet_0015</a></td></tr><tr><td style=''white-space: nowrap''>Focus cell painter</td><td>Enables to customize the focus cell painting.</td><td>0.1</td><td>high</td><td></td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0011.java''>Snippet_0011</a></td></tr><tr><td style=''white-space: nowrap''>Cell style</td><td>Set of attributes that can be named and applied to a number of cells.</td><td></td><td>medium</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Zoom</td><td>Zoom in  and zoom out the view port area.</td><td>>1</td><td>low</td><td></td><td></td></tr><tr><td style=''white-space: nowrap''>Shorten text at the end</td><td>Three dots at the end of text instead in the middle if the text is to long to fit in a cell.</td><td>0.9</td><td>medium</td><td></td><td></td></tr><tr><td colspan=''7'' class=''header''><h3>Data</h3></td></tr><tr><td style=''white-space: nowrap''>Filtering</td><td>Filtering can be implemented by simply taking data to paint from a reduced collection of items.</td><td>0.1</td><td>high</td><td></td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_003.java''>Snippet_003</a></td></tr><tr><td style=''white-space: nowrap''>Sorting</td><td>Sorting marker can be displayed using painter method and sorting cen be triggered by the header zone event listener</td><td>0.1</td><td>high</td><td></td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_005.java''>Snippet_005</a></td></tr><tr><td style=''white-space: nowrap''>Add/remove items</td><td>Adding or removing items in the model is reflected in the matrix</td><td>0.1</td><td>high</td><td></td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_004.java''>Snippet_004</a></td></tr><tr><td colspan=''7'' class=''header''><h3>Gestures</h3></td></tr><tr><td style=''white-space: nowrap''>Command binding</td><td>Custom binding many of the user activated commands to key/mouse gestures</td><td>0.1</td><td>high</td><td>outstanding</td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0901.java''>Snippet_0901</a></td></tr><tr><td style=''white-space: nowrap''>SelectionEvent</td><td>Handling of SelectionEvent</td><td>0.1</td><td>high</td><td></td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0902.java''>Snippet_0902</a></td></tr><tr><td style=''white-space: nowrap''>ControlEvent</td><td>Handling of ControlEvent</td><td>0.1</td><td>high</td><td></td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0902.java''>Snippet_0902</a></td></tr><tr><td colspan=''7'' class=''header''><h3>Edit</h3></td></tr><tr><td style=''white-space: nowrap''>Text, combo, date/time</td><td>Allow changing the value of a cell using standard SWT controls as pop-ups</td><td>0.2</td><td>high</td><td></td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0404.java''>Snippet_0404</a></td></tr><tr><td style=''white-space: nowrap''>Embedded native controls</td><td>Check buttons or other controls constantly embedded in the cell</td><td>0.2</td><td>middle</td><td>outstanding</td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0402.java''>Snippet_0402</a></td></tr><tr><td style=''white-space: nowrap''>Checkbox emulation</td><td>For bettern performance then lots of native controls. Support for custom OS themes.</td><td>0.2</td><td>high</td><td></td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0403.java''>Snippet_0403</a></td></tr><tr><td style=''white-space: nowrap''>Cut/copy/paste</td><td>Using clipboard tab separated format compatible with Excel</td><td>0.2</td><td>high</td><td></td><td><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0410.java''>Snippet_0410</a></td></tr><tr><td style=''white-space: nowrap''>Delete</td><td>Delete a cell value</td><td>0.2</td><td>high</td><td></td><td></td></tr><tr><td colspan=''7'' class=''header''><h3>Other</h3></td></tr><tr><td style=''white-space: nowrap''>Tooltips</td><td>Tooltips for individual cells</td><td>0.8</td><td>medium</td><td></td><td></td></tr></table><!-- generated end -->\r\n<script type="text/javascript">// <![CDATA[\r\nfilterFeatures();\r\n// ]]></script>\r\n<p><a name="comments"></a></p>', '', 1, 1, 0, 1, '2011-03-14 09:04:13', 62, '', '2011-06-17 20:40:41', 62, 0, '0000-00-00 00:00:00', '2011-03-14 09:04:13', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 89, 0, 13, '', '', 0, 1959, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (18, 'Issue Tracker', 'issuet-racker', '', '<!--iframe src="http://www.codaset.com/netanel/swt-matrix/tickets" mce_src="http://www.codaset.com/netanel/swt-matrix/tickets" width="100%" height="100%">\r\n  Your browser does not support iframes.\r\n</iframe--><p>\r\n\r\n<iframe src="http://netanel.myjetbrains.com/youtrack/issues" mce_src="http://netanel.myjetbrains.com/youtrack/issues" width="100%" height="800">\r\n  Your browser does not support iframes.\r\n</iframe></p>\r\n\r\n<script type="text/javascript">\r\njQuery(".main").css("width", "auto");\r\n</script>', '', 1, 1, 0, 1, '2011-07-20 13:07:12', 62, '', '2011-10-13 15:23:22', 62, 0, '0000-00-00 00:00:00', '2011-07-20 13:07:12', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 22, 0, 3, '', '', 0, 393, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (6, '404', '404', '', '<h1>404: Not Found</h1>\r\n<h2>Sorry, but the content you requested could not be found</h2>', '', 1, 0, 0, 0, '2004-11-11 12:44:38', 62, '', '2011-03-14 12:01:41', 0, 62, '2011-05-06 16:43:28', '2004-10-17 00:00:00', '0000-00-00 00:00:00', '', '', 'menu_image=-1\nitem_title=0\npageclass_sfx=\nback_button=\nrating=0\nauthor=0\ncreatedate=0\nmodifydate=0\npdf=0\nprint=0\nemail=0', 1, 0, 1, '', '', 0, 750, '');
 INSERT INTO `jos_content` VALUES (7, 'API', 'api', '', '<p>api</p>', '', -2, 1, 0, 1, '2011-03-14 12:43:56', 62, '', '2011-03-14 14:40:19', 62, 0, '0000-00-00 00:00:00', '2011-03-14 12:43:56', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 2, 0, 0, '', '', 0, 5, 'robots=\nauthor=');
-INSERT INTO `jos_content` VALUES (8, 'Forum', 'forum', '', '<p><a id="nabblelink" href="http://swt-matrix.1049369.n5.nabble.com/">swt-matrix</a></p>\r\n<script src="http://swt-matrix.1049369.n5.nabble.com/embed/f4367519"></script>', '', 1, 0, 0, 0, '2011-03-14 18:03:36', 62, '', '2011-05-03 15:08:05', 62, 0, '0000-00-00 00:00:00', '2011-03-14 18:03:36', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 2, 0, 1, '', '', 0, 188, 'robots=\nauthor=');
-INSERT INTO `jos_content` VALUES (9, 'SWT Matrix - Overview', 'swt-matrix-overview', '', '<p>{module SWT Matrix Menu}</p>\r\n<p>SWT Matrix is a tabular widget for <a href="http://www.eclipse.org/swt">SWT</a> Java GUI toolkit.</p>\r\n<p>What makes it different from other such components is <strong>unlimited capacity</strong> and <strong>instant rendering</strong>. <br />It also focuses on developer productivity by <strong>clean design</strong> with minimal learning curve.</p>\r\n<p><img src="images/infinite.png" border="0" width="64" height="64" style="float:left; padding-right:10px" /></p>\r\n<h3><a name="capacity"></a>Unlimited Capacity</h3>\r\n<p style="padding-left: 85px">SWT Matrix can handle an <strong>unlimited</strong> number of rows and columns. Integer.MAX_VALUE (2 147 483 647) is not a limit, neither is Long.MAX_VALUE (9 223 372 036 854 775 807). And still it performs block selection, moving, resizing scrolling and setting of various properties of cells, rows and columns. More then 2147483647 items is a rare case, but it <span style="text-decoration: underline;">can</span> happen. It''s better to be <span style="text-decoration: underline;">safe</span> then sorry.</p>\r\n<p><img src="images/clock.png" border="0" width="64" height="64" style="float:left; padding-right:10px; " /></p>\r\n<h3><a name="instant"></a>Instant Rendering</h3>\r\n<p style="padding-left: 85px">It is assumed by convention that<strong> instant</strong> for GUI applications means responding in less then 0.1 sec. Now consider scrolling a content of a table with 1 million rows and columns in a full screen mode with 1680 x 1050 screen resolution. It''s around 2000 visible cells of size 50x16. Components that don''t support virtual display choke completely. BTW don''t be misled by SWT.VIRTUAL constructor flag of those widgets. Scroll to the end and you will see that it is lazy initialization rather then virtualization. None of the popular tabular components tested on Windows XP 2GHz are consistent to provide instant response for basic operations like navigation. SWT Matrix paints itself in about <strong>50 ms</strong>, which is at least <strong>8x better</strong> then the other grid/table widgets. And not all identified optimizations have been implemented yet.</p>\r\n<p><img src="images/design.png" border="0" width="64" height="64" style="float:left; padding-right:10px; " /></p>\r\n<h3><a name="design"></a>Clean design</h3>\r\n<p style="padding-left: 85px">Total of <strong>7 classes</strong> in the public <a href="swt-matrix/javadoc/index.html">API</a> does not sound like an over-complicated design for the amount of supported features and compared to hundreds of classes in other solutions. <strong>Symmetry</strong> is also a measure of a clean design. Thus there is no such a thing that works for columns, but does not work for rows and vice versa, or works for one section and does not for another. For example since columns can be resized why not resize the row header? Even freezing is symetric. If the head of an axis can be frozen why not the tail? A frozen footer may come handy.</p>\r\n<p>The current major limitations are for instance lack of cell merging, column/row grouping and hierarchy. But they are coming in the next releases. {article features}{link}Here{/link}{/article} is the detail feature list.</p>\r\n<p>The component is released under<strong> commercial licence</strong> but is free of charge for non commercial use.</p>\r\n<p>The current stage is <strong>alpha release</strong> to allow evaluation and early user feedback. <br />Hope to hear from you. Your opinion is invaluable to us.</p>\r\n<p> </p>\r\n<!-- AddThis Button BEGIN -->\r\n<div class="addthis_toolbox addthis_default_style ">\r\n<p><a class="addthis_button_facebook_like"></a> <a class="addthis_button_tweet"></a> <a class="addthis_counter addthis_pill_style"></a></p>\r\n</div>\r\n<script src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4dd798d712e3ff54" type="text/javascript"></script>\r\n<script type="text/javascript">// <![CDATA[\r\n/*var cssLink = document.createElement("link") \r\ncssLink.href = "media/css/addvalthis.css"; \r\ncssLink.rel = "stylesheet"; \r\ncssLink.type = "text/css"; \r\nframes[0].document.head.appendChild(cssLink);*/\r\n// ]]></script>\r\n<!-- AddThis Button END -->', '', 1, 1, 0, 1, '2011-03-15 07:00:25', 62, '', '2011-06-17 21:16:29', 62, 0, '0000-00-00 00:00:00', '2011-03-15 07:00:25', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 107, 0, 7, '', '', 0, 857, 'robots=\nauthor=');
-INSERT INTO `jos_content` VALUES (10, 'Design', 'swt-matrix-design', '', '<p>The over arching principle for the matrix widget design is simplicity, that materializes in:</p>\r\n<p>\r\n<ul>\r\n<li>Separation of concerns. The state maintenance has been </li>\r\n</ul>\r\n</p>\r\n<h3>Main concepts</h3>\r\n<p>- Matrix, MatrixAxis</p>\r\n<p>- Cell and line</p>\r\n<p>- AxisLayout</p>\r\n<p>- Index</p>\r\n<p>- Section</p>\r\n<p>- Zone</p>\r\n<p>- Dock</p>\r\n<p>- Painters</p>\r\n<p> </p>\r\n<p> </p>\r\n<p> </p>\r\n<p>Performance</p>\r\n<p>- Loop inversion: loop painters -&gt; loop cells -&gt; paint</p>\r\n<p>- Caching the layout computation results, paint does not recompute widths, distances, visible indexes</p>\r\n<p>- Caching results of GC.stringExtent for single characters of each font used in TextPainter.</p>\r\n<p> </p>\r\n<p>Indexes</p>\r\n<p>model index - original index that numbers the items in the model</p>\r\n<p>order index - position of the model index in the order sequence</p>\r\n<p>visible index - position of the model index in the order seqence after hiding some items</p>\r\n<p>The letter one matches with what the user sees on the screen.</p>\r\n<p> </p>\r\n<p>Selection and reordering is limited to the scope a single section only.</p>\r\n<p> </p>\r\n<p>Freezing</p>\r\n<p> </p>\r\n<p>Command</p>\r\n<p> </p>\r\n<p>Item reordering</p>\r\n<p> </p>\r\n<p>Indexes to selection are interim (position in order sequence ignoring hiding).</p>\r\n<p>This is to naturaly support a scenario of for example selecting extent</p>\r\n<p>from column 4 to column 6 including a hidden column 5 in between.</p>\r\n<p> </p>', '', 1, 1, 0, 1, '2011-03-15 10:14:57', 62, '', '2011-04-13 12:27:57', 62, 62, '2011-04-13 12:27:57', '2011-03-15 10:14:57', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 4, 0, 6, '', '', 0, 5, 'robots=\nauthor=');
-INSERT INTO `jos_content` VALUES (11, 'Snippets', 'snippets', '', '<p>Snippets are minimal stand-alone programs that demonstrate specific techniques or functionality. Often a small example is the easiest way to understand how to use a particular feature.</p>\r\n<!-- generated start --><p>Layout</p><ul><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0001.java''>Simplest matrix.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0002.java''>Unlimited number of items.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0003.java''>Filter section between header and body.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0004.java''>Add / remove model items.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0005.java''>Sorting by columns.</a></li></ul><p>Painters</p><ul><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0010.java''>Draw custom background for the whole matrix.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0011.java''>Draw custom focus cell marker.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0012.java''>Change the line style.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0013.java''>Gap between cells like HTML table cellspacing attribute. Hide lines.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0014.java''>Altering row background.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0015.java''>Current row gradient highlighter.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0016.java''>Mark selection with SWT.COLOR_LIST... colors.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0017.java''>Cell background calculated</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0018.java''>Image painting</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0019.java''>Align column to the right.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0020.java''>Custom column packing.</a></li></ul><p>Navigation</p><ul><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0201.java''>Freeze head and tail with different color for the dividing line</a></li></ul><p>Edit</p><ul><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0401.java''>Simplest zone editor.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0402.java''>Embedded check buttons.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0403.java''>Emulated check buttons.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0404.java''>Edit controls Text, DateTime, Boolean, Combo depending on the cell value.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0410.java''>Custom copy / paste.</a></li></ul><p>Other</p><ul><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0901.java''>Change gesture binding.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0902.java''>Selection and control event handling.</a></li><li><a href=''http://netanel.pl/swt-matrix/snippets/Snippet_0903.java''>Identifying items by distance.</a></li></ul><!-- generated end -->', '', 1, 1, 0, 1, '2011-03-15 10:17:07', 62, '', '2011-03-25 19:34:37', 62, 0, '0000-00-00 00:00:00', '2011-03-15 10:17:07', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 6, 0, 5, '', '', 0, 196, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (8, 'Forum', 'forum', '', '<p><a id="nabblelink" href="http://swt-matrix.1049369.n5.nabble.com/">swt-matrix</a></p>\r\n<script src="http://swt-matrix.1049369.n5.nabble.com/embed/f4367519"></script>', '', -2, 0, 0, 0, '2011-03-14 18:03:36', 62, '', '2011-05-03 15:08:05', 62, 0, '0000-00-00 00:00:00', '2011-03-14 18:03:36', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 2, 0, 0, '', '', 0, 22, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (9, 'SWT Matrix - Overview', 'swt-matrix-overview', '', '<p>{module SWT Matrix Menu}</p>\r\n<p>SWT Matrix is a tabular widget for&nbsp;<a href="http://www.eclipse.org/swt" mce_href="http://www.eclipse.org/swt">SWT</a> Java GUI toolkit.</p>\r\n<p>What makes it different from other such components is <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">unlimited capacity</span> and <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">instant rendering</span>. <br />It also focuses on developer productivity by <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">clean design</span> with minimal learning curve.</p>\r\n<p><img src="images/infinite.png" mce_src="images/infinite.png" style="float:left; padding-right:10px" mce_style="float:left; padding-right:10px" border="0" height="64" width="64"></p>\r\n<h3>Unlimited Capacity</h3>\r\n<p>SWT Matrix can handle an <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">unlimited</span> number of rows and columns. Integer.MAX_VALUE (2 147 483 647)&nbsp;is not a limit, neither is Long.MAX_VALUE (9 223 372 036 854 775 807). And still it performs block selection, moving, resizing scrolling and setting of various properties of cells, rows and columns. More then 2147483647&nbsp;items is a rare case, but it <u style="">can</u> happen. It''s better to be <u style="">safe</u> then sorry.</p>\r\n<p><img src="images/clock.png" mce_src="images/clock.png" style="float:left; padding-right:10px; " mce_style="float:left; padding-right:10px; " border="0" height="64" width="64"></p>\r\n<h3>Instant Rendering</h3>\r\n<p>By convention <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">instant</span> for GUI applications means responding in less then 0.1 sec. Now consider scrolling a content of a&nbsp;table with 1 million rows and columns in a full screen mode with 1680 x 1050 screen resolution. It''s around 2000 visible cells of size 50x16. Components that don''t support virtual display choke completely. BTW don''t be misled by SWT.VIRTUAL constructor flag of those widgets. Scroll to the end and you will see that it is lazy initialization rather then virtualization. None of the popular tabular components tested on Windows XP 2GHz are consistent to provide instant response for basic operations like scrolling. SWT Matrix paints itself in about <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">50 ms</span>, which is at least&nbsp;<span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">8x better</span> then any other grid/table widget. And not all identified optimizations have been implemented yet.</p>\r\n<p><img src="images/design.png" mce_src="images/design.png" style="float:left; padding-right:10px; " mce_style="float:left; padding-right:10px; " border="0" height="64" width="64"></p>\r\n<h3>Clean design</h3>\r\n<p>Total of <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">12 classes/interfaces</span> in the public <a href="swt-matrix/javadoc/index.html" mce_href="swt-matrix/javadoc/index.html">API</a> does not sound like an over-complicated design for the amount of supported features and compared to hundreds of classes in other solutions. <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">Symmetry</span> is also a measure of a clean design. Thus there is no such a thing that works for columns, but does not work for rows and vice versa, or works for one section and does not for another. For example since columns can be resized why not resize the row header? Even freezing is symetric. If the head of an axis can be frozen why not the tail? A frozen footer may come handy.</p>\r\n<p>The current major limitations are for instance lack of cell merging, column/row grouping and hierarchy. But they are coming in the next releases. {article features}{link}Here{/link}{/article} is the detail feature list.</p>\r\n\r\n<p>The component is released under<span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1"> commercial licence</span> but is free of charge for non commercial use.</p><p>Fell free to express you feed back. Your opinion is invaluable to us. Hope to {article forum}{link}hear{/link}{/article}&nbsp;from you.</p>\r\n<p><br /></p>\r\n<!-- AddThis Button BEGIN -->\r\n<div class="addthis_toolbox addthis_default_style ">\r\n<p><a class="addthis_button_facebook_like"></a> <a class="addthis_button_tweet"></a> <a class="addthis_counter addthis_pill_style"></a><br mce_bogus="1"></p>\r\n</div>\r\n<mce:script mce_src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4dd798d712e3ff54" type="text/javascript"></mce:script>\r\n<mce:script type="text/javascript"><!--\r\n/*var cssLink = document.createElement("link") \r\ncssLink.href = "media/css/addvalthis.css"; \r\ncssLink.rel = "stylesheet"; \r\ncssLink.type = "text/css"; \r\nframes[0].document.head.appendChild(cssLink);*/\r\n// --></mce:script>\r\n<!-- AddThis Button END -->', '', 1, 1, 0, 1, '2011-03-15 07:00:25', 62, '', '2012-10-08 23:33:07', 62, 0, '0000-00-00 00:00:00', '2011-03-15 07:00:25', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 121, 0, 11, '', '', 0, 2918, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (10, 'Design', 'swt-matrix-design', '', '<p>The over arching principle for the matrix widget design is simplicity, that materializes in:</p>\r\n<p>\r\n<ul>\r\n<li>Separation of concerns. The state maintenance has been </li>\r\n</ul>\r\n</p>\r\n<h3>Main concepts</h3>\r\n<p>- Matrix, MatrixAxis</p>\r\n<p>- Cell and line</p>\r\n<p>- AxisLayout</p>\r\n<p>- Index</p>\r\n<p>- Section</p>\r\n<p>- Zone</p>\r\n<p>- Dock</p>\r\n<p>- Painters</p>\r\n<p> </p>\r\n<p> </p>\r\n<p> </p>\r\n<p>Performance</p>\r\n<p>- Loop inversion: loop painters -&gt; loop cells -&gt; paint</p>\r\n<p>- Caching the layout computation results, paint does not recompute widths, distances, visible indexes</p>\r\n<p>- Caching results of GC.stringExtent for single characters of each font used in TextPainter.</p>\r\n<p> </p>\r\n<p>Indexes</p>\r\n<p>model index - original index that numbers the items in the model</p>\r\n<p>order index - position of the model index in the order sequence</p>\r\n<p>visible index - position of the model index in the order seqence after hiding some items</p>\r\n<p>The letter one matches with what the user sees on the screen.</p>\r\n<p> </p>\r\n<p>Selection and reordering is limited to the scope a single section only.</p>\r\n<p> </p>\r\n<p>Freezing</p>\r\n<p> </p>\r\n<p>Command</p>\r\n<p> </p>\r\n<p>Item reordering</p>\r\n<p> </p>\r\n<p>Indexes to selection are interim (position in order sequence ignoring hiding).</p>\r\n<p>This is to naturaly support a scenario of for example selecting extent</p>\r\n<p>from column 4 to column 6 including a hidden column 5 in between.</p>\r\n<p> </p>', '', 1, 1, 0, 1, '2011-03-15 10:14:57', 62, '', '2011-04-13 12:27:57', 62, 62, '2011-04-13 12:27:57', '2011-03-15 10:14:57', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 4, 0, 10, '', '', 0, 5, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (11, 'Snippets', 'snippets', '', '<p>Snippets are minimal stand-alone programs that demonstrate specific techniques or functionality. Often a small example is the easiest way to understand how to use a particular feature.</p><p>All the snippets are available for {article download}{link}download{/link}{/article}.</p><p>Layout</p>\r\n<!-- generated start --><li><a href="http://netanel.pl/swt-matrix/snippets/S0001_SimplestMatrix.java" mce_href="swt-matrix/snippets/S0001_SimplestMatrix.java">Simplest matrix.</a></li><li><a href="http://netanel.pl/swt-matrix/snippets/S0002_UnlimitedNumberOfItems.java" mce_href="swt-matrix/snippets/S0002_UnlimitedNumberOfItems.java">Unlimited number of items.</a></li><li><a href="http://netanel.pl/swt-matrix/snippets/S0003_FilterSectionBetweenHeaderAndBody.java" mce_href="swt-matrix/snippets/S0003_FilterSectionBetweenHeaderAndBody.java">Filter section between header and body.</a></li><li><a href="http://netanel.pl/swt-matrix/snippets/S0004_Add_RemoveModelItems.java" mce_href="swt-matrix/snippets/S0004_Add_RemoveModelItems.java">Add / remove model items.</a></li><li><a href="http://netanel.pl/swt-matrix/snippets/S0005_SortingByColumns.java" mce_href="swt-matrix/snippets/S0005_SortingByColumns.java">Sorting by columns.</a></li><ul></ul><p>Painters</p><li><a href="swt-matrix/snippets/S0010_DrawCustomBackgroundForTheWholeMatrix_ResizeTheWindow_.java" mce_href="swt-matrix/snippets/S0010_DrawCustomBackgroundForTheWholeMatrix_ResizeTheWindow_.java">Draw custom background for the whole matrix.</a></li>\r\n<li><a href="swt-matrix/snippets/S0011_DrawCustomFocusCellMarker.java" mce_href="swt-matrix/snippets/S0011_DrawCustomFocusCellMarker.java">Draw custom focus cell marker.</a></li>\r\n<li><a href="swt-matrix/snippets/S0012_ChangeTheLineStyle.java" mce_href="swt-matrix/snippets/S0012_ChangeTheLineStyle.java">Change the line style.</a></li>\r\n<li><a href="swt-matrix/snippets/S0013_GapBetweenCellsLikeHTMLTableCellspacingAttribute_HideLines.java" mce_href="swt-matrix/snippets/S0013_GapBetweenCellsLikeHTMLTableCellspacingAttribute_HideLines.java">Gap between cells like HTML table cell spacing attribute. Hide lines.</a></li>\r\n<li><a href="swt-matrix/snippets/S0014_AlteringRowBackground.java" mce_href="swt-matrix/snippets/S0014_AlteringRowBackground.java">Altering row background.</a></li>\r\n<li><a href="swt-matrix/snippets/S0015_CurrentRowGradientHighlighter.java" mce_href="swt-matrix/snippets/S0015_CurrentRowGradientHighlighter.java">Current row gradient highlighter.</a></li>\r\n<li><a href="swt-matrix/snippets/S0016_MarkSelectionWithSWT_COLOR_LIST___Colors.java" mce_href="swt-matrix/snippets/S0016_MarkSelectionWithSWT_COLOR_LIST___Colors.java">Mark selection with SWT.COLOR_LIST... colors.</a></li>\r\n<li><a href="swt-matrix/snippets/S0017_CellBackgroundCalculated.java" mce_href="swt-matrix/snippets/S0017_CellBackgroundCalculated.java">Cell background calculated</a></li>\r\n<li><a href="swt-matrix/snippets/S0018_ImagePainting.java" mce_href="swt-matrix/snippets/S0018_ImagePainting.java">Image painting</a></li>\r\n<li><a href="swt-matrix/snippets/S0019_AlignColumnToTheRight.java" mce_href="swt-matrix/snippets/S0019_AlignColumnToTheRight.java">Align column to the right.</a></li>\r\n<li><a href="swt-matrix/snippets/S0201_FreezeHeadAndTailWithDifferentColorForTheDividingLine.java" mce_href="swt-matrix/snippets/S0201_FreezeHeadAndTailWithDifferentColorForTheDividingLine.java">Freeze head and tail with different color for the dividing line</a></li><p>Edit</p><li><a href="swt-matrix/snippets/S0401_SimplestZoneEditor.java" mce_href="swt-matrix/snippets/S0401_SimplestZoneEditor.java">Simplest zone editor.</a></li>\r\n<li><a href="swt-matrix/snippets/S0402_EmbeddedCheckButtons.java" mce_href="swt-matrix/snippets/S0402_EmbeddedCheckButtons.java">Embedded check buttons.</a></li>\r\n<li><a href="swt-matrix/snippets/S0403_CheckButtonsEmulatedByImages.java" mce_href="swt-matrix/snippets/S0403_CheckButtonsEmulatedByImages.java">Check buttons emulated by images.</a></li>\r\n<li><a href="swt-matrix/snippets/S0404_EditControlsText_DateTime_Boolean_ComboDependingOnTheCellValue.java" mce_href="swt-matrix/snippets/S0404_EditControlsText_DateTime_Boolean_ComboDependingOnTheCellValue.java">Edit controls Text, DateTime, Boolean, Combo depending on the cell value.</a></li>\r\n<li><a href="swt-matrix/snippets/S0405_ListAsACustomEditorControl.java" mce_href="swt-matrix/snippets/S0405_ListAsACustomEditorControl.java">List as a custom editor control.</a></li>\r\n<li><a href="swt-matrix/snippets/S0410_SeparateZoneToInsertNewItems.java" mce_href="swt-matrix/snippets/S0410_SeparateZoneToInsertNewItems.java">Separate zone to insert new items.</a></li>\r\n<li><a href="swt-matrix/snippets/S0450_ActivateEditorWithSingleClickInsteadOfDoubleClick.java" mce_href="swt-matrix/snippets/S0450_ActivateEditorWithSingleClickInsteadOfDoubleClick.java">Activate editor with single click instead of double click.</a></li><ul></ul><p>Other</p><li><a href="swt-matrix/snippets/S0456_TraverseCells_Shift__TabAndEnter_TraverseMatrixWith_Shift__Ctrl_Tab.java" mce_href="swt-matrix/snippets/S0456_TraverseCells_Shift__TabAndEnter_TraverseMatrixWith_Shift__Ctrl_Tab.java">Traverse cells (Shift+) Tab and Enter. Traverse Matrix with (Shift+) Ctrl+Tab.</a></li>\r\n<li><a href="swt-matrix/snippets/S0490_CustomCopy_Paste.java" mce_href="swt-matrix/snippets/S0490_CustomCopy_Paste.java">Custom copy / paste.</a></li>\r\n<li><a href="swt-matrix/snippets/S0901_ChangeGestureBinding.java" mce_href="swt-matrix/snippets/S0901_ChangeGestureBinding.java">Change gesture binding.</a></li>\r\n<li><a href="swt-matrix/snippets/S0902_SelectionAndControlEventHandling.java" mce_href="swt-matrix/snippets/S0902_SelectionAndControlEventHandling.java">Selection and control event handling.</a></li>\r\n<li><a href="swt-matrix/snippets/S0903_IdentifyingItemsByDistance.java" mce_href="swt-matrix/snippets/S0903_IdentifyingItemsByDistance.java">Identifying items by distance.</a></li>\r\n<li><a href="swt-matrix/snippets/S0910_DragAndDropFilesFromExternalWindow.java" mce_href="swt-matrix/snippets/S0910_DragAndDropFilesFromExternalWindow.java" style="">Drag and drop files from external window.</a></li>\r\n<li><a href="swt-matrix/snippets/S1001_CompoundExample.java" mce_href="swt-matrix/snippets/S1001_CompoundExample.java">Compound example.</a></li><p><br /></p><p><br /></p><ul></ul><!-- generated end -->', '', 1, 1, 0, 1, '2011-03-15 10:17:07', 62, '', '2011-09-28 07:18:15', 62, 0, '0000-00-00 00:00:00', '2011-03-15 10:17:07', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 12, 0, 9, '', '', 0, 1067, 'robots=\nauthor=');
 INSERT INTO `jos_content` VALUES (12, 'Tutorial', 'tutorial', '', '<p>{article swt-matrix-design}{url}design{/article}</p>', '', -2, 1, 0, 1, '2011-03-15 10:17:35', 62, '', '2011-03-15 10:54:36', 62, 0, '0000-00-00 00:00:00', '2011-03-15 10:17:35', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 2, 0, 0, '', '', 0, 0, 'robots=\nauthor=');
-INSERT INTO `jos_content` VALUES (13, 'Tutorial', 'swt-matrix-tutorial', '', '<!-- ArticleToC: enabled=yes -->\r\n<p>The <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html">Matrix</a> widget is designed with a <strong>separation of concerns</strong> in mind. It does not imply any data storage model for the visual attributes of the matrix elements. Instead it concentrates on efficient matrix <strong>layout</strong> calculation, <strong>painting</strong>, and <strong>event handling</strong>.</p>\r\n<h3>Layout</h3>\r\n<p>The diagram below presents the basic concepts of the Matrix layout.</p>\r\n<p><img src="swt-matrix/images/Section.png" border="0" width="473" height="267" /></p>\r\n<p style="text-align: left; "><strong>Diagram 1</strong></p>\r\n<table class="dictionary" border="0">\r\n<tbody>\r\n<tr>\r\n<td>\r\n<p><strong>Axis</strong></p>\r\n</td>\r\n<td>\r\n<p><a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Axis.html">Axis</a> is one of the two <strong>dimension</strong>s of the two-dimensional matrix. Axis names are appended with 0 and 1 in order to make them as short as possible, even in length and staying next to each other when sorted.</p>\r\n<pre xml:lang="java">Axis axisX = matrix.getAxisX();\r\nAxis axisY = matrix.getAxisY();</pre>\r\nis faster to type and more readable then\r\n<pre xml:lang="java">Axis columnAxis = matrix.getColumnAxis();\r\nAxis rowAxis = matrix.getRowAxis();</pre>\r\n<p>Appending axis name with X and Y would invert the alphabetical sorting disturbing the coding style, because there is a convention to pass row index as a first argument, leading to for example</p>\r\n<pre>zone.isSelected(indexX, indexY);</pre>\r\n<p>Axis is composed of sections (at least one) and is indexed by a specific sub-type of the java.lang.Number class. By default it is Integer class. It can be switched to BigInteger for example by creating the Axis manually:</p>\r\n<pre>Axis axisX = new Axis(Integer.class, 2);    // Two sections indexed by Integer class<br />Axis axisY = new Axis(BigInteger.class, 3);    // Three sections indexed by BigInteger class<br />final Matrix matrix = new Matrix(shell, SWT.V_SCROLL, axisX, axisY);</pre>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<p><strong>Section</strong></p>\r\n</td>\r\n<td>\r\n<p><a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Section.html">Section</a> is a continuous <strong>segment</strong> of a matrix axis containing a number of items. Section can serve as a header, body, footer, filter area, etc. By default each axis has two sections: <strong>header</strong> with one item and <strong>body</strong> with zero items. The number of sections can be specified by creating the axis manually:</p>\r\n<pre>Axis axisX = new Axis(Integer.class, 2);    // Two sections indexed by Integer class<br />Axis axisY = new Axis(BigInteger.class, 3);    // Three sections indexed by BigInteger class<br />final Matrix matrix = new Matrix(shell, SWT.V_SCROLL, axisX, axisY);</pre>\r\n<p>On Diagram 1 row axis has a header section with 1 item and the body section with 10 items, while the column axis has header section with 1 item and body section with 5 items.</p>\r\n<p>This approach may cause some confusion, because in order to show the labels for the columns one must set the header section on the row axis visible, for example:</p>\r\n<pre>matrix.getAxisY().getHeader().setVisible(true);</pre>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<p><strong>Zone</strong></p>\r\n</td>\r\n<td>\r\n<p><a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Zone.html">Zone</a> constitutes a <strong>region</strong> of the matrix where a section from <code>axis0</code> and a section from the <code>axis1</code> <strong>intersect</strong> with each other. There are four zones on the diagram below:</p>\r\n<table border="0">\r\n<tbody>\r\n<tr>\r\n<td>\r\n<ul>\r\n<li>body</li>\r\n</ul>\r\n</td>\r\n<td>at intersection of axisX body section and axisY body section</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<ul>\r\n<li>column header</li>\r\n</ul>\r\n</td>\r\n<td>at intersection of axisX body section and axisY header section</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<ul>\r\n<li>row header</li>\r\n</ul>\r\n</td>\r\n<td>at intersection of axisX header section and axisY body section</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<ul>\r\n<li>top left</li>\r\n</ul>\r\n</td>\r\n<td>at intersection of axisX header section and axisY header section</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p><img src="swt-matrix/images/Zone.png" border="0" alt="zones" /></p>\r\n<p>Zones are created automatically by the matrix to cover all intersections of axis sections.</p>\r\n<p>Each zone has its own collection of painters and key/mouse bindings.</p>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<p><strong>Cell</strong></p>\r\n</td>\r\n<td>\r\n<p>Cell is identified by indexes of two section items from perpendicular axises. Cell area does not include lines, so whenever the line width changes the cell content painting algorithm can stay untouched. Painting lines separately provides also speed optimization advantages.</p>\r\n<p>The line at index n belongs logically to section n-th item as well as cell at index n, so whenever the n-th item is hidden or moved so is the n-th line. The exception is line with index equal to <code>section.getCount()</code>, which is not bound to any cell.</p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<h3>Painting</h3>\r\n<p><a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Painter.html">Painter</a> is responsible to <strong>draw</strong> everything that appears on the matrix canvas: background, images, text, lines. The design of painting mechanism allows 100% customization of the matrix appearance.</p>\r\n<h4>Painting order</h4>\r\n<p>Both matrix and each zone has an individual list of painters that defines the order in which the painters <code>paint</code> method is executed. The painter list can be manipulated by the <code><a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html#addPainter(int, pl.netanel.swt.matrix.Painter)">addPainter</a></code>, <code><a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html#removePainter(int)">removePainter</a></code>, <code><a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html#setPainter(int, pl.netanel.swt.matrix.Painter)">setPainter</a></code>, <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html#replacePainter(pl.netanel.swt.matrix.Painter)"><code>replacePainter</code> </a>methods.</p>\r\n<p>The default structure of painters is following:</p>\r\n<ul>\r\n<li>matrix painters - collection of painters    \r\n<ul>\r\n<li><strong>frozen</strong> <strong>area </strong>painter - named by one of the Painter.NAME_FROZEN_... names, <em>(description in the next paragraph)</em> \r\n<ul>\r\n<li>zones - that are visible in the given frozen area    \r\n<ul>\r\n<li>zone painters - collection of painters    \r\n<ul>\r\n<li><strong>cells</strong> painter - named Painter.NAME_CELLS</li>\r\n<li><strong>horizontal lines</strong> painter - named Painter.NAME_LINES_X</li>\r\n<li><strong>vertical lines</strong> painter - named Painter.NAME_LINES_Y</li>\r\n<li><strong>emulated controls</strong> painter - named Painter.NAME_EMULATED_CONTROLS</li>\r\n<li><strong>embedded controls</strong> painter - named Painter.NAME_EMBEDDED_CONTROLS</li>\r\n</ul>\r\n</li>\r\n</ul>\r\n</li>\r\n</ul>\r\n</li>\r\n</ul>\r\n<ul>\r\n<li><strong>focus cell</strong> painter - a painter named Painter.NAME_FOCUS_CELL</li>\r\n<li><strong>drag horizontal item</strong> painter - a painter named Painter.NAME_DRAG_ITEM_X</li>\r\n<li><strong>drag vertical item</strong> painter - a painter named Painter.NAME_DRAG_ITEM_Y</li>\r\n</ul>\r\n</li>\r\n</ul>\r\n<p>Frozen area painter is responsible for painting separately one of 9 matrix areas formed by the head and tail freeze dividers on both axises:</p>\r\n<ul>\r\n<li><strong>frozen none none</strong> - <span class="column2">area not frozen neither on X axis not on Y axis</span></li>\r\n<li><strong>frozen none tail</strong> - <span class="column2">area not frozen on X axis and tail frozen on Y axis</span></li>\r\n<li><strong>frozen tail none</strong> - <span class="column2">area tail frozen on X axis and not frozen on Y axis</span></li>\r\n<li><strong>frozen none head</strong> - <span class="column2">area not frozen on X axis and head frozen on Y axis</span></li>\r\n<li><strong>frozen head none</strong> - <span class="column2">area head frozen on X axis and not frozen on Y axis</span></li>\r\n<li><strong>frozen head tail</strong> - <span class="column2">area head frozen on X axis and tail frozen on Y axis</span></li>\r\n<li><strong>frozen tail head</strong> - <span class="column2">area tail frozen on X axis and head frozen on Y axis</span></li>\r\n<li><strong>frozen tail tail</strong> - <span class="column2">area tail frozen on X axis and tail frozen on Y axis</span></li>\r\n<li><strong>frozen head head</strong> - <span class="column2">area head frozen on X axis and head frozen on Y axis</span></li>\r\n</ul>\r\n<h4>Painter Scope</h4>\r\n<p>The painter type specifies the scope in which it paints. The zone painting mechanism feeds the paint method with with values appropriate for the given scope.</p>\r\n<p>Only zone painters can handle various painter scopes. Matrix works with only one type <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Painter.html#SCOPE_SINGLE">SCOPE_SINGLE</a>, so the actual painter type is ignored.</p>\r\n<h4>Painter Properties</h4>\r\n<p>Painter has a set of public properties that are investigated by the paint method to determine what should be drawn on the canvas. Those properties include:</p>\r\n<ul>\r\n<li><code>text</code>, <code>textAlignX</code>, <code>textAlignY</code>, <code>textMarginX</code>, <code>textMarginY</code>,</li>\r\n<li><code>image</code>, <code>imageAlignX</code>, <code>imageAlignX</code>, <code>imageMarginX</code>, <code>imageMarginY</code></li>\r\n<li><code>foreground</code> and <code>background</code> colors</li>\r\n<li><code>selectionHighlight</code></li>\r\n</ul>\r\n<p>In order to alter properties depending on the cell indexes one should replace the default painter, for instance (<a href="swt-matrix/snippets/Snippet_0017.java">Snippet_0017</a>):</p>\r\n<pre>final Color color = display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);\r\nmatrix.getBody().replacePainter(new Painter(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {\r\n    @Override\r\n    public void getText(Number indexX, Number indexY) {\r\n        background = indexY.intValue() % 2 + indexX.intValue() % 2 == 1 ? color : null;\r\n    }\r\n});\r\n</pre>\r\n<h3>Event handling</h3>\r\n<h4>Command Binding</h4>\r\n<p>Typical commands are bound to keyboard and mouse gestures. The default bindings are enlisted {article swt-matrix-bindings}{link}here{/link}{/article}. The more complex action triggering conditions includes moving by select axis items and start dragging from one of them.</p>\r\n<p>The bindings can be added or removed by the <code>bind</code> and <code>unbind</code> methods. For example the default matrix binding to move the focus cell to the beginning of line can be altered by (<a href="swt-matrix/snippets/Snippet_0901.java" style="color: #1b57b1; text-decoration: none; font-weight: normal;">Snippet_0901</a>):</p>\r\n<pre>matrix.unbind(Matrix.CMD_FOCUS_MOST_LEFT, SWT.KeyDown, SWT.HOME);    // Windows standard<br />matrix.bind(Matrix.CMD_FOCUS_MOST_LEFT, SWT.KeyDown, SWT.MOD1 | SWT.ARROW_LEFT);    // Mac OS standard</pre>\r\n<p>Zones also have the <code>bind</code> and <code>unbind</code> methods.</p>\r\n<h4>Secondary Events</h4>\r\n<p>A SelectionEvent event of selecting cells by user can be handled with the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Zone.html#addSelectionListener(org.eclipse.swt.events.SelectionListener)">Zone.addSelectionListener</a> method and selecting section items by the user can be handled with the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Section.html#addSelectionListener(org.eclipse.swt.events.SelectionListener)">Section.addSelectionListener</a> method. Also a ControlEvent can be handled by <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Section.html#addControlListener(org.eclipse.swt.events.ControlListener)">Section.addControlListener</a> method. See <a href="swt-matrix/snippets/Snippet_0902.java" style="color: #1b57b1; text-decoration: none; font-weight: normal;">Snippet_0902</a>.</p>\r\n<h3><a name="Editing"></a>Editing</h3>\r\n<p>Editing of a matrix cells is facilitated by the <a href="swt-matrix/javadoc/index.html">ZoneEditor</a> class, for each &lt;code&gt;Zone&lt;/code&gt; separately. The simplest way to make the matrix editable is to instiate the <code>ZoneEditor</code> class with a concrete implementation of the <code>setModelValue</code> method to apply the modified value to the model (see <a href="swt-matrix/snippets/Snippet_0401.java">Snippet_0401</a>):</p>\r\n<pre>data = new ArrayList&lt;Object[]&gt;\r\nnew ZoneEditor(matrix.getBody()) {\r\n    @Override\r\n    public void setModelValue(Number indexX, Number indexY, Object value) {\r\n        data.get(indexY.intValue())[indexX.intValue()] = value;\r\n    }\r\n};\r\n</pre>\r\n<p>The default cell editor control for the above is <code>Text</code> and the value to edit is taken from the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Painter.html#getText(N0, N1)">Painter.getText(Number, Number)</a> method of the "cells" painter of the zone being edited.</p>\r\n<p>Besides <code>Text</code> the <code>ZoneEditor</code> also supports other <strong>cell editor controls</strong>: native <code>Combo</code>, <code>DateTime</code> controls and emulated, native looking check boxes.</p>\r\n<p>In order to use other controls then <code>Text</code> the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#createControl(N0, N1)" style="color: #1b57b1; text-decoration: none; font-weight: normal;">createControl(Number, Number)</a> method of <code>ZoneEditor</code> must be overriden to return the desired control for the specified cells. For example:</p>\r\n<pre>    @Override\r\n    public Control createControl(Number indexX, Number indexY, Composite parent) {\r\n        if (indexX.intValue() == 2) {\r\n            Combo combo = new Combo(parent, SWT.BORDER);\r\n            combo.setItems(comboItems);\r\n            return combo;\r\n        } \r\n        else if (indexX.intValue() == 3) {\r\n            return new DateTime(matrix, SWT.BORDER);\r\n        }\r\n        else {\r\n             return super.createControl(index0, index1);\r\n         }\r\n     }</pre>\r\n<p>Since <code>DateTime</code> control is suited to <code>Date </code>values and check boxes to <code>Boolean</code> values thus the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#getModelValue(N0, N1)">getModelValue(Number, Number)</a> method provides a mechanism to get a proper <strong>type of value</strong> suited to the cell editor control. For example:</p>\r\n<pre>    @Override\r\n    public Object getModelValue(Number indexX, Number indexY) {\r\n        return data.get(indexY.intValue())[indexX.intValue()];\r\n    }</pre>\r\n<p>There is also method to set value in the cell editor control after it is activated <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#setEditorValue(org.eclipse.swt.widgets.Control, java.lang.Object)">setEditorValue(Control, Object)</a> and <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#getEditorValue(org.eclipse.swt.widgets.Control)">getEditorValue(Control)</a> method to get the value from the cell editor control after the apply action has been triggered. They need to be overridden in order to handle <strong>custom control types</strong> other then the built-in ones. For example:</p>\r\n<pre>    @Override\r\n    public void setEditorValue(Control control, Object value) {\r\n        if (control instanceof List) {\r\n            List list = ((List) control);\r\n            list.deselectAll();\r\n            int position = list.indexOf((String) value);\r\n            if (position != -1) {\r\n                list.select(position);\r\n            }\r\n        } else {\r\n            super.setEditorValue(control, value);\r\n        }\r\n    }\r\n    \r\n    @Override\r\n    public Object getEditorValue(Control control) {\r\n        if (control instanceof List) {\r\n            List list = (List) control;\r\n            int position = list.getSelectionIndex();\r\n            return position == -1 ? null : list.getItem(position);\r\n        } else {\r\n            return super.getEditorValue(control);\r\n        }\r\n    }</pre>\r\n<h4>Embedded Controls</h4>\r\n<p>Edit controls can be be embedded in the cells by returning true from the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#hasEmbeddedControl(N0, N1)" style="color: #1b57b1; text-decoration: none; font-weight: normal;">hasEmbeddedControl(Number, Number)</a> method, for example (<a href="swt-matrix/snippets/Snippet_0402.java" style="color: #1b57b1; text-decoration: none; font-weight: normal;">Snippet_0402</a>):</p>\r\n<pre>    @Override\r\n    public boolean hasEmbeddedControl(Number indexX, Number indexY) {\r\n        Object value = data.get(indexY.intValue())[indexX.intValue()];\r\n        return value instanceof Boolean;\r\n    }\r\n    \r\n    @Override\r\n    protected Control createControl(Number indexX, Number indexY, Composite parent) {\r\n        Object value = data.get(indexY.intValue())[indexX.intValue()];\r\n        if (value instanceof Boolean) {\r\n            return new Button(parent, SWT.CHECK);\r\n        }\r\n        return super.createControl(indexX, indexY);\r\n    }</pre>\r\n<h4>Checkbox Emulation</h4>\r\n<p>Embedding controls in cells hurts performance. Check boxes can be emulated by returning a value from the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#getCheckboxEmulation(N0, N1)" style="color: #1b57b1; text-decoration: none; font-weight: normal;">getCheckboxEmulation(Number, Number)</a> method, for example:</p>\r\n<pre>    @Override\r\n    public Object[] getCheckboxEmulation(Number indexX, Number indexY) {\r\n        Object value = data.get(indexX.intValue())[indexY.intValue()];\r\n        return value instanceof Boolean ? getDefaultCheckBoxImages() : null;\r\n    } </pre>\r\n<p>The images are taken from the path specified by the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#setEmulationPath(java.lang.String)">setEmulationPath(String)</a> method.</p>\r\n<p>The images of the check boxes in the current system theme can be created by then <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#snapControlImages(java.lang.String)">snapControlImages(String) </a>the method.</p>\r\n<h4>Clipboard Operations</h4>\r\n<p><code>MatrixEditor</code> is also responcible for clipboard operations.</p>\r\n<p>The <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#copy()">copy()</a> method uses the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#format(N0, N1)">format(Number, Number)</a> function to get the <code>String</code> values for the individual cell. By default it is the value returned from the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Painter.html#getText(N0, N1)" style="color: #1b57b1; text-decoration: none; font-weight: normal;">Painter.getText(Number, Number)</a> method of the "cells" painter of the zone being edited.</p>\r\n<p>The <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#cut()" style="color: #1b57b1; text-decoration: none; font-weight: normal;">cut()</a> method sets <code>null </code>value to the selected cells after invoking <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#copy()" style="color: #1b57b1; text-decoration: none; font-weight: normal;">copy()</a> method.</p>\r\n<p>The <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#paste()" style="color: #1b57b1; text-decoration: none; font-weight: normal;">paste()</a> method uses the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#parse(N0, N1, java.lang.String)" style="color: #1b57b1; text-decoration: none; font-weight: normal;">parse(Number, Number, String)</a> function to parse the values for the individual cells.</p>\r\n<p>The clipboard operations can be customized by overriding any of the above mentioned methods.</p>\r\n<h4>Commands</h4>\r\n<p>The default command bindings are listed below:</p>\r\n<table class="data" border="0">\r\n<tbody>\r\n<tr>\r\n<td class="caption"><strong>Command</strong></td>\r\n<td class="caption"><strong>Matrix</strong></td>\r\n<td><strong><span class="caption">Edit C</span>ontrol</strong></td>\r\n</tr>\r\n<tr>\r\n<td>CMD_EDIT</td>\r\n<td>SWT.KeyDown SWT.F2 or SWT.MouseDoubleClick or<br />(for check buttons only) SWT.KeyDown '' ''</td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td>CMD_APPLY_EDIT</td>\r\n<td></td>\r\n<td>SWT.CR or SWT.FocusOut</td>\r\n</tr>\r\n<tr>\r\n<td>CMD_CANCEL_EDIT</td>\r\n<td></td>\r\n<td>SWT.ESC</td>\r\n</tr>\r\n<tr>\r\n<td>CMD_COPY</td>\r\n<td>SWT.KeyDown SWT.MOD1 | ''c''</td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td>CMD_PASTE</td>\r\n<td>SWT.KeyDown SWT.MOD1 | ''p''</td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td>CMD_CUT</td>\r\n<td>SWT.KeyDown SWT.MOD1 | ''x''</td>\r\n<td></td>\r\n</tr>\r\n<tr>\r\n<td>CMD_DEL</td>\r\n<td>SWT.KeyDown SWT.DEL</td>\r\n<td></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p><span style="font-family: monospace; font-size: xx-small;"><br /></span></p>', '', 1, 1, 0, 1, '2011-03-15 10:17:35', 62, '', '2011-07-31 16:19:50', 62, 0, '0000-00-00 00:00:00', '2011-03-15 10:17:35', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 181, 0, 4, '', '', 0, 722, 'robots=\nauthor=');
-INSERT INTO `jos_content` VALUES (14, 'Buy', 'buy', '', '<p>SWT Matrix component is free of charge for evaluation and non commercial use.<br />It is also startup friendly meaning no payments are required until the product built with it earns a revenue of 3 times the price of it.</p>\r\n<p>The license includes 1 year of free product upgrades.</p>\r\n<p><a href="https://sites.fastspring.com/netanel/instant/swtmatrix" target="_top"><img src="images/fs_buynow.png" border="0" alt="buy now" width="280" height="67" /></a></p>', '', 1, 1, 0, 1, '2011-03-17 14:17:45', 62, '', '2011-07-31 16:20:11', 62, 0, '0000-00-00 00:00:00', '2011-03-17 14:17:45', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 24, 0, 3, '', '', 0, 267, 'robots=\nauthor=');
-INSERT INTO `jos_content` VALUES (16, 'Key & Mouse Bindings', 'swt-matrix-bindings', '', '<p>All the command constants (CMD_...) are defined in the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html">Matrix</a> class.</p>\r\n<p>The SWT constants are from the standard SWT library class.</p>\r\n<p>The character codes denote keys and numeric codes denote mouse buttons.</p>\r\n<h3>Matrix Bindings</h3>\r\n<p>Matrix bindings apply to all zones.</p>\r\n<p>\r\n<table class="dictionary" border="0">\r\n<tbody>\r\n<tr>\r\n<th>Event Type</th><th>Key / Mouse Combination</th> <th>Command</th>\r\n</tr>\r\n<tr>\r\n<td colspan="3">\r\n<h4>Focus Cell Navigation - keys</h4>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.ARROW_UP</td>\r\n<td>CMD_FOCUS_UP</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.ARROW_DOWN</td>\r\n<td>CMD_FOCUS_DOWN</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.ARROW_LEFT</td>\r\n<td>CMD_FOCUS_LEFT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.ARROW_RIGHT</td>\r\n<td>CMD_FOCUS_RIGHT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.PAGE_DOWN</td>\r\n<td>CMD_FOCUS_PAGE_DOWN</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.PAGE_UP</td>\r\n<td>CMD_FOCUS_PAGE_UP</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD3 | SWT.PAGE_DOWN</td>\r\n<td>CMD_FOCUS_PAGE_RIGHT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD3 | SWT.PAGE_UP</td>\r\n<td>CMD_FOCUS_PAGE_LEFT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.HOME</td>\r\n<td>CMD_FOCUS_MOST_LEFT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.END</td>\r\n<td>CMD_FOCUS_MOST_RIGHT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | SWT.PAGE_UP</td>\r\n<td>CMD_FOCUS_MOST_UP</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | SWT.PAGE_DOWN</td>\r\n<td>CMD_FOCUS_MOST_DOWN</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | SWT.HOME</td>\r\n<td>CMD_FOCUS_MOST_UP_LEFT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | SWT.END</td>\r\n<td>CMD_FOCUS_MOST_DOWN_RIGHT</td>\r\n</tr>\r\n<tr>\r\n<td colspan="3">\r\n<h4>Focus Cell Navigation - mouse</h4>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.MouseDown</td>\r\n<td>button 1</td>\r\n<td>CMD_FOCUS_LOCATION</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.MouseDown</td>\r\n<td>SWT.MOD1 | button 1</td>\r\n<td>CMD_FOCUS_LOCATION_ALTER</td>\r\n</tr>\r\n<tr>\r\n<td colspan="3">\r\n<h4>Cell Selection - keys</h4>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | ''a''</td>\r\n<td>CMD_SELECT_ALL</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.ARROW_UP</td>\r\n<td>CMD_SELECT_UP</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.ARROW_DOWN</td>\r\n<td>CMD_SELECT_DOWN</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.ARROW_LEFT</td>\r\n<td>CMD_SELECT_LEFT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.ARROW_RIGHT</td>\r\n<td>CMD_SELECT_RIGHT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.PAGE_UP</td>\r\n<td>CMD_SELECT_PAGE_UP</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.PAGE_DOWN</td>\r\n<td>CMD_SELECT_PAGE_DOWN</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.MOD3 | SWT.ARROW_LEFT</td>\r\n<td>CMD_SELECT_PAGE_LEFT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.MOD3 | SWT.ARROW_RIGHT</td>\r\n<td>CMD_SELECT_PAGE_RIGHT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | SWT.MOD2 | SWT.PAGE_UP</td>\r\n<td>CMD_SELECT_FULL_UP</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | SWT.MOD2 | SWT.PAGE_DOWN</td>\r\n<td>CMD_SELECT_FULL_DOWN</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.HOME</td>\r\n<td>CMD_SELECT_FULL_LEFT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.END</td>\r\n<td>CMD_SELECT_FULL_RIGHT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | SWT.MOD2 | SWT.HOME</td>\r\n<td>CMD_SELECT_FULL_UP_LEFT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | SWT.MOD2 | SWT.END</td>\r\n<td>CMD_SELECT_FULL_DOWN_RIGHT</td>\r\n</tr>\r\n<tr>\r\n<td colspan="3">\r\n<h4>Cell Selection - mouse</h4>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.MouseDown</td>\r\n<td>SWT.MOD2 | button 1</td>\r\n<td>CMD_SELECT_TO_LOCATION</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.MouseDown</td>\r\n<td>SWT.MOD1 | SWT.MOD2 | button 1</td>\r\n<td>CMD_SELECT_TO_LOCATION_ALTER</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.MouseMove</td>\r\n<td>SWT.BUTTON1</td>\r\n<td>CMD_SELECT_TO_LOCATION</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.MouseMove</td>\r\n<td>SWT.MOD1 | SWT.BUTTON1</td>\r\n<td>CMD_SELECT_TO_LOCATION_ALTER</td>\r\n</tr>\r\n\r\n<tr>\r\n<td colspan="3">\r\n<h4>Other</h4>\r\n</td>\r\n</tr>\r\n<tr><td>SWT.KeyDown</td><td>''c''</td><td>Matrix.CMD_COPY</td></tr>\r\n<tr><td>SWT.KeyDown</td><td>SWT.MOD3 | SWT.DEL</td><td>Matrix.CMD_HIDE</td></tr>\r\n<tr><td>SWT.KeyDown</td><td>SWT.MOD3 | SWT.INSERT</td><td>Matrix.CMD_UNHIDE</td></tr>\r\n\r\n</tbody>\r\n</table>\r\n</p>\r\n\r\n\r\n\r\n<h3>Row Header Bindings</h3>\r\n<p>These bindings apply only to row header zone.</p>\r\n<p>\r\n<table class="dictionary" border="0">\r\n<tbody>\r\n<tr>\r\n<th>Event Type</th><th>Key / Mouse Combination</th> <th>Command</th>\r\n</tr>\r\n<tr><td>SWT.MouseDown</td><td>button 1</td><td>Matrix.CMD_SELECT_ROW</td></tr>\r\n<tr><td>SWT.MouseDown</td><td>SWT.MOD1 | button 1</td><td>Matrix.CMD_SELECT_ROW_ALTER</td></tr>\r\n<tr><td>SWT.MouseDown</td><td>SWT.MOD2 | button 1</td><td>Matrix.CMD_SELECT_TO_ROW</td></tr>\r\n<tr><td>SWT.MouseDown</td><td>SWT.MOD1 | SWT.MOD2 | button 1</td><td>Matrix.CMD_SELECT_TO_ROW_ALTER</td></tr>\r\n<tr><td>SWT.MouseMove</td><td>SWT.BUTTON1</td><td>Matrix.CMD_SELECT_TO_ROW</td></tr>\r\n<tr><td>SWT.MouseMove</td><td>SWT.MOD1 | SWT.BUTTON1</td><td>Matrix.CMD_SELECT_TO_ROW_ALTER</td></tr>\r\n<tr><td>SWT.MouseDoubleClick</td><td>button 1</td><td>Matrix.CMD_RESIZE_PACK</td></tr>\r\n</tbody>\r\n</table>\r\n</p>\r\n\r\n\r\n\r\n<h3>Column Header Bindings</h3>\r\n<p>These bindings apply only to column header zone.</p>\r\n<p>\r\n<table class="dictionary" border="0">\r\n<tbody>\r\n<tr>\r\n<th>Event Type</th><th>Key / Mouse Combination</th> <th>Command</th>\r\n</tr>\r\n<tr><td>SWT.MouseDown</td><td>button 1</td><td>Matrix.CMD_SELECT_COLUMN</td></tr>\r\n<tr><td>SWT.MouseDown</td><td>SWT.MOD1 | button 1</td><td>Matrix.CMD_SELECT_COLUMN_ALTER</td></tr>\r\n<tr><td>SWT.MouseDown</td><td>SWT.MOD2 | button 1</td><td>Matrix.CMD_SELECT_TO_COLUMN</td></tr>\r\n<tr><td>SWT.MouseDown</td><td>SWT.MOD1 | SWT.MOD2 | button 1</td><td>Matrix.CMD_SELECT_TO_COLUMN_ALTER</td></tr>\r\n<tr><td>SWT.MouseMove</td><td>SWT.BUTTON1</td><td>Matrix.CMD_SELECT_TO_COLUMN</td></tr>\r\n<tr><td>SWT.MouseMove</td><td>SWT.MOD1 | SWT.BUTTON1</td><td>Matrix.CMD_SELECT_TO_COLUMN_ALTER</td></tr>\r\n<tr><td>SWT.MouseDoubleClick</td><td>button 1</td><td>Matrix.CMD_RESIZE_PACK</td></tr>\r\n</tbody>\r\n</table>\r\n</p>\r\n\r\n\r\n<h3>Top Left Bindings</h3>\r\n<p>These bindings apply only to top left zone.</p>\r\n<p>\r\n<table class="dictionary" border="0">\r\n<tbody>\r\n<tr>\r\n<th>Event Type</th><th>Key / Mouse Combination</th> <th>Command</th>\r\n</tr>\r\n<tr><td>SWT.MouseDown</td><td>button 1</td><td>Matrix.CMD_SELECT_ALL</td></tr>\r\n\r\n</tbody>\r\n</table>\r\n</p>', '', 1, 1, 0, 1, '2011-04-26 12:12:06', 62, '', '2011-04-26 15:52:27', 62, 0, '0000-00-00 00:00:00', '2011-04-26 12:12:06', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 39, 0, 1, '', '', 0, 86, 'robots=\nauthor=');
-INSERT INTO `jos_content` VALUES (15, 'FAQ', 'swt-matrix-faq', '', '<p>Q. I can''t find the required method in Matrix class, where is it?</p>\r\n<p>A. Most of the cell related methods are in Zone class. The axis items, which are rows and columns, on the other hand are handled by Section and Axis classes.</p>', '', 1, 1, 0, 1, '2011-03-27 16:35:28', 62, '', '0000-00-00 00:00:00', 0, 0, '0000-00-00 00:00:00', '2011-03-27 16:35:28', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 1, 0, 2, '', '', 0, 0, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (13, 'Tutorial', 'swt-matrix-tutorial', '', '<!-- ArticleToC: enabled=yes -->\r\n<p>The <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html">Matrix</a> widget is designed with a <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">separation of concerns</span> in mind. It does not imply any data storage model for the visual attributes of the matrix elements. Instead it concentrates on efficient matrix <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">layout</span> calculation, <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">painting</span>, and <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">event handling</span>.</p>\r\n<h3>Layout</h3>\r\n<p>The diagram below presents the basic concepts of the Matrix layout.</p>\r\n<p><img src="swt-matrix/images/Section.png" mce_src="swt-matrix/images/Section.png" border="0" height="267" width="473"></p>\r\n<p style="text-align: left; " mce_style="text-align: left; "><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">Diagram 1</span></p>\r\n<table class="dictionary mceItemTable" border="0">\r\n<tbody>\r\n<tr>\r\n<td>\r\n<p><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">Axis</span></p>\r\n</td>\r\n<td>\r\n<p><a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Axis.html" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/Axis.html">Axis</a> is one of the two <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">dimension</span>s of the two-dimensional matrix. Axis names are appended with 0 and 1 in order to make them as short as possible, even in length and staying next to each other when sorted.</p>\r\n<pre xml:lang="java">Axis axisX = matrix.getAxisX();\r\nAxis axisY = matrix.getAxisY();</pre>\r\nis faster to type and more readable then\r\n<pre xml:lang="java">Axis columnAxis = matrix.getColumnAxis();\r\nAxis rowAxis = matrix.getRowAxis();</pre>\r\n<p>Appending axis name with X and Y would invert the alphabetical sorting disturbing the coding style, because there is a convention to pass row index as a first argument, leading to for example</p>\r\n<pre>zone.isSelected(indexX, indexY);</pre>\r\n<p>Axis is composed of sections (at least one) and is indexed by a specific sub-type of the java.lang.Number class. By default it is Integer class. It can be switched to BigInteger for example by creating the Axis manually:</p>\r\n<pre>Axis axisX = new Axis(Integer.class, 2);    // Two sections indexed by Integer class<br />Axis axisY = new Axis(BigInteger.class, 3);    // Three sections indexed by BigInteger class<br />final Matrix matrix = new Matrix(shell, SWT.V_SCROLL, axisX, axisY);</pre>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<p><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">Section</span></p>\r\n</td>\r\n<td>\r\n<p><a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Section.html" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/Section.html">Section</a> is a continuous <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">segment</span> of a matrix axis containing a number of items. Section can serve as a header, body, footer, filter area, etc. By default each axis has two sections: <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">header</span> with one item and <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">body</span> with zero items. The number of sections can be specified by creating the axis manually:</p>\r\n<pre>Axis axisX = new Axis(Integer.class, 2);    // Two sections indexed by Integer class<br />Axis axisY = new Axis(BigInteger.class, 3);    // Three sections indexed by BigInteger class<br />final Matrix matrix = new Matrix(shell, SWT.V_SCROLL, axisX, axisY);</pre>\r\n<p>On Diagram 1 row axis has a header section with 1 item and the body section with 10 items, while the column axis has header section with 1 item and body section with 5 items.</p>\r\n<p>This approach may cause some confusion, because in order to show the labels for the columns one must set the header section on the row axis visible, for example:</p>\r\n<pre>matrix.getAxisY().getHeader().setVisible(true);</pre>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<p><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">Zone</span></p>\r\n</td>\r\n<td>\r\n<p><a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Zone.html" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/Zone.html">Zone</a> constitutes a <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">region</span> of the matrix where a section from <code>axis0</code> and a section from the <code>axis1</code> <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">intersect</span> with each other. There are four zones on the diagram below:</p>\r\n<table class="mceItemTable" border="0">\r\n<tbody>\r\n<tr>\r\n<td>\r\n<ul>\r\n<li>body</li>\r\n</ul>\r\n</td>\r\n<td>at intersection of axisX body section and axisY body section</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<ul>\r\n<li>column header</li>\r\n</ul>\r\n</td>\r\n<td>at intersection of axisX body section and axisY header section</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<ul>\r\n<li>row header</li>\r\n</ul>\r\n</td>\r\n<td>at intersection of axisX header section and axisY body section</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<ul>\r\n<li>top left</li>\r\n</ul>\r\n</td>\r\n<td>at intersection of axisX header section and axisY header section</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p><img src="swt-matrix/images/Zone.png" mce_src="swt-matrix/images/Zone.png" alt="zones" border="0"></p><p>Zones are created automatically by the matrix to cover all intersections of axis sections.</p>\r\n<p>Each zone has its own collection of painters and key/mouse bindings.</p>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<p><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">Cell</span></p>\r\n</td>\r\n<td>\r\n<p>Cell is identified by indexes of two section items from perpendicular axises. Cell area does not include lines, so whenever the line width changes the cell content painting algorithm can stay untouched. Painting lines separately provides also speed optimization advantages.</p>\r\n<p>The line at index n belongs logically to section n-th item as well as cell at index n, so whenever the n-th item is hidden or moved so is the n-th line. The exception is line with index equal to <code>section.getCount()</code>, which is not bound to any cell.</p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<h3>Painting</h3>\r\n<p><a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Painter.html" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/Painter.html">Painter</a> is responsible to <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">draw</span> everything that appears on the matrix canvas: background, images, text, lines. The design of painting mechanism allows 100% customization of the matrix appearance.</p>\r\n<h4>Painting order</h4>\r\n<p>Both matrix and each zone has an individual list of painters that defines the order in which the painters <code>paint</code> method is executed. The painter list can be manipulated by the <code><a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html#addPainter%28int,%20pl.netanel.swt.matrix.Painter%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html#addPainter(int, pl.netanel.swt.matrix.Painter)">addPainter</a></code>, <code><a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html#removePainter%28int%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html#removePainter(int)">removePainter</a></code>, <code><a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html#setPainter%28int,%20pl.netanel.swt.matrix.Painter%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html#setPainter(int, pl.netanel.swt.matrix.Painter)">setPainter</a></code>, <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html#replacePainter%28pl.netanel.swt.matrix.Painter%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html#replacePainter(pl.netanel.swt.matrix.Painter)"><code>replacePainter</code> </a>methods.</p>\r\n<p>The default structure of painters is following:</p>\r\n<ul>\r\n<li>matrix painters - collection of painters  \r\n<ul>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">frozen</span> <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">area </span>painter - named by one of the Painter.NAME_FROZEN_... names, <span mce_name="em" mce_style="font-style: italic;" style="font-style: italic;" class="Apple-style-span" mce_fixed="1">(description in the next paragraph)</span> \r\n<ul>\r\n<li>zones - that are visible in the given frozen area  \r\n<ul>\r\n<li>zone painters - collection of painters  \r\n<ul>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">cells</span> painter - named Painter.NAME_CELLS</li>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">horizontal lines</span> painter - named Painter.NAME_LINES_X</li>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">vertical lines</span> painter - named Painter.NAME_LINES_Y</li>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">emulated controls</span> painter - named Painter.NAME_EMULATED_CONTROLS</li>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">embedded controls</span> painter - named Painter.NAME_EMBEDDED_CONTROLS</li>\r\n</ul>\r\n</li>\r\n</ul>\r\n</li>\r\n</ul>\r\n</li>\r\n</ul>\r\n<ul>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">focus cell</span> painter - a painter named Painter.NAME_FOCUS_CELL</li>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">drag horizontal item</span> painter - a painter named Painter.NAME_DRAG_ITEM_X</li><li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">drag vertical item</span> painter - a painter named Painter.NAME_DRAG_ITEM_Y</li>\r\n</ul>\r\n</li>\r\n</ul>\r\n<p>Frozen area painter is responsible for painting separately one of 9 matrix areas formed by the head and tail freeze dividers on both axises:</p>\r\n<ul>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">frozen none none</span> -&nbsp;<span class="column2">area not frozen neither on X axis not on Y axis</span></li>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">frozen none tail</span> -&nbsp;<span class="column2">area not frozen on X axis and tail frozen on Y axis</span></li>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">frozen tail none</span> -&nbsp;<span class="column2">area tail frozen on X axis and not frozen on Y axis</span></li>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">frozen none head</span> -&nbsp;<span class="column2">area not frozen on X axis and head frozen on Y axis</span></li>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">frozen head none</span> -&nbsp;<span class="column2">area head frozen on X axis and not frozen on Y axis</span></li>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">frozen head tail</span> -&nbsp;<span class="column2">area head frozen on X axis and tail frozen on Y axis</span></li>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">frozen tail head</span> -&nbsp;<span class="column2">area tail frozen on X axis and head frozen on Y axis</span></li>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">frozen tail tail</span> -&nbsp;<span class="column2">area tail frozen on X axis and tail frozen on Y axis</span></li>\r\n<li><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">frozen head head</span> -&nbsp;<span class="column2">area head frozen on X axis and head frozen on Y axis</span></li>\r\n</ul>\r\n<h4>Painter Scope</h4>\r\n<p>The painter type specifies the scope in which it paints. The zone painting mechanism feeds the paint method with with values appropriate for the given scope.</p>\r\n<p>Only zone painters can handle various painter scopes. Matrix works with only one type <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Painter.html#SCOPE_SINGLE" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/Painter.html#SCOPE_SINGLE">SCOPE_SINGLE</a>, so the actual painter type is ignored.</p>\r\n<h4>Painter Properties</h4>\r\n<p>Painter has a set of public properties that are investigated by the paint method to determine what should be drawn on the canvas. Those properties include:</p>\r\n<ul>\r\n<li><code>text</code>, <code>textAlignX</code>, <code>textAlignY</code>, <code>textMarginX</code>, <code>textMarginY</code>,</li>\r\n<li><code>image</code>, <code>imageAlignX</code>, <code>imageAlignX</code>, <code>imageMarginX</code>, <code>imageMarginY</code></li>\r\n<li><code>foreground</code> and <code>background</code> colors</li>\r\n<li><code>selectionHighlight</code></li>\r\n</ul>\r\n<p>In order to alter properties depending on the cell indexes one should replace the default painter, for instance (<a href="swt-matrix/snippets/Snippet_0017.java" mce_href="swt-matrix/snippets/Snippet_0017.java">Snippet_0017</a>):</p>\r\n<pre>final Color color = display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);\r\nmatrix.getBody().replacePainter(new Painter<integer, integer="">(Painter.NAME_CELLS, Painter.SCOPE_CELLS) {\r\n    @Override\r\n    public void setup(Integer indexX, Integer indexY) {\r\n        background = indexY % 2 + indexX % 2 == 1 ? color : null;\r\n    }\r\n});\r\n</integer,></pre>\r\n<h3>Zone</h3>\r\n<h4>Cell Merging<br /></h4><p>Cell merging can be done by (<a mce_href="swt-matrix/snippets/S0210_CellMerging.java" href="swt-matrix/snippets/S0210_CellMerging.java">Snippet S0210</a>):</p><pre>zone.setMerged(startX, countX, startY, countY);</pre><p>If the range defined by setMerging contains a cell that is merged, then all cells merged with that cell will be unmerged. This behavior is the same as in spreadsheets.</p><p>The merged area is attached to the cell with (startX, startY)  coordinates, and is not attached the cell at the end of the merged area,  so the cells can be moved in and out the merged region - this opertion  does not change the merged area size. The area size changes when the  cells inside of it get hidden or shown.</p><p>The maximum size of the merged area can be set by:</p><pre>zone.setMergeLimit(X limitX, Y limitY);</pre><p>It is introduced to prevent performance problems with layout calculation which in case of merged cells must go beyond viewport area. The default value of the merge limit is 1000.<br /></p><p>Cell can be checked for being merged by:</p><pre>zone.isMerged(indexX, indexY);</pre><h3>Event handling</h3>\r\n<h4>Command Binding</h4>\r\n<p>Typical commands are bound to keyboard and mouse gestures. The default bindings are enlisted {article swt-matrix-bindings}{link}here{/link}{/article}. The more complex action triggering conditions includes moving by select axis items and start dragging from one of them.</p>\r\n<p>The bindings can be added or removed by the <code>bind</code> and <code>unbind</code> methods. For example the default matrix binding to move the focus cell to the beginning of line can be altered by (<a href="swt-matrix/snippets/Snippet_0901.java" mce_href="swt-matrix/snippets/Snippet_0901.java" style="color: #1b57b1; text-decoration: none; font-weight: normal;" mce_style="color: #1b57b1; text-decoration: none; font-weight: normal;">Snippet_0901</a>):</p>\r\n<pre>matrix.unbind(Matrix.CMD_FOCUS_MOST_LEFT, SWT.KeyDown, SWT.HOME);    // Windows standard<br />matrix.bind(Matrix.CMD_FOCUS_MOST_LEFT, SWT.KeyDown, SWT.MOD1 | SWT.ARROW_LEFT);    // Mac OS standard</pre>\r\n<p>Zones also have the <code>bind</code> and <code>unbind</code> methods.</p>\r\n<h4>Secondary Events</h4>\r\n<p>A SelectionEvent event of selecting cells by user can be handled with the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Zone.html#addSelectionListener%28org.eclipse.swt.events.SelectionListener%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/Zone.html#addSelectionListener(org.eclipse.swt.events.SelectionListener)">Zone.addSelectionListener</a> method and selecting section items by the user can be handled with the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Section.html#addSelectionListener%28org.eclipse.swt.events.SelectionListener%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/Section.html#addSelectionListener(org.eclipse.swt.events.SelectionListener)">Section.addSelectionListener</a> method. Also a ControlEvent can be handled by <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Section.html#addControlListener%28org.eclipse.swt.events.ControlListener%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/Section.html#addControlListener(org.eclipse.swt.events.ControlListener)">Section.addControlListener</a> method. See <a href="swt-matrix/snippets/Snippet_0902.java" mce_href="swt-matrix/snippets/Snippet_0902.java" style="color: #1b57b1; text-decoration: none; font-weight: normal;" mce_style="color: #1b57b1; text-decoration: none; font-weight: normal;">Snippet_0902</a>.</p>\r\n<h3><img mce_name="a" name="Editing" class="mceItemAnchor">Editing</h3>\r\n<p>Editing of a matrix cells is facilitated by the <a href="swt-matrix/javadoc/index.html" mce_href="swt-matrix/javadoc/index.html">ZoneEditor</a> class, for each &lt;code&gt;Zone&lt;/code&gt; separately. The simplest way to make the matrix editable is to instiate the <code>ZoneEditor</code> class with a concrete implementation of the <code>setModelValue</code> method to apply the modified value to the model (see <a href="swt-matrix/snippets/Snippet_0401.java" mce_href="swt-matrix/snippets/Snippet_0401.java">Snippet_0401</a>):</p>\r\n<pre>data = new ArrayList&lt;Object[]&gt;\r\nnew ZoneEditor(matrix.getBody()) {\r\n    @Override\r\n    public void setModelValue(Number indexX, Number indexY, Object value) {\r\n        data.get(indexY.intValue())[indexX.intValue()] = value;\r\n    }\r\n};\r\n</pre>\r\n<p>The default cell editor control for the above is <code>Text</code> and the value to edit is taken from the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Painter.html#getText%28N0,%20N1%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/Painter.html#getText(N0, N1)">Painter.getText(Number, Number)</a> method of the "cells" painter of the zone being edited.</p>\r\n<p>Besides <code>Text</code> the <code>ZoneEditor</code> also supports other <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">cell editor controls</span>: native <code>Combo</code>, <code>DateTime</code> controls and emulated, native looking check boxes.</p>\r\n<p>In order to use other controls then <code>Text</code> the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#createControl%28N0,%20N1%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#createControl(N0, N1)" style="color: #1b57b1; text-decoration: none; font-weight: normal;" mce_style="color: #1b57b1; text-decoration: none; font-weight: normal;">createControl(Number, Number)</a> method of <code>ZoneEditor</code> must be overriden to return the desired control for the specified cells. For example:</p>\r\n<pre>    @Override\r\n    public Control createControl(Number indexX, Number indexY, Composite parent) {\r\n        if (indexX.intValue() == 2) {\r\n            Combo combo = new Combo(parent, SWT.BORDER);\r\n            combo.setItems(comboItems);\r\n            return combo;\r\n        } \r\n        else if (indexX.intValue() == 3) {\r\n            return new DateTime(matrix, SWT.BORDER);\r\n        }\r\n        else {\r\n             return super.createControl(index0, index1);\r\n         }\r\n     }</pre>\r\n<p>Since <code>DateTime</code> control is suited to <code>Date </code>values and check boxes to <code>Boolean</code> values thus the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#getModelValue%28N0,%20N1%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#getModelValue(N0, N1)">getModelValue(Number, Number)</a> method provides a mechanism to get a proper <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">type of value</span> suited to the cell editor control. For example:</p>\r\n<pre>    @Override\r\n    public Object getModelValue(Number indexX, Number indexY) {\r\n        return data.get(indexY.intValue())[indexX.intValue()];\r\n    }</pre>\r\n<p>There is also method to set value in the cell editor control after it is activated <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#setEditorValue%28org.eclipse.swt.widgets.Control,%20java.lang.Object%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#setEditorValue(org.eclipse.swt.widgets.Control, java.lang.Object)">setEditorValue(Control, Object)</a> and <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#getEditorValue%28org.eclipse.swt.widgets.Control%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#getEditorValue(org.eclipse.swt.widgets.Control)">getEditorValue(Control)</a> method to get the value from the cell editor control after the apply action has been triggered. They need to be overridden in order to handle <span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">custom control types</span> other then the built-in ones. For example:</p>\r\n<pre>    @Override\r\n    public void setEditorValue(Control control, Object value) {\r\n        if (control instanceof List) {\r\n            List list = ((List) control);\r\n            list.deselectAll();\r\n            int position = list.indexOf((String) value);\r\n            if (position != -1) {\r\n                list.select(position);\r\n            }\r\n        } else {\r\n            super.setEditorValue(control, value);\r\n        }\r\n    }\r\n    \r\n    @Override\r\n    public Object getEditorValue(Control control) {\r\n        if (control instanceof List) {\r\n            List list = (List) control;\r\n            int position = list.getSelectionIndex();\r\n            return position == -1 ? null : list.getItem(position);\r\n        } else {\r\n            return super.getEditorValue(control);\r\n        }\r\n    }</pre>\r\n<h4>Embedded Controls</h4>\r\n<p>Edit controls can be be embedded in the cells by returning true from the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#hasEmbeddedControl%28N0,%20N1%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#hasEmbeddedControl(N0, N1)" style="color: #1b57b1; text-decoration: none; font-weight: normal;" mce_style="color: #1b57b1; text-decoration: none; font-weight: normal;">hasEmbeddedControl(Number, Number)</a> method, for example (<a href="swt-matrix/snippets/Snippet_0402.java" mce_href="swt-matrix/snippets/Snippet_0402.java" style="color: #1b57b1; text-decoration: none; font-weight: normal;" mce_style="color: #1b57b1; text-decoration: none; font-weight: normal;">Snippet_0402</a>):</p>\r\n<pre>    @Override\r\n    public boolean hasEmbeddedControl(Number indexX, Number indexY) {\r\n        Object value = data.get(indexY.intValue())[indexX.intValue()];\r\n        return value instanceof Boolean;\r\n    }\r\n    \r\n    @Override\r\n    protected Control createControl(Number indexX, Number indexY, Composite parent) {\r\n        Object value = data.get(indexY.intValue())[indexX.intValue()];\r\n        if (value instanceof Boolean) {\r\n            return new Button(parent, SWT.CHECK);\r\n        }\r\n        return super.createControl(indexX, indexY);\r\n    }</pre>\r\n<h4>Checkbox Emulation</h4>\r\n<p>Embedding controls in cells hurts performance. Check boxes can be emulated by returning a value from the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#getCheckboxEmulation%28N0,%20N1%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#getCheckboxEmulation(N0, N1)" style="color: #1b57b1; text-decoration: none; font-weight: normal;" mce_style="color: #1b57b1; text-decoration: none; font-weight: normal;">getCheckboxEmulation(Number, Number)</a> method, for example:</p>\r\n<pre>    @Override\r\n    public Object[] getCheckboxEmulation(Number indexX, Number indexY) {\r\n        Object value = data.get(indexX.intValue())[indexY.intValue()];\r\n        return value instanceof Boolean ? getDefaultCheckBoxImages() : null;\r\n    } </pre>\r\n<p>The images are taken from the path specified by the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#setEmulationPath%28java.lang.String%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#setEmulationPath(java.lang.String)">setEmulationPath(String)</a> method.</p>\r\n<p>The images of the check boxes in the current system theme can be created by then <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#snapControlImages%28java.lang.String%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#snapControlImages(java.lang.String)">snapControlImages(String) </a>the method.</p>\r\n<h4>Clipboard Operations</h4>\r\n<p><code>MatrixEditor</code> is also responcible for clipboard operations.</p>\r\n<p>The <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#copy%28%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#copy()">copy()</a> method uses the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#format%28N0,%20N1%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#format(N0, N1)">format(Number, Number)</a> function to get the <code>String</code> values for the individual cell. By default it is the value returned from the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Painter.html#getText%28N0,%20N1%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/Painter.html#getText(N0, N1)" style="color: #1b57b1; text-decoration: none; font-weight: normal;" mce_style="color: #1b57b1; text-decoration: none; font-weight: normal;">Painter.getText(Number, Number)</a> method of the "cells" painter of the zone being edited.</p>\r\n<p>The <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#cut%28%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#cut()" style="color: #1b57b1; text-decoration: none; font-weight: normal;" mce_style="color: #1b57b1; text-decoration: none; font-weight: normal;">cut()</a> method sets <code>null </code>value to the selected cells after invoking <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#copy%28%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#copy()" style="color: #1b57b1; text-decoration: none; font-weight: normal;" mce_style="color: #1b57b1; text-decoration: none; font-weight: normal;">copy()</a> method.</p>\r\n<p>The <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#paste%28%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#paste()" style="color: #1b57b1; text-decoration: none; font-weight: normal;" mce_style="color: #1b57b1; text-decoration: none; font-weight: normal;">paste()</a> method uses the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#parse%28N0,%20N1,%20java.lang.String%29" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/ZoneEditor.html#parse(N0, N1, java.lang.String)" style="color: #1b57b1; text-decoration: none; font-weight: normal;" mce_style="color: #1b57b1; text-decoration: none; font-weight: normal;">parse(Number, Number, String)</a> function to parse the values for the individual cells.</p>\r\n<p>The clipboard operations can be customized by overriding any of the above mentioned methods.</p>\r\n<h4>Commands</h4>\r\n<p>The default command bindings are listed below:</p>\r\n<table class="data mceItemTable" border="0">\r\n<tbody>\r\n<tr>\r\n<td class="caption"><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">Command</span></td>\r\n<td class="caption"><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1">Matrix</span></td>\r\n<td><span mce_name="strong" mce_style="font-weight: bold;" style="font-weight: bold;" class="Apple-style-span" mce_fixed="1"><span class="caption">Edit C</span>ontrol</span></td>\r\n</tr>\r\n<tr>\r\n<td>CMD_EDIT</td>\r\n<td>SWT.KeyDown SWT.F2 or SWT.MouseDoubleClick or<br />(for check buttons only) SWT.KeyDown '' ''</td>\r\n<td><br mce_bogus="1"></td>\r\n</tr>\r\n<tr>\r\n<td>CMD_APPLY_EDIT</td>\r\n<td><br mce_bogus="1"></td>\r\n<td>SWT.CR or SWT.FocusOut</td>\r\n</tr>\r\n<tr>\r\n<td>CMD_CANCEL_EDIT</td>\r\n<td><br mce_bogus="1"></td>\r\n<td>SWT.ESC</td>\r\n</tr>\r\n<tr>\r\n<td>CMD_COPY</td>\r\n<td>SWT.KeyDown SWT.MOD1 | ''c''</td>\r\n<td><br mce_bogus="1"></td>\r\n</tr>\r\n<tr>\r\n<td>CMD_PASTE</td>\r\n<td>SWT.KeyDown SWT.MOD1 | ''p''</td>\r\n<td><br mce_bogus="1"></td>\r\n</tr>\r\n<tr>\r\n<td>CMD_CUT</td>\r\n<td>SWT.KeyDown SWT.MOD1 | ''x''</td>\r\n<td><br mce_bogus="1"></td>\r\n</tr>\r\n<tr>\r\n<td>CMD_DEL</td>\r\n<td>SWT.KeyDown SWT.DEL</td>\r\n<td><br mce_bogus="1"></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p><span style="font-family: monospace; font-size: xx-small;" mce_style="font-family: monospace; font-size: xx-small;"><br /></span></p>', '', 1, 1, 0, 1, '2011-03-15 10:17:35', 62, '', '2012-07-29 05:47:34', 62, 0, '0000-00-00 00:00:00', '2011-03-15 10:17:35', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 211, 0, 8, '', '', 0, 2392, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (14, 'Buy', 'buy', '', '<p>The use of SWT Matrix is guarded by this End User License Agreement <a mce_href="swt-matrix/EULA_v1.0.html" href="swt-matrix/EULA_v1.0.html">EULA</a>.<br /></p><p>The purchase plans are following:<br /></p><ol><li>Developer license: $129, there are volume discounts.</li><li>Site license: $2000 - unlimited number of developers in one organization.</li><li>Non commercial license: $0 - for private use and non-commercial products, although donations are welcome.</li><li>Startup license: no payments are required until the product built with it earns a revenue of 3 times the price of SWT Matrix, organization is considered startup if has less then 3 developers.</li></ol><p> Please note that Developer is a named user and not a concurrent user.<br /> <br />The purchase includes one year of free upgrades. After that period  the license can be renewed for 25% of the full license price at that  time in order to get upgrades for another year. Skipping the license  renewal does not prevent you from using older versions of the product  within range of one year from your last license purchase.<br /> Redistribution of swt-matrix-*.jar to the end users of your product is royalty free.<br /> Bugs are fixed obviously free of charge - in most cases within 48 hours.</p><p>Please contact us via <a href="mailto:%20office@netanel.pl" mce_href="mailto: office@netanel.pl" style="">office@netanel.pl</a> to discuss licencing and procurement.</p><p>\r\n<a href="https://sites.fastspring.com/netanel/instant/swt-matrix" mce_href="https://sites.fastspring.com/netanel/instant/swt-matrix" target="_top"><img mce_src="images/fs_buynow.png" src="images/fs_buynow.png" alt="buy now" height="67" width="280"></a><br mce_bogus="1"></p>', '', 1, 1, 0, 1, '2011-03-17 14:17:45', 62, '', '2012-08-03 06:48:46', 62, 62, '2012-10-08 23:31:01', '2011-03-17 14:17:45', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 91, 0, 7, '', '', 0, 1260, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (19, 'Forum', 'forum', '', '<p><a id="nabblelink" href="http://swt-matrix.1049369.n5.nabble.com/">swt-matrix</a></p>\r\n<script src="http://swt-matrix.1049369.n5.nabble.com/embed/f4367519"></script>', '', 1, 1, 0, 1, '2011-07-30 21:00:59', 62, '', '2011-08-18 20:55:19', 62, 0, '0000-00-00 00:00:00', '2011-07-30 21:00:59', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 2, 0, 2, '', '', 0, 642, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (16, 'Key & Mouse Bindings', 'swt-matrix-bindings', '', '<p>All the command constants (CMD_...) are defined in the <a href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html" mce_href="swt-matrix/javadoc/pl/netanel/swt/matrix/Matrix.html">Matrix</a> class.</p>\r\n<p>The SWT constants are from the standard SWT library class.</p>\r\n<p>The character codes denote keys and numeric codes denote mouse buttons.</p>\r\n<h3>Matrix Bindings</h3>\r\n<p>Matrix bindings apply to all zones.</p>\r\n<p>\r\n<table class="dictionary mceItemTable" border="0">\r\n<tbody>\r\n<tr>\r\n<th>Event Type</th><th>Key / Mouse Combination</th> <th>Command</th>\r\n</tr>\r\n<tr>\r\n<td colspan="3">\r\n<h4>Focus Cell Navigation - keys</h4>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.ARROW_UP</td>\r\n<td>CMD_FOCUS_UP</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.ARROW_DOWN</td>\r\n<td>CMD_FOCUS_DOWN</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.ARROW_LEFT</td>\r\n<td>CMD_FOCUS_LEFT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.ARROW_RIGHT</td>\r\n<td>CMD_FOCUS_RIGHT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.PAGE_DOWN</td>\r\n<td>CMD_FOCUS_PAGE_DOWN</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.PAGE_UP</td>\r\n<td>CMD_FOCUS_PAGE_UP</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD3 | SWT.PAGE_DOWN</td>\r\n<td>CMD_FOCUS_PAGE_RIGHT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD3 | SWT.PAGE_UP</td>\r\n<td>CMD_FOCUS_PAGE_LEFT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.HOME</td>\r\n<td>CMD_FOCUS_MOST_LEFT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.END</td>\r\n<td>CMD_FOCUS_MOST_RIGHT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | SWT.PAGE_UP</td>\r\n<td>CMD_FOCUS_MOST_UP</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | SWT.PAGE_DOWN</td>\r\n<td>CMD_FOCUS_MOST_DOWN</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | SWT.HOME</td>\r\n<td>CMD_FOCUS_MOST_UP_LEFT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | SWT.END</td>\r\n<td>CMD_FOCUS_MOST_DOWN_RIGHT</td>\r\n</tr>\r\n<tr>\r\n<td colspan="3">\r\n<h4>Focus Cell Navigation - mouse</h4>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.MouseDown</td>\r\n<td>button 1</td>\r\n<td>CMD_FOCUS_LOCATION</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.MouseDown</td>\r\n<td>SWT.MOD1 | button 1</td>\r\n<td>CMD_FOCUS_LOCATION_ALTER</td>\r\n</tr>\r\n<tr>\r\n<td colspan="3">\r\n<h4>Cell Selection - keys</h4>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | ''a''</td>\r\n<td>CMD_SELECT_ALL</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.ARROW_UP</td>\r\n<td>CMD_SELECT_UP</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.ARROW_DOWN</td>\r\n<td>CMD_SELECT_DOWN</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.ARROW_LEFT</td>\r\n<td>CMD_SELECT_LEFT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.ARROW_RIGHT</td>\r\n<td>CMD_SELECT_RIGHT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.PAGE_UP</td>\r\n<td>CMD_SELECT_PAGE_UP</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.PAGE_DOWN</td>\r\n<td>CMD_SELECT_PAGE_DOWN</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.MOD3 | SWT.ARROW_LEFT</td>\r\n<td>CMD_SELECT_PAGE_LEFT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.MOD3 | SWT.ARROW_RIGHT</td>\r\n<td>CMD_SELECT_PAGE_RIGHT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | SWT.MOD2 | SWT.PAGE_UP</td>\r\n<td>CMD_SELECT_FULL_UP</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | SWT.MOD2 | SWT.PAGE_DOWN</td>\r\n<td>CMD_SELECT_FULL_DOWN</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.HOME</td>\r\n<td>CMD_SELECT_FULL_LEFT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD2 | SWT.END</td>\r\n<td>CMD_SELECT_FULL_RIGHT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | SWT.MOD2 | SWT.HOME</td>\r\n<td>CMD_SELECT_FULL_UP_LEFT</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.KeyDown</td>\r\n<td>SWT.MOD1 | SWT.MOD2 | SWT.END</td>\r\n<td>CMD_SELECT_FULL_DOWN_RIGHT</td>\r\n</tr>\r\n<tr>\r\n<td colspan="3">\r\n<h4>Cell Selection - mouse</h4>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.MouseDown</td>\r\n<td>SWT.MOD2 | button 1</td>\r\n<td>CMD_SELECT_TO_LOCATION</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.MouseDown</td>\r\n<td>SWT.MOD1 | SWT.MOD2 | button 1</td>\r\n<td>CMD_SELECT_TO_LOCATION_ALTER</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.MouseMove</td>\r\n<td>SWT.BUTTON1</td>\r\n<td>CMD_SELECT_TO_LOCATION</td>\r\n</tr>\r\n<tr>\r\n<td>SWT.MouseMove</td>\r\n<td>SWT.MOD1 | SWT.BUTTON1</td>\r\n<td>CMD_SELECT_TO_LOCATION_ALTER</td>\r\n</tr>\r\n\r\n<tr>\r\n<td colspan="3">\r\n<h4>Other</h4>\r\n</td>\r\n</tr>\r\n<tr><td>SWT.KeyDown</td><td>''c''</td><td>Matrix.CMD_COPY</td></tr>\r\n<tr><td>SWT.KeyDown</td><td>SWT.MOD3 | SWT.DEL</td><td>Matrix.CMD_ITEM_HIDE</td></tr>\r\n<tr><td>SWT.KeyDown</td><td>SWT.MOD3 | SWT.INSERT</td><td>Matrix.CMD_ITEM_SHOW</td></tr>\r\n\r\n</tbody>\r\n</table>\r\n</p>\r\n\r\n\r\n\r\n<h3>Row Header Bindings</h3>\r\n<p>These bindings apply only to row header zone.</p>\r\n<p>\r\n<table class="dictionary mceItemTable" border="0">\r\n<tbody>\r\n<tr>\r\n<th>Event Type</th><th>Key / Mouse Combination</th> <th>Command</th>\r\n</tr>\r\n<tr><td>SWT.MouseDown</td><td>button 1</td><td>Matrix.CMD_SELECT_ROW</td></tr>\r\n<tr><td>SWT.MouseDown</td><td>SWT.MOD1 | button 1</td><td>Matrix.CMD_SELECT_ROW_ALTER</td></tr>\r\n<tr><td>SWT.MouseDown</td><td>SWT.MOD2 | button 1</td><td>Matrix.CMD_SELECT_TO_ROW</td></tr>\r\n<tr><td>SWT.MouseDown</td><td>SWT.MOD1 | SWT.MOD2 | button 1</td><td>Matrix.CMD_SELECT_TO_ROW_ALTER</td></tr>\r\n<tr><td>SWT.MouseMove</td><td>SWT.BUTTON1</td><td>Matrix.CMD_SELECT_TO_ROW</td></tr>\r\n<tr><td>SWT.MouseMove</td><td>SWT.MOD1 | SWT.BUTTON1</td><td>Matrix.CMD_SELECT_TO_ROW_ALTER</td></tr>\r\n<tr><td>SWT.MouseDoubleClick</td><td>button 1</td><td>Matrix.CMD_RESIZE_PACK</td></tr>\r\n</tbody>\r\n</table>\r\n</p>\r\n\r\n\r\n\r\n<h3>Column Header Bindings</h3>\r\n<p>These bindings apply only to column header zone.</p>\r\n<p>\r\n<table class="dictionary mceItemTable" border="0">\r\n<tbody>\r\n<tr>\r\n<th>Event Type</th><th>Key / Mouse Combination</th> <th>Command</th>\r\n</tr>\r\n<tr><td>SWT.MouseDown</td><td>button 1</td><td>Matrix.CMD_SELECT_COLUMN</td></tr>\r\n<tr><td>SWT.MouseDown</td><td>SWT.MOD1 | button 1</td><td>Matrix.CMD_SELECT_COLUMN_ALTER</td></tr>\r\n<tr><td>SWT.MouseDown</td><td>SWT.MOD2 | button 1</td><td>Matrix.CMD_SELECT_TO_COLUMN</td></tr>\r\n<tr><td>SWT.MouseDown</td><td>SWT.MOD1 | SWT.MOD2 | button 1</td><td>Matrix.CMD_SELECT_TO_COLUMN_ALTER</td></tr>\r\n<tr><td>SWT.MouseMove</td><td>SWT.BUTTON1</td><td>Matrix.CMD_SELECT_TO_COLUMN</td></tr>\r\n<tr><td>SWT.MouseMove</td><td>SWT.MOD1 | SWT.BUTTON1</td><td>Matrix.CMD_SELECT_TO_COLUMN_ALTER</td></tr>\r\n<tr><td>SWT.MouseDoubleClick</td><td>button 1</td><td>Matrix.CMD_RESIZE_PACK</td></tr>\r\n</tbody>\r\n</table>\r\n</p>\r\n\r\n\r\n<h3>Top Left Bindings</h3>\r\n<p>These bindings apply only to top left zone.</p>\r\n<p>\r\n<table class="dictionary mceItemTable" border="0">\r\n<tbody>\r\n<tr>\r\n<th>Event Type</th><th>Key / Mouse Combination</th> <th>Command</th>\r\n</tr>\r\n<tr><td>SWT.MouseDown</td><td>button 1</td><td>Matrix.CMD_SELECT_ALL</td></tr>\r\n\r\n</tbody>\r\n</table>\r\n</p>', '', 1, 1, 0, 1, '2011-04-26 12:12:06', 62, '', '2012-04-21 22:47:41', 62, 0, '0000-00-00 00:00:00', '2011-04-26 12:12:06', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 40, 0, 5, '', '', 0, 489, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (15, 'FAQ', 'swt-matrix-faq', '', '<p>Q. I can''t find the required method in Matrix class, where is it?</p>\r\n<p>A. Most of the cell related methods are in Zone class. The axis items, which are rows and columns, on the other hand are handled by Section and Axis classes.</p>', '', 1, 1, 0, 1, '2011-03-27 16:35:28', 62, '', '0000-00-00 00:00:00', 0, 0, '0000-00-00 00:00:00', '2011-03-27 16:35:28', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 1, 0, 6, '', '', 0, 0, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (17, 'Purchase Completion', 'purchase-completion', '', '<p>Thank you for your purchase.</p><p>Please contact us <a href="mailto: support@netanel.pl" mce_href="mailto: support@netanel.pl" style="">support@netanel.pl</a> in case of any questions regarding the product.</p>', '', 1, 1, 0, 1, '2011-07-08 15:41:44', 62, '', '2011-07-08 16:29:48', 62, 0, '0000-00-00 00:00:00', '2011-07-08 15:41:44', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 2, 0, 4, '', '', 0, 0, 'robots=\nauthor=');
+INSERT INTO `jos_content` VALUES (20, 'Screenshots', 'screenshots', '', '<p><img mce_src="images/swt-matrix-screenshot-1.jpg" src="images/swt-matrix-screenshot-1.jpg" width="976" height="456" alt="screenshot 1" style=""></p>\r\n<script type="text/javascript">// <![CDATA[\r\nfilterFeatures();\r\n// ]]></script>', '', 1, 1, 0, 1, '2011-08-18 20:09:57', 62, '', '2011-08-18 20:51:16', 62, 0, '0000-00-00 00:00:00', '2011-08-18 20:09:57', '0000-00-00 00:00:00', '', '', 'show_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_vote=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nlanguage=\nkeyref=\nreadmore=', 9, 0, 1, '', '', 0, 2022, 'robots=\nauthor=');
 
 -- --------------------------------------------------------
 
@@ -1737,7 +1708,6 @@ INSERT INTO `jos_content` VALUES (15, 'FAQ', 'swt-matrix-faq', '', '<p>Q. I can'
 -- Table structure for table `jos_content_frontpage`
 -- 
 
-DROP TABLE IF EXISTS `jos_content_frontpage`;
 CREATE TABLE `jos_content_frontpage` (
   `content_id` int(11) NOT NULL default '0',
   `ordering` int(11) NOT NULL default '0',
@@ -1757,7 +1727,6 @@ INSERT INTO `jos_content_frontpage` VALUES (9, 2);
 -- Table structure for table `jos_content_rating`
 -- 
 
-DROP TABLE IF EXISTS `jos_content_rating`;
 CREATE TABLE `jos_content_rating` (
   `content_id` int(11) NOT NULL default '0',
   `rating_sum` int(11) unsigned NOT NULL default '0',
@@ -1777,7 +1746,6 @@ CREATE TABLE `jos_content_rating` (
 -- Table structure for table `jos_core_acl_aro`
 -- 
 
-DROP TABLE IF EXISTS `jos_core_acl_aro`;
 CREATE TABLE `jos_core_acl_aro` (
   `id` int(11) NOT NULL auto_increment,
   `section_value` varchar(240) NOT NULL default '0',
@@ -1806,7 +1774,6 @@ INSERT INTO `jos_core_acl_aro` VALUES (14, 'users', '66', 0, 'dddd', 0);
 -- Table structure for table `jos_core_acl_aro_groups`
 -- 
 
-DROP TABLE IF EXISTS `jos_core_acl_aro_groups`;
 CREATE TABLE `jos_core_acl_aro_groups` (
   `id` int(11) NOT NULL auto_increment,
   `parent_id` int(11) NOT NULL default '0',
@@ -1841,7 +1808,6 @@ INSERT INTO `jos_core_acl_aro_groups` VALUES (25, 24, 'Super Administrator', 16,
 -- Table structure for table `jos_core_acl_aro_map`
 -- 
 
-DROP TABLE IF EXISTS `jos_core_acl_aro_map`;
 CREATE TABLE `jos_core_acl_aro_map` (
   `acl_id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default '0',
@@ -1860,7 +1826,6 @@ CREATE TABLE `jos_core_acl_aro_map` (
 -- Table structure for table `jos_core_acl_aro_sections`
 -- 
 
-DROP TABLE IF EXISTS `jos_core_acl_aro_sections`;
 CREATE TABLE `jos_core_acl_aro_sections` (
   `id` int(11) NOT NULL auto_increment,
   `value` varchar(230) NOT NULL default '',
@@ -1884,7 +1849,6 @@ INSERT INTO `jos_core_acl_aro_sections` VALUES (10, 'users', 1, 'Users', 0);
 -- Table structure for table `jos_core_acl_groups_aro_map`
 -- 
 
-DROP TABLE IF EXISTS `jos_core_acl_groups_aro_map`;
 CREATE TABLE `jos_core_acl_groups_aro_map` (
   `group_id` int(11) NOT NULL default '0',
   `section_value` varchar(240) NOT NULL default '',
@@ -1908,7 +1872,6 @@ INSERT INTO `jos_core_acl_groups_aro_map` VALUES (25, '', 10);
 -- Table structure for table `jos_core_log_items`
 -- 
 
-DROP TABLE IF EXISTS `jos_core_log_items`;
 CREATE TABLE `jos_core_log_items` (
   `time_stamp` date NOT NULL default '0000-00-00',
   `item_table` varchar(50) NOT NULL default '',
@@ -1927,7 +1890,6 @@ CREATE TABLE `jos_core_log_items` (
 -- Table structure for table `jos_core_log_searches`
 -- 
 
-DROP TABLE IF EXISTS `jos_core_log_searches`;
 CREATE TABLE `jos_core_log_searches` (
   `search_term` varchar(128) NOT NULL default '',
   `hits` int(11) unsigned NOT NULL default '0'
@@ -1944,7 +1906,6 @@ CREATE TABLE `jos_core_log_searches` (
 -- Table structure for table `jos_extensions`
 -- 
 
-DROP TABLE IF EXISTS `jos_extensions`;
 CREATE TABLE `jos_extensions` (
   `extension_id` int(11) NOT NULL auto_increment,
   `name` varchar(100) NOT NULL,
@@ -2093,7 +2054,6 @@ INSERT INTO `jos_extensions` VALUES (10003, 'huruhelpdesk', 'component', 'com_hu
 -- Table structure for table `jos_fb_announcement`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_announcement`;
 CREATE TABLE `jos_fb_announcement` (
   `id` int(3) NOT NULL auto_increment,
   `title` tinytext NOT NULL,
@@ -2117,7 +2077,6 @@ CREATE TABLE `jos_fb_announcement` (
 -- Table structure for table `jos_fb_attachments`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_attachments`;
 CREATE TABLE `jos_fb_attachments` (
   `mesid` int(11) NOT NULL default '0',
   `filelocation` text NOT NULL,
@@ -2135,7 +2094,6 @@ CREATE TABLE `jos_fb_attachments` (
 -- Table structure for table `jos_fb_categories`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_categories`;
 CREATE TABLE `jos_fb_categories` (
   `id` int(11) NOT NULL auto_increment,
   `parent` int(11) default '0',
@@ -2184,7 +2142,6 @@ INSERT INTO `jos_fb_categories` VALUES (4, 1, 'General', 0, 0, 0, 0, NULL, 0, 0,
 -- Table structure for table `jos_fb_config`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_config`;
 CREATE TABLE `jos_fb_config` (
   `id` int(11) NOT NULL default '0',
   `board_title` text,
@@ -2349,7 +2306,6 @@ INSERT INTO `jos_fb_config` VALUES (1, 'Forum', 'info@netanel.pl', 0, '0', '<h2>
 -- Table structure for table `jos_fb_config_backup`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_config_backup`;
 CREATE TABLE `jos_fb_config_backup` (
   `id` int(11) NOT NULL default '0',
   `board_title` text,
@@ -2513,7 +2469,6 @@ INSERT INTO `jos_fb_config_backup` VALUES (1, 'Forum', 'info@netanel.pl', 0, '0'
 -- Table structure for table `jos_fb_favorites`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_favorites`;
 CREATE TABLE `jos_fb_favorites` (
   `thread` int(11) NOT NULL default '0',
   `userid` int(11) NOT NULL default '0',
@@ -2532,7 +2487,6 @@ CREATE TABLE `jos_fb_favorites` (
 -- Table structure for table `jos_fb_groups`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_groups`;
 CREATE TABLE `jos_fb_groups` (
   `id` int(4) NOT NULL auto_increment,
   `title` varchar(255) default NULL,
@@ -2551,7 +2505,6 @@ INSERT INTO `jos_fb_groups` VALUES (1, '"._KUNENA_REGISTERED."');
 -- Table structure for table `jos_fb_messages`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_messages`;
 CREATE TABLE `jos_fb_messages` (
   `id` int(11) NOT NULL auto_increment,
   `parent` int(11) default '0',
@@ -2597,7 +2550,6 @@ INSERT INTO `jos_fb_messages` VALUES (3, 2, 2, 4, 'jacek', 63, 'jackolo@poczta.f
 -- Table structure for table `jos_fb_messages_text`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_messages_text`;
 CREATE TABLE `jos_fb_messages_text` (
   `mesid` int(11) NOT NULL default '0',
   `message` text NOT NULL,
@@ -2617,7 +2569,6 @@ INSERT INTO `jos_fb_messages_text` VALUES (3, 'This post by my name');
 -- Table structure for table `jos_fb_moderation`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_moderation`;
 CREATE TABLE `jos_fb_moderation` (
   `catid` int(11) NOT NULL default '0',
   `userid` int(11) NOT NULL default '0',
@@ -2637,7 +2588,6 @@ CREATE TABLE `jos_fb_moderation` (
 -- Table structure for table `jos_fb_ranks`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_ranks`;
 CREATE TABLE `jos_fb_ranks` (
   `rank_id` mediumint(8) unsigned NOT NULL auto_increment,
   `rank_title` varchar(255) NOT NULL default '',
@@ -2667,7 +2617,6 @@ INSERT INTO `jos_fb_ranks` VALUES (9, 'Spammer', 0, 1, 'rankspammer.gif');
 -- Table structure for table `jos_fb_sessions`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_sessions`;
 CREATE TABLE `jos_fb_sessions` (
   `userid` int(11) NOT NULL default '0',
   `allowed` text,
@@ -2691,7 +2640,6 @@ INSERT INTO `jos_fb_sessions` VALUES (66, 'na', 1271323473, '', 1302860600);
 -- Table structure for table `jos_fb_smileys`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_smileys`;
 CREATE TABLE `jos_fb_smileys` (
   `id` int(4) NOT NULL auto_increment,
   `code` varchar(12) NOT NULL default '',
@@ -2748,7 +2696,6 @@ INSERT INTO `jos_fb_smileys` VALUES (37, ':D', 'laughing.png', 'laughing-grey.pn
 -- Table structure for table `jos_fb_subscriptions`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_subscriptions`;
 CREATE TABLE `jos_fb_subscriptions` (
   `thread` int(11) NOT NULL default '0',
   `userid` int(11) NOT NULL default '0',
@@ -2769,7 +2716,6 @@ INSERT INTO `jos_fb_subscriptions` VALUES (2, 62, 0);
 -- Table structure for table `jos_fb_users`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_users`;
 CREATE TABLE `jos_fb_users` (
   `userid` int(11) NOT NULL default '0',
   `view` varchar(8) NOT NULL default 'flat',
@@ -2817,7 +2763,6 @@ INSERT INTO `jos_fb_users` VALUES (63, 'flat', NULL, 0, 0, 1, NULL, 0, 0, 1, 0, 
 -- Table structure for table `jos_fb_version`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_version`;
 CREATE TABLE `jos_fb_version` (
   `id` int(11) NOT NULL auto_increment,
   `version` varchar(20) NOT NULL,
@@ -2840,7 +2785,6 @@ INSERT INTO `jos_fb_version` VALUES (1, '1.5.13', '2010-11-04', '2011-04-15', '1
 -- Table structure for table `jos_fb_whoisonline`
 -- 
 
-DROP TABLE IF EXISTS `jos_fb_whoisonline`;
 CREATE TABLE `jos_fb_whoisonline` (
   `id` int(6) NOT NULL auto_increment,
   `userid` int(7) NOT NULL default '0',
@@ -2855,13 +2799,13 @@ CREATE TABLE `jos_fb_whoisonline` (
   `user` tinyint(2) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `userid` (`userid`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
 
 -- 
 -- Dumping data for table `jos_fb_whoisonline`
 -- 
 
-INSERT INTO `jos_fb_whoisonline` VALUES (12, 63, '1304438956', 0, 'Welcome', 'view', '', '', 'http://localhost:8088/netanel15/index.php', '127.0.0.1', 1);
+INSERT INTO `jos_fb_whoisonline` VALUES (13, 0, '1330251491', 0, 'Forum Main', '', '', '', 'http://netanel.pl/index2.php', '66.103.62.11', 0);
 
 -- --------------------------------------------------------
 
@@ -2869,7 +2813,6 @@ INSERT INTO `jos_fb_whoisonline` VALUES (12, 63, '1304438956', 0, 'Welcome', 'vi
 -- Table structure for table `jos_groups`
 -- 
 
-DROP TABLE IF EXISTS `jos_groups`;
 CREATE TABLE `jos_groups` (
   `id` tinyint(3) unsigned NOT NULL default '0',
   `name` varchar(50) NOT NULL default '',
@@ -2890,7 +2833,6 @@ INSERT INTO `jos_groups` VALUES (2, 'Special');
 -- Table structure for table `jos_hd_category`
 -- 
 
-DROP TABLE IF EXISTS `jos_hd_category`;
 CREATE TABLE `jos_hd_category` (
   `catid` int(11) NOT NULL auto_increment,
   `name` varchar(50) NOT NULL default '',
@@ -2912,7 +2854,6 @@ INSERT INTO `jos_hd_category` VALUES (1, 'Default Category', 'If there are no ot
 -- Table structure for table `jos_hd_groups`
 -- 
 
-DROP TABLE IF EXISTS `jos_hd_groups`;
 CREATE TABLE `jos_hd_groups` (
   `grpid` int(10) unsigned NOT NULL auto_increment,
   `name` varchar(50) NOT NULL default '',
@@ -2935,7 +2876,6 @@ INSERT INTO `jos_hd_groups` VALUES (3, 'administrator', 'components/com_jtaghelp
 -- Table structure for table `jos_hd_highlight`
 -- 
 
-DROP TABLE IF EXISTS `jos_hd_highlight`;
 CREATE TABLE `jos_hd_highlight` (
   `hdid` int(11) NOT NULL default '0',
   `ticketid` int(11) NOT NULL default '0',
@@ -2954,7 +2894,6 @@ CREATE TABLE `jos_hd_highlight` (
 -- Table structure for table `jos_hd_msg`
 -- 
 
-DROP TABLE IF EXISTS `jos_hd_msg`;
 CREATE TABLE `jos_hd_msg` (
   `msgid` int(11) NOT NULL auto_increment,
   `ticketid` int(11) NOT NULL default '0',
@@ -2975,7 +2914,6 @@ CREATE TABLE `jos_hd_msg` (
 -- Table structure for table `jos_hd_permissions`
 -- 
 
-DROP TABLE IF EXISTS `jos_hd_permissions`;
 CREATE TABLE `jos_hd_permissions` (
   `grpid` int(11) NOT NULL default '0',
   `catid` int(11) default '0',
@@ -2997,7 +2935,6 @@ INSERT INTO `jos_hd_permissions` VALUES (3, 1, 'VmRCDPAO');
 -- Table structure for table `jos_hd_settings`
 -- 
 
-DROP TABLE IF EXISTS `jos_hd_settings`;
 CREATE TABLE `jos_hd_settings` (
   `name` varchar(255) NOT NULL default '',
   `value` varchar(255) default NULL,
@@ -3061,7 +2998,6 @@ INSERT INTO `jos_hd_settings` VALUES ('debugmessage', 'Continue >>');
 -- Table structure for table `jos_hd_ticket`
 -- 
 
-DROP TABLE IF EXISTS `jos_hd_ticket`;
 CREATE TABLE `jos_hd_ticket` (
   `hdid` int(11) NOT NULL default '0',
   `ticketid` int(11) NOT NULL auto_increment,
@@ -3084,7 +3020,6 @@ CREATE TABLE `jos_hd_ticket` (
 -- Table structure for table `jos_hd_users`
 -- 
 
-DROP TABLE IF EXISTS `jos_hd_users`;
 CREATE TABLE `jos_hd_users` (
   `hdid` int(11) NOT NULL default '0',
   `organisation` varchar(25) NOT NULL default '',
@@ -3104,7 +3039,6 @@ CREATE TABLE `jos_hd_users` (
 -- Table structure for table `jos_huruhelpdesk_attachments`
 -- 
 
-DROP TABLE IF EXISTS `jos_huruhelpdesk_attachments`;
 CREATE TABLE `jos_huruhelpdesk_attachments` (
   `id` int(11) NOT NULL auto_increment,
   `note_id` int(11) NOT NULL,
@@ -3126,7 +3060,6 @@ CREATE TABLE `jos_huruhelpdesk_attachments` (
 -- Table structure for table `jos_huruhelpdesk_categories`
 -- 
 
-DROP TABLE IF EXISTS `jos_huruhelpdesk_categories`;
 CREATE TABLE `jos_huruhelpdesk_categories` (
   `category_id` bigint(20) NOT NULL auto_increment,
   `cname` text NOT NULL,
@@ -3147,7 +3080,6 @@ INSERT INTO `jos_huruhelpdesk_categories` VALUES (2, 'Bug', 0);
 -- Table structure for table `jos_huruhelpdesk_config`
 -- 
 
-DROP TABLE IF EXISTS `jos_huruhelpdesk_config`;
 CREATE TABLE `jos_huruhelpdesk_config` (
   `id` int(11) NOT NULL,
   `hdreply` text NOT NULL,
@@ -3202,7 +3134,7 @@ CREATE TABLE `jos_huruhelpdesk_config` (
 -- Dumping data for table `jos_huruhelpdesk_config`
 -- 
 
-INSERT INTO `jos_huruhelpdesk_config` VALUES (1, 'info@netanel.pl', 'http://www.netanel.pl/index.php?option=com_huruhelpdesk&view=cpanel&Itemid=2', 1, 1, 3, 15, 24, 1, 1, 10, 50, '0.88 beta', 0, 0, 10000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 0, 0, 0, 50, 50, 50, 50, 'Netanel Helpdesk', 1, 1, -1, 10000, '.jpg,.png', 'image/jpeg,image/png', 1048576, 1, '', 0, 0, 'info@netanel.pl');
+INSERT INTO `jos_huruhelpdesk_config` VALUES (1, 'info@netanel.pl', 'http://www.netanel.pl/index.php?option=com_huruhelpdesk&view=cpanel&Itemid=2', 1, 1, 3, 15, 24, 1, 1, 10, 0, '0.88 beta', 0, 0, 10000, 0, 0, 0, 0, 0, 50, 50, 0, 0, 100, 0, 0, 0, 50, 50, 50, 50, 'Netanel Helpdesk', 1, 1, -1, 10000, '.jpg,.png', 'image/jpeg,image/png', 1048576, 1, '', 0, 0, 'info@netanel.pl');
 
 -- --------------------------------------------------------
 
@@ -3210,7 +3142,6 @@ INSERT INTO `jos_huruhelpdesk_config` VALUES (1, 'info@netanel.pl', 'http://www.
 -- Table structure for table `jos_huruhelpdesk_departments`
 -- 
 
-DROP TABLE IF EXISTS `jos_huruhelpdesk_departments`;
 CREATE TABLE `jos_huruhelpdesk_departments` (
   `department_id` bigint(20) NOT NULL auto_increment,
   `dname` text NOT NULL,
@@ -3229,7 +3160,6 @@ INSERT INTO `jos_huruhelpdesk_departments` VALUES (1, 'Testing');
 -- Table structure for table `jos_huruhelpdesk_emailmsg`
 -- 
 
-DROP TABLE IF EXISTS `jos_huruhelpdesk_emailmsg`;
 CREATE TABLE `jos_huruhelpdesk_emailmsg` (
   `id` int(11) NOT NULL auto_increment,
   `type` text NOT NULL,
@@ -3257,7 +3187,6 @@ INSERT INTO `jos_huruhelpdesk_emailmsg` VALUES (8, 'adminnew', 'HELPDESK: Proble
 -- Table structure for table `jos_huruhelpdesk_langstrings`
 -- 
 
-DROP TABLE IF EXISTS `jos_huruhelpdesk_langstrings`;
 CREATE TABLE `jos_huruhelpdesk_langstrings` (
   `id` int(11) NOT NULL auto_increment,
   `lang_id` bigint(20) NOT NULL,
@@ -3523,7 +3452,6 @@ INSERT INTO `jos_huruhelpdesk_langstrings` VALUES (580, 1, 'Updated', 'Updated')
 -- Table structure for table `jos_huruhelpdesk_language`
 -- 
 
-DROP TABLE IF EXISTS `jos_huruhelpdesk_language`;
 CREATE TABLE `jos_huruhelpdesk_language` (
   `id` bigint(20) NOT NULL auto_increment,
   `langname` text NOT NULL,
@@ -3543,7 +3471,6 @@ INSERT INTO `jos_huruhelpdesk_language` VALUES (1, 'English', 'English');
 -- Table structure for table `jos_huruhelpdesk_notes`
 -- 
 
-DROP TABLE IF EXISTS `jos_huruhelpdesk_notes`;
 CREATE TABLE `jos_huruhelpdesk_notes` (
   `note_id` int(11) NOT NULL auto_increment,
   `id` bigint(20) NOT NULL,
@@ -3554,7 +3481,7 @@ CREATE TABLE `jos_huruhelpdesk_notes` (
   `priv` int(11) NOT NULL,
   PRIMARY KEY  (`note_id`),
   FULLTEXT KEY `note` (`note`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
 -- 
 -- Dumping data for table `jos_huruhelpdesk_notes`
@@ -3564,6 +3491,8 @@ INSERT INTO `jos_huruhelpdesk_notes` VALUES (1, 1, 'Problem created', '2011-04-1
 INSERT INTO `jos_huruhelpdesk_notes` VALUES (2, 2, 'Problem created', '2011-04-12 10:26:42', '', '127.0.0.1', 1);
 INSERT INTO `jos_huruhelpdesk_notes` VALUES (3, 3, 'Problem created', '2011-04-12 10:28:52', '', '127.0.0.1', 1);
 INSERT INTO `jos_huruhelpdesk_notes` VALUES (4, 4, 'Problem created', '2011-04-14 20:46:24', 'dddd', '127.0.0.1', 1);
+INSERT INTO `jos_huruhelpdesk_notes` VALUES (5, 5, 'Problem created', '2011-07-19 18:12:05', '', '127.0.0.1', 1);
+INSERT INTO `jos_huruhelpdesk_notes` VALUES (6, 5, 'fix it please', '2011-07-19 18:12:05', '', '127.0.0.1', 0);
 
 -- --------------------------------------------------------
 
@@ -3571,7 +3500,6 @@ INSERT INTO `jos_huruhelpdesk_notes` VALUES (4, 4, 'Problem created', '2011-04-1
 -- Table structure for table `jos_huruhelpdesk_priority`
 -- 
 
-DROP TABLE IF EXISTS `jos_huruhelpdesk_priority`;
 CREATE TABLE `jos_huruhelpdesk_priority` (
   `priority_id` bigint(20) NOT NULL auto_increment,
   `pname` text NOT NULL,
@@ -3597,7 +3525,6 @@ INSERT INTO `jos_huruhelpdesk_priority` VALUES (9, ' 9 - EMERGENCY - NO PAGE ');
 -- Table structure for table `jos_huruhelpdesk_problems`
 -- 
 
-DROP TABLE IF EXISTS `jos_huruhelpdesk_problems`;
 CREATE TABLE `jos_huruhelpdesk_problems` (
   `id` bigint(20) NOT NULL auto_increment,
   `uid` text NOT NULL,
@@ -3622,7 +3549,7 @@ CREATE TABLE `jos_huruhelpdesk_problems` (
   FULLTEXT KEY `solution` (`solution`),
   FULLTEXT KEY `description` (`description`),
   FULLTEXT KEY `title` (`title`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 -- 
 -- Dumping data for table `jos_huruhelpdesk_problems`
@@ -3632,6 +3559,7 @@ INSERT INTO `jos_huruhelpdesk_problems` VALUES (1, 'Jacek', 'jacek.p.kolodziejcz
 INSERT INTO `jos_huruhelpdesk_problems` VALUES (2, 'a', 'jacek.p.kolodziejczyk@gmail.com', 'Kraków', '6132662', 0, 15, 0, 1, '0000-00-00 00:00:00', 1, 'test2', 'a', '', '2011-04-12 10:26:42', 3, 0, 0);
 INSERT INTO `jos_huruhelpdesk_problems` VALUES (3, 'a', 'jacek.p.kolodziejczyk@gmail.com', 'Kraków', '6132662', 0, 15, 0, 1, '0000-00-00 00:00:00', 1, 'test3', 'asdfasdf', '', '2011-04-12 10:28:52', 3, 0, 0);
 INSERT INTO `jos_huruhelpdesk_problems` VALUES (4, 'dddd', 'd@d.pl', '', '', 0, 15, 0, 1, '0000-00-00 00:00:00', 1, 'd1', 'ddddd', '', '2011-04-14 20:46:23', 3, 3, 0);
+INSERT INTO `jos_huruhelpdesk_problems` VALUES (5, 'Juzek', 'juzek@wp.pl', '', '', 0, 15, 0, 2, '0000-00-00 00:00:00', 1, 'asfasdfasdfa', 'sdfasfasdfasdfa', '', '2011-07-19 18:12:05', 3, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -3639,7 +3567,6 @@ INSERT INTO `jos_huruhelpdesk_problems` VALUES (4, 'dddd', 'd@d.pl', '', '', 0, 
 -- Table structure for table `jos_huruhelpdesk_status`
 -- 
 
-DROP TABLE IF EXISTS `jos_huruhelpdesk_status`;
 CREATE TABLE `jos_huruhelpdesk_status` (
   `id` int(11) NOT NULL auto_increment,
   `status_id` bigint(20) NOT NULL,
@@ -3667,7 +3594,6 @@ INSERT INTO `jos_huruhelpdesk_status` VALUES (24, 100, 'CLOSED');
 -- Table structure for table `jos_huruhelpdesk_users`
 -- 
 
-DROP TABLE IF EXISTS `jos_huruhelpdesk_users`;
 CREATE TABLE `jos_huruhelpdesk_users` (
   `id` int(11) NOT NULL auto_increment,
   `joomla_id` int(11) NOT NULL,
@@ -3700,7 +3626,6 @@ INSERT INTO `jos_huruhelpdesk_users` VALUES (3, 66, 1, 0, 0, '', '', '', '', '',
 -- Table structure for table `jos_languages`
 -- 
 
-DROP TABLE IF EXISTS `jos_languages`;
 CREATE TABLE `jos_languages` (
   `lang_id` int(11) unsigned NOT NULL auto_increment,
   `lang_code` char(7) NOT NULL,
@@ -3728,7 +3653,6 @@ INSERT INTO `jos_languages` VALUES (1, 'en-GB', 'English (UK)', 'English (UK)', 
 -- Table structure for table `jos_menu`
 -- 
 
-DROP TABLE IF EXISTS `jos_menu`;
 CREATE TABLE `jos_menu` (
   `id` int(11) NOT NULL auto_increment,
   `menutype` varchar(75) default NULL,
@@ -3755,34 +3679,40 @@ CREATE TABLE `jos_menu` (
   KEY `componentid` (`componentid`,`menutype`,`published`,`access`),
   KEY `menutype` (`menutype`),
   KEY `link` (`link`(27))
-) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 AUTO_INCREMENT=23 ;
+) ENGINE=MyISAM AUTO_INCREMENT=29 DEFAULT CHARSET=utf8 AUTO_INCREMENT=29 ;
 
 -- 
 -- Dumping data for table `jos_menu`
 -- 
 
 INSERT INTO `jos_menu` VALUES (1, 'mainmenu', 'Home', 'home', 'index.php?option=com_content&view=frontpage', 'component', 1, 0, 20, 0, 1, 62, '2011-05-31 17:08:28', 0, 0, 0, 3, 'num_leading_articles=1\nnum_intro_articles=4\nnum_columns=2\nnum_links=4\norderby_pri=\norderby_sec=front\nmulti_column_order=1\nshow_pagination=2\nshow_pagination_results=1\nshow_feed_link=1\nshow_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=0\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 1);
-INSERT INTO `jos_menu` VALUES (2, 'mainmenu', 'Issue Tracker', 'issuetracker', 'index.php?option=com_huruhelpdesk&view=cpanel', 'component', 0, 6, 34, 1, 1, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'page_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
-INSERT INTO `jos_menu` VALUES (3, 'mainmenu', 'Products', 'products', 'index.php?option=com_content&view=article&id=9', 'component', 1, 0, 20, 0, 2, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
-INSERT INTO `jos_menu` VALUES (4, 'mainmenu', 'SWT Matrix', 'swtmatrix', 'index.php?option=com_content&view=article&id=9', 'component', 1, 3, 20, 1, 1, 62, '2011-05-31 17:08:08', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=table.png\nsecure=0\nmega_showtitle=1\nmega_desc=Limits breaking tabular widget\nmega_cols=1\nmega_group=1\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
-INSERT INTO `jos_menu` VALUES (5, 'mainmenu', 'Download', 'download', 'index.php?option=com_content&view=article&id=4', 'component', 1, 0, 20, 0, 3, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n', 0, 0, 0);
-INSERT INTO `jos_menu` VALUES (6, 'mainmenu', 'Forum', 'forum', 'index.php?option=com_content&view=article&id=8', 'component', 1, 0, 20, 0, 5, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (2, 'mainmenu', 'Issue Tracker', 'issuetracker', 'index.php?option=com_content&view=article&id=18', 'component', 1, 23, 20, 1, 2, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (3, 'mainmenu', 'Products', 'products', 'index.php?option=com_content&view=article&id=9', 'component', 1, 0, 20, 0, 3, 62, '2011-07-19 16:06:21', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (4, 'mainmenu', 'SWT Matrix', 'swtmatrix', 'index.php?option=com_content&view=article&id=9', 'component', 1, 3, 20, 1, 1, 62, '2011-07-19 16:06:09', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=table.png\nsecure=0\nmega_showtitle=1\nmega_desc=Limits breaking tabular widget\nmega_cols=1\nmega_group=1\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (5, 'mainmenu', 'Download', 'download', 'index.php?option=com_content&view=article&id=4', 'component', 1, 0, 20, 0, 4, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (6, 'mainmenu', 'Forum', 'forum', 'index.php?option=com_content&view=article&id=8', 'component', 0, 0, 20, 0, 6, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (23, 'mainmenu', 'Community', 'community', 'https://swtmatrix.fogbugz.com/', 'url', 1, 0, 0, 0, 9, 62, '2011-08-18 20:53:09', 0, 0, 0, 0, 'menu_image=-1\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (24, 'mainmenu', 'Issue Tracker', 'issuetracker', 'index.php?option=com_huruhelpdesk&view=cpanel', 'component', -2, 0, 34, 0, 2, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'page_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
 INSERT INTO `jos_menu` VALUES (7, 'mainmenu', 'Features', 'features', 'index.php?option=com_content&view=article&id=5', 'component', 1, 4, 20, 2, 2, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
 INSERT INTO `jos_menu` VALUES (8, 'SWT-Matrix-Menu', 'Features', 'features', 'index.php?Itemid=7', 'menulink', 1, 0, 0, 0, 1, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'menu_item=7\n\n', 0, 0, 0);
-INSERT INTO `jos_menu` VALUES (11, 'mainmenu', 'Buy', 'buy', 'index.php?option=com_content&view=article&id=14', 'component', 1, 0, 20, 0, 4, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
-INSERT INTO `jos_menu` VALUES (12, 'mainmenu', 'Contact', 'contact', 'index.php?option=com_content&view=article&id=8', 'component', 0, 0, 20, 0, 6, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n', 0, 0, 0);
-INSERT INTO `jos_menu` VALUES (9, 'SWT-Matrix-Menu', 'API', 'api', 'index.php?Itemid=10', 'menulink', 1, 0, 0, 0, 2, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'menu_item=10\n\n', 0, 0, 0);
-INSERT INTO `jos_menu` VALUES (14, 'mainmenu', 'Design', 'design', 'index.php?option=com_content&view=article&id=10', 'component', 0, 4, 20, 2, 3, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n', 0, 0, 0);
-INSERT INTO `jos_menu` VALUES (10, 'mainmenu', 'API', 'api', 'swt-matrix/javadoc/index.html', 'url', 1, 4, 0, 2, 4, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'menu_image=-1\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (11, 'mainmenu', 'Buy', 'buy', 'index.php?option=com_content&view=article&id=14', 'component', 1, 0, 20, 0, 5, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (12, 'mainmenu', 'Contact', 'contact', 'index.php?option=com_content&view=article&id=8', 'component', 0, 0, 20, 0, 7, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (9, 'SWT-Matrix-Menu', 'API', 'api', 'index.php?Itemid=10', 'menulink', 1, 0, 0, 0, 3, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'menu_item=10\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (14, 'mainmenu', 'Design', 'design', 'index.php?option=com_content&view=article&id=10', 'component', 0, 4, 20, 2, 4, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (10, 'mainmenu', 'API', 'api', 'swt-matrix/javadoc/index.html', 'url', 1, 4, 0, 2, 5, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'menu_image=-1\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
 INSERT INTO `jos_menu` VALUES (13, 'mainmenu', 'Overview', 'overview', 'index.php?option=com_content&view=article&id=9', 'component', 1, 4, 20, 2, 1, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n', 0, 0, 0);
-INSERT INTO `jos_menu` VALUES (15, 'mainmenu', 'Tutorial', 'tutorial', 'index.php?option=com_content&view=article&id=13', 'component', 1, 4, 20, 2, 5, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
-INSERT INTO `jos_menu` VALUES (16, 'mainmenu', 'Snippets', 'snippets', 'index.php?option=com_content&view=article&id=11', 'component', 1, 4, 20, 2, 6, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (15, 'mainmenu', 'Tutorial', 'tutorial', 'index.php?option=com_content&view=article&id=13', 'component', 1, 4, 20, 2, 6, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (16, 'mainmenu', 'Snippets', 'snippets', 'index.php?option=com_content&view=article&id=11', 'component', 1, 4, 20, 2, 7, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n', 0, 0, 0);
 INSERT INTO `jos_menu` VALUES (17, 'Hidden', 'Design', 'design', 'index.php?option=com_content&view=article&id=10', 'component', 1, 0, 20, 0, 1, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\n\n', 0, 0, 0);
-INSERT INTO `jos_menu` VALUES (18, 'mainmenu', 'Forum Zoho', 'forum', 'http://discussions.zoho.com/swtmatrix/', 'url', 0, 6, 0, 1, 2, 0, '0000-00-00 00:00:00', 0, 1, 0, 0, 'menu_image=-1\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
-INSERT INTO `jos_menu` VALUES (19, 'mainmenu', 'Login', 'login', 'index.php?option=com_user&view=login', 'component', 0, 0, 14, 0, 7, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_login_title=1\nheader_login=\nlogin=\nlogin_message=1\ndescription_login=1\ndescription_login_text=\nimage_login=\nimage_login_align=right\nshow_logout_title=1\nheader_logout=\nlogout=\nlogout_message=1\ndescription_logout=1\ndescription_logout_text=\nimage_logout=\nimage_logout_align=left\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=200\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=mod\nmega_subcontent-mod-modules=19\n\n', 0, 0, 0);
-INSERT INTO `jos_menu` VALUES (20, 'mainmenu', 'Forum', 'forum', 'index.php?option=com_kunena', 'component', 0, 6, 54, 1, 3, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'page_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
-INSERT INTO `jos_menu` VALUES (21, 'SWT-Matrix-Menu', 'Tutorial', 'tutorial', 'index.php?option=com_content&view=article&id=13', 'component', 1, 0, 20, 0, 3, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
-INSERT INTO `jos_menu` VALUES (22, 'SWT-Matrix-Menu', 'Snippets', 'snippets', 'index.php?option=com_content&view=article&id=11', 'component', 1, 0, 20, 0, 4, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (18, 'mainmenu', 'Forum Zoho', 'forum', 'http://discussions.zoho.com/swtmatrix/', 'url', 0, 6, 0, 1, 1, 62, '2011-07-19 16:02:52', 0, 1, 0, 0, 'menu_image=-1\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (19, 'mainmenu', 'Login', 'login', 'index.php?option=com_user&view=login', 'component', 0, 0, 14, 0, 8, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_login_title=1\nheader_login=\nlogin=\nlogin_message=1\ndescription_login=1\ndescription_login_text=\nimage_login=\nimage_login_align=right\nshow_logout_title=1\nheader_logout=\nlogout=\nlogout_message=1\ndescription_logout=1\ndescription_logout_text=\nimage_logout=\nimage_logout_align=left\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=200\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=mod\nmega_subcontent-mod-modules=19\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (20, 'mainmenu', 'Forum Kunena', 'forumkunena', 'index.php?option=com_kunena', 'component', 0, 6, 54, 1, 2, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'page_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (21, 'SWT-Matrix-Menu', 'Tutorial', 'tutorial', 'index.php?option=com_content&view=article&id=13', 'component', 1, 0, 20, 0, 4, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (22, 'SWT-Matrix-Menu', 'Snippets', 'snippets', 'index.php?option=com_content&view=article&id=11', 'component', 1, 0, 20, 0, 5, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (25, 'mainmenu', 'Forum', 'forum', 'index.php?option=com_content&view=article&id=19', 'component', 1, 23, 20, 1, 1, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (26, 'SWT-Matrix-Menu', 'Screenshots', 'screenshosts', 'index.php?option=com_content&view=article&id=20', 'component', 1, 0, 20, 0, 2, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (27, 'mainmenu', 'Screentshots', 'screenshots', 'index.php?option=com_content&view=article&id=20', 'component', 1, 4, 20, 2, 3, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
+INSERT INTO `jos_menu` VALUES (28, 'mainmenu', 'Forum', 'forum', 'index.php?option=com_content&view=article&id=19', 'component', 0, 0, 20, 0, 10, 0, '0000-00-00 00:00:00', 0, 0, 0, 0, 'show_noauth=\nshow_title=\nlink_titles=\nshow_intro=\nshow_section=\nlink_section=\nshow_category=\nlink_category=\nshow_author=\nshow_create_date=\nshow_modify_date=\nshow_item_navigation=\nshow_readmore=\nshow_vote=\nshow_icons=\nshow_pdf_icon=\nshow_print_icon=\nshow_email_icon=\nshow_hits=\nfeed_summary=\npage_title=\nshow_page_title=1\npageclass_sfx=\nmenu_image=-1\nsecure=0\nmega_showtitle=1\nmega_desc=\nmega_cols=1\nmega_group=0\nmega_width=\nmega_colw=\nmega_colxw=\nmega_class=\nmega_subcontent=0\n\n', 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -3790,7 +3720,6 @@ INSERT INTO `jos_menu` VALUES (22, 'SWT-Matrix-Menu', 'Snippets', 'snippets', 'i
 -- Table structure for table `jos_menu_types`
 -- 
 
-DROP TABLE IF EXISTS `jos_menu_types`;
 CREATE TABLE `jos_menu_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `menutype` varchar(75) NOT NULL default '',
@@ -3814,7 +3743,6 @@ INSERT INTO `jos_menu_types` VALUES (3, 'Hidden', 'HIdden', 'for article links')
 -- Table structure for table `jos_messages`
 -- 
 
-DROP TABLE IF EXISTS `jos_messages`;
 CREATE TABLE `jos_messages` (
   `message_id` int(10) unsigned NOT NULL auto_increment,
   `user_id_from` int(10) unsigned NOT NULL default '0',
@@ -3840,7 +3768,6 @@ CREATE TABLE `jos_messages` (
 -- Table structure for table `jos_messages_cfg`
 -- 
 
-DROP TABLE IF EXISTS `jos_messages_cfg`;
 CREATE TABLE `jos_messages_cfg` (
   `user_id` int(10) unsigned NOT NULL default '0',
   `cfg_name` varchar(100) NOT NULL default '',
@@ -3859,7 +3786,6 @@ CREATE TABLE `jos_messages_cfg` (
 -- Table structure for table `jos_migration_backlinks`
 -- 
 
-DROP TABLE IF EXISTS `jos_migration_backlinks`;
 CREATE TABLE `jos_migration_backlinks` (
   `itemid` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
@@ -3880,7 +3806,6 @@ CREATE TABLE `jos_migration_backlinks` (
 -- Table structure for table `jos_modules`
 -- 
 
-DROP TABLE IF EXISTS `jos_modules`;
 CREATE TABLE `jos_modules` (
   `id` int(11) NOT NULL auto_increment,
   `title` text NOT NULL,
@@ -3901,7 +3826,7 @@ CREATE TABLE `jos_modules` (
   PRIMARY KEY  (`id`),
   KEY `published` (`published`,`access`),
   KEY `newsfeeds` (`module`,`published`)
-) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 AUTO_INCREMENT=23 ;
 
 -- 
 -- Dumping data for table `jos_modules`
@@ -3927,6 +3852,7 @@ INSERT INTO `jos_modules` VALUES (17, 'SWT Matrix Menu', '', 0, 'menu', 0, '0000
 INSERT INTO `jos_modules` VALUES (18, 'Search', '', 0, 'search', 62, '2011-04-20 09:33:42', 1, 'mod_search', 0, 0, 0, 'moduleclass_sfx=\nwidth=20\ntext=search\nbutton=\nbutton_pos=right\nimagebutton=1\nbutton_text=\nset_itemid=\ncache=1\ncache_time=900\n\n', 0, 0, '');
 INSERT INTO `jos_modules` VALUES (19, 'Login', '', 0, 'menu', 0, '0000-00-00 00:00:00', 1, 'mod_login', 0, 0, 1, 'cache=0\nmoduleclass_sfx=\npretext=Login is needed to post in the issue tracker and the forum.\nposttext=\nlogin=\nlogout=\ngreeting=1\nname=0\nusesecure=0\n\n', 0, 0, '');
 INSERT INTO `jos_modules` VALUES (21, 'Footer', '', 1, 'footer', 0, '0000-00-00 00:00:00', 1, 'mod_footer', 0, 0, 1, 'cache=1\n\n', 0, 0, '');
+INSERT INTO `jos_modules` VALUES (22, 'Easy Joomla PayPal Payment / Donations Module', '', 0, 'left', 0, '0000-00-00 00:00:00', 0, 'mod_j15paypal', 0, 0, 0, 'payment_type=2\nlogo_on=0\nlogo=http://www.paypal.com/en_US/i/btn/x-click-but04.gif\nmoduleclass_sfx=\npaypal_email=dattard@gmail.com\npaypal_org=Donation\npaypalcur_on=1\npaypalval_on=1\npaypalcur_val=USD\npaypalval_button=Donate\npaypalval_val=5\npaypalvalleast_val=5\npaypalreturn=http://www.yoursite.com\npaypalcancel=http://www.yoursite.com\npaymentlocation=\n\n', 0, 0, '');
 
 -- --------------------------------------------------------
 
@@ -3934,7 +3860,6 @@ INSERT INTO `jos_modules` VALUES (21, 'Footer', '', 1, 'footer', 0, '0000-00-00 
 -- Table structure for table `jos_modules_menu`
 -- 
 
-DROP TABLE IF EXISTS `jos_modules_menu`;
 CREATE TABLE `jos_modules_menu` (
   `moduleid` int(11) NOT NULL default '0',
   `menuid` int(11) NOT NULL default '0',
@@ -3953,6 +3878,7 @@ INSERT INTO `jos_modules_menu` VALUES (17, 10);
 INSERT INTO `jos_modules_menu` VALUES (18, 0);
 INSERT INTO `jos_modules_menu` VALUES (19, 0);
 INSERT INTO `jos_modules_menu` VALUES (21, 0);
+INSERT INTO `jos_modules_menu` VALUES (22, 0);
 
 -- --------------------------------------------------------
 
@@ -3960,7 +3886,6 @@ INSERT INTO `jos_modules_menu` VALUES (21, 0);
 -- Table structure for table `jos_newsfeeds`
 -- 
 
-DROP TABLE IF EXISTS `jos_newsfeeds`;
 CREATE TABLE `jos_newsfeeds` (
   `catid` int(11) NOT NULL default '0',
   `id` int(11) NOT NULL auto_increment,
@@ -3991,7 +3916,6 @@ CREATE TABLE `jos_newsfeeds` (
 -- Table structure for table `jos_plugins`
 -- 
 
-DROP TABLE IF EXISTS `jos_plugins`;
 CREATE TABLE `jos_plugins` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(100) NOT NULL default '',
@@ -4007,7 +3931,7 @@ CREATE TABLE `jos_plugins` (
   `params` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `idx_folder` (`published`,`client_id`,`access`,`folder`)
-) ENGINE=MyISAM AUTO_INCREMENT=50 DEFAULT CHARSET=utf8 AUTO_INCREMENT=50 ;
+) ENGINE=MyISAM AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 AUTO_INCREMENT=51 ;
 
 -- 
 -- Dumping data for table `jos_plugins`
@@ -4031,7 +3955,7 @@ INSERT INTO `jos_plugins` VALUES (15, 'Content - Code Hightlighter (GeSHi)', 'ge
 INSERT INTO `jos_plugins` VALUES (16, 'Content - Load Module', 'loadmodule', 'content', 0, 6, 1, 0, 0, 0, '0000-00-00 00:00:00', 'enabled=1\nstyle=0\n\n');
 INSERT INTO `jos_plugins` VALUES (17, 'Content - Page Navigation', 'pagenavigation', 'content', 0, 2, 1, 1, 0, 0, '0000-00-00 00:00:00', 'position=1\n\n');
 INSERT INTO `jos_plugins` VALUES (18, 'Editor - No Editor', 'none', 'editors', 0, 0, 1, 1, 0, 0, '0000-00-00 00:00:00', '');
-INSERT INTO `jos_plugins` VALUES (19, 'Editor - TinyMCE', 'tinymce', 'editors', 0, 0, 1, 1, 0, 0, '0000-00-00 00:00:00', 'mode=extended\nskin=0\ncompressed=0\ncleanup_startup=0\ncleanup_save=2\nentity_encoding=raw\nlang_mode=0\nlang_code=en\ntext_direction=ltr\ncontent_css=1\ncontent_css_custom=\nrelative_urls=1\nnewlines=0\ninvalid_elements=applet\nextended_elements=\ntoolbar=top\ntoolbar_align=left\nhtml_height=550\nhtml_width=750\nelement_path=1\nfonts=1\npaste=1\nsearchreplace=1\ninsertdate=1\nformat_date=%Y-%m-%d\ninserttime=1\nformat_time=%H:%M:%S\ncolors=1\ntable=1\nsmilies=1\nmedia=1\nhr=1\ndirectionality=1\nfullscreen=1\nstyle=1\nlayer=1\nxhtmlxtras=1\nvisualchars=1\nnonbreaking=1\nblockquote=1\ntemplate=0\nadvimage=1\nadvlink=1\nautosave=1\ncontextmenu=1\ninlinepopups=1\nsafari=1\ncustom_plugin=\ncustom_button=\n\n');
+INSERT INTO `jos_plugins` VALUES (19, 'Editor - TinyMCE', 'tinymce', 'editors', 0, 0, 1, 1, 0, 0, '0000-00-00 00:00:00', 'mode=extended\nskin=0\ncompressed=0\ncleanup_startup=0\ncleanup_save=0\nentity_encoding=raw\nlang_mode=0\nlang_code=en\ntext_direction=ltr\ncontent_css=1\ncontent_css_custom=\nrelative_urls=1\nnewlines=0\ninvalid_elements=applet\nextended_elements=input[name\\|size\\|type\\|value\\|onclick]\ntoolbar=top\ntoolbar_align=left\nhtml_height=550\nhtml_width=750\nelement_path=1\nfonts=1\npaste=1\nsearchreplace=1\ninsertdate=1\nformat_date=%Y-%m-%d\ninserttime=1\nformat_time=%H:%M:%S\ncolors=1\ntable=1\nsmilies=1\nmedia=1\nhr=1\ndirectionality=1\nfullscreen=1\nstyle=1\nlayer=1\nxhtmlxtras=1\nvisualchars=1\nnonbreaking=1\nblockquote=1\ntemplate=0\nadvimage=1\nadvlink=1\nautosave=1\ncontextmenu=1\ninlinepopups=1\nsafari=1\ncustom_plugin=\ncustom_button=\n\n');
 INSERT INTO `jos_plugins` VALUES (20, 'Editor - XStandard Lite 2.0', 'xstandard', 'editors', 0, 0, 0, 1, 0, 0, '0000-00-00 00:00:00', '');
 INSERT INTO `jos_plugins` VALUES (21, 'Editor Button - Image', 'image', 'editors-xtd', 0, 0, 1, 0, 0, 0, '0000-00-00 00:00:00', '');
 INSERT INTO `jos_plugins` VALUES (22, 'Editor Button - Pagebreak', 'pagebreak', 'editors-xtd', 0, 0, 1, 0, 0, 0, '0000-00-00 00:00:00', '');
@@ -4058,7 +3982,8 @@ INSERT INTO `jos_plugins` VALUES (45, 'Content - Article Table of Contents', 'to
 INSERT INTO `jos_plugins` VALUES (46, 'System - Modules Anywhere', 'modulesanywhere', 'system', 0, 0, 1, 0, 0, 0, '0000-00-00 00:00:00', 'style=none\noverride_style=1\noverride_settings=1\nmodule_tag=module\nignore_state=0\nmodulepos_tag=modulepos\nhandle_loadposition=0\n@activate_jumper=0\narticles_enable=1\narticles_security_level=23\ncomponents_enable=1\ncomponents=x\nother_enable=1\nplace_comments=1\n\n');
 INSERT INTO `jos_plugins` VALUES (47, 'Editor Button - Modules Anywhere', 'modulesanywhere', 'editors-xtd', 0, 0, 1, 0, 0, 0, '0000-00-00 00:00:00', '');
 INSERT INTO `jos_plugins` VALUES (48, 'Content - ValAddThis', 'valaddthis', 'content', 0, 0, 0, 0, 0, 62, '2011-05-21 12:07:14', 'plugin_class=\naddthis_pub=\nsecure_server=1\naddthis_type=0\naddthis_type_cat=0\naddthis_type_sec=0\naddthis_type_front=0\naddthis_position=0\nshow_cat=0\nshow_sec=0\nshow_front=0\nfilter_art=\nfilter_cat=\nfilter_sec=\nhtml_before=\nhtml_after=\nservices_compact=facebook, twitter, buzz, delicious\nservices_expanded=\nservices_exclude=\nui_use_css=1\nui_use_addressbook=0\ndata_track_linkback=0\ndata_use_flash=1\ndata_use_cookies=1\nui_use_embeddable_services_beta=0\ndata_ga_tracker=0\nga_tracker_object=\nui_header_color=\nui_header_background=\nui_cobrand=\nui_offset_top=\nui_offset_left=\nui_hover_direction=0\nui_delay=\nui_language=\ntext_share_caption=\ntext_email_caption=\ntext_email=\ntext_favorites=\ntext_more=\nbutton_type=0\nui_click=0\ncustom_choice=0\naddthis_button=0\ncustom_button=\ncustom_text=\ntext_style=\nalt_text=\nrssfeed_url=\ntoolbox_services=\nuse_text_flag=0\nuse_nofollow=0\ntoolbox_style=default\ntoolbox_width=\ntoolbox_sharetext=\ntooltip_text=\nuse_more_flag=1\ntoolbox_more=\ntoolbox_separator=\n\n');
-INSERT INTO `jos_plugins` VALUES (49, 'Disqus Comment System for Joomla! (by JoomlaWorks)', 'jw_disqus', 'content', 0, 0, 1, 0, 0, 62, '2011-07-30 22:45:37', 'disqusSubDomain=swt-matrix\nselectedCategories=\nselectedMenus=1|3|4|13|7|10|15|16|5|11|6\ndisqusListingCounter=0\ndisqusArticleCounter=0\ndisqusDevMode=1\ndebugMode=1\n\n');
+INSERT INTO `jos_plugins` VALUES (49, 'Disqus Comment System for Joomla! (by JoomlaWorks)', 'jw_disqus', 'content', 0, 0, 0, 0, 0, 0, '0000-00-00 00:00:00', 'disqusSubDomain=swt-matrix\nselectedCategories=\nselectedMenus=1|3|4|13|7|10|15|16|5|11|6\ndisqusListingCounter=0\ndisqusArticleCounter=0\ndisqusDevMode=1\ndebugMode=1\n\n');
+INSERT INTO `jos_plugins` VALUES (50, 'Editor - JCE', 'jce', 'editors', 0, 0, 0, 0, 0, 0, '0000-00-00 00:00:00', '');
 
 -- --------------------------------------------------------
 
@@ -4066,7 +3991,6 @@ INSERT INTO `jos_plugins` VALUES (49, 'Disqus Comment System for Joomla! (by Joo
 -- Table structure for table `jos_poll_data`
 -- 
 
-DROP TABLE IF EXISTS `jos_poll_data`;
 CREATE TABLE `jos_poll_data` (
   `id` int(11) NOT NULL auto_increment,
   `pollid` int(11) NOT NULL default '0',
@@ -4087,7 +4011,6 @@ CREATE TABLE `jos_poll_data` (
 -- Table structure for table `jos_poll_date`
 -- 
 
-DROP TABLE IF EXISTS `jos_poll_date`;
 CREATE TABLE `jos_poll_date` (
   `id` bigint(20) NOT NULL auto_increment,
   `date` datetime NOT NULL default '0000-00-00 00:00:00',
@@ -4108,7 +4031,6 @@ CREATE TABLE `jos_poll_date` (
 -- Table structure for table `jos_poll_menu`
 -- 
 
-DROP TABLE IF EXISTS `jos_poll_menu`;
 CREATE TABLE `jos_poll_menu` (
   `pollid` int(11) NOT NULL default '0',
   `menuid` int(11) NOT NULL default '0',
@@ -4126,7 +4048,6 @@ CREATE TABLE `jos_poll_menu` (
 -- Table structure for table `jos_polls`
 -- 
 
-DROP TABLE IF EXISTS `jos_polls`;
 CREATE TABLE `jos_polls` (
   `id` int(11) unsigned NOT NULL auto_increment,
   `title` varchar(255) NOT NULL default '',
@@ -4151,7 +4072,6 @@ CREATE TABLE `jos_polls` (
 -- Table structure for table `jos_redirect_links`
 -- 
 
-DROP TABLE IF EXISTS `jos_redirect_links`;
 CREATE TABLE `jos_redirect_links` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `old_url` varchar(150) NOT NULL,
@@ -4177,7 +4097,6 @@ CREATE TABLE `jos_redirect_links` (
 -- Table structure for table `jos_schemas`
 -- 
 
-DROP TABLE IF EXISTS `jos_schemas`;
 CREATE TABLE `jos_schemas` (
   `extension_id` int(11) NOT NULL,
   `version_id` varchar(20) NOT NULL,
@@ -4195,7 +4114,6 @@ CREATE TABLE `jos_schemas` (
 -- Table structure for table `jos_sections`
 -- 
 
-DROP TABLE IF EXISTS `jos_sections`;
 CREATE TABLE `jos_sections` (
   `id` int(11) NOT NULL auto_increment,
   `title` varchar(255) NOT NULL default '',
@@ -4228,7 +4146,6 @@ INSERT INTO `jos_sections` VALUES (1, 'Products', '', 'products', '', 'content',
 -- Table structure for table `jos_sefaliases`
 -- 
 
-DROP TABLE IF EXISTS `jos_sefaliases`;
 CREATE TABLE `jos_sefaliases` (
   `id` int(11) NOT NULL auto_increment,
   `alias` varchar(255) NOT NULL default '',
@@ -4249,7 +4166,6 @@ CREATE TABLE `jos_sefaliases` (
 -- Table structure for table `jos_sefexts`
 -- 
 
-DROP TABLE IF EXISTS `jos_sefexts`;
 CREATE TABLE `jos_sefexts` (
   `id` int(11) NOT NULL auto_increment,
   `file` varchar(100) NOT NULL,
@@ -4272,7 +4188,6 @@ INSERT INTO `jos_sefexts` VALUES (2, 'com_content.xml', '+^[0-9]*$=limit,limitst
 -- Table structure for table `jos_sefexttexts`
 -- 
 
-DROP TABLE IF EXISTS `jos_sefexttexts`;
 CREATE TABLE `jos_sefexttexts` (
   `id` int(11) NOT NULL auto_increment,
   `extension` varchar(100) NOT NULL,
@@ -4292,7 +4207,6 @@ CREATE TABLE `jos_sefexttexts` (
 -- Table structure for table `jos_sefmoved`
 -- 
 
-DROP TABLE IF EXISTS `jos_sefmoved`;
 CREATE TABLE `jos_sefmoved` (
   `id` int(11) NOT NULL auto_increment,
   `old` varchar(255) NOT NULL,
@@ -4313,7 +4227,6 @@ CREATE TABLE `jos_sefmoved` (
 -- Table structure for table `jos_sefurls`
 -- 
 
-DROP TABLE IF EXISTS `jos_sefurls`;
 CREATE TABLE `jos_sefurls` (
   `id` int(11) NOT NULL auto_increment,
   `cpt` int(11) NOT NULL default '0',
@@ -4356,7 +4269,6 @@ CREATE TABLE `jos_sefurls` (
 -- Table structure for table `jos_sefurlword_xref`
 -- 
 
-DROP TABLE IF EXISTS `jos_sefurlword_xref`;
 CREATE TABLE `jos_sefurlword_xref` (
   `word` int(11) NOT NULL,
   `url` int(11) NOT NULL,
@@ -4374,7 +4286,6 @@ CREATE TABLE `jos_sefurlword_xref` (
 -- Table structure for table `jos_sefwords`
 -- 
 
-DROP TABLE IF EXISTS `jos_sefwords`;
 CREATE TABLE `jos_sefwords` (
   `id` int(11) NOT NULL auto_increment,
   `word` varchar(255) NOT NULL default '',
@@ -4392,7 +4303,6 @@ CREATE TABLE `jos_sefwords` (
 -- Table structure for table `jos_session`
 -- 
 
-DROP TABLE IF EXISTS `jos_session`;
 CREATE TABLE `jos_session` (
   `username` varchar(150) default '',
   `time` varchar(14) default '',
@@ -4413,9 +4323,7 @@ CREATE TABLE `jos_session` (
 -- Dumping data for table `jos_session`
 -- 
 
-INSERT INTO `jos_session` VALUES ('', '1313686799', 'a48e435de573f119daa333f19278faab', 1, 0, '', 0, 0, '__default|a:7:{s:15:"session.counter";i:1;s:19:"session.timer.start";i:1313686799;s:18:"session.timer.last";i:1313686799;s:17:"session.timer.now";i:1313686799;s:22:"session.client.browser";s:99:"Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.112 Safari/535.1";s:8:"registry";O:9:"JRegistry":3:{s:17:"_defaultNameSpace";s:7:"session";s:9:"_registry";a:1:{s:7:"session";a:1:{s:4:"data";O:8:"stdClass":0:{}}}s:7:"_errors";a:0:{}}s:4:"user";O:5:"JUser":19:{s:2:"id";i:0;s:4:"name";N;s:8:"username";N;s:5:"email";N;s:8:"password";N;s:14:"password_clear";s:0:"";s:8:"usertype";N;s:5:"block";N;s:9:"sendEmail";i:0;s:3:"gid";i:0;s:12:"registerDate";N;s:13:"lastvisitDate";N;s:10:"activation";N;s:6:"params";N;s:3:"aid";i:0;s:5:"guest";i:1;s:7:"_params";O:10:"JParameter":7:{s:4:"_raw";s:0:"";s:4:"_xml";N;s:9:"_elements";a:0:{}s:12:"_elementPath";a:1:{i:0;s:85:"/homepages/45/d346168534/htdocs/wsb6077281001/libraries/joomla/html/parameter/element";}s:17:"_defaultNameSpace";s:8:"_default";s:9:"_registry";a:1:{s:8:"_default";a:1:{s:4:"data";O:8:"stdClass":0:{}}}s:7:"_errors";a:0:{}}s:9:"_errorMsg";N;s:7:"_errors";a:0:{}}}');
-INSERT INTO `jos_session` VALUES ('', '1313687134', '963c176a51257ba5af9925acd51a5273', 1, 0, '', 0, 0, '__default|a:7:{s:15:"session.counter";i:1;s:19:"session.timer.start";i:1313687134;s:18:"session.timer.last";i:1313687134;s:17:"session.timer.now";i:1313687134;s:22:"session.client.browser";s:58:"Mozilla/5.0 (compatible; Ezooms/1.0; ezooms.bot@gmail.com)";s:8:"registry";O:9:"JRegistry":3:{s:17:"_defaultNameSpace";s:7:"session";s:9:"_registry";a:1:{s:7:"session";a:1:{s:4:"data";O:8:"stdClass":0:{}}}s:7:"_errors";a:0:{}}s:4:"user";O:5:"JUser":19:{s:2:"id";i:0;s:4:"name";N;s:8:"username";N;s:5:"email";N;s:8:"password";N;s:14:"password_clear";s:0:"";s:8:"usertype";N;s:5:"block";N;s:9:"sendEmail";i:0;s:3:"gid";i:0;s:12:"registerDate";N;s:13:"lastvisitDate";N;s:10:"activation";N;s:6:"params";N;s:3:"aid";i:0;s:5:"guest";i:1;s:7:"_params";O:10:"JParameter":7:{s:4:"_raw";s:0:"";s:4:"_xml";N;s:9:"_elements";a:0:{}s:12:"_elementPath";a:1:{i:0;s:85:"/homepages/45/d346168534/htdocs/wsb6077281001/libraries/joomla/html/parameter/element";}s:17:"_defaultNameSpace";s:8:"_default";s:9:"_registry";a:1:{s:8:"_default";a:1:{s:4:"data";O:8:"stdClass":0:{}}}s:7:"_errors";a:0:{}}s:9:"_errorMsg";N;s:7:"_errors";a:0:{}}}');
-INSERT INTO `jos_session` VALUES ('', '1313686479', 'dd1389bb45d8b60dbd9689f7a565cc19', 1, 0, '', 0, 0, '__default|a:7:{s:15:"session.counter";i:1;s:19:"session.timer.start";i:1313686479;s:18:"session.timer.last";i:1313686479;s:17:"session.timer.now";i:1313686479;s:22:"session.client.browser";s:83:"Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)";s:8:"registry";O:9:"JRegistry":3:{s:17:"_defaultNameSpace";s:7:"session";s:9:"_registry";a:1:{s:7:"session";a:1:{s:4:"data";O:8:"stdClass":0:{}}}s:7:"_errors";a:0:{}}s:4:"user";O:5:"JUser":19:{s:2:"id";i:0;s:4:"name";N;s:8:"username";N;s:5:"email";N;s:8:"password";N;s:14:"password_clear";s:0:"";s:8:"usertype";N;s:5:"block";N;s:9:"sendEmail";i:0;s:3:"gid";i:0;s:12:"registerDate";N;s:13:"lastvisitDate";N;s:10:"activation";N;s:6:"params";N;s:3:"aid";i:0;s:5:"guest";i:1;s:7:"_params";O:10:"JParameter":7:{s:4:"_raw";s:0:"";s:4:"_xml";N;s:9:"_elements";a:0:{}s:12:"_elementPath";a:1:{i:0;s:85:"/homepages/45/d346168534/htdocs/wsb6077281001/libraries/joomla/html/parameter/element";}s:17:"_defaultNameSpace";s:8:"_default";s:9:"_registry";a:1:{s:8:"_default";a:1:{s:4:"data";O:8:"stdClass":0:{}}}s:7:"_errors";a:0:{}}s:9:"_errorMsg";N;s:7:"_errors";a:0:{}}}');
+INSERT INTO `jos_session` VALUES ('', '1349761916', '8659ed4e719493dfc64d23114cff6fe7', 1, 0, '', 0, 0, '__default|a:7:{s:15:"session.counter";i:1;s:19:"session.timer.start";i:1349761916;s:18:"session.timer.last";i:1349761916;s:17:"session.timer.now";i:1349761916;s:22:"session.client.browser";s:67:"Mozilla/5.0 (Windows NT 5.1; rv:15.0) Gecko/20100101 Firefox/15.0.1";s:8:"registry";O:9:"JRegistry":3:{s:17:"_defaultNameSpace";s:7:"session";s:9:"_registry";a:1:{s:7:"session";a:1:{s:4:"data";O:8:"stdClass":0:{}}}s:7:"_errors";a:0:{}}s:4:"user";O:5:"JUser":19:{s:2:"id";i:0;s:4:"name";N;s:8:"username";N;s:5:"email";N;s:8:"password";N;s:14:"password_clear";s:0:"";s:8:"usertype";N;s:5:"block";N;s:9:"sendEmail";i:0;s:3:"gid";i:0;s:12:"registerDate";N;s:13:"lastvisitDate";N;s:10:"activation";N;s:6:"params";N;s:3:"aid";i:0;s:5:"guest";i:1;s:7:"_params";O:10:"JParameter":7:{s:4:"_raw";s:0:"";s:4:"_xml";N;s:9:"_elements";a:0:{}s:12:"_elementPath";a:1:{i:0;s:85:"/homepages/45/d346168534/htdocs/wsb6077281001/libraries/joomla/html/parameter/element";}s:17:"_defaultNameSpace";s:8:"_default";s:9:"_registry";a:1:{s:8:"_default";a:1:{s:4:"data";O:8:"stdClass":0:{}}}s:7:"_errors";a:0:{}}s:9:"_errorMsg";N;s:7:"_errors";a:0:{}}}');
 
 -- --------------------------------------------------------
 
@@ -4423,7 +4331,6 @@ INSERT INTO `jos_session` VALUES ('', '1313686479', 'dd1389bb45d8b60dbd9689f7a56
 -- Table structure for table `jos_stats_agents`
 -- 
 
-DROP TABLE IF EXISTS `jos_stats_agents`;
 CREATE TABLE `jos_stats_agents` (
   `agent` varchar(255) NOT NULL default '',
   `type` tinyint(1) unsigned NOT NULL default '0',
@@ -4442,7 +4349,6 @@ CREATE TABLE `jos_stats_agents` (
 -- Table structure for table `jos_template_styles`
 -- 
 
-DROP TABLE IF EXISTS `jos_template_styles`;
 CREATE TABLE `jos_template_styles` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `template` varchar(50) NOT NULL default '',
@@ -4472,7 +4378,6 @@ INSERT INTO `jos_template_styles` VALUES (7, 'yougrids', 0, '0', 'Yougrids - Def
 -- Table structure for table `jos_templates_menu`
 -- 
 
-DROP TABLE IF EXISTS `jos_templates_menu`;
 CREATE TABLE `jos_templates_menu` (
   `template` varchar(255) NOT NULL default '',
   `menuid` int(11) NOT NULL default '0',
@@ -4493,7 +4398,6 @@ INSERT INTO `jos_templates_menu` VALUES ('khepri', 0, 1);
 -- Table structure for table `jos_update_categories`
 -- 
 
-DROP TABLE IF EXISTS `jos_update_categories`;
 CREATE TABLE `jos_update_categories` (
   `categoryid` int(11) NOT NULL auto_increment,
   `name` varchar(20) default '',
@@ -4514,7 +4418,6 @@ CREATE TABLE `jos_update_categories` (
 -- Table structure for table `jos_update_sites`
 -- 
 
-DROP TABLE IF EXISTS `jos_update_sites`;
 CREATE TABLE `jos_update_sites` (
   `update_site_id` int(11) NOT NULL auto_increment,
   `name` varchar(100) default '',
@@ -4537,7 +4440,6 @@ INSERT INTO `jos_update_sites` VALUES (2, 'Joomla Extension Directory', 'collect
 -- Table structure for table `jos_update_sites_extensions`
 -- 
 
-DROP TABLE IF EXISTS `jos_update_sites_extensions`;
 CREATE TABLE `jos_update_sites_extensions` (
   `update_site_id` int(11) NOT NULL default '0',
   `extension_id` int(11) NOT NULL default '0',
@@ -4557,7 +4459,6 @@ INSERT INTO `jos_update_sites_extensions` VALUES (2, 700);
 -- Table structure for table `jos_updates`
 -- 
 
-DROP TABLE IF EXISTS `jos_updates`;
 CREATE TABLE `jos_updates` (
   `update_id` int(11) NOT NULL auto_increment,
   `update_site_id` int(11) default '0',
@@ -4586,7 +4487,6 @@ CREATE TABLE `jos_updates` (
 -- Table structure for table `jos_user_profiles`
 -- 
 
-DROP TABLE IF EXISTS `jos_user_profiles`;
 CREATE TABLE `jos_user_profiles` (
   `user_id` int(11) NOT NULL,
   `profile_key` varchar(100) NOT NULL,
@@ -4606,7 +4506,6 @@ CREATE TABLE `jos_user_profiles` (
 -- Table structure for table `jos_user_usergroup_map`
 -- 
 
-DROP TABLE IF EXISTS `jos_user_usergroup_map`;
 CREATE TABLE `jos_user_usergroup_map` (
   `user_id` int(10) unsigned NOT NULL default '0' COMMENT 'Foreign Key to #__users.id',
   `group_id` int(10) unsigned NOT NULL default '0' COMMENT 'Foreign Key to #__usergroups.id',
@@ -4626,7 +4525,6 @@ INSERT INTO `jos_user_usergroup_map` VALUES (42, 8);
 -- Table structure for table `jos_usergroups`
 -- 
 
-DROP TABLE IF EXISTS `jos_usergroups`;
 CREATE TABLE `jos_usergroups` (
   `id` int(10) unsigned NOT NULL auto_increment COMMENT 'Primary Key',
   `parent_id` int(10) unsigned NOT NULL default '0' COMMENT 'Adjacency List Reference Id',
@@ -4659,7 +4557,6 @@ INSERT INTO `jos_usergroups` VALUES (8, 1, 18, 19, 'Super Users');
 -- Table structure for table `jos_users`
 -- 
 
-DROP TABLE IF EXISTS `jos_users`;
 CREATE TABLE `jos_users` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
@@ -4686,7 +4583,7 @@ CREATE TABLE `jos_users` (
 -- Dumping data for table `jos_users`
 -- 
 
-INSERT INTO `jos_users` VALUES (62, 'Administrator', 'admin', 'jacek.p.kolodziejczyk@gmail.com', '206fb885934fc3f7d312b204ebca8913:G8wcM1KOP0GdeAb7HF63BeojFVjuumtf', 'Super Administrator', 0, 1, 25, '2011-03-13 21:18:07', '2011-08-18 14:54:23', '', 'admin_language=\nlanguage=\neditor=\nhelpsite=\ntimezone=0\n\n');
+INSERT INTO `jos_users` VALUES (62, 'Administrator', 'admin', 'jacek.p.kolodziejczyk@gmail.com', '206fb885934fc3f7d312b204ebca8913:G8wcM1KOP0GdeAb7HF63BeojFVjuumtf', 'Super Administrator', 0, 1, 25, '2011-03-13 21:18:07', '2012-10-08 23:29:28', '', 'admin_language=\nlanguage=\neditor=\nhelpsite=\ntimezone=0\n\n');
 INSERT INTO `jos_users` VALUES (63, 'Jacek', 'jacek', 'jackolo@poczta.fm', '8f39acd9fba3134e96c5d4f6b025ab16:iNoq0ku6Jp8BW9swWGvNhHOprddJSpBQ', 'Registered', 0, 0, 18, '2011-04-14 13:52:15', '2011-05-03 12:50:34', 'f9b1ef19e09e5e4d7ad9faf64839c132', '');
 INSERT INTO `jos_users` VALUES (64, 'bbb', 'bbb', 'bbb@b.pl', 'a6544a4c61523f4af13493d38994e040:2wAKjgcH2LeVMJU0cZWDVbLE9cSQBW5m', 'Registered', 0, 0, 18, '2011-04-14 15:22:19', '2011-04-14 18:39:48', 'f3c72fb900fbf7edf6463172b21f5b7c', '');
 INSERT INTO `jos_users` VALUES (65, 'cccc', 'cccc', 'c@c.pl', '9da19f8c7b4ae5e12d90a27fbe5b1e51:qWhgjF3a6tMLvDmkBPUXhVZuTqdAER7y', 'Registered', 0, 0, 18, '2011-04-14 18:40:07', '2011-04-14 18:43:00', 'b4df79c17fb4d8a48411228b5102f376', '\n');
@@ -4698,7 +4595,6 @@ INSERT INTO `jos_users` VALUES (66, 'dddd', 'dddd', 'd@d.pl', 'd87e05f38b5389a8e
 -- Table structure for table `jos_viewlevels`
 -- 
 
-DROP TABLE IF EXISTS `jos_viewlevels`;
 CREATE TABLE `jos_viewlevels` (
   `id` int(10) unsigned NOT NULL auto_increment COMMENT 'Primary Key',
   `title` varchar(100) NOT NULL default '',
@@ -4722,7 +4618,6 @@ INSERT INTO `jos_viewlevels` VALUES (3, 'Special', 2, '[6,3,8]');
 -- Table structure for table `jos_weblinks`
 -- 
 
-DROP TABLE IF EXISTS `jos_weblinks`;
 CREATE TABLE `jos_weblinks` (
   `id` int(11) unsigned NOT NULL auto_increment,
   `catid` int(11) NOT NULL default '0',
@@ -4748,3 +4643,34 @@ CREATE TABLE `jos_weblinks` (
 -- Dumping data for table `jos_weblinks`
 -- 
 
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `jos_wf_profiles`
+-- 
+
+CREATE TABLE `jos_wf_profiles` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `users` text NOT NULL,
+  `types` varchar(255) NOT NULL,
+  `components` text NOT NULL,
+  `area` tinyint(3) NOT NULL,
+  `rows` text NOT NULL,
+  `plugins` text NOT NULL,
+  `published` tinyint(3) NOT NULL,
+  `ordering` int(11) NOT NULL,
+  `checked_out` tinyint(3) NOT NULL,
+  `checked_out_time` datetime NOT NULL,
+  `params` text NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+-- 
+-- Dumping data for table `jos_wf_profiles`
+-- 
+
+INSERT INTO `jos_wf_profiles` VALUES (1, 'Default', 'Default Profile for all users', '', '19,20,21,23,24,25', '', 0, 'help,newdocument,undo,redo,spacer,bold,italic,underline,strikethrough,justifyfull,justifycenter,justifyleft,justifyright,spacer,blockquote,formatselect,styleselect,removeformat,cleanup;fontselect,fontsizeselect,forecolor,backcolor,spacer,paste,indent,outdent,numlist,bullist,sub,sup,textcase,charmap,hr;directionality,fullscreen,preview,source,print,searchreplace,spacer,table;visualaid,visualchars,nonbreaking,style,xhtmlxtras,anchor,unlink,link,imgmanager,spellchecker,article', 'contextmenu,browser,inlinepopups,media,help,paste,searchreplace,directionality,fullscreen,preview,source,table,textcase,print,style,nonbreaking,visualchars,xhtmlxtras,imgmanager,link,spellchecker,article', 1, 1, 0, '0000-00-00 00:00:00', '');
+INSERT INTO `jos_wf_profiles` VALUES (2, 'Front End', 'Sample Front-end Profile', '', '19,20,21', '', 1, 'help,newdocument,undo,redo,spacer,bold,italic,underline,strikethrough,justifyfull,justifycenter,justifyleft,justifyright,spacer,formatselect,styleselect;paste,searchreplace,indent,outdent,numlist,bullist,cleanup,charmap,removeformat,hr,sub,sup,textcase,nonbreaking,visualchars;fullscreen,preview,print,visualaid,style,xhtmlxtras,anchor,unlink,link,imgmanager,spellchecker,article', 'contextmenu,inlinepopups,help,paste,searchreplace,fullscreen,preview,print,style,textcase,nonbreaking,visualchars,xhtmlxtras,imgmanager,link,spellchecker,article', 0, 2, 0, '0000-00-00 00:00:00', '');

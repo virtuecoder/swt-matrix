@@ -1092,8 +1092,18 @@ public class  SwtTestCase {
     }
   }
 
-  public RGB getRGB(Rectangle r, int offset) {
-    return getRGB(r.x + offset, r.y + offset);
+  public void assertNotColor(Color color, int x, int y) {
+    RGB rgb = getRGB(x, y);
+
+    if (color.getBlue() == rgb.blue &&
+        color.getGreen() == rgb.green &&
+        color.getRed() == rgb.red) {
+      fail(String.format("Wrong color, expected not %s", color.toString()));
+    }
+  }
+
+  public RGB getRGB(Rectangle r, int offsetX, int offsetY) {
+    return getRGB(r.x + offsetX, r.y + offsetY);
   }
 
   public RGB getRGB(int x, int y) {
@@ -1102,6 +1112,7 @@ public class  SwtTestCase {
     Image image = new Image(display, bounds.width, bounds.height);
     Point p = shell.toDisplay(new Point(bounds.x, bounds.y));
     gc.copyArea(image, p.x, p.y);
+
     ImageData data = image.getImageData();
 //    ImageLoader loader = new ImageLoader();
 //    loader.data = new ImageData[] { data };
@@ -1365,7 +1376,8 @@ public class  SwtTestCase {
   Image getImage(Rectangle r) {
     GC gc = new GC(display);
     final Image image = new Image(display, r.width, r.height);
-    gc.copyArea(image, r.x, r.y);
+    Point p = shell.toDisplay(new Point(r.x, r.y));
+    gc.copyArea(image, p.x, p.y);
     gc.dispose();
     shell.addDisposeListener(new DisposeListener() {
       @Override public void widgetDisposed(DisposeEvent e) {

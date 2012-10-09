@@ -533,11 +533,8 @@ public class Painter<X extends Number, Y extends Number> {
         y3 += height - textSize.y - style.textMarginY; break;
       }
 
-		  if (style.hasWordWraping) {
-		    textLayout.setText(text);
-		    textLayout.setAlignment(style.textAlignX);
-		    textLayout.setWidth(width < 1 ? 1 : textSize.x);
 
+	    if (style.hasWordWraping) {
 //		    Rectangle clipping2 = gc.getClipping();
 		    textLayout.draw(gc, x3, y3);
 		  }
@@ -566,7 +563,20 @@ public class Painter<X extends Number, Y extends Number> {
   */
   protected void clipText() {
     extent = gc.stringExtent(text);
-    if (!style.hasWordWraping) {
+    if (style.hasWordWraping) {
+      int spacing = textLayout.getSpacing();
+      int lineCount = (textSize.y + spacing) / (extent.y + spacing) ;
+      text = FontWidthCache.shortenTextMiddle(
+          text, textSize.x, lineCount, extent, extentCache);
+
+      textLayout.setText(text);
+      textLayout.setAlignment(style.textAlignX);
+      textLayout.setWidth(textSize.x < 1 ? 1 : textSize.x);
+
+      Rectangle lastLineBounds = textLayout.getLineBounds(textLayout.getLineCount() - 1);
+      extent.y = lastLineBounds.y + lastLineBounds.height;
+
+    } else {
       // Compute extent only when font changes or text horizontal align is center or right
 //		    if (fontChange ||
 //          Arrays.contains(EXTENT_ALIGN, style.textAlignX)) {
@@ -583,12 +593,6 @@ public class Painter<X extends Number, Y extends Number> {
 //		      text = FontWidthCache.shortenTextEnd(
 //		        text, width - style.textMarginX * 2, extent, extentCache);
 //		    }
-    }
-    else {
-      int spacing = textLayout.getSpacing();
-      int lineCount = (textSize.y + spacing) / (extent.y + spacing) ;
-      text = FontWidthCache.shortenTextMiddle(
-          text, textSize.x, lineCount, extent, extentCache);
     }
   }
 
@@ -686,15 +690,7 @@ public class Painter<X extends Number, Y extends Number> {
     }
 	}
 
-  /**
-   * Set the style of the painter.
-   * @param style to set
-   */
-  public void setStyle(Style style) {
-    this.style = style;
-  }
-
-	/**
+ 	/**
    * Sets custom data for this painter.
    * <p>
    * Painters {@link #NAME_DRAG_ITEM_X} and {@link #NAME_DRAG_ITEM_Y} use it to

@@ -216,6 +216,8 @@ import pl.netanel.swt.matrix.NumberOrder.ForwardExtentFirstLastSequence;
 	  assertEquals(1, order.getCount().intValue());
 	}
 
+
+
 	@Test
 	public void insertBefore() throws Exception {
 		NumberOrder order = numberOrder(5);
@@ -262,6 +264,22 @@ import pl.netanel.swt.matrix.NumberOrder.ForwardExtentFirstLastSequence;
 		order.insert(1, 2);
 		assertEquals("5, 0-4, 6", order.toString());
 		assertEquals(7, order.getCount().intValue());
+	}
+
+	@Test
+	public void delete() throws Exception {
+	  NumberOrder order = numberOrder(5);
+	  order.delete(1, 2);
+	  assertEquals("0-2", order.toString());
+	  assertEquals(3, order.getCount().intValue());
+	}
+
+	@Test
+	public void deleteAll() throws Exception {
+	  NumberOrder order = numberOrder(5);
+	  order.delete(0, 4);
+	  assertEquals("", order.toString());
+	  assertEquals(0, order.getCount().intValue());
 	}
 
 	@Test

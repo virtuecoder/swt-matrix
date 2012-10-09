@@ -37,9 +37,12 @@
 			<manifest>
 				<attribute name="Class-Path" value="." />
 				<attribute name="Version" value="${version}" />
+				<attribute name="Distribution" value="Retail" />
 			</manifest>
 		</jar>
-
+	</target>
+	
+  <target name="obfuscate"> 
 		<!-- Obfuscate and optimize by ProGuard -->
 		<taskdef resource="proguard/ant/task.properties" classpath="${proguard.dir}/proguard.jar" />
 		<proguard>
@@ -121,7 +124,7 @@
 </target>
 
 <!-- Creates distribition of jar file allowed by EULA + public information --> 
-<target name="dist" depends="clean, jar, javadoc, snippets">
+<target name="dist" depends="clean, jar, obfuscate, javadoc, snippets">
 	<zip destfile="${output.dir}/swt-matrix-${version}.zip">
 		<!-- Binaries -->
 		<fileset dir="${output.dir}" includes="swt-matrix-${version}.jar" />
