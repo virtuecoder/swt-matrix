@@ -36,6 +36,11 @@ import pl.netanel.util.Preconditions;
  * There are toggle button to collapse/expand groups.
  */
 public class Grouping {
+
+  private static final Boolean TOGGLE_EXPAND = false;
+  private static final Boolean TOGGLE_COLLAPSE = true;
+  private static final Boolean TOGGLE_NONE = null;
+
   private final Zone<Integer, Integer> zone;
   private final Matrix<Integer, Integer> matrix;
   private final Node root;
@@ -49,6 +54,7 @@ public class Grouping {
   private NodeVisitor layoutVisitor;
   private CellImageButtonPainter<Integer, Integer> cellPainter;
   private Integer selectLevel = 0;
+
 
   /**
    * Creates groups in the given zone that are spanning in the giving direction
@@ -108,9 +114,10 @@ public class Grouping {
       public Boolean getToggleState(Integer indexX, Integer indexY) {
         // Return true if is expanded
         Node node = getNodeByCellIndex(indexX, indexY);
-        return node.collapseDirection != SWT.NONE && isFirstItem(node, indexX, indexY) &&
-            node.children.length > 1 /*&& node.parent.collapsed == false*/ ?
-                !node.collapsed : null;
+        return node.getToggleState();
+//        return node.collapseDirection != SWT.NONE && isFirstItem(node, indexX, indexY) &&
+//            node.children.size() > 1 /*&& node.parent.collapsed == false*/ ?
+//                !node.collapsed : null;
       }
 
       @Override
@@ -181,7 +188,7 @@ public class Grouping {
       Node parent = root;
 
       @Override
-      protected void visitBefore() {
+      protected void visitBefore(Node node) {
         if (!node.hasChildren()) {
           node.extent = Extent.createUnchecked(index[0], index[0]);
           node.index = index[0]++;
@@ -194,14 +201,14 @@ public class Grouping {
       }
 
       @Override
-      protected void visitAfter() {
+      protected void visitAfter(Node node) {
         maxLevel[0] = java.lang.Math.max(maxLevel[0], level);
         parent = node.parent;
         level--;
         if (node.hasChildren()) {
           node.extent = Extent.createUnchecked(
-              node.children[0].extent.getStart(),
-              node.children[node.children.length-1].extent.getEnd());
+              node.children.get(0).extent.getStart(),
+              node.children.get(node.children.size()-1).extent.getEnd());
         }
       }
 
@@ -259,7 +266,7 @@ public class Grouping {
 
   void createVisitors() {
     layoutVisitor = new NodeVisitor() {
-      @Override protected void visitBefore() {
+      @Override protected void visitBefore(Node node) {
         if (axisDirection == SWT.HORIZONTAL) {
           if (node.hasChildren()) {
             zone.setMerged(node.extent.getStart(), node.extent.getEnd() - node.extent.getStart() + 1,
@@ -414,7 +421,7 @@ public class Grouping {
   public Node getNodeByTreeIndex(final int ...index) {
     Node node  = root;
     for (int i = 0; i < index.length; i++) {
-      node = node.children[index[i]];
+      node = node.children.get(index[i]);
     }
     return root.equals(node) ? null : node;
   }
@@ -429,7 +436,7 @@ public class Grouping {
    */
   public static class Node {
     private final String caption;
-    private final Node[] children;
+    private final List<Node> children;
     private Node parent;
     private int level = -1, index;
     private Extent<Integer> extent;
@@ -439,7 +446,7 @@ public class Grouping {
 
     public Node(String caption, Node ...children) {
       this.caption = caption;
-      this.children = children;
+      this.children = Arrays.asList(children);
       this.collapseDirection = SWT.BEGINNING;
     }
 
@@ -453,7 +460,7 @@ public class Grouping {
      * @return <code>true</code> if this node has children, or false otherwise
      */
     public boolean hasChildren() {
-      return children.length > 0;
+      return !children.isEmpty();
     }
 
     /**
@@ -461,7 +468,7 @@ public class Grouping {
      * @return list of children of this node
      */
     public List<Node> getChildren() {
-      return Arrays.asList(children);
+      return children;
     }
 
     /**
@@ -486,17 +493,17 @@ public class Grouping {
      */
     public Node setCollapsed(boolean state) {
       if (collapseDirection == SWT.NONE || level == -1) return this;
-      collapsed = !collapsed;
+      collapsed = state;
       if (grouping != null) {
         AxisItem<Integer> focusItem = grouping.axis.getFocusItem();
 
         // Collapse
-        if (state == true && children.length > 1) {
+        if (state == true && children.size() > 1) {
           // Find the not collapse able extents to exclude
           final ArrayList<Extent<Integer>> extents = new ArrayList<Extent<Integer>>();
           new NodeVisitor() {
             @Override
-            protected void visitBefore() {
+            protected void visitBefore(Node node) {
               if (node.collapseDirection == SWT.NONE) {
                 stopBranch = true;
                 extents.add(node.extent);
@@ -522,7 +529,7 @@ public class Grouping {
           }
         }
 
-//        // Fix the collapse state of parents
+//        // Expand the parent when all its children are expanded
 //        Node node = this.parent;
 //        while (node != grouping.root) {
 //          boolean allExpanded = true;
@@ -534,6 +541,9 @@ public class Grouping {
 //          }
 //          node = node.parent;
 //        }
+//
+//        // Collapse the children o
+
 
         grouping.matrix.refresh();
         if (focusItem != null) {
@@ -574,7 +584,7 @@ public class Grouping {
         }
         new NodeVisitor() {
           @Override
-          protected void visitBefore() {
+          protected void visitBefore(Node node) {
             node.collapsed = false;
           }
         }.traverse(this);
@@ -582,13 +592,8 @@ public class Grouping {
       else {
         new NodeVisitor() {
           @Override
-          protected void visitAfter() {
-            if (state == true && node.level > 0 && node.collapseDirection != SWT.NONE) {
-              node.collapsed = true;
-            }
-            else {
-              node.setCollapsed(state);
-            }
+          protected void visitAfter(Node node) {
+            node.setCollapsed(state);
           }
         }.traverse(this);
       }
@@ -637,7 +642,7 @@ public class Grouping {
 
       new NodeVisitor() {
         @Override
-        protected void visitBefore() {
+        protected void visitBefore(Node node) {
           node.setCollapseDirection(direction);
         }
       }.traverse(this);
@@ -648,6 +653,30 @@ public class Grouping {
       Preconditions.checkArgument(direction == SWT.BEGINNING
           || direction == SWT.END || direction == SWT.NONE,
           "direction must be either SWT.BEGINNING or SWT.END or SWT.NONE");
+    }
+
+    /**
+     * Returns <code>true</code> if this node is collapsed, or <code>false</code> otherwise.
+     * @return <code>true</code> if this node is collapsed, or <code>false</code> otherwise
+     */
+    public boolean isCollapsed() {
+      return collapsed;
+    }
+
+    Boolean getToggleState() {
+      if (collapseDirection == SWT.NONE || children.size() <= 1) {
+        return TOGGLE_NONE;
+      }
+      not_found: {
+        for (int i = 1; i < children.size(); i++) {
+          if (children.get(i).collapseDirection != SWT.NONE) {
+            break not_found;
+          }
+        }
+        return TOGGLE_NONE;
+      }
+      /*&& node.parent.collapsed == false*/
+      return collapsed ? TOGGLE_EXPAND : TOGGLE_COLLAPSE;
     }
 
   }
@@ -677,14 +706,16 @@ public class Grouping {
 
     /**
      * Method executed before traversing children
+     * @param node2
      * @param node parent for the children to traverse
      */
-    protected void visitBefore() {}
+    protected void visitBefore(Node node) {}
     /**
      * Method executed after traversing children
+     * @param node2
      * @param node parent for the children to traverse
      */
-    protected void visitAfter() {}
+    protected void visitAfter(Node node) {}
 
     /**
      * Returns the latest visited node.
@@ -699,15 +730,13 @@ public class Grouping {
      * @return this object
      */
     public NodeVisitor traverse(Node node) {
-      this.node = node;
-      visitBefore();
+      visitBefore(node);
       if (stop) return this;
       for (Node child: node.children) {
         traverse(child);
         if (stop || stopBranch) return this;
       }
-      this.node = node;
-      visitAfter();
+      visitAfter(node);
       return this;
     }
 
@@ -716,7 +745,7 @@ public class Grouping {
      * @param nodes nodes to traverse
      * @return this object
      */
-    public NodeVisitor traverse(Node[] nodes) {
+    public NodeVisitor traverse(List<Node> nodes) {
       for (Node node: nodes) {
         traverse(node);
         if (stop || stopBranch) break;

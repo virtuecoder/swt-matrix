@@ -70,11 +70,102 @@ public class GroupingTest {
 //    TestUtil.showMatrix(matrix);
   }
 
-  private void createGrouping() {
+  @Test
+  public void expandedInitially() throws Exception {
+    createGrouping3();
+    new Grouping.NodeVisitor() {
+      @Override
+      protected void visitAfter(Node node) {
+        assertFalse(node.isCollapsed());
+      }
+    }.traverse(grouping.getRoot().getChildren());
+  }
+
+  @Test
+  public void collapseAll() throws Exception {
+    createGrouping3();
+    grouping.getRoot().setCollapsedAll(true);
+    assertTrue(grouping.getNodeByTreeIndex(0).isCollapsed());
+    assertTrue(grouping.getNodeByTreeIndex(0, 0).isCollapsed());
+    assertTrue(grouping.getNodeByTreeIndex(0, 0, 0).isCollapsed());
+    assertTrue(grouping.getNodeByTreeIndex(0, 0, 1).isCollapsed());
+    assertTrue(grouping.getNodeByTreeIndex(0, 1).isCollapsed());
+    assertTrue(grouping.getNodeByTreeIndex(1).isCollapsed());
+    assertTrue(grouping.getNodeByTreeIndex(1, 0).isCollapsed());
+    assertTrue(grouping.getNodeByTreeIndex(1, 0, 0).isCollapsed());
+    assertTrue(grouping.getNodeByTreeIndex(1, 0, 1).isCollapsed());
+    assertTrue(grouping.getNodeByTreeIndex(1, 1).isCollapsed());
+    assertFalse(grouping.getNodeByTreeIndex(2).isCollapsed());
+    assertFalse(grouping.getNodeByTreeIndex(2, 0).isCollapsed());
+    assertFalse(grouping.getNodeByTreeIndex(2, 0, 0).isCollapsed());
+    assertFalse(grouping.getNodeByTreeIndex(2, 0, 1).isCollapsed());
+    assertFalse(grouping.getNodeByTreeIndex(2, 1).isCollapsed());
+  }
+
+  @Test
+  public void noToggleWhenOnlyFirstchildIsCollapsible() throws Exception {
+    grouping = new Grouping(matrix.getHeaderX(), SWT.HORIZONTAL, new Node("root",
+      new Node("0",
+          new Node("0.0", new Node("0.0.0"), new Node("0.0.1")),
+          new Node("0.1", new Node("0.1.0"), new Node("0.1.1")).setCollapseDirectionAll(SWT.NONE))));
+    assertEquals(null, grouping.getNodeByTreeIndex(0).getToggleState());
+  }
+
+  @Test
+  public void expandParentWhenAllChildrenExpanded() throws Exception {
+
+  }
+
+  @Test
+  public void collapseFirstChildWhenCollapseParent() throws Exception {
+//    matrix.refresh();
+//
+//    grouping = new Grouping(matrix.getHeaderX(), SWT.HORIZONTAL, new Node("root",
+//            new Node("0",
+//                new Node("0.0", new Node("0.0.0"), new Node("0.0.1")),
+//                new Node("0.1", new Node("0.1.0"), new Node("0.1.1")))));
+//
+//
+//    grouping.getNodeByTreeIndex(0).setCollapsed(false);
+//    assertFalse(grouping.getNodeByTreeIndex(01).isCollapsed());
+//
+//
+//    // Expand all subgroups and the parent group should be expanded as well
+//    assertTrue(grouping.getNodeByTreeIndex(1, 0).isCollapsed());
+//    assertFalse(grouping.getNodeByTreeIndex(1, 1).isCollapsed());
+//    grouping.getNodeByTreeIndex(1, 0).setCollapsed(false);
+//    assertFalse(grouping.getNodeByTreeIndex(1).isCollapsed());
+//
+//    // Collapse parent and all the children should be collapsed too
+//    grouping.getNodeByTreeIndex(1).setCollapsed(true);
+//    assertTrue(grouping.getNodeByTreeIndex(1, 0).isCollapsed());
+  }
+
+  void createGrouping() {
     grouping = new Grouping(matrix.getHeaderX(), SWT.HORIZONTAL,
         new Node("root", new Node("1", new Node("1.1"), new Node("1.2")), new Node("2")));
     matrix.refresh();
   }
 
+  void createGrouping2() {
+    grouping = new Grouping(matrix.getHeaderX(), SWT.HORIZONTAL,
+        new Node("root",
+            new Node("0", new Node("0.0", new Node("0.0.0"), new Node("0.0.1")), new Node("0.1")),
+            new Node("1",
+                new Node("1.0", new Node("1.0.0"), new Node("1.0.1")),
+                new Node("1.1", new Node("1.1.0"), new Node("1.1.1")).setCollapseDirectionAll(SWT.NONE)
+            )));
+    matrix.refresh();
+  }
+
+  void createGrouping3() {
+    grouping = new Grouping(matrix.getHeaderX(), SWT.HORIZONTAL,
+        new Node("root",
+            new Node("1", new Node("1.1", new Node("1.1.1"), new Node("1.1.2")), new Node("1.2")),
+            new Node("2", new Node("2.1", new Node("2.1.1"), new Node("2.1.2")), new Node("2.2")),
+            new Node("3", new Node("3.1", new Node("3.1.1"), new Node("3.1.2")), new Node("3.2"))
+              .setCollapseDirectionAll(SWT.NONE)));
+    matrix.refresh();
+  }
 
 }

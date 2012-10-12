@@ -21,8 +21,6 @@ import pl.netanel.swt.matrix.ZoneEditor.ZoneEditorData;
 
 /**
  * Creates embedded controls rather then drawing directly if the layout has been modified.
- *
- * @author Jacek Kolodziejczyk created 14-06-2011
  */
 class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painter<X, Y> {
 	private final ZoneEditor<X, Y> editor;

@@ -30,6 +30,10 @@ Grouping: collapse to end
 Grouping: summary column
 Grouping: moving items
 
+http://stackoverflow.com/questions/121324/a-java-api-to-generate-java-source-files
+http://codemodel.java.net/
+
+Make ready for eclipse 4.2
 
 Multithreaded compute of x and y axis
 Binary search in sequence.seek

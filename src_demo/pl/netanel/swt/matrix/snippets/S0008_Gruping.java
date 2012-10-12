@@ -15,8 +15,6 @@ public class S0008_Gruping {
 
   static final Node structure = new Node("root",
     new Node("Group1",
-        new Node("Format",
-            new Node("format")),
         new Node("Pricing",
           new Node("strike"),
           new Node("barier")),

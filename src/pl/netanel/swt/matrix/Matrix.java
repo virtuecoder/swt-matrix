@@ -7,6 +7,7 @@
  ******************************************************************************/
 package pl.netanel.swt.matrix;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.Executors;
@@ -526,7 +527,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	}
 
 	void onPaint(Event event) {
-//		long t = System.nanoTime();
+		long t = System.nanoTime();
 		final GC gc = event.gc;
 		layoutX.computeIfRequired();
 		layoutY.computeIfRequired();
@@ -540,7 +541,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 //		gc.setBackground(Resources.getColor(SWT.COLOR_RED));
 //		gc.fillRectangle(51, 193, 3, 18);
 
-//		System.out.println(BigDecimal.valueOf(System.nanoTime() - t, 6).toString());
+		System.out.println(BigDecimal.valueOf(System.nanoTime() - t, 9).toString());
 	}
 
 	/*------------------------------------------------------------------------
