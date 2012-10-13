@@ -30,6 +30,8 @@ Grouping: collapse to end
 Grouping: summary column
 Grouping: moving items
 
+Decouple ZoneEditor from Zone. Use Zone.setEditor to attach to zone instead of ZoneEditor constructor.
+
 http://stackoverflow.com/questions/121324/a-java-api-to-generate-java-source-files
 http://codemodel.java.net/
 

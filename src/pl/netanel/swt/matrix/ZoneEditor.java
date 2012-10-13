@@ -308,7 +308,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	private void cancel(Control control) {
 	  ZoneEditorData<X, Y> data = getData(control);
 		if (control != null && data != null && data.isEmbedded == false) {
-			disposeControl(control);
+			removeControl(control);
 		}
 		getMatrix().forceFocus();
 	}
@@ -396,8 +396,10 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	 * @param control
 	 * @see #createControl(Number, Number)
 	 */
-	protected void disposeControl(Control control) {
-		control.dispose();
+	protected void removeControl(Control control) {
+	  if (control != null) {
+	    control.dispose();
+	  }
 	}
 
 

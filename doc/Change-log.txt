@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------
+Version 0.7.11
+
+API changes:
+- Renamed ZoneEditor.disposeControl to ZoneEditor.removeControl
+
+-------------------------------------------------------------------------------
 Version 0.7.10
 
 Bug fixes:

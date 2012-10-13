@@ -607,12 +607,12 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 					AxisLayoutSequence<Y> seqY = layoutY.cellSequence(frozenY, sectionY);
 					AxisLayoutSequence<X> seqX = layoutX.cellSequence(frozenX, sectionX);
 					for (seqY.init(); seqY.next();) {
-						int distance = seqY.getDistance();
-						int width = seqY.getWidth();
+//						int distance = seqY.getDistance();
+//						int width = seqY.getWidth();
 						Y index = seqY.getIndex();
 						for (seqX.init(); seqX.next();) {
 						  p.setup(seqX.getIndex(), index);
-							p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
+							//p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
 						}
 					}
 					p.clean();

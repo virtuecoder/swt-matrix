@@ -20,117 +20,124 @@ import org.eclipse.swt.widgets.Listener;
 import pl.netanel.swt.matrix.ZoneEditor.ZoneEditorData;
 
 /**
- * Creates embedded controls rather then drawing directly if the layout has been modified.
+ * Creates embedded controls rather then drawing directly if the layout has been
+ * modified.
  */
 class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painter<X, Y> {
-	private final ZoneEditor<X, Y> editor;
-	HashMap<Number, HashMap<Number, Control>> controls;
-	boolean needsPainting;
-	private final Listener focusInListener;
-	private final ControlListener controlListener;
+  private final ZoneEditor<X, Y> editor;
+  HashMap<Number, HashMap<Number, Control>> controls;
+  boolean needsPainting;
+  private final Listener focusInListener;
+  private final ControlListener controlListener;
 
-	public EmbeddedControlsPainter(final ZoneEditor<X, Y> editor) {
-		super(Painter.NAME_EMBEDDED_CONTROLS);
-		this.editor = editor;
-		controls = new HashMap<Number, HashMap<Number, Control>>();
+  public EmbeddedControlsPainter(final ZoneEditor<X, Y> editor) {
+    super(Painter.NAME_EMBEDDED_CONTROLS);
+    this.editor = editor;
+    controls = new HashMap<Number, HashMap<Number, Control>>();
 
-		// Set the focus cell in the matrix when the cell control gets focus
-		focusInListener = new Listener() {
-			@Override
-			public void handleEvent(Event e) {
-				Matrix<X, Y> matrix = getMatrix();
-				ZoneEditorData<X, Y> data = editor.getData(e.widget);
-				matrix.layout.setSelected(false, true);
-				matrix.axisY.setFocusItem(AxisItem.createInternal(editor.zone.sectionY, data.indexY));
-				matrix.axisX.setFocusItem(AxisItem.createInternal(editor.zone.sectionX, data.indexX));
-				matrix.redraw();
-			}
-		};
+    // Set the focus cell in the matrix when the cell control gets focus
+    focusInListener = new Listener() {
+      @Override
+      public void handleEvent(Event e) {
+        Matrix<X, Y> matrix = getMatrix();
+        ZoneEditorData<X, Y> data = editor.getData(e.widget);
+        matrix.layout.setSelected(false, true);
+        matrix.axisY.setFocusItem(AxisItem.createInternal(editor.zone.sectionY, data.indexY));
+        matrix.axisX.setFocusItem(AxisItem.createInternal(editor.zone.sectionX, data.indexX));
+        matrix.redraw();
+      }
+    };
 
-		// Set the repainting flag when the axis item gets resized or moved
-		controlListener = new ControlListener() {
-			@Override
-			public void controlMoved(ControlEvent e) {
-				needsPainting = true;
-			}
-			@Override
-			public void controlResized(ControlEvent e) {
-				needsPainting = true;
-			}
-		};
-		editor.zone.getSectionY().addControlListener(controlListener);
-		editor.zone.getSectionX().addControlListener(controlListener);
-	}
+    // Set the repainting flag when the axis item gets resized or moved
+    controlListener = new ControlListener() {
+      @Override
+      public void controlMoved(ControlEvent e) {
+        needsPainting = true;
+      }
 
-
-	@Override
-	protected boolean init() {
-		if (!needsPainting) return false;
-		clearControls();
-		return true;
-	}
-
-
-  void clearControls() {
-    for (Entry<Number, HashMap<Number, Control>> entry: controls.entrySet()) {
-			for (Control control: entry.getValue().values()) {
-				control.dispose();
-			}
-		}
-		controls.clear();
+      @Override
+      public void controlResized(ControlEvent e) {
+        needsPainting = true;
+      }
+    };
+    editor.zone.getSectionY().addControlListener(controlListener);
+    editor.zone.getSectionX().addControlListener(controlListener);
   }
 
-	@Override
-	public void setup(X indexX, Y indexY) {
-		if (editor.hasEmbeddedControl(indexX, indexY)) {
-			Control control = editor.addControl(indexX, indexY);
-			if (control != null) {
-			  control.addListener(SWT.FocusIn, focusInListener );
-			  control.addListener(SWT.Selection, new Listener() {
-			    @Override public void handleEvent(Event event) {
-			      getMatrix().forceFocus();
-			    }
-			  });
-			}
+  @Override
+  protected boolean init() {
+    if (!needsPainting) {
+      return false;
+    }
+    clearControls();
+    return true;
+  }
 
-//			control.addListener(SWT.Selection, listener );
-			HashMap<Number, Control> row = controls.get(indexY);
-			if (row == null) {
-				controls.put(indexY, row = new HashMap<Number, Control>());
-			}
-			row.put(indexX, control);
-		}
-	}
+  void clearControls() {
+    for (Entry<Number, HashMap<Number, Control>> entry : controls.entrySet()) {
+      for (Control control : entry.getValue().values()) {
+        editor.removeControl(control);
+      }
+    }
+    controls.clear();
+  }
 
-	@Override
-	public void clean() {
-		if (needsPainting) {
-			getMatrix().forceFocus();
-		needsPainting = false;
-		}
-	}
+  @Override
+  public void setup(X indexX, Y indexY) {
+    if (editor.hasEmbeddedControl(indexX, indexY)) {
+      Control control = editor.addControl(indexX, indexY);
+      if (control != null) {
+        control.addListener(SWT.FocusIn, focusInListener);
+        control.addListener(SWT.Selection, new Listener() {
+          @Override
+          public void handleEvent(Event event) {
+            getMatrix().forceFocus();
+          }
+        });
+      }
 
-	public Control getControl(X indexX, Y indexY) {
-		HashMap<Number, Control> row = controls.get(indexY);
-		if (row == null) {
-			return null;
-		}
-		else {
-			return row.get(indexX);
-		}
-	}
+      // control.addListener(SWT.Selection, listener );
+      HashMap<Number, Control> row = controls.get(indexY);
+      if (row == null) {
+        controls.put(indexY, row = new HashMap<Number, Control>());
+      }
+      row.put(indexX, control);
+    }
+  }
 
-	@Override
-	protected void setMatrix(final Matrix<X, Y> matrix) {
-		Runnable r = new Runnable() {
-			@Override
-			public void run() {
-				needsPainting = true;
-			}
-		};
-		matrix.layoutY.callbacks.add(r);
-		matrix.layoutX.callbacks.add(r);
+  @Override
+  protected void paint(int x, int y, int width, int height) {
+    // do nothing
+  }
 
-		super.setMatrix(matrix);
-	}
+  @Override
+  public void clean() {
+    if (needsPainting) {
+      getMatrix().forceFocus();
+      needsPainting = false;
+    }
+  }
+
+  public Control getControl(X indexX, Y indexY) {
+    HashMap<Number, Control> row = controls.get(indexY);
+    if (row == null) {
+      return null;
+    } else {
+      return row.get(indexX);
+    }
+  }
+
+  @Override
+  protected void setMatrix(final Matrix<X, Y> matrix) {
+    Runnable r = new Runnable() {
+      @Override
+      public void run() {
+        needsPainting = true;
+      }
+    };
+    matrix.layoutY.callbacks.add(r);
+    matrix.layoutX.callbacks.add(r);
+
+    super.setMatrix(matrix);
+  }
 }
