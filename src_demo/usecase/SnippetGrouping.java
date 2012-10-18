@@ -50,7 +50,8 @@ public class SnippetGrouping {
     /* Create class holding the API and all the logic to achieve grouping effect
        in the given zone and along the given direction */
     Zone<Integer, Integer> zone = axisDirection == SWT.HORIZONTAL ? matrix.getHeaderX() : matrix.getHeaderY();
-    new Grouping(zone, axisDirection, structure);
+    Grouping grouping = new Grouping(zone, axisDirection, structure);
+    grouping.dispose();
   }
 
   void pack() {

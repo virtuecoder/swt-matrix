@@ -32,8 +32,8 @@ import pl.netanel.util.Preconditions;
 
 /**
  * Manages collapse-able hierarchy of item groups.
- * Parent node spans across its children.
- * There are toggle button to collapse/expand groups.
+ * Parent nodes span across its children.
+ * There are toggle buttons to collapse/expand groups.
  */
 public class Grouping {
 
@@ -54,6 +54,8 @@ public class Grouping {
   private NodeVisitor layoutVisitor;
   private CellImageButtonPainter<Integer, Integer> cellPainter;
   private Integer selectLevel = 0;
+  private Painter<Integer, Integer> oldCellPainter;
+  private Listener selectItemListener;
 
 
   /**
@@ -97,11 +99,12 @@ public class Grouping {
     zone.getMatrix().addListener(SWT.Dispose, new Listener() {
       @Override
       public void handleEvent(Event e) {
-        if (trueImage != null) trueImage.dispose();
-        if (falseImage != null) falseImage.dispose();
+        if (trueImage != null && !trueImage.isDisposed()) trueImage.dispose();
+        if (falseImage != null && !falseImage.isDisposed()) falseImage.dispose();
       }
     });
 
+    oldCellPainter = zone.getPainter(Painter.NAME_CELLS);
     cellPainter = new CellImageButtonPainter<Integer, Integer>(Painter.NAME_CELLS, trueImage, falseImage)
     {
 
@@ -138,7 +141,7 @@ public class Grouping {
         }
       }
     };
-    zone.replacePainterPreserveStyle(cellPainter);
+    zone.replacePainter(cellPainter);
 
     cellPainter.style.textAlignY = SWT.CENTER;
     cellPainter.style.imageAlignX = SWT.END;
@@ -149,7 +152,7 @@ public class Grouping {
     //zone.unbind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
     final int commandId = axisDirection == SWT.HORIZONTAL ? Matrix.CMD_SELECT_COLUMN : Matrix.CMD_SELECT_ROW;
     zone.unbind(commandId, SWT.MouseDown, 1);
-    zone.addListener(SWT.MouseDown, new Listener() {
+    selectItemListener = new Listener() {
       @Override
       public void handleEvent(Event e) {
         AxisItem<Integer> itemX = zone.getMatrix().getAxisX().getMouseItem();
@@ -174,9 +177,28 @@ public class Grouping {
           matrix.redraw();
         }
       }
-    });
+    };
+    zone.addListener(SWT.MouseDown, selectItemListener);
+  }
 
+  /**
+   * Disposes the grouping.
+   * <ul>
+   * <li>Reverts back the old cell painter</li>
+   * <li>Removes cell merging</li>
+   * <li>Sets the number of levels to 1</li>
+   * <li>Brings back the normal item selection handler</li>
+   * </ul>
+   */
+  public void dispose() {
+    zone.replacePainter(oldCellPainter);
+    zone.setMerged(0, zone.getSectionX().getCount(), 0, zone.getSectionY().getCount(), false);
 
+    final int commandId = axisDirection == SWT.HORIZONTAL ? Matrix.CMD_SELECT_COLUMN : Matrix.CMD_SELECT_ROW;
+    zone.bind(commandId, SWT.MouseDown, 1);
+    zone.removeListener(SWT.MouseDown, selectItemListener);
+
+    section2.setCount(1);
   }
 
   private void initNodes() {

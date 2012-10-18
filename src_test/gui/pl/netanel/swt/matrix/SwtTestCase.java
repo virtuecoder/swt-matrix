@@ -1362,12 +1362,12 @@ public class  SwtTestCase {
     System.out.println(sb);
   }
 
-  static void saveImage(Image image) {
+  public static void saveImage(Image image) {
     ImageLoader loader = new ImageLoader();
     loader.data = new ImageData[] { image.getImageData() };
     loader.save("image.png", SWT.IMAGE_PNG);
   }
-  static void saveImage(Image image, String name) {
+  public static void saveImage(Image image, String name) {
     ImageLoader loader = new ImageLoader();
     loader.data = new ImageData[] { image.getImageData() };
     loader.save(name, name.endsWith(".png") ? SWT.IMAGE_PNG : -1);

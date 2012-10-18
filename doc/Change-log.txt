@@ -1,5 +1,28 @@
 -------------------------------------------------------------------------------
+Version 0.7.13
+
+Features changes:
+- CellImageButtonPainter can work with single image to emulate image buttons. 
+
+API changes:
+- Added CellImageButtonPainter(String, image)
+
+Bug fixes:
+- Section.setWidth(Number) did not consider the size of embedded controls
+- Deleting items was causing index out of bounds exception in cell selection set
+
+-------------------------------------------------------------------------------
+Version 0.7.12
+
+API changes:
+- Added Zone.removeListener(int, Listener)
+- Added Grouping.dispose()
+
+-------------------------------------------------------------------------------
 Version 0.7.11
+
+Bug fixes
+- Embeded Button control was causing endless painting loop.
 
 API changes:
 - Renamed ZoneEditor.disposeControl to ZoneEditor.removeControl

@@ -7,6 +7,7 @@
  ******************************************************************************/
 package pl.netanel.swt.matrix.reloaded;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -21,19 +22,46 @@ import pl.netanel.util.Preconditions;
  * Get cell indexes when given coordinates are inside the cell image.
  * Toggle image
  */
-public abstract class CellImageButtonPainter<X extends Number, Y extends Number> extends Painter<X, Y> {
+public class CellImageButtonPainter<X extends Number, Y extends Number> extends Painter<X, Y> {
 
   private Image trueImage;
   private Image falseImage;
   private Rectangle imageBounds;
 
+  /**
+   * Creates toggle button behavior and displaying trueImage
+   * when {@link #getToggleState(Number, Number)} returns {@link Boolean#TRUE},
+   * <code>falseImage</code> when {@link Boolean#FALSE}
+   * and nothing when it returns <code>null</code>.
+   *
+   * @param name name of the painter
+   * @param trueImage image to display when the toggle is set to true
+   * @param falseImage image to display when the toggle is set to false
+   */
   public CellImageButtonPainter(String name, Image trueImage, Image falseImage) {
     super(name, Painter.SCOPE_CELLS);
 
-    Preconditions.checkNotNullWithName(trueImage, "image0");
+    Preconditions.checkNotNullWithName(trueImage, "trueImage");
+    Preconditions.checkNotNullWithName(falseImage, "falseImage");
     // Images must have the same sizes
 
     setToggleImages(trueImage, falseImage);
+  }
+
+  /**
+   * Creates push button behavior using the given image as the button.
+   * @param name name of the painter
+   * @param trueImage image to emulate the button
+   */
+  public CellImageButtonPainter(String name, Image buttonImage) {
+    super(name, Painter.SCOPE_CELLS);
+
+    Preconditions.checkNotNullWithName(buttonImage, "buttonImage");
+    image = buttonImage;
+    imageBounds = image.getBounds();
+
+    style.imageAlignX = SWT.RIGHT;
+    style.imageMarginX = style.imageMarginY = 2;
   }
 
   public void setToggleImages(Image trueImage, Image falseImage) {
@@ -53,16 +81,23 @@ public abstract class CellImageButtonPainter<X extends Number, Y extends Number>
    * @param indexY
    * @return
    */
-  public abstract Boolean getToggleState(X indexX, Y indexY);
+  public Boolean getToggleState(X indexX, Y indexY) {
+    return true;
+  }
 
+  /**
+   * Overrides the default method setting the image related to toggle state.
+   */
   @Override
   public void setupSpatial(X indexX, Y indexY) {
     super.setupSpatial(indexX, indexY);
-    Boolean toggle = getToggleState(indexX, indexY);
-    image =
-      toggle == null         ? null :
-      toggle == Boolean.TRUE ? trueImage :
-                               falseImage;
+    if (trueImage != null) {
+      Boolean toggle = getToggleState(indexX, indexY);
+      image =
+          toggle == null         ? null :
+          toggle == Boolean.TRUE ? trueImage :
+                                   falseImage;
+    }
   };
 
   /**
@@ -93,4 +128,5 @@ public abstract class CellImageButtonPainter<X extends Number, Y extends Number>
     return imageX <= x  && x <= imageX + imageBounds.width &&
         imageY <= y && y <= imageY + imageBounds.height;
   }
+
 }

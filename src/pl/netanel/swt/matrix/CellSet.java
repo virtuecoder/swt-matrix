@@ -368,27 +368,25 @@ class CellSet<X extends Number, Y extends Number> {
 
 
 	public void deleteY(Y start, Y end) {
-		for (int i = 0, imax = itemsY.size(); i < imax; i++) {
-			MutableExtent.delete(mathY, itemsY, start, end);
-		}
+		IntArray toRemove = MutableExtent.delete(mathY, itemsY, start, end);
+    for (int j = 0; j < toRemove.size(); j++) {
+      itemsX.remove(toRemove.get(j));
+    }
 	}
 
 	public void deleteX(X start, X end) {
-		for (int i = 0, imax = itemsY.size(); i < imax; i++) {
-			MutableExtent.delete(mathX, itemsX, start, end);
-		}
+		IntArray toRemove = MutableExtent.delete(mathX, itemsX, start, end);
+		for (int j = 0; j < toRemove.size(); j++) {
+		  itemsY.remove(toRemove.get(j));
+    }
 	}
 
 	public void insertY(Y target, Y count) {
-		for (int i = 0, imax = itemsY.size(); i < imax; i++) {
-			MutableExtent.insert(mathY, itemsY, target, count);
-		}
+		MutableExtent.insert(mathY, itemsY, target, count);
 	}
 
 	public void insertX(X target, X count) {
-		for (int i = 0, imax = itemsY.size(); i < imax; i++) {
-			MutableExtent.insert(mathX, itemsX, target, count);
-		}
+	  MutableExtent.insert(mathX, itemsX, target, count);
 	}
 
 

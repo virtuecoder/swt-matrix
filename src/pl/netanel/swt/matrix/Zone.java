@@ -421,6 +421,31 @@ public interface Zone<X extends Number, Y extends Number> {
    */
   void addListener(int eventType, final Listener listener);
 
+
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when an event of the given type occurs. The event
+   * type is one of the event constants defined in class <code>SWT</code>.
+   *
+   * @param eventType the type of event to listen for
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see Listener
+   * @see SWT
+   * @see #addListener
+   * @see #getListeners(int)
+   * @see #notifyListeners
+   */
+  public void removeListener (int eventType, Listener listener) ;
+
   /**
    * Adds the painter at the end of the receiver's painters list.
    * @param painter the painter to be added
@@ -578,6 +603,8 @@ public interface Zone<X extends Number, Y extends Number> {
   Matrix<X, Y> getMatrix();
 
   boolean contains(CellExtent<X, Y> cellExtent, X indexX, Y indexY);
+
+
 
 
 

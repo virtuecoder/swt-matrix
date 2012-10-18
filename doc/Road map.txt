@@ -29,6 +29,7 @@ Commands: undo, record, replay
 Grouping: collapse to end
 Grouping: summary column
 Grouping: moving items
+Cache embedded controls for repainting
 
 Decouple ZoneEditor from Zone. Use Zone.setEditor to attach to zone instead of ZoneEditor constructor.
 

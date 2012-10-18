@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -140,4 +141,15 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 
     super.setMatrix(matrix);
   }
+
+  @Override
+  public Point computeSize(X indexX, Y indexY, int wHint, int hHint) {
+    Control control = getControl(indexX, indexY);
+    if (control == null) {
+      return new Point(wHint, hHint);
+    }
+    else {
+      return control.computeSize(wHint, hHint);
+    }
+  };
 }

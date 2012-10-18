@@ -35,28 +35,28 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void testOfTest1() throws Exception {
-		insert(	"■■" 	,
+		add(	"■■" 	,
 				"■■" 	);
 		assertEquals("[0-1, 0-1]", set.toString());
 	}
 
 	@Test
 	public void testOfTest2() throws Exception {
-		insert(	"∟∟" 	,
+		add(	"∟∟" 	,
 				"∟■" 	);
 		assertEquals("[1-1, 1-1]", set.toString());
 	}
 
 	@Test
 	public void testOfTest3() throws Exception {
-		insert(	"■∟" 	,
+		add(	"■∟" 	,
 				"∟∟" 	);
 		assertEquals("[0-0, 0-0]", set.toString());
 	}
 
 	@Test
 	public void testOfTest4() throws Exception {
-		insert(	"■∟■" );
+		add(	"■∟■" );
 		assertEquals("[0-0, 0-0], [0-0, 2-2]", set.toString());
 	}
 
@@ -69,16 +69,16 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addTheSame() throws Exception {
-		insert(	"■"		);
-		insert(	"■"		);
+		add(	"■"		);
+		add(	"■"		);
 		result(	"■"		);
 		count(1);
 	}
 
 	@Test
 	public void addApart() throws Exception {
-		insert(	"■∟"	);
-		insert(	"∟∟"	,
+		add(	"■∟"	);
+		add(	"∟∟"	,
 				"∟■"	);
 		result(	"■∟" 	,
 				"∟■" 	);
@@ -87,16 +87,16 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addApart2() throws Exception {
-		insert(	"■∟∟"		);
-		insert(	"∟∟■" );
+		add(	"■∟∟"		);
+		add(	"∟∟■" );
 		result(	"■∟■" );
 		count(2);
 	}
 
 	@Test
 	public void addExtendAfterSimetric() throws Exception {
-		insert(	"■∟"   );
-		insert(	"■■" 	,
+		add(	"■∟"   );
+		add(	"■■" 	,
 				"■■" 	);
 		result(	"■■" 	,
 				"■■" 	);
@@ -105,9 +105,9 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addExtendBeforeSimetric() throws Exception {
-		insert(	"∟∟" 	,
+		add(	"∟∟" 	,
 				"∟■" 	);
-		insert(	"■■" 	,
+		add(	"■■" 	,
 				"■■" 	);
 		result(	"■■" 	,
 				"■■" 	);
@@ -116,9 +116,9 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addInside() throws Exception {
-		insert(	"■■" 	,
+		add(	"■■" 	,
 				"■■" 	);
-		insert(	"■∟" 	,
+		add(	"■∟" 	,
 				"∟∟" 	);
 		result(	"■■" 	,
 				"■■" 	);
@@ -127,9 +127,9 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addInside2() throws Exception {
-		insert( "■■" 	,
+		add( "■■" 	,
 		    	"■■" 	);
-		insert(	"∟∟" 	,
+		add(	"∟∟" 	,
 		    	"∟■" 	);
 		result( "■■" 	,
 		        "■■" 	);
@@ -138,10 +138,10 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addInside3() throws Exception {
-		insert( "■■■" 	,
+		add( "■■■" 	,
 				"■■■" 	,
 				"■■■" 	);
-		insert(	"∟∟∟" 	,
+		add(	"∟∟∟" 	,
 				"∟■∟" 	);
 		result( "■■■" 	,
 				"■■■" 	,
@@ -151,9 +151,9 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addOverlap() throws Exception {
-		insert(	"∟∟∟" 	,
+		add(	"∟∟∟" 	,
 				"∟■∟" 	);
-		insert( "■■■" 	,
+		add( "■■■" 	,
 				"■■■" 	,
 				"■■■" 	);
 		result( "■■■" 	,
@@ -164,9 +164,9 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addCrossAfterSimetric() throws Exception {
-		insert(	"■■∟" 	,
+		add(	"■■∟" 	,
 				"■■∟" 	);
-		insert( "∟∟∟" 	,
+		add( "∟∟∟" 	,
 				"∟■■" 	,
 				"∟■■" 	);
 		result( "■■∟" 	,
@@ -177,10 +177,10 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addCrossBeforeSimetric() throws Exception {
-		insert( "∟∟∟" 	,
+		add( "∟∟∟" 	,
 				"∟■■" 	,
 				"∟■■" 	);
-		insert(	"■■∟" 	,
+		add(	"■■∟" 	,
 				"■■∟" 	,
 				"∟∟∟" 	);
 		result( "■■∟" 	,
@@ -191,11 +191,11 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addCrossBeforeBig() throws Exception {
-		insert( "∟∟∟∟" 	,
+		add( "∟∟∟∟" 	,
 				"∟∟∟∟" 	,
 				"∟∟■■" 	,
 				"∟∟■■" 	);
-		insert(	"■■■∟" 	,
+		add(	"■■■∟" 	,
 				"■■■∟" 	,
 				"■■■∟" 	,
 				"∟∟∟∟" 	);
@@ -208,10 +208,10 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addCrossLeft() throws Exception {
-		insert( "∟∟∟" 	,
+		add( "∟∟∟" 	,
 				"■■■" 	,
 				"∟∟∟" 	);
-		insert(	"■∟∟" 	,
+		add(	"■∟∟" 	,
 				"■∟∟" 	,
 				"■∟∟" 	);
 		result( "■∟∟" 	,
@@ -222,10 +222,10 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addCrossMiddle() throws Exception {
-		insert( "∟■∟" 	,
+		add( "∟■∟" 	,
 				"∟■∟" 	,
 				"∟■∟" 	);
-		insert(	"∟∟∟" 	,
+		add(	"∟∟∟" 	,
 				"■■■" 	,
 				"∟∟∟" 	);
 		result( "∟■∟" 	,
@@ -236,9 +236,9 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addColumnAfter() throws Exception {
-		insert( "■" 	,
+		add( "■" 	,
 				"■" 	);
-		insert(	"∟■" 	,
+		add(	"∟■" 	,
 				"∟■"	);
 		result( "■■" 	,
 				"■■" 	);
@@ -247,9 +247,9 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addCoumnBefore() throws Exception {
-		insert( "∟■" 	,
+		add( "∟■" 	,
 				"∟■" 	);
-		insert(	"■" 	,
+		add(	"■" 	,
 				"■"		);
 		result( "■■" 	,
 				"■■" 	);
@@ -258,9 +258,9 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addRowAfter() throws Exception {
-		insert( "■■" 	,
+		add( "■■" 	,
 				"∟∟" 	);
-		insert(	"∟∟" 	,
+		add(	"∟∟" 	,
 				"■■"		);
 		result( "■■" 	,
 				"■■" 	);
@@ -269,9 +269,9 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addRowBefore() throws Exception {
-		insert( "∟∟" 	,
+		add( "∟∟" 	,
 				"■■" 	);
-		insert(	"■■" 	,
+		add(	"■■" 	,
 				"∟∟"	);
 		result( "■■" 	,
 				"■■" 	);
@@ -280,9 +280,9 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void addAdjacentRight() throws Exception {
-		insert( "■■" 	,
+		add( "■■" 	,
 				"■■" 	);
-		insert(	"∟∟■"	);
+		add(	"∟∟■"	);
 		result( "■■■"	,
 				"■■∟"	);
 		count(5);
@@ -303,7 +303,7 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void removeTheSame1() throws Exception {
-		insert( "■" 	);
+		add( "■" 	);
 		remove( "■" 	);
 		result( ""		);
 		count(0);
@@ -311,7 +311,7 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void removeNothing1() throws Exception {
-		insert( "■" 	);
+		add( "■" 	);
 		remove( "∟" 	);
 		result( "■"		);
 		count(1);
@@ -319,7 +319,7 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void removeNothing2() throws Exception {
-		insert( "∟■∟" 	);
+		add( "∟■∟" 	);
 		remove( "∟∟∟" 	);
 		result( "∟■∟"		);
 		count(1);
@@ -327,7 +327,7 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void removeTheSame2() throws Exception {
-		insert( "■■" 	,
+		add( "■■" 	,
 				"■■"	);
 		remove( "■■" 	,
 				"■■"	);
@@ -337,7 +337,7 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void removeOverlap() throws Exception {
-		insert( "■"		);
+		add( "■"		);
 		remove( "■■"	);
 		result( ""		);
 		count(0);
@@ -345,7 +345,7 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void removePart1() throws Exception {
-		insert( "■■" 	,
+		add( "■■" 	,
 				"■■"	);
 		remove( "■∟"	,
 				"∟∟"	);
@@ -356,7 +356,7 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void removePart2() throws Exception {
-		insert( "■■" 	,
+		add( "■■" 	,
 				"■■"	);
 		remove( "∟■"	,
 				"∟∟"	);
@@ -367,7 +367,7 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void removePart3() throws Exception {
-		insert( "■■" 	,
+		add( "■■" 	,
 				"■■"	);
 		remove( "∟∟"	,
 				"■∟"	);
@@ -378,7 +378,7 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void removePart4() throws Exception {
-		insert( "■■" 	,
+		add( "■■" 	,
 				"■■"	);
 		remove( "∟∟"	,
 				"∟■"	);
@@ -389,7 +389,7 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void removeCrossing() throws Exception {
-		insert( "■■" 	,
+		add( "■■" 	,
 				"■■"	);
 		remove( "∟∟∟"	,
 				"∟■■"	,
@@ -401,7 +401,7 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void removeInside1() throws Exception {
-		insert( "■■■" );
+		add( "■■■" );
 		remove( "∟■∟"	);
 		result( "■∟■"	);
 		count(2);
@@ -409,7 +409,7 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void removeInside2() throws Exception {
-		insert( "■■■" ,
+		add( "■■■" ,
 				"■■■"	,
 				"■■■"	);
 		remove( "∟∟∟"	,
@@ -423,7 +423,7 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void removeCrossMiddle() throws Exception {
-		insert( "∟■∟" ,
+		add( "∟■∟" ,
 				"■■■"	,
 				"∟■∟"	);
 		remove( "∟∟∟"	,
@@ -437,7 +437,7 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void removeCorner() throws Exception {
-		insert( "∟■■" ,
+		add( "∟■■" ,
 				"∟■■"	);
 		remove( "∟∟"	,
 				"■■"	,
@@ -449,7 +449,7 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void removeCorner1() throws Exception {
-		insert( "■■" 	,
+		add( "■■" 	,
 				"∟■"	);
 		remove( "∟■"	,
 				"∟■"	);
@@ -509,20 +509,20 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void cellSequenceSingle() throws Exception {
-		insert( "■" );
+		add( "■" );
 		assertInSequence("0:0");
 	}
 
 	@Test
 	public void cellSequence() throws Exception {
-		insert( "∟■"   ,
+		add( "∟■"   ,
 				"■■"	);
 		assertInSequence("0:1, 1:0, 1:1");
 	}
 
 	@Test
 	public void cellSequence2() throws Exception {
-		insert( "■■"   ,
+		add( "■■"   ,
 				"■■"	);
 		assertInSequence("0:0, 0:1, 1:0, 1:1");
 	}
@@ -534,16 +534,86 @@ import pl.netanel.util.Arrays;
 
 	@Test
 	public void getExtentOne() throws Exception {
-		insert( "∟■" );
+		add( "∟■" );
 		assertExtent(0, 0, 1, 1);
 	}
 
 	@Test
 	public void getExtent() throws Exception {
-		insert( "∟■∟"	,
+		add( "∟■∟"	,
 				"■∟■"	,
 				"∟■∟"	);
 		assertExtent(0, 2, 0, 2);
+	}
+
+	@Test
+  public void insert1() throws Exception {
+    assertEquals(0, set.getCount().intValue());
+    set.insertX(0, 1);
+    result( "" );
+    assertEquals(0, set.getCount().intValue());
+  }
+
+  @Test
+  public void insertSplitSingle() throws Exception {
+    add( "■■" ,
+         "∟∟" ,
+         "■∟" );
+    assertEquals(3, set.getCount().intValue());
+    set.insertX(1, 1);
+    result( "■■■" ,
+            "∟∟∟" ,
+            "■∟∟" );
+    assertEquals(4, set.getCount().intValue());
+  }
+
+
+	@Test
+	public void delete1() throws Exception {
+	  add( "■" );
+	  assertEquals(1, set.getCount().intValue());
+	  set.deleteX(0, 0);
+	  result( "" );
+	  assertEquals(0, set.getCount().intValue());
+	}
+
+	@Test
+  public void deleteSplitSingle() throws Exception {
+    add( "∟■" ,
+         "∟∟" ,
+         "∟■" );
+    assertEquals(2, set.getCount().intValue());
+    set.deleteX(0, 0);
+    result( "■" ,
+            "∟" ,
+            "■" );
+    assertEquals(2, set.getCount().intValue());
+  }
+
+	@Test
+	public void deleteSplitDouble() throws Exception {
+	  add( "∟■■" ,
+	      "∟∟∟" ,
+	      "∟■■" );
+	  assertEquals(4, set.getCount().intValue());
+	  set.deleteX(0, 1);
+	  result( "■" ,
+	          "∟" ,
+	          "■" );
+	  assertEquals(2, set.getCount().intValue());
+	}
+
+	@Test
+	public void deleteSplit() throws Exception {
+	  add( "∟■■" ,
+	       "∟■■" ,
+	       "■∟■" );
+	  assertEquals(6, set.getCount().intValue());
+	  set.deleteX(2, 2);
+	  result( "∟■" ,
+	          "∟■" ,
+	          "■∟" );
+	  assertEquals(3, set.getCount().intValue());
 	}
 
 	private void assertExtent(int startY, int endY, int startX, int endX) {
@@ -607,7 +677,7 @@ import pl.netanel.util.Arrays;
 		set.add(startX, endX, startY, endY);
 	}
 
-	private void insert(String ...lines) {
+	private void add(String ...lines) {
 		operation(true, lines);
 	}
 
@@ -706,6 +776,10 @@ import pl.netanel.util.Arrays;
 			sb.append("\n");
 			if (quit) break;
 		}
-		if (message.length() > 0) assertFalse(message + "\n" + sb, true);
+		if (data.isEmpty() && expected[0].length() > 0) assertFalse("empty set was not expected", true);
+		if (message.length() > 0) {
+		  System.out.println(message + "\n" + sb);
+		  assertFalse(message + "\n" + sb, true);
+		}
 	}
 }

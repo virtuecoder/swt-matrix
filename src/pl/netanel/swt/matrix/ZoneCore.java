@@ -55,6 +55,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	ZoneEditor<X, Y> editor;
 
 	private final Listeners listeners;
+	private final ArrayList<ZoneListener> zoneListeners;
 	private final ArrayList<GestureBinding> bindings;
 	private boolean selectionEnabled;
 
@@ -79,6 +80,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 		painters = new Painters<X, Y>();
     listeners = new Listeners();
+    zoneListeners = new ArrayList<ZoneListener>();
     bindings = new ArrayList<GestureBinding>();
     bounds = new Rectangle(0, 0, 0, 0);
     selectionEnabled = true;
@@ -469,8 +471,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	@Override public void addSelectionListener (SelectionListener listener) {
 		Preconditions.checkNotNullWithName(listener, "listener");
 		TypedListener typedListener = new TypedListener(listener);
-		this.listeners.add(SWT.Selection, typedListener);
-		this.listeners.add(SWT.DefaultSelection, typedListener);
+		listeners.add(SWT.Selection, typedListener);
+		listeners.add(SWT.DefaultSelection, typedListener);
 	}
 
 	@Override public void removeSelectionListener(SelectionListener listener) {
@@ -480,20 +482,36 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	}
 
 	@Override public void addListener(int eventType, final Listener listener) {
-		matrix.addListener(eventType, new Listener() {
-
-			@Override public void handleEvent(Event e) {
-			  AxisItem<X> itemX = matrix.getAxisX().getItemByViewportDistance(e.x);
-				AxisItem<Y> itemY = matrix.getAxisY().getItemByViewportDistance(e.y);
-				if (itemX != null && itemY != null && ZoneCore.this ==
-						matrix.layout.getZone(itemX.section, itemY.section))
-				{
-					listener.handleEvent(e);
-				}
-			}
-		});
+		ZoneListener zoneListener = new ZoneListener(listener);
+		zoneListeners.add(zoneListener);
+    matrix.addListener(eventType, zoneListener);
 	}
 
+  @Override
+  public void removeListener(int eventType, Listener listener) {
+    for (ZoneListener zoneListener: zoneListeners) {
+      if (zoneListener.listener == listener) {
+        zoneListeners.remove(zoneListener);
+        matrix.removeListener(eventType, zoneListener);
+      }
+    }
+  }
+
+  class ZoneListener implements Listener {
+    private final Listener listener;
+    public ZoneListener(Listener listener) {
+      this.listener = listener;
+    }
+    @Override public void handleEvent(Event e) {
+      AxisItem<X> itemX = matrix.getAxisX().getItemByViewportDistance(e.x);
+      AxisItem<Y> itemY = matrix.getAxisY().getItemByViewportDistance(e.y);
+      if (itemX != null && itemY != null && ZoneCore.this ==
+          matrix.layout.getZone(itemX.section, itemY.section))
+      {
+        listener.handleEvent(e);
+      }
+    }
+  }
 
 	/*------------------------------------------------------------------------
 	 * Painting
@@ -741,6 +759,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
     return sectionX.math.contains(cellExtent.startX, cellExtent.getEndX(), indexX) &&
       sectionY.math.contains(cellExtent.startY, cellExtent.getEndY(), indexY);
   }
+
 
 
 

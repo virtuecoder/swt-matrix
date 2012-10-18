@@ -278,6 +278,12 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   }
 
   @Override
+  public void removeListener(int eventType, Listener listener) {
+    Preconditions.checkNotNullWithName(listener, "listener");
+    core.removeListener(eventType, listener);
+  }
+
+  @Override
   public void addSelectionListener(SelectionListener listener) {
     Preconditions.checkNotNullWithName(listener, "listener");
     core.addSelectionListener(listener);
@@ -299,14 +305,15 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   private void checkPainter(Painter<X, Y> painter) {
     Preconditions.checkNotNullWithName(painter, "painter");
 
-    Preconditions.checkArgument(painter.zone == null || this.equals(painter.zone),
-      "The painter belongs to a different zone: %s", painter.zone);
-
     Matrix<X, Y> matrix2 = getMatrix();
     if (matrix2 != null) {
       Preconditions.checkArgument(painter.matrix == null || matrix2.equals(painter.matrix),
-        "The painter belongs to a different matrix: %s", painter.matrix);
+          "The painter belongs to a different matrix: %s", painter.matrix);
     }
+
+    Preconditions.checkArgument(painter.zone == null || this.core.equals(painter.zone),
+      "The painter belongs to a different zone: %s", painter.zone);
+
   }
 
   @Override
