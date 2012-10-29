@@ -33,6 +33,8 @@ public class S0011_DrawCustomFocusCellMarker {
           // Get bounds of the focus cell
           AxisItem<Integer> itemX = matrix.getAxisX().getFocusItem();
           AxisItem<Integer> itemY = matrix.getAxisY().getFocusItem();
+          if (itemX == null || itemY == null) return;
+
           Zone<Integer, Integer> zone = matrix.getZone(itemX.getSection(),
             itemY.getSection());
           if (zone == null) return;

@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
+import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
@@ -43,7 +44,9 @@ public class S0007_Tree {
     matrix.addKeyListener(new KeyAdapter() {
       @Override
       public void keyReleased(KeyEvent e) {
-        Integer index = axisY.getFocusItem().getIndex();
+        AxisItem<Integer> focusItem = axisY.getFocusItem();
+        if (focusItem == null) return;
+        Integer index = focusItem.getIndex();
         switch (e.character) {
         case '+': bodyY.setExpanded(index, true); matrix.refresh(); break;
         case '-': bodyY.setExpanded(index, false); matrix.refresh(); break;

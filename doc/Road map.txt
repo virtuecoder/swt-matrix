@@ -30,7 +30,9 @@ Grouping: collapse to end
 Grouping: summary column
 Grouping: moving items
 Cache embedded controls for repainting
+Add sections at runtime
 
+maximize the use of public void redraw (int x, int y, int width, int height, boolean all) 
 Decouple ZoneEditor from Zone. Use Zone.setEditor to attach to zone instead of ZoneEditor constructor.
 
 http://stackoverflow.com/questions/121324/a-java-api-to-generate-java-source-files

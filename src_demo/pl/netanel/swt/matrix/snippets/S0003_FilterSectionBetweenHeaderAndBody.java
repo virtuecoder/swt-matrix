@@ -62,7 +62,7 @@ public class S0003_FilterSectionBetweenHeaderAndBody {
     bodyY.setCount(list.size());
     bodyY.setDefaultResizable(true);
 
-    final Matrix<Integer, Integer> matrix = 
+    final Matrix<Integer, Integer> matrix =
       new Matrix<Integer, Integer>(shell, SWT.V_SCROLL, null, axisY);
     matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 

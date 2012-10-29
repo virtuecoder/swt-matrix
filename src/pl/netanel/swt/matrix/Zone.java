@@ -403,8 +403,16 @@ public interface Zone<X extends Number, Y extends Number> {
    * event does occur in the zone, the listener is notified by
    * sending it the <code>handleEvent()</code> message. The event
    * type is one of the event constants defined in class <code>SWT</code>.
+   * The zone for the mouse event is identified by mouse location
+   * and the zone for key events is identified by the focus items on the axises.
+   * The coordinates of the mouse event are Matrix widget related and
+   * are not translated to be related to the zone location.
+   * <p>
+   * The supported event types are: {@link SWT#MouseDoubleClick}, {@link SWT#MouseDown},
+   * {@link SWT#MouseUp}, {@link SWT#MouseMove}, {@link SWT#MouseEnter}, {@link SWT#MouseExit},
+   * {@link SWT#KeyDown}, {@link SWT#KeyUp}
    *
-   * @param eventType the type of event to listen for
+   * @param eventType the type of event to listen for.
    * @param listener the listener which should be notified when the event occurs
    *
    * @exception IllegalArgumentException <ul>

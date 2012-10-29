@@ -10,13 +10,20 @@ package pl.netanel.swt.matrix;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TypedListener;
 
 import pl.netanel.util.HashMapArrayList;
-import pl.netanel.util.Preconditions;
 
+/**
+ * Holds collection of listeners requiring special handling,
+ * such as firing events for {@link SelectionListener}, {@link ControlListener}
+ * or for zone: {@link SWT#MouseEnter} or {@link SWT#MouseExit}.
+ */
 class Listeners {
 	final private HashMapArrayList<Integer, Listener> listeners;
 	final private ArrayList<Event> events;
@@ -27,12 +34,12 @@ class Listeners {
 	}
 
 	public void add(int type, Listener listener) {
-		Preconditions.checkNotNullWithName(listener, "listener");
+//		Preconditions.checkNotNullWithName(listener, "listener");
 		listeners.add(type, listener);
 	}
 
 	public void remove(int type, Object listener) {
-		Preconditions.checkNotNullWithName(listener, "listener");
+//		Preconditions.checkNotNullWithName(listener, "listener");
 		List<Listener> list = listeners.get(type);
 		for (int i = list.size(); i-- > 0;) {
 			Listener listener2 = list.get(i);

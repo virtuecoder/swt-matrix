@@ -340,6 +340,7 @@ class AxisLayout<N extends Number> {
 		case PREVIOUS: 			current2 = nextItem(current, backwardNavigator); break;
 		case NEXT_PAGE:			show(current); current2 = nextPage(current, forwardNavigator); break;
 		case PREVIOUS_PAGE:		show(current); current2 = nextPage(current, backwardNavigator); break;
+		case NULL: 				break;
 		}
 		boolean result = current2 != null && compare(current, current2) != 0;
 		if (current2 != null) {

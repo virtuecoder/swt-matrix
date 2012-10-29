@@ -1,4 +1,27 @@
 -------------------------------------------------------------------------------
+Version 0.7.16
+
+Bug fixes:
+- Editor control was getting focus cell instead of mouse cell with double click activation
+
+-------------------------------------------------------------------------------
+Version 0.7.15
+
+Bug fixes:
+- Editor activation was throwing NLP 
+
+-------------------------------------------------------------------------------
+Version 0.7.14
+
+Features changes:
+- SWT.MouseEnter and SWT.MouseExit supported in Zone.addListener
+- Image painting optimized to avoid setClipping when not neccessary
+
+Bug fixes:
+- Resize cursor was not reset when moving over embedded controls
+
+
+-------------------------------------------------------------------------------
 Version 0.7.13
 
 Features changes:

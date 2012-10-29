@@ -11,13 +11,19 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.Iterator;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
 
+import pl.netanel.util.Arrays;
 import pl.netanel.util.Preconditions;
 
 class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
+  private static final int[] SUPPORTED_EVENTS = {
+    SWT.MouseDoubleClick, SWT.MouseDown, SWT.MouseEnter, SWT.MouseExit, SWT.MouseUp,
+    SWT.MouseMove, SWT.KeyDown, SWT.KeyUp };
+
   final ZoneCore<X, Y> core;
   final SectionClient<X> sectionX;
   final SectionClient<Y> sectionY;
@@ -274,6 +280,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
   @Override
   public void addListener(int eventType, Listener listener) {
     Preconditions.checkNotNullWithName(listener, "listener");
+    Preconditions.checkArgument(Arrays.contains(SUPPORTED_EVENTS, eventType), "Event type not supported");
     core.addListener(eventType, listener);
   }
 

@@ -62,7 +62,8 @@ public class S0015_CurrentRowGradientHighlighter {
 
       @Override
       public void setup(Integer indexX, Integer indexY) {
-        isFocused = body.getSectionY().equals(focusItem.getSection())
+        isFocused = focusItem == null ? false :
+          body.getSectionY().equals(focusItem.getSection())
           && indexY.equals(focusItem.getIndex());
       }
 

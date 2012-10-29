@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TypedListener;
 
 import pl.netanel.util.ImmutableIterator;
-import pl.netanel.util.Preconditions;
 
 
 /**
@@ -54,8 +53,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 	ZoneEditor<X, Y> editor;
 
-	private final Listeners listeners;
-	private final ArrayList<ZoneListener> zoneListeners;
+	private final Listeners typedListeners;
+	final ArrayList<ZoneListener> zoneListeners;
 	private final ArrayList<GestureBinding> bindings;
 	private boolean selectionEnabled;
 
@@ -79,7 +78,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		mathY = sectionY.math;
 
 		painters = new Painters<X, Y>();
-    listeners = new Listeners();
+    typedListeners = new Listeners();
     zoneListeners = new ArrayList<ZoneListener>();
     bindings = new ArrayList<GestureBinding>();
     bounds = new Rectangle(0, 0, 0, 0);
@@ -469,22 +468,20 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 
 	@Override public void addSelectionListener (SelectionListener listener) {
-		Preconditions.checkNotNullWithName(listener, "listener");
 		TypedListener typedListener = new TypedListener(listener);
-		listeners.add(SWT.Selection, typedListener);
-		listeners.add(SWT.DefaultSelection, typedListener);
+		typedListeners.add(SWT.Selection, typedListener);
+		typedListeners.add(SWT.DefaultSelection, typedListener);
 	}
 
 	@Override public void removeSelectionListener(SelectionListener listener) {
-		Preconditions.checkNotNullWithName(listener, "listener");
-		listeners.remove(SWT.Selection, listener);
-		listeners.remove(SWT.DefaultSelection, listener);
+		typedListeners.remove(SWT.Selection, listener);
+		typedListeners.remove(SWT.DefaultSelection, listener);
 	}
 
 	@Override public void addListener(int eventType, final Listener listener) {
-		ZoneListener zoneListener = new ZoneListener(listener);
+		ZoneListener zoneListener = new ZoneListener(eventType, listener);
 		zoneListeners.add(zoneListener);
-    matrix.addListener(eventType, zoneListener);
+	  matrix.addListener(eventType, zoneListener);
 	}
 
   @Override
@@ -498,17 +495,30 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
   }
 
   class ZoneListener implements Listener {
-    private final Listener listener;
-    public ZoneListener(Listener listener) {
+    final Listener listener;
+    final int eventType;
+    public ZoneListener(int eventType, Listener listener) {
+      this.eventType = eventType;
       this.listener = listener;
     }
     @Override public void handleEvent(Event e) {
-      AxisItem<X> itemX = matrix.getAxisX().getItemByViewportDistance(e.x);
-      AxisItem<Y> itemY = matrix.getAxisY().getItemByViewportDistance(e.y);
-      if (itemX != null && itemY != null && ZoneCore.this ==
-          matrix.layout.getZone(itemX.section, itemY.section))
-      {
+//      boolean handle = e.type == SWT.MouseEnter || e.type == SWT.MouseExit;
+//      if (!handle) {
+        AxisItem<X> itemX = matrix.getAxisX().getItemByViewportDistance(e.x);
+        AxisItem<Y> itemY = matrix.getAxisY().getItemByViewportDistance(e.y);
+        boolean handle = itemX != null && itemY != null && ZoneCore.this ==
+            matrix.layout.getZone(itemX.section, itemY.section);
+
+      if (handle) {
         listener.handleEvent(e);
+
+        // Prevent double enter or exit by mouse movement
+        if (e.type == SWT.MouseEnter) {
+          matrix.listener.zone = matrix.listener.lastZone = ZoneCore.this;
+        }
+        if (e.type == SWT.MouseExit) {
+          matrix.listener.lastZone = null;
+        }
       }
     }
   }
@@ -739,14 +749,14 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	}
 
   void sendEvents() {
-    listeners.sendEvents();
+    typedListeners.sendEvents();
   }
 
   void addSelectionEvent() {
     Event event = new Event();
     event.type = SWT.Selection;
     event.widget = matrix;
-    listeners.add(event);
+    typedListeners.add(event);
   }
 
   public static <X2 extends Number, Y2 extends Number> ZoneCore<X2, Y2> from(Zone<X2, Y2> zone) {

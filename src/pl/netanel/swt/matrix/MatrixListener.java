@@ -121,6 +121,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 
   private CellExtent<X, Y> span;
 
+  ZoneCore<X, Y> lastZone;
+
   public MatrixListener(final Matrix<X, Y> matrix) {
     this.matrix = matrix;
     SectionCore<X> bodyX = SectionCore.from(matrix.axisX.getBody());
@@ -152,6 +154,14 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     }
     matrix.listener = this;
 
+    matrix.addListener(SWT.MouseExit, new Listener() {
+      @Override
+      public void handleEvent(Event event) {
+        lastZone = null;
+        matrix.setCursor(cursor = null);
+      }
+    });
+
     stateX.axisLayout = matrix.layoutX;
     stateY.axisLayout = matrix.layoutY;
     stateX.axis = matrix.axisX;
@@ -181,6 +191,9 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       else if (stateY.item != null && stateX.item != null) {
         zone = matrix.layout.getZone(stateX.item.section, stateY.item.section);
       }
+
+      // Generate mouse enter/exit for the zone
+      generateMouseNeterOrExitForZonez(e);
 
       if (e.type == SWT.MouseDown && e.button == 1) {
         mouseDown = true;
@@ -225,6 +238,42 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     }
     catch (Exception ex) {
       matrix.rethrow(ex);
+    }
+  }
+
+
+  private void generateMouseNeterOrExitForZonez(Event e) {
+    if (e.type == SWT.MouseMove) {
+      if (lastZone != null && !lastZone.equals(zone)) {
+        Event event = new Event();
+        event.type = SWT.MouseExit;
+        event.widget = e.widget;
+        event.display = e.display;
+        event.doit = true;
+        event.time = e.time;
+
+        for (ZoneCore<X,Y>.ZoneListener zoneListener: lastZone.zoneListeners) {
+          if (zoneListener.eventType == SWT.MouseExit) {
+            zoneListener.listener.handleEvent(event);
+          }
+        }
+      }
+
+      if (zone != null && !zone.equals(lastZone)) {
+        Event event = new Event();
+        event.type = SWT.MouseEnter;
+        event.widget = e.widget;
+        event.display = e.display;
+        event.doit = true;
+        event.time = e.time;
+
+        for (ZoneCore<X,Y>.ZoneListener zoneListener: zone.zoneListeners) {
+          if (zoneListener.eventType == SWT.MouseEnter) {
+            zoneListener.listener.handleEvent(event);
+          }
+        }
+        lastZone = zone;
+      }
     }
   }
 
@@ -485,6 +534,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
           case END: case NEXT: case NEXT_PAGE:
             index = axisLayout.current.section.order.getIndexByOffset(start, axisLayout.math.decrement(count));
             break;
+          case NULL: break;
           }
           if (index != null) {
             axisLayout.current = AxisItem.create(axisLayout.current.section, index);

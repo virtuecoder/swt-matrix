@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
+import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Section;
 
@@ -29,7 +30,7 @@ public class S0201_FreezeHeadAndTailWithDifferentColorForTheDividingLine {
     final Point head = new Point(0, 0);
     final Point tail = new Point(0, 0);
 
-    final Matrix<Integer, Integer> matrix = 
+    final Matrix<Integer, Integer> matrix =
       new Matrix<Integer, Integer>(shell, SWT.H_SCROLL | SWT.V_SCROLL);
     matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
     final Axis<Integer> axisY = matrix.getAxisY();
@@ -47,8 +48,13 @@ public class S0201_FreezeHeadAndTailWithDifferentColorForTheDividingLine {
     add.addSelectionListener(new SelectionAdapter() {
       @Override
       public void widgetSelected(SelectionEvent e) {
-        head.y = axisY.getViewportPosition(axisY.getFocusItem());
-        head.x = axisX.getViewportPosition(axisX.getFocusItem());
+        AxisItem<Integer> focusItemY = axisY.getFocusItem();
+        if (focusItemY == null) return;
+        head.y = axisY.getViewportPosition(focusItemY);
+        AxisItem<Integer> focusItemX = axisX.getFocusItem();
+        if (focusItemX == null) return;
+        head.x = axisX.getViewportPosition(focusItemX);
+
         axisY.setFrozenHead(head.y);
         axisX.setFrozenHead(head.x);
         matrix.refresh();
@@ -61,10 +67,15 @@ public class S0201_FreezeHeadAndTailWithDifferentColorForTheDividingLine {
     remove.addSelectionListener(new SelectionAdapter() {
       @Override
       public void widgetSelected(SelectionEvent e) {
+        AxisItem<Integer> focusItemY = axisY.getFocusItem();
+        if (focusItemY == null) return;
+        AxisItem<Integer> focusItemX = axisX.getFocusItem();
+        if (focusItemX == null) return;
+
         tail.y = axisY.getViewportItemCount()
-          - axisY.getViewportPosition(axisY.getFocusItem()) - 1;
+          - axisY.getViewportPosition(focusItemY) - 1;
         tail.x = axisX.getViewportItemCount()
-          - axisX.getViewportPosition(axisX.getFocusItem()) - 1;
+          - axisX.getViewportPosition(focusItemX) - 1;
         axisY.setFrozenTail(tail.y);
         axisX.setFrozenTail(tail.x);
         matrix.refresh();

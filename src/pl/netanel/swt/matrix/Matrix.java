@@ -468,24 +468,24 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
     frozenLinePainter.style.background = Resources.getColor(SWT.COLOR_BLACK);
     painters.add(frozenLinePainter);
 
-		painters.add(new Painter<X, Y>(Painter.NAME_FOCUS_CELL) {
-			@Override
-			public void paint(int x, int y, int width, int height) {
-			  AxisItem<X> itemX = axisX.getFocusItem();
-				AxisItem<Y> itemY = axisY.getFocusItem();
-				if (itemX == null || itemY == null) return;
-				ZoneCore<X, Y> zone = layout.getZone(itemX.section, itemY.section);
-				if (zone == null) return;
-				Rectangle r = zone.getCellBounds(itemX.getIndex(), itemY.getIndex());
-				if (r == null) return;
-				gc.setLineWidth(2);
-				gc.setForeground(Resources.getColor(SWT.COLOR_BLACK));
-				gc.drawRectangle(r);
-			}
-		});
+    painters.add(new Painter<X, Y>(Painter.NAME_FOCUS_CELL) {
+    	@Override
+    	public void paint(int x, int y, int width, int height) {
+    		AxisItem<X> itemX = axisX.getFocusItem();
+    		AxisItem<Y> itemY = axisY.getFocusItem();
+    		if (itemX == null || itemY == null) return;
+    		ZoneCore<X, Y> zone = layout.getZone(itemX.section, itemY.section);
+    		if (zone == null) return;
+    		Rectangle r = zone.getCellBounds(itemX.getIndex(), itemY.getIndex());
+    		if (r == null) return;
+    		gc.setLineWidth(2);
+    		gc.setForeground(Resources.getColor(SWT.COLOR_BLACK));
+    		gc.drawRectangle(r);
+    	}
+    });
 
-		addPainter(listener.new DragItemPainterX());
-		addPainter(listener.new DragItemPainterY());
+    addPainter(listener.new DragItemPainterX());
+    addPainter(listener.new DragItemPainterY());
 	}
 
 	class FrozenPainter extends Painter<X, Y> {

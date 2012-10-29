@@ -19,13 +19,13 @@ import pl.netanel.swt.matrix.Painter;
 @RunWith(JUnit4.class) public class  MatrixPerformance {
 	ArrayList<Long> time = new ArrayList<Long>();
 	protected long t;
-	
+
 	@Test
 	public void cursorNavigationInteger() throws Exception {
 		Shell shell = new Shell();
 		Display display = shell.getDisplay();
 		shell.setLayout(new FillLayout());
-		
+
 		Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		matrix.addPainter(0, new Painter<Integer, Integer>("start timer") {
 			@Override
@@ -43,21 +43,22 @@ import pl.netanel.swt.matrix.Painter;
 				//, new MatrixModel(new AxisModel(BigInteger.class), new AxisModel(BigInteger.class)));
 		matrix.getAxisY().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
 		matrix.getAxisX().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
-		
+
 		matrix.getBody().replacePainterPreserveStyle(new Painter<Integer, Integer>(Painter.NAME_CELLS) {
 		  @Override
 		  public void setupSpatial(Integer indexX, Integer indexY) {
 		    text = indexY.toString() + ", " + indexX;
+		    style.hasWordWraping = true;
 		  }
 		});
-		
+
 		shell.setBounds(display.getBounds());
 		shell.open();
-		
+
 		for (int i = 0; i < 10; i++) {
 			press(SWT.ARROW_DOWN);
 		}
-		
+
 		long sum = 0;
 		for (int i = 1, imax = time.size(); i < imax; i++) {
 			sum += time.get(i);
@@ -65,21 +66,21 @@ import pl.netanel.swt.matrix.Painter;
 		long avg = sum / (time.size() - 1);
 		System.out.println(avg);
 		assertTrue("" + avg + " expected to be <= 60", avg <= 60);
-	
+
 //		while (!shell.isDisposed()) {
 //			if (!display.readAndDispatch()) {
 //				display.sleep();
 //			}
 //		}
 	}
-	
-	@SuppressWarnings({"rawtypes", "unchecked"}) 
+
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Test
 	public void cursorNavigationBigInteger() throws Exception {
 		Shell shell = new Shell();
 		Display display = shell.getDisplay();
 		shell.setLayout(new FillLayout());
-		
+
 		Matrix matrix = new Matrix(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		matrix.addPainter(0, new Painter("start timer") {
 			@Override
@@ -97,14 +98,14 @@ import pl.netanel.swt.matrix.Painter;
 		//, new MatrixModel(new AxisModel(BigInteger.class), new AxisModel(BigInteger.class)));
 		matrix.getAxisY().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
 		matrix.getAxisX().getBody().setCount(1000000000); //new BigInteger("1000000000000000"));
-		
+
 		shell.setBounds(display.getBounds());
 		shell.open();
-		
+
 		for (int i = 0; i < 10; i++) {
 			press(SWT.ARROW_DOWN);
 		}
-		
+
 		long sum = 0;
 		for (int i = 1, imax = time.size(); i < imax; i++) {
 			sum += time.get(i);
@@ -112,14 +113,14 @@ import pl.netanel.swt.matrix.Painter;
 		long avg = sum / (time.size() - 1);
 		System.out.println(avg);
 		assertTrue("" + avg + " expected to be <= 60", avg <= 60);
-		
+
 //		while (!shell.isDisposed()) {
 //			if (!display.readAndDispatch()) {
 //				display.sleep();
 //			}
 //		}
 	}
-	
+
 	/**
      * Posts key event, for keys that are not characters
      * @param key
@@ -163,7 +164,7 @@ import pl.netanel.swt.matrix.Painter;
     	}
 		return display.post(event);
     }
-    
+
     /**
      * Imitates pressing a key that is not a character
      * @param key
@@ -173,7 +174,7 @@ import pl.netanel.swt.matrix.Painter;
 		postKey(key, SWT.KeyUp);
 		processEvents();
     }
-    
+
     /**
      * Imitates pressing a key that is not a character, with modifier keys like
      * SWT.CONTROL, SWT.SHIFT, SWT.ALT, which can be joind by <code>|</code>
@@ -182,7 +183,7 @@ import pl.netanel.swt.matrix.Painter;
      */
     public void press(final int stateMask, final int keyCode) {
     	Display display = Display.getCurrent();
-    	if (Thread.currentThread() != display.getThread()) { 
+    	if (Thread.currentThread() != display.getThread()) {
     		display.syncExec(new Runnable() {
 				@Override public void run() {
 					press(stateMask, keyCode);
@@ -201,16 +202,16 @@ import pl.netanel.swt.matrix.Painter;
         if ((stateMask & SWT.CONTROL) != 0) postKey(SWT.CTRL, SWT.KeyUp);
 
         processEvents();
-        
-        
+
+
     }
-    
+
     /**
      * Process all the pending events in system event queue
      */
     public void processEvents() {
     	Display display = Display.getCurrent();
-    	if (Thread.currentThread() != display.getThread()) { 
+    	if (Thread.currentThread() != display.getThread()) {
     		display.asyncExec(new Runnable() {
     			@Override public void run() {
     				processEvents();

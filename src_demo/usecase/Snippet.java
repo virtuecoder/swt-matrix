@@ -12,7 +12,12 @@ public class Snippet {
     final Shell shell = new Shell();
     shell.setLayout(new FillLayout());
 
-    new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
+    Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
+
+    matrix.getAxisX().getBody().setCount(10);
+    matrix.getAxisY().getBody().setCount(10);
+    matrix.getAxisX().getHeader().setVisible(true);
+    matrix.getAxisY().getHeader().setVisible(true);
 
     shell.setBounds(400, 200, 600, 400);
     shell.open();

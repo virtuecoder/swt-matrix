@@ -44,9 +44,6 @@ import pl.netanel.util.Preconditions;
  * This optimization is possible due to replacing of painting operations loop with the cell iteration loop.
  * In Matrix cell iteration happens inside of the painters iteration and it can still fold to a single
  * cell iteration if all the drawing is done by a single painter.
- *
- *
- * @author jacek.p.kolodziejczyk@gmail.com
  */
 
 public class Painter<X extends Number, Y extends Number> {
@@ -491,7 +488,8 @@ public class Painter<X extends Number, Y extends Number> {
 			case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
 				y2 += height - bounds.height - style.imageMarginY; break;
 			}
-			if (clipping2 == null) {
+			if (clipping2 == null && width < bounds.width + 2 * style.imageMarginX ||
+			    height < bounds.height + 2 * style.imageMarginY) {
 			  clipping2 = gc.getClipping();
 			  gc.setClipping(x, y, width, height);
 			}
