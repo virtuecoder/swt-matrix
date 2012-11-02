@@ -12,17 +12,8 @@ import java.text.MessageFormat;
 
 import pl.netanel.util.Preconditions;
 
-
-
 /**
  * Abstracts arithmetics on integer types including BigInteger.
- *
- * @author Jacek Kolodziejczyk created 01-03-2011
- */
-/**
- *
- * @author jacek.p.kolodziejczyk@gmail.com
- * @created 14-05-2012
  */
 abstract class Math<N extends Number> {
 
@@ -123,9 +114,9 @@ abstract class Math<N extends Number> {
     int compare = compare(x.start.getValue(), x.end.getValue(), y.start.getValue(), y.end.getValue());
     return compare == ADJACENT_AFTER || compare == ADJACENT_BEFORE || compare == AFTER || compare == BEFORE;
 	}
-	
-	public boolean areExclusive(MutableNumber<N> startX, MutableNumber<N> endX, 
-	    MutableNumber<N> startY, MutableNumber<N> endY) 
+
+	public boolean areExclusive(MutableNumber<N> startX, MutableNumber<N> endX,
+	    MutableNumber<N> startY, MutableNumber<N> endY)
 	{
 	  int compare = compare(startX.getValue(), endX.getValue(), startY.getValue(), endY.getValue());
 	  return compare == ADJACENT_AFTER || compare == ADJACENT_BEFORE || compare == AFTER || compare == BEFORE;

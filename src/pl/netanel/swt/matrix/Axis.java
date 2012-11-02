@@ -27,9 +27,6 @@ import pl.netanel.util.Preconditions;
  *
  * @param <N> specifies the indexing class for the receiver
  * @see Section
- *
- * @author Jacek
- * @created 27-03-2011
  */
 public class Axis<N extends Number>  {
 	private static final String FREEZE_ITEM_COUNT_ERROR = "Freeze item count cannot be negative";
@@ -622,6 +619,9 @@ public class Axis<N extends Number>  {
 	  }
 	}
 
+	/**
+	 * Sets the optimal size of cells for all items in all sections.
+	 */
 	public void pack() {
 	  for (SectionCore<N> section: layout.sections) {
 	    Iterator<N> it = section.getOrder();
@@ -630,6 +630,14 @@ public class Axis<N extends Number>  {
 	      matrix.pack(symbol, section, next);
 	    }
 	  }
+	}
+
+	/**
+	 * Creates a number set.
+	 * @return newly created number set
+	 */
+	public NumberSet<N> createNumberSet() {
+	  return new NumberSet<N>(math, true);
 	}
 
 	/*------------------------------------------------------------------------
@@ -913,6 +921,7 @@ public class Axis<N extends Number>  {
 	}
 
   void deleteInZones(SectionCore<N> section, N start, N end) {
+    if (matrix == null) return;
     if (symbol == 'X') {
       matrix.deleteInZonesX(section, start, end);
     } else {
@@ -925,6 +934,7 @@ public class Axis<N extends Number>  {
 	}
 
   void insertInZones(SectionCore<N> section, N target, N count) {
+    if (matrix == null) return;
     if (symbol == 'X') {
       matrix.insertInZonesX(section, target, count);
     } else {

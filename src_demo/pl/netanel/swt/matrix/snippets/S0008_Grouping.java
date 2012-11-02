@@ -11,7 +11,7 @@ import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.reloaded.ints.Grouping;
 import pl.netanel.swt.matrix.reloaded.ints.Grouping.Node;
 
-public class S0008_Gruping {
+public class S0008_Grouping {
 
   static final Node structure = new Node("root",
     new Node("Group1",
@@ -37,7 +37,7 @@ public class S0008_Gruping {
   private Matrix<Integer, Integer> matrix;
   private final int axisDirection;
 
-  public S0008_Gruping(Shell shell, int axisDirection) {
+  public S0008_Grouping(Shell shell, int axisDirection) {
     this.axisDirection = axisDirection;
     matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL | SWT.H_SCROLL);
     matrix.getAxisX().getBody().setCount(2);
@@ -68,7 +68,7 @@ public class S0008_Gruping {
     final Shell shell = new Shell();
     shell.setLayout(new FillLayout());
 
-    S0008_Gruping snippet = new S0008_Gruping(shell, SWT.HORIZONTAL);
+    S0008_Grouping snippet = new S0008_Grouping(shell, SWT.HORIZONTAL);
 
     shell.setBounds(400, 200, 900, 400);
     shell.open();

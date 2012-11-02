@@ -381,7 +381,7 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence;
 	}
 
 	static private int count(NumberSet set, int start, int end) {
-		return set.getCount(start, end).intValue();
+		return set.getMutableCount(start, end).intValue();
 	}
 
 	static private boolean add(NumberSet set, int n) {

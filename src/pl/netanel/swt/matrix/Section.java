@@ -1070,6 +1070,12 @@ public interface Section<N extends Number> {
 
   boolean hasChildren(N parent);
 
+  public abstract void removeHiddenSet(NumberSet<N> set);
+
+  public abstract void addHiddenSet(NumberSet<N> set);
+
+  public NumberSet<N> getHiddenSet();
+
 //  /**
 //   * Returns <code>true</code> if the item with the given index in the model is merged be moved by end user.
 //   * Otherwise, <code>false</code> is returned.

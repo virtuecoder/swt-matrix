@@ -24,6 +24,7 @@ import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Extent;
 import pl.netanel.swt.matrix.Matrix;
+import pl.netanel.swt.matrix.NumberSet;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
@@ -56,6 +57,7 @@ public class Grouping {
   private Integer selectLevel = 0;
   private Painter<Integer, Integer> oldCellPainter;
   private Listener selectItemListener;
+  private NumberSet<Integer> hidden;
 
 
   /**
@@ -90,6 +92,7 @@ public class Grouping {
       section = zone.getSectionY();
       section2 = zone.getSectionX();
     }
+    section.addHiddenSet(hidden = axis.createNumberSet());
 
     createVisitors();
     initNodes();
@@ -117,7 +120,7 @@ public class Grouping {
       public Boolean getToggleState(Integer indexX, Integer indexY) {
         // Return true if is expanded
         Node node = getNodeByCellIndex(indexX, indexY);
-        return node.getToggleState();
+        return node == null ? null : node.getToggleState();
 //        return node.collapseDirection != SWT.NONE && isFirstItem(node, indexX, indexY) &&
 //            node.children.size() > 1 /*&& node.parent.collapsed == false*/ ?
 //                !node.collapsed : null;
@@ -146,7 +149,7 @@ public class Grouping {
     cellPainter.style.textAlignY = SWT.CENTER;
     cellPainter.style.imageAlignX = SWT.END;
     cellPainter.style.imageAlignY = SWT.CENTER;
-    cellPainter.style.imageMarginX = 2;
+    cellPainter.style.imageMarginX = matrix.getAxisX().getResizeOffset();
 
     // Create toggle and selection listener
     //zone.unbind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
@@ -162,9 +165,10 @@ public class Grouping {
         Integer indexX = itemX.getIndex();
         Integer indexY = itemY.getIndex();
         Node node = getNodeByCellIndex(indexX, indexY);
+        if (node == null) return;
 
         // toggle
-        if (cellPainter.isOverImage(e.x, e.y)) {
+        if (node.getToggleState() != TOGGLE_NONE && cellPainter.isOverImage(e.x, e.y)) {
           node.setCollapsed(!node.collapsed);
         }
         else {
@@ -199,6 +203,7 @@ public class Grouping {
     zone.removeListener(SWT.MouseDown, selectItemListener);
 
     section2.setCount(1);
+    section.removeHiddenSet(hidden);
   }
 
   private void initNodes() {
@@ -232,6 +237,7 @@ public class Grouping {
               node.children.get(0).extent.getStart(),
               node.children.get(node.children.size()-1).extent.getEnd());
         }
+        node.extentCount = node.extent.getEnd() - node.extent.getStart() + 1;
       }
 
     }.traverse(root.children);
@@ -254,7 +260,7 @@ public class Grouping {
    */
   public String getText(Integer indexX, Integer indexY) {
     Node node = getNodeByCellIndex(indexX, indexY);
-    return node != null && isFirstItem(node, indexX, indexY) ?
+    return node != null  ?
         node.caption : null;
   }
 
@@ -364,40 +370,40 @@ public class Grouping {
     }
   }
 
-  void createImages2(int axisDirection) {
-    Display display = zone.getMatrix().getDisplay();
-    trueImage = new Image(display, 9, 9);
-    falseImage = new Image(display, 9, 9);
-
-    if (axisDirection == SWT.HORIZONTAL) {
-      GC gc = new GC(trueImage);
-      gc.setAntialias(SWT.ON);
-      gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
-      gc.drawRectangle(0, 0, 8, 8);
-      gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
-      // Draw <<
-      gc.drawLine(2, 4, 4, 2);
-      gc.drawLine(4, 4, 6, 2);
-      gc.drawLine(2, 4, 4, 6);
-      gc.drawLine(4, 4, 6, 6);
-      gc.dispose();
-
-      gc = new GC(falseImage);
-      gc.setAntialias(SWT.ON);
-      gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
-      gc.drawRectangle(0, 0, 8, 8);
-      gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
-      // Draw >>
-      gc.drawLine(2, 2, 4, 4);
-      gc.drawLine(4, 2, 6, 4);
-      gc.drawLine(2, 6, 4, 4);
-      gc.drawLine(4, 6, 6, 4);
-      gc.dispose();
-    }
-    else {
-
-    }
-  }
+//  void createImages2(int axisDirection) {
+//    Display display = zone.getMatrix().getDisplay();
+//    trueImage = new Image(display, 9, 9);
+//    falseImage = new Image(display, 9, 9);
+//
+//    if (axisDirection == SWT.HORIZONTAL) {
+//      GC gc = new GC(trueImage);
+//      gc.setAntialias(SWT.ON);
+//      gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
+//      gc.drawRectangle(0, 0, 8, 8);
+//      gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
+//      // Draw <<
+//      gc.drawLine(2, 4, 4, 2);
+//      gc.drawLine(4, 4, 6, 2);
+//      gc.drawLine(2, 4, 4, 6);
+//      gc.drawLine(4, 4, 6, 6);
+//      gc.dispose();
+//
+//      gc = new GC(falseImage);
+//      gc.setAntialias(SWT.ON);
+//      gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
+//      gc.drawRectangle(0, 0, 8, 8);
+//      gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
+//      // Draw >>
+//      gc.drawLine(2, 2, 4, 4);
+//      gc.drawLine(4, 2, 6, 4);
+//      gc.drawLine(2, 6, 4, 4);
+//      gc.drawLine(4, 6, 6, 4);
+//      gc.dispose();
+//    }
+//    else {
+//
+//    }
+//  }
 
   private Image setWhiteAsTransparent(Image image) {
     ImageData imageData = image.getImageData();
@@ -462,9 +468,11 @@ public class Grouping {
     private Node parent;
     private int level = -1, index;
     private Extent<Integer> extent;
+    private int extentCount;
     private boolean collapsed;
     Grouping grouping;
     private int collapseDirection;
+    private boolean preserve;
 
     public Node(String caption, Node ...children) {
       this.caption = caption;
@@ -514,7 +522,7 @@ public class Grouping {
      * @return this node
      */
     public Node setCollapsed(boolean state) {
-      if (collapseDirection == SWT.NONE || level == -1) return this;
+      if (collapseDirection == SWT.NONE || grouping != null && this == grouping.root) return this;
       collapsed = state;
       if (grouping != null) {
         AxisItem<Integer> focusItem = grouping.axis.getFocusItem();
@@ -522,26 +530,26 @@ public class Grouping {
         // Collapse
         if (state == true && children.size() > 1) {
           // Find the not collapse able extents to exclude
-          final ArrayList<Extent<Integer>> extents = new ArrayList<Extent<Integer>>();
+          final ArrayList<Extent<Integer>> extentsToExclude = new ArrayList<Extent<Integer>>();
           new NodeVisitor() {
             @Override
             protected void visitBefore(Node node) {
               if (node.collapseDirection == SWT.NONE) {
                 stopBranch = true;
-                extents.add(node.extent);
+                extentsToExclude.add(node.extent);
               }
             }
           }.traverse(this);
 
           // Hide
-          int ds = collapseDirection == SWT.END ? 0 : 1;
-          int de = collapseDirection == SWT.END ? 1 : 0;
-          grouping.section.setHidden(extent.getStart() + ds, extent.getEnd() - de, true);
+          Integer firstExcluded = grouping.section.getHiddenSet().firstExcluded(extent.getStart(), Matrix.FORWARD);
+          grouping.hidden.add(extent.getStart(), extent.getEnd());
+          grouping.hidden.remove(firstExcluded);
 
           // Unhide the excluded ones
-          for (int i = 0; i < extents.size(); i++) {
-            Extent<Integer> extent2 = extents.get(i);
-            grouping.section.setHidden(extent2.getStart(), extent2.getEnd(), false);
+          for (int i = 0; i < extentsToExclude.size(); i++) {
+            Extent<Integer> extent2 = extentsToExclude.get(i);
+            grouping.hidden.remove(extent2.getStart(), extent2.getEnd());
           }
         }
         // Expand
@@ -579,15 +587,15 @@ public class Grouping {
       if (node.hasChildren()) {
         for (Node child: node.children) {
           if (child.collapsed) {
-            grouping.section.setHidden(child.extent.getStart(), false);
+            grouping.hidden.remove(child.extent.getStart());
           }
           else {
-            grouping.section.setHidden(child.extent.getStart(), child.extent.getEnd(), false);
+            grouping.hidden.remove(child.extent.getStart(), child.extent.getEnd());
           }
         }
       }
       else {
-        grouping.section.setHidden(node.index, node.index, false);
+        grouping.hidden.remove(node.index, node.index);
       }
     }
 
@@ -602,7 +610,7 @@ public class Grouping {
 
       if (state == false) {
         if (grouping != null) {
-          grouping.section.setHidden(extent.getStart(), extent.getEnd(), false);
+          grouping.hidden.remove(extent.getStart(), extent.getEnd());
         }
         new NodeVisitor() {
           @Override
@@ -686,7 +694,9 @@ public class Grouping {
     }
 
     Boolean getToggleState() {
-      if (collapseDirection == SWT.NONE || children.size() <= 1) {
+      if (collapseDirection == SWT.NONE || children.size() <= 1 ||
+          grouping.section.getHiddenSet().getCount(extent.getStart(), extent.getEnd()) >= extentCount - 1)
+      {
         return TOGGLE_NONE;
       }
       not_found: {
@@ -699,6 +709,15 @@ public class Grouping {
       }
       /*&& node.parent.collapsed == false*/
       return collapsed ? TOGGLE_EXPAND : TOGGLE_COLLAPSE;
+    }
+
+    /**
+     * Makes the node to stay visible when the parent is collapsed.
+     * @return this node
+     */
+    public Node preserve() {
+      preserve = true;
+      return this;
     }
 
   }

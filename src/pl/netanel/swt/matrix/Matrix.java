@@ -63,8 +63,14 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	static final int TYPE_CELLS = 1;
 	static final int TYPE_LINES = 2;
 
-	static final int FORWARD = -1;
-	static final int BACKWARD = 1;
+	/**
+	 * Denotes a forward direction
+	 */
+	public static final int FORWARD = 1;
+	/**
+	 * Denotes a backward direction
+	 */
+	public static final int BACKWARD = -1;
 
 	public static final int PRINTABLE_CHARS = 10;
 
@@ -1066,6 +1072,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	            seq.indexX(), seq.indexY(),
 	            SWT.DEFAULT, zone.sectionY.getCellWidth(seq.indexY.getValue())).x);
 	        }
+	        painter.clean();
 	      }
 	    }
 

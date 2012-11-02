@@ -41,7 +41,8 @@ public class GroupingTest {
 
   @Test
   public void nodes_1() throws Exception {
-    grouping = new Grouping(matrix.getHeaderX(), SWT.HORIZONTAL, new Node("root", new Node("A")));
+    grouping = new Grouping(matrix.getHeaderX(), SWT.HORIZONTAL, 
+        new Node("root", new Node("A")));
     assertEquals(1, matrix.getAxisX().getBody().getCount().intValue());
   }
 
@@ -58,7 +59,7 @@ public class GroupingTest {
 
     bodyX.setHidden(1, true);
     grouping.getRoot().setCollapsedAll(false);
-    assertEquals(0, bodyX.getHiddenCount().intValue());
+    assertEquals(1, bodyX.getHiddenCount().intValue());
 
     bodyX.setHidden(0, true);
     grouping.getRoot().setCollapsedAll(true);
@@ -66,7 +67,7 @@ public class GroupingTest {
 
     bodyX.setHidden(1, 2, true);
     grouping.getRoot().setCollapsedAll(false);
-    assertEquals(0, bodyX.getHiddenCount().intValue());
+    assertEquals(3, bodyX.getHiddenCount().intValue());
 //    TestUtil.showMatrix(matrix);
   }
 

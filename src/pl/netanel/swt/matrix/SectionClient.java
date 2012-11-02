@@ -550,4 +550,19 @@ class SectionClient<N extends Number> implements Section<N> {
     return core.hasChildren(parent);
   }
 
+  public void removeHiddenSet(NumberSet<N> set) {
+    Preconditions.checkNotNullWithName(set, "set");
+    core.removeHiddenSet(set);
+  }
+
+  public void addHiddenSet(NumberSet<N> set) {
+    Preconditions.checkNotNullWithName(set, "set");
+    core.addHiddenSet(set);
+  }
+
+  @Override
+  public NumberSet<N> getHiddenSet() {
+    return core.getHiddenSet();
+  }
+
 }

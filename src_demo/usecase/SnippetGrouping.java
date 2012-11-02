@@ -1,8 +1,12 @@
 package usecase;
 
+import java.util.ArrayList;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Matrix;
@@ -36,10 +40,12 @@ public class SnippetGrouping {
             new Node("expired"))
     )
   );
+
   private Matrix<Integer, Integer> matrix;
   private final int axisDirection;
+  ArrayList<Integer> hidden = new ArrayList<Integer>();
 
-  public SnippetGrouping(Shell shell, int axisDirection) {
+  public SnippetGrouping(Shell shell, final int axisDirection) {
     this.axisDirection = axisDirection;
     matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL | SWT.H_SCROLL);
     matrix.getAxisX().getBody().setCount(2);
@@ -49,9 +55,23 @@ public class SnippetGrouping {
 
     /* Create class holding the API and all the logic to achieve grouping effect
        in the given zone and along the given direction */
-    Zone<Integer, Integer> zone = axisDirection == SWT.HORIZONTAL ? matrix.getHeaderX() : matrix.getHeaderY();
-    Grouping grouping = new Grouping(zone, axisDirection, structure);
-    grouping.dispose();
+    final Zone<Integer, Integer> zone = axisDirection == SWT.HORIZONTAL ? matrix.getHeaderX() : matrix.getHeaderY();
+    new Grouping(zone, axisDirection, structure);
+
+    // Work around
+    hidden.add(2);
+    zone.getSectionX().setHidden(2, true);
+    zone.addListener(SWT.MouseDown, new Listener() {
+      @Override
+      public void handleEvent(Event event) {
+        if (axisDirection == SWT.HORIZONTAL) {
+          for (Integer index: hidden) {
+            zone.getSectionX().setHidden(index, true);
+          }
+          matrix.refresh();
+        }
+      }
+    });
   }
 
   void pack() {

@@ -118,7 +118,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	 * @param target
 	 */
 	public void move(NumberSet<N>set, N target) {
-		N target2 = set.firstExcluded(target);
+		N target2 = set.firstExcluded(target, Matrix.FORWARD);
 		assert !set.contains(target2);
 
 		removeAll(set);

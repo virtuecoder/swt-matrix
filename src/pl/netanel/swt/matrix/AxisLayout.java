@@ -1134,16 +1134,16 @@ class AxisLayout<N extends Number> {
 		return true;
 	}
 
-	public Bound getBound(AxisItem<N> item, MutableExtent<N>span, int distance) {
-	  SectionCore<N> section = item.section;
-	  spanSeq.set(item, span.end.getValue());
+	public Bound getBound(SectionCore<N> section, MutableExtent<N>span, int distance) {
+	  N start = span.start.getValue();
+    spanSeq.set(AxisItem.createInternal(section, start), span.end.getValue());
     int w = 0;
 	  for (spanSeq.init(); spanSeq.next();) {
 	    N index = spanSeq.index.getValue();
 	    w += section.getLineWidth(index) + section.getCellWidth(index);
     }
 
-    return new Bound(distance, java.lang.Math.max(w - section.getLineWidth(item.getIndex()), 0));
+    return new Bound(distance, java.lang.Math.max(w - section.getLineWidth(start), 0));
   }
 
   public int computeSize() {

@@ -7,7 +7,17 @@
  ******************************************************************************/
 package pl.netanel.swt.matrix;
 
-import static pl.netanel.swt.matrix.Math.*;
+import static pl.netanel.swt.matrix.Math.ADJACENT_AFTER;
+import static pl.netanel.swt.matrix.Math.ADJACENT_BEFORE;
+import static pl.netanel.swt.matrix.Math.AFTER;
+import static pl.netanel.swt.matrix.Math.BEFORE;
+import static pl.netanel.swt.matrix.Math.CROSS_AFTER;
+import static pl.netanel.swt.matrix.Math.CROSS_BEFORE;
+import static pl.netanel.swt.matrix.Math.EQUAL;
+import static pl.netanel.swt.matrix.Math.INSIDE;
+import static pl.netanel.swt.matrix.Math.OVERLAP;
+import static pl.netanel.swt.matrix.NumberSet.ContentChangeEvent.ADD;
+import static pl.netanel.swt.matrix.NumberSet.ContentChangeEvent.REMOVE;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,15 +26,20 @@ import pl.netanel.util.ImmutableIterator;
 
 /**
  * Stores number extents of numbers ensuring they are continuous as much as possible and do not overlap.
+ * <p>
+ * Made public prematurely to implement independent hiding for grouping.
+ * Don't use it yet.
  */
-class NumberSet<N extends Number> {
-	protected Math<N> math;
+public class NumberSet<N extends Number> {
+
+  protected Math<N> math;
 	protected boolean sorted;
 	ArrayList<MutableExtent<N>> items;
 	protected ArrayList<MutableExtent<N>> toRemove;
 
 	protected MutableExtent<N> modified;
 	protected transient int modCount;
+  final private ArrayList<ContentChangeListener<N>> listeners;
 
 
 	public NumberSet(Math<N> math) {
@@ -36,6 +51,7 @@ class NumberSet<N extends Number> {
 		this.math = math;
 		items = new ArrayList<MutableExtent<N>>();
 		toRemove = new ArrayList<MutableExtent<N>>();
+		listeners = new ArrayList<ContentChangeListener<N>>();
 	};
 
 	@Override
@@ -135,6 +151,10 @@ class NumberSet<N extends Number> {
 		}
 		toRemove.clear();
 		modCount++;
+
+		if (!listeners.isEmpty()) {
+		  notify(ADD, start, end);
+		}
 		return true;
 	}
 
@@ -209,7 +229,12 @@ class NumberSet<N extends Number> {
 			items.remove(e);
 		}
 		toRemove.clear();
-		if (modified) modCount++;
+		if (modified) {
+		  modCount++;
+
+		  notify(REMOVE, start, end);
+		}
+
 		return modified;
 	}
 
@@ -246,7 +271,7 @@ class NumberSet<N extends Number> {
 	 * @param end
 	 * @return
 	 */
-	public MutableNumber<N> getCount(N start, N end) {
+	public MutableNumber<N> getMutableCount(N start, N end) {
 		MutableNumber<N> sum = math.create(0);
 		for (MutableExtent<N> e: items) {
 			switch (math.compare(e.start(), e.end(), start, end)) {
@@ -264,6 +289,15 @@ class NumberSet<N extends Number> {
 		return sum;
 	}
 
+	/**
+   * Gets the count of indexes included in the given scope between start and end.
+   * @param start
+   * @param end
+   * @return
+   */
+	public N getCount(N start, N end) {
+	  return getMutableCount(start, end).getValue();
+	}
 
 	/**
 	 * Removes all of the elements from this set (optional operation). The set
@@ -272,12 +306,19 @@ class NumberSet<N extends Number> {
 	public void clear() {
 		items.clear();
 		modCount++;
+		if (!listeners.isEmpty()) {
+		  notify(REMOVE, math.ZERO_VALUE(), getCount().getValue());
+		}
 	}
 
 	public void replace(NumberSet<N> set) {
 		items.clear();
+		boolean isNotifyNeeded = listeners.isEmpty();
 		for (MutableExtent<N> e: set.items) {
 			items.add(new MutableExtent<N>(math.create(e.start()), math.create(e.end())));
+			if (isNotifyNeeded) {
+			  notify(ADD, e.start.getValue(), e.end.getValue());
+			}
 		}
 	}
 
@@ -312,15 +353,30 @@ class NumberSet<N extends Number> {
 		return -1;
 	}
 
-	N firstExcluded(N n) {
+	public N firstExcluded(N n, int direction) {
+//	  if (!sorted) {
+//	    throw new UnsupportedOperationException();
+//	  }
 		N n2 = n;
-		again: {
-		for (MutableExtent<N> e: items) {
-			if (math.contains(e, n2)) {
-				n2 = math.increment(e.end());
-				if (sorted) break; else break again;
-			}
-		}}
+		if (direction == Matrix.FORWARD) {
+		  again: {
+		  for (MutableExtent<N> e: items) {
+		    if (math.contains(e, n2)) {
+		      n2 = math.increment(e.end());
+		      if (sorted) break; else break again;
+		    }
+		  }}
+		}
+		else {
+		  again: {
+      for (int i = items.size(); i-- > 0;) {
+        MutableExtent<N> e = items.get(i);
+        if (math.contains(e, n2)) {
+          n2 = math.decrement(e.start());
+          if (sorted) break; else break again;
+        }
+      }}
+		}
 		return n2;
 	}
 
@@ -457,5 +513,40 @@ class NumberSet<N extends Number> {
         return next;
       }
     };
+  }
+
+  private void notify(int operation, N start, N end) {
+    ContentChangeEvent<N> event = new ContentChangeEvent<N>(
+        operation, start, end);
+    for (ContentChangeListener<N> listener: listeners) {
+      listener.handle(event);
+    }
+  }
+
+  public static interface ContentChangeListener<N> {
+    public void handle(ContentChangeEvent<N> e);
+  }
+
+  public static class ContentChangeEvent<N> {
+    public final static int ADD = 0;
+    public final static int REMOVE = 1;
+
+    public N start;
+    public N end;
+    public int operation;
+
+    public ContentChangeEvent(int operation, N start, N end) {
+      this.operation = operation;
+      this.start = start;
+      this.end = end;
+    }
+  }
+
+  public void addListener(ContentChangeListener<N> listener) {
+    listeners.add(listener);
+  }
+
+  public void removeListener(ContentChangeListener<N> listener) {
+    listeners.remove(listener);
   }
 }

@@ -5,6 +5,8 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Matrix;
@@ -27,12 +29,18 @@ public class S0018_ImagePainting {
     Display display = shell.getDisplay();
 
     // Create image
-    Image image = new Image(display, 16, 16);
+    final Image image = new Image(display, 16, 16);
     GC gc = new GC(image);
     gc.setBackground(display.getSystemColor(SWT.COLOR_BLUE));
     gc.setAntialias(SWT.ON);
     gc.fillOval(0, 0, 16, 16);
     gc.dispose();
+    display.addListener(SWT.Dispose, new Listener() {
+      @Override
+      public void handleEvent(Event event) {
+        image.dispose();
+      }
+    });
 
     // Image data model
     final Image[][] images = new Image[ROW_COUNT][];

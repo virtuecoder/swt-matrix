@@ -57,6 +57,25 @@ public class MergeGuiTest extends SwtTestCase {
     assertTrue(body.isSelected(3, 3));
     assertFalse(body.isSelected(3, 0));
   }
+  
+  @Test public void mergeHidden() throws Exception {
+    Matrix matrix = createMatrix();
+    shell.setBounds(100, 100, 800, 600);
+    matrix.getAxisY().getBody().setCount(10);
+    matrix.getAxisX().getBody().setCount(10);
+    matrix.refresh();
+
+    Zone body = matrix.getBody();
+    body.setMerged(0, 3, 0, 3, true);
+    body.setMerged(3, 3, 0, 3, true);
+    body.getSectionX().setHidden(1, true);
+    matrix.refresh();
+    assertEquals(101, body.getCellBounds(0, 0).width);
+    body.getSectionX().setHidden(1, false);
+    body.getSectionX().setHidden(0, true);
+    matrix.refresh();
+    assertEquals(101, body.getCellBounds(0, 0).width);
+  }
 
   @Test
   public void wordWrap() throws Exception {

@@ -32,6 +32,7 @@ Grouping: moving items
 Cache embedded controls for repainting
 Add sections at runtime
 
+MatrixLayout.getMergedBounds depend on frozen area, rename frozen are to panel or view. 
 maximize the use of public void redraw (int x, int y, int width, int height, boolean all) 
 Decouple ZoneEditor from Zone. Use Zone.setEditor to attach to zone instead of ZoneEditor constructor.
 
@@ -149,3 +150,15 @@ copy paste
 autoscroll 
 drag indicator
 column width compress
+
+
+
+
+
+There are a few complication with multiple interleaving collections of hidden items. One is collapsed groups and the other custom one.
+1. What should happen when you hide the first item from the group? The first item works internally as a group holder for higher levels. I guess the grouping at higher levels remains with just fewer items below. By the way I have found this use case is not handled correctly by the current implementation - it's getting merged with the next group.
+2. Should the group show toggle button if it has less then two items not hidden in the custom set? Or the toggle button should not depend on custom hidden set? But the behavior would be surprising for the user, as he tries to expand and nothing happens.
+
+
+I guess that kind of things would have to be handled by the client code when I develop the command framework mentioned in the quarterly plan and provide command listeners to respond to collapse/expand action.
+
