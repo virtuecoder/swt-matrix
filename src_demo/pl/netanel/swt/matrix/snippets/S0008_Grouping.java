@@ -1,5 +1,7 @@
 package pl.netanel.swt.matrix.snippets;
 
+import static pl.netanel.swt.matrix.reloaded.ints.Grouping.Node.*;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
@@ -15,26 +17,27 @@ public class S0008_Grouping {
 
   static final Node structure = new Node("root",
     new Node("Group1",
-      new Node("Pricing",               // When collapsed to the first child will remain visible by default
+      new Node("Pricing",              // When collapsed to the first child will remain visible by default
         new Node("strike"),
         new Node("barier"),
-        new Node("summary").summary()), // It will be hidden when expanded and show only when collapsed
-      new Node("Dates",                 // When collapsed last child will remain visible
+        new Node("summary", SUMMARY)), // It will be hidden when expanded and show only when collapsed
+      new Node("Dates",                // When collapsed last child will remain visible
         new Node("settlementDate"),
-        new Node("expirationDate").remain())
+        new Node("expirationDate", REMAIN))
       ),
     new Node("Group2",
-      new Node("Sub Group 2.1",         // When collapsed 1st and 3rd child will be visible. This node will be collapsed by default
-        new Node("currency").remain(),
+      // When collapsed 1st and 3rd child will be visible. This node will be initially collapsed
+      new Node("Sub Group 2.1", REMAIN | COLLAPSED,
+        new Node("currency", REMAIN),
         new Node("spot"),
-        new Node("fwd").remain(),
+        new Node("fwd", REMAIN),
         new Node("vol")
-      ).remain().setCollapsed(true),
-      new Node("Sub Group 2.2",
+      ),
+      new Node("Sub Group 2.2", PERMANENT, // It will be not possible to collapse this node
         new Node("value"),
         new Node("currencies"),
         new Node("expired")
-      ).permanent()                    // It will be not possible to collapse this node
+      )
     )
   );
   private Matrix<Integer, Integer> matrix;

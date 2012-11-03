@@ -8,6 +8,7 @@
 package pl.netanel.swt.matrix.reloaded.ints;
 
 import static org.junit.Assert.*;
+import static pl.netanel.swt.matrix.reloaded.ints.Grouping.Node.*;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
@@ -50,6 +51,24 @@ public class GroupingTest {
     assertEquals(1, matrix.getAxisX().getBody().getCount().intValue());
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void bothRemainAndSummary() throws Exception {
+    grouping = new Grouping(zone, SWT.HORIZONTAL,
+        new Node("root", new Node("A", REMAIN | SUMMARY)));
+  }
+
+  public void optionsRemain() throws Exception {
+    // No exception
+    grouping = new Grouping(zone, SWT.HORIZONTAL,
+        new Node("root", new Node("A", REMAIN)));
+  }
+
+  public void optionsSummary() throws Exception {
+    // No exception
+    grouping = new Grouping(zone, SWT.HORIZONTAL,
+        new Node("root", new Node("A", SUMMARY)));
+  }
+
   @Test
   public void nodes_tree_not_even_layout() throws Exception {
     grouping = new Grouping(zone, SWT.HORIZONTAL, new Node("root",
@@ -76,7 +95,7 @@ public class GroupingTest {
   @Test
   public void ramainLast() throws Exception {
     grouping = new Grouping(matrix.getBody(), SWT.HORIZONTAL, new Node("root",
-        new Node("0", new Node("0.0"), new Node("0.1").remain()), new Node("1")));
+        new Node("0", new Node("0.0"), new Node("0.1", REMAIN)), new Node("1")));
     assertEquals(3, matrix.getAxisX().getBody().getCount().intValue());
     assertEquals(2, matrix.getAxisY().getBody().getCount().intValue());
 
@@ -88,7 +107,7 @@ public class GroupingTest {
   @Test
   public void ramainLast3Levels() throws Exception {
     grouping = new Grouping(matrix.getBody(), SWT.HORIZONTAL, new Node("root",
-        new Node("0", new Node("0.0"), new Node("0.1", new Node("0.1.0"), new Node("0.1.1").remain())), new Node("1")));
+        new Node("0", new Node("0.0"), new Node("0.1", new Node("0.1.0"), new Node("0.1.1", REMAIN))), new Node("1")));
     assertEquals(4, matrix.getAxisX().getBody().getCount().intValue());
     assertEquals(3, matrix.getAxisY().getBody().getCount().intValue());
 
@@ -106,7 +125,7 @@ public class GroupingTest {
   public void ramainTwo3Levels() throws Exception {
     grouping = new Grouping(matrix.getBody(), SWT.HORIZONTAL, new Node("root",
         new Node("0",
-            new Node("0.0", new Node("0.0.0").remain(), new Node("0.0.1"), new Node("0.0.2").remain()),
+            new Node("0.0", new Node("0.0.0", REMAIN), new Node("0.0.1"), new Node("0.0.2", REMAIN)),
             new Node("0.1")),
         new Node("1")));
     assertEquals(5, matrix.getAxisX().getBody().getCount().intValue());
@@ -127,7 +146,7 @@ public class GroupingTest {
     grouping = new Grouping(matrix.getBody(), SWT.HORIZONTAL, new Node("root",
         new Node("0",
             new Node("0.0", new Node("0.0.0"), new Node("0.0.1")),
-            new Node("0.1", new Node("0.1.0"), new Node("0.1.1")).permanent()),
+            new Node("0.1", PERMANENT, new Node("0.1.0"), new Node("0.1.1"))),
         new Node("1")));
     assertEquals(5, matrix.getAxisX().getBody().getCount().intValue());
     assertEquals(3, matrix.getAxisY().getBody().getCount().intValue());
@@ -145,8 +164,8 @@ public class GroupingTest {
   public void permanentGetToggle() throws Exception {
     grouping = new Grouping(matrix.getBody(), SWT.HORIZONTAL, new Node("root",
         new Node("0",
-            new Node("0.0", new Node("0.0.0"), new Node("0.0.1")).remain(),
-            new Node("0.1", new Node("0.1.0"), new Node("0.1.1")).permanent()),
+            new Node("0.0", REMAIN, new Node("0.0.0"), new Node("0.0.1")),
+            new Node("0.1", PERMANENT, new Node("0.1.0"), new Node("0.1.1"))),
             new Node("1")));
     assertEquals(5, matrix.getAxisX().getBody().getCount().intValue());
     assertEquals(3, matrix.getAxisY().getBody().getCount().intValue());
@@ -158,7 +177,7 @@ public class GroupingTest {
   public void summary() throws Exception {
     grouping = new Grouping(matrix.getBody(), SWT.HORIZONTAL, new Node("root",
         new Node("0",
-            new Node("0.0", new Node("0.0.0"), new Node("0.0.1").summary()),
+            new Node("0.0", new Node("0.0.0"), new Node("0.0.1", SUMMARY)),
             new Node("0.1", new Node("0.1.0"), new Node("0.1.1"))),
             new Node("1")));
     assertEquals(5, matrix.getAxisX().getBody().getCount().intValue());
@@ -272,7 +291,7 @@ public class GroupingTest {
             new Node("0", new Node("0.0", new Node("0.0.0"), new Node("0.0.1")), new Node("0.1")),
             new Node("1",
                 new Node("1.0", new Node("1.0.0"), new Node("1.0.1")),
-                new Node("1.1", new Node("1.1.0"), new Node("1.1.1")).permanent()
+                new Node("1.1", PERMANENT, new Node("1.1.0"), new Node("1.1.1"))
             )));
     matrix.refresh();
   }
@@ -282,8 +301,7 @@ public class GroupingTest {
         new Node("root",
             new Node("1", new Node("1.1", new Node("1.1.1"), new Node("1.1.2")), new Node("1.2")),
             new Node("2", new Node("2.1", new Node("2.1.1"), new Node("2.1.2")), new Node("2.2")),
-            new Node("3", new Node("3.1", new Node("3.1.1"), new Node("3.1.2")), new Node("3.2"))
-              .permanent()));
+            new Node("3", PERMANENT, new Node("3.1", new Node("3.1.1"), new Node("3.1.2")), new Node("3.2"))));
     matrix.refresh();
   }
 

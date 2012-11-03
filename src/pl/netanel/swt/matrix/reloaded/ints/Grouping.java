@@ -256,7 +256,7 @@ public class Grouping {
 
           // Make the first child to remain by default if nothing was set to remain
           if (node.remain.isEmpty()) {
-            firstChild.remain();
+            firstChild.isRemain = true;
             addRemain(node, firstChild);
           }
         }
@@ -508,6 +508,24 @@ public class Grouping {
    * Implements Builder pattern.
    */
   public static class Node {
+
+    /**
+     * Makes the node to stay visible when the parent is collapsed.
+     */
+    public final static int REMAIN = 1 << 0;
+    /**
+     * The node is visible only when node is collapsed
+     */
+    public final static int SUMMARY = 1 << 1;
+    /**
+     * Makes the node not collapse-able.
+     */
+    public final static int PERMANENT = 1 << 2;
+    /**
+     * the node is initially collapsed
+     */
+    public final static int COLLAPSED = 1 << 3;
+
     private final String caption;
     private final List<Node> children;
     private NumberSet<Integer> remain;
@@ -522,6 +540,24 @@ public class Grouping {
     private boolean isSummary;
 
     public Node(String caption, Node ...children) {
+      this.caption = caption;
+      this.children = Arrays.asList(children);
+    }
+
+    public Node(String caption, int options, Node ...children) {
+      // Check options
+      Preconditions.checkArgument((options & SUMMARY) == 0 || (options & REMAIN) == 0,
+          "the node cannot remain and be a summary at the same time");
+      Preconditions.checkArgument((options & PERMANENT) == 0 || (options & REMAIN) == 0,
+          "the node cannot be permament and summary at the same time");
+      Preconditions.checkArgument(options <= (REMAIN | SUMMARY | PERMANENT | COLLAPSED),
+          "Uknown options");
+
+      if ((options & REMAIN) != 0 ) isRemain = true;
+      if ((options & SUMMARY) != 0 ) isSummary = true;
+      if ((options & PERMANENT) != 0 ) isPermanent = true;
+      if ((options & COLLAPSED) != 0 ) isCollapsed = true;
+
       this.caption = caption;
       this.children = Arrays.asList(children);
     }
@@ -677,31 +713,6 @@ public class Grouping {
       }
       /*&& node.parent.collapsed == false*/
       return isCollapsed ? TOGGLE_EXPAND : TOGGLE_COLLAPSE;
-    }
-
-    /**
-     * Makes the node not collapse-able.
-     * @return this node
-     */
-    public Node permanent() {
-      isPermanent = true;
-      return this;
-    }
-
-    /**
-     * Makes the node to stay visible when the parent is collapsed.
-     * @return this node
-     */
-    public Node remain() {
-      Preconditions.checkArgument(!isSummary, "Cannot be remain and summary at the same time");
-      isRemain = true;
-      return this;
-    }
-
-    public Node summary() {
-      Preconditions.checkArgument(!isRemain, "Cannot be summary and remain at the same time");
-      isSummary = true;
-      return this;
     }
 
   }
