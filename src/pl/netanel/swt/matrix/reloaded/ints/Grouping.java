@@ -7,7 +7,6 @@
  ******************************************************************************/
 package pl.netanel.swt.matrix.reloaded.ints;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,6 +57,8 @@ public class Grouping {
   private Painter<Integer, Integer> oldCellPainter;
   private Listener selectItemListener;
   private NumberSet<Integer> hidden;
+  private boolean isBulkCollapse;
+  private AxisItem<Integer> focusItem;
 
 
   /**
@@ -169,7 +170,7 @@ public class Grouping {
 
         // toggle
         if (node.getToggleState() != TOGGLE_NONE && cellPainter.isOverImage(e.x, e.y)) {
-          node.setCollapsed(!node.collapsed);
+          node.setCollapsed(!node.isCollapsed);
         }
         else {
           AxisItem<Integer> item = axis2.getMouseItem();
@@ -223,6 +224,7 @@ public class Grouping {
         node.parent = parent;
         node.level = level;
         node.grouping = Grouping.this;
+        node.remain = node.grouping.axis.createNumberSet();
         parent = node;
         level++;
       }
@@ -232,13 +234,49 @@ public class Grouping {
         maxLevel[0] = java.lang.Math.max(maxLevel[0], level);
         parent = node.parent;
         level--;
+
+        // Group node
         if (node.hasChildren()) {
-          node.extent = Extent.createUnchecked(
-              node.children.get(0).extent.getStart(),
-              node.children.get(node.children.size()-1).extent.getEnd());
+          Node firstChild = node.children.get(0);
+          Node lastChild = node.children.get(node.children.size()-1);
+          node.extent = Extent.createUnchecked( firstChild.extent.getStart(), lastChild.extent.getEnd());
+
+          // Find the children to remain
+          int count = 0;
+          for (Node child: node.children) {
+            if (child.isRemain || child.isSummary || child.isPermanent || node.isPermanent) {
+              addRemain(node, child);
+              count++;
+            }
+          }
+
+          if (count == node.children.size()) {
+            node.isPermanent = true;
+          }
+
+          // Make the first child to remain by default if nothing was set to remain
+          if (node.remain.isEmpty()) {
+            firstChild.remain();
+            addRemain(node, firstChild);
+          }
+        }
+
+        if (node.isSummary) {
+          Grouping.this.hidden.add(node.extent.getStart(), node.extent.getEnd());
         }
         node.extentCount = node.extent.getEnd() - node.extent.getStart() + 1;
       }
+
+      private void addRemain(Node node, Node child) {
+        if (child.hasChildren()) {
+          node.remain.addAll(child.remain);
+        }
+        else {
+          node.remain.add(child.extent.getStart());
+        }
+      }
+
+
 
     }.traverse(root.children);
 
@@ -295,6 +333,8 @@ public class Grouping {
   void createVisitors() {
     layoutVisitor = new NodeVisitor() {
       @Override protected void visitBefore(Node node) {
+
+        // Merge horizontal
         if (axisDirection == SWT.HORIZONTAL) {
           if (node.hasChildren()) {
             zone.setMerged(node.extent.getStart(), node.extent.getEnd() - node.extent.getStart() + 1,
@@ -304,6 +344,8 @@ public class Grouping {
             zone.setMerged(node.index, 1, node.level, levelCount - node.level, true);
           }
         }
+
+        // Merge vertical
         else {
           if (node.hasChildren()) {
             zone.setMerged( node.level, 1,
@@ -313,11 +355,14 @@ public class Grouping {
             zone.setMerged(node.level, levelCount - node.level, node.index, 1, true);
           }
         }
-        if (node.collapsed) {
-          node.collapsed = false;
+
+        // Apply collapsed state set before Grouping creation
+        if (node.isCollapsed) {
+          node.isCollapsed = false;
           node.setCollapsed(true);
         }
       }
+
       @Override
       public NodeVisitor traverse() {
         super.traverse(root.children);
@@ -465,19 +510,20 @@ public class Grouping {
   public static class Node {
     private final String caption;
     private final List<Node> children;
+    private NumberSet<Integer> remain;
     private Node parent;
     private int level = -1, index;
     private Extent<Integer> extent;
     private int extentCount;
-    private boolean collapsed;
+    private boolean isCollapsed;
     Grouping grouping;
-    private int collapseDirection;
-    private boolean preserve;
+    private boolean isRemain;
+    private boolean isPermanent;
+    private boolean isSummary;
 
     public Node(String caption, Node ...children) {
       this.caption = caption;
       this.children = Arrays.asList(children);
-      this.collapseDirection = SWT.BEGINNING;
     }
 
     @Override
@@ -518,205 +564,143 @@ public class Grouping {
     }
     /**
      * Sets the collapsed state of this node to the given value.
-     * @param state state to set for <code>collapsed</code> property
+     * @param newState state to set for <code>collapsed</code> property
      * @return this node
      */
-    public Node setCollapsed(boolean state) {
-      if (collapseDirection == SWT.NONE || grouping != null && this == grouping.root) return this;
-      collapsed = state;
+    public Node setCollapsed(boolean newState) {
+      if (isPermanent || children.size() < 1 || grouping != null && this == grouping.root) return this;
+      isCollapsed = newState;
       if (grouping != null) {
-        AxisItem<Integer> focusItem = grouping.axis.getFocusItem();
+        grouping.saveFocusItem();
 
         // Collapse
-        if (state == true && children.size() > 1) {
-          // Find the not collapse able extents to exclude
-          final ArrayList<Extent<Integer>> extentsToExclude = new ArrayList<Extent<Integer>>();
-          new NodeVisitor() {
-            @Override
-            protected void visitBefore(Node node) {
-              if (node.collapseDirection == SWT.NONE) {
-                stopBranch = true;
-                extentsToExclude.add(node.extent);
-              }
-            }
-          }.traverse(this);
-
-          // Hide
-          Integer firstExcluded = grouping.section.getHiddenSet().firstExcluded(extent.getStart(), Matrix.FORWARD);
+        if (newState == true) {
           grouping.hidden.add(extent.getStart(), extent.getEnd());
-          grouping.hidden.remove(firstExcluded);
-
-          // Unhide the excluded ones
-          for (int i = 0; i < extentsToExclude.size(); i++) {
-            Extent<Integer> extent2 = extentsToExclude.get(i);
-            grouping.hidden.remove(extent2.getStart(), extent2.getEnd());
-          }
+          grouping.hidden.removeAll(remain);
         }
         // Expand
         else {
-          if (hasChildren()) {
-            expand(level+1, this);
-          }
+          expand();
         }
 
-//        // Expand the parent when all its children are expanded
-//        Node node = this.parent;
-//        while (node != grouping.root) {
-//          boolean allExpanded = true;
-//          for (Node child: node.getChildren()) {
-//            allExpanded = allExpanded && !child.collapsed;
-//          }
-//          if (allExpanded) {
-//            node.collapsed = false;
-//          }
-//          node = node.parent;
-//        }
-//
-//        // Collapse the children o
-
-
-        grouping.matrix.refresh();
-        if (focusItem != null) {
-          grouping.axis.setFocusItem(focusItem);
-        }
+        grouping.restoreFocusItem();
       }
       return this;
     }
 
-    private void expand(int startLevel, Node node) {
-      if (node.hasChildren()) {
-        for (Node child: node.children) {
-          if (child.collapsed) {
-            grouping.hidden.remove(child.extent.getStart());
+    private void expand() {
+      // Group node
+      if (hasChildren()) {
+        for (Node child: children) {
+          if (child.isCollapsed) {
+            grouping.hidden.removeAll(child.remain);
           }
           else {
-            grouping.hidden.remove(child.extent.getStart(), child.extent.getEnd());
+            if (child.isSummary) {
+              grouping.hidden.add(child.extent.getStart(), child.extent.getEnd());
+            }
+            else {
+              child.expand();
+            }
           }
         }
       }
+      // Leaf node
       else {
-        grouping.hidden.remove(node.index, node.index);
+        grouping.hidden.remove(index, index);
       }
     }
+
 
     /**
      * Sets the collapsed state of this node
      * and all related nodes on the lower level to the given value.
      *
-     * @param state state to set for <code>collapsed</code> property
+     * @param newState state to set for <code>collapsed</code> property
      * @return this node
      */
-    public Node setCollapsedAll(final boolean state) {
+    public Node setCollapsedAll(final boolean newState) {
 
-      if (state == false) {
+      // Expand
+      if (newState == false) {
         if (grouping != null) {
           grouping.hidden.remove(extent.getStart(), extent.getEnd());
         }
         new NodeVisitor() {
           @Override
           protected void visitBefore(Node node) {
-            node.collapsed = false;
+            node.isCollapsed = false;
           }
         }.traverse(this);
       }
+      // Collapse
       else {
+        grouping.saveFocusItem();
+        grouping.isBulkCollapse = true;
         new NodeVisitor() {
           @Override
           protected void visitAfter(Node node) {
-            node.setCollapsed(state);
+            node.setCollapsed(newState);
           }
         }.traverse(this);
+        grouping.isBulkCollapse = false;
+        grouping.restoreFocusItem();
       }
       return this;
     }
 
-    /**
-     * Sets the collapse direction of this node to the given value.
-     *
-     * @param direction collapse direction to set
-     * <p>
-     * The possible values are {@link SWT#BEGINNING}, {@link SWT#END} and {@link SWT#NONE}
-     * <li> With {@link SWT#BEGINNING} the first node is shown when node is collapsed
-     * <li> With {@link SWT#END} the last node is shown when node is collapsed (<b>not implemented yet!</b>)
-     * <li> With {@link SWT#NONE} the node cannot be collapsed
-     * @return this node
-     */
-    public Node setCollapseDirection(int direction) {
-      checkCollapseDirection(direction);
-
-      if (direction == SWT.END) throw new UnsupportedOperationException("Not implemnted yet");
-      if (direction == SWT.NONE) {
-        collapsed = false;
-      }
-      collapseDirection = direction;
-      if (grouping != null) {
-        grouping.matrix.redraw();
-      }
-      return this;
-    }
-
-    /**
-     * Sets the collapse direction of this node
-     * and all related nodes in the lower level to the given value.
-     * @param direction collapse direction to set.
-     * <p>
-     * The possible values are {@link SWT#BEGINNING}, {@link SWT#END} and {@link SWT#NONE}
-     * <li> With {@link SWT#BEGINNING} the first node is shown when node is collapsed
-     * <li> With {@link SWT#END} the last node is shown when node is collapsed (<b>not implemented yet!</b>)
-     * <li> With {@link SWT#NONE} the node cannot be collapsed
-     * @return this node
-     * @see #setCollapseDirection(int)
-     */
-    public Node setCollapseDirectionAll(final int direction) {
-      checkCollapseDirection(direction);
-
-      new NodeVisitor() {
-        @Override
-        protected void visitBefore(Node node) {
-          node.setCollapseDirection(direction);
-        }
-      }.traverse(this);
-      return this;
-    }
-
-    private void checkCollapseDirection(int direction) {
-      Preconditions.checkArgument(direction == SWT.BEGINNING
-          || direction == SWT.END || direction == SWT.NONE,
-          "direction must be either SWT.BEGINNING or SWT.END or SWT.NONE");
-    }
 
     /**
      * Returns <code>true</code> if this node is collapsed, or <code>false</code> otherwise.
      * @return <code>true</code> if this node is collapsed, or <code>false</code> otherwise
      */
     public boolean isCollapsed() {
-      return collapsed;
+      return isCollapsed;
     }
 
     Boolean getToggleState() {
-      if (collapseDirection == SWT.NONE || children.size() <= 1 ||
+      if (isPermanent || children.size() <= 1 ||
+          // less then two not hidden items to display
+          // TODO Replace with (all hidden - grouping.hidden)
           grouping.section.getHiddenSet().getCount(extent.getStart(), extent.getEnd()) >= extentCount - 1)
       {
         return TOGGLE_NONE;
       }
-      not_found: {
-        for (int i = 1; i < children.size(); i++) {
-          if (children.get(i).collapseDirection != SWT.NONE) {
-            break not_found;
+      something_to_collapse: {
+        for (int i = 0; i < children.size(); i++) {
+          Node node = children.get(i);
+          if (!node.isRemain) {
+            break something_to_collapse;
           }
         }
         return TOGGLE_NONE;
       }
       /*&& node.parent.collapsed == false*/
-      return collapsed ? TOGGLE_EXPAND : TOGGLE_COLLAPSE;
+      return isCollapsed ? TOGGLE_EXPAND : TOGGLE_COLLAPSE;
+    }
+
+    /**
+     * Makes the node not collapse-able.
+     * @return this node
+     */
+    public Node permanent() {
+      isPermanent = true;
+      return this;
     }
 
     /**
      * Makes the node to stay visible when the parent is collapsed.
      * @return this node
      */
-    public Node preserve() {
-      preserve = true;
+    public Node remain() {
+      Preconditions.checkArgument(!isSummary, "Cannot be remain and summary at the same time");
+      isRemain = true;
+      return this;
+    }
+
+    public Node summary() {
+      Preconditions.checkArgument(!isRemain, "Cannot be summary and remain at the same time");
+      isSummary = true;
       return this;
     }
 
@@ -734,14 +718,12 @@ public class Grouping {
      */
     protected Node node;
     /**
-     * Stops the execution after {@link #visit(Node)} or <code>traverse(child)</code>
-     * if set to <code>true</code>
+     * Stops the traversing if set to <code>true</code>
      */
     protected boolean stop;
 
     /**
-     * Stops processing the current branch and got the one
-     * if set to <code>true</code>
+     * Stops traversing deeper into the current branch if set to <code>true</code>
      */
     protected boolean stopBranch;
 
@@ -772,10 +754,10 @@ public class Grouping {
      */
     public NodeVisitor traverse(Node node) {
       visitBefore(node);
-      if (stop) return this;
+      if (stop || stopBranch) return this;
       for (Node child: node.children) {
         traverse(child);
-        if (stop || stopBranch) return this;
+        if (stop) return this;
       }
       visitAfter(node);
       return this;
@@ -789,7 +771,7 @@ public class Grouping {
     public NodeVisitor traverse(List<Node> nodes) {
       for (Node node: nodes) {
         traverse(node);
-        if (stop || stopBranch) break;
+        if (stop) break;
       }
       return this;
     }
@@ -801,5 +783,21 @@ public class Grouping {
     public NodeVisitor traverse() {
       return this;
     }
+  }
+
+  void saveFocusItem() {
+    if (!isBulkCollapse) {
+      focusItem = axis.getFocusItem();
+    }
+  }
+
+  void restoreFocusItem() {
+    if (!isBulkCollapse) {
+      matrix.refresh();
+      if(focusItem != null) {
+        axis.setFocusItem(focusItem);
+      }
+    }
+
   }
 }

@@ -15,23 +15,26 @@ public class S0008_Grouping {
 
   static final Node structure = new Node("root",
     new Node("Group1",
-        new Node("Pricing",
-          new Node("strike"),
-          new Node("barier")),
-        new Node("Dates",
-          new Node("settlementDate"),
-          new Node("expirationDate"))
-        ),
+      new Node("Pricing",               // When collapsed to the first child will remain visible by default
+        new Node("strike"),
+        new Node("barier"),
+        new Node("summary").summary()), // It will be hidden when expanded and show only when collapsed
+      new Node("Dates",                 // When collapsed last child will remain visible
+        new Node("settlementDate"),
+        new Node("expirationDate").remain())
+      ),
     new Node("Group2",
-        new Node("Sub Group 2.1",
-          new Node("currency"),
-          new Node("spot"),
-          new Node("fwd"),
-          new Node("vol")).setCollapsed(true),
-        new Node("Sub Group 2.2",
-            new Node("value"),
-            new Node("currencies"),
-            new Node("expired")).setCollapseDirection(SWT.NONE)
+      new Node("Sub Group 2.1",         // When collapsed 1st and 3rd child will be visible. This node will be collapsed by default
+        new Node("currency").remain(),
+        new Node("spot"),
+        new Node("fwd").remain(),
+        new Node("vol")
+      ).remain().setCollapsed(true),
+      new Node("Sub Group 2.2",
+        new Node("value"),
+        new Node("currencies"),
+        new Node("expired")
+      ).permanent()                    // It will be not possible to collapse this node
     )
   );
   private Matrix<Integer, Integer> matrix;
@@ -45,14 +48,14 @@ public class S0008_Grouping {
     matrix.getAxisX().getHeader().setVisible(true);
     matrix.getAxisY().getHeader().setVisible(true);
 
+    Zone<Integer, Integer> zone = axisDirection == SWT.HORIZONTAL ? matrix.getHeaderX() : matrix.getHeaderY();
+
     /* Create class holding the API and all the logic to achieve grouping effect
        in the given zone and along the given direction */
-    Zone<Integer, Integer> zone = axisDirection == SWT.HORIZONTAL ? matrix.getHeaderX() : matrix.getHeaderY();
     Grouping grouping = new Grouping(zone, axisDirection, structure);
     grouping.getRoot().setCollapsedAll(true);
 
-//    grouping.getRoot().setCollapsedAll(false);
-//    System.out.println(grouping.getNodeByTreeIndex(1, 1, 0).getParent());
+    matrix.getAxisX().getBody().setHidden(6, true); // It will be not visible when group is expanded
   }
 
   void pack() {

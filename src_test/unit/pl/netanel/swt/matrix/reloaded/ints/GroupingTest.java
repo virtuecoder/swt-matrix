@@ -14,14 +14,17 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.Before;
 import org.junit.Test;
 
+import pl.netanel.swt.matrix.CellExtent;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Section;
+import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.reloaded.ints.Grouping.Node;
 
 public class GroupingTest {
   private Matrix<Integer, Integer> matrix;
   private Grouping grouping;
   private Section<Integer> bodyX;
+  private Zone<Integer, Integer> zone;
 
   @Before
   public void setUp() {
@@ -29,11 +32,12 @@ public class GroupingTest {
     matrix.getAxisY().getBody().setCount(5);
     matrix.getAxisX().getHeader().setVisible(true);
     matrix.getAxisY().getHeader().setVisible(true);
+    zone = matrix.getBody();
   }
 
   @Test
   public void nodes_0() throws Exception {
-    grouping = new Grouping(matrix.getHeaderX(), SWT.HORIZONTAL, new Node("root"));
+    grouping = new Grouping(zone, SWT.HORIZONTAL, new Node("root"));
     assertEquals(0, matrix.getAxisX().getBody().getCount().intValue());
     grouping.getRoot().setCollapsed(true);
     grouping.getRoot().setCollapsedAll(true);
@@ -41,15 +45,129 @@ public class GroupingTest {
 
   @Test
   public void nodes_1() throws Exception {
-    grouping = new Grouping(matrix.getHeaderX(), SWT.HORIZONTAL, 
+    grouping = new Grouping(zone, SWT.HORIZONTAL,
         new Node("root", new Node("A")));
     assertEquals(1, matrix.getAxisX().getBody().getCount().intValue());
   }
 
   @Test
-  public void nodes_tree_not_even() throws Exception {
-    createGrouping();
+  public void nodes_tree_not_even_layout() throws Exception {
+    grouping = new Grouping(zone, SWT.HORIZONTAL, new Node("root",
+        new Node("0", new Node("0.0"), new Node("0.1")), new Node("1")));
     assertEquals(3, matrix.getAxisX().getBody().getCount().intValue());
+    assertEquals(2, matrix.getAxisY().getBody().getCount().intValue());
+    CellExtent<Integer, Integer> merged = zone.getMerged(2, 0);
+    assertEquals("[2-1, 0-2]", merged.toString());
+  }
+
+  @Test
+  public void ramainFirst() throws Exception {
+    grouping = new Grouping(matrix.getBody(), SWT.HORIZONTAL, new Node("root",
+        new Node("0", new Node("0.0"), new Node("0.1")), new Node("1")));
+    assertEquals(3, matrix.getAxisX().getBody().getCount().intValue());
+    assertEquals(2, matrix.getAxisY().getBody().getCount().intValue());
+
+    assertEquals(0, zone.getSectionX().getHiddenCount().intValue());
+    grouping.getRoot().setCollapsedAll(true);
+    assertEquals(1, zone.getSectionX().getHiddenCount().intValue());
+    assertTrue(zone.getSectionX().isHidden(1));
+  }
+
+  @Test
+  public void ramainLast() throws Exception {
+    grouping = new Grouping(matrix.getBody(), SWT.HORIZONTAL, new Node("root",
+        new Node("0", new Node("0.0"), new Node("0.1").remain()), new Node("1")));
+    assertEquals(3, matrix.getAxisX().getBody().getCount().intValue());
+    assertEquals(2, matrix.getAxisY().getBody().getCount().intValue());
+
+    grouping.getRoot().setCollapsedAll(true);
+    assertEquals(1, zone.getSectionX().getHiddenCount().intValue());
+    assertTrue(zone.getSectionX().isHidden(0));
+  }
+
+  @Test
+  public void ramainLast3Levels() throws Exception {
+    grouping = new Grouping(matrix.getBody(), SWT.HORIZONTAL, new Node("root",
+        new Node("0", new Node("0.0"), new Node("0.1", new Node("0.1.0"), new Node("0.1.1").remain())), new Node("1")));
+    assertEquals(4, matrix.getAxisX().getBody().getCount().intValue());
+    assertEquals(3, matrix.getAxisY().getBody().getCount().intValue());
+
+    grouping.getRoot().setCollapsedAll(true);
+    assertEquals(2, zone.getSectionX().getHiddenCount().intValue());
+    assertTrue(zone.getSectionX().isHidden(1));
+    assertTrue(zone.getSectionX().isHidden(2));
+
+    grouping.getNodeByTreeIndex(0).setCollapsed(false);
+    assertEquals(1, zone.getSectionX().getHiddenCount().intValue());
+    assertTrue(zone.getSectionX().isHidden(1));
+  }
+
+  @Test
+  public void ramainTwo3Levels() throws Exception {
+    grouping = new Grouping(matrix.getBody(), SWT.HORIZONTAL, new Node("root",
+        new Node("0",
+            new Node("0.0", new Node("0.0.0").remain(), new Node("0.0.1"), new Node("0.0.2").remain()),
+            new Node("0.1")),
+        new Node("1")));
+    assertEquals(5, matrix.getAxisX().getBody().getCount().intValue());
+    assertEquals(3, matrix.getAxisY().getBody().getCount().intValue());
+
+    grouping.getRoot().setCollapsedAll(true);
+    assertEquals(2, zone.getSectionX().getHiddenCount().intValue());
+    assertTrue(zone.getSectionX().isHidden(1));
+    assertTrue(zone.getSectionX().isHidden(3));
+
+    grouping.getNodeByTreeIndex(0).setCollapsed(false);
+    assertEquals(1, zone.getSectionX().getHiddenCount().intValue());
+    assertTrue(zone.getSectionX().isHidden(1));
+  }
+
+  @Test
+  public void permanent3Levels() throws Exception {
+    grouping = new Grouping(matrix.getBody(), SWT.HORIZONTAL, new Node("root",
+        new Node("0",
+            new Node("0.0", new Node("0.0.0"), new Node("0.0.1")),
+            new Node("0.1", new Node("0.1.0"), new Node("0.1.1")).permanent()),
+        new Node("1")));
+    assertEquals(5, matrix.getAxisX().getBody().getCount().intValue());
+    assertEquals(3, matrix.getAxisY().getBody().getCount().intValue());
+
+    assertEquals(true, grouping.getNodeByTreeIndex(0).getToggleState());
+    assertEquals(null, grouping.getNodeByTreeIndex(0, 1).getToggleState());
+
+    grouping.getRoot().setCollapsedAll(true);
+    assertEquals(2, zone.getSectionX().getHiddenCount().intValue());
+    assertTrue(zone.getSectionX().isHidden(0));
+    assertTrue(zone.getSectionX().isHidden(1));
+  }
+
+  @Test
+  public void permanentGetToggle() throws Exception {
+    grouping = new Grouping(matrix.getBody(), SWT.HORIZONTAL, new Node("root",
+        new Node("0",
+            new Node("0.0", new Node("0.0.0"), new Node("0.0.1")).remain(),
+            new Node("0.1", new Node("0.1.0"), new Node("0.1.1")).permanent()),
+            new Node("1")));
+    assertEquals(5, matrix.getAxisX().getBody().getCount().intValue());
+    assertEquals(3, matrix.getAxisY().getBody().getCount().intValue());
+
+    assertEquals(null, grouping.getNodeByTreeIndex(0).getToggleState());
+  }
+
+  @Test
+  public void summary() throws Exception {
+    grouping = new Grouping(matrix.getBody(), SWT.HORIZONTAL, new Node("root",
+        new Node("0",
+            new Node("0.0", new Node("0.0.0"), new Node("0.0.1").summary()),
+            new Node("0.1", new Node("0.1.0"), new Node("0.1.1"))),
+            new Node("1")));
+    assertEquals(5, matrix.getAxisX().getBody().getCount().intValue());
+    assertEquals(3, matrix.getAxisY().getBody().getCount().intValue());
+
+    assertEquals(1, zone.getSectionX().getHiddenCount().intValue());
+    assertTrue(zone.getSectionX().isHidden(1));
+    grouping.getNodeByTreeIndex(0, 0).setCollapsed(true);
+    assertFalse(zone.getSectionX().isHidden(1));
   }
 
   @Test
@@ -88,29 +206,29 @@ public class GroupingTest {
     grouping.getRoot().setCollapsedAll(true);
     assertTrue(grouping.getNodeByTreeIndex(0).isCollapsed());
     assertTrue(grouping.getNodeByTreeIndex(0, 0).isCollapsed());
-    assertTrue(grouping.getNodeByTreeIndex(0, 0, 0).isCollapsed());
-    assertTrue(grouping.getNodeByTreeIndex(0, 0, 1).isCollapsed());
-    assertTrue(grouping.getNodeByTreeIndex(0, 1).isCollapsed());
+    assertFalse(grouping.getNodeByTreeIndex(0, 0, 0).isCollapsed());
+    assertFalse(grouping.getNodeByTreeIndex(0, 0, 1).isCollapsed());
+    assertFalse(grouping.getNodeByTreeIndex(0, 1).isCollapsed());
     assertTrue(grouping.getNodeByTreeIndex(1).isCollapsed());
     assertTrue(grouping.getNodeByTreeIndex(1, 0).isCollapsed());
-    assertTrue(grouping.getNodeByTreeIndex(1, 0, 0).isCollapsed());
-    assertTrue(grouping.getNodeByTreeIndex(1, 0, 1).isCollapsed());
-    assertTrue(grouping.getNodeByTreeIndex(1, 1).isCollapsed());
+    assertFalse(grouping.getNodeByTreeIndex(1, 0, 0).isCollapsed());
+    assertFalse(grouping.getNodeByTreeIndex(1, 0, 1).isCollapsed());
+    assertFalse(grouping.getNodeByTreeIndex(1, 1).isCollapsed());
     assertFalse(grouping.getNodeByTreeIndex(2).isCollapsed());
-    assertFalse(grouping.getNodeByTreeIndex(2, 0).isCollapsed());
+    assertTrue(grouping.getNodeByTreeIndex(2, 0).isCollapsed());
     assertFalse(grouping.getNodeByTreeIndex(2, 0, 0).isCollapsed());
     assertFalse(grouping.getNodeByTreeIndex(2, 0, 1).isCollapsed());
     assertFalse(grouping.getNodeByTreeIndex(2, 1).isCollapsed());
   }
 
-  @Test
-  public void noToggleWhenOnlyFirstchildIsCollapsible() throws Exception {
-    grouping = new Grouping(matrix.getHeaderX(), SWT.HORIZONTAL, new Node("root",
-      new Node("0",
-          new Node("0.0", new Node("0.0.0"), new Node("0.0.1")),
-          new Node("0.1", new Node("0.1.0"), new Node("0.1.1")).setCollapseDirectionAll(SWT.NONE))));
-    assertEquals(null, grouping.getNodeByTreeIndex(0).getToggleState());
-  }
+//  @Test
+//  public void noToggleWhenOnlyFirstchildIsCollapsible() throws Exception {
+//    grouping = new Grouping(matrix.getHeaderX(), SWT.HORIZONTAL, new Node("root",
+//      new Node("0",
+//          new Node("0.0", new Node("0.0.0"), new Node("0.0.1")),
+//          new Node("0.1", new Node("0.1.0"), new Node("0.1.1")).permanent())));
+//    assertEquals(null, grouping.getNodeByTreeIndex(0).getToggleState());
+//  }
 
   @Test
   public void expandParentWhenAllChildrenExpanded() throws Exception {
@@ -154,7 +272,7 @@ public class GroupingTest {
             new Node("0", new Node("0.0", new Node("0.0.0"), new Node("0.0.1")), new Node("0.1")),
             new Node("1",
                 new Node("1.0", new Node("1.0.0"), new Node("1.0.1")),
-                new Node("1.1", new Node("1.1.0"), new Node("1.1.1")).setCollapseDirectionAll(SWT.NONE)
+                new Node("1.1", new Node("1.1.0"), new Node("1.1.1")).permanent()
             )));
     matrix.refresh();
   }
@@ -165,7 +283,7 @@ public class GroupingTest {
             new Node("1", new Node("1.1", new Node("1.1.1"), new Node("1.1.2")), new Node("1.2")),
             new Node("2", new Node("2.1", new Node("2.1.1"), new Node("2.1.2")), new Node("2.2")),
             new Node("3", new Node("3.1", new Node("3.1.1"), new Node("3.1.2")), new Node("3.2"))
-              .setCollapseDirectionAll(SWT.NONE)));
+              .permanent()));
     matrix.refresh();
   }
 

@@ -1,4 +1,19 @@
 -------------------------------------------------------------------------------
+Version 0.7.17
+
+Feature changes:
+- Grouping nodes can be marked as remain, summary and permanent 
+- Reduced repainting in grouping collapse/expand
+- Multiple hidden sets for a section. The effective hidden state is union of all hidden sets. 
+  Grouping uses that to allow hiding items independently from collapse/extend state of group nodes.
+
+API changes:
+- Add NumberSet class. Made public prematurely in order be used by Grouping. Not polished. Better not use it yet.  
+- Added Section.addHiddenSet(NumberSet)
+- Added Section.removeHiddenSet(NumberSet)
+- Added Section.getHiddenSet()
+
+-------------------------------------------------------------------------------
 Version 0.7.16
 
 Bug fixes:
