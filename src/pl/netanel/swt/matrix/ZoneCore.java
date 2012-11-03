@@ -14,6 +14,7 @@ import java.util.Iterator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -33,14 +34,6 @@ import pl.netanel.util.ImmutableIterator;
  * @param <Y> indexing type for vertical axis
  * @param <X> indexing type for the horizontal axis
  * @see SectionCore
- *
- * @author Jacek
- * @created 13-10-2010
- */
-/**
- *
- * @author Jacek
- * @created 30-06-2012
  */
 class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
@@ -179,6 +172,10 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		return null;
 	}
 
+  @Override
+  public Point computeSize(X indexX, Y indexY, int wHint, int hHint) {
+    return painters.computeSize(indexX, indexY, wHint, hHint);
+  }
 
 	@Override public Rectangle getBounds(Frozen frozenX, Frozen frozenY) {
 	  Bound bx = matrix.layoutX.getBound(frozenX, sectionX);
@@ -763,15 +760,9 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
     return (ZoneCore<X2, Y2>) zone.getUnchecked();
   }
 
-
   @Override
   public boolean contains(CellExtent<X, Y> cellExtent, X indexX, Y indexY) {
     return sectionX.math.contains(cellExtent.startX, cellExtent.getEndX(), indexX) &&
       sectionY.math.contains(cellExtent.startY, cellExtent.getEndY(), indexY);
   }
-
-
-
-
-
 }

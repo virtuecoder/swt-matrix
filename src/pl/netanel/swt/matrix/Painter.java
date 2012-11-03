@@ -469,7 +469,6 @@ public class Painter<X extends Number, Y extends Number> {
 		int x2 = x, y2 = y;
 		int x3 = x, y3 = y;
 
-
 		if (image != null) {
 			Rectangle bounds = image.getBounds();
 			switch (style.imageAlignX) {
@@ -826,7 +825,7 @@ public class Painter<X extends Number, Y extends Number> {
 	 * @param hHint the height hint (can be <code>SWT.DEFAULT</code>)
 	 * @return the preferred size of the control
 	 */
-	public Point computeSize(X indexX, Y indexY, int wHint, int hHint) {
+	protected Point computeSize(X indexX, Y indexY, int wHint, int hHint) {
 	  setupSpatial(indexX, indexY);
 
 	  int x = 0, y = 0;
@@ -838,6 +837,13 @@ public class Painter<X extends Number, Y extends Number> {
 	  }
 
     if (text != null) {
+      boolean fontChange = style.font != lastFont;
+      if (fontChange) {
+        Font font = style.font == null ? matrix.getDisplay().getSystemFont() : style.font;
+        gc.setFont(font);
+        extentCache = FontWidthCache.get(gc, font);
+        lastFont = font;
+      }
 
       if (style.hasWordWraping) {
         if (wHint == SWT.DEFAULT) {

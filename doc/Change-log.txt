@@ -8,12 +8,14 @@ Feature changes:
   Grouping uses that to allow hiding items independently from collapse/extend state of group nodes.
 
 API changes:
+- Added Zone.computeSize(Number, Number, int, int)
 - Added constants in Grouping.Node: REMAIN, SUMMARY, PERMANENT, COLLAPSED
 - Added Grouping.Node(String, int, Node[])  
 - Added NumberSet class. Made public prematurely in order be used by Grouping. Not polished. Better not use it yet.  
 - Added Section.addHiddenSet(NumberSet)
 - Added Section.removeHiddenSet(NumberSet)
 - Added Section.getHiddenSet()
+- Remove ColumnGrouping
 
 -------------------------------------------------------------------------------
 Version 0.7.16

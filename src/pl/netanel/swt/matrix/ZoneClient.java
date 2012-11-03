@@ -13,6 +13,7 @@ import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
 
@@ -78,6 +79,11 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     sectionY.checkCellIndex(indexY, "indexY");
     sectionX.checkCellIndex(indexX, "indexX");
     return core.getCellBounds(indexX, indexY);
+  }
+
+  @Override
+  public Point computeSize(X indexX, Y indexY, int wHint, int hHint) {
+    return core.computeSize(indexX, indexY, wHint, hHint);
   }
 
   @Override
@@ -320,13 +326,10 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
 
     Preconditions.checkArgument(painter.zone == null || this.core.equals(painter.zone),
       "The painter belongs to a different zone: %s", painter.zone);
-
   }
 
   @Override
   public boolean contains(CellExtent<X, Y> cellExtent, X indexX, Y indexY) {
     return core.contains(cellExtent, indexX, indexY);
   }
-
-
 }

@@ -14,9 +14,12 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 
+import pl.netanel.util.Arrays;
 import pl.netanel.util.Preconditions;
 
 class Painters<X extends Number, Y extends Number> implements Iterable<Painter<X, Y>> {
+
+  private static final int[] CELL_PAINTERS = new int[] {Painter.SCOPE_CELLS, Painter.SCOPE_CELLS_X, Painter.SCOPE_CELLS_Y};
 
   private final ArrayList<Painter<X, Y>> items;
 
@@ -122,7 +125,6 @@ class Painters<X extends Number, Y extends Number> implements Iterable<Painter<X
 	  return items.iterator();
 	}
 
-
   private void checkUniqueness(Painter<X, Y> painter) {
     for (int i = 0, imax = items.size(); i < imax; i++) {
       Painter<X, Y> painter2 = items.get(i);
@@ -131,20 +133,21 @@ class Painters<X extends Number, Y extends Number> implements Iterable<Painter<X
     }
   }
 
-
-  public Point computeSize(X x, Y y, int wHint, int hHint) {
+  public Point computeSize(X indexX, Y indexY, int wHint, int hHint) {
     Point result = new Point(0, 0);
     GC gc = new GC(Display.getDefault());
     for (Painter<X, Y> painter: items) {
-      painter.init(gc, Frozen.NONE, Frozen.NONE);
-      Point size = painter.computeSize( x, y, wHint, hHint);
-      result.x = java.lang.Math.max(result.x, size.x);
-      result.y = java.lang.Math.max(result.y, size.y);
+      if (Arrays.contains(CELL_PAINTERS, painter.scope)) {
+        painter.init(gc, Frozen.NONE, Frozen.NONE);
+        Point size = painter.computeSize(indexX, indexY, wHint, hHint);
+        result.x = java.lang.Math.max(result.x, size.x);
+        result.y = java.lang.Math.max(result.y, size.y);
+        painter.clean();
+      }
     }
     gc.dispose();
     return result;
   }
-
 }
 
 //	public void setMatrixAndZone(Matrix matrix, Zone zone) {

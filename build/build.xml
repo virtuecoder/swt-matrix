@@ -46,12 +46,12 @@
 		<!-- Obfuscate and optimize by ProGuard -->
 		<taskdef resource="proguard/ant/task.properties" classpath="${proguard.dir}/proguard.jar" />
 		<proguard>
-			-libraryjars "${jdk.dir}\jre\lib\rt.jar"
-			-libraryjars "${eclipse.swt.file}" 
-			-libraryjars "${eclipse.swt.win32.file}"
-			-injars       ${output.dir}\swt-matrix-dont-distribute.jar
-			-outjars      ${output.dir}\${ant.project.name}-${version}.jar
-			-printmapping ${output.dir}\obfuscation-${version}.map
+			-libraryjars  "${jdk.dir}\jre\lib\rt.jar"
+			-libraryjars  "${eclipse.swt.file}" 
+			-libraryjars  "${eclipse.swt.win32.file}"
+			-injars       "${output.dir}\swt-matrix-dont-distribute.jar"
+			-outjars      "${output.dir}\${ant.project.name}-${version}.jar"
+			-printmapping "${output.dir}\obfuscation-${version}.map"
 
 			-dontoptimize
 			-dontshrink

@@ -14,6 +14,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
 
@@ -81,6 +82,29 @@ public interface Zone<X extends Number, Y extends Number> {
    * @return the rectangular boundaries of this zone
    */
   Rectangle getBounds(Frozen frozenX, Frozen frozenY);
+
+  /**
+   * Returns the preferred size of the cell.
+   * <p>
+   * The preferred size of a cell is the size that it would best be displayed
+   * at. The width hint and height hint arguments allow the caller to ask a cell
+   * questions such as
+   * "Given a particular width, how high does the control need to be to show all of the contents?"
+   * To indicate that the caller does not wish to constrain a particular
+   * dimension, the constant SWT.DEFAULT is passed for the hint.
+   * <p>
+   * The hints are not implemented yet for text wrap.
+   * <p>
+   * The size is maximum size returned by {@link Painter#computeSize(Number, Number, int, int)}
+   * of all painters of
+   *
+   * @param indexX cell index on the horizontal axis
+   * @param indexY cell index on the vertical axis
+   * @param wHint the width hint (can be <code>SWT.DEFAULT</code>)
+   * @param hHint the height hint (can be <code>SWT.DEFAULT</code>)
+   * @return the preferred size of the control
+   */
+  public Point computeSize(X indexX, Y indexY, int wHint, int hHint);
 
   /**
    * Returns <code>true</code> if selection is enabled, false otherwise.

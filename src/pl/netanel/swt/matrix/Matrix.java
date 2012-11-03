@@ -1105,6 +1105,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	              seq.indexX(), seq.indexY(),
 	              zone.sectionX.getCellWidth(seq.indexX.getValue()), SWT.DEFAULT).y);
 	          }
+	          painter.clean();
 	        }
 	      }
 	    }
