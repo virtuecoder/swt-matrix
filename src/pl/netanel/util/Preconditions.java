@@ -3,7 +3,7 @@
  * All rights reserved. This source code and the accompanying materials
  * are made available under the terms of the EULA v1.0
  * which accompanies this distribution, and is available at
- * http://www.netanel.pl/swt-matrix/EULA_v1.0.html
+ * http://www.netanel.pl/swt-matrix/EULA.html
  ******************************************************************************/
 /*
  * Copyright (C) 2007 Google Inc.

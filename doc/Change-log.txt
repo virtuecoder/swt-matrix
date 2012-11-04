@@ -15,7 +15,9 @@ API changes:
 - Added Section.addHiddenSet(NumberSet)
 - Added Section.removeHiddenSet(NumberSet)
 - Added Section.getHiddenSet()
-- Remove ColumnGrouping
+- Removed Grouping.Node.setCollapsedDirection
+- Removed Grouping.Node.setCollapsedDirectionAll
+- Removed ColumnGrouping
 
 -------------------------------------------------------------------------------
 Version 0.7.16

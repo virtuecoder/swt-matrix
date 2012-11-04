@@ -270,7 +270,25 @@
   	  http://www.netanel.pl/swt-matrix/872533850/swt-matrix-src-${version}.zip</echo>
   	
 	</target>
-
+	
+  <target name="build-126999091">
+  	<ant antfile="build\build.xml" target="dist" />
+    <ftp 
+       server="${ftp.server}"
+       remotedir="${ftp.remote.dir}/swt-matrix/872533850"
+       userid="${ftp.username}"
+       password="${ftp.password}"
+       depends="true"
+       verbose="yes"
+     >
+       <fileset file="${output.dir}/swt-matrix-${version}.zip"/>
+    </ftp>
+  	<echo>The new version:
+  	  http://www.netanel.pl/swt-matrix/126999091/swt-matrix-${version}.zip
+  	</echo>
+  	
+	</target>
+	
 	<target name="dump-database">  
 	    <exec executable="mysqldump.exe" dir="D:\Dev\wamp\bin\mysql\mysql5.5.24\bin" output="d:\database-dump.sql">  
 	        <arg value="--user=dbo361399687" />  
