@@ -538,17 +538,19 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	}
 
 	void onPaint(Event event) {
+	  // Because some controls generate paint event on setText in embbeded controls painter
 	  if (isPainting) {
 	    event.doit = false;
 	    return;
 	  }
 	  isPainting = true;
 //		long t = System.nanoTime();
-		final GC gc = event.gc;
-		layoutX.computeIfRequired();
-		layoutY.computeIfRequired();
-		layout.computeMerging();
+//		layoutX.computeIfRequired();
+//		layoutY.computeIfRequired();
+//		layout.computeMerging();
+		layout.computeIfRequired();
 
+		final GC gc = event.gc;
 		for (Painter<X, Y> p: painters) {
 			if (!p.isEnabled() || !p.init(gc, Frozen.NONE, Frozen.NONE)) continue;
 			p.paint(area.x, area.y, area.width, area.height);

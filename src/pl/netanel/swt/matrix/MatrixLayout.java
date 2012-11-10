@@ -36,7 +36,6 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
 //  List<Rectangle> mergingCacheLineY;
   Region region;
 
-  private boolean isComputingRequired;
   private PairSequence frozenSeq;
 
 
@@ -410,9 +409,15 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
     computeMerging();
   }
 
-  public void computeMergingIfRequired() {
-    if (isComputingRequired) {
-      computeMerging();
+  public void computeIfRequired() {
+    layoutX.computeIfRequired();
+    layoutY.computeIfRequired();
+
+    for (ZoneCore<X, Y> zone: zones) {
+      if (zone.isDirty) {
+        computeMerging();
+        break;
+      }
     }
   }
 

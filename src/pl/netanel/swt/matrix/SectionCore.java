@@ -77,6 +77,7 @@ class SectionCore<N extends Number> implements Section<N> {
   final Listeners listeners;
   private final Class<N> indexClass;
   final private HashMap<NumberSet<N>, ContentChangeListener<N>> hiddenSetListeners;
+  boolean isDirty;
 
   /**
    * Constructs a section indexed by the given sub-class of {@link Number}.
@@ -114,6 +115,7 @@ class SectionCore<N extends Number> implements Section<N> {
     defaultResizable = true;
     isNavigationEnabled = isVisible = true;
     listeners = new Listeners();
+    isDirty = true;
   }
 
 
@@ -135,7 +137,11 @@ class SectionCore<N extends Number> implements Section<N> {
    */
 
   @Override public void setCount(N count) {
-    if (math.compare(count, this.count) > 0) {
+    int compare = math.compare(count, this.count);
+    if (compare == 0) {
+      return;
+    }
+    else if (compare > 0) {
       parents.setValue(this.count, count, null);
     }
     else {
@@ -145,6 +151,7 @@ class SectionCore<N extends Number> implements Section<N> {
     order.setCount(count);
     this.count = count;
     refreshFinale();
+    isDirty = true;
   }
 
   @Override public N getCount() {
@@ -214,6 +221,7 @@ class SectionCore<N extends Number> implements Section<N> {
 
   @Override public void setVisible(boolean visible) {
     this.isVisible = visible;
+    isDirty = true;
   }
 
   @Override public boolean isVisible() {
@@ -222,6 +230,7 @@ class SectionCore<N extends Number> implements Section<N> {
 
   @Override public void setFocusItemEnabled(boolean enabled) {
     this.isNavigationEnabled = enabled;
+    isDirty = true;
   }
 
   @Override public boolean isFocusItemEnabled() {
@@ -288,6 +297,7 @@ class SectionCore<N extends Number> implements Section<N> {
   @Override public void setDefaultCellWidth(int width) {
     if (width < 0) return;
     cellWidth.setDefault(width);
+    isDirty = true;
   }
 
   @Override public int getDefaultCellWidth() {
@@ -297,6 +307,7 @@ class SectionCore<N extends Number> implements Section<N> {
   @Override public void setDefaultLineWidth(int width) {
     if (width < 0) return;
     lineWidth.setDefault(width);
+    isDirty = true;
   }
 
   @Override public int getDefaultLineWidth() {
@@ -337,11 +348,13 @@ class SectionCore<N extends Number> implements Section<N> {
   @Override
   public void setLineWidth(N start, N end, int width) {
     lineWidth.setValue(start, end, width);
+    isDirty = true;
   }
 
   @Override
   public void setLineWidth(N index, int width) {
     lineWidth.setValue(index, index, width);
+    isDirty = true;
   }
 
   @Override
@@ -352,11 +365,13 @@ class SectionCore<N extends Number> implements Section<N> {
   @Override
   public void setCellWidth(N start, N end, int width) {
     cellWidth.setValue(start, end, width);
+    isDirty = true;
   }
 
   @Override
   public void setCellWidth(N index, int width) {
     cellWidth.setValue(index, index, width);
+    isDirty = true;
   }
 
   @Override
@@ -437,6 +452,7 @@ class SectionCore<N extends Number> implements Section<N> {
   public void setHidden(N start, N end, boolean state) {
     hiddenByUser.change(start, end, state);
     refreshFinale();
+    isDirty = true;
   }
 
   @Override
@@ -576,6 +592,7 @@ class SectionCore<N extends Number> implements Section<N> {
     parents.setValue(start, end, getParent(target));
     order.move(start, end, target);
     refreshFinale();
+    isDirty = true;
   }
 
   @Override public void setOrder(N index, N target) {
@@ -589,6 +606,7 @@ class SectionCore<N extends Number> implements Section<N> {
       order.add(next);
     }
     refreshFinale();
+    isDirty = true;
   }
 
   @Override public void setOrderExtents(Iterator<Extent<N>> iterator) {
@@ -598,6 +616,7 @@ class SectionCore<N extends Number> implements Section<N> {
       order.add(next.start, next.end);
     }
     refreshFinale();
+    isDirty = true;
   }
 
   boolean moveSelected(N source, N target) {
@@ -625,6 +644,7 @@ class SectionCore<N extends Number> implements Section<N> {
     //  	  }
     //  	}
 
+    isDirty = true;
     return true;
   }
 
@@ -654,6 +674,7 @@ class SectionCore<N extends Number> implements Section<N> {
     if (axis != null) {
       axis.deleteInZones(this, start, end);
     }
+    isDirty = true;
   }
 
   @Override public void insert(N target, N count) {
@@ -678,6 +699,7 @@ class SectionCore<N extends Number> implements Section<N> {
     if (axis != null) {
       axis.insertInZones(this, target, count);
     }
+    isDirty = true;
   }
 
   @Override public void addControlListener(ControlListener listener) {
@@ -730,6 +752,7 @@ class SectionCore<N extends Number> implements Section<N> {
     };
     hiddenSetListeners.put(set, listener);
     set.addListener(listener);
+    isDirty = true;
   }
 
   @Override
@@ -737,6 +760,7 @@ class SectionCore<N extends Number> implements Section<N> {
     hidden.removeAll(set);
     hiddenSets.remove(set);
     set.removeListener(hiddenSetListeners.remove(set));
+    isDirty = true;
   }
 
   /*------------------------------------------------------------------------
@@ -829,7 +853,8 @@ class SectionCore<N extends Number> implements Section<N> {
     }
     parents.setValue(start, end, parent);
     collapse(parent, parent);
-  }
+    isDirty = true;
+}
 
   /**
    * Can return null
@@ -908,6 +933,7 @@ class SectionCore<N extends Number> implements Section<N> {
     }
 
     collapse(start, end);
+    isDirty = true;
   }
 
   private void collapse(N start, N end) {
@@ -927,6 +953,7 @@ class SectionCore<N extends Number> implements Section<N> {
         collapse(extent.start, extent.end);
       }
     }
+    isDirty = true;
   }
 
   @Override

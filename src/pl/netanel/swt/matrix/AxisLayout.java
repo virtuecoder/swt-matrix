@@ -174,6 +174,9 @@ class AxisLayout<N extends Number> {
 		ensureCurrentIsValid();
 
 		isComputingRequired = false;
+		for (SectionCore<N> section: sections) {
+		  section.isDirty = false;
+		}
 
 		for (Runnable r: callbacks) {
 			r.run();
@@ -222,11 +225,23 @@ class AxisLayout<N extends Number> {
 	}
 
 	public void computeIfRequired() {
-		if (isComputingRequired) {
+		if (isComputingRequired()) {
 			compute();
 		}
 	}
-	public int computeSize(int hint, int max, boolean changed) {
+
+	private boolean isComputingRequired() {
+	  for(SectionCore<N> section: sections) {
+	    if (section.isDirty) {
+	      isComputingRequired = true;
+	      break;
+	    }
+	  }
+    return isComputingRequired;
+  }
+
+
+  public int computeSize(int hint, int max, boolean changed) {
 		int oldSize = viewportSize;
 		viewportSize = hint == -1 ? max : hint;
 		compute();
@@ -248,7 +263,7 @@ class AxisLayout<N extends Number> {
 		N count = currentSection.getCount();
 		if (math.compare(current.getIndex(), count) >= 0) {
 			current = math.compare(count, math.ZERO_VALUE()) == 0 ? null :
-				AxisItem.createInternal(currentSection, math.decrement(current.getIndex()));
+				AxisItem.createInternal(currentSection, math.decrement(count));
 		}
 
 		// Hidden
@@ -303,7 +318,7 @@ class AxisLayout<N extends Number> {
 	public boolean setFocusItem(AxisItem<N> item) {
 	  if (!isFocusItemEnabled || item == null || !item.section.isFocusItemEnabled()) return false;
 
-	  if (isComputingRequired) compute();
+	  computeIfRequired();
 
 	  AxisItem<N> current2 = null;
 	  forwardNavigator.init(item);
@@ -355,7 +370,7 @@ class AxisLayout<N extends Number> {
 
 	public boolean show(AxisItem<N> item) {
 		if (item == null) return false;
-		if (isComputingRequired) compute();
+		computeIfRequired();
 
 		if (comparePosition(item, endNoTrim) > 0) {
 			compute(item, backward);
@@ -370,7 +385,7 @@ class AxisLayout<N extends Number> {
 	}
 
 	AxisItem<N> scroll(MutableNumber<N> itemCount, AxisSequence<N> AxisSequence) {
-		if (isComputingRequired) compute();
+		computeIfRequired();
 		AxisItem<N> start2 = nextItem(start, itemCount, AxisSequence);
 		if (start2 == null || compare(start2, start) == 0) return null;
 		start = start2;
@@ -914,20 +929,20 @@ class AxisLayout<N extends Number> {
 
 
 	public AxisLayoutSequence<N> sequence(Frozen frozen, SectionCore<N> section, int type) {
-	  if (isComputingRequired) compute();
+	  computeIfRequired();
 	  Cache cache = getCache(frozen);
 	  ArrayList<Bound> space = type == Matrix.TYPE_CELLS ? cache.cells : cache.lines;
     return new AxisLayoutSequence<N>(cache.items, space, section);
 	}
 
 	public AxisLayoutSequence<N> cellSequence(Frozen frozen, SectionCore<N> section) {
-		if (isComputingRequired) compute();
+		computeIfRequired();
 		Cache cache = getCache(frozen);
 		return new AxisLayoutSequence<N>(cache.items, cache.cells, section);
 	}
 
 	public AxisLayoutSequence<N> lineSequence(Frozen frozen, SectionCore<N> section) {
-		if (isComputingRequired) compute();
+		computeIfRequired();
 		Cache cache = getCache(frozen);
 		return new AxisLayoutSequence<N>(cache.items, cache.lines, section);
 	}

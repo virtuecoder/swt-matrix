@@ -57,6 +57,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	Y cellMergeLimitY;
   private Math<X> mathX;
   private Math<Y> mathY;
+  boolean isDirty;
 
 
   /**
@@ -88,6 +89,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 //		foreground = new MapValueToCellSet<X, Y, Color>(mathX, mathY);
 //		text = new MapValueToCellSet(this.sectionY.math, this.sectionX.math);
 //		image = new MapValueToCellSet(this.sectionY.math, this.sectionX.math);
+		isDirty = true;
 	}
 
 
@@ -213,6 +215,11 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	}
 
 	@Override
+	public void setSelected(X indexX, Y indexY, boolean state) {
+	  setSelected(indexX, indexX, indexY, indexY, state);
+	}
+
+	@Override
 	public void setSelected(X startX, X endX, Y startY, Y endY, boolean state) {
 		setSelected(startX, endX, startY, endY, state, true);
 	}
@@ -253,12 +260,9 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	      cellSelection.remove(startX, endX, startY, endY);
 	    }
 	  }
+	  matrix.redraw();
 	}
 
-	@Override
-	public void setSelected(X indexX, Y indexY, boolean state) {
-		setSelected(indexX, indexX, indexY, indexY, state);
-	}
 
 	@Override public void setSelectedAll(boolean state) {
 		if (!selectionEnabled) return;
@@ -274,6 +278,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		}
 //		sectionY.setSelectedAll(state);
 //		sectionX.setSelectedAll(state);
+		matrix.redraw();
 	}
 
 	@Override public BigInteger getSelectedCount() {
@@ -394,6 +399,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
       (mathX.compare(countX, mathX.ONE_VALUE()) > 0 || mathY.compare(countY, mathY.ONE_VALUE()) > 0)) {
 	    cellMerging.add(indexX, countX, indexY, countY);
 	  }
+    isDirty = true;
     return !removed;
 	}
 

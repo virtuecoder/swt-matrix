@@ -1,4 +1,12 @@
 -------------------------------------------------------------------------------
+Version 0.7.18
+
+Bug fixes:
+- Layout was not recomputed after some Section state changes, like Section.delete for instance
+- Focus cell was not set correctly after deleting an item 
+- Shift select by keys was not working correctly
+
+-------------------------------------------------------------------------------
 Version 0.7.17
 
 Feature changes:

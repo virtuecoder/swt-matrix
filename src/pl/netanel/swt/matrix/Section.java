@@ -37,8 +37,6 @@ import org.eclipse.swt.events.SelectionListener;
  * Section visibility and focus item can be enabled or disabled.
  *
  * @param <N> specifies the indexing class for the receiver
- *
- * @author Jacek Kolodziejczyk created 02-03-2011
  */
 public interface Section<N extends Number> {
 
@@ -52,11 +50,17 @@ public interface Section<N extends Number> {
   Class<N> getIndexClass();
 
   /**
-   * Returns a no argument checking implementation for this section.
+   * Returns a better performing but less user friendly implementation
+   * for this section that is more loop efficient:
+   * <ul>
+   * <li>does not check validity of the method arguments</li>
+   * <li>does not mark the layout as required computing on every method call,
+   * instead relying on the client to call {@link Matrix#refresh()}</li>
+   * </ul>
    * It may be useful for loop optimization, for example inside of
    * {@link Painter#paint(int, int, int, int)}
    * method.
-   * @return a no argument checking implementation for this section
+   * @return a better performing but less user friendly implementation for this section
    */
   Section<N> getUnchecked();
 

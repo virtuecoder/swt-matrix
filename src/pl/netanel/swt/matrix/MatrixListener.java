@@ -542,6 +542,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         }
 
         focusMoved = axisLayout.moveFocusItem(move);
+        item = axisLayout.current;
         if (focusMoved) {
           axis.scroll();
         }
@@ -982,10 +983,6 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 
       if (mY != null) stateY.moveFocusItem(mY, startY, countY);
       if (mX != null) stateX.moveFocusItem(mX, startX, countX);
-      if (mY != null || mX != null) {
-        stateY.item = currentY;
-        stateX.item = currentX;
-      }
     }
 
     // Set current to the start of the merged cell

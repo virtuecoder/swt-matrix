@@ -130,7 +130,7 @@
 		<fileset dir="${output.dir}" includes="swt-matrix-${version}.jar" />
 
 		<!-- Docs -->
-		<fileset dir="doc" includes="EULA_v1.0.html" />
+		<fileset dir="doc" includes="EULA.html" />
 		<fileset dir="doc" includes="Change-log.txt" />
 		<zipfileset dir="${output.dir}/javadoc" prefix="javadoc" />
 
