@@ -45,17 +45,21 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 
 	private static final String ZONE_EDITOR_DATA = "swt matrix edited cell";
 	private static final String DEFAULT_TRUE_TEXT = "\u2713";
-	private static final String NEW_LINE = System.getProperty("line.separator");
+	static final String NEW_LINE = System.getProperty("line.separator");
 
 	final ZoneCore<X, Y> zone;
 	final CommandListener controlListener;
 
 	EmbeddedControlsPainter<X, Y> embedded;
 	private Painter<X, Y> cellsPainter;
+  private GestureBinding mouseDownActivation;
+  private GestureBinding mouseDobleClickActivation;
 
 
 	/**
 	 * Default constructor, facilitates editing of the specified zone.
+	 * <p>
+	 * If an editor was created before it will be replace with this new one.
 	 * @param zone
 	 */
 	public ZoneEditor(Zone<X, Y> zone) {
@@ -70,11 +74,11 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		zone.replacePainterPreserveStyle(new Painter<X, Y>(
 				Painter.NAME_EMULATED_CONTROLS, Painter.SCOPE_CELLS)
 				{
-			@Override 
+			@Override
 			protected boolean init() {
 				return true;
 			}
-			@Override 
+			@Override
 			public void setup(X indexX, Y indexY) {
 				image = null;
 				text = null;
@@ -92,7 +96,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 				super.setup(indexX, indexY);
 			};
 		});
-		zone.addPainter(embedded = new EmbeddedControlsPainter<X, Y>(this));
+		zone.replacePainter(embedded = new EmbeddedControlsPainter<X, Y>(this));
 
 		// Command binding
 		zone.bind(CMD_CUT, SWT.KeyDown, SWT.MOD1 | 'x');
@@ -103,8 +107,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		//		zone.bind(CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1);
 		zone.bind(CMD_EDIT_ACTIVATE, SWT.KeyDown, Matrix.PRINTABLE_CHARS);
 
-		// Clicking on the image emulation
-		this.zone.bind(new GestureBinding(CMD_EDIT_ACTIVATE, SWT.MouseDown, 1) {
+		mouseDownActivation = new GestureBinding(CMD_EDIT_ACTIVATE, SWT.MouseDown, 1) {
 
 			@Override public boolean isMatching(Event e) {
 				if (!super.isMatching(e)) return false;
@@ -133,10 +136,10 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 				}
 				return false;
 			}
-		});
+		};
+    this.zone.bind(mouseDownActivation);
 
-		// Avoid double click on the image
-		this.zone.bind(new GestureBinding(CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1) {
+		mouseDobleClickActivation = new GestureBinding(CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1) {
 
 			@Override public boolean isMatching(Event e) {
 				if (!super.isMatching(e)) return false;
@@ -165,7 +168,8 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 				}
 				return true;
 			}
-		});
+		};
+    this.zone.bind(mouseDobleClickActivation);
 
 		controlListener = new CommandListener() {
 			@Override protected void executeCommand(int commandId) {
@@ -187,6 +191,28 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 			}
 		});
 	}
+
+  static <X extends Number, Y extends Number> ZoneEditor<X, Y> createCopyOnlyEditor(ZoneCore<X, Y> zone) {
+    return new ZoneEditor<X, Y>(zone) {
+      @Override
+      protected Control createControl(X indexX, Y indexY) {
+        return null;
+      };
+    };
+  }
+
+  void dispose() {
+    zone.unbind(CMD_CUT, SWT.KeyDown, SWT.MOD1 | 'x');
+    zone.unbind(CMD_COPY, SWT.KeyDown, SWT.MOD1 | 'c');
+    zone.unbind(CMD_PASTE, SWT.KeyDown, SWT.MOD1 | 'v');
+    zone.unbind(CMD_DELETE, SWT.KeyDown, SWT.DEL);
+    zone.unbind(CMD_EDIT_ACTIVATE, SWT.KeyUp, SWT.F2);
+    //    zone.bind(CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1);
+    zone.unbind(CMD_EDIT_ACTIVATE, SWT.KeyDown, Matrix.PRINTABLE_CHARS);
+    zone.unbind(mouseDownActivation);
+    zone.unbind(mouseDobleClickActivation);
+    embedded.dispose();
+  }
 
 
 	/**
@@ -517,23 +543,25 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		StringBuilder sb = new StringBuilder();
 		cellsPainter = zone.getPainter(Painter.NAME_CELLS);
 
-		CellExtent<X, Y> n = zone.getSelectedExtent();
-		if (n == null) return;
+    CellExtent<X, Y> extent = zone.getSelectedExtent();
+    if (extent == null) return;
 
-		Y maxY = n.getEndY();
-		X maxX = n.getEndX();
-		Iterator<Cell<X, Y>> it = zone.getSelectedBoundsIterator();
+    Y maxY = extent.getEndY();
+    X maxX = extent.getEndX();
 
-		while (it.hasNext()) {
-			Cell<X, Y> next = it.next();
-			X indexX = next.getIndexX();
-			Y indexY = next.getIndexY();
-			sb.append(zone.isSelected(indexX, indexY) ? format(indexX, indexY) : "");
-			if (getMatrix().axisX.math.compare(indexX, maxX) < 0) sb.append("\t");
-			else if (getMatrix().axisY.math.compare(indexY, maxY) < 0) {
-				sb.append(NEW_LINE);
-			}
-		}
+    for (Iterator<Cell<X, Y>> it = zone.getSelectedBoundsIterator(); it.hasNext();) {
+      Cell<X, Y> next = it.next();
+      X indexX = next.getIndexX();
+      Y indexY = next.getIndexY();
+      sb.append(zone.isSelected(indexX, indexY) ? format(indexX, indexY) : "");
+      if (getMatrix().axisX.math.compare(indexX, maxX) < 0) {
+        sb.append("\t");
+      }
+      else if (getMatrix().axisY.math.compare(indexY, maxY) < 0) {
+        sb.append(NEW_LINE);
+      }
+    }
+
 		if (sb.length() > 0) {
 			Clipboard clipboard = new Clipboard(getMatrix().getDisplay());
 			clipboard.setContents(new Object[] {sb.toString()},
@@ -542,8 +570,29 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 		}
 	}
 
+  void copySelectionInRow(StringBuilder sb, Y row) {
+    CellExtent<X, Y> extent = zone.getSelectedExtent();
+    if (extent == null) return;
+
+    Y maxY = extent.getEndY();
+    X maxX = extent.getEndX();
+
+    for (NumberPairSequence<X, Y> seq = zone.cellSelection.sequenceY(row, row); seq.next();) {
+      X indexX = seq.indexX();
+      Y indexY = seq.indexY();
+      sb.append(zone.isSelected(indexX, indexY) ? format(indexX, indexY) : "");
+      if (getMatrix().axisX.math.compare(indexX, maxX) < 0) {
+        sb.append("\t");
+      }
+      else if (getMatrix().axisY.math.compare(indexY, maxY) < 0) {
+        sb.append(NEW_LINE);
+      }
+    }
+  }
+
+
 	/**
-	 * Pastes form the clipboard to the zone starting from the focus cell.
+	 * Pastes from the clipboard to the zone starting from the focus cell.
 	 * <p>
 	 * The items in the clipboard exceeding the section item count will be ignored.
 	 */
@@ -578,9 +627,11 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 				if (value != null) {
 					setModelValue(indexX, indexY, value);
 				}
-				indexX = mathX.increment(indexX);
+				indexX = zone.sectionX.nextNotHiddenIndex(mathX.increment(indexX), Matrix.FORWARD);
+				if (indexX == null) break;
 			}
-			indexY = mathY.increment(indexY);
+			indexY = zone.sectionY.nextNotHiddenIndex(mathY.increment(indexY), Matrix.FORWARD);
+			if (indexY == null) break;
 		}
 
 		embedded.needsPainting = true;
@@ -626,7 +677,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 	protected String format(X indexX, Y indexY) {
 		if (cellsPainter == null) return null;
 		cellsPainter.setupSpatial(indexX, indexY);
-		return cellsPainter.text;
+		return cellsPainter.text == null ? "" : cellsPainter.text;
 		//		Object value = getModelValue(indexY, indexX);
 		//		return value == null ? "" : value.toString();
 	}

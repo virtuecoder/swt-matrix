@@ -160,7 +160,7 @@ public class Extent<N extends Number> implements Iterable<N> {
   public static <N extends Number> Iterator<N> numberIterator(
       final Math<N> math, final List<MutableExtent<N>> items) {
     return new ImmutableIterator<N>() {
-      NumberSequence<N> seq = new NumberSequence<N>(math, items);
+      NumberSequence2<N> seq = new NumberSequence2<N>(math, items);
       private boolean hasNext;
       {
         seq.init();

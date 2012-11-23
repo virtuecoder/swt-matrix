@@ -272,6 +272,7 @@ public class Painter<X extends Number, Y extends Number> {
   private SectionCore<Y> bodyY;
   protected Frozen frozenX;
   protected Frozen frozenY;
+  private Listener treeMouseListener;
 
 
   /**
@@ -311,15 +312,6 @@ public class Painter<X extends Number, Y extends Number> {
 		this.scope = scope;
 		this.style = new Style();
 		nodeImageSize = new Point(0, 0);
-
-    display = Display.getDefault();
-    display.addListener(SWT.Dispose, new Listener() {
-      @Override
-      public void handleEvent(Event e) {
-        if (collapsedImage != null) collapsedImage.dispose();
-        if (expandedImage != null) expandedImage.dispose();
-      }
-    });
 	}
 
 	/**
@@ -411,6 +403,13 @@ public class Painter<X extends Number, Y extends Number> {
 	  if (textLayout != null) textLayout.dispose();
 	  //gc.setClipping(clipping);
 	}
+
+  public void dispose() {
+    if (collapsedImage != null) collapsedImage.dispose();
+    if (expandedImage != null) expandedImage.dispose();
+    if (zone != null) zone.removeListener(SWT.MouseDown, treeMouseListener);
+  }
+
 
 	/**
 	 * Draws on the canvas within the given boundaries according to the given indexes.
@@ -991,7 +990,7 @@ public class Painter<X extends Number, Y extends Number> {
   void setZone(ZoneCore<X, Y> zone) {
     this.zone = zone;
     this.matrix = zone.getMatrix();
-    zone.addListener(SWT.MouseDown, new Listener() {
+    treeMouseListener = new Listener() {
       @Override
       public void handleEvent(Event e) {
         if (isTreeEnabled && isOverNodeIcon(e.x, e.y)) {
@@ -1002,7 +1001,8 @@ public class Painter<X extends Number, Y extends Number> {
           matrix.refresh();
         }
       }
-    });
+    };
+    zone.addListener(SWT.MouseDown, treeMouseListener);
   }
 
 
@@ -1023,4 +1023,5 @@ public class Painter<X extends Number, Y extends Number> {
     System.out.println("getInterpolation() " +  gc.getInterpolation());
     System.out.println("getTextAntialias() " +  gc.getTextAntialias());
   }
+
 }

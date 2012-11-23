@@ -12,12 +12,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 
 import pl.netanel.swt.matrix.Frozen.PairSequence;
 import pl.netanel.util.ImmutableIterator;
@@ -56,15 +52,6 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
     for (frozenSeq.init(); frozenSeq.next();) {
       mergeCache.add(new MergeCache<X, Y>());
     }
-
-    Display.getDefault().addListener(SWT.Dispose, new Listener() {
-      @Override
-      public void handleEvent(Event event) {
-        if (region != null && !region.isDisposed()) {
-          region.dispose();
-        }
-      }
-    });
   }
 
   void setMatrix(Matrix<X, Y> matrix) {
@@ -119,11 +106,18 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
             zone.setHeaderStyle();
           }
         }
+        ZoneEditor.createCopyOnlyEditor(zone);
       }
     }
     calculatePaintOrder();
 
     seq = new ExtentPairSequence();
+  }
+
+  public void dispose() {
+    if (region != null && !region.isDisposed()) {
+      region.dispose();
+    }
   }
 
 

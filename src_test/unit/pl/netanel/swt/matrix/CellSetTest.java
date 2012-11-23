@@ -21,532 +21,532 @@ import pl.netanel.util.Arrays;
  * @author Jacek created 15-02-2011
  */
 @SuppressWarnings({"rawtypes", "unchecked"}) @RunWith(JUnit4.class) public class  CellSetTest {
-	private CellSet set;
+  private CellSet set;
 
-	@Before
-	public void _beforeEach() {
-		IntMath math = IntMath.getInstance();
-		set = new CellSet(math, math);
-	}
-	@After
-	public void _afterEach() {
-		set = null;
-	}
+  @Before
+  public void _beforeEach() {
+    IntMath math = IntMath.getInstance();
+    set = new CellSet(math, math);
+  }
+  @After
+  public void _afterEach() {
+    set = null;
+  }
 
-	@Test
-	public void testOfTest1() throws Exception {
-		add(	"■■" 	,
-				"■■" 	);
-		assertEquals("[0-1, 0-1]", set.toString());
-	}
+  @Test
+  public void testOfTest1() throws Exception {
+    add(  "■■"   ,
+        "■■"   );
+    assertEquals("[0-1, 0-1]", set.toString());
+  }
 
-	@Test
-	public void testOfTest2() throws Exception {
-		add(	"∟∟" 	,
-				"∟■" 	);
-		assertEquals("[1-1, 1-1]", set.toString());
-	}
+  @Test
+  public void testOfTest2() throws Exception {
+    add(  "∟∟"   ,
+        "∟■"   );
+    assertEquals("[1-1, 1-1]", set.toString());
+  }
 
-	@Test
-	public void testOfTest3() throws Exception {
-		add(	"■∟" 	,
-				"∟∟" 	);
-		assertEquals("[0-0, 0-0]", set.toString());
-	}
+  @Test
+  public void testOfTest3() throws Exception {
+    add(  "■∟"   ,
+        "∟∟"   );
+    assertEquals("[0-0, 0-0]", set.toString());
+  }
 
-	@Test
-	public void testOfTest4() throws Exception {
-		add(	"■∟■" );
-		assertEquals("[0-0, 0-0], [0-0, 2-2]", set.toString());
-	}
+  @Test
+  public void testOfTest4() throws Exception {
+    add(  "■∟■" );
+    assertEquals("[0-0, 0-0], [0-0, 2-2]", set.toString());
+  }
 
-	@Test
-	public void testOfTest5() throws Exception {
-		set.add(1, 1, 1, 1);
-		result(	"∟∟"	,
-				"∟■"	);
-	}
+  @Test
+  public void testOfTest5() throws Exception {
+    set.add(1, 1, 1, 1);
+    result(  "∟∟"  ,
+        "∟■"  );
+  }
 
-	@Test
-	public void addTheSame() throws Exception {
-		add(	"■"		);
-		add(	"■"		);
-		result(	"■"		);
-		count(1);
-	}
+  @Test
+  public void addTheSame() throws Exception {
+    add(  "■"    );
+    add(  "■"    );
+    result(  "■"    );
+    count(1);
+  }
 
-	@Test
-	public void addApart() throws Exception {
-		add(	"■∟"	);
-		add(	"∟∟"	,
-				"∟■"	);
-		result(	"■∟" 	,
-				"∟■" 	);
-		count(2);
-	}
+  @Test
+  public void addApart() throws Exception {
+    add(  "■∟"  );
+    add(  "∟∟"  ,
+        "∟■"  );
+    result(  "■∟"   ,
+        "∟■"   );
+    count(2);
+  }
 
-	@Test
-	public void addApart2() throws Exception {
-		add(	"■∟∟"		);
-		add(	"∟∟■" );
-		result(	"■∟■" );
-		count(2);
-	}
+  @Test
+  public void addApart2() throws Exception {
+    add(  "■∟∟"    );
+    add(  "∟∟■" );
+    result(  "■∟■" );
+    count(2);
+  }
 
-	@Test
-	public void addExtendAfterSimetric() throws Exception {
-		add(	"■∟"   );
-		add(	"■■" 	,
-				"■■" 	);
-		result(	"■■" 	,
-				"■■" 	);
-		count(4);
-	}
+  @Test
+  public void addExtendAfterSimetric() throws Exception {
+    add(  "■∟"   );
+    add(  "■■"   ,
+        "■■"   );
+    result(  "■■"   ,
+        "■■"   );
+    count(4);
+  }
 
-	@Test
-	public void addExtendBeforeSimetric() throws Exception {
-		add(	"∟∟" 	,
-				"∟■" 	);
-		add(	"■■" 	,
-				"■■" 	);
-		result(	"■■" 	,
-				"■■" 	);
-		count(4);
-	}
+  @Test
+  public void addExtendBeforeSimetric() throws Exception {
+    add(  "∟∟"   ,
+        "∟■"   );
+    add(  "■■"   ,
+        "■■"   );
+    result(  "■■"   ,
+        "■■"   );
+    count(4);
+  }
 
-	@Test
-	public void addInside() throws Exception {
-		add(	"■■" 	,
-				"■■" 	);
-		add(	"■∟" 	,
-				"∟∟" 	);
-		result(	"■■" 	,
-				"■■" 	);
-		count(4);
-	}
+  @Test
+  public void addInside() throws Exception {
+    add(  "■■"   ,
+        "■■"   );
+    add(  "■∟"   ,
+        "∟∟"   );
+    result(  "■■"   ,
+        "■■"   );
+    count(4);
+  }
 
-	@Test
-	public void addInside2() throws Exception {
-		add( "■■" 	,
-		    	"■■" 	);
-		add(	"∟∟" 	,
-		    	"∟■" 	);
-		result( "■■" 	,
-		        "■■" 	);
-		count(4);
-	}
+  @Test
+  public void addInside2() throws Exception {
+    add( "■■"   ,
+          "■■"   );
+    add(  "∟∟"   ,
+          "∟■"   );
+    result( "■■"   ,
+            "■■"   );
+    count(4);
+  }
 
-	@Test
-	public void addInside3() throws Exception {
-		add( "■■■" 	,
-				"■■■" 	,
-				"■■■" 	);
-		add(	"∟∟∟" 	,
-				"∟■∟" 	);
-		result( "■■■" 	,
-				"■■■" 	,
-				"■■■" 	);
-		count(9);
-	}
+  @Test
+  public void addInside3() throws Exception {
+    add( "■■■"   ,
+        "■■■"   ,
+        "■■■"   );
+    add(  "∟∟∟"   ,
+        "∟■∟"   );
+    result( "■■■"   ,
+        "■■■"   ,
+        "■■■"   );
+    count(9);
+  }
 
-	@Test
-	public void addOverlap() throws Exception {
-		add(	"∟∟∟" 	,
-				"∟■∟" 	);
-		add( "■■■" 	,
-				"■■■" 	,
-				"■■■" 	);
-		result( "■■■" 	,
-				"■■■" 	,
-				"■■■" 	);
-		count(9);
-	}
+  @Test
+  public void addOverlap() throws Exception {
+    add(  "∟∟∟"   ,
+        "∟■∟"   );
+    add( "■■■"   ,
+        "■■■"   ,
+        "■■■"   );
+    result( "■■■"   ,
+        "■■■"   ,
+        "■■■"   );
+    count(9);
+  }
 
-	@Test
-	public void addCrossAfterSimetric() throws Exception {
-		add(	"■■∟" 	,
-				"■■∟" 	);
-		add( "∟∟∟" 	,
-				"∟■■" 	,
-				"∟■■" 	);
-		result( "■■∟" 	,
-				"■■■" 	,
-				"∟■■" 	);
-		count(7);
-	}
+  @Test
+  public void addCrossAfterSimetric() throws Exception {
+    add(  "■■∟"   ,
+        "■■∟"   );
+    add( "∟∟∟"   ,
+        "∟■■"   ,
+        "∟■■"   );
+    result( "■■∟"   ,
+        "■■■"   ,
+        "∟■■"   );
+    count(7);
+  }
 
-	@Test
-	public void addCrossBeforeSimetric() throws Exception {
-		add( "∟∟∟" 	,
-				"∟■■" 	,
-				"∟■■" 	);
-		add(	"■■∟" 	,
-				"■■∟" 	,
-				"∟∟∟" 	);
-		result( "■■∟" 	,
-				"■■■" 	,
-				"∟■■" 	);
-		count(7);
-	}
+  @Test
+  public void addCrossBeforeSimetric() throws Exception {
+    add( "∟∟∟"   ,
+        "∟■■"   ,
+        "∟■■"   );
+    add(  "■■∟"   ,
+        "■■∟"   ,
+        "∟∟∟"   );
+    result( "■■∟"   ,
+        "■■■"   ,
+        "∟■■"   );
+    count(7);
+  }
 
-	@Test
-	public void addCrossBeforeBig() throws Exception {
-		add( "∟∟∟∟" 	,
-				"∟∟∟∟" 	,
-				"∟∟■■" 	,
-				"∟∟■■" 	);
-		add(	"■■■∟" 	,
-				"■■■∟" 	,
-				"■■■∟" 	,
-				"∟∟∟∟" 	);
-		result( "■■■∟" 	,
-				"■■■∟" 	,
-				"■■■■" 	,
-				"∟∟■■" 	);
-		count(12);
-	}
+  @Test
+  public void addCrossBeforeBig() throws Exception {
+    add( "∟∟∟∟"   ,
+        "∟∟∟∟"   ,
+        "∟∟■■"   ,
+        "∟∟■■"   );
+    add(  "■■■∟"   ,
+        "■■■∟"   ,
+        "■■■∟"   ,
+        "∟∟∟∟"   );
+    result( "■■■∟"   ,
+        "■■■∟"   ,
+        "■■■■"   ,
+        "∟∟■■"   );
+    count(12);
+  }
 
-	@Test
-	public void addCrossLeft() throws Exception {
-		add( "∟∟∟" 	,
-				"■■■" 	,
-				"∟∟∟" 	);
-		add(	"■∟∟" 	,
-				"■∟∟" 	,
-				"■∟∟" 	);
-		result( "■∟∟" 	,
-				"■■■" 	,
-				"■∟∟" 	);
-		count(5);
-	}
+  @Test
+  public void addCrossLeft() throws Exception {
+    add( "∟∟∟"   ,
+        "■■■"   ,
+        "∟∟∟"   );
+    add(  "■∟∟"   ,
+        "■∟∟"   ,
+        "■∟∟"   );
+    result( "■∟∟"   ,
+        "■■■"   ,
+        "■∟∟"   );
+    count(5);
+  }
 
-	@Test
-	public void addCrossMiddle() throws Exception {
-		add( "∟■∟" 	,
-				"∟■∟" 	,
-				"∟■∟" 	);
-		add(	"∟∟∟" 	,
-				"■■■" 	,
-				"∟∟∟" 	);
-		result( "∟■∟" 	,
-				"■■■" 	,
-				"∟■∟" 	);
-		count(5);
-	}
+  @Test
+  public void addCrossMiddle() throws Exception {
+    add( "∟■∟"   ,
+        "∟■∟"   ,
+        "∟■∟"   );
+    add(  "∟∟∟"   ,
+        "■■■"   ,
+        "∟∟∟"   );
+    result( "∟■∟"   ,
+        "■■■"   ,
+        "∟■∟"   );
+    count(5);
+  }
 
-	@Test
-	public void addColumnAfter() throws Exception {
-		add( "■" 	,
-				"■" 	);
-		add(	"∟■" 	,
-				"∟■"	);
-		result( "■■" 	,
-				"■■" 	);
-		count(4);
-	}
+  @Test
+  public void addColumnAfter() throws Exception {
+    add( "■"   ,
+        "■"   );
+    add(  "∟■"   ,
+        "∟■"  );
+    result( "■■"   ,
+        "■■"   );
+    count(4);
+  }
 
-	@Test
-	public void addCoumnBefore() throws Exception {
-		add( "∟■" 	,
-				"∟■" 	);
-		add(	"■" 	,
-				"■"		);
-		result( "■■" 	,
-				"■■" 	);
-		count(4);
-	}
+  @Test
+  public void addCoumnBefore() throws Exception {
+    add( "∟■"   ,
+        "∟■"   );
+    add(  "■"   ,
+        "■"    );
+    result( "■■"   ,
+        "■■"   );
+    count(4);
+  }
 
-	@Test
-	public void addRowAfter() throws Exception {
-		add( "■■" 	,
-				"∟∟" 	);
-		add(	"∟∟" 	,
-				"■■"		);
-		result( "■■" 	,
-				"■■" 	);
-		count(4);
-	}
+  @Test
+  public void addRowAfter() throws Exception {
+    add( "■■"   ,
+        "∟∟"   );
+    add(  "∟∟"   ,
+        "■■"    );
+    result( "■■"   ,
+        "■■"   );
+    count(4);
+  }
 
-	@Test
-	public void addRowBefore() throws Exception {
-		add( "∟∟" 	,
-				"■■" 	);
-		add(	"■■" 	,
-				"∟∟"	);
-		result( "■■" 	,
-				"■■" 	);
-		count(4);
-	}
+  @Test
+  public void addRowBefore() throws Exception {
+    add( "∟∟"   ,
+        "■■"   );
+    add(  "■■"   ,
+        "∟∟"  );
+    result( "■■"   ,
+        "■■"   );
+    count(4);
+  }
 
-	@Test
-	public void addAdjacentRight() throws Exception {
-		add( "■■" 	,
-				"■■" 	);
-		add(	"∟∟■"	);
-		result( "■■■"	,
-				"■■∟"	);
-		count(5);
-	}
+  @Test
+  public void addAdjacentRight() throws Exception {
+    add( "■■"   ,
+         "■■"   );
+    add(  "∟∟■"  );
+    result( "■■■"  ,
+            "■■∟"  );
+    count(5);
+  }
 
 
 
-	/*------------------------------------------------------------------------
-	 * Remove
-	 */
+  /*------------------------------------------------------------------------
+   * Remove
+   */
 
-	@Test
-	public void removeFromEmpty() throws Exception {
-		remove( "■" 	);
-		result( ""		);
-		count(0);
-	}
+  @Test
+  public void removeFromEmpty() throws Exception {
+    remove( "■"   );
+    result( ""    );
+    count(0);
+  }
 
-	@Test
-	public void removeTheSame1() throws Exception {
-		add( "■" 	);
-		remove( "■" 	);
-		result( ""		);
-		count(0);
-	}
+  @Test
+  public void removeTheSame1() throws Exception {
+    add( "■"   );
+    remove( "■"   );
+    result( ""    );
+    count(0);
+  }
 
-	@Test
-	public void removeNothing1() throws Exception {
-		add( "■" 	);
-		remove( "∟" 	);
-		result( "■"		);
-		count(1);
-	}
+  @Test
+  public void removeNothing1() throws Exception {
+    add( "■"   );
+    remove( "∟"   );
+    result( "■"    );
+    count(1);
+  }
 
-	@Test
-	public void removeNothing2() throws Exception {
-		add( "∟■∟" 	);
-		remove( "∟∟∟" 	);
-		result( "∟■∟"		);
-		count(1);
-	}
+  @Test
+  public void removeNothing2() throws Exception {
+    add( "∟■∟"   );
+    remove( "∟∟∟"   );
+    result( "∟■∟"    );
+    count(1);
+  }
 
-	@Test
-	public void removeTheSame2() throws Exception {
-		add( "■■" 	,
-				"■■"	);
-		remove( "■■" 	,
-				"■■"	);
-		result( ""		);
-		count(0);
-	}
+  @Test
+  public void removeTheSame2() throws Exception {
+    add( "■■"   ,
+         "■■"  );
+    remove( "■■"   ,
+            "■■"  );
+    result( ""    );
+    count(0);
+  }
 
-	@Test
-	public void removeOverlap() throws Exception {
-		add( "■"		);
-		remove( "■■"	);
-		result( ""		);
-		count(0);
-	}
+  @Test
+  public void removeOverlap() throws Exception {
+    add( "■"    );
+    remove( "■■"  );
+    result( ""    );
+    count(0);
+  }
 
-	@Test
-	public void removePart1() throws Exception {
-		add( "■■" 	,
-				"■■"	);
-		remove( "■∟"	,
-				"∟∟"	);
-		result( "∟■"	,
-				"■■"	);
-		count(3);
-	}
+  @Test
+  public void removePart1() throws Exception {
+    add( "■■"   ,
+         "■■"  );
+    remove( "■∟"  ,
+            "∟∟"  );
+    result( "∟■"  ,
+            "■■"  );
+    count(3);
+  }
 
-	@Test
-	public void removePart2() throws Exception {
-		add( "■■" 	,
-				"■■"	);
-		remove( "∟■"	,
-				"∟∟"	);
-		result( "■∟"	,
-				"■■"	);
-		count(3);
-	}
+  @Test
+  public void removePart2() throws Exception {
+    add( "■■"   ,
+         "■■"  );
+    remove( "∟■"  ,
+            "∟∟"  );
+    result( "■∟"  ,
+           "■■"  );
+    count(3);
+  }
 
-	@Test
-	public void removePart3() throws Exception {
-		add( "■■" 	,
-				"■■"	);
-		remove( "∟∟"	,
-				"■∟"	);
-		result( "■■"	,
-				"∟■"	);
-		count(3);
-	}
+  @Test
+  public void removePart3() throws Exception {
+    add( "■■"   ,
+         "■■"  );
+    remove( "∟∟"  ,
+            "■∟"  );
+    result( "■■"  ,
+            "∟■"  );
+    count(3);
+  }
 
-	@Test
-	public void removePart4() throws Exception {
-		add( "■■" 	,
-				"■■"	);
-		remove( "∟∟"	,
-				"∟■"	);
-		result( "■■"	,
-				"■∟"	);
-		count(3);
-	}
+  @Test
+  public void removePart4() throws Exception {
+    add( "■■"   ,
+         "■■"  );
+    remove( "∟∟"  ,
+            "∟■"  );
+    result( "■■"  ,
+            "■∟"  );
+    count(3);
+  }
 
-	@Test
-	public void removeCrossing() throws Exception {
-		add( "■■" 	,
-				"■■"	);
-		remove( "∟∟∟"	,
-				"∟■■"	,
-				"∟■■" );
-		result( "■■"	,
-				"■∟"	);
-		count(3);
-	}
+  @Test
+  public void removeCrossing() throws Exception {
+    add( "■■"   ,
+         "■■"  );
+    remove( "∟∟∟"  ,
+            "∟■■"  ,
+            "∟■■" );
+    result( "■■"  ,
+            "■∟"  );
+    count(3);
+  }
 
-	@Test
-	public void removeInside1() throws Exception {
-		add( "■■■" );
-		remove( "∟■∟"	);
-		result( "■∟■"	);
-		count(2);
-	}
+  @Test
+  public void removeInside1() throws Exception {
+    add( "■■■" );
+    remove( "∟■∟"  );
+    result( "■∟■"  );
+    count(2);
+  }
 
-	@Test
-	public void removeInside2() throws Exception {
-		add( "■■■" ,
-				"■■■"	,
-				"■■■"	);
-		remove( "∟∟∟"	,
-				"∟■∟"	,
-				"∟∟∟" );
-		result( "■■■"	,
-				"■∟■"	,
-				"■■■"	);
-		count(8);
-	}
+  @Test
+  public void removeInside2() throws Exception {
+    add( "■■■" ,
+         "■■■"  ,
+         "■■■"  );
+    remove( "∟∟∟"  ,
+            "∟■∟"  ,
+            "∟∟∟" );
+    result( "■■■"  ,
+        "■∟■"  ,
+        "■■■"  );
+    count(8);
+  }
 
-	@Test
-	public void removeCrossMiddle() throws Exception {
-		add( "∟■∟" ,
-				"■■■"	,
-				"∟■∟"	);
-		remove( "∟∟∟"	,
-				"∟■∟"	,
-				"∟∟∟" );
-		result( "∟■∟"	,
-				"■∟■"	,
-				"∟■∟"	);
-		count(4);
-	}
+  @Test
+  public void removeCrossMiddle() throws Exception {
+    add( "∟■∟" ,
+        "■■■"  ,
+        "∟■∟"  );
+    remove( "∟∟∟"  ,
+        "∟■∟"  ,
+        "∟∟∟" );
+    result( "∟■∟"  ,
+        "■∟■"  ,
+        "∟■∟"  );
+    count(4);
+  }
 
-	@Test
-	public void removeCorner() throws Exception {
-		add( "∟■■" ,
-				"∟■■"	);
-		remove( "∟∟"	,
-				"■■"	,
-				"■■" 	);
-		result( "∟■■"	,
-				"∟∟■"	);
-		count(3);
-	}
+  @Test
+  public void removeCorner() throws Exception {
+    add( "∟■■" ,
+        "∟■■"  );
+    remove( "∟∟"  ,
+        "■■"  ,
+        "■■"   );
+    result( "∟■■"  ,
+        "∟∟■"  );
+    count(3);
+  }
 
-	@Test
-	public void removeCorner1() throws Exception {
-		add( "■■" 	,
-				"∟■"	);
-		remove( "∟■"	,
-				"∟■"	);
-		result( "■∟"	,
-				"∟∟"	);
-	}
+  @Test
+  public void removeCorner1() throws Exception {
+    add( "■■"   ,
+        "∟■"  );
+    remove( "∟■"  ,
+        "∟■"  );
+    result( "■∟"  ,
+        "∟∟"  );
+  }
 
-	@Test
-	public void removeCorner2() throws Exception {
-		set.add(2, 3, 0, 2);
-		set.remove(0, 2, 2, 4);
-		result( "∟∟■■"	,
-				"∟∟■■"	,
-				"∟∟∟■" 	);
-		count(5);
-	}
+  @Test
+  public void removeCorner2() throws Exception {
+    set.add(2, 3, 0, 2);
+    set.remove(0, 2, 2, 4);
+    result( "∟∟■■"  ,
+        "∟∟■■"  ,
+        "∟∟∟■"   );
+    count(5);
+  }
 
-//	@Test
-//	public void subsetEmpty() throws Exception {
-//		insert( "∟■" ,
-//				"■■"	);
-//		subset(0, 0, 0, 0, "");
-//	}
+//  @Test
+//  public void subsetEmpty() throws Exception {
+//    insert( "∟■" ,
+//        "■■"  );
+//    subset(0, 0, 0, 0, "");
+//  }
 //
-//	@Test
-//	public void subsetTheSame() throws Exception {
-//		insert( "∟■" ,
-//				"■■"	);
-//		subset(0, 1, 0, 1,
-//				"∟■" ,
-//				"■■"	);
-//	}
+//  @Test
+//  public void subsetTheSame() throws Exception {
+//    insert( "∟■" ,
+//        "■■"  );
+//    subset(0, 1, 0, 1,
+//        "∟■" ,
+//        "■■"  );
+//  }
 //
-//	@Test
-//	public void subsetMore() throws Exception {
-//		insert( "∟■" ,
-//				"■■"	);
-//		subset(0, 10, 0, 10,
-//				"∟■" ,
-//				"■■"	);
-//	}
+//  @Test
+//  public void subsetMore() throws Exception {
+//    insert( "∟■" ,
+//        "■■"  );
+//    subset(0, 10, 0, 10,
+//        "∟■" ,
+//        "■■"  );
+//  }
 //
-//	@Test
-//	public void subset() throws Exception {
-//		insert( "∟■∟" ,
-//				"■■■"	,
-//				"∟■∟"	);
-//		subset(0, 1, 0, 1,
-//				"∟■" ,
-//				"■■");
-//	}
+//  @Test
+//  public void subset() throws Exception {
+//    insert( "∟■∟" ,
+//        "■■■"  ,
+//        "∟■∟"  );
+//    subset(0, 1, 0, 1,
+//        "∟■" ,
+//        "■■");
+//  }
 
-	@Test
-	public void cellSequenceEmpty() throws Exception {
-		assertInSequence("");
-	}
+  @Test
+  public void cellSequenceEmpty() throws Exception {
+    assertInSequence("");
+  }
 
-	@Test
-	public void cellSequenceSingle() throws Exception {
-		add( "■" );
-		assertInSequence("0:0");
-	}
+  @Test
+  public void cellSequenceSingle() throws Exception {
+    add( "■" );
+    assertInSequence("0:0");
+  }
 
-	@Test
-	public void cellSequence() throws Exception {
-		add( "∟■"   ,
-				"■■"	);
-		assertInSequence("0:1, 1:0, 1:1");
-	}
+  @Test
+  public void cellSequence() throws Exception {
+    add( "∟■"   ,
+         "■■"  );
+    assertInSequence("0:1, 1:0, 1:1");
+  }
 
-	@Test
-	public void cellSequence2() throws Exception {
-		add( "■■"   ,
-				"■■"	);
-		assertInSequence("0:0, 0:1, 1:0, 1:1");
-	}
+  @Test
+  public void cellSequence2() throws Exception {
+    add( "■■"   ,
+         "■■"  );
+    assertInSequence("0:0, 0:1, 1:0, 1:1");
+  }
 
-	@Test
-	public void getExtentEmpty() throws Exception {
-		assertEquals(null, set.getExtent());
-	}
+  @Test
+  public void getExtentEmpty() throws Exception {
+    assertEquals(null, set.getExtent());
+  }
 
-	@Test
-	public void getExtentOne() throws Exception {
-		add( "∟■" );
-		assertExtent(0, 0, 1, 1);
-	}
+  @Test
+  public void getExtentOne() throws Exception {
+    add( "∟■" );
+    assertExtent(0, 0, 1, 1);
+  }
 
-	@Test
-	public void getExtent() throws Exception {
-		add( "∟■∟"	,
-				"■∟■"	,
-				"∟■∟"	);
-		assertExtent(0, 2, 0, 2);
-	}
+  @Test
+  public void getExtent() throws Exception {
+    add( "∟■∟"  ,
+         "■∟■"  ,
+         "∟■∟"  );
+    assertExtent(0, 2, 0, 2);
+  }
 
-	@Test
+  @Test
   public void insert1() throws Exception {
     assertEquals(0, set.getCount().intValue());
     set.insertX(0, 1);
@@ -568,16 +568,16 @@ import pl.netanel.util.Arrays;
   }
 
 
-	@Test
-	public void delete1() throws Exception {
-	  add( "■" );
-	  assertEquals(1, set.getCount().intValue());
-	  set.deleteX(0, 0);
-	  result( "" );
-	  assertEquals(0, set.getCount().intValue());
-	}
+  @Test
+  public void delete1() throws Exception {
+    add( "■" );
+    assertEquals(1, set.getCount().intValue());
+    set.deleteX(0, 0);
+    result( "" );
+    assertEquals(0, set.getCount().intValue());
+  }
 
-	@Test
+  @Test
   public void deleteSplitSingle() throws Exception {
     add( "∟■" ,
          "∟∟" ,
@@ -590,196 +590,196 @@ import pl.netanel.util.Arrays;
     assertEquals(2, set.getCount().intValue());
   }
 
-	@Test
-	public void deleteSplitDouble() throws Exception {
-	  add( "∟■■" ,
-	      "∟∟∟" ,
-	      "∟■■" );
-	  assertEquals(4, set.getCount().intValue());
-	  set.deleteX(0, 1);
-	  result( "■" ,
-	          "∟" ,
-	          "■" );
-	  assertEquals(2, set.getCount().intValue());
-	}
+  @Test
+  public void deleteSplitDouble() throws Exception {
+    add( "∟■■" ,
+         "∟∟∟" ,
+         "∟■■" );
+    assertEquals(4, set.getCount().intValue());
+    set.deleteX(0, 1);
+    result( "■" ,
+            "∟" ,
+            "■" );
+    assertEquals(2, set.getCount().intValue());
+  }
 
-	@Test
-	public void deleteSplit() throws Exception {
-	  add( "∟■■" ,
-	       "∟■■" ,
-	       "■∟■" );
-	  assertEquals(6, set.getCount().intValue());
-	  set.deleteX(2, 2);
-	  result( "∟■" ,
-	          "∟■" ,
-	          "■∟" );
-	  assertEquals(3, set.getCount().intValue());
-	}
+  @Test
+  public void deleteSplit() throws Exception {
+    add( "∟■■" ,
+         "∟■■" ,
+         "■∟■" );
+    assertEquals(6, set.getCount().intValue());
+    set.deleteX(2, 2);
+    result( "∟■" ,
+            "∟■" ,
+            "■∟" );
+    assertEquals(3, set.getCount().intValue());
+  }
 
-	private void assertExtent(int startY, int endY, int startX, int endX) {
-		CellExtent e = set.getExtent();
-		assertEquals(startY + " " + endY + " " + startX + " " + endX,
-				e.startY + " " + e.endY + " " + e.startX + " " + e.endX);
-	}
+  private void assertExtent(int startY, int endY, int startX, int endX) {
+    CellExtent e = set.getExtent();
+    assertEquals(startY + " " + endY + " " + startX + " " + endX,
+        e.startY + " " + e.endY + " " + e.startX + " " + e.endX);
+  }
 
-	private void assertInSequence(String expected) {
-		String[] cells = expected.split(", "); if (cells[0].equals("")) cells = new String[0];
+  private void assertInSequence(String expected) {
+    String[] cells = expected.split(", "); if (cells[0].equals("")) cells = new String[0];
 
-		NumberPairSequence seq = new NumberPairSequence(set);
-		int count = 0;
-		for (seq.init(); seq.next(); count++) {
-			String cell = seq.indexY.toString() + ":" + seq.indexX.toString();
-			assertTrue("Unexpected " + cell, Arrays.contains(cells, cell));
-		}
-		assertEquals("Wrong count, ", cells.length, count);
-	}
+    NumberPairSequence seq = new NumberPairSequence(set);
+    int count = 0;
+    for (seq.init(); seq.next(); count++) {
+      String cell = seq.indexY.toString() + ":" + seq.indexX.toString();
+      assertTrue("Unexpected " + cell, Arrays.contains(cells, cell));
+    }
+    assertEquals("Wrong count, ", cells.length, count);
+  }
 
 
-//	@Ignore
-//	@Test
-//	public void apply() throws Exception {
-////		Random random = new Random();
-//		int[][] data = new int[] [] {
-//				new int[] {0, 2, 2, 3},
-//				new int[] {4, 2, 2, 0}};
+//  @Ignore
+//  @Test
+//  public void apply() throws Exception {
+////    Random random = new Random();
+//    int[][] data = new int[] [] {
+//        new int[] {0, 2, 2, 3},
+//        new int[] {4, 2, 2, 0}};
 //
-//		int len = data.length;
-//		for (int i = 0; i < len; i++) {
-////			Index startY = number(random.nextInt(5));
-////			Index endY = number(random.nextInt(5));
-////			Index startX = number(random.nextInt(5));
-////			Index endX = number(random.nextInt(5));
-////			Strings.println(startY, endY, startX, endX);
-//			Index startY = number(data[i][0]);
-//			Index endY = number(data[i][1]);
-//			Index startX = number(data[i][2]);
-//			Index endX = number(data[i][3]);
-//			CellSet subset = new CellSet(IntIndexFactory.instance, IntIndexFactory.instance);
-//			subset.add(startY, endY, startX, endX);
-//			set.remove(startY, endY, startX, endX);
-//			set.apply(subset);
-//			assertTrue("Number of items should not be more then 25", set.size() <= 25);
-//		}
-//	}
+//    int len = data.length;
+//    for (int i = 0; i < len; i++) {
+////      Index startY = number(random.nextInt(5));
+////      Index endY = number(random.nextInt(5));
+////      Index startX = number(random.nextInt(5));
+////      Index endX = number(random.nextInt(5));
+////      Strings.println(startY, endY, startX, endX);
+//      Index startY = number(data[i][0]);
+//      Index endY = number(data[i][1]);
+//      Index startX = number(data[i][2]);
+//      Index endX = number(data[i][3]);
+//      CellSet subset = new CellSet(IntIndexFactory.instance, IntIndexFactory.instance);
+//      subset.add(startY, endY, startX, endX);
+//      set.remove(startY, endY, startX, endX);
+//      set.apply(subset);
+//      assertTrue("Number of items should not be more then 25", set.size() <= 25);
+//    }
+//  }
 
-//	private void subset(int startY, int endY, int startX, int endX, String ...expected) {
-//		Math f = IntMath.getInstance();
-//		CellSet subset = new CellSet(f, f);
-//		set.subset(startY, endY, startX, endX, subset);
-//		result(subset, expected);
-//	}
+//  private void subset(int startY, int endY, int startX, int endX, String ...expected) {
+//    Math f = IntMath.getInstance();
+//    CellSet subset = new CellSet(f, f);
+//    set.subset(startY, endY, startX, endX, subset);
+//    result(subset, expected);
+//  }
 
-	private void count(int i) {
-		assertEquals("Wrong count for: "+set, i, set.getCount().intValue());
-	}
+  private void count(int i) {
+    assertEquals("Wrong count for: "+set, i, set.getCount().intValue());
+  }
 
-	void add(int startY, int endY, int startX, int endX) {
-		set.add(startX, endX, startY, endY);
-	}
+  void add(int startY, int endY, int startX, int endX) {
+    set.add(startX, endX, startY, endY);
+  }
 
-	private void add(String ...lines) {
-		operation(true, lines);
-	}
+  private void add(String ...lines) {
+    operation(true, lines);
+  }
 
-	private void remove(String ...lines) {
-		operation(false, lines);
-	}
+  private void remove(String ...lines) {
+    operation(false, lines);
+  }
 
-	private void operation(boolean insert, String ...lines) {
-		for (int i = 0; i < lines.length; i++) {
-			String s = lines[i];
-			int startX = -1, endX = -1, x1 = -1, x2 = -1;
+  private void operation(boolean insert, String ...lines) {
+    for (int i = 0; i < lines.length; i++) {
+      String s = lines[i];
+      int startX = -1, endX = -1, x1 = -1, x2 = -1;
 
-			// Find the block on x axis
-			while (endX < s.length() - 1) {
-				startX = s.indexOf('■', endX + 1);
-				if (startX == -1) break;
-				endX = s.indexOf('∟', startX) - 1;
-				if (endX < 0) endX = s.length() - 1;
+      // Find the block on x axis
+      while (endX < s.length() - 1) {
+        startX = s.indexOf('■', endX + 1);
+        if (startX == -1) break;
+        endX = s.indexOf('∟', startX) - 1;
+        if (endX < 0) endX = s.length() - 1;
 
-				int j = i+1;
-				for (; j < lines.length; j++) {
-					String s2 = lines[j];
-					x1 = s2.indexOf('■', x1);
-					if (x1 != startX) break;
-					x2 = s2.indexOf('∟', x1) - 1;
-					if (x2 < 0) x2 = s2.length() - 1;
-					if (x2 != endX) break;
-				}
-				doOperation(insert, i, j-1, startX, endX);
-				i = j - 1;
-			}
-		}
-	}
+        int j = i+1;
+        for (; j < lines.length; j++) {
+          String s2 = lines[j];
+          x1 = s2.indexOf('■', x1);
+          if (x1 != startX) break;
+          x2 = s2.indexOf('∟', x1) - 1;
+          if (x2 < 0) x2 = s2.length() - 1;
+          if (x2 != endX) break;
+        }
+        doOperation(insert, i, j-1, startX, endX);
+        i = j - 1;
+      }
+    }
+  }
 
-	private void doOperation(boolean insert, int startY, int endY, int startX,
-			int endX) {
-		if (insert)
-			set.add(startX, endX, startY, endY);
-		else
-			set.remove(startX, endX, startY, endY);
-	}
+  private void doOperation(boolean insert, int startY, int endY, int startX,
+      int endX) {
+    if (insert)
+      set.add(startX, endX, startY, endY);
+    else
+      set.remove(startX, endX, startY, endY);
+  }
 
-	private void result(String ...expected) {
-		result(set, expected);
-	}
-	private void result(CellSet set, String ...expected) {
-		ArrayList<ArrayList<Boolean>> data = new ArrayList<ArrayList<Boolean>>();
-		int size = set.itemsY.size();
-		int max = 0;
+  private void result(String ...expected) {
+    result(set, expected);
+  }
+  private void result(CellSet set, String ...expected) {
+    ArrayList<ArrayList<Boolean>> data = new ArrayList<ArrayList<Boolean>>();
+    int size = set.itemsY.size();
+    int max = 0;
 
-		for (int i = 0; i < size; i++) {
-		  MutableExtent itemX = (MutableExtent) set.itemsX.get(i);
-			MutableExtent itemY = (MutableExtent) set.itemsY.get(i);
-			for (int j = 0; j <= itemY.end.intValue(); j++) {
-				ArrayList<Boolean> line;
-				if (j >= data.size()) {
-					data.add(line = new ArrayList<Boolean>());
-				}
-				if (j < itemY.start.intValue()) {
-					continue;
-				} else {
-					line = data.get(j);
-				}
-				if (max < itemX.end.intValue() + 1) {
-					max = itemX.end.intValue() + 1;
-				}
-				for (int k = 0; k <= itemX.end.intValue(); k++) {
-					if (k < itemX.start.intValue()) {
-						if (k >= line.size()) {
-							line.add(false);
-						}
-					}
-					else {
-						if (k >= line.size()) {
-							line.add(true);
-						} else {
-							line.set(k, true);
-						}
-					}
-				}
-			}
-		}
-		String message = "";
-		boolean quit = false;
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < data.size(); i++) {
-			ArrayList<Boolean> line = data.get(i);
-			for (int j = 0; j < max; j++) {
-				String s = j < line.size() ? line.get(j) ? "■" : "∟" : "∟";
-				sb.append(s);
-				if (expected[i].charAt(j) != s.charAt(0)) {
-					message += "\nAt "+i+":"+j+" expected "+String.valueOf(expected[i].charAt(j))+
-						" but was "+s;
-				}
-			}
-			sb.append("\n");
-			if (quit) break;
-		}
-		if (data.isEmpty() && expected[0].length() > 0) assertFalse("empty set was not expected", true);
-		if (message.length() > 0) {
-		  System.out.println(message + "\n" + sb);
-		  assertFalse(message + "\n" + sb, true);
-		}
-	}
+    for (int i = 0; i < size; i++) {
+      MutableExtent itemX = (MutableExtent) set.itemsX.get(i);
+      MutableExtent itemY = (MutableExtent) set.itemsY.get(i);
+      for (int j = 0; j <= itemY.end.intValue(); j++) {
+        ArrayList<Boolean> line;
+        if (j >= data.size()) {
+          data.add(line = new ArrayList<Boolean>());
+        }
+        if (j < itemY.start.intValue()) {
+          continue;
+        } else {
+          line = data.get(j);
+        }
+        if (max < itemX.end.intValue() + 1) {
+          max = itemX.end.intValue() + 1;
+        }
+        for (int k = 0; k <= itemX.end.intValue(); k++) {
+          if (k < itemX.start.intValue()) {
+            if (k >= line.size()) {
+              line.add(false);
+            }
+          }
+          else {
+            if (k >= line.size()) {
+              line.add(true);
+            } else {
+              line.set(k, true);
+            }
+          }
+        }
+      }
+    }
+    String message = "";
+    boolean quit = false;
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < data.size(); i++) {
+      ArrayList<Boolean> line = data.get(i);
+      for (int j = 0; j < max; j++) {
+        String s = j < line.size() ? line.get(j) ? "■" : "∟" : "∟";
+        sb.append(s);
+        if (expected[i].charAt(j) != s.charAt(0)) {
+          message += "\nAt "+i+":"+j+" expected "+String.valueOf(expected[i].charAt(j))+
+            " but was "+s;
+        }
+      }
+      sb.append("\n");
+      if (quit) break;
+    }
+    if (data.isEmpty() && expected[0].length() > 0) assertFalse("empty set was not expected", true);
+    if (message.length() > 0) {
+      System.out.println(message + "\n" + sb);
+      assertFalse(message + "\n" + sb, true);
+    }
+  }
 }

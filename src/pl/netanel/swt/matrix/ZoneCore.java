@@ -46,7 +46,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 	ZoneEditor<X, Y> editor;
 
-	private final Listeners typedListeners;
+	private final TypedListeners typedListeners;
 	final ArrayList<ZoneListener> zoneListeners;
 	private final ArrayList<GestureBinding> bindings;
 	private boolean selectionEnabled;
@@ -72,7 +72,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		mathY = sectionY.math;
 
 		painters = new Painters<X, Y>();
-    typedListeners = new Listeners();
+    typedListeners = new TypedListeners();
     zoneListeners = new ArrayList<ZoneListener>();
     bindings = new ArrayList<GestureBinding>();
     bounds = new Rectangle(0, 0, 0, 0);
@@ -356,6 +356,16 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				CellExtent<X, Y> e = cellSelection.getExtent();
 				CellSet<X, Y> set = new CellSet<X, Y>(sectionX.math, sectionY.math);
 				set.add(e.startX, e.endX, e.startY, e.endY);
+				if (!matrix.getCopyPasteHiddenCells()) {
+				  for (Iterator<Extent<X>> it = sectionX.getHiddenExtents(); it.hasNext(); ) {
+				    Extent<X> extent = it.next();
+				    set.remove(extent.start, extent.end, mathY.ZERO_VALUE(), mathY.decrement(sectionY.getCount()));
+				  }
+				  for (Iterator<Extent<Y>> it = sectionY.getHiddenExtents(); it.hasNext(); ) {
+				    Extent<Y> extent = it.next();
+				    set.remove(mathX.ZERO_VALUE(), mathX.decrement(sectionX.getCount()), extent.start, extent.end);
+				  }
+				}
 				seq = new NumberPairSequence<X, Y>(set);
 			}
 
@@ -448,6 +458,10 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 		}
 	}
 
+	void unbind(GestureBinding binding) {
+    bindings.remove(binding);
+	}
+
 	@Override public void unbind(int commandId, int eventType, int code) {
 		if (editor != null && (
 				commandId == Matrix.CMD_EDIT_DEACTIVATE_APPLY ||
@@ -489,9 +503,11 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
   @Override
   public void removeListener(int eventType, Listener listener) {
-    for (ZoneListener zoneListener: zoneListeners) {
+    if (matrix.isDisposed()) return;
+    for (Iterator<ZoneListener> it = zoneListeners.iterator(); it.hasNext();) {
+      ZoneListener zoneListener = it.next();
       if (zoneListener.listener == listener) {
-        zoneListeners.remove(zoneListener);
+        it.remove();
         matrix.removeListener(eventType, zoneListener);
       }
     }
@@ -721,7 +737,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
     }
   }
 
-	private void setPainterMatrixAndZone(Painter<X, Y> painter) {
+	private void setPainterMatrixAndZone(final Painter<X, Y> painter) {
 			painter.setZone(this);
 			painter.setMatrix(matrix);
 	}
@@ -748,6 +764,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	}
 
 	void setEditor(ZoneEditor<X, Y> editor) {
+	  if (this.editor != null) this.editor.dispose();
 		this.editor = editor;
 	}
 

@@ -24,11 +24,11 @@ import pl.netanel.util.HashMapArrayList;
  * such as firing events for {@link SelectionListener}, {@link ControlListener}
  * or for zone: {@link SWT#MouseEnter} or {@link SWT#MouseExit}.
  */
-class Listeners {
+class TypedListeners {
 	final private HashMapArrayList<Integer, Listener> listeners;
 	final private ArrayList<Event> events;
 
-	public Listeners() {
+	public TypedListeners() {
 		events = new ArrayList<Event>();
 		listeners = new HashMapArrayList<Integer, Listener>();
 	}
@@ -41,15 +41,17 @@ class Listeners {
 	public void remove(int type, Object listener) {
 //		Preconditions.checkNotNullWithName(listener, "listener");
 		List<Listener> list = listeners.get(type);
+		list.remove(listener);
 		for (int i = list.size(); i-- > 0;) {
 			Listener listener2 = list.get(i);
-			if (listener2 != listener && listener2 instanceof TypedListener) {
-				listener2 = (Listener) ((TypedListener) listener2).getEventListener();
-			}
-			if (listener2 == listener) {
-				list.remove(i);
-				return;
-			}
+
+			if (listener2 instanceof TypedListener) {
+        TypedListener typedListener = (TypedListener) listener2;
+        if (typedListener.getEventListener () == listener) {
+          list.remove(i);
+          return;
+        }
+      }
 		}
 	}
 

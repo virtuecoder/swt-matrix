@@ -18,6 +18,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TypedListener;
 
+import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 import pl.netanel.swt.matrix.NumberSet.ContentChangeListener;
 import pl.netanel.util.ImmutableIterator;
 import pl.netanel.util.Preconditions;
@@ -74,7 +75,7 @@ class SectionCore<N extends Number> implements Section<N> {
 
   Axis<N> axis;
   int index;
-  final Listeners listeners;
+  final TypedListeners listeners;
   private final Class<N> indexClass;
   final private HashMap<NumberSet<N>, ContentChangeListener<N>> hiddenSetListeners;
   boolean isDirty;
@@ -114,7 +115,7 @@ class SectionCore<N extends Number> implements Section<N> {
 
     defaultResizable = true;
     isNavigationEnabled = isVisible = true;
-    listeners = new Listeners();
+    listeners = new TypedListeners();
     isDirty = true;
   }
 
@@ -472,7 +473,7 @@ class SectionCore<N extends Number> implements Section<N> {
 
   @Override
   public Iterator<N> getHidden() {
-    return new IndexIterator(new NumberSequence<N>(hidden));
+    return new IndexIterator(new NumberSequence2<N>(hidden));
   }
 
   @Override
@@ -562,8 +563,8 @@ class SectionCore<N extends Number> implements Section<N> {
    * Returns a sequence of indexes of selected items.
    * @return a sequence of indexes of selected items
    */
-  NumberSequence<N> getSelectedSequence() {
-    return new NumberSequence<N>(math, selection.items);
+  NumberSequence2<N> getSelectedSequence() {
+    return new NumberSequence2<N>(math, selection.items);
   }
 
   @Override public Iterator<N> getSelected() {
@@ -798,9 +799,9 @@ class SectionCore<N extends Number> implements Section<N> {
 
   class IndexIterator extends ImmutableIterator<N> {
 
-    private final NumberSequence<N> seq;
+    private final NumberSequence2<N> seq;
 
-    IndexIterator(NumberSequence<N> seq) {
+    IndexIterator(NumberSequence2<N> seq) {
       super();
       this.seq = seq;
       seq.init();
@@ -935,6 +936,14 @@ class SectionCore<N extends Number> implements Section<N> {
     collapse(start, end);
     isDirty = true;
   }
+
+
+  DirectionIndexSequence<N> numbers(final N start, N end) {
+    Forward<N> seq = new DirectionIndexSequence.Forward<N>(this);
+
+    return seq;
+  }
+
 
   private void collapse(N start, N end) {
     MutableNumber<N> index = math.create(start);

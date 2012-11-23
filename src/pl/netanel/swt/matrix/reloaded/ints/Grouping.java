@@ -59,6 +59,7 @@ public class Grouping {
   private NumberSet<Integer> hidden;
   private boolean isBulkCollapse;
   private AxisItem<Integer> focusItem;
+  private Listener disposeListener;
 
 
   /**
@@ -100,13 +101,13 @@ public class Grouping {
     layout();
 
     createImages(axisDirection);
-    zone.getMatrix().addListener(SWT.Dispose, new Listener() {
+    disposeListener = new Listener() {
       @Override
       public void handleEvent(Event e) {
-        if (trueImage != null && !trueImage.isDisposed()) trueImage.dispose();
-        if (falseImage != null && !falseImage.isDisposed()) falseImage.dispose();
+        dispose();
       }
-    });
+    };
+    zone.getMatrix().addListener(SWT.Dispose, disposeListener);
 
     oldCellPainter = zone.getPainter(Painter.NAME_CELLS);
     cellPainter = new CellImageButtonPainter<Integer, Integer>(Painter.NAME_CELLS, trueImage, falseImage)
@@ -196,6 +197,9 @@ public class Grouping {
    * </ul>
    */
   public void dispose() {
+    if (trueImage != null) trueImage.dispose();
+    if (falseImage != null) falseImage.dispose();
+
     zone.replacePainter(oldCellPainter);
     zone.setMerged(0, zone.getSectionX().getCount(), 0, zone.getSectionY().getCount(), false);
 
@@ -205,6 +209,7 @@ public class Grouping {
 
     section2.setCount(1);
     section.removeHiddenSet(hidden);
+    matrix.removeListener(SWT.Dispose, disposeListener);
   }
 
   private void initNodes() {

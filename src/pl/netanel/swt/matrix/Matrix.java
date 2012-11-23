@@ -16,8 +16,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -235,6 +233,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
   public static final int EVENT_LAYOUT = 1000;
 
+
 	/*------------------------------------------------------------------------
 	 * Mouse event modifiers, cannot collide with SWT state masks or mouse button numbers
 	 */
@@ -255,6 +254,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	final Painters<X, Y> painters;
 	private ScheduledExecutorService executor;
   private boolean isPainting;
+  private boolean shouldCopyPasteHiddenCells;
+//  private boolean shouldCopyBoyondBody;
 
 	/**
 	 * Calls the {@link #Matrix(Composite, int, Axis, Axis)} constructor
@@ -312,6 +313,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 */
 	public Matrix(Composite parent, int style, Axis<X> axisX, Axis<Y> axisY) {
 		super(parent, style | SWT.DOUBLE_BUFFERED);
+
 		setBackground(Resources.getColor(SWT.COLOR_LIST_BACKGROUND));
 		setForeground(Resources.getColor(SWT.COLOR_LIST_FOREGROUND));
 
@@ -337,12 +339,6 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 		addListener(SWT.Paint, listener2);
 		addListener(SWT.Resize,	listener2);
 
-		addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				if (executor != null) executor.shutdownNow();
-			}
-		});
 
 //		parent.addControlListener(new ControlListener() {
 //      @Override public void controlResized(ControlEvent e) {
@@ -358,6 +354,18 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	}
 
 	@Override
+	public void dispose() {
+	  super.dispose();
+	  if (executor != null) executor.shutdownNow();
+	  for (ZoneCore<X, Y> zone: layout.zones) {
+	    for (Painter<X, Y> painter: zone.painters) {
+	      painter.dispose();
+	    }
+	  }
+	  layout.dispose();
+	}
+
+  @Override
 	public void addListener(int eventType, Listener listener) {
 	  if (eventType == EVENT_LAYOUT) {
 	      throw new UnsupportedOperationException("EVENT_LAYOUT not supported yet" );
@@ -1160,6 +1168,80 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
           " then the Y axis: %1");
     setAxises(axisY, axisX);
   }
+
+  /**
+   * Will cause the matrix to copy the hidden cells when set to <code>true</code>.
+   * Otherwise the hidden cells will not be copied.
+   * <p>
+   * Default value is <code>false</code>.
+   *
+   * @param state the new state for the "copy hidden cells" property
+   */
+  public void setCopyPasteHiddenCells(boolean state) {
+    shouldCopyPasteHiddenCells = state;
+  }
+
+  /**
+   * Returns <code>true</code> if the hidden cells should be copied with the copy command.
+   * @return the state of the "copy paste hidden cells" property
+   */
+  public boolean getCopyPasteHiddenCells() {
+    return shouldCopyPasteHiddenCells;
+  }
+
+//  /**
+//   * Will cause the matrix to copy selected cells from other zone than the current one
+//   * as well when set to <code>true</code>. Otherwise the only cells from the current
+//   * zone will be copied. "Current" means the zone with the focus cell.
+//   * <p>
+//   * Default value is <code>false</code>.
+//   *
+//   * @param state the new state for the "copy paste beyond body" property
+//   */
+//  public void setCopyBeyondBody(boolean state) {
+//    shouldCopyBoyondBody = state;
+//  }
+//
+//  /**
+//   * Returns <code>true</code> if all the selected cells not only from the current zone
+//   * should be copied with the copy command and <code>false</code> otherwise.
+//   *
+//   * @return the state of the "copy beyond body" property
+//   */
+//  public boolean getCopyBeyondBody() {
+//    return shouldCopyBoyondBody;
+//  }
+//
+//  /**
+//   * Will allow the matrix to copy not rectangular cell selections when set to
+//   * <code>true</code>. Otherwise will throw @link
+//   * {@link UnsupportedOperationException} when not rectangular cell selection
+//   * will be copied.
+//   * <p>
+//   * For paste command, it will paste the cells skipping the blank values
+//   * (white spaces between two tabs) when set to <code>true</code>. Otherwise
+//   * will throw {@link UnsupportedOperationException} when not rectangular cell
+//   * selection will be pasted.
+//   * <p>
+//   * Default value is <code>false</code>.
+//   *
+//   * @param state the new state for the "copy paste not rectangular" property
+//   * @throws UnsupportedOperationException when not rectangular selection is copied
+//   * or pasted and the property values is <code>false</code>
+//   */
+//  public void setCopyPasteNotRectangular(boolean state) {
+//    shouldCopyPasteNotRectangular = state;
+//  }
+//
+//  /**
+//   * Returns <code>true</code> if the copy / paste of not rectangular cell sets is enabled
+//   * and <code>false</code> otherwise.
+//   *
+//   * @return the state of the "copy paste not rectangular" property
+//   */
+//  public boolean getCopyPasteNotRectangular() {
+//    return shouldCopyPasteNotRectangular;
+//  }
 
 	@SuppressWarnings("unchecked")
 	<N extends Number> void insertInZonesX(SectionCore<N> section, N target, N count) {

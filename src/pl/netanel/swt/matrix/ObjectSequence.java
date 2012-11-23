@@ -8,28 +8,13 @@
 package pl.netanel.swt.matrix;
 
 /**
- * Number sequence.
+ * Sequence of objects of type T.
+ * @param T type of objects in the sequence.
  */
-public class NumberSequence<N extends Number> implements ObjectSequence<N> {
-
-  MutableNumber<N> index;
-
-  public static <N2 extends Number> NumberSequence<N2> subtract(NumberSequence<N2> seq1, NumberSequence<N2> seq2) {
-    return null;
-  }
-
-  @Override
-  public void init() {
-  }
-
-  @Override
-  public boolean next() {
-    return false;
-  }
-
-  @Override
-  public N item() {
-    return index.getValue();
-  }
-
+public interface ObjectSequence<T> extends Sequence {
+  /**
+   * Returns current item of the sequence.
+   * @return current item of the sequence.
+   */
+  T item();
 }

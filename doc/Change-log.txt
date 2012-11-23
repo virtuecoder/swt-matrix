@@ -1,4 +1,17 @@
 -------------------------------------------------------------------------------
+Version 0.7.19
+
+Feature changes:
+- Ability to skip hidden cells while doing copy/paste.
+
+Bug fixes:
+- There was a memory leak on matrix disposal.
+
+API changes:
+- Added Matrix.setCopyPasteHiddenCells(boolean)
+- Added Matrix.getCopyPasteHiddenCells() : boolean
+
+-------------------------------------------------------------------------------
 Version 0.7.18
 
 Bug fixes:

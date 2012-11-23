@@ -193,7 +193,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       }
 
       // Generate mouse enter/exit for the zone
-      generateMouseNeterOrExitForZonez(e);
+      generateMouseEnterOrExitForZones(e);
 
       if (e.type == SWT.MouseDown && e.button == 1) {
         mouseDown = true;
@@ -242,7 +242,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
   }
 
 
-  private void generateMouseNeterOrExitForZonez(Event e) {
+  private void generateMouseEnterOrExitForZones(Event e) {
     if (e.type == SWT.MouseMove) {
       if (lastZone != null && !lastZone.equals(zone)) {
         Event event = new Event();
@@ -411,7 +411,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
           int len = axis.sections.size();
           for (int i = 0; i < len; i++) {
             SectionCore<N> section = axisLayout.sections.get(i);
-            NumberSequence<N> seq = section.getSelectedSequence();
+            NumberSequence2<N> seq = section.getSelectedSequence();
             for (seq.init(); seq.next();) {
               section.setCellWidth(seq.index());
             }
@@ -884,8 +884,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 
     case CMD_EDIT_ACTIVATE:				 if (zone.editor != null) zone.editor.edit(b); return;
     case CMD_CUT:				           if (zone.editor != null) zone.editor.cut(); return;
-    case CMD_COPY:				         if (zone.editor != null) zone.editor.copy(); return;
-    case CMD_PASTE:				         if (zone.editor != null) zone.editor.paste(); return;
+    case CMD_COPY:				         copy(); return;
+    case CMD_PASTE:				         paste(); return;
     case CMD_DELETE:			         if (zone.editor != null) zone.editor.delete(); return;
     case CMD_TRAVERSE_TAB_NEXT:			matrix.traverse(SWT.TRAVERSE_TAB_NEXT); return;
     case CMD_TRAVERSE_TAB_PREVIOUS: matrix.traverse(SWT.TRAVERSE_TAB_PREVIOUS); return;
@@ -924,39 +924,85 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     // forceFocus(); // in order to make focus go out of a pop-up editor
   }
 
+
+  private void copy() {
+//    if (matrix.getCopyBeyondBody()) {
+//      StringBuilder sb = new StringBuilder();
+//      for (SectionCore<Y> sectionY: stateY.axisLayout.sections) {
+//        Math<Y> mathY = matrix.axisY.math;
+//        Y minY = sectionY.getCount();
+//        Y maxY = mathY.create(-1).getValue();
+//        for (SectionCore<X> sectionX: stateX.axisLayout.sections) {
+//          ZoneCore<X, Y> zone = matrix.layout.getZone(sectionX, sectionY);
+//          if (zone.editor == null || zone.cellSelection.isEmpty()) continue;
+//          CellExtent<X, Y> extent = zone.cellSelection.getExtent();
+//          if (mathY.compare(extent.startY, minY) < 0) minY = extent.startY;
+//          if (mathY.compare(extent.endY, maxY) < 0) maxY = extent.endY;
+//        }
+//
+//        boolean isNext = false;
+//        DirectionIndexSequence<Y> seq = sectionY.numbers(minY, maxY);
+//        for (seq.init(); seq.next();) {
+//          for (SectionCore<X> sectionX: stateX.axisLayout.sections) {
+//            ZoneCore<X, Y> zone = matrix.layout.getZone(sectionX, sectionY);
+//            if (zone.editor == null || zone.cellSelection.isEmpty()) continue;
+//            if (isNext) sb.append("\t");
+//            isNext = true;
+//            zone.editor.copySelectionInRow(sb, seq.index().getValue());
+//          }
+//        }
+//        if (sb.length() > 0) sb.append(ZoneEditor.NEW_LINE);
+//      }
+//      if (sb.length() > 0) {
+//        Clipboard clipboard = new Clipboard(matrix.getDisplay());
+//        clipboard.setContents(new Object[] {sb.toString()},
+//            new Transfer[] {TextTransfer.getInstance()});
+//        clipboard.dispose();
+//      }
+//    }
+//    else {
+      if (zone.editor != null) zone.editor.copy();
+//    }
+  }
+
+  private void paste() {
+    if (zone.editor != null) zone.editor.paste();
+  }
+
+
   protected boolean moveCursor(int commandId) {
     stateY.focusMoved = true;
     stateX.focusMoved = true;
     mY = null; mX = null;
     switch (commandId) {
 
-    case CMD_FOCUS_DOWN: 		case CMD_SELECT_DOWN: 		mY = Move.NEXT; break;
+    case CMD_FOCUS_DOWN: 		case CMD_SELECT_DOWN: 	mY = Move.NEXT; break;
     case CMD_FOCUS_UP:   		case CMD_SELECT_UP:			mY = Move.PREVIOUS; break;
-    case CMD_FOCUS_RIGHT: 		case CMD_SELECT_RIGHT:		mX = Move.NEXT; break;
+    case CMD_FOCUS_RIGHT: 	case CMD_SELECT_RIGHT:	mX = Move.NEXT; break;
     case CMD_FOCUS_LEFT: 		case CMD_SELECT_LEFT:		mX = Move.PREVIOUS; break;
 
-    case CMD_FOCUS_PAGE_DOWN:	case CMD_SELECT_PAGE_DOWN:	mY = Move.NEXT_PAGE; break;
-    case CMD_FOCUS_PAGE_UP:		case CMD_SELECT_PAGE_UP: 	mY = Move.PREVIOUS_PAGE; break;
+    case CMD_FOCUS_PAGE_DOWN: 	case CMD_SELECT_PAGE_DOWN:	mY = Move.NEXT_PAGE; break;
+    case CMD_FOCUS_PAGE_UP:		  case CMD_SELECT_PAGE_UP: 	  mY = Move.PREVIOUS_PAGE; break;
     case CMD_FOCUS_PAGE_RIGHT:	case CMD_SELECT_PAGE_RIGHT:	mX = Move.NEXT_PAGE; break;
-    case CMD_FOCUS_PAGE_LEFT:	case CMD_SELECT_PAGE_LEFT:	mX = Move.PREVIOUS_PAGE; break;
+    case CMD_FOCUS_PAGE_LEFT:	  case CMD_SELECT_PAGE_LEFT:	mX = Move.PREVIOUS_PAGE; break;
 
-    case CMD_FOCUS_MOST_DOWN:	case CMD_SELECT_FULL_DOWN:	mY = Move.END; break;
-    case CMD_FOCUS_MOST_UP:		case CMD_SELECT_FULL_UP:	mY = Move.HOME; break;
+    case CMD_FOCUS_MOST_DOWN:	  case CMD_SELECT_FULL_DOWN:	mY = Move.END; break;
+    case CMD_FOCUS_MOST_UP:		  case CMD_SELECT_FULL_UP:	  mY = Move.HOME; break;
     case CMD_FOCUS_MOST_RIGHT:	case CMD_SELECT_FULL_RIGHT:	mX = Move.END; break;
-    case CMD_FOCUS_MOST_LEFT:	case CMD_SELECT_FULL_LEFT:	mX = Move.HOME; break;
+    case CMD_FOCUS_MOST_LEFT:	  case CMD_SELECT_FULL_LEFT:	mX = Move.HOME; break;
 
-    case CMD_FOCUS_MOST_UP_LEFT:	case CMD_SELECT_FULL_UP_LEFT:	 mX = Move.HOME;
+    case CMD_FOCUS_MOST_UP_LEFT:	  case CMD_SELECT_FULL_UP_LEFT:	   mX = Move.HOME;
     mY = Move.HOME; break;
 
     case CMD_FOCUS_MOST_DOWN_RIGHT:	case CMD_SELECT_FULL_DOWN_RIGHT: mX = Move.END;
     mY = Move.END; break;
 
-    case CMD_FOCUS_LOCATION: 		case CMD_FOCUS_LOCATION_ALTER:
+    case CMD_FOCUS_LOCATION: 		  case CMD_FOCUS_LOCATION_ALTER:
     case CMD_SELECT_TO_LOCATION:	case CMD_SELECT_TO_LOCATION_ALTER:
     case CMD_SELECT_TO_COLUMN: 		case CMD_SELECT_TO_COLUMN_ALTER:
-    case CMD_SELECT_COLUMN:			case CMD_SELECT_COLUMN_ALTER:
-    case CMD_SELECT_TO_ROW: 		case CMD_SELECT_TO_ROW_ALTER:
-    case CMD_SELECT_ROW:			case CMD_SELECT_ROW_ALTER:
+    case CMD_SELECT_COLUMN:			  case CMD_SELECT_COLUMN_ALTER:
+    case CMD_SELECT_TO_ROW: 		  case CMD_SELECT_TO_ROW_ALTER:
+    case CMD_SELECT_ROW:			    case CMD_SELECT_ROW_ALTER:
       //		  AxisItem<X> focusX = stateX.layout.current;
       //		  if (!stateX.setFocusItem()) return false;
       //		  if (!stateY.setFocusItem()) {

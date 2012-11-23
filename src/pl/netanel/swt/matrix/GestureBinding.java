@@ -31,20 +31,28 @@ class GestureBinding {
 		this.key = code;
 		this.enabled = true;
 	}
-	
+
 	public void setKey(int code) {
 		this.key = code;
 	}
 
 	public boolean isMatching(Event e) {
-	  if (!enabled || eventType != e.type) return false;
-		if (key == (e.stateMask | e.keyCode | e.button)) return true;
-		isCharActivated = key == Matrix.PRINTABLE_CHARS && isPrintable(e.character) && 
-		  (e.stateMask == 0 || (e.stateMask & SWT.MOD2) != 0);
-		character = e.character;
-		return isCharActivated;
+	  if (enabled && eventType == e.type) {
+  		if (key == (e.stateMask | e.keyCode | e.button)) {
+  		  return true;
+  		}
+  		else {
+    		isCharActivated = key == Matrix.PRINTABLE_CHARS && isPrintable(e.character) &&
+    		  (e.stateMask == 0 || (e.stateMask & SWT.MOD2) != 0);
+    		character = e.character;
+    		return isCharActivated;
+  		}
+	  }
+	  else {
+	    return false;
+	  }
 	}
-	
+
 	public static boolean isPrintable(char c) {
 	  int index = Arrays.binarySearch(FontWidthCache.PRINTABLE_CHARS, c);
 	  return index >= 0;

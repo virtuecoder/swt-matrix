@@ -17,9 +17,6 @@ import pl.netanel.util.IntArray;
 /**
  * Manages a consistent, not overlapping set of cell ranges.
  * It can model a cell selection.
- *
- * @author Jacek
- * @created 15-11-2010
  */
 class CellSet<X extends Number, Y extends Number> {
 	final ArrayList<MutableExtent<X>> itemsX;
@@ -388,6 +385,35 @@ class CellSet<X extends Number, Y extends Number> {
 	public void insertX(X target, X count) {
 	  MutableExtent.insert(mathX, itemsX, target, count);
 	}
+
+	/**
+	 * Creates sequence of cells in the given range of rows moving horizontally first.
+	 */
+  public NumberPairSequence<X, Y> sequenceY(final Y start, final Y end) {
+    return new NumberPairSequence<X, Y>(this) {
+      @Override
+      public void init() {
+        super.init();
+      }
+
+      @Override
+      public boolean next() {
+        if (size == 0) return false;
+        X x = indexX.increment().getValue();
+        if (set.mathX.compare(x, ex.end()) > 0) {
+          Y y = indexY.increment().getValue();
+          if (set.mathY.compare(y, ey.end()) > 0 || set.mathY.compare(y, end) > 0) {
+            if (++i >= size) return false;
+            ey = set.itemsY.get(i);
+            ex = set.itemsX.get(i);
+            indexY.set(mathY.min(ey.start.getValue(), start));
+          }
+          indexX.set(ex.start);
+        }
+        return true;
+      }
+    };
+  }
 
 
 

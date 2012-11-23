@@ -30,6 +30,7 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
   boolean needsPainting;
   private final Listener focusInListener;
   private final ControlListener controlListener;
+  private Runnable layoutCallback;
 
   public EmbeddedControlsPainter(final ZoneEditor<X, Y> editor) {
     super(Painter.NAME_EMBEDDED_CONTROLS);
@@ -72,6 +73,15 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
     }
     clearControls();
     return true;
+  }
+
+  @Override
+  public void dispose() {
+    super.dispose();
+    editor.zone.getSectionY().removeControlListener(controlListener);
+    editor.zone.getSectionX().removeControlListener(controlListener);
+    matrix.layoutX.callbacks.remove(layoutCallback);
+    matrix.layoutY.callbacks.remove(layoutCallback);
   }
 
   void clearControls() {
@@ -130,14 +140,14 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 
   @Override
   protected void setMatrix(final Matrix<X, Y> matrix) {
-    Runnable r = new Runnable() {
+    layoutCallback = new Runnable() {
       @Override
       public void run() {
         needsPainting = true;
       }
     };
-    matrix.layoutY.callbacks.add(r);
-    matrix.layoutX.callbacks.add(r);
+    matrix.layoutY.callbacks.add(layoutCallback);
+    matrix.layoutX.callbacks.add(layoutCallback);
 
     super.setMatrix(matrix);
   }

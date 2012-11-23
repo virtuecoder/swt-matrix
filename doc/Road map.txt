@@ -23,6 +23,7 @@ New features:
 Bug fixes:
 - Drag and drop of a group of items just before or after one of the selected does not work.
 - Section.setSelected should highlight the cells in matrix.
+- Fix memory leak test failing on ImageData at 4981 iteration.
 
 
 Commands: undo, record, replay

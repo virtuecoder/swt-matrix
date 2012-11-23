@@ -90,7 +90,7 @@ public class  AxisNavigationTest {
 	}
 
 	@Test
-	public void ensureCurrentIsValid() throws Exception {
+	public void ensureFocusIsValid() throws Exception {
 		Axis axis = new Axis();
 		axis.getHeader().setVisible(true);
 		Section body = axis.getBody();
@@ -106,6 +106,8 @@ public class  AxisNavigationTest {
 		assertEquals("1:9", layout.current.toString());
 		body.setHidden(9, true); layout.compute();
 		assertEquals("1:8", layout.current.toString());
+		body.setHidden(0, 9, true); layout.compute();
+		assertEquals(null, layout.current);
 	}
 
 	@Test

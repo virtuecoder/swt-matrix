@@ -11,10 +11,10 @@ import pl.netanel.util.ImmutableIterator;
 
 class NumberIterator<N extends Number> extends ImmutableIterator<N> {
 
-  private final NumberSequence<N> seq;
+  private final NumberSequence2<N> seq;
   private boolean hasNext;
 
-  NumberIterator(NumberSequence<N> seq) {
+  NumberIterator(NumberSequence2<N> seq) {
     super();
     this.seq = seq;
     seq.init();

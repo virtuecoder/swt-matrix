@@ -27,55 +27,53 @@ package pl.netanel.swt.matrix;
  *         seq.startX() + "-" + seq.endX());
  * }
  * </pre>
- * 
- * @author Jacek created 21-02-2011
  */
 class NumberPairSequence<X extends Number, Y extends Number> implements Sequence {
 	CellSet<X, Y> set;
 	int i, size;
-	MutableExtent<Y> e0;
-	MutableExtent<X> e1;
+	MutableExtent<Y> ey;
+	MutableExtent<X> ex;
 	MutableNumber<Y> indexY;
 	MutableNumber<X> indexX;
-	
-	
+
+
 	NumberPairSequence(CellSet<X, Y> set) {
 		this.set = set;
 	}
-	
+
 	public void init() {
 		i = 0;
 		size = set.size();
 		if (size == 0) return;
-		e0 = set.itemsY.get(i);
-		e1 = set.itemsX.get(i);
-		indexY = set.mathY.create(e0.start);
-		indexX = set.mathX.create(e1.start);
+		ey = set.itemsY.get(i);
+		ex = set.itemsX.get(i);
+		indexY = set.mathY.create(ey.start);
+		indexX = set.mathX.create(ex.start);
 		indexX.decrement();
 	}
-	
+
 	/**
-	 * Returns true if the next iteration step succeeded, false otherwise. 
-	 * Another words false return value means the iteration has reached the end.   
+	 * Returns true if the next iteration step succeeded, false otherwise.
+	 * Another words false return value means the iteration has reached the end.
 	 * @return
 	 */
 	public boolean next() {
 		if (size == 0) return false;
-		if (set.mathX.compare(indexX.increment().getValue(), e1.end()) > 0) {
-			if (set.mathY.compare(indexY.increment().getValue(), e0.end()) > 0) {
+		if (set.mathX.compare(indexX.increment().getValue(), ex.end()) > 0) {
+			if (set.mathY.compare(indexY.increment().getValue(), ey.end()) > 0) {
 				if (++i >= size) return false;
-				e0 = set.itemsY.get(i);
-				e1 = set.itemsX.get(i);
-				indexY.set(e0.start);
+				ey = set.itemsY.get(i);
+				ex = set.itemsX.get(i);
+				indexY.set(ey.start);
 			}
-			indexX.set(e1.start);
+			indexX.set(ex.start);
 		}
 		return true;
 	}
-	
+
 	/**
-	 * Returns vertical axis index of the current cell. 
-	 * 
+	 * Returns vertical axis index of the current cell.
+	 *
 	 * @return vertical axis index
 	 */
 	public Y indexY() {
@@ -83,35 +81,35 @@ class NumberPairSequence<X extends Number, Y extends Number> implements Sequence
 	}
 
 	/**
-	 * Return horizontal axis index of the current cell. 
-	 * 
-	 * @return horizontal axis index 
+	 * Return horizontal axis index of the current cell.
+	 *
+	 * @return horizontal axis index
 	 */
 	public X indexX() {
 		return indexX.getValue();
 	}
-	
-	
+
+
 	public boolean nextExtent() {
 		if (i++ >= size) return false;
-		e0 = set.itemsY.get(i-1);
-		e1 = set.itemsX.get(i-1);
-		indexY = set.mathY.create(e0.start);
-		indexX = set.mathX.create(e1.start);
+		ey = set.itemsY.get(i-1);
+		ex = set.itemsX.get(i-1);
+		indexY = set.mathY.create(ey.start);
+		indexX = set.mathX.create(ex.start);
 		indexX.decrement();
 		return true;
 	}
-	
+
 	public Y startY() {
-		return e0.start();
+		return ey.start();
 	}
 	public Y endY() {
-		return e0.end();
+		return ey.end();
 	}
 	public X startX() {
-		return e1.start();
+		return ex.start();
 	}
 	public X endX() {
-		return e1.end();
+		return ex.end();
 	}
 }
