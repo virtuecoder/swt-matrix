@@ -389,8 +389,8 @@ class CellSet<X extends Number, Y extends Number> {
 	/**
 	 * Creates sequence of cells in the given range of rows moving horizontally first.
 	 */
-  public NumberPairSequence<X, Y> sequenceY(final Y start, final Y end) {
-    return new NumberPairSequence<X, Y>(this) {
+  public NumberPairSequence2<X, Y> sequenceY(final Y start, final Y end) {
+    return new NumberPairSequence2<X, Y>(this) {
       @Override
       public void init() {
         super.init();

@@ -50,7 +50,7 @@ public class SectionCoreTest {
     section.setSelected(0, 2, true);
     section.setDefaultResizable(true);
     section.setResizable(1, 1, false);
-    ExtentSequence seq = section.getSelectedExtentSequence();
+    ExtentSequence2 seq = section.getSelectedExtentSequence();
     seq.init();
     seq.next();
     assertEquals("0 0", "" + seq.start + " " + seq.end);

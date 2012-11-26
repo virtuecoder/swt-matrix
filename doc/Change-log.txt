@@ -1,4 +1,17 @@
 -------------------------------------------------------------------------------
+Version 0.7.20
+
+Feature changes:
+- Ability to copy selected cells from beyond the body zone.
+
+API changes:
+- Added Matrix.setCopyBeyondBody(boolean)
+- Added Matrix.getCopyBeyondBody() : boolean
+
+Bug fixes:
+- Grouping dispose was causing org.eclipse.swt.SWTException: Widget is disposed
+
+-------------------------------------------------------------------------------
 Version 0.7.19
 
 Feature changes:

@@ -10,21 +10,42 @@ package pl.netanel.swt.matrix;
 /**
  * Number sequence.
  */
-public class NumberSequence<N extends Number> implements ObjectSequence<N> {
+class NumberSequence<N extends Number> implements ObjectSequence<N> {
 
   MutableNumber<N> index;
+  private final ExtentSequence<N> seq;
+  private boolean more;
+  private Math<N> math;
 
-  public static <N2 extends Number> NumberSequence<N2> subtract(NumberSequence<N2> seq1, NumberSequence<N2> seq2) {
-    return null;
+  public NumberSequence(Math<N> math, ExtentSequence<N> seq) {
+    this.math = math;
+    this.seq = seq;
   }
 
   @Override
   public void init() {
+    seq.init();
+    more = seq.next();
+    if (more) {
+      this.index = math.create(seq.getStart()).decrement();
+    }
+    else {
+      index = null;
+    }
   }
 
   @Override
   public boolean next() {
-    return false;
+    if (!more) return false;
+    if (math.compare(index.increment(), seq.getEnd()) > 0) {
+      more = seq.next();
+      if (!more) {
+        index = null;
+        return false;
+      }
+      index.set(seq.getStart());
+    }
+    return true;
   }
 
   @Override

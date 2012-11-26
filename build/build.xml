@@ -91,8 +91,9 @@
 	
 	<!-- Specify trace file in command line: -Dstack.trace=<your.file> -->
 	<target name="retrace" depends="jar">
+		<echo message="-jar ${proguard.dir}/retrace.jar &quot;${output.dir}\obfuscation-${version}.map&quot; &quot;${stack.trace}&quot;"/>
 		<exec executable="java">
-			<arg line="-jar ${proguard.dir}/retrace.jar ${output.dir}\obfuscation-${version}.map ${stack.trace}"/>
+			<arg line="-jar ${proguard.dir}/retrace.jar &quot;${output.dir}\obfuscation-${version}.map&quot; &quot;${stack.trace}&quot;" />
 		</exec>
 	</target>
 

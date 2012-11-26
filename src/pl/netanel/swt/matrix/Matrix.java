@@ -255,8 +255,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	private ScheduledExecutorService executor;
   private boolean isPainting;
   private boolean shouldCopyPasteHiddenCells;
-//  private boolean shouldCopyBoyondBody;
-
+  private boolean shouldCopyBoyondBody;
 	/**
 	 * Calls the {@link #Matrix(Composite, int, Axis, Axis)} constructor
 	 * with <code>null</code> values for <code>axisY</code> and <code>axisX</code>
@@ -1073,7 +1072,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	      CellSet<X, Y> set = new CellSet<X, Y>(zone.sectionX.math, zone.sectionY.math);
 	      set.add(index, index,
 	        zone.sectionY.math.ZERO_VALUE(), zone.sectionY.math.decrement(zone.sectionY.getCount()));
-	      NumberPairSequence<X, Y> seq = new NumberPairSequence<X, Y>(set);
+	      NumberPairSequence2<X, Y> seq = new NumberPairSequence2<X, Y>(set);
 	      for (Painter<X, Y> painter: zone.painters) {
 	        painter.init(gc, Frozen.NONE, Frozen.NONE);
 	        for (seq.init(); seq.next();) {
@@ -1107,7 +1106,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	        set.add(zone.sectionX.math.ZERO_VALUE(), zone.sectionX.math.decrement(zone.sectionX.getCount()),
 	          index,
 	          index);
-	        NumberPairSequence<X, Y> seq = new NumberPairSequence<X, Y>(set);
+	        NumberPairSequence2<X, Y> seq = new NumberPairSequence2<X, Y>(set);
 	        for (Painter<X, Y> painter: zone.painters) {
 	          painter.init(gc, Frozen.NONE, Frozen.NONE);
 	          for (seq.init(); seq.next();) {
@@ -1189,29 +1188,29 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
     return shouldCopyPasteHiddenCells;
   }
 
-//  /**
-//   * Will cause the matrix to copy selected cells from other zone than the current one
-//   * as well when set to <code>true</code>. Otherwise the only cells from the current
-//   * zone will be copied. "Current" means the zone with the focus cell.
-//   * <p>
-//   * Default value is <code>false</code>.
-//   *
-//   * @param state the new state for the "copy paste beyond body" property
-//   */
-//  public void setCopyBeyondBody(boolean state) {
-//    shouldCopyBoyondBody = state;
-//  }
-//
-//  /**
-//   * Returns <code>true</code> if all the selected cells not only from the current zone
-//   * should be copied with the copy command and <code>false</code> otherwise.
-//   *
-//   * @return the state of the "copy beyond body" property
-//   */
-//  public boolean getCopyBeyondBody() {
-//    return shouldCopyBoyondBody;
-//  }
-//
+  /**
+   * Will cause the matrix to copy selected cells from other zone than the current one
+   * as well when set to <code>true</code>. Otherwise the only cells from the current
+   * zone will be copied. "Current" means the zone with the focus cell.
+   * <p>
+   * Default value is <code>false</code>.
+   *
+   * @param state the new state for the "copy paste beyond body" property
+   */
+  public void setCopyBeyondBody(boolean state) {
+    shouldCopyBoyondBody = state;
+  }
+
+  /**
+   * Returns <code>true</code> if all the selected cells not only from the current zone
+   * should be copied with the copy command and <code>false</code> otherwise.
+   *
+   * @return the state of the "copy beyond body" property
+   */
+  public boolean getCopyBeyondBody() {
+    return shouldCopyBoyondBody;
+  }
+
 //  /**
 //   * Will allow the matrix to copy not rectangular cell selections when set to
 //   * <code>true</code>. Otherwise will throw @link

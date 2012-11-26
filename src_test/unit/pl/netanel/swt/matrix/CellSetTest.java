@@ -625,7 +625,7 @@ import pl.netanel.util.Arrays;
   private void assertInSequence(String expected) {
     String[] cells = expected.split(", "); if (cells[0].equals("")) cells = new String[0];
 
-    NumberPairSequence seq = new NumberPairSequence(set);
+    NumberPairSequence2 seq = new NumberPairSequence2(set);
     int count = 0;
     for (seq.init(); seq.next(); count++) {
       String cell = seq.indexY.toString() + ":" + seq.indexX.toString();

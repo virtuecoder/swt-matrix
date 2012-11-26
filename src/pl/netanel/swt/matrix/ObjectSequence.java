@@ -11,7 +11,7 @@ package pl.netanel.swt.matrix;
  * Sequence of objects of type T.
  * @param T type of objects in the sequence.
  */
-public interface ObjectSequence<T> extends Sequence {
+interface ObjectSequence<T> extends Sequence {
   /**
    * Returns current item of the sequence.
    * @return current item of the sequence.

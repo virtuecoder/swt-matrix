@@ -307,7 +307,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 	@Override public Iterator<Cell<X,Y>> getSelectedIterator() {
 		return new ImmutableIterator<Cell<X,Y>>() {
-			NumberPairSequence<X, Y> seq = new NumberPairSequence<X, Y>(cellSelection.copy());
+			NumberPairSequence2<X, Y> seq = new NumberPairSequence2<X, Y>(cellSelection.copy());
 			private boolean next;
 			{
 				seq.init();
@@ -328,7 +328,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 	@Override public Iterator<CellExtent<X, Y>> getSelectedExtentIterator() {
 		return new ImmutableIterator<CellExtent<X, Y>>() {
-			NumberPairSequence<X, Y> seq = new NumberPairSequence<X, Y>(cellSelection.copy());
+			NumberPairSequence2<X, Y> seq = new NumberPairSequence2<X, Y>(cellSelection.copy());
 			private boolean next;
 			{
 				seq.init();
@@ -351,7 +351,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 	ImmutableIterator<Cell<X, Y>> getSelectedBoundsIterator() {
 		return new ImmutableIterator<Cell<X, Y>>() {
-			NumberPairSequence<X, Y> seq;
+			NumberPairSequence2<X, Y> seq;
 			{
 				CellExtent<X, Y> e = cellSelection.getExtent();
 				CellSet<X, Y> set = new CellSet<X, Y>(sectionX.math, sectionY.math);
@@ -366,7 +366,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				    set.remove(mathX.ZERO_VALUE(), mathX.decrement(sectionX.getCount()), extent.start, extent.end);
 				  }
 				}
-				seq = new NumberPairSequence<X, Y>(set);
+				seq = new NumberPairSequence2<X, Y>(set);
 			}
 
 			private boolean next;

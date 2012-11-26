@@ -163,6 +163,10 @@ abstract class Math<N extends Number> {
 			   compare(n, end.getValue()) <= 0;
 	}
 
+  public boolean intersects(N start1, N end1, N start2, N end2) {
+    return compare(end1, start2) >= 0 && compare(start1, end2) <= 0;
+  }
+
 	public N max(N x, N y) {
 		return compare(x, y) < 0 ? y : x;
 	}

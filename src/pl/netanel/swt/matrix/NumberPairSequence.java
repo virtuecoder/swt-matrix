@@ -3,113 +3,68 @@
  * All rights reserved. This source code and the accompanying materials
  * are made available under the terms of the EULA v1.0
  * which accompanies this distribution, and is available at
- * http://www.netanel.pl/swt-matrix/EULA.html
+ * http://www.netanel.pl/swt-matrix/EULA_v1.0.html
  ******************************************************************************/
 package pl.netanel.swt.matrix;
 
+import java.util.Iterator;
 
 /**
- * Iterates over a set of number pairs.
- * <p>
- * Two modes of iteration are possible by single numbers and by extents of numbers.
- * <p>
- * Example usage: <pre>
- * NumberPairSequence seq = zone.getSelected();
- * // single pair iteration
- * for (seq.init(); seq.next();) {
- *     System.out.println(
- *         seq.indexY() + " : " + seq.indexX());
- * }
- * // pair extents iteration
- * for (seq.init(); seq.nextExtent();) {
- *     System.out.println(
- *         seq.startY() + "-" + seq.endY() + " : " +
- *         seq.startX() + "-" + seq.endX());
- * }
- * </pre>
+ * Iterates over pairs of numbers. Models matrix cells iteration.
  */
-class NumberPairSequence<X extends Number, Y extends Number> implements Sequence {
-	CellSet<X, Y> set;
-	int i, size;
-	MutableExtent<Y> ey;
-	MutableExtent<X> ex;
-	MutableNumber<Y> indexY;
-	MutableNumber<X> indexX;
+class NumberPairSequence<X extends Number, Y extends Number> implements Sequence, Iterable<Cell<X, Y>>{
+  ExtentPairSequence<X, Y> seq;
+  MutableNumber<X> indexX;
+  MutableNumber<Y> indexY;
+  private boolean more;
+
+  public NumberPairSequence(ExtentPairSequence<X, Y> seq) {
+    this.seq = seq;
+  }
+
+  @Override
+  public void init() {
+    seq.init();
+    more = seq.next();
+    if (more) {
+      indexX = seq.getMathX().create(seq.getStartX()).decrement();
+      indexY = seq.getMathY().create(seq.getStartY());
+    }
+    else {
+      indexX = null;
+      indexY = null;
+    }
+  }
+
+  @Override
+  public boolean next() {
+    if (!more) return false;
+    if (seq.getMathX().compare(indexX.increment(), seq.getEndX()) > 0) {
+      if (seq.getMathY().compare(indexY.increment(), seq.getEndY()) > 0) {
+        more = seq.next();
+        if (!more) {
+          indexX = null;
+          indexY = null;
+          return false;
+        }
+      }
+      indexX.set(seq.getStartX());
+    }
+    return true;
+  }
 
 
-	NumberPairSequence(CellSet<X, Y> set) {
-		this.set = set;
-	}
+  public X getX() {
+    return indexX.getValue();
+  }
 
-	public void init() {
-		i = 0;
-		size = set.size();
-		if (size == 0) return;
-		ey = set.itemsY.get(i);
-		ex = set.itemsX.get(i);
-		indexY = set.mathY.create(ey.start);
-		indexX = set.mathX.create(ex.start);
-		indexX.decrement();
-	}
+  public Y getY() {
+    return indexY.getValue();
+  }
 
-	/**
-	 * Returns true if the next iteration step succeeded, false otherwise.
-	 * Another words false return value means the iteration has reached the end.
-	 * @return
-	 */
-	public boolean next() {
-		if (size == 0) return false;
-		if (set.mathX.compare(indexX.increment().getValue(), ex.end()) > 0) {
-			if (set.mathY.compare(indexY.increment().getValue(), ey.end()) > 0) {
-				if (++i >= size) return false;
-				ey = set.itemsY.get(i);
-				ex = set.itemsX.get(i);
-				indexY.set(ey.start);
-			}
-			indexX.set(ex.start);
-		}
-		return true;
-	}
+  @Override
+  public Iterator<Cell<X, Y>> iterator() {
+    return null;
+  }
 
-	/**
-	 * Returns vertical axis index of the current cell.
-	 *
-	 * @return vertical axis index
-	 */
-	public Y indexY() {
-		return indexY.getValue();
-	}
-
-	/**
-	 * Return horizontal axis index of the current cell.
-	 *
-	 * @return horizontal axis index
-	 */
-	public X indexX() {
-		return indexX.getValue();
-	}
-
-
-	public boolean nextExtent() {
-		if (i++ >= size) return false;
-		ey = set.itemsY.get(i-1);
-		ex = set.itemsX.get(i-1);
-		indexY = set.mathY.create(ey.start);
-		indexX = set.mathX.create(ex.start);
-		indexX.decrement();
-		return true;
-	}
-
-	public Y startY() {
-		return ey.start();
-	}
-	public Y endY() {
-		return ey.end();
-	}
-	public X startX() {
-		return ex.start();
-	}
-	public X endX() {
-		return ex.end();
-	}
 }

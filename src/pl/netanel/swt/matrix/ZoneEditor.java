@@ -202,6 +202,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
   }
 
   void dispose() {
+    if (zone.getMatrix().isDisposed()) return;
     zone.unbind(CMD_CUT, SWT.KeyDown, SWT.MOD1 | 'x');
     zone.unbind(CMD_COPY, SWT.KeyDown, SWT.MOD1 | 'c');
     zone.unbind(CMD_PASTE, SWT.KeyDown, SWT.MOD1 | 'v');
@@ -574,18 +575,16 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     CellExtent<X, Y> extent = zone.getSelectedExtent();
     if (extent == null) return;
 
-    Y maxY = extent.getEndY();
     X maxX = extent.getEndX();
 
-    for (NumberPairSequence<X, Y> seq = zone.cellSelection.sequenceY(row, row); seq.next();) {
-      X indexX = seq.indexX();
-      Y indexY = seq.indexY();
+    NumberPairSequence<X, Y> seq = new NumberPairSequence<X, Y>(
+        new ExtentPairScopeSequence<X, Y>(zone.cellSelection).scope(null, null, row, row));
+    for (seq.init(); seq.next();) {
+      X indexX = seq.getX();
+      Y indexY = seq.getY();
       sb.append(zone.isSelected(indexX, indexY) ? format(indexX, indexY) : "");
       if (getMatrix().axisX.math.compare(indexX, maxX) < 0) {
         sb.append("\t");
-      }
-      else if (getMatrix().axisY.math.compare(indexY, maxY) < 0) {
-        sb.append(NEW_LINE);
       }
     }
   }

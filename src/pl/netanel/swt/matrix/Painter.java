@@ -407,7 +407,9 @@ public class Painter<X extends Number, Y extends Number> {
   public void dispose() {
     if (collapsedImage != null) collapsedImage.dispose();
     if (expandedImage != null) expandedImage.dispose();
-    if (zone != null) zone.removeListener(SWT.MouseDown, treeMouseListener);
+    if (zone != null && !zone.getMatrix().isDisposed()) {
+      zone.removeListener(SWT.MouseDown, treeMouseListener);
+    }
   }
 
 

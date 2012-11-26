@@ -87,15 +87,25 @@ public class CopyPasteTest {
 
   }
 
-//  @Test
-//  public void copyBeyondBody() throws Exception {
-//    matrix.setCopyBeyondBody(true);
-//    axisX.getHeader().setVisible(true);
-//    bodyX.setSelected(1, 1, true);
-//
-//    matrix.execute(Matrix.CMD_COPY);
-//    assertClipboard("1\n1,0\n1,1\n1,2\n1,3\n1,4");
-//  }
+  @Test
+  public void copyBeyondBodyColumns() throws Exception {
+    matrix.setCopyBeyondBody(true);
+    axisX.getHeader().setVisible(true);
+    bodyX.setSelected(1, 1, true);
+
+    matrix.execute(Matrix.CMD_COPY);
+    assertClipboard("1\n1,0\n1,1\n1,2\n1,3\n1,4");
+  }
+
+  @Test
+  public void copyBeyondBodyRows() throws Exception {
+    matrix.setCopyBeyondBody(true);
+    axisY.getHeader().setVisible(true);
+    bodyY.setSelected(1, 2, true);
+
+    matrix.execute(Matrix.CMD_COPY);
+    assertClipboard("1\t0,1\t1,1\t2,1\t3,1\t4,1\n2\t0,2\t1,2\t2,2\t3,2\t4,2");
+  }
 
   void assertClipboard(String expected) {
     Clipboard clipboard = new Clipboard(Display.getDefault());

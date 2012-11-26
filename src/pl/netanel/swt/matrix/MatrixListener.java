@@ -68,7 +68,10 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
@@ -391,7 +394,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
           int len = axis.sections.size();
           for (int i = 0; i < len; i++) {
             SectionCore<N> section = axisLayout.sections.get(i);
-            ExtentSequence<N> seq = section.getSelectedExtentSequence();
+            ExtentSequence2<N> seq = section.getSelectedExtentSequence();
             for (seq.init(); seq.next();) {
 
               if (item.section.equals(section) &&
@@ -926,43 +929,48 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 
 
   private void copy() {
-//    if (matrix.getCopyBeyondBody()) {
-//      StringBuilder sb = new StringBuilder();
-//      for (SectionCore<Y> sectionY: stateY.axisLayout.sections) {
-//        Math<Y> mathY = matrix.axisY.math;
-//        Y minY = sectionY.getCount();
-//        Y maxY = mathY.create(-1).getValue();
-//        for (SectionCore<X> sectionX: stateX.axisLayout.sections) {
-//          ZoneCore<X, Y> zone = matrix.layout.getZone(sectionX, sectionY);
-//          if (zone.editor == null || zone.cellSelection.isEmpty()) continue;
-//          CellExtent<X, Y> extent = zone.cellSelection.getExtent();
-//          if (mathY.compare(extent.startY, minY) < 0) minY = extent.startY;
-//          if (mathY.compare(extent.endY, maxY) < 0) maxY = extent.endY;
-//        }
-//
-//        boolean isNext = false;
-//        DirectionIndexSequence<Y> seq = sectionY.numbers(minY, maxY);
-//        for (seq.init(); seq.next();) {
-//          for (SectionCore<X> sectionX: stateX.axisLayout.sections) {
-//            ZoneCore<X, Y> zone = matrix.layout.getZone(sectionX, sectionY);
-//            if (zone.editor == null || zone.cellSelection.isEmpty()) continue;
-//            if (isNext) sb.append("\t");
-//            isNext = true;
-//            zone.editor.copySelectionInRow(sb, seq.index().getValue());
-//          }
-//        }
-//        if (sb.length() > 0) sb.append(ZoneEditor.NEW_LINE);
-//      }
-//      if (sb.length() > 0) {
-//        Clipboard clipboard = new Clipboard(matrix.getDisplay());
-//        clipboard.setContents(new Object[] {sb.toString()},
-//            new Transfer[] {TextTransfer.getInstance()});
-//        clipboard.dispose();
-//      }
-//    }
-//    else {
+    if (matrix.getCopyBeyondBody()) {
+      StringBuilder sb = new StringBuilder();
+      for (int sectionIndex = 0; sectionIndex < stateY.axisLayout.sections.size(); sectionIndex++) {
+        SectionCore<Y> sectionY = stateY.axisLayout.sections.get(sectionIndex);
+        Math<Y> mathY = matrix.axisY.math;
+        Y minY = sectionY.getCount();
+        Y maxY = mathY.create(-1).getValue();
+        for (SectionCore<X> sectionX: stateX.axisLayout.sections) {
+          ZoneCore<X, Y> zone = matrix.layout.getZone(sectionX, sectionY);
+          if (zone.editor == null || zone.cellSelection.isEmpty()) continue;
+          CellExtent<X, Y> extent = zone.cellSelection.getExtent();
+          if (mathY.compare(extent.startY, minY) < 0) minY = extent.startY;
+          if (mathY.compare(extent.endY, maxY) > 0) maxY = extent.endY;
+        }
+
+        boolean isNext = false;
+        boolean containsSelection = false;
+        for (MutableNumber<Y> i = sectionY.math.create(minY); sectionY.math.compare(i, maxY) <= 0; i.increment()) {
+          containsSelection = true;
+          for (SectionCore<X> sectionX: stateX.axisLayout.sections) {
+            ZoneCore<X, Y> zone = matrix.layout.getZone(sectionX, sectionY);
+            if (zone.editor == null || zone.cellSelection.isEmpty()) continue;
+            if (isNext) sb.append("\t");
+            isNext = true;
+            zone.editor.copySelectionInRow(sb, i.getValue());
+          }
+          isNext = false;
+          if (sectionY.math.compare(i, maxY) < 0) sb.append(ZoneEditor.NEW_LINE);
+        }
+        boolean isLast = sectionIndex == stateY.axisLayout.sections.size() - 1;
+        if (containsSelection && !isLast) sb.append(ZoneEditor.NEW_LINE);
+      }
+      if (sb.length() > 0) {
+        Clipboard clipboard = new Clipboard(matrix.getDisplay());
+        clipboard.setContents(new Object[] {sb.toString()},
+            new Transfer[] {TextTransfer.getInstance()});
+        clipboard.dispose();
+      }
+    }
+    else {
       if (zone.editor != null) zone.editor.copy();
-//    }
+    }
   }
 
   private void paste() {

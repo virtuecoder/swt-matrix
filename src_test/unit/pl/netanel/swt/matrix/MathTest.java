@@ -1,6 +1,6 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static pl.netanel.swt.matrix.Math.ADJACENT_AFTER;
 import static pl.netanel.swt.matrix.Math.ADJACENT_BEFORE;
 import static pl.netanel.swt.matrix.Math.AFTER;
@@ -36,8 +36,20 @@ import org.junit.runners.JUnit4;
 		assertEquals(OVERLAP, compare(math, 1, 9, 3, 7));
 		assertEquals(EQUAL, compare(math, 3, 7, 3, 7));
 	}
-	
-	
+
+	@Test
+  public void intersects() throws Exception {
+	  Math math = new IntMath();
+	  assertFalse(math.intersects(0, 1, 2, 3));
+	  assertFalse(math.intersects(2, 3, 0, 1));
+	  assertTrue(math.intersects(0, 2, 1, 3));
+	  assertTrue(math.intersects(1, 3, 0, 2));
+	  assertTrue(math.intersects(0, 3, 1, 2));
+	  assertTrue(math.intersects(1, 2, 0, 3));
+	  assertTrue(math.intersects(1, 2, 1, 2));
+  }
+
+
 	public int compare(Math math, Number startX, Number endX, Number start2, Number end2) {
 		return math.compare(startX, endX, start2, end2);
 	}

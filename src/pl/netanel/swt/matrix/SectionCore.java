@@ -792,8 +792,8 @@ class SectionCore<N extends Number> implements Section<N> {
     return math.compare(index, count) < 0 ? index : null;
   }
 
-  ExtentSequence<N> getSelectedExtentSequence() {
-    return new ExtentSequence<N>(selection.items);
+  ExtentSequence2<N> getSelectedExtentSequence() {
+    return new ExtentSequence2<N>(selection.items);
   }
 
 

@@ -200,6 +200,9 @@ public class Grouping {
     if (trueImage != null) trueImage.dispose();
     if (falseImage != null) falseImage.dispose();
 
+    if (matrix.isDisposed()) return;
+    matrix.removeListener(SWT.Dispose, disposeListener);
+
     zone.replacePainter(oldCellPainter);
     zone.setMerged(0, zone.getSectionX().getCount(), 0, zone.getSectionY().getCount(), false);
 
@@ -209,7 +212,6 @@ public class Grouping {
 
     section2.setCount(1);
     section.removeHiddenSet(hidden);
-    matrix.removeListener(SWT.Dispose, disposeListener);
   }
 
   private void initNodes() {

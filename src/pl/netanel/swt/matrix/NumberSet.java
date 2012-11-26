@@ -25,10 +25,11 @@ import java.util.Iterator;
 import pl.netanel.util.ImmutableIterator;
 
 /**
- * Stores number extents of numbers ensuring they are continuous as much as possible and do not overlap.
+ * Stores extents of numbers ensuring they are continuous as much as possible
+ * and do not overlap.
  * <p>
- * Made public prematurely to implement independent hiding for grouping.
- * Don't use it yet.
+ * Made public prematurely to implement independent hiding for grouping. Don't
+ * use it yet.
  */
 public class NumberSet<N extends Number> {
 
@@ -40,6 +41,7 @@ public class NumberSet<N extends Number> {
 	protected MutableExtent<N> modified;
 	protected transient int modCount;
   final private ArrayList<ContentChangeListener<N>> listeners;
+  final MutableExtent<N> tmp;
 
 
 	public NumberSet(Math<N> math) {
@@ -52,6 +54,7 @@ public class NumberSet<N extends Number> {
 		items = new ArrayList<MutableExtent<N>>();
 		toRemove = new ArrayList<MutableExtent<N>>();
 		listeners = new ArrayList<ContentChangeListener<N>>();
+		tmp = new MutableExtent<N>(math.create(0), math.create(0));
 	};
 
 	@Override
@@ -300,6 +303,73 @@ public class NumberSet<N extends Number> {
 	}
 
 	/**
+	 * The return object is always the same with mutated values to avoid
+	 * excessive object creation.
+	 *
+	 * @param start
+	 * @param end
+	 * @return mutable extent containing intersection.
+	 */
+	 ExtentSequence<N> intersect(N start, N end) {
+//	  return new ExtentSequence<N>() {
+//      private int i;
+//      private MutableExtent<N> extent;
+//      N start, end;
+//      private int len;
+//
+//      @Override
+//      public void init() {
+//        if (items.isEmpty()) return;
+//        len = items.size();
+//        i = 0;
+//        tmp.start.set(start);
+//        tmp.end.set(end);
+//      }
+//
+//      @Override
+//      public boolean next() {
+//        while (i < len) {
+//          extent = items.get(0);
+//
+//        }
+//        while (math.compare(tmp.end, extent.start) < 0 ||
+//            math.compare(tmp.start, extent.end) > 0) {
+//          tmp
+//        }
+//        return false;
+//      }
+//
+//      @Override
+//      public Iterator<Extent<N>> iterator() {
+//        return null;
+//      }
+//
+//      @Override
+//      public N getStart() {
+//        return null;
+//      }
+//
+//      @Override
+//      public N getEnd() {
+//        return null;
+//      }
+//
+//	  };
+//	  for (MutableExtent<N> e: items) {
+//	    if (math.compare(tmp.end, e.start) < 0 &&
+//	        math.compare(tmp.start, e.end) > 0) {
+//	      continue;
+//      }
+//	    else {
+//	      tmp.start.max(e.start);
+//	      tmp.end.min(e.end);
+//	      return tmp;
+//	    }
+//	  }
+	  return null;
+	}
+
+	/**
 	 * Removes all of the elements from this set (optional operation). The set
 	 * will be empty after this call returns.
 	 */
@@ -494,7 +564,7 @@ public class NumberSet<N extends Number> {
 
   public Iterator<Extent<N>> extentIterator() {
     return new ImmutableIterator<Extent<N>>() {
-      ExtentSequence<N> seq = new ExtentSequence<N>(items);
+      ExtentSequence2<N> seq = new ExtentSequence2<N>(items);
       private Extent<N> next;
       private boolean hasNext;
       {
