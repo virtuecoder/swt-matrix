@@ -37,8 +37,9 @@ public class  EditorTest extends SwtTestCase {
         return data[0];
       }
       @Override
-      public void setModelValue(Number indexY, Number indexX, Object value) {
+      public boolean setModelValue(Number indexY, Number indexX, Object value) {
         data[0] = (Boolean) value;
+        return true;
       }
     };
 
@@ -71,8 +72,9 @@ public class  EditorTest extends SwtTestCase {
         return data[0];
       }
       @Override
-      public void setModelValue(Number indexY, Number indexX, Object value) {
+      public boolean setModelValue(Number indexY, Number indexX, Object value) {
         data[0] = (Boolean) value;
+        return true;
       }
     };
 
@@ -118,8 +120,9 @@ public class  EditorTest extends SwtTestCase {
     final Object[] data = new Object[1];
     new ZoneEditor(body) {
       @Override
-      public void setModelValue(Number indexY, Number indexX, Object value) {
+      public boolean setModelValue(Number indexY, Number indexX, Object value) {
         data[0] = value;
+        return true;
       }
     };
     shell.open();

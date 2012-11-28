@@ -51,8 +51,9 @@ public class S0450_ActivateEditorWithSingleClickInsteadOfDoubleClick {
     // Body editor
     new ZoneEditor<Integer, Integer>(body) {
       @Override
-      public void setModelValue(Integer indexX, Integer indexY, Object value) {
+      public boolean setModelValue(Integer indexX, Integer indexY, Object value) {
         data.get(indexY.intValue())[indexX.intValue()] = value;
+        return true;
       }
     };
 

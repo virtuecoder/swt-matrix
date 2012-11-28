@@ -26,6 +26,10 @@ Bug fixes:
 - Fix memory leak test failing on ImageData at 4981 iteration.
 
 
+Reduce extents of hidden and other sets on Section.setCount.
+Atomicity of paste
+Section.getItems order with hidden
+Customize drag instead drag select in the headers
 Commands: undo, record, replay
 Grouping: collapse to end
 Grouping: summary column

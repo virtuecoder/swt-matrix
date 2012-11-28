@@ -64,8 +64,9 @@ public class S0402_EmbeddedCheckButtons {
       }
 
       @Override
-      public void setModelValue(Integer indexX, Integer indexY, Object value) {
+      public boolean setModelValue(Integer indexX, Integer indexY, Object value) {
         data.get(indexY.intValue())[indexX.intValue()] = value;
+        return true;
       }
 
       @Override

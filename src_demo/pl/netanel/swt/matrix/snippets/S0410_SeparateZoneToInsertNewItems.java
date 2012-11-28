@@ -56,7 +56,7 @@ public class S0410_SeparateZoneToInsertNewItems {
     insertSection.setCount(1);
 
     // Matrix
-    final Matrix<Integer, Integer> matrix = 
+    final Matrix<Integer, Integer> matrix =
       new Matrix<Integer, Integer>( parent, SWT.NONE, null, axisY);
 
     // Configure axises
@@ -173,10 +173,11 @@ public class S0410_SeparateZoneToInsertNewItems {
     }
 
     @Override
-    public void setModelValue(Integer indexX, Integer indexY, Object value) {
+    public boolean setModelValue(Integer indexX, Integer indexY, Object value) {
       isDirty = true;
       item[indexX.intValue()] = value;
       matrix.refresh();
+      return true;
     }
 
     public boolean isDirty() {

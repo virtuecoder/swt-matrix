@@ -90,8 +90,9 @@ public class S0456_TraverseCells_Shift__TabAndEnter_TraverseMatrixWith_Shift__Ct
     // Body editor
     new ZoneEditor<Integer, Integer>(body) {
       @Override
-      public void setModelValue(Integer indexX, Integer indexY, Object value) {
+      public boolean setModelValue(Integer indexX, Integer indexY, Object value) {
         data.get(indexY.intValue())[indexX.intValue()] = value;
+        return true;
       }
 
       @Override

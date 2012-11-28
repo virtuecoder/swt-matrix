@@ -84,8 +84,9 @@ public class S0403_CheckButtonsEmulatedByImages {
       }
 
       @Override
-      public void setModelValue(Integer indexX, Integer indexY, Object value) {
+      public boolean setModelValue(Integer indexX, Integer indexY, Object value) {
         data.get(indexY.intValue())[indexX.intValue()] = value;
+        return true;
       }
 
       @Override

@@ -1,4 +1,24 @@
 -------------------------------------------------------------------------------
+Version 0.7.22
+
+Feature changes:
+- ZoneEditor features input validation by returning boolean from setModelValue method
+- ZoneEditor can do activate, apply, and cancel programmatically.
+
+API changes:
+- Changed return value to boolean in ZoneEditor.setModelValue(Number, Number, Object)
+- Added ZoneEditor.activate(Number, Number)
+- Added ZoneEditor.getControl(Number, Number)
+- Added ZoneEditor.apply(Control)
+- Added ZoneEditor.cancel(Control)
+
+-------------------------------------------------------------------------------
+Version 0.7.21
+
+Bug fixes:
+- Focus was forced on matrix with zone editor during refresh.
+
+-------------------------------------------------------------------------------
 Version 0.7.20
 
 Feature changes:

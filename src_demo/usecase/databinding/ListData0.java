@@ -14,10 +14,10 @@ import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.ZoneEditor;
 
 public class ListData0<T> {
-  
+
   private final List<T> list;
-  public List<Column<?>> columns; 
-  
+  public List<Column<?>> columns;
+
   public ListData0(List<T> list) {
     this.list = list;
     this.columns = new ArrayList<Column<?>>();
@@ -26,36 +26,37 @@ public class ListData0<T> {
   private void show(Matrix<Integer, Integer> matrix) {
     matrix.getAxisX().getBody().setCount(columns.size());
     matrix.getAxisY().getBody().setCount(list.size());
-    
+
     matrix.getBody().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override public void setupSpatial(Integer indexX, Integer indexY){
           Column<?> column = columns.get(indexX);
           T item = list.get(indexY);
           style.textAlignX = column.align;
-          text = column.getValue(item).toString(); 
+          text = column.getValue(item).toString();
         }
     });
-    
+
     matrix.getHeaderX().replacePainterPreserveStyle(
       new Painter<Integer, Integer>(Painter.NAME_CELLS) {
         @Override public void setupSpatial(Integer indexX, Integer indexY){
           Column<?> column = columns.get(indexX);
           style.textAlignX = column.align;
-          text = column.name; 
+          text = column.name;
         }
       });
-    
+
     new ZoneEditor<Integer, Integer>(matrix.getBody()) {
       @Override
-      public void setModelValue(Integer indexX, Integer indexY, Object value) {
+      public boolean setModelValue(Integer indexX, Integer indexY, Object value) {
         Column<?> column = columns.get(indexX);
         T item = list.get(indexY);
         column.setValue(item, value);
+        return true;
       }
     };
   }
-  
+
   class Column<C> {
     String name;
     int align;
@@ -65,29 +66,29 @@ public class ListData0<T> {
       this.align = align;
       columns.add(this);
     }
-    
+
     C getValue(T item) {
       return null;
     }
     void setValue(T item, Object value) {}
   }
-  
+
   public static void main(String[] args) {
     Shell shell = new Shell();
     shell.setLayout(new FillLayout());
     shell.setBounds(400, 300, 600, 400);
-    
+
     // Matrix
     Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.None);
     matrix.getAxisY().getHeader().setVisible(true);
-    
+
     // Data source
     Person0 person1 = new Person0("John", new Date(), 'M', false);
     Person0 person2 = new Person0("Mary", new Date(), 'F', true);
     List<Person0> persons = new ArrayList<Person0>();
     persons.add(person1);
     persons.add(person2);
-    
+
     // Data binder
     ListData0<Person0> data = new ListData0<Person0>(persons);
 
@@ -125,10 +126,10 @@ public class ListData0<T> {
         item.hasDog = (Boolean) value;
       }
     };
-    
+
     // Render
     data.show(matrix);
-    
+
     shell.open();
     Display display = shell.getDisplay();
     while (!shell.isDisposed()) {
@@ -136,7 +137,7 @@ public class ListData0<T> {
         display.sleep();
       }
     }
-  }   
+  }
 }
 
 class Person0 {

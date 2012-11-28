@@ -391,7 +391,7 @@ public class Axis<N extends Number>  {
 	}
 
 	/**
-	 * Returns the last item the mouse was over. Or <code>null</code> if no such item.
+	 * Returns the last item the mouse was over. Or <code>null</code> if there is no such item.
 	 * @return the last item the mouse was over
 	 */
 	@SuppressWarnings("unchecked")

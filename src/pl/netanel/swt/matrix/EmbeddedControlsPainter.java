@@ -31,6 +31,7 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
   private final Listener focusInListener;
   private final ControlListener controlListener;
   private Runnable layoutCallback;
+  private boolean hadFocus;
 
   public EmbeddedControlsPainter(final ZoneEditor<X, Y> editor) {
     super(Painter.NAME_EMBEDDED_CONTROLS);
@@ -71,6 +72,7 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
     if (!needsPainting) {
       return false;
     }
+    hadFocus = matrix.getDisplay().getFocusControl() == matrix;
     clearControls();
     return true;
   }
@@ -123,7 +125,7 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 
   @Override
   public void clean() {
-    if (needsPainting) {
+    if (needsPainting && hadFocus) {
       getMatrix().forceFocus();
       needsPainting = false;
     }

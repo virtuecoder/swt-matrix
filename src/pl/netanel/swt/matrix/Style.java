@@ -17,11 +17,9 @@ import pl.netanel.swt.matrix.Painter.TextClipMethod;
 
 /**
  * Graphical style properties used by painters.
- * 
- * @author Jacek Kolodziejczyk created 11-08-2011
  */
 public class Style {
-	
+
 	/**
 	 * Foreground color.
 	 */
@@ -38,64 +36,64 @@ public class Style {
 	 * Background color of selected cells.
 	 */
 	public Color selectionBackground;
-	
+
 	/**
-	 * Horizontal text alignment. One of the following constants defined in class SWT: 
+	 * Horizontal text alignment. One of the following constants defined in class SWT:
 	 * SWT.LEFT, SWT.RIGHT, SWT.CENTER, SWT.BEGINING, SWT.END.
 	 */
 	public int textAlignX = SWT.BEGINNING;
 	/**
-	 * Vertical text alignment. One of the following constants defined in class SWT: 
+	 * Vertical text alignment. One of the following constants defined in class SWT:
 	 * SWT.LEFT, SWT.RIGHT, SWT.CENTER, SWT.BEGINING, SWT.END.
 	 */
 	public int textAlignY = SWT.BEGINNING;
 	/**
-	 * Horizontal image alignment. One of the following constants defined in class SWT: 
+	 * Horizontal image alignment. One of the following constants defined in class SWT:
 	 * SWT.LEFT, SWT.RIGHT, SWT.CENTER, SWT.BEGINING, SWT.END.
 	 */
 	public int imageAlignX = SWT.BEGINNING;
 	/**
-	 * Vertical image alignment. One of the following constants defined in class SWT: 
+	 * Vertical image alignment. One of the following constants defined in class SWT:
 	 * SWT.TOP, SWT.BOTTOM, SWT.CENTER, SWT.BEGINING, SWT.END.
 	 */
 	public int imageAlignY = SWT.BEGINNING;
 	/**
-	 * Horizontal text margin. It is measured from the cell boundaries 
-	 * (which don't include dividing lines). 
+	 * Horizontal text margin. It is measured from the cell boundaries
+	 * (which don't include dividing lines).
 	 */
 	public int textMarginX;
 	/**
-	 * Vertical text margin. It is measured from the cell boundaries 
-	 * (which don't include dividing lines). 
+	 * Vertical text margin. It is measured from the cell boundaries
+	 * (which don't include dividing lines).
 	 */
 	public int textMarginY;
 	/**
-	 * Horizontal image margin. It is measured from the cell boundaries 
-	 * (which don't include dividing lines). 
+	 * Horizontal image margin. It is measured from the cell boundaries
+	 * (which don't include dividing lines).
 	 */
 	public int imageMarginX;
 	/**
-	 * Vertical image margin. It is measured from the cell boundaries 
-	 * (which don't include dividing lines). 
+	 * Vertical image margin. It is measured from the cell boundaries
+	 * (which don't include dividing lines).
 	 */
 	public int imageMarginY;
-	
+
 	/**
 	 * Font for the text.
 	 */
 	public Font font;
-	
+
 	/**
-   * Word wrapping for text in cells. 
+   * Word wrapping for text in cells.
    */
   public boolean hasWordWraping;
-  
+
   TextClipMethod textClipMethod;
 
   public Style() {
-    textMarginY = 1; 
+    textMarginY = 1;
     textMarginX = 4;
-    textAlignY = SWT.BEGINNING; 
+    textAlignY = SWT.BEGINNING;
     textAlignX = SWT.BEGINNING;
     textClipMethod = TextClipMethod.DOTS_IN_THE_MIDDLE;
   }
@@ -106,7 +104,7 @@ public class Style {
    */
   public static Style createBodyCellStyle() {
     Style style = new Style();
-    
+
     style.foreground = style.background = null;
 
     // style.selectionForeground = Resources.getColor(SWT.COLOR_LIST_SELECTION_TEXT);
@@ -118,8 +116,8 @@ public class Style {
 
     return style;
   }
-	
-  
+
+
   /**
    * Creates a default style for the lines of the body zone.
    * @return a new instance of this class
@@ -129,15 +127,15 @@ public class Style {
     style.background = Resources.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
     return style;
   }
-  
-  
+
+
   /**
    * Creates a default style for the cells of the header type of zones.
    * @return a new instance of this class
    */
   public static Style createHeaderCellStyle() {
     Style style = new Style();
-    
+
     style.foreground = Resources.getColor(SWT.COLOR_WIDGET_FOREGROUND);
 //    style.background = Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND);
 
@@ -147,11 +145,11 @@ public class Style {
     RGB whiteColor = Resources.getColor(SWT.COLOR_WIDGET_BACKGROUND).getRGB();
     RGB rgb = Painter.blend(selectionColor, whiteColor, 90);
     style.selectionBackground = Resources.getColor(rgb);
-    
+
     return style;
   }
-  
-  
+
+
   /**
    * Creates a default style for the lines of the header type of zones.
    * @return a new instance of this class
@@ -161,7 +159,7 @@ public class Style {
     style.background = Resources.getColor(SWT.COLOR_WIDGET_DARK_SHADOW);
     return style;
   }
-  
-  
-  
+
+
+
 }

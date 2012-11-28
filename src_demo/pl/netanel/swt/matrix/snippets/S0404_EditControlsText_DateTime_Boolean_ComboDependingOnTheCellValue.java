@@ -58,7 +58,7 @@ public class S0404_EditControlsText_DateTime_Boolean_ComboDependingOnTheCellValu
       }
 
       @Override
-      public void setModelValue(Integer indexX, Integer indexY, Object value) {
+      public boolean setModelValue(Integer indexX, Integer indexY, Object value) {
         if (value instanceof String) {
           try {
             value = dateFormat.parse((String) value);
@@ -70,6 +70,7 @@ public class S0404_EditControlsText_DateTime_Boolean_ComboDependingOnTheCellValu
           }
         }
         data.get(indexY.intValue())[indexX.intValue()] = value;
+        return true;
       }
 
       @Override

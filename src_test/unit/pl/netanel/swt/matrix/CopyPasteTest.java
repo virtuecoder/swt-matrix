@@ -49,8 +49,9 @@ public class CopyPasteTest {
 
     editor = new ZoneEditor<Integer, Integer>(body) {
       @Override
-      public void setModelValue(Integer indexX, Integer indexY, Object value) {
+      public boolean setModelValue(Integer indexX, Integer indexY, Object value) {
         data[indexX][indexY] = value == null ? "" : value.toString();
+        return true;
       }
     };
   }
