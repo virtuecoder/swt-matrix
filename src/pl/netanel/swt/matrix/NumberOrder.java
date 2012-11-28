@@ -49,7 +49,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	}
 
 	@Override
-  public MutableNumber<N> getCount() {
+  public MutableNumber<N> getMutableCount() {
 	  return count;
 	}
 

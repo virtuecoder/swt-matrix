@@ -28,10 +28,10 @@ import pl.netanel.util.ImmutableIterator;
  * Stores extents of numbers ensuring they are continuous as much as possible
  * and do not overlap.
  * <p>
- * Made public prematurely to implement independent hiding for grouping. Don't
- * use it yet.
+ * Made public prematurely to implement independent hiding for grouping.
+ * The public API is not polished and may change.
  */
-public class NumberSet<N extends Number> {
+class NumberSet<N extends Number> implements ExtentSet<N> {
 
   protected Math<N> math;
 	protected boolean sorted;
@@ -71,23 +71,33 @@ public class NumberSet<N extends Number> {
 		return sb.toString();
 	}
 
-
 	public boolean contains(N n) {
-		for (MutableExtent<N> e: items) {
-			if (math.contains(e, n)) {
-				return true;
-			}
-		}
-		return false;
+	  for (MutableExtent<N> e: items) {
+	    if (math.contains(e, n)) {
+	      return true;
+	    }
+	  }
+	  return false;
 	}
 
-	public boolean contains(MutableExtent<N> o) {
-		for (MutableExtent<N> e: items) {
-			if (math.contains(e.start(), e.end(), o.start()) && math.contains(e.start(), e.end(), o.end())) {
-				return true;
-			}
-		}
-		return false;
+	@Override
+	public boolean contains(N start, N end) {
+	  for (MutableExtent<N> e: items) {
+	    if (math.contains(e.start(), e.end(), start) && math.contains(e.start(), e.end(), end)) {
+	      return true;
+	    }
+	  }
+	  return false;
+	}
+
+	public boolean contains(MutableExtent<N> extent) {
+		return contains(extent.start(), extent.end());
+	}
+
+
+	@Override
+	public boolean contains(Extent<N> extent) {
+	  return contains(extent.getStart(), extent.getEnd());
 	}
 
 	/**
@@ -161,10 +171,16 @@ public class NumberSet<N extends Number> {
 		return true;
 	}
 
-	public void addAll(NumberSet<N> set) {
-		for (MutableExtent<N> e: set.items) {
-			add(e);
-		}
+	public boolean addAll(final ExtentSet<N> set) {
+	  boolean result = false;
+	  if (set instanceof NumberSet) {
+      for (MutableExtent<N> e: ((NumberSet<N>) set).items) {
+        result = add(e.start(), e.end()) || result;
+      }
+    } else {
+      throw new UnsupportedOperationException();
+    }
+		return result;
 	}
 
 
@@ -175,92 +191,13 @@ public class NumberSet<N extends Number> {
 		modified.end.set(math.max(end, modified.end(), existing.end()));
 	}
 
-	/**
-	 * Shortcut for <code>remove(n, n)</code>.
-	 * <p>
-	 * Instead of removing a range of numbers one at a time it is recommended to
-	 * remove them with <code>remove(start, end)</code> method.
-	 *
-	 * @param n number to remove
-	 * @return true if the receiver has been modified by this operation,
-	 * or false otherwise
-	 * @see #remove(MutableNumber, MutableNumber)
-	 */
-	public boolean remove(N n) {
-		return remove(n, n);
-	}
-
-	public boolean remove(MutableExtent<N> e) {
-		return remove(e.start(), e.end());
-	}
-
-	public boolean remove(N start, N end) {
-		boolean modified = false;
-		int i = 0;
-
-		for (;i < items.size(); i++) {
-			MutableExtent<N> item = items.get(i);
-
-			int location = math.compare(start, end, item.start(), item.end());
-			switch (location) {
-			case AFTER: 			continue;
-			case BEFORE:
-				if (sorted) i = items.size(); // Quit the loop
-				break;
-
-			case CROSS_BEFORE:
-				item.start.set(end).increment();
-				break;
-
-			case CROSS_AFTER:
-				item.end.set(math.max(math.decrement(start), item.start()));
-				break;
-
-			case EQUAL:
-			case OVERLAP:
-				toRemove.add(0, item);
-				break;
-
-			case INSIDE:
-				MutableNumber<N> newEnd = item.end.copy();
-				item.end.set(math.max(math.decrement(start), item.start()));
-				items.add(i+1, new MutableExtent<N>(math.create(end).increment(), newEnd));
-			}
-			modified = location >= OVERLAP || modified;
-		}
-		for (MutableExtent<N> e: toRemove) {
-			items.remove(e);
-		}
-		toRemove.clear();
-		if (modified) {
-		  modCount++;
-
-		  notify(REMOVE, start, end);
-		}
-
-		return modified;
-	}
-
-	public boolean removeAll(NumberSet<N> set) {
-		boolean removed = false;
-		if (set == this) {
-			removed = !items.isEmpty();
-			items.clear();
-			return removed;
-		}
-		for (MutableExtent<N> e: set.items) {
-			removed = remove(e) || removed;
-		}
-		if (removed) modCount++;
-		return removed;
-	}
 
 
 	/**
 	 * Return total number of numbers in this set.
 	 * @return
 	 */
-	public MutableNumber<N> getCount() {
+	public MutableNumber<N> getMutableCount() {
 		MutableNumber<N> sum = math.create(0);
 		for (MutableExtent<N> e: items) {
 			sum.add(e.end).subtract(e.start).increment();
@@ -377,7 +314,7 @@ public class NumberSet<N extends Number> {
 		items.clear();
 		modCount++;
 		if (!listeners.isEmpty()) {
-		  notify(REMOVE, math.ZERO_VALUE(), getCount().getValue());
+		  notify(REMOVE, math.ZERO_VALUE(), getMutableCount().getValue());
 		}
 	}
 
@@ -460,7 +397,7 @@ public class NumberSet<N extends Number> {
 
 
 
-	class NumberSequence implements Sequence {
+	class NumberSequence2 implements Sequence {
 	  private int i, size;
 	  MutableExtent<N> e;
 	  MutableNumber<N> index;
@@ -542,7 +479,7 @@ public class NumberSet<N extends Number> {
 
   public Iterator<N> numberIterator() {
     return new ImmutableIterator<N>() {
-      NumberSequence seq = new NumberSequence();
+      NumberSequence2 seq = new NumberSequence2();
       private boolean hasNext;
       {
         seq.init();
@@ -618,5 +555,127 @@ public class NumberSet<N extends Number> {
 
   public void removeListener(ContentChangeListener<N> listener) {
     listeners.remove(listener);
+  }
+
+
+  @Override
+  public N getCount() {
+    return getMutableCount().getValue();
+  }
+
+  @Override
+  public boolean add(Extent<N> extent) {
+    return add(extent.getStart(), extent.getEnd());
+  }
+
+  @Override
+  public boolean remove(Extent<N> extent) {
+    return remove(extent.getStart(), extent.getEnd());
+  }
+
+
+  /**
+   * Shortcut for <code>remove(n, n)</code>.
+   * <p>
+   * Instead of removing a range of numbers one at a time it is recommended to
+   * remove them with <code>remove(start, end)</code> method.
+   *
+   * @param n number to remove
+   * @return true if the receiver has been modified by this operation,
+   * or false otherwise
+   * @see #remove(MutableNumber, MutableNumber)
+   */
+  public boolean remove(N n) {
+    return remove(n, n);
+  }
+
+  public boolean remove(MutableExtent<N> e) {
+    return remove(e.start(), e.end());
+  }
+
+  public boolean remove(N start, N end) {
+    boolean modified = false;
+    int i = 0;
+
+    for (;i < items.size(); i++) {
+      MutableExtent<N> item = items.get(i);
+
+      int location = math.compare(start, end, item.start(), item.end());
+      switch (location) {
+      case AFTER:       continue;
+      case BEFORE:
+        if (sorted) i = items.size(); // Quit the loop
+        break;
+
+      case CROSS_BEFORE:
+        item.start.set(end).increment();
+        break;
+
+      case CROSS_AFTER:
+        item.end.set(math.max(math.decrement(start), item.start()));
+        break;
+
+      case EQUAL:
+      case OVERLAP:
+        toRemove.add(0, item);
+        break;
+
+      case INSIDE:
+        MutableNumber<N> newEnd = item.end.copy();
+        item.end.set(math.max(math.decrement(start), item.start()));
+        items.add(i+1, new MutableExtent<N>(math.create(end).increment(), newEnd));
+      }
+      modified = location >= OVERLAP || modified;
+    }
+    for (MutableExtent<N> e: toRemove) {
+      items.remove(e);
+    }
+    toRemove.clear();
+    if (modified) {
+      modCount++;
+
+      notify(REMOVE, start, end);
+    }
+
+    return modified;
+  }
+
+  public boolean removeAll(ExtentSet<N> set) {
+    boolean removed = false;
+    if (set == this) {
+      removed = !items.isEmpty();
+      items.clear();
+      return removed;
+    }
+    if (set instanceof NumberSet) {
+      for (MutableExtent<N> e: ((NumberSet<N>) set).items) {
+        removed = remove(e.start(), e.end()) || removed;
+      }
+    } else {
+      throw new UnsupportedOperationException();
+    }
+    if (removed) modCount++;
+    return removed;
+  }
+
+  @Override
+  public void delete(N number) {
+    delete(number, number);
+  }
+
+  @Override
+  public void delete(Extent<N> extent) {
+    delete(extent.getStart(), extent.getEnd());
+  }
+
+
+  @Override
+  public Iterator<Extent<N>> getExtents(SequenceQuery<N> query) {
+    return new ExtentSequence.Forward<N>(this).iterator();
+  }
+
+  @Override
+  public Iterator<N> getNumbers(SequenceQuery<N> query) {
+    return new NumberSequence<N>(math, new ExtentSequence.Forward<N>(this)).iterator();
   }
 }

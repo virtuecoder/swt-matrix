@@ -44,6 +44,7 @@ import pl.netanel.util.Util;
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class  SwtTestCase {
+
   public static boolean breakFlag = false;
   public static boolean runManual = false;
 
@@ -1325,7 +1326,12 @@ public class  SwtTestCase {
       sb.append(e.character);
     }
     sb.append(" ");
-    sb.append(e.button + e.keyCode);
+    if (3 <= e.type && e.type <= 8) {
+      sb.append(e.button).append(" ").append(e.x).append(" ").append(e.y);
+
+    } else {
+      sb.append(e.keyCode);
+    }
     TestUtil.log(sb);
   }
 

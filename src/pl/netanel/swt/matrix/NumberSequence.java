@@ -7,10 +7,12 @@
  ******************************************************************************/
 package pl.netanel.swt.matrix;
 
+import java.util.Iterator;
+
 /**
  * Number sequence.
  */
-class NumberSequence<N extends Number> implements ObjectSequence<N> {
+class NumberSequence<N extends Number> implements ObjectSequence<N>, Iterable<N> {
 
   MutableNumber<N> index;
   private final ExtentSequence<N> seq;
@@ -51,6 +53,11 @@ class NumberSequence<N extends Number> implements ObjectSequence<N> {
   @Override
   public N item() {
     return index.getValue();
+  }
+
+  @Override
+  public Iterator<N> iterator() {
+    return null;
   }
 
 }

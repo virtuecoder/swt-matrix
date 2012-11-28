@@ -275,6 +275,8 @@ public class SelectTest extends SwtTestCase {
     matrix.getAxisX().getBody().setSelected(0, 2, true);
     matrix.redraw();
 
+//    SwtTestCase.listenToAll(shell);
+
     dragAndDrop(SWT.MOD1, bounds1, bounds2);
 
     // Axis item and header cell should be selected

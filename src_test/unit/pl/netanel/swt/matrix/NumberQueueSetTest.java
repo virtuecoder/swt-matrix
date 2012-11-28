@@ -256,11 +256,11 @@ import org.junit.runners.JUnit4;
 	
 	@Test
 	public void getCount() throws Exception {
-		assertEquals(0, list.getCount().intValue());
+		assertEquals(0, list.getMutableCount().intValue());
 		list.add(extent(1, 2));
-		assertEquals(2, list.getCount().intValue());
+		assertEquals(2, list.getMutableCount().intValue());
 		list.add(5);
-		assertEquals(3, list.getCount().intValue());
+		assertEquals(3, list.getMutableCount().intValue());
 	}
 }
 

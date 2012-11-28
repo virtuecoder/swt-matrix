@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Listener;
 import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Extent;
+import pl.netanel.swt.matrix.ExtentSet;
 import pl.netanel.swt.matrix.Matrix;
-import pl.netanel.swt.matrix.NumberSet;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
@@ -56,7 +56,7 @@ public class Grouping {
   private Integer selectLevel = 0;
   private Painter<Integer, Integer> oldCellPainter;
   private Listener selectItemListener;
-  private NumberSet<Integer> hidden;
+  private ExtentSet<Integer> hidden;
   private boolean isBulkCollapse;
   private AxisItem<Integer> focusItem;
   private Listener disposeListener;
@@ -535,7 +535,7 @@ public class Grouping {
 
     private final String caption;
     private final List<Node> children;
-    private NumberSet<Integer> remain;
+    private ExtentSet<Integer> remain;
     private Node parent;
     private int level = -1, index;
     private Extent<Integer> extent;

@@ -386,7 +386,7 @@ class SectionClient<N extends Number> implements Section<N> {
 
 	  core.setOrder(iterator);
 
-    MutableNumber<N> iteratorCount = core.order.getCount();
+    MutableNumber<N> iteratorCount = core.order.getMutableCount();
     if (core.math.compare(iteratorCount, core.getCount()) != 0) {
       core.order.items = copy;
       throw new IllegalArgumentException(MessageFormat.format(
@@ -401,7 +401,7 @@ class SectionClient<N extends Number> implements Section<N> {
 
     core.setOrderExtents(iterator);
 
-    MutableNumber<N> iteratorCount = core.order.getCount();
+    MutableNumber<N> iteratorCount = core.order.getMutableCount();
     if (core.math.compare(iteratorCount, core.getCount()) != 0) {
       core.order.items = copy;
       throw new IllegalArgumentException(MessageFormat.format(
@@ -550,18 +550,18 @@ class SectionClient<N extends Number> implements Section<N> {
     return core.hasChildren(parent);
   }
 
-  public void removeHiddenSet(NumberSet<N> set) {
+  public void removeHiddenSet(ExtentSet<N> set) {
     Preconditions.checkNotNullWithName(set, "set");
     core.removeHiddenSet(set);
   }
 
-  public void addHiddenSet(NumberSet<N> set) {
+  public void addHiddenSet(ExtentSet<N> set) {
     Preconditions.checkNotNullWithName(set, "set");
     core.addHiddenSet(set);
   }
 
   @Override
-  public NumberSet<N> getHiddenSet() {
+  public ExtentSet<N> getHiddenSet() {
     return core.getHiddenSet();
   }
 

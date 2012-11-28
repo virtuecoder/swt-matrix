@@ -54,7 +54,7 @@ class SectionCore<N extends Number> implements Section<N> {
   final NumberOrder<N> order;
   final NumberSet<N> hidden; // union of all hidden sets
   final NumberSet<N> hiddenByUser; // hidden by user form stanrd ui actions
-  final ArrayList<NumberSet<N>> hiddenSets;
+  final ArrayList<ExtentSet<N>> hiddenSets;
   final NumberSet<N> buried;
   final ValueNumberSetMap<N, N> parents;
 
@@ -77,7 +77,7 @@ class SectionCore<N extends Number> implements Section<N> {
   int index;
   final TypedListeners listeners;
   private final Class<N> indexClass;
-  final private HashMap<NumberSet<N>, ContentChangeListener<N>> hiddenSetListeners;
+  final private HashMap<ExtentSet<N>, ContentChangeListener<N>> hiddenSetListeners;
   boolean isDirty;
 
   /**
@@ -93,8 +93,8 @@ class SectionCore<N extends Number> implements Section<N> {
     order = new NumberOrder<N>(math);
     //		merged = new NumberSet<N>(math, true);
     hidden = new NumberSet<N>(math, true);
-    hiddenSets = new ArrayList<NumberSet<N>>();
-    hiddenSetListeners = new HashMap<NumberSet<N>, ContentChangeListener<N>>();
+    hiddenSets = new ArrayList<ExtentSet<N>>();
+    hiddenSetListeners = new HashMap<ExtentSet<N>, ContentChangeListener<N>>();
     hiddenByUser = new NumberSet<N>(math, true);
     addHiddenSet(hiddenByUser);
     buried = new NumberSet<N>(math);
@@ -468,7 +468,7 @@ class SectionCore<N extends Number> implements Section<N> {
 
   @Override
   public N getHiddenCount() {
-    return hidden.getCount().getValue();
+    return hidden.getMutableCount().getValue();
   }
 
   @Override
@@ -556,7 +556,7 @@ class SectionCore<N extends Number> implements Section<N> {
   }
 
   @Override public N getSelectedCount() {
-    return selection.getCount().getValue();
+    return selection.getMutableCount().getValue();
   }
 
   /**
@@ -662,7 +662,7 @@ class SectionCore<N extends Number> implements Section<N> {
     moveable.delete(start, end);
     hideable.delete(start, end);
     hidden.delete(start, end);
-    for (NumberSet<N> set: hiddenSets) {
+    for (ExtentSet<N> set: hiddenSets) {
       set.delete(start, end);
     }
     buried.delete(start, end);
@@ -685,7 +685,7 @@ class SectionCore<N extends Number> implements Section<N> {
     moveable.insert(target, count);
     hideable.insert(target, count);
     hidden.insert(target, count);
-    for (NumberSet<N> set: hiddenSets) {
+    for (ExtentSet<N> set: hiddenSets) {
       set.insert(target, count);
     }
     buried.insert(target, count);
@@ -730,7 +730,7 @@ class SectionCore<N extends Number> implements Section<N> {
 
 
   @Override
-  public void addHiddenSet(final NumberSet<N> set) {
+  public void addHiddenSet(final ExtentSet<N> set) {
     hiddenSets.add(set);
     hidden.addAll(set);
 
@@ -744,7 +744,7 @@ class SectionCore<N extends Number> implements Section<N> {
           hidden.remove(e.start, e.end);
           // Ensure this extent or part of it is still hidden
           // if it was hidden in any other set
-          for (NumberSet<N> set2: hiddenSets) {
+          for (ExtentSet<N> set2: hiddenSets) {
             if (set2 == set) continue;
             hidden.addAll(set2);
           }
@@ -752,15 +752,19 @@ class SectionCore<N extends Number> implements Section<N> {
       }
     };
     hiddenSetListeners.put(set, listener);
-    set.addListener(listener);
+    if (set instanceof NumberSet) {
+      ((NumberSet<N>) set).addListener(listener);
+    }
     isDirty = true;
   }
 
   @Override
-  public void removeHiddenSet(NumberSet<N> set) {
+  public void removeHiddenSet(ExtentSet<N> set) {
     hidden.removeAll(set);
     hiddenSets.remove(set);
-    set.removeListener(hiddenSetListeners.remove(set));
+    if (set instanceof NumberSet) {
+      ((NumberSet<N>) set).removeListener(hiddenSetListeners.remove(set));
+    }
     isDirty = true;
   }
 
@@ -769,7 +773,7 @@ class SectionCore<N extends Number> implements Section<N> {
    */
 
   N getVisibleCount() {
-    return math.create(count).subtract(hidden.getCount()).getValue();
+    return math.create(count).subtract(hidden.getMutableCount()).getValue();
   }
 
   N nextNotHiddenIndex(N index, int direction) {

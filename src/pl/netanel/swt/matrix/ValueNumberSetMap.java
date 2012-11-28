@@ -98,7 +98,7 @@ class ValueNumberSetMap<N extends Number, T> {
     if (i == -1) {
       return math.ZERO_VALUE();
     } else {
-      return sets.get(i).getCount().getValue();
+      return sets.get(i).getMutableCount().getValue();
     }
 	}
 
