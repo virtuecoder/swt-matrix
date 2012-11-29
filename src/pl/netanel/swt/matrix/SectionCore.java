@@ -1012,7 +1012,6 @@ class SectionCore<N extends Number> implements Section<N> {
     //	  }
   }
 
-
   static <N2 extends Number> SectionCore<N2> from(AxisItem<N2> item) {
     return item.section;
   }
@@ -1020,6 +1019,7 @@ class SectionCore<N extends Number> implements Section<N> {
   static <N2 extends Number> SectionCore<N2> from(Section<N2> section) {
     return (SectionCore<N2>) section.getUnchecked();
   }
+
 
 
 

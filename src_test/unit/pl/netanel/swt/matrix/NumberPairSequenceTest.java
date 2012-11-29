@@ -40,6 +40,20 @@ public class NumberPairSequenceTest {
     assertFalse(seq.next());
   }
 
+  @Test
+  public void gap() throws Exception {
+    CellSet set = new CellSet(math, math);
+    set.add(1, 1, 0, 0);
+    set.add(3, 3, 0, 0);
+    NumberPairSequence seq = new NumberPairSequence(new ExtentPairSequence(set));
+    seq.init();
+    assertTrue(seq.next());
+    assertCell("1 0", seq);
+    assertTrue(seq.next());
+    assertCell("3 0", seq);
+    assertFalse(seq.next());
+  }
+
   void assertCell(String expected, NumberPairSequence seq) {
     StringBuilder sb = new StringBuilder();
     sb.append(seq.getX()).append(" ").append(seq.getY());

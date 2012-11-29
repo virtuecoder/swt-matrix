@@ -256,6 +256,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
   private boolean isPainting;
   private boolean shouldCopyPasteHiddenCells;
   private boolean shouldCopyBoyondBody;
+  private boolean shouldSelectHidden;
 	/**
 	 * Calls the {@link #Matrix(Composite, int, Axis, Axis)} constructor
 	 * with <code>null</code> values for <code>axisY</code> and <code>axisX</code>
@@ -1169,12 +1170,32 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
   }
 
   /**
+   * Will cause the matrix to include hidden cells in range select when set to
+   * <code>true</code>. Otherwise the hidden cells will not be selected.
+   * <p>
+   * Default value is <code>false</code>.
+   *
+   * @param state the new state for the "select hidden cells" property
+   */
+  public void setSelectHiddenCells(boolean state) {
+    shouldSelectHidden = state;
+  }
+
+  /**
+   * Returns <code>true</code> if the hidden cells should be selected with range select.
+   * @return the state of the "copy paste hidden cells" property
+   */
+  public boolean getSelectHiddenCells() {
+    return shouldSelectHidden;
+  }
+
+  /**
    * Will cause the matrix to copy the hidden cells when set to <code>true</code>.
    * Otherwise the hidden cells will not be copied.
    * <p>
    * Default value is <code>false</code>.
    *
-   * @param state the new state for the "copy hidden cells" property
+   * @param state the new state for the "select hidden cells" property
    */
   public void setCopyPasteHiddenCells(boolean state) {
     shouldCopyPasteHiddenCells = state;

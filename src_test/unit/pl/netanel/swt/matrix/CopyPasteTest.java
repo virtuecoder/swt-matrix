@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Before;
@@ -54,6 +55,16 @@ public class CopyPasteTest {
         return true;
       }
     };
+    clearClipboard();
+  }
+
+  @Test
+  public void copyFromEmptyMatrix() throws Exception {
+    body.setSelectedAll(true);
+    bodyX.setCount(0);
+    bodyY.setCount(0);
+    editor.copy();
+    assertClipboard(" ");
   }
 
   @Test
@@ -62,6 +73,19 @@ public class CopyPasteTest {
     bodyX.setCount(0);
     bodyY.setCount(0);
     editor.paste();
+  }
+
+  @Test
+  public void copySingleCell() throws Exception {
+    editor.copy();
+    assertClipboard("0,0");
+  }
+
+  @Test
+  public void copySingleCellBeyondBody() throws Exception {
+    matrix.setCopyBeyondBody(true);
+    matrix.execute(Matrix.CMD_COPY);
+    assertClipboard("0,0");
   }
 
   @Test
@@ -85,17 +109,39 @@ public class CopyPasteTest {
     assertEquals("1,0", data[1][1]);
     assertEquals("2,1", data[2][1]);
     assertEquals("3,0", data[3][1]);
-
   }
 
   @Test
   public void copyBeyondBodyColumns() throws Exception {
     matrix.setCopyBeyondBody(true);
-    axisX.getHeader().setVisible(true);
+    axisY.getHeader().setVisible(true);
     bodyX.setSelected(1, 1, true);
 
     matrix.execute(Matrix.CMD_COPY);
     assertClipboard("1\n1,0\n1,1\n1,2\n1,3\n1,4");
+  }
+
+  @Test
+  public void copyBeyondBodyColumnsHidden() throws Exception {
+    bodyX.setSelected(1, 3, true);
+    bodyX.setHidden(2, true);
+    axisY.getHeader().setVisible(true);
+    matrix.setCopyBeyondBody(true);
+
+    matrix.execute(Matrix.CMD_COPY);
+    assertClipboard("1\t3\n1,0\t3,0\n1,1\t3,1\n1,2\t3,2\n1,3\t3,3\n1,4\t3,4");
+  }
+
+  @Test
+  public void copyBeyondBodyColumnsHiddenIncluded() throws Exception {
+    bodyX.setSelected(1, 3, true);
+    bodyX.setHidden(2, true);
+    axisY.getHeader().setVisible(true);
+    matrix.setCopyBeyondBody(true);
+    matrix.setCopyPasteHiddenCells(true);
+
+    matrix.execute(Matrix.CMD_COPY);
+    assertClipboard("1\t2\t3\n1,0\t2,0\t3,0\n1,1\t2,1\t3,1\n1,2\t2,2\t3,2\n1,3\t2,3\t3,3\n1,4\t2,4\t3,4");
   }
 
   @Test
@@ -127,4 +173,13 @@ public class CopyPasteTest {
 
     assertEquals(expected, sb.toString());
   }
+
+  private void clearClipboard() {
+    Clipboard clipboard = new Clipboard(Display.getDefault());
+    clipboard.setContents(new Object[] {" "},
+        new Transfer[] {TextTransfer.getInstance()});
+    clipboard.dispose();
+  }
+
+
 }

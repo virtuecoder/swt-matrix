@@ -72,4 +72,15 @@ class ExtentPairSequence<X extends Number, Y extends Number> implements Sequence
     return null;
   }
 
+//  static class ExtentPairSequenceSubtract<X extends Number, Y extends Number> extends ExtentPairSequence<X, Y> {
+//
+//    private final CellSet<X, Y> set2;
+//
+//    public ExtentPairSequenceSubtract(CellSet<X, Y> set1, CellSet<X, Y> set2) {
+//      super(set1);
+//      this.set2 = set2;
+//    }
+//
+//  }
+
 }

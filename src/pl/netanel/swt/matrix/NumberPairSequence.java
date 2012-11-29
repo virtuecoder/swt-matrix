@@ -47,6 +47,7 @@ class NumberPairSequence<X extends Number, Y extends Number> implements Sequence
           indexY = null;
           return false;
         }
+        indexY.set(seq.getStartY());
       }
       indexX.set(seq.getStartX());
     }

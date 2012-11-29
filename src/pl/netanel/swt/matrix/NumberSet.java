@@ -460,7 +460,7 @@ public class NumberSet<N extends Number> {
 
 
 
-	class NumberSequence implements Sequence {
+	class NumberSequence3 implements Sequence {
 	  private int i, size;
 	  MutableExtent<N> e;
 	  MutableNumber<N> index;
@@ -542,7 +542,7 @@ public class NumberSet<N extends Number> {
 
   public Iterator<N> numberIterator() {
     return new ImmutableIterator<N>() {
-      NumberSequence seq = new NumberSequence();
+      NumberSequence3 seq = new NumberSequence3();
       private boolean hasNext;
       {
         seq.init();
@@ -618,5 +618,28 @@ public class NumberSet<N extends Number> {
 
   public void removeListener(ContentChangeListener<N> listener) {
     listeners.remove(listener);
+  }
+
+  ExtentSequence<N> extentSequence(SequenceQuery<N> query) {
+    ExtentSequence<N> seq;
+    if (query.subtract != null) {
+      seq = query.backward ?
+          new ExtentSequence.SubtractBackward<N>(this, query.subtract) :
+            new ExtentSequence.SubtractForward<N>(this, query.subtract);
+    }
+    else {
+      seq = query.backward ?
+          new ExtentSequence.Backward<N>(this) :
+            new ExtentSequence.Forward<N>(this);
+    }
+
+    if (query.origin != null) seq.origin(query.origin);
+    if (query.finish != null) seq.finish(query.finish);
+
+    return seq;
+  }
+
+  NumberSequence<N> numberSequence(SequenceQuery<N> query) {
+    return new NumberSequence<N>(math, extentSequence(query));
   }
 }

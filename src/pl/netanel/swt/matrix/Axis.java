@@ -840,8 +840,6 @@ public class Axis<N extends Number>  {
 
 	/**
 	 * Iterates over extents between the start and end items.
-	 *
-	 * @author Jacek Kolodziejczyk created 11-03-2011
 	 */
 	class ExtentSequence {
 		SectionCore<N> section;
@@ -849,6 +847,7 @@ public class Axis<N extends Number>  {
 		private int i, istart, iend, sectionIndex, lastSectionIndex;
 		private ArrayList<MutableExtent<N>> items;
 		private AxisItem<N> startItem, endItem;
+    private boolean skipHidden;
 
 		void init(AxisItem<N> startItem, AxisItem<N> endItem) {
 			this.startItem = startItem;
@@ -867,13 +866,15 @@ public class Axis<N extends Number>  {
 			items = section.order.items;
 			lastSectionIndex = layout.sections.indexOf(endItem.section);
 			i = istart;
+			skipHidden = matrix.getSelectHiddenCells() == false;
 		}
 
 		boolean next() {
 			while (i >= items.size()) {
 				sectionIndex++;
-				if (sectionIndex > lastSectionIndex) return false;
+				if (sectionIndex > lastSectionIndex ) return false;
 				section = SectionCore.from(sections.get(sectionIndex));
+				if (skipHidden && section.isVisible()) continue;
 				items = section.order.items;
 				i = 0;
 			}
@@ -882,6 +883,7 @@ public class Axis<N extends Number>  {
 					startItemIndex : e.start;
 			end = section == endItem.section && i == iend ?
 					endItemIndex : e.end;
+
 			if (i >= iend && math.compare(end, endItemIndex) == 0) {
 				i = items.size();
 			}

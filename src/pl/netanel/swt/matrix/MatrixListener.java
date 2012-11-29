@@ -933,6 +933,9 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       StringBuilder sb = new StringBuilder();
       for (int sectionIndex = 0; sectionIndex < stateY.axisLayout.sections.size(); sectionIndex++) {
         SectionCore<Y> sectionY = stateY.axisLayout.sections.get(sectionIndex);
+        if (!sectionY.isVisible()) continue;
+
+        // Find vertical selection bounds
         Math<Y> mathY = matrix.axisY.math;
         Y minY = sectionY.getCount();
         Y maxY = mathY.create(-1).getValue();
@@ -940,26 +943,49 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
           ZoneCore<X, Y> zone = matrix.layout.getZone(sectionX, sectionY);
           if (zone.editor == null || zone.cellSelection.isEmpty()) continue;
           CellExtent<X, Y> extent = zone.cellSelection.getExtent();
-          if (mathY.compare(extent.startY, minY) < 0) minY = extent.startY;
-          if (mathY.compare(extent.endY, maxY) > 0) maxY = extent.endY;
+          Y start = sectionY.hidden.firstExcluded(extent.startY, Matrix.FORWARD);
+          Y end = sectionY.hidden.firstExcluded(extent.endY, Matrix.BACKWARD);
+          if (mathY.compare(start, minY) < 0) minY = start;
+          if (mathY.compare(end, maxY) > 0) maxY = end;
         }
 
         boolean isNext = false;
         boolean containsSelection = false;
+
         for (MutableNumber<Y> i = sectionY.math.create(minY); sectionY.math.compare(i, maxY) <= 0; i.increment()) {
+          Y row = i.getValue();
+          int hiddenIndex = sectionY.hidden.getExtentIndex(row);
+          if (hiddenIndex != -1) {
+            i.set(sectionY.hidden.items.get(hiddenIndex).end);
+            continue;
+          }
           containsSelection = true;
           for (SectionCore<X> sectionX: stateX.axisLayout.sections) {
             ZoneCore<X, Y> zone = matrix.layout.getZone(sectionX, sectionY);
             if (zone.editor == null || zone.cellSelection.isEmpty()) continue;
             if (isNext) sb.append("\t");
             isNext = true;
-            zone.editor.copySelectionInRow(sb, i.getValue());
+            zone.editor.copySelectionInRow(sb, row);
           }
           isNext = false;
-          if (sectionY.math.compare(i, maxY) < 0) sb.append(ZoneEditor.NEW_LINE);
+          sb.append(ZoneEditor.NEW_LINE);
+        }
+        if (sb.length() > 0) {
+          sb.delete(sb.length() - ZoneEditor.NEW_LINE.length(), sb.length());
         }
         boolean isLast = sectionIndex == stateY.axisLayout.sections.size() - 1;
         if (containsSelection && !isLast) sb.append(ZoneEditor.NEW_LINE);
+      }
+      if (sb.length() == 0) {
+        // Copy single cell from the focus cell
+        AxisItem<X> focusItemX = matrix.getAxisX().getFocusItem();
+        AxisItem<Y> focusItemY = matrix.getAxisY().getFocusItem();
+        if (focusItemX != null && focusItemY != null) {
+          ZoneCore<X, Y> zone = matrix.layout.getZone(focusItemX.section, focusItemY.section);
+          if (zone.editor != null) {
+            sb.append(zone.editor.format(focusItemX.getIndex(), focusItemY.getIndex()));
+          }
+        }
       }
       if (sb.length() > 0) {
         Clipboard clipboard = new Clipboard(matrix.getDisplay());

@@ -603,25 +603,33 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     StringBuilder sb = new StringBuilder();
     cellsPainter = zone.getPainter(Painter.NAME_CELLS);
 
-    CellExtent<X, Y> extent = zone.getSelectedExtent();
-    if (extent == null) return;
-
-    Y maxY = extent.getEndY();
-    X maxX = extent.getEndX();
-
-    for (Iterator<Cell<X, Y>> it = zone.getSelectedBoundsIterator(); it.hasNext();) {
-      Cell<X, Y> next = it.next();
-      X indexX = next.getIndexX();
-      Y indexY = next.getIndexY();
-      sb.append(zone.isSelected(indexX, indexY) ? format(indexX, indexY) : "");
-      if (getMatrix().axisX.math.compare(indexX, maxX) < 0) {
-        sb.append("\t");
-      }
-      else if (getMatrix().axisY.math.compare(indexY, maxY) < 0) {
-        sb.append(NEW_LINE);
+    CellExtent<X, Y> selected = zone.getSelectedExtent();
+    if (selected == null) {
+      // Copy single cell from the focus cell
+      AxisItem<X> focusItemX = getMatrix().getAxisX().getFocusItem();
+      AxisItem<Y> focusItemY = getMatrix().getAxisY().getFocusItem();
+      if (focusItemX != null && focusItemY != null) {
+        sb.append(format(focusItemX.getIndex(), focusItemY.getIndex()));
       }
     }
+    else {
 
+      Y maxY = selected.getEndY();
+      X maxX = selected.getEndX();
+
+      for (Iterator<Cell<X, Y>> it = zone.getSelectedBoundsIterator(); it.hasNext();) {
+        Cell<X, Y> next = it.next();
+        X indexX = next.getIndexX();
+        Y indexY = next.getIndexY();
+        sb.append(zone.isSelected(indexX, indexY) ? format(indexX, indexY) : "");
+        if (getMatrix().axisX.math.compare(indexX, maxX) < 0) {
+          sb.append("\t");
+        }
+        else if (getMatrix().axisY.math.compare(indexY, maxY) < 0) {
+          sb.append(NEW_LINE);
+        }
+      }
+    }
     if (sb.length() > 0) {
       Clipboard clipboard = new Clipboard(getMatrix().getDisplay());
       clipboard.setContents(new Object[] {sb.toString()},
@@ -636,8 +644,20 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 
     X maxX = extent.getEndX();
 
+    CellSet<X, Y> cellSet = zone.cellSelection;
+    if (getMatrix().getCopyPasteHiddenCells() == false) {
+      cellSet = zone.cellSelection.copy();
+      for (MutableExtent<X> extentX: zone.sectionX.hidden.items) {
+        cellSet.remove(extentX.start(), extentX.end(),
+            zone.sectionY.math.ZERO_VALUE(), zone.sectionY.math.decrement(zone.sectionY.getCount()));
+      }
+      for (MutableExtent<Y> extentY: zone.sectionY.hidden.items) {
+        cellSet.remove(zone.sectionX.math.ZERO_VALUE(), zone.sectionX.math.decrement(zone.sectionX.getCount()),
+            extentY.start(), extentY.end());
+      }
+    }
     NumberPairSequence<X, Y> seq = new NumberPairSequence<X, Y>(
-        new ExtentPairScopeSequence<X, Y>(zone.cellSelection).scope(null, null, row, row));
+        new ExtentPairScopeSequence<X, Y>(cellSet).scope(null, null, row, row));
     for (seq.init(); seq.next();) {
       X indexX = seq.getX();
       Y indexY = seq.getY();

@@ -1,4 +1,11 @@
 -------------------------------------------------------------------------------
+Version 0.7.23
+
+Bug fixes:
+- Copy of single cell to the clipbaord was not possible
+- Copy beyond body did not consider "copy paste hidden cells" setting
+
+-------------------------------------------------------------------------------
 Version 0.7.22
 
 Feature changes:
