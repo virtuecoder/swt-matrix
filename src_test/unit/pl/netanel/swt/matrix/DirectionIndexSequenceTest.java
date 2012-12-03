@@ -173,7 +173,7 @@ public class DirectionIndexSequenceTest {
 	  assertSequence("0, 1, 6, 7, 8, 9, 5", new Forward(section));
 
 	  assertArrayEquals(new Integer[] {0, 1, 2, 6, 7, 8, 9, 3, 4, 5},
-	    TestUtil.getList(section.getOrder()).toArray(new Integer[] {}));
+	    TestUtil.getList(section.getOrder().numberIterator(null)).toArray(new Integer[] {}));
 	}
 
 	@Test

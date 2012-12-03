@@ -9,6 +9,8 @@ package pl.netanel.swt.matrix;
 
 import java.util.Iterator;
 
+import pl.netanel.util.ImmutableIterator;
+
 /**
  * Iterates over pairs of numbers. Models matrix cells iteration.
  */
@@ -65,7 +67,19 @@ class NumberPairSequence<X extends Number, Y extends Number> implements Sequence
 
   @Override
   public Iterator<Cell<X, Y>> iterator() {
-    return null;
+    return new ImmutableIterator<Cell<X, Y>>() {
+
+      @Override
+      public boolean hasNext() {
+        return false;
+      }
+
+      @Override
+      public Cell<X, Y> next() {
+        return null;
+      }
+
+    };
   }
 
 }

@@ -1,3 +1,5 @@
+
+
 A note on model items. The only connection between Matrix and the model is the index of the item in the model. Section.insert and Section.delete are only there to reindex state when we want to preserve state related to model indexes, like the cell with for example which is related to specific item(s). So when we have cell width set for index 5 and insert two item at index 3 then we want that cell width to be attached to index 7. When we don't care about the individual cell state, 
 
 - Licence text
@@ -59,3 +61,6 @@ Example sites:
 - http://www.excelsior-usa.com/
 - http://www.myeclipseide.com/
 - http://37signals.com/
+- http://www.treegrid.com
+The company is registered in Czech Republic (the part of European Union) with Trade Certificate number 722 72 384 since 2nd October 2001
+The company has Professional Indemnify (Liability) Insurance (PII/PLI) with total limit of indemnity 1,000,000 USD from insurer Chartis Europe S.A. (France, ID 552 128 795)

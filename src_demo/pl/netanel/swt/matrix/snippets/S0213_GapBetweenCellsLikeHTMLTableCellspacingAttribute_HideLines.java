@@ -13,7 +13,7 @@ import pl.netanel.swt.matrix.Section;
 /**
  * Gap between cells like HTML table cell spacing attribute. Hide lines.
  */
-public class S0013_GapBetweenCellsLikeHTMLTableCellspacingAttribute_HideLines {
+public class S0213_GapBetweenCellsLikeHTMLTableCellspacingAttribute_HideLines {
   public static void main(String[] args) {
     Shell shell = new Shell();
     shell.setText(title);
@@ -73,5 +73,4 @@ public class S0013_GapBetweenCellsLikeHTMLTableCellspacingAttribute_HideLines {
   // Meta data
   static final String title = "Gap between cells like HTML table cellspacing attribute. Hide lines";
   static final String instructions = "";
-  static final String code = "0013";
 }

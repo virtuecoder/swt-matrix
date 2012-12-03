@@ -52,5 +52,4 @@ public class S0903_IdentifyingItemsByDistance {
   // Meta data
   static final String title = "Identifying items by distance";
   static final String instructions = "";
-  static final String code = "0903";
 }

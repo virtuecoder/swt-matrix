@@ -87,7 +87,7 @@ public class TreeSectionTest {
     setUp20();
     section.setExpanded(1, true);
 
-    Iterator<Integer> it = section.getOrder();
+    Iterator<Integer> it = section.getOrder().numberIterator(null);
     assertEquals("0", it.next().toString());
     assertEquals("1", it.next().toString());
     assertEquals("3", it.next().toString());

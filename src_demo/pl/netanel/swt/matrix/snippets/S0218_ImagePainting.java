@@ -16,7 +16,7 @@ import pl.netanel.swt.matrix.Section;
 /**
  * Image painting
  */
-public class S0018_ImagePainting {
+public class S0218_ImagePainting {
 
   private static final int ROW_COUNT = 8;
   private static final int COLUMN_COUNT = 4;
@@ -82,5 +82,4 @@ public class S0018_ImagePainting {
   // Meta data
   static final String title = "Image painting";
   static final String instructions = "";
-  static final String code = "0018";
 }

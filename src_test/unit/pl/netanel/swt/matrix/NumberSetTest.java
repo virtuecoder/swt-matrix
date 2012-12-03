@@ -1,23 +1,22 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static pl.netanel.swt.matrix.TestUtil.extent;
 import static pl.netanel.swt.matrix.TestUtil.numberSet;
+
+import java.util.Iterator;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import pl.netanel.swt.matrix.NumberSet.NumberSequence3;
-
+import pl.netanel.swt.matrix.NumberSetCore.NumberSequence3;
 
 @SuppressWarnings({"rawtypes", "unchecked"}) @RunWith(JUnit4.class) public class  NumberSetTest {
 
 	@Test
 	public void getCount() throws Exception {
-		NumberSet list = numberSet(4, 8);
+		NumberSetCore list = numberSet(4, 8);
 		assertEquals(5, count(list));
 		assertEquals(0, count(list, 0, 1));
 		assertEquals(0, count(list, 0, 3));
@@ -41,7 +40,7 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence3;
 
 	@Test
 	public void addNotOverlap() throws Exception {
-		NumberSet set = numberSet();
+		NumberSetCore set = numberSet();
 		assertEquals("", set.toString());
 
 		assertTrue(add(set, 0));
@@ -86,7 +85,7 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence3;
 
 	@Test
 	public void addSingleOverlap() throws Exception {
-		NumberSet set = numberSet(); add(set, 5, 10);
+		NumberSetCore set = numberSet(); add(set, 5, 10);
 		assertTrue(add(set, 4, 5));
 		assertEquals("4-10", set.toString());
 
@@ -109,7 +108,7 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence3;
 
 	@Test public void addMultipleOverlap() throws Exception {
 		// Overlaps two, each end in the middle
-		NumberSet set = numberSet(); add(set, 0, 4); add(set, 8, 12);
+		NumberSetCore set = numberSet(); add(set, 0, 4); add(set, 8, 12);
 
 		assertTrue(add(set, 2, 10));
 		assertEquals("0-12", set.toString());
@@ -138,7 +137,7 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence3;
 
 	@Test public void removeIndex() throws Exception {
 
-		NumberSet set = numberSet();
+		NumberSetCore set = numberSet();
 
 		// Remove not existent
 		assertFalse(remove(set, 3));
@@ -168,7 +167,7 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence3;
 	}
 
 	@Test public void removeSingleOverlap() throws Exception {
-		NumberSet set = numberSet();
+		NumberSetCore set = numberSet();
 
 		// Remove not existent
 		assertFalse(remove(set, 3, 3));
@@ -212,7 +211,7 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence3;
 	}
 
 	@Test public void removeMultipleOverlap() throws Exception {
-		NumberSet set = numberSet(); add(set, 2, 4); add(set, 6, 8);
+		NumberSetCore set = numberSet(); add(set, 2, 4); add(set, 6, 8);
 
 		// Not existent
 		assertFalse(remove(set, 5, 5));
@@ -251,7 +250,7 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence3;
 	}
 
 	@Test public void contains() throws Exception {
-		NumberSet set = numberSet();
+		NumberSetCore set = numberSet();
 
 		assertEquals(false, constains(set, 2));
 		assertEquals(false, constains(set, 2, 4));
@@ -273,7 +272,7 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence3;
 
 	@Test
 	public void addSorted() throws Exception {
-		NumberSet set = new NumberSet(IntMath.getInstance(), true);
+		NumberSetCore set = new NumberSetCore(IntMath.getInstance(), true);
 
 		assertTrue(add(set, 5));
 		assertFalse(add(set, 5));
@@ -286,7 +285,7 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence3;
 
 	@Test
 	public void addUnsorted() throws Exception {
-		NumberSet set = new NumberSet(IntMath.getInstance(), false);
+		NumberSetCore set = new NumberSetCore(IntMath.getInstance(), false);
 
 		assertTrue(add(set, 5));
 		assertFalse(add(set, 5));
@@ -326,7 +325,7 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence3;
 
 	@Test
   public void forward0() throws Exception {
-	  NumberSet set = numberSet();
+	  NumberSetCore set = numberSet();
 	  NumberSequence3 seq = set.new NumberSequence3();
 	  seq.init();
 	  assertFalse(seq.next());
@@ -334,7 +333,7 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence3;
 
 	@Test
 	public void forward1() throws Exception {
-	  NumberSet set = numberSet();
+	  NumberSetCore set = numberSet();
 	  set.add(0, 0);
 	  NumberSequence3 seq = set.new NumberSequence3();
 	  seq.init();
@@ -345,7 +344,7 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence3;
 
 	@Test
 	public void forward2() throws Exception {
-	  NumberSet set = numberSet();
+	  NumberSetCore set = numberSet();
 	  set.add(0, 0);
 	  set.add(1, 2);
 	  NumberSequence3 seq = set.new NumberSequence3();
@@ -360,46 +359,103 @@ import pl.netanel.swt.matrix.NumberSet.NumberSequence3;
 	}
 
 
+	@Test
+  public void numberIterator0() throws Exception {
+	  NumberSetCore set = numberSet();
+    Iterator it = set.numberIterator(null);
+    assertFalse(it.hasNext());
+  }
+
+	@Test
+	public void numberIterator1() throws Exception {
+	  NumberSetCore set = numberSet();
+	  set.add(0, 0);
+	  Iterator it = set.numberIterator(null);
+    assertTrue(it.hasNext());
+    assertEquals(0, it.next());
+    assertFalse(it.hasNext());
+	}
+
+	@Test
+  public void numberIterator2() throws Exception {
+    NumberSetCore set = numberSet();
+    set.add(0, 0);
+    set.add(1, 2);
+    Iterator it = set.numberIterator(null);
+    assertTrue(it.hasNext());
+    assertEquals(0, it.next());
+    assertTrue(it.hasNext());
+    assertEquals(1, it.next());
+    assertTrue(it.hasNext());
+    assertEquals(2, it.next());
+    assertFalse(it.hasNext());
+  }
+
+	@Test
+	public void numberIteratorScope() throws Exception {
+	  NumberSetCore set = new NumberSetCore(Math.getInstance(int.class), true);
+	  set.add(0, 1);
+	  set.add(3, 5);
+	  Iterator it = set.numberIterator(new NumberSet.Query().scope(1, 4));
+	  assertNumberIterator("1, 3, 4", it);
+	}
+
+//	@Test
+//	public void numberIteratorSCopeBackwards() throws Exception {
+//	  NumberSet set = new NumberSet(Math.getInstance(int.class), true);
+//	  set.add(0, 1);
+//	  set.add(3, 5);
+//	  Iterator it = set.numberIterator(new SequenceQuery().scope(4, 1).backward());
+//	  assertNumberIterator("4, 3, 1", it);
+//	}
 
 	static private String subtract(int estart, int eend, int astart, int aend) {
-		NumberSet set = new NumberSet(IntMath.getInstance(), false);
+		NumberSetCore set = new NumberSetCore(IntMath.getInstance(), false);
 		set.add(estart, eend);
 		set.delete(astart, aend);
 		return set.toString();
 	}
 
-	static private boolean constains(NumberSet set, int n) {
+	static private boolean constains(NumberSetCore set, int n) {
 		return set.contains(n);
 	}
 
-	static private boolean constains(NumberSet set, int start, int end) {
+	static private boolean constains(NumberSetCore set, int start, int end) {
 		return set.contains(extent(start, end));
 	}
 
-	static private int count(NumberSet set) {
-		return set.getCount().intValue();
+	static private int count(NumberSetCore set) {
+		return set.getMutableCount().intValue();
 	}
 
-	static private int count(NumberSet set, int start, int end) {
+	static private int count(NumberSetCore set, int start, int end) {
 		return set.getMutableCount(start, end).intValue();
 	}
 
-	static private boolean add(NumberSet set, int n) {
+	static private boolean add(NumberSetCore set, int n) {
 		return set.add(n);
 	}
 
-	static private boolean add(NumberSet set, int start, int end) {
+	static private boolean add(NumberSetCore set, int start, int end) {
 		return set.add(start, end);
 	}
 
-	static private boolean remove(NumberSet set, int n) {
+	static private boolean remove(NumberSetCore set, int n) {
 		return set.remove(n);
 	}
 
-	static private boolean remove(NumberSet set, int start, int end) {
+	static private boolean remove(NumberSetCore set, int start, int end) {
 		return set.remove(start, end);
 	}
 
+	static private void assertNumberIterator(String expected, Iterator it) {
+	  StringBuilder sb = new StringBuilder();
+	  while (it.hasNext()) {
+	    if (sb.length() > 0) sb.append(", ");
+	    sb.append(it.next());
+	  }
+	  assertEquals(expected, sb.toString());
+	}
 
 
 }

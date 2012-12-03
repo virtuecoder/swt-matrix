@@ -153,6 +153,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	public static final int CMD_CUT = 200; 						// binding = SWT.MOD2 + SWT.DEL
 	public static final int CMD_COPY = 201; 					// binding = SWT.MOD1 + SWT.INSERT;
 	public static final int CMD_PASTE = 202;					// binding = SWT.MOD2 + SWT.INSERT ;
+	public static final int CMD_UNDO = 203;					// binding = SWT.MOD2 + SWT.INSERT ;
+	public static final int CMD_REDO = 204;					// binding = SWT.MOD2 + SWT.INSERT ;
 
 	/**
 	 * Command to activate the editor control by setting focus on it.
@@ -256,7 +258,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
   private boolean isPainting;
   private boolean shouldCopyPasteHiddenCells;
   private boolean shouldCopyBoyondBody;
-  private boolean shouldSelectHidden;
+  private boolean skipHidden;
+
 	/**
 	 * Calls the {@link #Matrix(Composite, int, Axis, Axis)} constructor
 	 * with <code>null</code> values for <code>axisY</code> and <code>axisX</code>
@@ -338,7 +341,6 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
 		addListener(SWT.Paint, listener2);
 		addListener(SWT.Resize,	listener2);
-
 
 //		parent.addControlListener(new ControlListener() {
 //      @Override public void controlResized(ControlEvent e) {
@@ -765,7 +767,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	      zone.setSelected(
 	        start, end,
 	        mathY.ZERO_VALUE(), mathY.decrement(zone.sectionY.getCount()),
-	        state, false);
+	        state, false, skipHidden);
 
 	      if (notify) {
 	        zone.addSelectionEvent();
@@ -781,7 +783,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	      zone.setSelected(
 	        mathX.ZERO_VALUE(), mathX.decrement(zone.sectionX.getCount()),
 	        start, end,
-	        state, false);
+	        state, false, skipHidden);
 
 	      if (notify) {
 	        zone.addSelectionEvent();
@@ -1170,23 +1172,23 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
   }
 
   /**
-   * Will cause the matrix to include hidden cells in range select when set to
-   * <code>true</code>. Otherwise the hidden cells will not be selected.
+   * Will cause the matrix to exclude the hidden cells from range select when set to
+   * <code>true</code>. Otherwise the hidden cells will be selected.
    * <p>
    * Default value is <code>false</code>.
    *
    * @param state the new state for the "select hidden cells" property
    */
-  public void setSelectHiddenCells(boolean state) {
-    shouldSelectHidden = state;
+  public void setSelectSkipHidden(boolean state) {
+    skipHidden = state;
   }
 
   /**
    * Returns <code>true</code> if the hidden cells should be selected with range select.
    * @return the state of the "copy paste hidden cells" property
    */
-  public boolean getSelectHiddenCells() {
-    return shouldSelectHidden;
+  public boolean getSelectSkipHidden() {
+    return skipHidden;
   }
 
   /**

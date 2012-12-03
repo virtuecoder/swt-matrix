@@ -143,5 +143,4 @@ public class S0456_TraverseCells_Shift__TabAndEnter_TraverseMatrixWith_Shift__Ct
   // Meta data
   static final String title = "Traverse cells (Shift+) Tab and Enter. Traverse Matrix with (Shift+) Ctrl+Tab";
   static final String instructions = "";
-  static final String code = "0456";
 }

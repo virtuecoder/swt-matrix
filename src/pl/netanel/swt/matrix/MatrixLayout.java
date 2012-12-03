@@ -220,16 +220,18 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
   }
 
   /**
-   * Attention: it is to be called only by a UI handler, since it emits Selection event.
+   * Attention: it is to be called only by a UI handler, since it emits Selection event
+   * and passes the flag to skip the hidden items.
    * @param startX
    * @param endX
    * @param startY
    * @param endY
    * @param selected
+   * @param skipHidden
    */
-  void setSelected (
+  void setSelectedFromUI (
       AxisItem<X> startX, AxisItem<X> endX,
-      AxisItem<Y> startY, AxisItem<Y> endY, boolean selected) {
+      AxisItem<Y> startY, AxisItem<Y> endY, boolean selected, boolean skipHidden) {
 
 //    System.out.println(String.format("%s %s %s %s",
 //      startX.index, endX.index,
@@ -279,7 +281,7 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
       if (zone.isSelectionEnabled()) {
         zone.setSelected(
           seq.startX.getValue(), seq.endX.getValue(),
-          seq.startY.getValue(), seq.endY.getValue(), selected);
+          seq.startY.getValue(), seq.endY.getValue(), selected, true, skipHidden);
 
         if (!zone.equals(lastZone)) {
           zone.addSelectionEvent();

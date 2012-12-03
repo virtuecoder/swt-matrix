@@ -20,6 +20,21 @@ import org.junit.runners.JUnit4;
 		assertEquals(0, body.getSelectedCount());
 	}
 
+	@Test public void rangeSelect() throws Exception {
+    Matrix matrix = new Matrix(new Shell(), SWT.None);
+    matrix.getAxisX().getBody().setCount(10);
+    matrix.getAxisY().getBody().setCount(10);
+    Zone body = matrix.getBody();
+    body.setSelected(2, 3, 2, 3, true);
+//    TestUtil.showMatrix(matrix);
+    assertTrue(body.isSelected(2, 2));
+    assertTrue(body.isSelected(2, 3));
+    assertTrue(body.isSelected(3, 2));
+    assertTrue(body.isSelected(3, 3));
+    assertFalse(body.isSelected(1, 1));
+    assertFalse(body.isSelected(4, 4));
+  }
+
 //	@Test(expected = IndexOutOfBoundsException.class)
 //	public void emptyBoundsException() throws Exception {
 //		Matrix matrix = new Matrix(new Shell(), SWT.None);

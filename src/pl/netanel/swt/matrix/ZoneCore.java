@@ -221,10 +221,10 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 	@Override
 	public void setSelected(X startX, X endX, Y startY, Y endY, boolean state) {
-		setSelected(startX, endX, startY, endY, state, true);
+		setSelected(startX, endX, startY, endY, state, true, false);
 	}
 
-	void setSelected(X startX, X endX, Y startY, Y endY, boolean state, boolean withMerged) {
+	void setSelected(X startX, X endX, Y startY, Y endY, boolean state, boolean withMerged, boolean skipHidden) {
 	  if (!selectionEnabled) return;
 	  // assert startX <= endX, startY <= endY
 
@@ -234,21 +234,35 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	    endX = overlap.endX;
 	    startY = overlap.startY;
 	    endY = overlap.endY;
-	    NumberOrder<X>.ForwardExtentFirstLastSequence seqX = sectionX.order.untilForward;
-	    NumberOrder<Y>.ForwardExtentFirstLastSequence seqY = sectionY.order.untilForward;
-	    for (seqX.init(startX, endX); seqX.next();) {
-	      for (seqY.init(startY, endY); seqY.next();) {
+
+	    ExtentSequence<X> seqX = sectionX.seq.origin(startX).finish(endX);
+	    ExtentSequence<Y> seqY = sectionY.seq.origin(startY).finish(endY);
+	    if (skipHidden) {
+	      NumberSetCore<X> setX = new NumberSetCore<X>(mathX, false);
+	      for (seqX.init(); seqX.next();) {
+	        setX.add(seqX.start, seqX.end);
+	      }
+	      setX.removeAll(sectionX.hidden);
+	      seqX = new ExtentSequence.Forward<X>(setX);
+
+	      NumberSetCore<Y> setY = new NumberSetCore<Y>(mathY, false);
+	      for (seqY.init(); seqY.next();) {
+	        setY.add(seqY.start, seqY.end);
+	      }
+	      setY.removeAll(sectionY.hidden);
+	      seqY = new ExtentSequence.Forward<Y>(setY);
+	    }
+	    else {
+	    }
+	    for (seqX.init(); seqX.next();) {
+	      for (seqY.init(); seqY.next();) {
 	        if (state) {
 //	          System.out.println(String.format("%s %s %s %s",
 //	            seqX.start.getValue(), seqX.end.getValue(),
 //              seqY.start.getValue(), seqY.end.getValue()));
-	          cellSelection.add(
-	            seqX.start.getValue(), seqX.end.getValue(),
-	            seqY.start.getValue(), seqY.end.getValue());
+	          cellSelection.add(seqX.start, seqX.end, seqY.start, seqY.end);
 	        } else {
-	          cellSelection.remove(
-	            seqX.start.getValue(), seqX.end.getValue(),
-              seqY.start.getValue(), seqY.end.getValue());
+	          cellSelection.remove(seqX.start, seqX.end, seqY.start, seqY.end);
 	        }
 	      }
 	    }

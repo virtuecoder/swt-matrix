@@ -9,59 +9,7 @@ package pl.netanel.swt.matrix;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
-import static pl.netanel.swt.matrix.Matrix.CMD_COPY;
-import static pl.netanel.swt.matrix.Matrix.CMD_CUT;
-import static pl.netanel.swt.matrix.Matrix.CMD_DELETE;
-import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_ACTIVATE;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_DOWN_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_UP_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_ITEM_HIDE;
-import static pl.netanel.swt.matrix.Matrix.CMD_ITEM_SHOW;
-import static pl.netanel.swt.matrix.Matrix.CMD_PASTE;
-import static pl.netanel.swt.matrix.Matrix.CMD_RESIZE_PACK;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ALL;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_COLUMN;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_COLUMN_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_DOWN_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_UP_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ROW;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ROW_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_COLUMN;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_COLUMN_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_TRAVERSE_TAB_NEXT;
-import static pl.netanel.swt.matrix.Matrix.CMD_TRAVERSE_TAB_PREVIOUS;
-import static pl.netanel.swt.matrix.Matrix.isBodySelect;
-import static pl.netanel.swt.matrix.Matrix.isExtendingSelect;
+import static pl.netanel.swt.matrix.Matrix.*;
 
 import java.math.BigInteger;
 import java.util.concurrent.ScheduledFuture;
@@ -560,6 +508,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       if (last == null || item == null) return;
       if (!last.section.equals(item.section)) return;
 
+      boolean skipHidden = matrix.getSelectSkipHidden();
       boolean ctrlSelection =
           commandId == CMD_SELECT_COLUMN_ALTER || commandId == CMD_SELECT_TO_COLUMN_ALTER ||
           commandId == CMD_SELECT_ROW_ALTER || commandId == CMD_SELECT_TO_ROW_ALTER;
@@ -595,7 +544,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         //				matrix.model.setSelected(false);
       }
 
-      axis.setSelected(start, end, selectState);
+      axis.setSelected(start, end, selectState, skipHidden);
       //			TestUtil.log(Arrays.toString(start.getSection().selection.items.toArray()));
 
       prev = ctrlSelection ? item : null;
@@ -796,7 +745,6 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     bindKey(Matrix.CMD_SELECT_FULL_UP_LEFT, SWT.MOD1 | SWT.MOD2 | SWT.HOME);
     bindKey(Matrix.CMD_SELECT_FULL_DOWN_RIGHT, SWT.MOD1 | SWT.MOD2 | SWT.END);
 
-
     //		matrix.bind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
     //
     //		// Drag and drop
@@ -890,6 +838,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     case CMD_COPY:				         copy(); return;
     case CMD_PASTE:				         paste(); return;
     case CMD_DELETE:			         if (zone.editor != null) zone.editor.delete(); return;
+    case CMD_UNDO:			           if (zone.editor != null) zone.editor.undo(); return;
+    case CMD_REDO:			           if (zone.editor != null) zone.editor.redo(); return;
     case CMD_TRAVERSE_TAB_NEXT:			matrix.traverse(SWT.TRAVERSE_TAB_NEXT); return;
     case CMD_TRAVERSE_TAB_PREVIOUS: matrix.traverse(SWT.TRAVERSE_TAB_PREVIOUS); return;
     }
@@ -1109,11 +1059,12 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     if (stateY.last == null) stateY.last = stateY.item;
     if (stateX.last == null) stateX.last = stateX.item;
 
+    boolean skipHidden = matrix.getSelectSkipHidden();
     boolean ctrlSelection = commandId == CMD_FOCUS_LOCATION_ALTER ||
         commandId == CMD_SELECT_TO_LOCATION_ALTER;
 
     if (ctrlSelection && isSelected(stateX.last, stateY.last)) {
-      matrix.layout.setSelected(stateX.last, stateX.item, stateY.last, stateY.item, false);
+      matrix.layout.setSelectedFromUI(stateX.last, stateX.item, stateY.last, stateY.item, false, skipHidden);
     }
     else {
       if (ctrlSelection) {
@@ -1141,7 +1092,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         matrix.layout.setSelected(false, notify);
       }
       if (commandId > CMD_FOCUS_LOCATION) {
-        matrix.layout.setSelected(stateX.last, stateX.item, stateY.last, stateY.item, true);
+        matrix.layout.setSelectedFromUI(stateX.last, stateX.item, stateY.last, stateY.item, true, skipHidden);
       }
     }
   }

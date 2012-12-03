@@ -155,5 +155,4 @@ public class S0404_EditControlsText_DateTime_Boolean_ComboDependingOnTheCellValu
   // Meta data
   static final String title = "Edit controls Text, DateTime, Boolean, Combo depending on the cell value";
   static final String instructions = "";
-  static final String code = "0404";
 }

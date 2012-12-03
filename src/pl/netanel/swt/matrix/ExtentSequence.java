@@ -14,7 +14,7 @@ import java.util.Iterator;
  */
 abstract class ExtentSequence<N extends Number> implements Sequence, Iterable<Extent<N>> {
 
-  protected final NumberSet<N> set;
+  protected final NumberSetCore<N> set;
   protected final Math<N> math;
 
   protected int i;
@@ -24,7 +24,7 @@ abstract class ExtentSequence<N extends Number> implements Sequence, Iterable<Ex
   protected N start, end, origin, finish;
   protected int originIndex, finishIndex;
 
-  public ExtentSequence(NumberSet<N> set) {
+  public ExtentSequence(NumberSetCore<N> set) {
     this.set = set;
     this.math = set.math;
   }
@@ -56,7 +56,7 @@ abstract class ExtentSequence<N extends Number> implements Sequence, Iterable<Ex
 
     // Origin
     if (origin != null) {
-      i = 0;
+      firstExtentIndex();
       do {
         extent = set.items.get(i);
         if (math.compare(extent.end.getValue(), origin) >= 0) {
@@ -67,7 +67,7 @@ abstract class ExtentSequence<N extends Number> implements Sequence, Iterable<Ex
       }
       while(!hasCompleted());
 
-      if (hasCompleted()) return;
+//      if (hasCompleted()) return;
     }
   }
 
@@ -101,7 +101,7 @@ abstract class ExtentSequence<N extends Number> implements Sequence, Iterable<Ex
   abstract void nextExtentIndex();
   abstract boolean hasCompleted();
   abstract void makeCompleted();
-  abstract boolean setEdges();
+  abstract void setEdges();
 
 
   public ExtentSequence<N> origin(N origin) {
@@ -125,7 +125,7 @@ abstract class ExtentSequence<N extends Number> implements Sequence, Iterable<Ex
 
 
   public static class Forward<N extends Number> extends ExtentSequence<N> {
-    public Forward(NumberSet<N> set) {
+    public Forward(NumberSetCore<N> set) {
       super(set);
     }
 
@@ -155,25 +155,20 @@ abstract class ExtentSequence<N extends Number> implements Sequence, Iterable<Ex
     }
 
     @Override
-    boolean setEdges() {
-      if (i == originIndex && origin != null) {
+    void setEdges() {
+      if (origin != null && i == originIndex) {
         start = math.max(origin, extent.start.getValue());
-        end = extent.end();
-      }
-      else if (finish != null) {
-        if (math.contains(extent, finish)) {
-          start = extent.start();
-          end = finish;
-        }
-        else {
-          return false;
-        }
       }
       else {
         start = extent.start();
+      }
+      if (finish != null && math.contains(extent, finish)) {
+        end = finish;
+        i = len;
+      }
+      else {
         end = extent.end();
       }
-      return true;
     }
   }
 
@@ -233,58 +228,57 @@ abstract class ExtentSequence<N extends Number> implements Sequence, Iterable<Ex
 //    }
 //  }
 
-  public static class SubtractForward<N extends Number> extends Forward<N> {
-    private ExtentSequence<N> subtractSeq;
 
-    public SubtractForward(NumberSet<N> set, NumberSet<N> subtract) {
-      super(set);
-      subtractSeq = new Forward<N>(subtract);
-    }
-
-    @Override
-    public boolean next() {
-      if (hasCompleted()) {
-        start = null;
-        end = null;
-        return false;
-      }
-      extent = set.items.get(i);
-      if (!setEdges()) {
-        start = extent.start();
-        end = extent.end();
-      }
-      // subtract
-      if (!subtractSeq.more()) {
-        subtractSeq.origin(start);
-        subtractSeq.finish(end);
-        subtractSeq.init();
-      }
-      if (subtractSeq.next()) {
-        if (math.compare(subtractSeq.getStart(), start) == 0 &&
-            math.compare(subtractSeq.getEnd(), end) == 0) {
-          // When whole current extent should be subtracted
-          nextExtentIndex();
-        } else {
-          start = math.min(start, subtractSeq.getStart());
-          end = math.max(end, subtractSeq.getEnd());
-        }
-      } else {
-        nextExtentIndex();
-      }
-
-      return true;
-    }
-  }
-
-  public static class SubtractBackward<N extends Number> extends Forward<N> {
-    public SubtractBackward(NumberSet<N> set, NumberSet<N> subtract) {
-      super(set);
-    }
-  }
+  // That does not work
+//  public static class SubtractForward<N extends Number> extends Forward<N> {
+//    private ExtentSequence<N> subtractSeq;
+//
+//    public SubtractForward(NumberSet<N> set, NumberSet<N> subtract) {
+//      super(set);
+//      subtractSeq = new Forward<N>(subtract);
+//    }
+//
+//    @Override
+//    public boolean next() {
+//      if (hasCompleted()) {
+//        start = null;
+//        end = null;
+//        return false;
+//      }
+//      extent = set.items.get(i);
+//      setEdges();
+//      // subtract
+//      if (!subtractSeq.more()) {
+//        subtractSeq.origin(start);
+//        subtractSeq.finish(end);
+//        subtractSeq.init();
+//      }
+//      if (subtractSeq.next()) {
+//        if (math.compare(subtractSeq.getStart(), start) == 0 &&
+//            math.compare(subtractSeq.getEnd(), end) == 0) {
+//          // When whole current extent should be subtracted
+//          nextExtentIndex();
+//        } else {
+//          start = math.min(start, subtractSeq.getStart());
+//          end = math.min(end, subtractSeq.getEnd());
+//        }
+//      } else {
+//        nextExtentIndex();
+//      }
+//
+//      return true;
+//    }
+//  }
+//
+//  public static class SubtractBackward<N extends Number> extends Forward<N> {
+//    public SubtractBackward(NumberSet<N> set, NumberSet<N> subtract) {
+//      super(set);
+//    }
+//  }
 
 
   public static class Backward<N extends Number> extends ExtentSequence<N> {
-    public Backward(NumberSet<N> set) {
+    public Backward(NumberSetCore<N> set) {
       super(set);
     }
 
@@ -314,25 +308,23 @@ abstract class ExtentSequence<N extends Number> implements Sequence, Iterable<Ex
     }
 
     @Override
-    boolean setEdges() {
-      if (i == originIndex && origin != null) {
-        start = extent.start();
+    void setEdges() {
+      if (origin == null) {
+        end = extent.end();
+      }
+      else if (i == originIndex) {
         end = origin;
       }
-      else if (finish != null) {
-        if (math.contains(extent, finish)) {
-          start = finish;
-          end = extent.end();
-        }
-        else {
-          return false;
-        }
+
+      if (finish == null) {
+        start = extent.start();
+      }
+      else if (math.contains(extent, finish)) {
+        start = finish;
       }
       else {
         start = extent.start();
-        end = extent.end();
       }
-      return true;
     }
   }
 

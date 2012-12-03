@@ -8,7 +8,7 @@
 package pl.netanel.swt.matrix;
 
 
-class NumberOrder<N extends Number> extends NumberSet<N> {
+class NumberOrder<N extends Number> extends NumberSetCore<N> {
 
 	private MutableNumber<N> count;
   SpanExtentSequence spanExtents;
@@ -16,7 +16,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
   ForwardExtentFirstLastSequence untilForward;
 
 	public NumberOrder(Math<N> math) {
-		super(math);
+		super(math, false);
 		count = math.create(0);
 		spanExtents = new SpanExtentSequence();
 		countForward = new ForwardExtentOriginLimitSequence();
@@ -49,7 +49,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	}
 
 	@Override
-  public MutableNumber<N> getCount() {
+  public MutableNumber<N> getMutableCount() {
 	  return count;
 	}
 
@@ -117,7 +117,7 @@ class NumberOrder<N extends Number> extends NumberSet<N> {
 	 * @param set
 	 * @param target
 	 */
-	public void move(NumberSet<N>set, N target) {
+	public void move(NumberSetCore<N>set, N target) {
 		N target2 = set.firstExcluded(target, Matrix.FORWARD);
 		assert !set.contains(target2);
 

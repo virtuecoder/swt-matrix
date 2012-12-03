@@ -13,7 +13,7 @@ import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
 
-public class S0007_Tree {
+public class S0120_Tree {
   public static void main(String[] args) {
     final Shell shell = new Shell();
     Display display = shell.getDisplay();
@@ -65,5 +65,4 @@ public class S0007_Tree {
 
   static final String title = "Tree";
   static final String instructions = "";
-  static final String code = "0007";
 }

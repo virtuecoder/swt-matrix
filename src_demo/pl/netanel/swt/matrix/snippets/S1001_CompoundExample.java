@@ -44,7 +44,6 @@ public class S1001_CompoundExample {
   // Meta data
   static final String title = "Screenshot 1";
   static final String instructions = "";
-  static final String code = "1001";
 
   protected static final BigInteger BigIntegerTWO = new BigInteger("2");
   private BigInteger indexY0;

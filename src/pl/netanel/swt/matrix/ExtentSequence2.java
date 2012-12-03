@@ -37,7 +37,7 @@ class ExtentSequence2<N extends Number> implements Sequence {
 		return true;
 	}
 
-  public static <N extends Number> ExtentSequence2<N> difference(final NumberSet<N> set, final NumberSet<N> set2) {
+  public static <N extends Number> ExtentSequence2<N> difference(final NumberSetCore<N> set, final NumberSetCore<N> set2) {
     return new ExtentSequence2<N>(set.items) {
       private ArrayList<MutableExtent<N>> items2;
       private MutableExtent<N> e2;

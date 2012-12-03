@@ -16,7 +16,7 @@ import org.junit.Test;
 public class NumberSequenceTest {
   @Test
   public void empty() throws Exception {
-    NumberSet set = new NumberSet(Math.getInstance(Integer.class));
+    NumberSetCore set = new NumberSetCore(Math.getInstance(Integer.class), true);
     NumberSequence seq = new SequenceBuilder(set).numbers();
     seq.init();
     assertEquals(false, seq.next());
@@ -26,7 +26,7 @@ public class NumberSequenceTest {
 
   @Test
   public void originFinish() throws Exception {
-    NumberSet set = new NumberSet(Math.getInstance(Integer.class));
+    NumberSetCore set = new NumberSetCore(Math.getInstance(Integer.class), true);
     set.add(0, 2);
     set.add(5, 7);
 

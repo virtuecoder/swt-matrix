@@ -624,7 +624,7 @@ public class Axis<N extends Number>  {
 	 */
 	public void pack() {
 	  for (SectionCore<N> section: layout.sections) {
-	    Iterator<N> it = section.getOrder();
+	    Iterator<N> it = section.getOrder().numberIterator(null);
 	    while(it.hasNext()) {
 	      N next = it.next();
 	      matrix.pack(symbol, section, next);
@@ -636,8 +636,8 @@ public class Axis<N extends Number>  {
 	 * Creates a number set.
 	 * @return newly created number set
 	 */
-	public NumberSet<N> createNumberSet() {
-	  return new NumberSet<N>(math, true);
+	public NumberSetCore<N> createNumberSet() {
+	  return new NumberSetCore<N>(math, true);
 	}
 
 	/*------------------------------------------------------------------------
@@ -733,7 +733,7 @@ public class Axis<N extends Number>  {
 	}
 
 
-	void setSelected(AxisItem<N> start, AxisItem<N> end, boolean select) {
+	void setSelected(AxisItem<N> start, AxisItem<N> end, boolean select, boolean skipHidden) {
 		// Make sure start < end
 		if (layout.comparePosition(start, end) > 0) {
 			AxisItem<N> tmp = start; start = end; end = tmp;
@@ -741,7 +741,7 @@ public class Axis<N extends Number>  {
 
     AxisExtentSequence<N> seq = new AxisExtentSequence<N>(math, layout.sections);
     for (seq.init(start, end); seq.next();) {
-      seq.section.setSelected(seq.start, seq.end, select, true);
+      seq.section.setSelected(seq.start, seq.end, select, true, skipHidden);
     }
 
 //		for (int i = start.getSection().index; i <= end.getSection().index; i++) {
@@ -866,7 +866,7 @@ public class Axis<N extends Number>  {
 			items = section.order.items;
 			lastSectionIndex = layout.sections.indexOf(endItem.section);
 			i = istart;
-			skipHidden = matrix.getSelectHiddenCells() == false;
+			skipHidden = matrix.getSelectSkipHidden();
 		}
 
 		boolean next() {

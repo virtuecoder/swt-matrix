@@ -16,13 +16,13 @@ class ValueNumberSetMap<N extends Number, T> {
   private final Math<N> math;
 	T defaultValue, value;
 	ArrayList<T> values;
-  ArrayList<NumberSet<N>> sets;
+  ArrayList<NumberSetCore<N>> sets;
 
 	public ValueNumberSetMap(Math<N> math, T defaultValue) {
 		this.math = math;
     this.defaultValue = defaultValue;
 		values = new ArrayList<T>();
-		sets = new ArrayList<NumberSet<N>>();
+		sets = new ArrayList<NumberSetCore<N>>();
 	}
 
 	public boolean equalValues(int i, int j) {
@@ -49,14 +49,14 @@ class ValueNumberSetMap<N extends Number, T> {
 
 	public void setValue(N from, N to, T value) {
 	  // Remove if from any other value set
-	  for (NumberSet<N> set2: sets) {
+	  for (NumberSetCore<N> set2: sets) {
 	    set2.remove(from, to);
 	  }
 	  int i = values.indexOf(value);
-	  NumberSet<N> set;
+	  NumberSetCore<N> set;
 	  if (i == -1) {
 	    values.add(value);
-      set = new NumberSet<N>(math);
+      set = new NumberSetCore<N>(math, true);
       sets.add(set);
 	  }
 	  else {
@@ -98,7 +98,7 @@ class ValueNumberSetMap<N extends Number, T> {
     if (i == -1) {
       return math.ZERO_VALUE();
     } else {
-      return sets.get(i).getCount().getValue();
+      return sets.get(i).getMutableCount().getValue();
     }
 	}
 
@@ -111,7 +111,7 @@ class ValueNumberSetMap<N extends Number, T> {
 	  }
 	}
 
-  public NumberSet<N> getSet(T value) {
+  public NumberSetCore<N> getSet(T value) {
     int i = values.indexOf(value);
     if (i == -1) {
       return null;
@@ -122,13 +122,13 @@ class ValueNumberSetMap<N extends Number, T> {
   }
 
   public void insert(N target, N count) {
-    for (NumberSet<N> set: sets) {
+    for (NumberSetCore<N> set: sets) {
       set.insert(target, count);
     }
   }
 
   public void delete(N start, N end) {
-    for (NumberSet<N> set: sets) {
+    for (NumberSetCore<N> set: sets) {
       set.delete(start, end);
     }
   }

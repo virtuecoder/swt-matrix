@@ -67,5 +67,4 @@ public class S0401_SimplestZoneEditor {
   // Meta data
   static final String title = "Simplest zone editor";
   static final String instructions = "";
-  static final String code = "0401";
 }

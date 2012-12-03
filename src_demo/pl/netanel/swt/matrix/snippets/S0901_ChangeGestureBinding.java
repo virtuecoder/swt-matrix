@@ -39,5 +39,4 @@ public class S0901_ChangeGestureBinding {
   // Meta data
   static final String title = "Change gesture binding";
   static final String instructions = "";
-  static final String code = "0901";
 }

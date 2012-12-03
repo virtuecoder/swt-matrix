@@ -13,7 +13,7 @@ import pl.netanel.swt.matrix.Section;
 /**
  * Altering row background.
  */
-public class S0014_AlteringRowBackground {
+public class S0214_AlteringRowBackground {
   public static void main(String[] args) {
     Shell shell = new Shell();
     shell.setText(title);
@@ -78,5 +78,4 @@ public class S0014_AlteringRowBackground {
   // Meta data
   static final String title = "Altering row background";
   static final String instructions = "";
-  static final String code = "0014";
 }

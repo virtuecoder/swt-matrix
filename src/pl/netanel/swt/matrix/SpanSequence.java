@@ -61,7 +61,7 @@ class SpanSequence<N extends Number> extends AxisSequence.Forward<N> {
   }
 
   @Override
-  protected boolean skip(NumberSet<N> set) {
+  protected boolean skip(NumberSetCore<N> set) {
     int i = set.getExtentIndex(index.getValue());
     if (i != -1) {
       N last = last(set.items.get(i));

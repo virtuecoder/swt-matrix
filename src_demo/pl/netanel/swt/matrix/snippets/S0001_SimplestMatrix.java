@@ -33,5 +33,4 @@ public class S0001_SimplestMatrix {
   // Meta data
   static final String title = "Simplest matrix";
   static final String instructions = "";
-  static final String code = "0001";
 }

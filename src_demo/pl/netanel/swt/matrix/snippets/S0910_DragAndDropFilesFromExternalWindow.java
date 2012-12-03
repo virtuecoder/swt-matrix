@@ -146,5 +146,4 @@ public class S0910_DragAndDropFilesFromExternalWindow {
   // Meta data
   static final String title = "Drag and drop files";
   static final String instructions = "";
-  static final String code = "0910";
 }

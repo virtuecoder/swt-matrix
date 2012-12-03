@@ -297,8 +297,8 @@ class SectionClient<N extends Number> implements Section<N> {
 		return core.getHiddenCount();
 	}
 
-	@Override public Iterator<N> getHidden() {
-		return core.getHidden();
+	@Override public NumberSet<N> getHidden() {
+		return core.hidden.client;
 	}
 
 	@Override
@@ -336,7 +336,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	}
 
 	@Override
-	public Iterator<N> getSelected() {
+	public NumberSet<N> getSelected() {
 		return core.getSelected();
 	}
 
@@ -386,7 +386,7 @@ class SectionClient<N extends Number> implements Section<N> {
 
 	  core.setOrder(iterator);
 
-    MutableNumber<N> iteratorCount = core.order.getCount();
+    MutableNumber<N> iteratorCount = core.order.getMutableCount();
     if (core.math.compare(iteratorCount, core.getCount()) != 0) {
       core.order.items = copy;
       throw new IllegalArgumentException(MessageFormat.format(
@@ -401,7 +401,7 @@ class SectionClient<N extends Number> implements Section<N> {
 
     core.setOrderExtents(iterator);
 
-    MutableNumber<N> iteratorCount = core.order.getCount();
+    MutableNumber<N> iteratorCount = core.order.getMutableCount();
     if (core.math.compare(iteratorCount, core.getCount()) != 0) {
       core.order.items = copy;
       throw new IllegalArgumentException(MessageFormat.format(
@@ -415,7 +415,7 @@ class SectionClient<N extends Number> implements Section<N> {
 	  return core.getOrder(index);
 	}
 
-	@Override public Iterator<N> getOrder() {
+	@Override public NumberSet<N> getOrder() {
     return core.getOrder();
   }
 
@@ -561,8 +561,8 @@ class SectionClient<N extends Number> implements Section<N> {
   }
 
   @Override
-  public NumberSet<N> getHiddenSet() {
-    return core.getHiddenSet();
+  public NumberSet<N> getDefaultHiddenSet() {
+    return core.getDefaultHiddenSet();
   }
 
 }

@@ -117,5 +117,4 @@ public class S0403_CheckButtonsEmulatedByImages {
   // Meta data
   static final String title = "Check buttons emulated by images";
   static final String instructions = "";
-  static final String code = "0403";
 }

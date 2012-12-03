@@ -11,13 +11,13 @@ package pl.netanel.swt.matrix;
  * Build sequences of numbers and extents.
  */
 class SequenceBuilder<N extends Number> {
-  private NumberSet<N> set;
+  private NumberSetCore<N> set;
   private N origin;
   private N finish;
   private boolean backward;
-  private NumberSet<N> subtract;
+  private NumberSetCore<N> subtract;
 
-  public SequenceBuilder(NumberSet<N> set) {
+  public SequenceBuilder(NumberSetCore<N> set) {
     this.set = set;
   }
 
@@ -36,7 +36,7 @@ class SequenceBuilder<N extends Number> {
     return this;
   }
 
-  public SequenceBuilder<N> subtract(NumberSet<N> set) {
+  public SequenceBuilder<N> subtract(NumberSetCore<N> set) {
     this.subtract = set;
     return this;
   }
@@ -54,9 +54,11 @@ class SequenceBuilder<N extends Number> {
   public ExtentSequence<N> extents() {
     ExtentSequence<N> seq;
     if (subtract != null) {
+      NumberSetCore<N> copy = set.copy();
+      copy.removeAll(subtract);
       seq = backward ?
-          new ExtentSequence.SubtractBackward<N>(set, subtract) :
-          new ExtentSequence.SubtractForward<N>(set, subtract);
+          new ExtentSequence.Backward<N>(copy) :
+          new ExtentSequence.Forward<N>(copy);
     }
     else {
       seq = backward ?

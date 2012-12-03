@@ -16,13 +16,14 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class  EditorTest extends SwtTestCase {
 
+  private Button button;
+
   @Test public void activateEmbeddedCheckBoxBySpace() throws Exception {
     final Matrix matrix = new Matrix(shell, 0);
 //    listenToAll(matrix);
     matrix.getAxisY().getBody().setCount(1);
     matrix.getAxisX().getBody().setCount(1);
 
-    final Button button = new Button(matrix, SWT.CHECK);
     final boolean[] data = new boolean[] {false};
 
     ZoneEditor editor = new ZoneEditor(matrix.getBody()) {
@@ -30,7 +31,7 @@ public class  EditorTest extends SwtTestCase {
         return true;
       }
       @Override protected Control createControl(Number indexY, Number indexX) {
-        return button;
+        return button = new Button(matrix, SWT.CHECK);
       }
       @Override
       public Object getModelValue(Number indexY, Number indexX) {
@@ -43,9 +44,9 @@ public class  EditorTest extends SwtTestCase {
       }
     };
 
+//    SwtTestCase.listenToAll(shell);
     shell.open();
 
-    processEvents();
     type(" ");
     assertEquals(true, button.getSelection());
     assertEquals(true, editor.getModelValue(0, 0));
@@ -57,7 +58,6 @@ public class  EditorTest extends SwtTestCase {
     matrix.getAxisY().getBody().setCount(1);
     matrix.getAxisX().getBody().setCount(1);
 
-    final Button button = new Button(matrix, SWT.CHECK);
     final boolean[] data = new boolean[] {false};
 
     ZoneEditor editor = new ZoneEditor(matrix.getBody()) {
@@ -65,7 +65,7 @@ public class  EditorTest extends SwtTestCase {
         return true;
       }
       @Override protected Control createControl(Number indexY, Number indexX) {
-        return button;
+        return button = new Button(matrix, SWT.CHECK);
       }
       @Override
       public Object getModelValue(Number indexY, Number indexX) {

@@ -204,5 +204,4 @@ public class S0410_SeparateZoneToInsertNewItems {
   // Meta data
   static final String title = "Separate zone to insert new items";
   static final String instructions = "";
-  static final String code = "0410";
 }

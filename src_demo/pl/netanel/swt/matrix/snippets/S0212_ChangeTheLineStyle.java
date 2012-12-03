@@ -11,7 +11,7 @@ import pl.netanel.swt.matrix.Painter;
 /**
  * Change the line style.
  */
-public class S0012_ChangeTheLineStyle {
+public class S0212_ChangeTheLineStyle {
   public static void main(String[] args) {
     Shell shell = new Shell();
     shell.setText(title);
@@ -69,5 +69,4 @@ public class S0012_ChangeTheLineStyle {
   // Meta data
   static final String title = "Change the line style";
   static final String instructions = "";
-  static final String code = "0012";
 }

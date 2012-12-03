@@ -7,10 +7,14 @@
  ******************************************************************************/
 package pl.netanel.swt.matrix;
 
+import java.util.Iterator;
+
+import pl.netanel.util.ImmutableIterator;
+
 /**
  * Number sequence.
  */
-class NumberSequence<N extends Number> implements ObjectSequence<N> {
+class NumberSequence<N extends Number> implements ObjectSequence<N>, Iterable<N> {
 
   MutableNumber<N> index;
   private final ExtentSequence<N> seq;
@@ -48,9 +52,41 @@ class NumberSequence<N extends Number> implements ObjectSequence<N> {
     return true;
   }
 
+  public boolean more() {
+    return seq.more() || math.compare(index, seq.getEnd()) <= 0;
+  }
+
   @Override
   public N item() {
     return index.getValue();
+  }
+
+  @Override
+  public Iterator<N> iterator() {
+    return new ImmutableIterator<N>() {
+      private boolean hasMore;
+      private N pending, current;
+      {
+        init();
+        stepAhead();
+      }
+      private void stepAhead() {
+        hasMore = NumberSequence.this.next();
+        if (hasMore) pending = item();
+      }
+      @Override
+      public boolean hasNext() {
+        return hasMore;
+      }
+
+      @Override
+      public N next() {
+        if (!hasMore) throw new IllegalStateException("No more items to iterate");
+        current = pending;
+        stepAhead();
+        return current;
+      }
+    };
   }
 
 }
