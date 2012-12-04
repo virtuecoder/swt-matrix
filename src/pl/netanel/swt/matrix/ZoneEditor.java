@@ -52,7 +52,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
   final CommandListener controlListener;
 
   EmbeddedControlsPainter<X, Y> embedded;
-  private Painter<X, Y> cellsPainter;
+  Painter<X, Y> cellsPainter;
   private GestureBinding mouseDownActivation;
   private GestureBinding mouseDobleClickActivation;
 
@@ -71,7 +71,6 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     //    setImagePath(null);
 
     // Painters
-    cellsPainter = zone.getPainter(Painter.NAME_CELLS);
     zone.replacePainterPreserveStyle(new Painter<X, Y>(
         Painter.NAME_EMULATED_CONTROLS, Painter.SCOPE_CELLS)
         {

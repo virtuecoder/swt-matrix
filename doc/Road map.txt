@@ -18,7 +18,7 @@ New features:
 - Introduce events: LAYOUT_CHANGE, ITEM_COUNT_CHANGE.
 - Axis.setFrozenHead(Section) freezes at the end of given section and changes when item count of the proceeding section is altered. The same for setFrozenTail(Section)
 - Axis.setFrozenHead(Axis.getHeader()) is done by default.
-- Add Zone.removeListener(listener)
+
 
 Bug fixes:
 - Drag and drop of a group of items just before or after one of the selected does not work.

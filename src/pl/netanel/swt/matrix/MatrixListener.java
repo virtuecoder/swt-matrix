@@ -930,6 +930,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 
   private void copy() {
     if (matrix.getCopyBeyondBody()) {
+
       StringBuilder sb = new StringBuilder();
       for (int sectionIndex = 0; sectionIndex < stateY.axisLayout.sections.size(); sectionIndex++) {
         SectionCore<Y> sectionY = stateY.axisLayout.sections.get(sectionIndex);
@@ -963,6 +964,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
           for (SectionCore<X> sectionX: stateX.axisLayout.sections) {
             ZoneCore<X, Y> zone = matrix.layout.getZone(sectionX, sectionY);
             if (zone.editor == null || zone.cellSelection.isEmpty()) continue;
+            zone.editor.cellsPainter = zone.getPainter(Painter.NAME_CELLS);
             if (isNext) sb.append("\t");
             isNext = true;
             zone.editor.copySelectionInRow(sb, row);
@@ -983,14 +985,14 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         if (focusItemX != null && focusItemY != null) {
           ZoneCore<X, Y> zone = matrix.layout.getZone(focusItemX.section, focusItemY.section);
           if (zone.editor != null) {
+            zone.editor.cellsPainter = zone.getPainter(Painter.NAME_CELLS);
             sb.append(zone.editor.format(focusItemX.getIndex(), focusItemY.getIndex()));
           }
         }
       }
       if (sb.length() > 0) {
         Clipboard clipboard = new Clipboard(matrix.getDisplay());
-        clipboard.setContents(new Object[] {sb.toString()},
-            new Transfer[] {TextTransfer.getInstance()});
+        clipboard.setContents(new Object[] {sb.toString()}, new Transfer[] {TextTransfer.getInstance()});
         clipboard.dispose();
       }
     }
