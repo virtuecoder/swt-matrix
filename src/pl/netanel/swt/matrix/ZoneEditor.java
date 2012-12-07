@@ -73,9 +73,10 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     // Painters
     zone.replacePainterPreserveStyle(new Painter<X, Y>(
         Painter.NAME_EMULATED_CONTROLS, Painter.SCOPE_CELLS)
-        {
+    {
       @Override
       protected boolean init() {
+        cellsPainter = zone.getPainter(Painter.NAME_CELLS);
         return true;
       }
       @Override

@@ -1,9 +1,14 @@
 -------------------------------------------------------------------------------
+Version 0.7.23.2
+
+Bug fixes:
+- ZoneEditor did not use the latest cell painter in getModelValue()
+
+-------------------------------------------------------------------------------
 Version 0.7.23.1
 
 Bug fixes:
 - Copy did not take the latest cell painter correctly.
-
 
 -------------------------------------------------------------------------------
 Version 0.7.23

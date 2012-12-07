@@ -74,6 +74,7 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
     }
     hadFocus = matrix.getDisplay().getFocusControl() == matrix;
     clearControls();
+    if (zone.editor != null) zone.editor.cellsPainter = zone.getPainter(Painter.NAME_CELLS);
     return true;
   }
 
