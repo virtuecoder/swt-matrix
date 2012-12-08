@@ -18,32 +18,34 @@ import pl.netanel.swt.matrix.reloaded.ints.Grouping.Node;
 public class SnippetGrouping {
 
   static final Node structure = new Node("root",
-    new Node("Group1",
-        new Node("Format",
-            new Node("format")),
-        new Node("Pricing",
-          new Node("strike"),
-          new Node("barier")),
-        new Node("Dates",
-          new Node("settlementDate"),
-          new Node("expirationDate"))
+    new Node("1",
+        new Node("1.1",
+          new Node("1.1.1"),
+          new Node("1.1.2"),
+          new Node("1.1.3")),
+        new Node("1.2",
+          new Node("1.2.1"),
+          new Node("1.2.2"),
+          new Node("1.2.3")),
+        new Node("1.3",
+          new Node("1.3.1"),
+          new Node("1.3.2"),
+          new Node("1.3.3"))
         ),
-    new Node("Group2",
-        new Node("Sub Group 2.1",
-          new Node("currency"),
-          new Node("spot"),
-          new Node("fwd"),
-          new Node("vol")),
-        new Node("Sub Group 2.1",
-            new Node("value"),
-            new Node("currencies"),
-            new Node("expired"))
+    new Node("2",
+        new Node("2.1",
+          new Node("2.1.1"),
+          new Node("2.1.2"),
+          new Node("2.1.3")),
+        new Node("2.2",
+          new Node("2.2.1"),
+          new Node("2.2.2"),
+          new Node("2.2.3"))
     )
   );
 
   private Matrix<Integer, Integer> matrix;
   private final int axisDirection;
-  ArrayList<Integer> hidden = new ArrayList<Integer>();
 
   public SnippetGrouping(Shell shell, final int axisDirection) {
     this.axisDirection = axisDirection;
@@ -57,21 +59,6 @@ public class SnippetGrouping {
        in the given zone and along the given direction */
     final Zone<Integer, Integer> zone = axisDirection == SWT.HORIZONTAL ? matrix.getHeaderX() : matrix.getHeaderY();
     new Grouping(zone, axisDirection, structure);
-
-    // Work around
-    hidden.add(2);
-    zone.getSectionX().setHidden(2, true);
-    zone.addListener(SWT.MouseDown, new Listener() {
-      @Override
-      public void handleEvent(Event event) {
-        if (axisDirection == SWT.HORIZONTAL) {
-          for (Integer index: hidden) {
-            zone.getSectionX().setHidden(index, true);
-          }
-          matrix.refresh();
-        }
-      }
-    });
   }
 
   void pack() {
