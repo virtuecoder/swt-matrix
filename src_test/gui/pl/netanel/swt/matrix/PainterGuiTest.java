@@ -16,7 +16,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class PainterTest extends SwtTestCase {
+public class PainterGuiTest extends SwtTestCase {
   @Test
   public void gradientCurrentRowBackground() throws Exception {
     final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, 0);

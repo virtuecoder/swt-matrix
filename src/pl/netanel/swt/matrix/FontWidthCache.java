@@ -10,6 +10,7 @@ package pl.netanel.swt.matrix;
 import java.util.HashMap;
 
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 
@@ -23,16 +24,17 @@ class FontWidthCache {
         115,116,117,118,119,120,121,122,123,124,125,126,211,243,260,261,262,
         263,280,281,321,322,323,324,346,347,377,378,379,380,8364,61440,61441};
 
-	static HashMap<Font, int[]> cache = new HashMap<Font, int[]>();
+	static HashMap<FontData, int[]> cache = new HashMap<FontData, int[]>();
 
 	public static int[] get(GC gc, Font font) {
-		int[] a = cache.get(font);
+	  FontData fontData = font.getFontData()[0];
+		int[] a = cache.get(fontData);
 		if (a == null) {
 			a = new int[0xffff];
 			for (int ch: PRINTABLE_CHARS) {
 				a[ch] = gc.stringExtent(Character.toString((char) ch)).x;
 			}
-			cache.put(font, a);
+			cache.put(fontData, a);
 		}
 		return a;
 	}

@@ -376,7 +376,7 @@ public class Painter<X extends Number, Y extends Number> {
 //			gc.fillRectangle(zone.bounds);
 		}
 
-		Font font = style.font == null ? matrix.getDisplay().getSystemFont() : style.font;
+		Font font = lastFont = style.font == null ? matrix.getDisplay().getSystemFont() : style.font;
     gc.setFont(font);
 		extentCache = FontWidthCache.get(gc, font);
 		extent = new Point(-1, gc.stringExtent("ty").y);

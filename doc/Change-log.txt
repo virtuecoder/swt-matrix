@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------
+Version 0.7.23.3
+
+Bug fixes:
+- Painter.computeSize was returning incorrect result due to wrong font width cache hashing
+
+-------------------------------------------------------------------------------
 Version 0.7.23.2
 
 Bug fixes:
