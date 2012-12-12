@@ -951,7 +951,6 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         }
 
         boolean isNext = false;
-        boolean containsSelection = false;
 
         for (MutableNumber<Y> i = sectionY.math.create(minY); sectionY.math.compare(i, maxY) <= 0; i.increment()) {
           Y row = i.getValue();
@@ -960,25 +959,26 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
             i.set(sectionY.hidden.items.get(hiddenIndex).end);
             continue;
           }
-          containsSelection = true;
           for (SectionCore<X> sectionX: stateX.axisLayout.sections) {
             ZoneCore<X, Y> zone = matrix.layout.getZone(sectionX, sectionY);
             if (zone.editor == null || zone.cellSelection.isEmpty()) continue;
             zone.editor.cellsPainter = zone.getPainter(Painter.NAME_CELLS);
-            if (isNext) sb.append("\t");
-            isNext = true;
+            int lengthBefore = sb.length();
             zone.editor.copySelectionInRow(sb, row);
+            if (isNext && sb.length() > lengthBefore) {
+              sb.insert(lengthBefore, "\t");
+            }
+            isNext = true;
           }
           isNext = false;
           sb.append(ZoneEditor.NEW_LINE);
         }
-        if (sb.length() > 0) {
-          sb.delete(sb.length() - ZoneEditor.NEW_LINE.length(), sb.length());
-        }
-        boolean isLast = sectionIndex == stateY.axisLayout.sections.size() - 1;
-        if (containsSelection && !isLast) sb.append(ZoneEditor.NEW_LINE);
       }
-      if (sb.length() == 0) {
+      if (sb.length() > 0) {
+        sb.delete(sb.length() - ZoneEditor.NEW_LINE.length(), sb.length());
+      }
+      else {
+        assert sb.length() == 0;
         // Copy single cell from the focus cell
         AxisItem<X> focusItemX = matrix.getAxisX().getFocusItem();
         AxisItem<Y> focusItemY = matrix.getAxisY().getFocusItem();

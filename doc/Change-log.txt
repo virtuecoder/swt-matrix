@@ -1,4 +1,14 @@
 -------------------------------------------------------------------------------
+Version 0.7.23.4
+
+Features:
+- Numpad Enter works for editor apply
+
+Bug fixes:
+- Copy beyond body was incorrect with additional empty sections
+
+
+-------------------------------------------------------------------------------
 Version 0.7.23.3
 
 Bug fixes:

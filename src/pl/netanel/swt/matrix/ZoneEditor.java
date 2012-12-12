@@ -184,6 +184,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     };
     controlListener.bind(CMD_EDIT_DEACTIVATE_CANCEL, SWT.KeyDown, SWT.ESC);
     controlListener.bind(CMD_EDIT_DEACTIVATE_APPLY, SWT.KeyDown, SWT.CR);
+    controlListener.bind(CMD_EDIT_DEACTIVATE_APPLY, SWT.KeyDown, SWT.KEYPAD_CR);
     controlListener.bind(CMD_EDIT_DEACTIVATE_APPLY, SWT.FocusOut, 0);
     controlListener.bindings.add(new GestureBinding(CMD_EDIT_DEACTIVATE_APPLY, SWT.Selection, 0) {
       @Override public boolean isMatching(Event e) {

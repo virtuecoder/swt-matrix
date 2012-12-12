@@ -154,6 +154,66 @@ public class CopyPasteTest {
     assertClipboard("1\t0,1\t1,1\t2,1\t3,1\t4,1\n2\t0,2\t1,2\t2,2\t3,2\t4,2");
   }
 
+  @Test
+  public void copyBeyondBodyColumnsWithAdditionallSection() throws Exception {
+    Axis<Integer> axisX = new Axis<Integer>(int.class, 3, 0, 2);
+    Axis<Integer> axisY = new Axis<Integer>(int.class, 3, 0, 2);
+
+    final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(
+        new Shell(), SWT.V_SCROLL | SWT.H_SCROLL, axisX, axisY);
+
+    matrix.getBody().replacePainterPreserveStyle(new Painter<Integer, Integer>(Painter.NAME_CELLS) {
+      @Override
+      public void setupSpatial(Integer indexX, Integer indexY) {
+        text = "" + indexX + "," + indexY;
+      }
+    });
+
+
+    matrix.getAxisX().getBody().setCount(5);
+    matrix.getAxisY().getBody().setCount(5);
+    matrix.getAxisX().getHeader().setVisible(true);
+    matrix.getAxisY().getHeader().setVisible(true);
+
+    matrix.setCopyBeyondBody(true);
+    axisX.getBody().setSelected(1, 1, true);
+
+    matrix.execute(Matrix.CMD_COPY);
+    assertClipboard("1\n1,0\n1,1\n1,2\n1,3\n1,4");
+
+  }
+
+  @Test
+  public void copyBeyondBodyRowsWithAdditionallSection() throws Exception {
+    Axis<Integer> axisX = new Axis<Integer>(int.class, 3, 0, 2);
+    Axis<Integer> axisY = new Axis<Integer>(int.class, 3, 0, 2);
+
+    final Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(
+        new Shell(), SWT.V_SCROLL | SWT.H_SCROLL, axisX, axisY);
+
+    matrix.getBody().replacePainterPreserveStyle(new Painter<Integer, Integer>(Painter.NAME_CELLS) {
+      @Override
+      public void setupSpatial(Integer indexX, Integer indexY) {
+        text = "" + indexX + "," + indexY;
+      }
+    });
+
+
+    matrix.getAxisX().getBody().setCount(5);
+    matrix.getAxisY().getBody().setCount(5);
+    matrix.getAxisX().getHeader().setVisible(true);
+    matrix.getAxisY().getHeader().setVisible(true);
+
+    matrix.setCopyBeyondBody(true);
+    axisY.getBody().setSelected(1, 1, true);
+
+    matrix.execute(Matrix.CMD_COPY);
+    assertClipboard("1\t0,1\t1,1\t2,1\t3,1\t4,1");
+
+  }
+
+
+
   void assertClipboard(String expected) {
     Clipboard clipboard = new Clipboard(Display.getDefault());
     String actual = clipboard.getContents(TextTransfer.getInstance()).toString();
