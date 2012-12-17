@@ -213,6 +213,7 @@ public class AxisLayoutTest {
 //		assertEquals("1, 6, 7", indexes(layout.cellSequence(Dock.MAIN, body)));
 //		showMatrix(layout);
 
+		assertEquals(null, layout.getItemByDistance(-50));
 		assertEquals("0", layout.getItemByDistance(50).getIndex().toString());
 		assertEquals("1", layout.getItemByDistance(101).getIndex().toString());
 		assertEquals("1", layout.getItemByDistance(102).getIndex().toString());
@@ -220,6 +221,7 @@ public class AxisLayoutTest {
 		assertEquals("7", layout.getItemByDistance(348).getIndex().toString());
 		assertEquals("5", layout.getItemByDistance(349).getIndex().toString());
 		assertEquals("5", layout.getItemByDistance(449).getIndex().toString());
+		assertEquals(null, layout.getItemByDistance(1000));
 
 	}
 

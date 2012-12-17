@@ -254,8 +254,7 @@ public class Axis<N extends Number>  {
    * @return the item visible at the specified distance
    */
 	public AxisItem<N> getItemByViewportDistance(int distance) {
-		AxisItem<N> item = layout.getItemByDistance(distance);
-		return item == null ? null : item;
+		return layout.getItemByDistance(distance);
 	}
 
 	/**

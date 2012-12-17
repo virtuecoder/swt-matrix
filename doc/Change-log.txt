@@ -1,7 +1,14 @@
 -------------------------------------------------------------------------------
+Version 0.7.23.5
+
+Feature changes:
+- Axis.getMouseItem and Axis.getItemByDistance return null if the distance is before the first cell or after the last cell
+
+
+-------------------------------------------------------------------------------
 Version 0.7.23.4
 
-Features:
+Feature changes:
 - Numpad Enter works for editor apply
 
 Bug fixes:

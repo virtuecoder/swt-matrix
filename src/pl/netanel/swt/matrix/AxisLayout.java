@@ -911,7 +911,7 @@ class AxisLayout<N extends Number> {
 	AxisItem<N> getItemByDistance(int distance) {
 		Cache cache = getCache(distance);
 		if (cache.cells.isEmpty()) return null;
-		if (distance < cache.cells.get(0).distance) return cache.items.get(0);
+		if (distance < cache.cells.get(0).distance) return null; //cache.items.get(0);
 
 		AxisItem<N> item = null;
 		for (int i = 0; i < cache.cells.size(); i++) {
@@ -923,7 +923,7 @@ class AxisLayout<N extends Number> {
 //			  }
 			}
 		}
-		return item;
+		return null; //item;
 //		return getBeyond && !cache.isEmpty() ? cache.items.get(cache.items.size() - 2) : null;
 	}
 
