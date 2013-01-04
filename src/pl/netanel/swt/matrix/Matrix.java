@@ -257,6 +257,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
   private boolean shouldCopyPasteHiddenCells;
   private boolean shouldCopyBoyondBody;
   private boolean shouldSelectHidden;
+  private boolean isDuringResize;
 	/**
 	 * Calls the {@link #Matrix(Composite, int, Axis, Axis)} constructor
 	 * with <code>null</code> values for <code>axisY</code> and <code>axisX</code>
@@ -328,7 +329,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 				try {
 					switch (event.type) {
 					case SWT.Paint: 		onPaint(event); break;
-					case SWT.Resize: 		resize(); break;
+					case SWT.Resize: 		onResize(); break;
 					}
 				} catch (Exception e) {
 					rethrow(e);
@@ -579,18 +580,10 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 * Resize event handler.
 	 * @param event
 	 */
-	private void resize() {
-		// Return if there is no model provided yet.
-		if (layoutY == null) return;
-
+	private void onResize() {
 		area = getClientArea();
-
-		// Return if the widget does not have an area to draw yet.
-		if (area.width == 0) return;
-
 		layoutY.setViewportSize(area.height);
 		layoutX.setViewportSize(area.width);
-
 		updateScrollBars();
 	}
 
@@ -598,30 +591,38 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 	 * Called on resize or item count change.
 	 */
 	void updateScrollBars() {
-		area = getClientArea();
-		layoutY.computeIfRequired();
-		layoutX.computeIfRequired();
+	  if (isDuringResize) return;
+	  try {
+  	  isDuringResize = true;
+  	  if (axisX.scrollBar != null) axisX.scrollBar.setVisible(false);
+  	  if (axisY.scrollBar != null) axisY.scrollBar.setVisible(false);
+  		area = getClientArea();
+  		layoutY.computeIfRequired();
+  		layoutX.computeIfRequired();
 
-		// Update the scroll bars visibility
-		// If at one of the scroll bar visibility has changed then update the other one also
-		if (axisX.updateScrollBarVisibility()) {
-			area = getClientArea();
-			axisY.updateScrollBarVisibility();
-			axisX.updateScrollBarVisibility();
-			area = getClientArea();
-		}
-		else if (axisY.updateScrollBarVisibility()) {
-			area = getClientArea();
-			axisX.updateScrollBarVisibility();
-			axisY.updateScrollBarVisibility();
-			area = getClientArea();
-		}
+  		// Update the scroll bars visibility
+  		// If at one of the scroll bar visibility has changed then update the other one also
+  		if (axisX.updateScrollBarVisibility()) {
+  			area = getClientArea();
+  			axisY.updateScrollBarVisibility();
+  			axisX.updateScrollBarVisibility();
+  			area = getClientArea();
+  		}
+  		else if (axisY.updateScrollBarVisibility()) {
+  			area = getClientArea();
+  			axisX.updateScrollBarVisibility();
+  			axisY.updateScrollBarVisibility();
+  			area = getClientArea();
+  		}
 
-		axisX.updateScrollBarValues(area.width);
-		axisY.updateScrollBarValues(area.height);
+  		axisX.updateScrollBarValues(area.width);
+  		axisY.updateScrollBarValues(area.height);
 
-		area = getClientArea();
-
+  		area = getClientArea();
+	  }
+	  finally {
+	    isDuringResize = false;
+	  }
 //		listener.state0.item = layoutY.current;
 //		listener.state1.item = layoutX.current;
 	}
@@ -802,12 +803,13 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 //		layoutY.start = layoutY.current;
 //		layoutX.start = layoutX.current;
 	  layout.compute();
-		updateScrollBars();
-		listener.refresh();
+	  listener.refresh();
+	  getParent().layout(true, true);
 //		for (Zone<X, Y> zone: layout.zones) {
 //			zone.setSelectedAll(false);
 //		}
 		redraw();
+		updateScrollBars();
 	}
 
 

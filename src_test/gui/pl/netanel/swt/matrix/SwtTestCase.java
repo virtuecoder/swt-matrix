@@ -43,7 +43,7 @@ import pl.netanel.util.Util;
  * @created Apr 29, 2008
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class  SwtTestCase {
+public class SwtTestCase {
   public static boolean breakFlag = false;
   public static boolean runManual = false;
 
