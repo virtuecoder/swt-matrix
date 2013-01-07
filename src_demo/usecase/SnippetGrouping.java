@@ -44,7 +44,7 @@ public class SnippetGrouping {
   private Matrix<Integer, Integer> matrix;
   private final int axisDirection;
 
-  public SnippetGrouping(Shell shell, final int axisDirection) {
+  public SnippetGrouping(final Shell shell, final int axisDirection) {
     this.axisDirection = axisDirection;
     matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL | SWT.H_SCROLL);
     matrix.getAxisX().getBody().setCount(2);
@@ -55,7 +55,16 @@ public class SnippetGrouping {
     /* Create class holding the API and all the logic to achieve grouping effect
        in the given zone and along the given direction */
     final Zone<Integer, Integer> zone = axisDirection == SWT.HORIZONTAL ? matrix.getHeaderX() : matrix.getHeaderY();
-    new Grouping(zone, axisDirection, structure);
+    Grouping grouping = new Grouping(zone, axisDirection, structure);
+    zone.replacePainterPreserveStyle(grouping.new CellPainter() {
+      @Override
+      public void setup(Integer indexX, Integer indexY) {
+        super.setup(indexX, indexY);
+        style.foreground = shell.getDisplay().getSystemColor(indexY == 0 ? SWT.COLOR_BLUE :
+          indexY == 1 ? SWT.COLOR_GREEN : SWT.COLOR_RED);
+      }
+    });
+
   }
 
   void pack() {

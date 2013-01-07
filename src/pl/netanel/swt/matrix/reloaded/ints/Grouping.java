@@ -110,42 +110,7 @@ public class Grouping {
     zone.getMatrix().addListener(SWT.Dispose, disposeListener);
 
     oldCellPainter = zone.getPainter(Painter.NAME_CELLS);
-    cellPainter = new CellImageButtonPainter<Integer, Integer>(Painter.NAME_CELLS, trueImage, falseImage)
-    {
-
-      @Override
-      protected boolean init() {
-        boolean result = super.init();
-        return result;
-      }
-      @Override
-      public Boolean getToggleState(Integer indexX, Integer indexY) {
-        // Return true if is expanded
-        Node node = getNodeByCellIndex(indexX, indexY);
-        return node == null ? null : node.getToggleState();
-//        return node.collapseDirection != SWT.NONE && isFirstItem(node, indexX, indexY) &&
-//            node.children.size() > 1 /*&& node.parent.collapsed == false*/ ?
-//                !node.collapsed : null;
-      }
-
-      @Override
-      public void setupSpatial(Integer indexX, Integer indexY) {
-        super.setupSpatial(indexX, indexY);
-        text = getText(indexX, indexY);
-      }
-
-      @Override
-      public void setup(Integer indexX, Integer indexY) {
-        super.setup(indexX, indexY);
-        AxisItem<Integer> item = axis2.getMouseItem();
-        if (item != null) {
-          Node node = getNodeByCellIndex(indexX, indexY);
-          if (node.level < selectLevel && isFirstItem(node, indexX, indexY)) {
-            isSelected = false;
-          }
-        }
-      }
-    };
+    cellPainter = new CellPainter();
     zone.replacePainter(cellPainter);
 
     cellPainter.style.textAlignY = SWT.CENTER;
@@ -508,6 +473,47 @@ public class Grouping {
 
   public void setToggleImages(Image collapseImage, Image expandImage) {
     cellPainter.setToggleImages(collapseImage, expandImage);
+  }
+
+
+  public class CellPainter extends CellImageButtonPainter<Integer, Integer> {
+
+    public CellPainter() {
+      super(Painter.NAME_CELLS, trueImage, falseImage);
+    }
+
+    @Override
+    protected boolean init() {
+      boolean result = super.init();
+      return result;
+    }
+    @Override
+    public Boolean getToggleState(Integer indexX, Integer indexY) {
+      // Return true if is expanded
+      Node node = getNodeByCellIndex(indexX, indexY);
+      return node == null ? null : node.getToggleState();
+//      return node.collapseDirection != SWT.NONE && isFirstItem(node, indexX, indexY) &&
+//          node.children.size() > 1 /*&& node.parent.collapsed == false*/ ?
+//              !node.collapsed : null;
+    }
+
+    @Override
+    public void setupSpatial(Integer indexX, Integer indexY) {
+      super.setupSpatial(indexX, indexY);
+      text = getText(indexX, indexY);
+    }
+
+    @Override
+    public void setup(Integer indexX, Integer indexY) {
+      super.setup(indexX, indexY);
+      AxisItem<Integer> item = axis2.getMouseItem();
+      if (item != null) {
+        Node node = getNodeByCellIndex(indexX, indexY);
+        if (node.level < selectLevel && isFirstItem(node, indexX, indexY)) {
+          isSelected = false;
+        }
+      }
+    }
   }
 
   /**
