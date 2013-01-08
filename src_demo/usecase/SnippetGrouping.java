@@ -64,7 +64,6 @@ public class SnippetGrouping {
           indexY == 1 ? SWT.COLOR_GREEN : SWT.COLOR_RED);
       }
     });
-
   }
 
   void pack() {

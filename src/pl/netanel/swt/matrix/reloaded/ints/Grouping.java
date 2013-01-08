@@ -52,7 +52,6 @@ public class Grouping {
   private Axis<Integer> axis, axis2;
   private Section<Integer> section, section2;
   private NodeVisitor layoutVisitor;
-  private CellImageButtonPainter<Integer, Integer> cellPainter;
   private Integer selectLevel = 0;
   private Painter<Integer, Integer> oldCellPainter;
   private Listener selectItemListener;
@@ -110,7 +109,7 @@ public class Grouping {
     zone.getMatrix().addListener(SWT.Dispose, disposeListener);
 
     oldCellPainter = zone.getPainter(Painter.NAME_CELLS);
-    cellPainter = new CellPainter();
+    CellImageButtonPainter<Integer, Integer> cellPainter = new CellPainter();
     zone.replacePainter(cellPainter);
 
     cellPainter.style.textAlignY = SWT.CENTER;
@@ -135,7 +134,14 @@ public class Grouping {
         if (node == null) return;
 
         // toggle
-        if (node.getToggleState() != TOGGLE_NONE && cellPainter.isOverImage(e.x, e.y)) {
+        Painter<Integer, Integer> painter = zone.getPainter(Painter.NAME_CELLS);
+        CellImageButtonPainter<Integer, Integer> cellPainter = null;
+        if (painter instanceof CellImageButtonPainter) {
+          cellPainter = (CellImageButtonPainter<Integer, Integer>) painter;
+        }
+        if (node.getToggleState() != TOGGLE_NONE && cellPainter != null &&
+            cellPainter.isOverImage(e.x, e.y))
+        {
           node.setCollapsed(!node.isCollapsed);
         }
         else {
@@ -472,7 +478,10 @@ public class Grouping {
   }
 
   public void setToggleImages(Image collapseImage, Image expandImage) {
-    cellPainter.setToggleImages(collapseImage, expandImage);
+    Painter<Integer, Integer> painter = zone.getPainter(Painter.NAME_CELLS);
+    if (painter instanceof CellImageButtonPainter) {
+      ((CellImageButtonPainter<Integer, Integer>) painter).setToggleImages(collapseImage, expandImage);
+    }
   }
 
 

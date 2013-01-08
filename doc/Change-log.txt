@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------
+Version 0.7.23.8
+
+Bug fixes:
+- Grouping was taking incorrect painter in setToggleImages(Image, Image)
+
+-------------------------------------------------------------------------------
 Version 0.7.23.7
 
 Bug fixes:
