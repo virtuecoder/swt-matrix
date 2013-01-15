@@ -941,7 +941,7 @@ public class Axis<N extends Number>  {
     } else {
       matrix.insertInZonesY(section, target, count);
     }
-    layout.show(AxisItem.createInternal(section, target));
+    showItem(AxisItem.createInternal(section, target));
   }
 
 

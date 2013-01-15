@@ -9,59 +9,7 @@ package pl.netanel.swt.matrix;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
-import static pl.netanel.swt.matrix.Matrix.CMD_COPY;
-import static pl.netanel.swt.matrix.Matrix.CMD_CUT;
-import static pl.netanel.swt.matrix.Matrix.CMD_DELETE;
-import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_ACTIVATE;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_DOWN_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_UP_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_ITEM_HIDE;
-import static pl.netanel.swt.matrix.Matrix.CMD_ITEM_SHOW;
-import static pl.netanel.swt.matrix.Matrix.CMD_PASTE;
-import static pl.netanel.swt.matrix.Matrix.CMD_RESIZE_PACK;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ALL;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_COLUMN;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_COLUMN_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_DOWN_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_UP_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_DOWN;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_LEFT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_RIGHT;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ROW;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ROW_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_COLUMN;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_COLUMN_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW_ALTER;
-import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_UP;
-import static pl.netanel.swt.matrix.Matrix.CMD_TRAVERSE_TAB_NEXT;
-import static pl.netanel.swt.matrix.Matrix.CMD_TRAVERSE_TAB_PREVIOUS;
-import static pl.netanel.swt.matrix.Matrix.isBodySelect;
-import static pl.netanel.swt.matrix.Matrix.isExtendingSelect;
+import static pl.netanel.swt.matrix.Matrix.*;
 
 import java.math.BigInteger;
 import java.util.concurrent.ScheduledFuture;
@@ -829,7 +777,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       rowHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_ROW_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
       rowHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_ROW, SWT.MouseMove, SWT.BUTTON1));
       rowHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_ROW_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
-      rowHeader.bind(new GestureBinding(Matrix.CMD_RESIZE_PACK, SWT.MouseDoubleClick, 1));
+      rowHeader.bind(new GestureBinding(Matrix.CMD_PACK_ROW, SWT.MouseDoubleClick, 1));
 
       rowHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseDown, SWT.MOD2 | 1);
       rowHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1);
@@ -846,7 +794,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       columnHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1));
       columnHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN, SWT.MouseMove, SWT.BUTTON1));
       columnHeader.bind(new GestureBinding(Matrix.CMD_SELECT_TO_COLUMN_ALTER, SWT.MouseMove, SWT.MOD1 | SWT.BUTTON1));
-      columnHeader.bind(new GestureBinding(Matrix.CMD_RESIZE_PACK, SWT.MouseDoubleClick, 1));
+      columnHeader.bind(new GestureBinding(Matrix.CMD_PACK_COLUMN, SWT.MouseDoubleClick, 1));
 
       columnHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION, SWT.MouseDown, SWT.MOD2 | 1);
       columnHeader.unbind(Matrix.CMD_SELECT_TO_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | SWT.MOD2 | 1);
@@ -860,6 +808,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       topLeft.bind(new GestureBinding(Matrix.CMD_SELECT_ALL, SWT.MouseDown, 1));
       topLeft.unbind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
       topLeft.unbind(Matrix.CMD_FOCUS_LOCATION_ALTER, SWT.MouseDown, SWT.MOD1 | 1);
+      topLeft.bind(new GestureBinding(Matrix.CMD_PACK_ROW, SWT.MouseDoubleClick, 1));
+      topLeft.bind(new GestureBinding(Matrix.CMD_PACK_COLUMN, SWT.MouseDoubleClick, 1));
     }
 
     // Modification
@@ -883,7 +833,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     //case CMD_DND_SELECT_START:		 state &= STATE_SELECTING; break;
     //case CMD_DND_SELECT_STOP:		   state &= ~STATE_SELECTING; break;
 
-    case CMD_RESIZE_PACK:		       stateY.pack(); stateX.pack(); break;
+    case CMD_PACK_COLUMN:     stateX.pack(); break;
+    case CMD_PACK_ROW:        stateY.pack(); break;
 
     case CMD_EDIT_ACTIVATE:				 if (zone.editor != null) zone.editor.edit(b); return;
     case CMD_CUT:				           if (zone.editor != null) zone.editor.cut(); return;
@@ -915,9 +866,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     case CMD_SELECT_TO_COLUMN:	case CMD_SELECT_TO_COLUMN_ALTER:	stateX.setSelected(commandId); break;
 
     // Hiding
-    case CMD_ITEM_HIDE:			stateY.hide(true);  stateX.hide(true);  break;
-    case CMD_ITEM_SHOW:			stateY.hide(false); stateX.hide(false); break;
-    case CMD_RESIZE_PACK:		stateY.pack(); break;
+    case CMD_ITEM_HIDE:			  stateY.hide(true);  stateX.hide(true);  break;
+    case CMD_ITEM_SHOW:			  stateY.hide(false); stateX.hide(false); break;
     }
 
     if (isBodySelect(commandId)) { // || state0.focusMoved || state1.focusMoved) {

@@ -178,7 +178,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 
 	public static final int CMD_ITEM_HIDE = 301;						// binding = SWT.MOD3 + SWT.DEL;
 	public static final int CMD_ITEM_SHOW = 302;					// binding = SWT.MOD3 + SWT.INSERT;
-	public static final int CMD_RESIZE_PACK = 303;
+	public static final int CMD_PACK_COLUMN = 303;
+	public static final int CMD_PACK_ROW = 304;
 
 	static final int CMD_DND_RESIZE_START = 320;
 	static final int CMD_DND_RESIZE = 321;
@@ -808,8 +809,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas
 //		for (Zone<X, Y> zone: layout.zones) {
 //			zone.setSelectedAll(false);
 //		}
+	  updateScrollBars();
 		redraw();
-		updateScrollBars();
 	}
 
 

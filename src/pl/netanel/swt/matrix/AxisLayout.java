@@ -854,8 +854,14 @@ class AxisLayout<N extends Number> {
 	}
 
 	private Cache getCache(int distance) {
-		return distance < main.distance && !head.isEmpty() ? head :
-			   distance > tail.distance && !tail.isEmpty() ? tail : main;
+		return
+		    main.distance <= distance ?
+		        (distance <= tail.distance ?
+		            main :
+		            tail) :
+		        head;
+//		    distance < main.distance && !head.isEmpty() ? head :
+//			   distance > tail.distance && !tail.isEmpty() ? tail : main;
 	}
 
 	private Cache getCache(Section<N> section, N index) {
@@ -911,7 +917,7 @@ class AxisLayout<N extends Number> {
 	AxisItem<N> getItemByDistance(int distance) {
 		Cache cache = getCache(distance);
 		if (cache.cells.isEmpty()) return null;
-		if (distance < cache.cells.get(0).distance) return null; //cache.items.get(0);
+//		if (distance < cache.cells.get(0).distance) return null; //cache.items.get(0);
 
 		AxisItem<N> item = null;
 		for (int i = 0; i < cache.cells.size(); i++) {
