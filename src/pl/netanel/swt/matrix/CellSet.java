@@ -9,6 +9,7 @@ package pl.netanel.swt.matrix;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import pl.netanel.util.IntArray;
 
@@ -413,6 +414,15 @@ class CellSet<X extends Number, Y extends Number> {
         return true;
       }
     };
+  }
+
+
+  public Iterator<CellExtent<X, Y>> extentIterator(NumberSet.Query<X> queryX, NumberSet.Query<Y> queryY) {
+    return new ExtentPairSequence<X, Y>(this).iterator();
+  }
+
+  public Iterator<Cell<X, Y>> numberIterator(NumberSet.Query<X> queryX, NumberSet.Query<X> queryY) {
+    return new NumberPairSequence<X, Y>(new ExtentPairSequence<X, Y>(this)).iterator();
   }
 
 

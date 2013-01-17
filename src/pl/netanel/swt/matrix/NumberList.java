@@ -31,10 +31,10 @@ import pl.netanel.util.Preconditions;
  * An example application of this class is recording the block selection of
  * indexes in a sequential order.
  */
-class NumberList<N extends Number> extends NumberSet<N> {
+class NumberList<N extends Number> extends NumberSetCore<N> {
 
 	public NumberList(Math<N> math) {
-		super(math);
+		super(math, false);
 	}
 
 	/**

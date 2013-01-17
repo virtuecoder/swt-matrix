@@ -508,6 +508,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       if (last == null || item == null) return;
       if (!last.section.equals(item.section)) return;
 
+      boolean skipHidden = matrix.getSelectSkipHidden();
       boolean ctrlSelection =
           commandId == CMD_SELECT_COLUMN_ALTER || commandId == CMD_SELECT_TO_COLUMN_ALTER ||
           commandId == CMD_SELECT_ROW_ALTER || commandId == CMD_SELECT_TO_ROW_ALTER;
@@ -543,7 +544,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         //				matrix.model.setSelected(false);
       }
 
-      axis.setSelected(start, end, selectState);
+      axis.setSelected(start, end, selectState, skipHidden);
       //			TestUtil.log(Arrays.toString(start.getSection().selection.items.toArray()));
 
       prev = ctrlSelection ? item : null;
@@ -744,7 +745,6 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     bindKey(Matrix.CMD_SELECT_FULL_UP_LEFT, SWT.MOD1 | SWT.MOD2 | SWT.HOME);
     bindKey(Matrix.CMD_SELECT_FULL_DOWN_RIGHT, SWT.MOD1 | SWT.MOD2 | SWT.END);
 
-
     //		matrix.bind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
     //
     //		// Drag and drop
@@ -841,6 +841,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     case CMD_COPY:				         copy(); return;
     case CMD_PASTE:				         paste(); return;
     case CMD_DELETE:			         if (zone.editor != null) zone.editor.delete(); return;
+    case CMD_UNDO:			           if (zone.editor != null) zone.editor.undo(); return;
+    case CMD_REDO:			           if (zone.editor != null) zone.editor.redo(); return;
     case CMD_TRAVERSE_TAB_NEXT:			matrix.traverse(SWT.TRAVERSE_TAB_NEXT); return;
     case CMD_TRAVERSE_TAB_PREVIOUS: matrix.traverse(SWT.TRAVERSE_TAB_PREVIOUS); return;
     }
@@ -1061,11 +1063,12 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     if (stateY.last == null) stateY.last = stateY.item;
     if (stateX.last == null) stateX.last = stateX.item;
 
+    boolean skipHidden = matrix.getSelectSkipHidden();
     boolean ctrlSelection = commandId == CMD_FOCUS_LOCATION_ALTER ||
         commandId == CMD_SELECT_TO_LOCATION_ALTER;
 
     if (ctrlSelection && isSelected(stateX.last, stateY.last)) {
-      matrix.layout.setSelected(stateX.last, stateX.item, stateY.last, stateY.item, false);
+      matrix.layout.setSelectedFromUI(stateX.last, stateX.item, stateY.last, stateY.item, false, skipHidden);
     }
     else {
       if (ctrlSelection) {
@@ -1093,7 +1096,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         matrix.layout.setSelected(false, notify);
       }
       if (commandId > CMD_FOCUS_LOCATION) {
-        matrix.layout.setSelected(stateX.last, stateX.item, stateY.last, stateY.item, true);
+        matrix.layout.setSelectedFromUI(stateX.last, stateX.item, stateY.last, stateY.item, true, skipHidden);
       }
     }
   }

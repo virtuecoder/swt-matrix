@@ -97,5 +97,4 @@ public class S0402_EmbeddedCheckButtons {
   // Meta data
   static final String title = "Embedded check buttons";
   static final String instructions = "";
-  static final String code = "0402";
 }

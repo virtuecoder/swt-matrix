@@ -1,7 +1,6 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static pl.netanel.swt.matrix.TestUtil.seq;
 
 import java.util.Arrays;
@@ -28,6 +27,18 @@ public class SectionCoreTest {
 
     section.setCount(3);
     assertEquals(3, section.getCount().intValue());
+  }
+
+  public void setCountDecrease() throws Exception {
+    SectionCore section = new SectionCore(int.class);
+    section.setCount(10);
+    section.setHidden(9, true);
+    assertTrue(section.isHidden(9));
+
+    section.setCount(5);
+    assertFalse(section.isHidden(9));
+    section.setCount(10);
+    assertFalse(section.isHidden(9));
   }
 
   @Test(expected = NullPointerException.class)
@@ -198,6 +209,16 @@ public class SectionCoreTest {
     assertEquals("0, 1, 2, 3, 4", seq(section));
   }
 
+  @Test
+  public void moveGetOrder() throws Exception {
+    SectionCore section = new SectionCore(int.class);
+    section.setCount(5);
+    section.setOrder(section.getOrder().numberIterator(null));
+    section.setOrder(1, 2, 0);
+    assertEquals("1, 2, 0, 3, 4", seq(section));
+  }
+
+  @Test
   public void delete() throws Exception {
     SectionCore section = new SectionCore(int.class);
     section.setCount(5);
@@ -206,6 +227,66 @@ public class SectionCoreTest {
     section.delete(2, 2);
     assertEquals(33, section.getCellWidth(3));
     assertEquals(4, section.getCount());
+  }
+
+  @Test
+  public void deleteAfterOrder() throws Exception {
+    SectionCore section = new SectionCore(int.class);
+    section.setCount(5);
+    section.setOrder(1, 2, 0);
+    section.delete(0, 4);
+    assertEquals(0, section.getCount());
+    assertEquals("", seq(section));
+  }
+
+  @Test
+  public void deleteBefore() throws Exception {
+    SectionCore section = new SectionCore(int.class);
+    section.setCount(5);
+    section.setOrder(1, 2, 0);
+    section.delete(0, 0);
+    assertEquals(4, section.getCount());
+    assertEquals("0, 1, 2, 3", seq(section));
+  }
+
+  @Test
+  public void deleteInside() throws Exception {
+    SectionCore section = new SectionCore(int.class);
+    section.setCount(5);
+    section.setOrder(1, 3, 0);
+    assertEquals("1, 2, 3, 0, 4", seq(section));
+    section.delete(2, 2);
+    assertEquals("1, 2, 0, 3", seq(section));
+  }
+
+  @Test
+  public void deleteCrossBefore() throws Exception {
+    SectionCore section = new SectionCore(int.class);
+    section.setCount(5);
+    section.setOrder(3, 4, 1);
+    assertEquals("0, 3, 4, 1, 2", seq(section));
+    section.delete(0, 1);
+    assertEquals("1, 2, 0", seq(section));
+  }
+
+  @Test
+  public void deleteCrossAfter() throws Exception {
+    SectionCore section = new SectionCore(int.class);
+    section.setCount(5);
+    section.setOrder(0, 1, 3);
+    assertEquals("2, 0, 1, 3, 4", seq(section));
+    section.delete(1, 2);
+    assertEquals("0, 1, 2", seq(section));
+  }
+
+  @Test
+  public void deleteOverlap() throws Exception {
+    SectionCore section = new SectionCore(int.class);
+    section.setCount(5);
+    section.setOrder(0, 1, 3);
+    assertEquals("2, 0, 1, 3, 4", seq(section));
+    section.delete(1, 3);
+    assertEquals("0, 1", seq(section));
   }
 
   @Test
@@ -221,6 +302,15 @@ public class SectionCoreTest {
   public void setOrder() throws Exception {
     SectionCore section = new SectionCore(int.class);
     section.setCount(5);
+    section.delete(0, 4);
+    section.insert(0, 2);
+    section.setOrder(Arrays.asList(new Integer[] {0,1}).iterator());
+  }
+
+  @Test
+  public void setOrder2() throws Exception {
+    SectionCore section = new SectionCore(int.class);
+    section.setCount(5);
     section.setOrder(Arrays.asList(new Integer[] { 1, 2, 0, 3, 4 }).iterator());
     assertEquals("1, 2, 0, 3, 4", seq(section));
   }
@@ -230,15 +320,15 @@ public class SectionCoreTest {
     SectionCore section = new SectionCore(int.class);
     section.setCount(5);
     section.setOrderExtents(Arrays.asList(
-      new Extent[] { Extent.create(1, 2), Extent.create(0, 0),
-        Extent.create(3, 4) }).iterator());
+        new Extent[] { Extent.create(1, 2), Extent.create(0, 0),
+            Extent.create(3, 4) }).iterator());
     assertEquals("1, 2, 0, 3, 4", seq(section));
   }
 
   // private static String moveSelected(SectionUnchecked section, int source,
   // int target) {
   // section.moveSelected(source, target);
-  // return toString(section);
+  // return seq(section);
   // }
   //
   // private static SectionUnchecked section(int count) {
@@ -247,14 +337,14 @@ public class SectionCoreTest {
   // return section;
   // }
 
-//  static String seq(SectionCore section) {
-//    StringBuilder sb = new StringBuilder();
-//    Forward seq = new DirectionIndexSequence.Forward(section);
-//    for (seq.init(); seq.next();) {
-//      if (sb.length() > 0) sb.append(", ");
-//      sb.append(seq.index());
-//    }
-//    return sb.toString();
-//  }
+  //  static String seq(SectionCore section) {
+  //    StringBuilder sb = new StringBuilder();
+  //    Forward seq = new DirectionIndexSequence.Forward(section);
+  //    for (seq.init(); seq.next();) {
+  //      if (sb.length() > 0) sb.append(", ");
+  //      sb.append(seq.index());
+  //    }
+  //    return sb.toString();
+  //  }
 
 }

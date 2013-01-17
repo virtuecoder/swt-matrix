@@ -15,7 +15,7 @@ import pl.netanel.swt.matrix.Painter;
 /**
  * Current row gradient highlighter.
  */
-public class S0015_CurrentRowGradientHighlighter {
+public class S0215_CurrentRowGradientHighlighter {
   public static void main(String[] args) {
     Shell shell = new Shell();
     shell.setText(title);
@@ -86,5 +86,4 @@ public class S0015_CurrentRowGradientHighlighter {
   // Meta data
   static final String title = "Current row gradient highlighter";
   static final String instructions = "";
-  static final String code = "0015";
 }

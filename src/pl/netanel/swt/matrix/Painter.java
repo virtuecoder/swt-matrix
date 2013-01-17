@@ -386,8 +386,8 @@ public class Painter<X extends Number, Y extends Number> {
 
 		bodyX = zone.sectionX;
 		bodyY = zone.sectionY;
-		if (isTreeEnabled) {
-	    firstIndexX = bodyX.getOrder().next();
+		if (isTreeEnabled && bodyX.isEmpty() == false) {
+	    firstIndexX = bodyX.getOrder().numberIterator(null).next();
 		}
 		indent = 0;
 		return true;

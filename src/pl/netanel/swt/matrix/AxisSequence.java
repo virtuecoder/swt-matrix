@@ -198,7 +198,7 @@ abstract class AxisSequence<N extends Number> implements Sequence {
   }
 
 
-  protected boolean skip(NumberSet<N> set) {
+  protected boolean skip(NumberSetCore<N> set) {
     int i = set.getExtentIndex(index.getValue());
     if (i != -1) {
       index.set(last(set.items.get(i)));

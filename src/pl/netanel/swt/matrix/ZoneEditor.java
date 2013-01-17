@@ -7,13 +7,7 @@
  ******************************************************************************/
 package pl.netanel.swt.matrix;
 
-import static pl.netanel.swt.matrix.Matrix.CMD_COPY;
-import static pl.netanel.swt.matrix.Matrix.CMD_CUT;
-import static pl.netanel.swt.matrix.Matrix.CMD_DELETE;
-import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_ACTIVATE;
-import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_DEACTIVATE_APPLY;
-import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_DEACTIVATE_CANCEL;
-import static pl.netanel.swt.matrix.Matrix.CMD_PASTE;
+import static pl.netanel.swt.matrix.Matrix.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,7 +49,10 @@ public class ZoneEditor<X extends Number, Y extends Number> {
   Painter<X, Y> cellsPainter;
   private GestureBinding mouseDownActivation;
   private GestureBinding mouseDobleClickActivation;
-
+  private ArrayList<EditLogEntry<X, Y>> history;
+  private int historyLength;
+  private int historyIndex;
+  private boolean isBulkEditAtomic;
 
   /**
    * Default constructor, facilitates editing of the specified zone.
@@ -68,7 +65,8 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     this.zone = ZoneCore.from(zone);
     this.zone.setEditor(this);
 
-    //    setImagePath(null);
+    history = new ArrayList<EditLogEntry<X, Y>>();
+    historyIndex = -1;
 
     // Painters
     zone.replacePainterPreserveStyle(new Painter<X, Y>(
@@ -104,6 +102,8 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     zone.bind(CMD_COPY, SWT.KeyDown, SWT.MOD1 | 'c');
     zone.bind(CMD_PASTE, SWT.KeyDown, SWT.MOD1 | 'v');
     zone.bind(CMD_DELETE, SWT.KeyDown, SWT.DEL);
+    zone.bind(CMD_UNDO, SWT.KeyDown, SWT.MOD1 | 'z');
+    zone.bind(CMD_REDO, SWT.KeyDown, SWT.MOD1 | 'y');
     zone.bind(CMD_EDIT_ACTIVATE, SWT.KeyUp, SWT.F2);
     //    zone.bind(CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1);
     zone.bind(CMD_EDIT_ACTIVATE, SWT.KeyDown, Matrix.PRINTABLE_CHARS);
@@ -192,6 +192,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
         return super.isMatching(e);
       }
     });
+
   }
 
   static <X extends Number, Y extends Number> ZoneEditor<X, Y> createCopyOnlyEditor(ZoneCore<X, Y> zone) {
@@ -373,10 +374,40 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     if (control == null) return;
     ZoneEditorData<X, Y> data = getData(control);
     if (data == null) return;
-    if (setModelValue(data.indexX, data.indexY, getEditorValue(control))) {
+    Object newValue = getEditorValue(control);
+    if (setModelValueAndLog(data.indexX, data.indexY, data.value, newValue)) {
       cancel(control);
       getMatrix().redraw();
     }
+  }
+
+  private boolean setModelValueAndLog(X indexX, Y indexY, Object oldValue, Object newValue) {
+    boolean valid = setModelValue(indexX, indexY, newValue);
+    if (valid) {
+      logEditHistory(indexX, indexY, oldValue, newValue);
+    }
+    return valid;
+  }
+
+  private void logEditHistory(X indexX, Y indexY, Object oldValue, Object newValue) {
+    if (++historyIndex == historyLength) historyIndex = 0;
+    history.add(historyIndex, new EditLogEntry<X, Y>(indexX, indexY, oldValue, newValue));
+  }
+
+  private void logEditHistory(ArrayList<EditLogEntry<X, Y>> log) {
+    if (++historyIndex == historyLength) historyIndex = 0;
+    history.add(historyIndex, new EditLogEntry<X, Y>(log));
+  }
+
+
+
+  private boolean setModelValueAndLog(X indexX, Y indexY, Object newValue, ArrayList<EditLogEntry<X, Y>> log) {
+    Object oldValue = getModelValue(indexX, indexY);
+    boolean isValid = setModelValue(indexX, indexY, newValue);
+    if (log != null && isValid) {
+      log.add(new EditLogEntry<X, Y>(indexX, indexY, oldValue, newValue));
+    }
+    return isValid;
   }
 
   /**
@@ -425,9 +456,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     Object[] emulation = getCheckboxEmulation(indexX, indexY);
     Control control = embedded.getControl(indexX, indexY);
     if (emulation != null || isCheckbox(control)) {
-      boolean value = !Boolean.TRUE.equals(getModelValue(indexX, indexY));
-      setModelValue(indexX, indexY, value);
-      getMatrix().redraw();
+      boolean value = toggleBooleanValue(indexX, indexY);
       if (control != null) {
         ((Button) control).setSelection(value);
       }
@@ -436,9 +465,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
         control = addControl(indexX, indexY);
         if (b != null && b.isCharActivated) {
           if (isCheckbox(control)) {
-            boolean value = !Boolean.TRUE.equals(getModelValue(indexX, indexY));
-            ((Button) control).setSelection(value);
-            setModelValue(indexX, indexY, value);
+            toggleBooleanValue(indexX, indexY);
           } else {
             setEditorValue(control, b.character);
           }
@@ -451,6 +478,15 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     return control;
   }
 
+  private boolean toggleBooleanValue(X indexX, Y indexY) {
+    boolean value = !Boolean.TRUE.equals(getModelValue(indexX, indexY));
+    if (setModelValue(indexX, indexY, value)) {
+      logEditHistory(indexX, indexY, !value, value);
+      getMatrix().redraw();
+    }
+    return value;
+  }
+
 
   private boolean isCheckbox(Control control) {
     return control instanceof Button && (control.getStyle() & SWT.CHECK) != 0;
@@ -459,10 +495,11 @@ public class ZoneEditor<X extends Number, Y extends Number> {
   Control addControl(X indexX, Y indexY) {
     Control control = createControl(indexX, indexY);
     if (control != null) {
-      ZoneEditorData<X, Y> data = new ZoneEditorData<X, Y>(indexX, indexY,
+      Object modelValue = getModelValue(indexX, indexY);
+      ZoneEditorData<X, Y> data = new ZoneEditorData<X, Y>(indexX, indexY, modelValue,
           hasEmbeddedControl(indexX, indexY));
       control.setData(ZONE_EDITOR_DATA, data);
-      setEditorValue(control, getModelValue(indexX, indexY));
+      setEditorValue(control, modelValue);
       setBounds(indexX, indexY, control);
       control.moveAbove(getMatrix());
       controlListener.attachTo(control);
@@ -584,14 +621,31 @@ public class ZoneEditor<X extends Number, Y extends Number> {
    * Sets the <code>null</code> value to the selected cells.
    */
   void delete() {
-    Iterator<Cell<X, Y>> it = zone.getSelectedIterator();
-
-    while (it.hasNext()) {
-      Cell<X, Y> cell = it.next();
-      setModelValue(cell.getIndexX(), cell.getIndexY(), null);
+    Iterator<Cell<X, Y>> it = zone.getSelectedBoundsIterator();
+    ArrayList<EditLogEntry<X, Y>> log = null;
+    if (isBulkEditAtomic) log = new ArrayList<EditLogEntry<X, Y>>();
+    try {
+      while (it.hasNext()) {
+        Cell<X, Y> next = it.next();
+        X indexX = next.getIndexX();
+        Y indexY = next.getIndexY();
+        if (zone.isSelected(indexX, indexY) ) {
+          if (!setModelValueAndLog(indexX, indexY, null, log) && isBulkEditAtomic) {
+            undo(log);
+            return;
+          }
+        }
+      }
+      logEditHistory(log);
+      embedded.needsPainting = true;
+      getMatrix().redraw();
     }
-    embedded.needsPainting = true;
-    getMatrix().redraw();
+    catch (Exception e) {
+      if (isBulkEditAtomic) {
+        undo(log);
+      }
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -697,24 +751,38 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     X countX = axisX.getBody().getCount();
     Y countY = axisY.getBody().getCount();
 
-    String[] rows = contents.toString().split(NEW_LINE);
-    for (int i = 0; i < rows.length && mathY.compare(indexY, countY) < 0; i++) {
-      String[] cells = split(rows[i], "\t");
-      indexX = startX;
-      for (int j = 0; j < cells.length && mathX.compare(indexX, countX) < 0; j++) {
-        Object value = parse(indexX, indexY, cells[j]);
-        if (value != null) {
-          setModelValue(indexX, indexY, value);
+    ArrayList<EditLogEntry<X, Y>> log = null;
+    if (isBulkEditAtomic) log = new ArrayList<EditLogEntry<X, Y>>();
+    try {
+      String[] rows = contents.toString().split(NEW_LINE);
+      for (int i = 0; i < rows.length && mathY.compare(indexY, countY) < 0; i++) {
+        String[] cells = split(rows[i], "\t");
+        indexX = startX;
+        for (int j = 0; j < cells.length && mathX.compare(indexX, countX) < 0; j++) {
+          Object value = parse(indexX, indexY, cells[j]);
+          if (value != null) {
+            if (!setModelValueAndLog(indexX, indexY, value, log)) {
+              undo(log);
+              return;
+            }
+          }
+          indexX = zone.sectionX.nextNotHiddenIndex(mathX.increment(indexX), Matrix.FORWARD);
+          if (indexX == null) break;
         }
-        indexX = zone.sectionX.nextNotHiddenIndex(mathX.increment(indexX), Matrix.FORWARD);
-        if (indexX == null) break;
+        indexY = zone.sectionY.nextNotHiddenIndex(mathY.increment(indexY), Matrix.FORWARD);
+        if (indexY == null) break;
       }
-      indexY = zone.sectionY.nextNotHiddenIndex(mathY.increment(indexY), Matrix.FORWARD);
-      if (indexY == null) break;
-    }
+      logEditHistory(log);
 
-    embedded.needsPainting = true;
-    getMatrix().redraw();
+      embedded.needsPainting = true;
+      getMatrix().redraw();
+    }
+    catch (Exception e) {
+      if (isBulkEditAtomic) {
+        undo(log);
+      }
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -727,19 +795,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
    */
   public void cut() {
     copy();
-
-    // Set null value in the selected cells
-    Iterator<Cell<X, Y>> it = zone.getSelectedBoundsIterator();
-    while (it.hasNext()) {
-      Cell<X, Y> next = it.next();
-      X indexX = next.getIndexX();
-      Y indexY = next.getIndexY();
-      if (zone.isSelected(indexX, indexY) ) {
-        setModelValue(indexX, indexY, null);
-      }
-    }
-    embedded.needsPainting = true;
-    getMatrix().redraw();
+    delete();
   }
 
   /**
@@ -774,6 +830,97 @@ public class ZoneEditor<X extends Number, Y extends Number> {
    */
   protected Object parse(X indexX, Y indexY, String s) {
     return s;
+  }
+
+  /**
+   * If set to <code>true</code> and #setModelValue for any cell returns
+   * <code>false</code> then all the previous changes during bulk edit will be
+   * rolled back. Bulk edit operations are paste, cut, delete of selection or
+   * regular bulk edit to apply a value from a control to a set of cells.
+   *
+   * @param state new bulk edit atomicity state to set
+   */
+  public void setBulkEditAtomic(boolean state) {
+    isBulkEditAtomic = state;
+  }
+
+  /**
+   * Returns <code>true</code> if bulk editor operation should be atomic and
+   * all failing if one cell change fails. Otherwise the bulk edit should continue
+   * in chance of single cell not successful to chance the value in the model.
+   * @return
+   */
+  public boolean isBulkEditAtomic() {
+    return isBulkEditAtomic;
+  }
+
+  /**
+   * Sets the length of the history of modifications to the model done with this
+   * editor.
+   * <p>
+   * Default is 0.
+   *
+   * @param length
+   */
+  public void setEditHistoryLength(int length) {
+    historyLength = length;
+  }
+
+  /**
+   * Returns the length of the history of modifications to the model done with
+   * this editor.
+   *
+   * @return the length of the history of modifications to the model done with
+   * this editor
+   */
+  public int getEditHistoryLength() {
+    return historyLength;
+  }
+
+  /**
+   * Undo the latest model change operation.
+   */
+  public void undo() {
+    if (historyIndex >= 0) {
+      EditLogEntry<X, Y> entry = history.get(historyIndex--);
+      if (entry.newValue instanceof ArrayList) {
+        @SuppressWarnings("unchecked")
+        ArrayList<EditLogEntry<X, Y>> list = (ArrayList<EditLogEntry<X, Y>>) entry.newValue;
+        undo(list);
+      }
+      else {
+        setModelValue(entry.indexX, entry.indexY, entry.oldValue);
+      }
+      embedded.needsPainting = true;
+      getMatrix().redraw();
+    }
+  }
+
+  private void undo(ArrayList<EditLogEntry<X, Y>> list) {
+    for (EditLogEntry<X, Y> entry2: list) {
+      setModelValue(entry2.indexX, entry2.indexY, entry2.oldValue);
+    }
+  }
+
+  /**
+   * Redo the latest model change operation that was undone.
+   */
+  public void redo() {
+    if (historyIndex < history.size() - 1) {
+      EditLogEntry<X, Y> entry = history.get(++historyIndex);
+      if (entry.newValue instanceof ArrayList) {
+        @SuppressWarnings("unchecked")
+        ArrayList<EditLogEntry<X, Y>> list = (ArrayList<EditLogEntry<X, Y>>) entry.newValue;
+        for (EditLogEntry<X, Y> entry2: list) {
+          setModelValue(entry2.indexX, entry2.indexY, entry2.newValue);
+        }
+      }
+      else {
+        setModelValue(entry.indexX, entry.indexY, entry.newValue);
+      }
+      embedded.needsPainting = true;
+      getMatrix().redraw();
+    }
   }
 
   /**
@@ -987,16 +1134,34 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     public X2 indexX;
     public Y2 indexY;
     public boolean isEmbedded;
-    public ZoneEditorData(X2 indexX2, Y2 indexY2, boolean embedded) {
+    private Object value;
+    public ZoneEditorData(X2 indexX2, Y2 indexY2, Object value, boolean embedded) {
       indexY = indexY2;
       indexX = indexX2;
+      this.value = value;
       isEmbedded = embedded;
     }
   }
 
-
   @SuppressWarnings("unchecked")
   ZoneEditorData<X, Y> getData(Widget widget) {
     return (ZoneEditorData<X, Y>) widget.getData(ZONE_EDITOR_DATA);
+  }
+
+
+  static class EditLogEntry<X extends Number, Y extends Number> {
+    X indexX;
+    Y indexY;
+    Object oldValue, newValue;
+    public EditLogEntry(X indexX, Y indexY, Object oldValue, Object newValue) {
+      super();
+      this.indexX = indexX;
+      this.indexY = indexY;
+      this.oldValue = oldValue;
+      this.newValue = newValue;
+    }
+    public EditLogEntry(ArrayList<EditLogEntry<X, Y>> log) {
+      newValue = log;
+    }
   }
 }

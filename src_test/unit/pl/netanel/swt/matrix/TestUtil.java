@@ -31,18 +31,18 @@ public class TestUtil {
 		return AxisItem.create(section, index);
 	}
 
-	static NumberSet numberSet() {
-		return new NumberSet(IntMath.getInstance());
+	static NumberSetCore numberSet() {
+		return new NumberSetCore(Math.getInstance(Integer.class), false);
 	}
 
-	static NumberSet numberSet(int n) {
-		NumberSet set = new NumberSet(IntMath.getInstance());
+	static NumberSetCore numberSet(int n) {
+		NumberSetCore set = new NumberSetCore(Math.getInstance(Integer.class), false);
 		set.add(n);
 		return set;
 	}
 
-	static NumberSet numberSet(int start, int end) {
-		NumberSet set = new NumberSet(IntMath.getInstance());
+	static NumberSetCore numberSet(int start, int end) {
+		NumberSetCore set = new NumberSetCore(Math.getInstance(Integer.class), false);
 		set.add(start, end);
 		return set;
 	}
@@ -76,7 +76,7 @@ public class TestUtil {
 	}
 
 	public static AxisLayout layout(int ...count) {
-		Axis axis = new Axis(Integer.class, count.length);
+		Axis axis = new Axis(Integer.class, count.length, 0, 1);
 		AxisLayout layout = axis.layout;
 		for (int i = 0; i < count.length; i++) {
 		  SectionCore section = layout.getSection(i);

@@ -7,6 +7,20 @@
 		
 	<property name="output.dir" location="dist" />
 	<property name="project.dir" location="${output.dir}/project" />
+	
+	<!--  Conditions -->
+	<condition property="javadoc.exclude" value="pl.netanel.swt, pl.netanel.util, pl.netanel.swt.matrix.reloaded, pl.netanel.swt.matrix.reloaded.ints">
+	    <isset property="public"/>
+	</condition>
+	<property name="javadoc.exclude" location="pl.netanel.swt, pl.netanel.util" />
+	<echo message="jdk.dir=${jdk.dir}" />
+	
+	<condition property="distro" value="Public">
+	    <isset property="public"/>
+	</condition>
+	<property name="distro" location="Retail" />
+	
+	
 
 	<target name="clean">
 		<tstamp />
@@ -28,8 +42,8 @@
 		<jar jarfile="${output.dir}\swt-matrix-dont-distribute.jar">
 			<fileset dir="bin">
 				<include name="pl/netanel/swt/matrix/*.class" />
-				<include name="pl/netanel/swt/matrix/reloaded/*.class" />
-				<include name="pl/netanel/swt/matrix/reloaded/ints/*.class" />
+				<include name="pl/netanel/swt/matrix/reloaded/*.class" if="public"/>
+				<include name="pl/netanel/swt/matrix/reloaded/ints/*.class" if="public"/>
 				<include name="pl/netanel/util/*.class" />
 				<include name="../doc/EULA_v1.0.html" />
 				<exclude name="**/*Test*.class" />
@@ -37,7 +51,7 @@
 			<manifest>
 				<attribute name="Class-Path" value="." />
 				<attribute name="Version" value="${version}" />
-				<attribute name="Distribution" value="Retail" />
+				<attribute name="Distribution" value="${distro}" />
 			</manifest>
 		</jar>
 	</target>
@@ -112,7 +126,7 @@
 
 	<target name="javadoc" depends="-javadoc/check" unless="javadoc.uptodate">
 		<javadoc access="protected" author="false" sourcepath="src" 
-			excludepackagenames="pl.netanel.swt, pl.netanel.util, pl.netanel.swt.matrix.custom" 
+			excludepackagenames="${javadoc.exclude}" 
 			destdir="${output.dir}/javadoc" splitindex="true" use="true" version="false" 
 			windowtitle="SWT Matrix - API javadoc" doctitle="SWT Matrix ${version} API">
 

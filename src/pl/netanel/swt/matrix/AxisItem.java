@@ -31,7 +31,7 @@ public class AxisItem<N extends Number> {
 	 *
 	 * @throws IllegalArgumentException if section or index is null
    * @throws IndexOutOfBoundsException if index is out of 0 ...
-   *         {@link #getCount()} bounds
+   *         {@link #getMutableCount()} bounds
 	 */
 	public static <N2 extends Number> AxisItem<N2> create(Section<N2> section, N2 index) {
 	  Preconditions.checkNotNullWithName(section, "section");
@@ -63,7 +63,7 @@ public class AxisItem<N extends Number> {
 	 * @param index
 	 * @throws IllegalArgumentException if the section is <code>null</code>
 	 * or index is <code>null</code>
-	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getCount()}-1 bounds
+	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getMutableCount()}-1 bounds
 	 */
 	private AxisItem(SectionCore<N> section, N index) {
 	  this.section = section;

@@ -15,7 +15,7 @@ import org.junit.Test;
 public class ExtentSequenceTest {
   @Test
   public void empty() throws Exception {
-    NumberSet set = new NumberSet(Math.getInstance(Integer.class));
+    NumberSetCore set = new NumberSetCore(Math.getInstance(Integer.class), true);
     ExtentSequence seq = new SequenceBuilder(set).extents();
     seq.init();
     assertEquals(false, seq.next());
@@ -25,7 +25,7 @@ public class ExtentSequenceTest {
 
   @Test
   public void single() throws Exception {
-    NumberSet set = new NumberSet(Math.getInstance(Integer.class));
+    NumberSetCore set = new NumberSetCore(Math.getInstance(Integer.class), true);
     set.add(0, 9);
 
     ExtentSequence seq = new SequenceBuilder(set).extents();
@@ -42,7 +42,7 @@ public class ExtentSequenceTest {
 
   @Test
   public void two() throws Exception {
-    NumberSet set = new NumberSet(Math.getInstance(Integer.class));
+    NumberSetCore set = new NumberSetCore(Math.getInstance(Integer.class), true);
     set.add(0, 1);
     set.add(3, 4);
 
@@ -64,7 +64,7 @@ public class ExtentSequenceTest {
 
   @Test
   public void backward() throws Exception {
-    NumberSet set = new NumberSet(Math.getInstance(Integer.class));
+    NumberSetCore set = new NumberSetCore(Math.getInstance(Integer.class), true);
     set.add(0, 1);
     set.add(3, 4);
 
@@ -86,7 +86,7 @@ public class ExtentSequenceTest {
 
   @Test
   public void originFinish() throws Exception {
-    NumberSet set = new NumberSet(Math.getInstance(Integer.class));
+    NumberSetCore set = new NumberSetCore(Math.getInstance(Integer.class), true);
     set.add(0, 2);
     set.add(5, 7);
 
@@ -106,35 +106,35 @@ public class ExtentSequenceTest {
     assertEquals(null, seq.getEnd());
   }
 
-//  @Test
-//  public void subtract() throws Exception {
-//    NumberSet set1 = new NumberList(Math.getInstance(Integer.class));
-//    set1.add(2, 6);
-//    set1.add(0, 1);
-//
-//    NumberSet set2 = new NumberSet(Math.getInstance(Integer.class));
-//    set2.add(0, 1);
-//    set2.add(5);
-//    set2.add(3);
-//
-//    ExtentSequence seq = new SequenceBuilder(set1).subtract(set2).extents();
-//    seq.init();
-//
-//    assertEquals(true, seq.next());
-//    assertEquals(2, seq.getStart());
-//    assertEquals(2, seq.getEnd());
-//
-//    assertEquals(true, seq.next());
-//    assertEquals(4, seq.getStart());
-//    assertEquals(4, seq.getEnd());
-//
-//    assertEquals(true, seq.next());
-//    assertEquals(6, seq.getStart());
-//    assertEquals(6, seq.getEnd());
-//
-//    assertEquals(false, seq.next());
-//    assertEquals(null, seq.getStart());
-//    assertEquals(null, seq.getEnd());
-//  }
+  @Test
+  public void subtract() throws Exception {
+    NumberSetCore set1 = new NumberList(Math.getInstance(Integer.class));
+    set1.add(2, 6);
+    set1.add(0, 1);
+
+    NumberSetCore set2 = new NumberSetCore(Math.getInstance(Integer.class), true);
+    set2.add(0, 1);
+    set2.add(5);
+    set2.add(3);
+
+    ExtentSequence seq = new SequenceBuilder(set1).subtract(set2).extents();
+    seq.init();
+
+    assertEquals(true, seq.next());
+    assertEquals(2, seq.getStart());
+    assertEquals(2, seq.getEnd());
+
+    assertEquals(true, seq.next());
+    assertEquals(4, seq.getStart());
+    assertEquals(4, seq.getEnd());
+
+    assertEquals(true, seq.next());
+    assertEquals(6, seq.getStart());
+    assertEquals(6, seq.getEnd());
+
+    assertEquals(false, seq.next());
+    assertEquals(null, seq.getStart());
+    assertEquals(null, seq.getEnd());
+  }
 
 }

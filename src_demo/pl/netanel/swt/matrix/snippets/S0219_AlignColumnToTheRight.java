@@ -11,7 +11,7 @@ import pl.netanel.swt.matrix.Painter;
 /**
  * Align column to the right.
  */
-public class S0019_AlignColumnToTheRight {
+public class S0219_AlignColumnToTheRight {
 
   public static void main(String[] args) {
     Shell shell = new Shell();
@@ -56,5 +56,4 @@ public class S0019_AlignColumnToTheRight {
   // Meta data
   static final String title = "Align column to the right";
   static final String instructions = "";
-  static final String code = "0019";
 }

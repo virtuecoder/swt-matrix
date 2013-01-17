@@ -30,7 +30,7 @@ import pl.netanel.swt.matrix.Style;
 /*
  * Make sure ascending.png and descending.png is on your class path.
  */
-public class S0005_SortingByColumns {
+public class S0055_SortingByColumns {
 
   public static void main(String[] args) throws Exception {
     Shell shell = new Shell();
@@ -168,5 +168,4 @@ public class S0005_SortingByColumns {
   // Meta data
   static final String title = "Sorting by columns";
   static final String instructions = "";
-  static final String code = "0005";
 }

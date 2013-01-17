@@ -14,7 +14,7 @@ import pl.netanel.swt.matrix.Painter;
 /**
  * Draw custom focus cell marker.
  */
-public class S0011_DrawCustomFocusCellMarker {
+public class S0211_DrawCustomFocusCellMarker {
   public static void main(String[] args) {
     Shell shell = new Shell();
     shell.setText(title);
@@ -58,5 +58,4 @@ public class S0011_DrawCustomFocusCellMarker {
   // Meta data
   static final String title = "Draw custom focus cell marker";
   static final String instructions = "";
-  static final String code = "0011";
 }

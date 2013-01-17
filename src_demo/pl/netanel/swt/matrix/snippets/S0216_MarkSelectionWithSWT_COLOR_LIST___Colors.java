@@ -14,7 +14,7 @@ import pl.netanel.swt.matrix.Section;
 /**
  * Mark selection with SWT.COLOR_LIST... colors.
  */
-public class S0016_MarkSelectionWithSWT_COLOR_LIST___Colors {
+public class S0216_MarkSelectionWithSWT_COLOR_LIST___Colors {
   public static void main(String[] args) {
     Shell shell = new Shell();
     shell.setText(title);
@@ -51,5 +51,4 @@ public class S0016_MarkSelectionWithSWT_COLOR_LIST___Colors {
   // Meta data
   static final String title = "Mark selection with SWT.COLOR_LIST... colors";
   static final String instructions = "";
-  static final String code = "0016";
 }

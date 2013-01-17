@@ -72,5 +72,4 @@ public class S0450_ActivateEditorWithSingleClickInsteadOfDoubleClick {
   // Meta data
   static final String title = "Activate editor with single click instead of double click";
   static final String instructions = "";
-  static final String code = "0450";
 }

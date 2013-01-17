@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TypedListener;
 
 import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
-import pl.netanel.swt.matrix.NumberSet.ContentChangeListener;
+import pl.netanel.swt.matrix.NumberSetCore.ContentChangeListener;
 import pl.netanel.util.ImmutableIterator;
 import pl.netanel.util.Preconditions;
 
@@ -52,18 +52,18 @@ class SectionCore<N extends Number> implements Section<N> {
   N count;
 
   final NumberOrder<N> order;
-  final NumberSet<N> hidden; // union of all hidden sets
-  final NumberSet<N> hiddenByUser; // hidden by user form stanrd ui actions
+  final NumberSetCore<N> hidden; // union of all hidden sets
+  final NumberSetCore<N> hiddenByUser; // hidden by user form stanrd ui actions
   final ArrayList<NumberSet<N>> hiddenSets;
-  final NumberSet<N> buried;
+  final NumberSetCore<N> buried;
   final ValueNumberSetMap<N, N> parents;
 
   //	NumberOrder<N> finale;
 
-  private final NumberSet<N> expanded;
-  private final NumberSet<N> resizable;
-  private final NumberSet<N> moveable;
-  private final NumberSet<N> hideable;
+  private final NumberSetCore<N> expanded;
+  private final NumberSetCore<N> resizable;
+  private final NumberSetCore<N> moveable;
+  private final NumberSetCore<N> hideable;
   private final IntAxisState<N> cellWidth;
   private final IntAxisState<N> lineWidth;
 
@@ -78,7 +78,9 @@ class SectionCore<N extends Number> implements Section<N> {
   final TypedListeners listeners;
   private final Class<N> indexClass;
   final private HashMap<NumberSet<N>, ContentChangeListener<N>> hiddenSetListeners;
+
   boolean isDirty;
+  ExtentSequence.Forward<N> seq;
 
   /**
    * Constructs a section indexed by the given sub-class of {@link Number}.
@@ -92,26 +94,28 @@ class SectionCore<N extends Number> implements Section<N> {
 
     order = new NumberOrder<N>(math);
     //		merged = new NumberSet<N>(math, true);
-    hidden = new NumberSet<N>(math, true);
+    hidden = new NumberSetCore<N>(math, true);
     hiddenSets = new ArrayList<NumberSet<N>>();
     hiddenSetListeners = new HashMap<NumberSet<N>, ContentChangeListener<N>>();
-    hiddenByUser = new NumberSet<N>(math, true);
+    hiddenByUser = new NumberSetCore<N>(math, true);
     addHiddenSet(hiddenByUser);
-    buried = new NumberSet<N>(math);
-    expanded = new NumberSet<N>(math);
+    buried = new NumberSetCore<N>(math, true);
+    expanded = new NumberSetCore<N>(math, true);
     parents = new ValueNumberSetMap<N, N>(math, null);
 
     //		finale = new NumberOrder<N>(math);
 
-    resizable = new NumberSet<N>(math, true);
-    moveable = new NumberSet<N>(math, true);
-    hideable = new NumberSet<N>(math, true);
+    resizable = new NumberSetCore<N>(math, true);
+    moveable = new NumberSetCore<N>(math, true);
+    hideable = new NumberSetCore<N>(math, true);
 
     cellWidth = new IntAxisState<N>(math, DEFAULT_CELL_WIDTH);
     lineWidth = new IntAxisState<N>(math, DEFAULT_LINE_WIDTH);
 
     selection = new NumberList<N>(math);
     lastSelection = new NumberList<N>(math);
+
+    seq = new ExtentSequence.Forward<N>(order);
 
     defaultResizable = true;
     isNavigationEnabled = isVisible = true;
@@ -207,8 +211,8 @@ class SectionCore<N extends Number> implements Section<N> {
   }
 
   @Override
-  public Iterator<N> getOrder() {
-    return order.numberIterator();
+  public NumberSet<N> getOrder() {
+    return order;
   }
 
   @Override
@@ -385,9 +389,9 @@ class SectionCore<N extends Number> implements Section<N> {
   @Override
   public void setCellWidth() {
     if (axis != null) {
-      for (Iterator<N> it = getOrder(); it.hasNext();) {
-        N next = it.next();
-        axis.matrix.pack(axis.symbol, this, next);
+      NumberSequence<N> seq = order.numberSequence(null);
+      for (seq.init(); seq.next();) {
+        axis.matrix.pack(axis.symbol, this, seq.item());
       }
     }
   }
@@ -468,12 +472,12 @@ class SectionCore<N extends Number> implements Section<N> {
 
   @Override
   public N getHiddenCount() {
-    return hidden.getCount().getValue();
+    return hidden.getMutableCount().getValue();
   }
 
   @Override
-  public Iterator<N> getHidden() {
-    return new IndexIterator(new NumberSequence2<N>(hidden));
+  public NumberSet<N> getHidden() {
+    return hidden;
   }
 
   @Override
@@ -482,7 +486,7 @@ class SectionCore<N extends Number> implements Section<N> {
   }
 
   @Override
-  public NumberSet<N> getHiddenSet() {
+  public NumberSetCore<N> getDefaultHiddenSet() {
     return hiddenByUser;
   }
 
@@ -508,7 +512,7 @@ class SectionCore<N extends Number> implements Section<N> {
     setSelectedAll(state, false, true);
   }
 
-  void setSelected(N start, N end, boolean state, boolean notify) {
+  void setSelected(N start, N end, boolean state, boolean notify, boolean skipHidden) {
     // Determine if there is a selection change
     //    boolean modified = false;
     //    if (notify) {
@@ -527,6 +531,9 @@ class SectionCore<N extends Number> implements Section<N> {
     //    }
 
     selection.change(start, end, state);
+    if (skipHidden) {
+      selection.removeAll(hidden);
+    }
 
     //	  if (modified) {
     addSelectionEvent();
@@ -556,7 +563,7 @@ class SectionCore<N extends Number> implements Section<N> {
   }
 
   @Override public N getSelectedCount() {
-    return selection.getCount().getValue();
+    return selection.getMutableCount().getValue();
   }
 
   /**
@@ -567,8 +574,8 @@ class SectionCore<N extends Number> implements Section<N> {
     return new NumberSequence2<N>(math, selection.items);
   }
 
-  @Override public Iterator<N> getSelected() {
-    return selection.numberIterator();
+  @Override public NumberSet<N> getSelected() {
+    return selection;
   }
 
   @Override public Iterator<Extent<N>> getSelectedExtents() {
@@ -735,9 +742,9 @@ class SectionCore<N extends Number> implements Section<N> {
     hidden.addAll(set);
 
     // Listen to content changes in the added set
-    ContentChangeListener<N> listener = new NumberSet.ContentChangeListener<N>() {
-      public void handle(NumberSet.ContentChangeEvent<N> e) {
-        if (e.operation == NumberSet.ContentChangeEvent.ADD) {
+    ContentChangeListener<N> listener = new NumberSetCore.ContentChangeListener<N>() {
+      public void handle(NumberSetCore.ContentChangeEvent<N> e) {
+        if (e.operation == NumberSetCore.ContentChangeEvent.ADD) {
           hidden.add(e.start, e.end);
         }
         else {
@@ -752,7 +759,9 @@ class SectionCore<N extends Number> implements Section<N> {
       }
     };
     hiddenSetListeners.put(set, listener);
-    set.addListener(listener);
+    if (set instanceof NumberSetCore) {
+      ((NumberSetCore<N>) set).addListener(listener);
+    }
     isDirty = true;
   }
 
@@ -760,7 +769,9 @@ class SectionCore<N extends Number> implements Section<N> {
   public void removeHiddenSet(NumberSet<N> set) {
     hidden.removeAll(set);
     hiddenSets.remove(set);
-    set.removeListener(hiddenSetListeners.remove(set));
+    if (set instanceof NumberSetCore) {
+      ((NumberSetCore<N>) set).removeListener(hiddenSetListeners.remove(set));
+    }
     isDirty = true;
   }
 
@@ -769,7 +780,7 @@ class SectionCore<N extends Number> implements Section<N> {
    */
 
   N getVisibleCount() {
-    return math.create(count).subtract(hidden.getCount()).getValue();
+    return math.create(count).subtract(hidden.getMutableCount()).getValue();
   }
 
   N nextNotHiddenIndex(N index, int direction) {
@@ -1019,6 +1030,7 @@ class SectionCore<N extends Number> implements Section<N> {
   static <N2 extends Number> SectionCore<N2> from(Section<N2> section) {
     return (SectionCore<N2>) section.getUnchecked();
   }
+
 
 
 

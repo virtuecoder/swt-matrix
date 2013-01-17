@@ -118,5 +118,4 @@ public class S0902_SelectionAndControlEventHandling {
   // Meta data
   static final String title = "Selection and control event handling";
   static final String instructions = "";
-  static final String code = "0902";
 }

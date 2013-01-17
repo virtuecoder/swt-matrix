@@ -31,7 +31,7 @@ class NumberSequence2<N extends Number> implements Sequence {
   private final List<MutableExtent<N>> items;
 
 
-	NumberSequence2(NumberSet<N> set) {
+	NumberSequence2(NumberSetCore<N> set) {
 		this(set.math, set.items);
 	}
 

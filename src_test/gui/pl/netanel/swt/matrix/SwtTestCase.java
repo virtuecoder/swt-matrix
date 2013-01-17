@@ -44,6 +44,7 @@ import pl.netanel.util.Util;
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class SwtTestCase {
+
   public static boolean breakFlag = false;
   public static boolean runManual = false;
 
@@ -1233,7 +1234,6 @@ public class SwtTestCase {
     x == Matrix.CMD_DELETE ? "CMD_DELETE" :
     x == Matrix.CMD_ITEM_HIDE ? "CMD_ITEM_HIDE" :
     x == Matrix.CMD_ITEM_SHOW ? "CMD_ITEM_SHOW" :
-    x == Matrix.CMD_RESIZE_PACK ? "CMD_RESIZE_PACK" :
     x == Matrix.CMD_TRAVERSE_TAB_NEXT ? "CMD_TRAVERSE_TAB_NEXT" :
     x == Matrix.CMD_TRAVERSE_TAB_PREVIOUS ? "CMD_TRAVERSE_TAB_PREVIOUS" : "";
 
@@ -1325,7 +1325,12 @@ public class SwtTestCase {
       sb.append(e.character);
     }
     sb.append(" ");
-    sb.append(e.button + e.keyCode);
+    if (3 <= e.type && e.type <= 8) {
+      sb.append(e.button).append(" ").append(e.x).append(" ").append(e.y);
+
+    } else {
+      sb.append(e.keyCode);
+    }
     TestUtil.log(sb);
   }
 

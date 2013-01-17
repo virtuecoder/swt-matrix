@@ -1,4 +1,41 @@
 -------------------------------------------------------------------------------
+Version 0.7.26
+
+Bug fixes
+- Compute size was changing the state of navigation.
+
+-------------------------------------------------------------------------------
+Version 0.7.25
+
+Bug fixes
+- Resize in headerXY was not bound to events
+- Insert was not causing scroll update
+
+-------------------------------------------------------------------------------
+Version 0.7.24
+
+Feature changes:
+- Optional skipping of hidden items when selecting cells or row/columns in UI. Zone.setSelected and Section.setSelected still selects hidden regardless of that options.
+- Optional atomicity of bulk edit operation (copy/paste/cut/delete)
+- Undo/redo for editors, including bulk operations 
+- Multi column sorting snippet
+
+API changes:
+- Added Matrix.setSelectSkipHidden(boolean)
+- Added Matrix.getSelectSkipHidden() : boolean
+- Added ZoneEditor.setBulkEditAtomic(boolean)
+- Added ZoneEditor.isBulkEditAtomic() : boolean
+- Added ZoneEditor.setEditHistoryLength(int)
+- Added ZoneEditor.getEditHistoryLength() : int
+- Added ZoneEditor.undo()
+- Added ZoneEditor.redo()
+- Renamed Section.getHiddenSet to getDefaultHiddenSet
+The following API is still work in progress
+- Added NumberSet interface
+- Change return type Section.getHidden() from Iterator<Number> to ExtentSet. Call getHidden().numbers(null).iterator() instead.
+- Change return type Section.getSelected() from Iterator<Number> to ExtentSet. Call getSelected().numbers(null).iterator() instead.
+
+-------------------------------------------------------------------------------
 Version 0.7.23.8
 
 Bug fixes:

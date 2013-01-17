@@ -160,5 +160,4 @@ public class S0003_FilterSectionBetweenHeaderAndBody {
   // Meta data
   static final String title = "Filter section between header and body";
   static final String instructions = "";
-  static final String code = "0003";
 }

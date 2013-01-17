@@ -668,16 +668,16 @@ public interface Section<N extends Number> {
   N getHiddenCount();
 
   /**
-   * Returns iterator for indexes of the hidden items.
+   * Returns the set of numbers representing indexes of the hidden items.
    * <p>
    * Number that is returned by {@link Iterator#next()}
    * method is the index of the item in the model,
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations.
    *
-   * @return the iterator for indexes of the hidden items
+   * @return the set of indexes of the hidden items
    */
-  Iterator<N> getHidden();
+  NumberSet<N> getHidden();
 
   /**
    * Returns iterator for extents of the hidden items.
@@ -764,16 +764,16 @@ public interface Section<N extends Number> {
   N getSelectedCount();
 
   /**
-   * Returns iterator for indexes of the selected items.
+   * Returns the set of numbers representing indexes of the selected items.
    * <p>
    * Number that is returned by {@link Iterator#next()}
    * method is the index of the item in the model,
    * not the visual position of the item on the screen
    * which can be altered by move and hide operations.
    *
-   * @return the iterator for indexes of the selected items
+   * @return the set of indexes of the selected items
    */
-  Iterator<N> getSelected();
+  NumberSet<N> getSelected();
 
   /**
    * Returns iterator for extents of the selected items.
@@ -853,7 +853,7 @@ public interface Section<N extends Number> {
   N getOrder(N index);
 
   /**
-   * Returns iterator for indexes of the order ranks of the items.
+   * Returns set of number extents representing the order of the items.
    * <p>
    * Number that is returned by {@link Iterator#next()}
    * method is the index of the item in the model,
@@ -862,7 +862,7 @@ public interface Section<N extends Number> {
    *
    * @return the iterator for indexes of the selected items
    */
-  Iterator<N> getOrder();
+  NumberSet<N> getOrder();
 
   /**
    * Returns iterator for extents of the order ranks of the items.
@@ -1052,33 +1052,85 @@ public interface Section<N extends Number> {
    */
   void removeSelectionListener(SelectionListener listener);
 
-  public abstract boolean isExpanded(N index);
-
-  public abstract void setExpanded(N start, N end, boolean state);
-
-  public abstract void setExpanded(N parent, boolean state);
-
-  public abstract N getLevelInTree(N index);
-
-  public abstract N getParent(N index);
-
-  public abstract N getChildrenCount(N parent);
-
-  public abstract Iterator<N> getChildren(N parent);
-
-  public abstract Iterator<Extent<N>> getChildrenExtents(N parent);
-
-  public abstract void setParent(N start, N end, N parent);
-
-  public abstract void setParent(N child, N parent);
-
-  boolean hasChildren(N parent);
-
-  public abstract void removeHiddenSet(NumberSet<N> set);
-
+  /**
+   * Adds the given set to the collection of hidden sets. Each hidden set can be managed
+   * independently to reflect items hidden by the user, application logic filtering,
+   * or tree/grouping collapsing. The final hidden state will be union of all the individual
+   * hidden sets.
+   * @param set hidden set to be added
+   */
   public abstract void addHiddenSet(NumberSet<N> set);
 
-  public NumberSet<N> getHiddenSet();
+  /**
+   * Removes hidden set. The default hidden set cannot be removed.
+   * @param set hidden set to be removed
+   */
+  public abstract void removeHiddenSet(NumberSet<N> set);
+
+  /**
+   * Returns the default hidden set representing items hidden by the user with
+   * the commands bound to the user gestures.
+   *
+   * @return the default hidden set
+   */
+  public NumberSet<N> getDefaultHiddenSet();
+
+
+  /**
+   * Provisional tree API.
+   */
+  public abstract boolean isExpanded(N index);
+
+  /**
+   * Provisional tree API.
+   */
+  public abstract void setExpanded(N start, N end, boolean state);
+
+  /**
+   * Provisional tree API.
+   */
+  public abstract void setExpanded(N parent, boolean state);
+
+  /**
+   * Provisional tree API.
+   */
+  public abstract N getLevelInTree(N index);
+
+  /**
+   * Provisional tree API.
+   */
+  public abstract N getParent(N index);
+
+  /**
+   * Provisional tree API.
+   */
+  public abstract N getChildrenCount(N parent);
+
+  /**
+   * Provisional tree API.
+   */
+  public abstract Iterator<N> getChildren(N parent);
+
+  /**
+   * Provisional tree API.
+   */
+  public abstract Iterator<Extent<N>> getChildrenExtents(N parent);
+
+  /**
+   * Provisional tree API.
+   */
+  public abstract void setParent(N start, N end, N parent);
+
+  /**
+   * Provisional tree API.
+   */
+  public abstract void setParent(N child, N parent);
+
+  /**
+   * Provisional tree API.
+   */
+  boolean hasChildren(N parent);
+
 
 //  /**
 //   * Returns <code>true</code> if the item with the given index in the model is merged be moved by end user.

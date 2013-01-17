@@ -18,7 +18,7 @@ import pl.netanel.swt.matrix.Section;
 /**
  * Freeze head and tail with different color for the dividing line
  */
-public class S0201_FreezeHeadAndTailWithDifferentColorForTheDividingLine {
+public class S0250_FreezeHeadAndTailWithDifferentColorForTheDividingLine {
 
   public static void main(String[] args) {
     Shell shell = new Shell();
@@ -94,5 +94,4 @@ public class S0201_FreezeHeadAndTailWithDifferentColorForTheDividingLine {
   // Meta data
   static final String title = "Freeze head and tail with different color for the dividing line";
   static final String instructions = "";
-  static final String code = "0201";
 }

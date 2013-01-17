@@ -1,15 +1,13 @@
 <project name="swt-matrix" default="local website" basedir="..">
 	<property file="build/local.properties" />
+	<property file="build/build.properties" />
 	<property file="build/version.properties" />
   
 	<property name="output.dir" location="dist" />
-  <property name="project.dir" location="${output.dir}/project" />
+    <property name="project.dir" location="${output.dir}/project" />
 
 	
-	<property name="jdk.dir" value="C:\Program Files\Java\jdk1.6.0_32" />
 	<property name="java.lib.dir" value="D:\Dev\Java\java_lib" />
-	<property name="eclipse.swt.file" value="D:\Dev\Java\eclipse\plugins\org.eclipse.swt_3.7.2.v3740f.jar" />
-	<property name="eclipse.swt.win32.file" value="D:\Dev\Java\eclipse\plugins\org.eclipse.swt.win32.win32.x86_3.7.2.v3740f.jar" />
 	<property name="wamp.dir" value="D:\dev\wamp" />
 	<property name="local.website.dir" value="${wamp.dir}\www\netanel15" />
 
@@ -56,24 +54,6 @@
 	        <!--mapper type="merge" to="${ant.project.name}-${version}.jar"/-->
 	    </uptodate>
 	    <echo message="${proguard.uptodate}"/>
-	</target>
-
-	<target name="public-jar" description="create the jar" depends="proguard/check" unless="proguard.uptodate">
-		<!-- swt-matrix.jar-->
-		<jar jarfile="${output.dir}\swt-matrix-dont-distribute.jar">
-			<fileset dir="bin">
-				<include name="pl/netanel/swt/matrix/*.class" />
-				<include name="pl/netanel/util/*.class" />
-				<include name="../doc/EULA.txt" />
-				<exclude name="**/*Test*.class" />
-			</fileset>
-			<manifest>
-				<!--attribute name="Main-Class" value="app.DataMate" /-->
-				<attribute name="Class-Path" value="." />
-				<attribute name="Version" value="${version}" />
-				<attribute name="Distribution" value="Public" />
-			</manifest>
-		</jar>
 	</target>
 
 
@@ -178,27 +158,12 @@
   </target>
 
 	
-	<target name="public-dist" depends="clean, public-jar">
+	<target name="public-dist" depends="clean">
+		<!--ant antfile="build\build.xml" target="jar"><property name="public" value="true"/> </ant>
 		<ant antfile="build\build.xml" target="obfuscate"/>
-		<ant antfile="build\build.xml" target="javadoc"/>
-		<ant antfile="build\build.xml" target="snippets"/>
-		
-	  <zip destfile="swt-matrix-${version}.zip">
-	    <!-- Binaries -->
-	    <fileset dir="." includes="${output.dir}}/swt-matrix-${version}.jar" />
-
-	    <!-- Docs -->
-	    <fileset dir="doc" includes="EULA_v1.0.html" />
-	    <fileset dir="doc" includes="Change-log.txt" />
-	    <zipfileset dir="javadoc" prefix="javadoc" />
-
-	    <!-- Snippets -->
-	    <zipfileset dir="src_demo" includes="pl/netanel/swt/matrix/snippets/*.java" prefix="snippets" />
-
-	    <!-- Project -->
-	    <zipfileset dir="${output.dir}" includes="project/**.*" prefix="project" />
-
-	  </zip>
+		<ant antfile="build\build.xml" target="javadoc"><property name="public" value="true"/> </ant>
+		<ant antfile="build\build.xml" target="snippets"><property name="public" value="true"/> </ant-->
+		<ant antfile="build\build.xml" target="dist"><property name="public" value="true"/> </ant>
 	</target>
 
 	

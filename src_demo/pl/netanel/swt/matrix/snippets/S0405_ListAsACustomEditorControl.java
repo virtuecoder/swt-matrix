@@ -107,5 +107,4 @@ public class S0405_ListAsACustomEditorControl {
   // Meta data
   static final String title = "List as a custom editor control";
   static final String instructions = "";
-  static final String code = "0405";
 }

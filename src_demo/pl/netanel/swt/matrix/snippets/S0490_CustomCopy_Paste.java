@@ -223,5 +223,4 @@ public class S0490_CustomCopy_Paste {
   // Meta data
   static final String title = "Custom copy / paste";
   static final String instructions = "";
-  static final String code = "0490";
 }

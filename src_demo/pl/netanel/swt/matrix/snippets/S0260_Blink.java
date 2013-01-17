@@ -12,7 +12,7 @@ import pl.netanel.swt.matrix.Painter;
 /**
  * Shows how make the cells to blink.
  */
-public class S0020_Blink {
+public class S0260_Blink {
 
   public static void main(String[] args) {
     Shell shell = new Shell();
@@ -97,5 +97,4 @@ public class S0020_Blink {
   // Meta data
   static final String title = "Blink";
   static final String instructions = "";
-  static final String code = "0020";
 }

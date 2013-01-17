@@ -45,5 +45,4 @@ public class S0002_UnlimitedNumberOfItems {
   // Meta data
   static final String title = "Unlimited number of items";
   static final String instructions = "";
-  static final String code = "0002";
 }

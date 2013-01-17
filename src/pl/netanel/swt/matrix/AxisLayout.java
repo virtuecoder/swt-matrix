@@ -53,12 +53,11 @@ class AxisLayout<N extends Number> {
     createSections(numberClass, sectionCount, headerIndex, bodyIndex);
   }
 
-  public AxisLayout(int headerIndex, int bodyIndex, SectionCore<N>... sections) {
-    assert sections.length > 0;
-    this.sections = new ArrayList<SectionCore<N>>(sections.length);
-    math = sections[0].math;
-    for (int i = 0; i < sections.length; i++) {
-      SectionCore<N> section = sections[i];
+  public AxisLayout(int headerIndex, int bodyIndex, List<SectionCore<N>> sections) {
+    this.sections = new ArrayList<SectionCore<N>>(sections.size());
+    math = sections.get(0).math;
+    for (int i = 0; i < sections.size(); i++) {
+      SectionCore<N> section = sections.get(i);
       section.index = i;
       this.sections.add(section);
     }

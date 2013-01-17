@@ -69,6 +69,7 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 
   @Override
   protected boolean init() {
+    if (matrix.isDisposed()) return false;
     if (!needsPainting) {
       return false;
     }

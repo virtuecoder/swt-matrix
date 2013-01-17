@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Listener;
 import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Extent;
-import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.NumberSet;
+import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
@@ -720,7 +720,7 @@ public class Grouping {
       if (isPermanent || children.size() <= 1 ||
           // less then two not hidden items to display
           // TODO Replace with (all hidden - grouping.hidden)
-          grouping.section.getHiddenSet().getCount(extent.getStart(), extent.getEnd()) >= extentCount - 1)
+          grouping.section.getDefaultHiddenSet().getCount(extent.getStart(), extent.getEnd()) >= extentCount - 1)
       {
         return TOGGLE_NONE;
       }

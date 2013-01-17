@@ -16,7 +16,7 @@ public class AxisSequenceTest {
 
   @Test
   public void empty() throws Exception {
-    Axis<Integer> axis = new Axis<Integer>(Integer.class, 1);
+    Axis<Integer> axis = new Axis<Integer>(Integer.class, 2, 0, 1);
     SectionCore section = axis.layout.sections.get(0);
     section.setVisible(true);
     section.setCount(0);
@@ -28,7 +28,7 @@ public class AxisSequenceTest {
 
   @Test
   public void strait() throws Exception {
-    Axis<Integer> axis = new Axis<Integer>(Integer.class, 1);
+    Axis<Integer> axis = new Axis<Integer>(Integer.class, 2, 0, 1);
     SectionCore section = axis.layout.sections.get(0);
     section.setVisible(true);
     section.setCount(5);
@@ -39,7 +39,7 @@ public class AxisSequenceTest {
 
   @Test
   public void straitLast() throws Exception {
-    Axis<Integer> axis = new Axis<Integer>(Integer.class, 1);
+    Axis<Integer> axis = new Axis<Integer>(Integer.class, 2, 0, 1);
     SectionCore section = axis.layout.sections.get(0);
     section.setVisible(true);
     section.setCount(5);
@@ -50,7 +50,7 @@ public class AxisSequenceTest {
 
   @Test
   public void order() throws Exception {
-    Axis<Integer> axis = new Axis<Integer>(Integer.class, 1);
+    Axis<Integer> axis = new Axis<Integer>(Integer.class, 2, 0, 1);
     SectionCore section = axis.layout.sections.get(0);
     section.setVisible(true);
     section.setCount(5);
@@ -68,7 +68,7 @@ public class AxisSequenceTest {
 
   @Test
   public void hidden() throws Exception {
-    Axis<Integer> axis = new Axis<Integer>(Integer.class, 1);
+    Axis<Integer> axis = new Axis<Integer>(Integer.class, 2, 0, 1);
     SectionCore section = axis.layout.sections.get(0);
     section.setVisible(true);
     section.setCount(5);

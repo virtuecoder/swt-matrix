@@ -44,9 +44,9 @@ public class  EditorTest extends SwtTestCase {
       }
     };
 
+//    SwtTestCase.listenToAll(shell);
     shell.open();
 
-    processEvents();
     type(" ");
     assertEquals(true, button.getSelection());
     assertEquals(true, editor.getModelValue(0, 0));

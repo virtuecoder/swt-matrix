@@ -44,7 +44,6 @@ public class S1001_CompoundExample {
   // Meta data
   static final String title = "Screenshot 1";
   static final String instructions = "";
-  static final String code = "1001";
 
   protected static final BigInteger BigIntegerTWO = new BigInteger("2");
   private BigInteger indexY0;
@@ -115,7 +114,7 @@ public class S1001_CompoundExample {
     totalSection = axisY.getSection(3);
     totalSection.setFocusItemEnabled(false);
 
-    matrix = new Matrix<Integer, BigInteger>(parent, 
+    matrix = new Matrix<Integer, BigInteger>(parent,
       SWT.V_SCROLL | SWT.H_SCROLL, null, axisY);
     matrix.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -237,7 +236,7 @@ public class S1001_CompoundExample {
           .getSystemColor(SWT.COLOR_YELLOW) : null;
 
         boolean isOddY = indexY.divideAndRemainder(BigIntegerTWO)[1].equals(BigInteger.ZERO);
-        style.foreground = style.selectionForeground = indexX == 5 && isOddY 
+        style.foreground = style.selectionForeground = indexX == 5 && isOddY
           ? redColor
           : null;
 
@@ -276,7 +275,7 @@ public class S1001_CompoundExample {
       }
 
     });
-    
+
 
     // Vertical lines painter
     body.replacePainterPreserveStyle(new Painter<Integer, BigInteger>(Painter.NAME_LINES_Y) {
@@ -516,7 +515,8 @@ public class S1001_CompoundExample {
       }
     });
 
-    matrix.getHeaderX().unbind(Matrix.CMD_RESIZE_PACK, SWT.MouseDoubleClick, 1);
+    matrix.getHeaderX().unbind(Matrix.CMD_PACK_COLUMN, SWT.MouseDoubleClick, 1);
+    matrix.getHeaderY().unbind(Matrix.CMD_PACK_ROW, SWT.MouseDoubleClick, 1);
   }
 
   void highlightHeaders() {
@@ -558,7 +558,7 @@ public class S1001_CompoundExample {
     gc.fillOval(0, 0, 16, 16);
     gc.dispose();
 
-    ImageData imageData = new ImageData(9, 5, 24, 
+    ImageData imageData = new ImageData(9, 5, 24,
       new PaletteData(0xFF, 0xFF00, 0xFF0000));
     int transparentPixel = imageData.palette.getPixel(new RGB(255, 255, 255));
     imageData.transparentPixel = transparentPixel;
@@ -603,7 +603,7 @@ public class S1001_CompoundExample {
     gc.dispose();
 
     checkboxImages = new Image[] { checkedImage, uncheckedImage };
-    
+
     FontData[] fd = display.getSystemFont().getFontData();
     fd[0].setStyle(SWT.BOLD);
     boldFont = new Font(display, fd[0]);

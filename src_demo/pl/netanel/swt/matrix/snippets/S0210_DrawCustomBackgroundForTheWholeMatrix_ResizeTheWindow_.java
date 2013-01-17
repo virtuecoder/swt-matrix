@@ -16,7 +16,7 @@ import pl.netanel.swt.matrix.Painter;
 /**
  * Draw custom background for the whole matrix.
  */
-public class S0010_DrawCustomBackgroundForTheWholeMatrix_ResizeTheWindow_ {
+public class S0210_DrawCustomBackgroundForTheWholeMatrix_ResizeTheWindow_ {
   static Point point = new Point(-1000, -1000);
 
   public static void main(String[] args) {
@@ -75,5 +75,4 @@ public class S0010_DrawCustomBackgroundForTheWholeMatrix_ResizeTheWindow_ {
   // Meta data
   static final String title = "Draw custom background for the whole matrix, resize the window!";
   static final String instructions = "";
-  static final String code = "0010";
 }

@@ -36,10 +36,10 @@ import pl.netanel.util.Preconditions;
  * @author Jacek created 23-02-2011
  */
 //TODO Complete with other collection methods like addAll, etc.
-class NumberQueueSet<N extends Number> extends NumberSet<N> {
+class NumberQueueSet<N extends Number> extends NumberSetCore<N> {
 
 	public NumberQueueSet(Math<N> math) {
-		super(math);
+		super(math, false);
 	}
 
 	/**

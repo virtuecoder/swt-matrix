@@ -1,6 +1,6 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
@@ -15,7 +15,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class SelectTest extends SwtTestCase {
+public class SelectGuiTest extends SwtTestCase {
 
   @Test
   public void initialSelection() throws Exception {
@@ -275,6 +275,8 @@ public class SelectTest extends SwtTestCase {
     matrix.getAxisX().getBody().setSelected(0, 2, true);
     matrix.redraw();
 
+//    SwtTestCase.listenToAll(shell);
+
     dragAndDrop(SWT.MOD1, bounds1, bounds2);
 
     // Axis item and header cell should be selected
@@ -338,6 +340,53 @@ public class SelectTest extends SwtTestCase {
     click(matrix, bounds);
     assertEquals(0, counter.count);
   }
+
+  @Test public void selectWithoutHidden() throws Exception {
+    Matrix matrix = new Matrix(shell, SWT.None);
+    matrix.getAxisX().getBody().setCount(10);
+    matrix.getAxisY().getBody().setCount(10);
+    matrix.getAxisX().getBody().setHidden(3, 4, true);
+    matrix.setSelectSkipHidden(true);
+    shell.open();
+
+    Zone body = matrix.getBody();
+    Rectangle bounds1 = body.getCellBounds(2, 2);
+    Rectangle bounds2 = body.getCellBounds(5, 5);
+    dragAndDrop(0, toDisplay(bounds1), toDisplay(bounds2));
+//    matrix.getAxisX().getBody().setHidden(3, 4, false);
+//    TestUtil.showMatrix(matrix);
+    assertTrue(body.isSelected(2, 2));
+    assertTrue(body.isSelected(2, 5));
+    assertFalse(body.isSelected(3, 2));
+    assertTrue(body.isSelected(5, 2));
+    assertTrue(body.isSelected(5, 5));
+    assertFalse(body.isSelected(1, 1));
+    assertFalse(body.isSelected(6, 6));
+  }
+
+  @Test public void selectWithHidden() throws Exception {
+    Matrix matrix = new Matrix(shell, SWT.None);
+    matrix.getAxisX().getBody().setCount(10);
+    matrix.getAxisY().getBody().setCount(10);
+    matrix.getAxisY().getHeader().setVisible(true);
+    matrix.getAxisX().getBody().setHidden(3, 4, true);
+    shell.open();
+
+    Zone body = matrix.getBody();
+    Rectangle bounds1 = body.getCellBounds(2, 2);
+    Rectangle bounds2 = body.getCellBounds(5, 5);
+    dragAndDrop(0, toDisplay(bounds1), toDisplay(bounds2));
+//    TestUtil.showMatrix(matrix);
+    assertTrue(body.isSelected(2, 2));
+    assertTrue(body.isSelected(3, 2));
+    assertTrue(body.isSelected(2, 5));
+    assertTrue(body.isSelected(5, 2));
+    assertTrue(body.isSelected(5, 5));
+    assertFalse(body.isSelected(1, 1));
+    assertFalse(body.isSelected(6, 6));
+  }
+
+
 
   static class ZoneSelectionCounter implements SelectionListener {
     int count;

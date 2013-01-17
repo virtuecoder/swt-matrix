@@ -20,7 +20,7 @@ import pl.netanel.swt.matrix.Section;
 /**
  * Add / remove model items.
  */
-public class S0004_Add_RemoveModelItems {
+public class S0050_Add_RemoveModelItems {
   static int counter;
 
   public static void main(String[] args) {
@@ -113,5 +113,4 @@ public class S0004_Add_RemoveModelItems {
   // Meta data
   static final String title = "Add / remove model items";
   static final String instructions = "";
-  static final String code = "0004";
 }

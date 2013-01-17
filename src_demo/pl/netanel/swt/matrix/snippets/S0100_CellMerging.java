@@ -15,7 +15,7 @@ import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 
-public class S0210_CellMerging
+public class S0100_CellMerging
 {
     private static Matrix<Integer, Integer> matrix;
 
@@ -76,5 +76,4 @@ public class S0210_CellMerging
  // Meta data
     static final String title = "Cell merging";
     static final String instructions = "";
-    static final String code = "0210";
-}
+  }

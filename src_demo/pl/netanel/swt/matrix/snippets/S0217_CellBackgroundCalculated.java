@@ -13,7 +13,7 @@ import pl.netanel.swt.matrix.Section;
 /**
  * Cell background calculated
  */
-public class S0017_CellBackgroundCalculated {
+public class S0217_CellBackgroundCalculated {
 
   public static void main(String[] args) {
     Shell shell = new Shell();
@@ -54,5 +54,4 @@ public class S0017_CellBackgroundCalculated {
   // Meta data
   static final String title = "Cell background calculated";
   static final String instructions = "";
-  static final String code = "0017";
 }
