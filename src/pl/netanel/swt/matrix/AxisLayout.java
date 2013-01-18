@@ -17,6 +17,7 @@ import pl.netanel.util.Util;
 
 
 class AxisLayout<N extends Number> {
+
 	Math<N> math;
 	ArrayList<SectionCore<N>> sections;
 	SectionCore<N> body, header;
@@ -252,7 +253,6 @@ class AxisLayout<N extends Number> {
 
 	/**
 	 * Avoid current to be hidden or out of scope.
-	 *
 	 */
 	public void ensureCurrentIsValid() {
 		if (current == null) return;
@@ -1166,7 +1166,10 @@ class AxisLayout<N extends Number> {
     return new Bound(distance, java.lang.Math.max(w - section.getLineWidth(start), 0));
   }
 
-  public int computeSize() {
+  public int computeSize(int viewportSize) {
+    setViewportSize(viewportSize);
+    compute();
+
     int w = 0;
     if (!tail.lines.isEmpty()) {
       Bound bound = tail.lines.get(tail.lines.size() - 1);

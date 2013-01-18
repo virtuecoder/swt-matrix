@@ -23,7 +23,7 @@ public class MatrixTest {
 
   @Test
   public void computeSizeNotEmpty() throws Exception {
-    matrix = new Matrix<Integer, Integer>(new Shell(), SWT.V_SCROLL);
+    matrix = new Matrix<Integer, Integer>(new Shell(), SWT.NONE);
     matrix.getAxisX().getBody().setCount(10);
     matrix.getAxisY().getBody().setCount(10);
 
@@ -32,6 +32,15 @@ public class MatrixTest {
     assertSize(100, 100, -1, -1, 511, 171);
     assertSize(100, 100, 50, 50, 50, 50);
     assertSize(100, 100, 100, 100, 100, 100);
+  }
+
+  @Test
+  public void computeSizeWithScrollBar() throws Exception {
+    matrix = new Matrix<Integer, Integer>(new Shell(), SWT.V_SCROLL | SWT.H_SCROLL);
+    matrix.getAxisX().getBody().setCount(10);
+    matrix.getAxisY().getBody().setCount(10);
+
+    assertSize(100, 100, 100, -1, 100, 171+17);
   }
 
   void assertSize(int viewportX, int viewportY, int wHint, int hHint, int matrixX, int matrixY) {

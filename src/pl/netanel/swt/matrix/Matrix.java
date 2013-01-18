@@ -86,7 +86,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
 	public static final int CMD_FOCUS_MOST_UP = 11; // binding = SWT.MOD1 + SWT.PAGE_UP
 	public static final int CMD_FOCUS_MOST_DOWN = 12; // binding = SWT.MOD1 + SWT.PAGE_DOWN
 	public static final int CMD_FOCUS_MOST_UP_LEFT = 13; // binding = SWT.MOD1 + SWT.HOME
-	public static final int CMD_FOCUS_MOST_DOWN_RIGHT = 14; // binding = SWT.MOD1 // + SWT.END
+	public static final int CMD_FOCUS_MOST_DOWN_RIGHT = 14; // binding = SWT.MOD1 + SWT.END
 	public static final int CMD_FOCUS_LOCATION = 15; // binding = SWT.MouseDown
 	public static final int CMD_FOCUS_LOCATION_ALTER = 16; // binding = SWT.MOD1 + SWT.MouseDown
 
@@ -125,7 +125,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
 	public static final int CMD_SELECT_COLUMN_ALTER = 123; // binding = SWT.MOD1 + SWT.MouseDown + Zone.COLUMN_HEADER
 	public static final int CMD_SELECT_TO_ROW = 124; // binding = SWT.MouseDown + Zone.ROW_HEADER
 	public static final int CMD_SELECT_TO_ROW_ALTER = 125; // binding = SWT.MOD1 + SWT.MouseDown + Zone.ROW_HEADER
-	public static final int CMD_SELECT_TO_COLUMN = 126; // binding = SWT.MouseDown // + Zone.COLUMN_HEADER
+	public static final int CMD_SELECT_TO_COLUMN = 126; // binding = SWT.MouseDown + Zone.COLUMN_HEADER
 	public static final int CMD_SELECT_TO_COLUMN_ALTER = 127; // binding = SWT.MOD1 + SWT.MouseDown + Zone.COLUMN_HEADER
 
 	static boolean isBodySelect(int id) {
@@ -230,8 +230,6 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
 	 * 1&lt;&lt;9
 	 */
 	static final int STATE_IS_SELECTED = 1 << 9;
-
-	private static final int MAX_VIEWPORT_SIZE = 100000;
 
 	public static final int EVENT_LAYOUT = 1000;
 
@@ -608,11 +606,34 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
 	 * @param event
 	 */
 	private void onResize() {
-		area = getClientArea();
-		layoutY.setViewportSize(area.height);
-		layoutX.setViewportSize(area.width);
-		updateScrollBars();
+		setViewportSize();
 	}
+
+  private void setViewportSize() {
+    if (isDuringResize)
+      return;
+    try {
+      area = getClientArea();
+      for (int i = 0; i<2; i++) {
+        layoutX.setViewportSize(area.width);
+        layoutX.compute();
+        if (axisX.scrollBar != null) {
+          axisX.scrollBar.setVisible(layoutX.isScrollRequired());
+        }
+        layoutY.setViewportSize(area.height);
+        layoutY.compute();
+        if (axisY.scrollBar != null) {
+          axisY.scrollBar.setVisible(layoutY.isScrollRequired());
+          i = layoutY.isScrollRequired() ? 2 : i; // no need to repeat, because axisX state does not change
+        }
+      }
+      axisX.updateScrollBarValues(area.width);
+      axisY.updateScrollBarValues(area.height);
+//  		updateScrollBars();
+    } finally {
+      isDuringResize = false;
+    }
+  }
 
 	/**
 	 * Called on resize or item count change.
@@ -1226,24 +1247,34 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
 		return computeSize(wHint, hHint);
 	}
 
+	/**
+	 *
+	 */
 	@Override
 	public Point computeSize(int wHint, int hHint) {
-		area = getClientArea();
-		if (wHint == SWT.DEFAULT) {
-			axisX.computeSizeLayout.setViewportSize(MAX_VIEWPORT_SIZE);
-			axisX.computeSizeLayout.compute();
-			wHint = axisX.computeSizeLayout.computeSize();
-			// layoutX.setViewportSize(area.width);
-			// layoutX.compute();
-		}
-		if (hHint == SWT.DEFAULT) {
-			axisY.computeSizeLayout.setViewportSize(MAX_VIEWPORT_SIZE);
-			axisY.computeSizeLayout.compute();
-			hHint = axisY.computeSizeLayout.computeSize();
-			// layoutY.setViewportSize(area.height);
-			// layoutY.compute();
-		}
-		return new Point(wHint, hHint);
+	  Rectangle r = getDisplay().getBounds();
+	  if (wHint != SWT.DEFAULT) r.width = wHint;
+	  if (hHint != SWT.DEFAULT) r.height = hHint;
+
+	  int w = 0, h = 0;
+	  int scrollWidth = 0, scrollHeight = 0;
+	  for (int i = 0; i < 2; i++) {
+	    w = axisX.computeSizeLayout.computeSize(r.width);
+	    if (axisX.scrollBar != null && axisX.computeSizeLayout.isScrollRequired()) {
+	      scrollHeight = axisX.scrollBar.getSize().y;
+        r.height -= scrollHeight;
+	    }
+	    h = axisY.computeSizeLayout.computeSize(r.height);
+	    if (axisY.scrollBar != null && axisY.computeSizeLayout.isScrollRequired()) {
+	      scrollWidth = axisY.scrollBar.getSize().x;
+        r.width -= scrollWidth;
+	    } else {
+	      i = 2; // to go again
+	    }
+    }
+		return new Point(
+		    wHint == SWT.DEFAULT ? w + scrollWidth : wHint,
+        hHint == SWT.DEFAULT ? h + scrollHeight : hHint);
 	}
 
 	/**

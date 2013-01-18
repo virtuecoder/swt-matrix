@@ -9,6 +9,8 @@ package pl.netanel.swt.matrix;
 
 import java.util.Iterator;
 
+import pl.netanel.util.ImmutableIterator;
+
 /**
  * Iterates over extents of the given set.
  */
@@ -120,7 +122,25 @@ abstract class ExtentSequence<N extends Number> implements Sequence, Iterable<Ex
    */
   @Override
   public Iterator<Extent<N>> iterator() {
-    return null;
+    return new ImmutableIterator<Extent<N>>() {
+      private boolean hasNext;
+      private Extent<N> next;
+      {
+        init();
+        hasNext = ExtentSequence.this.next();
+      }
+      @Override
+      public boolean hasNext() {
+        return hasNext;
+      }
+
+      @Override
+      public Extent<N> next() {
+        next = hasNext ? Extent.create(start, end) : null;
+        hasNext = ExtentSequence.this.next();
+        return next;
+      }
+    };
   }
 
 
