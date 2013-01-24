@@ -42,8 +42,8 @@
 		<jar jarfile="${output.dir}\swt-matrix-dont-distribute.jar">
 			<fileset dir="bin">
 				<include name="pl/netanel/swt/matrix/*.class" />
-				<include name="pl/netanel/swt/matrix/reloaded/*.class" if="public"/>
-				<include name="pl/netanel/swt/matrix/reloaded/ints/*.class" if="public"/>
+				<include name="pl/netanel/swt/matrix/reloaded/*.class" if="retail"/>
+				<include name="pl/netanel/swt/matrix/reloaded/ints/*.class" if="retail"/>
 				<include name="pl/netanel/util/*.class" />
 				<include name="../doc/EULA_v1.0.html" />
 				<exclude name="**/*Test*.class" />

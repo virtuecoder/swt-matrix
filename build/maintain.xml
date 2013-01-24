@@ -216,8 +216,10 @@
   	</ftp>
   </target>
   
-  <target name="build-872533850">
-  	<ant antfile="build\build.xml" target="dist" />
+  <target name="build-872533850" description="Morgan Stanley">
+  	<ant antfile="build\build.xml" target="dist">
+		<property name="retail" value="true"/>
+	</ant>
   	<antcall target="export-project" />
     <ftp 
        server="${ftp.server}"
@@ -236,8 +238,10 @@
   	
 	</target>
 	
-  <target name="build-126999091">
-  	<ant antfile="build\build.xml" target="dist" />
+  <target name="build-126999091" description="Fico">
+  	<ant antfile="build\build.xml" target="dist">
+  		<property name="retail" value="true"/>
+  	</ant>
     <ftp 
        server="${ftp.server}"
        remotedir="${ftp.remote.dir}/swt-matrix/126999091"

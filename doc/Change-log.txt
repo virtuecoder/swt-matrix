@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------
+Version 0.7.28
+
+Bug fixes
+- MatrixLayout throwing null pointer exception on double click
+
+-------------------------------------------------------------------------------
 Version 0.7.27
 
 Bug fixes

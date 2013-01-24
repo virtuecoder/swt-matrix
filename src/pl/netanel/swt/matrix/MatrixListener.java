@@ -131,6 +131,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       stateX.setItem(e);
       stateY.setItem(e);
 
+      zone = null;
       boolean keyEvent = e.type == SWT.KeyDown || e.type == SWT.KeyUp;
       if (keyEvent) {
         AxisItem<X> focusItemX = matrix.getAxisX().getFocusItem();
