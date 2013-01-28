@@ -1,8 +1,14 @@
 -------------------------------------------------------------------------------
+Version 0.7.29
+
+Bug fixes
+- Axis layout showing first item from header when frozen and all body items are hidden
+
+-------------------------------------------------------------------------------
 Version 0.7.28
 
 Bug fixes
-- MatrixLayout throwing null pointer exception on double click
+- MatrixListener throwing null pointer exception on double click
 
 -------------------------------------------------------------------------------
 Version 0.7.27

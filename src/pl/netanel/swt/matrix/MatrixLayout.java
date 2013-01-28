@@ -169,10 +169,6 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
 
   /**
    * Attention: it is to be called only by a UI handler, since it emits Selection event.
-   * @param startY
-   * @param endY
-   * @param startX
-   * @param endX
    * @param selectState
    */
   public void setSelected(boolean selectState, boolean notify) {

@@ -1,12 +1,15 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
-import org.junit.*;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -42,14 +45,27 @@ public class MatrixListenerTest extends SwtTestCase {
 	}
 
 	@Test
-	public void selecttWithShiftKey() throws Exception {
+	public void selectWithShiftKey() throws Exception {
 	  Matrix<Integer, Integer> matrix = createMatrix();
+	  matrix.getShell().open();
 	  Event e = new Event();
 	  e.type = SWT.Activate;
     matrix.listener.handleEvent(e);
 	  matrix.execute(Matrix.CMD_SELECT_RIGHT);
 	  assertTrue(matrix.getBody().isSelected(0, 0));
 	  assertTrue(matrix.getBody().isSelected(1, 0));
+	}
+
+	@Test
+	public void afterDeleteInSection() throws Exception {
+	  Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
+    matrix.getAxisX().getBody().setCount(10);
+    matrix.getAxisY().getBody().setCount(10);
+	  matrix.getShell().open();
+
+	  matrix.getAxisX().getBody().delete(0, 9);
+	  matrix.refresh();
+	  matrix.execute(Matrix.CMD_DELETE);
 	}
 
   @Override

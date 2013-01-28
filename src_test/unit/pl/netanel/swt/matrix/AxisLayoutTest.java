@@ -10,10 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import pl.netanel.swt.matrix.Frozen;
-import pl.netanel.swt.matrix.AxisLayout;
-import pl.netanel.swt.matrix.SectionCore;
-
 @SuppressWarnings({ "rawtypes", "unchecked" })
 @RunWith(JUnit4.class)
 public class AxisLayoutTest {
@@ -301,5 +297,24 @@ public class AxisLayoutTest {
 	}
 
 
+	@Test
+  public void head2bodyAllHidden() throws Exception {
+	  AxisLayout layout = new AxisLayout();
+    layout.setViewportSize(1000);
+
+    layout.header.setVisible(true);
+    layout.header.setCount(2);
+    layout.header.setDefaultCellWidth(10);
+    layout.freezeHead(2);
+
+    layout.body.setCount(5);
+    layout.body.setHidden(0, 4, true);
+
+    layout.compute();
+    Bound bound = layout.getBound(Frozen.HEAD, layout.header);
+    assertEquals(23, bound.width);
+    bound = layout.getBound(Frozen.NONE, layout.body);
+    assertEquals(22, bound.distance);
+  }
 
 }

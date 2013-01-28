@@ -369,7 +369,11 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 			{
 				CellExtent<X, Y> e = cellSelection.getExtent();
 				CellSet<X, Y> set = new CellSet<X, Y>(sectionX.math, sectionY.math);
-				set.add(e.startX, e.endX, e.startY, e.endY);
+
+				if (e != null) {
+				  set.add(e.startX, e.endX, e.startY, e.endY);
+				}
+
 				if (!matrix.getCopyPasteHiddenCells()) {
 				  for (Iterator<Extent<X>> it = sectionX.getHiddenExtents(); it.hasNext(); ) {
 				    Extent<X> extent = it.next();

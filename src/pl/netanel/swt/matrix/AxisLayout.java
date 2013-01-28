@@ -704,7 +704,7 @@ class AxisLayout<N extends Number> {
 				// It is needed for distance cache limits
 				seq.freeze = isEmpty() ? null : items.get(items.size() - 1);
 				//seq.min = (seq == forward ? forwardNavigator : backwardNavigator).first();
-				seq.min = item == null ? seq.first() : item;
+				seq.min = item == null ? items.get(items.size()-1) : item;
 			}
 			if (dir instanceof Backward) reverse();
 
@@ -995,7 +995,7 @@ class AxisLayout<N extends Number> {
 		Cache cache = getCache(frozen);
 		int first = -1, last = -1;
 		if (cache.cells.isEmpty()) {
-		  return new Bound(0, 0);
+		  return new Bound(cache.distance, 0);
 		}
 		for (int i = 0, size = cache.items.size(); i < size; i++) {
 			if (cache.items.get(i).section.equals(section)) {
