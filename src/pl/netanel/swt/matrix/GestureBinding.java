@@ -54,7 +54,7 @@ class GestureBinding {
 	}
 
 	public static boolean isPrintable(char c) {
-	  int index = Arrays.binarySearch(FontWidthCache.PRINTABLE_CHARS, c);
+	  int index = Arrays.binarySearch(FontSizeCache.PRINTABLE_CHARS, c);
 	  return index >= 0;
 	}
 

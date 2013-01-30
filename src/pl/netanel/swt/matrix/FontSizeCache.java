@@ -14,7 +14,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 
-class FontWidthCache {
+class FontSizeCache {
 	public static final int[] PRINTABLE_CHARS = new int[] {
         1,2,4,5,6,7,11,12,14,15,16,17,18,19,20,21,22,23,24,25,26,28,29,30,
         31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,
@@ -24,39 +24,47 @@ class FontWidthCache {
         115,116,117,118,119,120,121,122,123,124,125,126,211,243,260,261,262,
         263,280,281,321,322,323,324,346,347,377,378,379,380,8364,61440,61441};
 
-	static HashMap<FontData, int[]> cache = new HashMap<FontData, int[]>();
+	static HashMap<FontData, FontSizeCache> cache = new HashMap<FontData, FontSizeCache>();
 
-	public static int[] get(GC gc, Font font) {
-	  FontData fontData = font.getFontData()[0];
-		int[] a = cache.get(fontData);
-		if (a == null) {
-			a = new int[0xffff];
-			for (int ch: PRINTABLE_CHARS) {
-				a[ch] = gc.stringExtent(Character.toString((char) ch)).x;
-			}
-			cache.put(fontData, a);
-		}
-		return a;
+	int[] x; int y;
+	FontSizeCache() {
+	  x = new int[0xffff];
 	}
 
-	public static int getWidth(String s, GC gc, int[] cache) {
+
+	public static FontSizeCache get(GC gc, Font font) {
+	  FontData fontData = font.getFontData()[0];
+	  FontSizeCache data = cache.get(fontData);
+		if (data == null) {
+			data = new FontSizeCache();
+			Point extent = null;
+			gc.setFont(font);
+			for (int ch: PRINTABLE_CHARS) {
+			  extent = gc.stringExtent(Character.toString((char) ch));
+				data.x[ch] = extent.x;
+			}
+			data.y = extent.y;
+			cache.put(fontData, data);
+		}
+		return data;
+	}
+
+	public int getHeight(String s) {
+	  return y;
+	}
+	public int getWidth(String s) {
 		int extent = 0;
 		for (int i = 0; i < s.length(); i++) {
-			final char ch = s.charAt(i);
-			int w = cache[ch];
-			if (w == 0) {
-				w = gc.stringExtent(Character.toString(ch)).x;
-				cache[ch] = w;
-			}
-			extent += w;
+			extent += x[s.charAt(i)];
 		}
 		return extent;
 	}
 
 	// TODO unit test it!
-	public static String shortenTextMiddle(String s, int width, Point extent, int[] cache) {
+	public String shortenTextMiddle(String s, int width, Point extent) {
 		if (s == null) return s;
 
+		int[] cache = x;
 		int len = s.length();
 		int w = 0;
 		int i = 0;
@@ -95,9 +103,10 @@ class FontWidthCache {
 		return s;
 	}
 
-	public static String shortenTextMiddle(String s, int width, int lineCount, Point extent, int[] cache) {
+	public  String shortenTextMiddle(String s, int width, int lineCount, Point extent) {
 	  if (s == null) return s;
 
+	  int[] cache = x;
 	  int len = s.length();
 	  boolean isEven = lineCount % 2 == 0;
 	  int dotLine = (lineCount - 1) / 2;
@@ -134,11 +143,11 @@ class FontWidthCache {
       sb.append(s.substring(0, iBefore));
 
       if (isEven) {
-        sb.append(shortenTextEnd(s.substring(iBefore, iAfter), width, extent, cache));
+        sb.append(shortenTextEnd(s.substring(iBefore, iAfter), width, extent));
         sb.append("\n");
       }
       else {
-        sb.append(shortenTextMiddle(s.substring(iBefore, iAfter), width, extent, cache));
+        sb.append(shortenTextMiddle(s.substring(iBefore, iAfter), width, extent));
       }
 
       sb.append(s.substring(iAfter));
@@ -149,7 +158,8 @@ class FontWidthCache {
     }
 	}
 
-	public static String shortenTextEnd(String s, int width, Point extent, int[] cache) {
+	public String shortenTextEnd(String s, int width, Point extent) {
+	  int[] cache = x;
 		int len = s.length();
 		if (len < 2) return s;
 		int w = 0;

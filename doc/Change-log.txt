@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------
+Version 0.7.30
+
+Bug fixes
+- Row height with a larger font was incorrect when autoresizing 
+
+-------------------------------------------------------------------------------
 Version 0.7.29
 
 Bug fixes

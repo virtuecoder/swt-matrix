@@ -252,7 +252,7 @@ public class Painter<X extends Number, Y extends Number> {
 	private Color lastForeground, lastBackground, defaultForeground;
 
 	private Font lastFont;
-	private int[] extentCache;
+	private FontSizeCache fontSizeCache;
 	private Point extent;
   protected TextLayout textLayout;
   Rectangle clipping;
@@ -376,20 +376,22 @@ public class Painter<X extends Number, Y extends Number> {
 //			gc.fillRectangle(zone.bounds);
 		}
 
-		Font font = lastFont = style.font == null ? matrix.getDisplay().getSystemFont() : style.font;
+		Font font = lastFont = getCurrentFont();
     gc.setFont(font);
-		extentCache = FontWidthCache.get(gc, font);
+		fontSizeCache = FontSizeCache.get(gc, font);
 		extent = new Point(-1, gc.stringExtent("ty").y);
 		textSize = new Point(-1, extent.y);
 		textLayout = new TextLayout(gc.getDevice());
 		clipping = gc.getClipping();
 
-		bodyX = zone.sectionX;
-		bodyY = zone.sectionY;
-		if (isTreeEnabled && bodyX.isEmpty() == false) {
-	    firstIndexX = bodyX.getOrder().numberIterator(null).next();
+		if (zone != null) {
+		  bodyX = zone.sectionX;
+		  bodyY = zone.sectionY;
+		  if (isTreeEnabled && bodyX.isEmpty() == false) {
+		    firstIndexX = bodyX.getOrder().numberIterator(null).next();
+		  }
+		  indent = 0;
 		}
-		indent = 0;
 		return true;
 	}
 
@@ -506,7 +508,7 @@ public class Painter<X extends Number, Y extends Number> {
         if (style.hasWordWraping) {
           textLayout.setFont(gc.getFont());
         }
-		    extentCache = FontWidthCache.get(gc, font);
+		    fontSizeCache = FontSizeCache.get(gc, font);
 		    lastFont = font;
 		  }
 
@@ -564,8 +566,7 @@ public class Painter<X extends Number, Y extends Number> {
     if (style.hasWordWraping) {
       int spacing = textLayout.getSpacing();
       int lineCount = (textSize.y + spacing) / (extent.y + spacing) ;
-      text = FontWidthCache.shortenTextMiddle(
-          text, textSize.x, lineCount, extent, extentCache);
+      text = fontSizeCache.shortenTextMiddle(text, textSize.x, lineCount, extent);
 
       textLayout.setText(text);
       textLayout.setAlignment(style.textAlignX);
@@ -583,12 +584,11 @@ public class Painter<X extends Number, Y extends Number> {
 
       if (style.textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
 //		      text = shortenTextMiddle(text, width - style.textMarginX * 2);
-        text = FontWidthCache.shortenTextMiddle(
-          text, textSize.x, extent, extentCache);
+        text = fontSizeCache.shortenTextMiddle(text, textSize.x, extent);
       }
       textSize.x = extent.x;
 //		    else if (style.textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
-//		      text = FontWidthCache.shortenTextEnd(
+//		      text = FontSizeCache.shortenTextEnd(
 //		        text, width - style.textMarginX * 2, extent, extentCache);
 //		    }
     }
@@ -826,23 +826,23 @@ public class Painter<X extends Number, Y extends Number> {
 	 * @param hHint the height hint (can be <code>SWT.DEFAULT</code>)
 	 * @return the preferred size of the control
 	 */
-	protected Point computeSize(X indexX, Y indexY, int wHint, int hHint) {
-	  setupSpatial(indexX, indexY);
+  protected Point computeSize(X indexX, Y indexY, int wHint, int hHint) {
+    setupSpatial(indexX, indexY);
 
-	  int x = 0, y = 0;
+    int x = 0, y = 0;
 
-	  if (image != null) {
-	    Rectangle bounds = image.getBounds();
-	    x = bounds.width + 2 * style.imageMarginX;
-	    y = bounds.height + 2 * style.imageMarginY;
-	  }
+    if (image != null) {
+      Rectangle bounds = image.getBounds();
+      x = bounds.width + 2 * style.imageMarginX;
+      y = bounds.height + 2 * style.imageMarginY;
+    }
 
     if (text != null) {
-      boolean fontChange = style.font != lastFont;
+      Font font = getCurrentFont();
+      boolean fontChange = font != lastFont;
       if (fontChange) {
-        Font font = style.font == null ? matrix.getDisplay().getSystemFont() : style.font;
         gc.setFont(font);
-        extentCache = FontWidthCache.get(gc, font);
+        fontSizeCache = FontSizeCache.get(gc, font);
         lastFont = font;
       }
 
@@ -874,17 +874,18 @@ public class Painter<X extends Number, Y extends Number> {
         y = max(y, y2 + 2 * style.textMarginY);
       }
       else {
-//        extent = gc.stringExtent(text);
-//        x += extent.x + 2 * style.textMarginX;
-        x += FontWidthCache.getWidth(text, gc, extentCache) + 2 * style.textMarginX;
-        y = max(y, extent.y + 2 * style.textMarginY);
+        x += fontSizeCache.getWidth(text) + 2 * style.textMarginX;
+        y = max(y, fontSizeCache.getHeight(text)) + 2 * style.textMarginY;
       }
     }
-    x += indent;
+//    x += indent;
 
-	  return new Point(max(x, wHint), max(y, hHint));
-	}
+    return new Point(max(x, wHint), max(y, hHint));
+  }
 
+  private Font getCurrentFont() {
+    return style.font == null ? Display.getCurrent().getSystemFont() : style.font;
+  }
 
 	/**
    * Creates default node icons
