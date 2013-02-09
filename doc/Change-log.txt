@@ -1,4 +1,15 @@
 -------------------------------------------------------------------------------
+Version 0.7.31
+
+Bug fixes
+- ZoneEditor: Repainting of embedded controls could be endless if matrix did not have focus.
+- ZoneEditor: The bounds could be incoreect for controls in headers
+- ZoneEditor: The controls would not be removed if the zone becomes invisible.
+
+API changes:
+- Added Section.getAxis()
+
+-------------------------------------------------------------------------------
 Version 0.7.30
 
 Bug fixes

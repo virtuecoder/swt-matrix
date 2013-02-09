@@ -660,28 +660,25 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 
 		if (embedded != null) {
 			final Painter<X, Y> p = embedded;
-//			Display display = matrix.getDisplay();
-//			display.asyncExec(new Runnable() {
-//				@Override public void run() {
-//				  GC gc2 = gc;
-//				  if (gc2.isDisposed()) {
-//				    gc2 = new GC(matrix.getDisplay());
-//				  }
-					if (!p.isEnabled() || !p.init(gc, frozenX, frozenY)) return;
-
-					AxisLayoutSequence<Y> seqY = layoutY.cellSequence(frozenY, sectionY);
-					AxisLayoutSequence<X> seqX = layoutX.cellSequence(frozenX, sectionX);
-					for (seqY.init(); seqY.next();) {
-//						int distance = seqY.getDistance();
-//						int width = seqY.getWidth();
-						Y index = seqY.getIndex();
-						for (seqX.init(); seqX.next();) {
-						  p.setup(seqX.getIndex(), index);
-							//p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
-						}
-					}
-					p.clean();
-//				}
+//			matrix.getDisplay().asyncExec(new Runnable() {
+//			  @Override
+//			  public void run() {
+//			    try {
+//			      matrix.isPainting = true;
+			      if (!p.isEnabled() || !p.init(gc, frozenX, frozenY)) return;
+			      AxisLayoutSequence<Y> seqY = layoutY.cellSequence(frozenY, sectionY);
+			      AxisLayoutSequence<X> seqX = layoutX.cellSequence(frozenX, sectionX);
+			      for (seqY.init(); seqY.next();) {
+			        Y index = seqY.getIndex();
+			        for (seqX.init(); seqX.next();) {
+			          p.setup(seqX.getIndex(), index);
+			        }
+			      }
+			      p.clean();
+//			    } finally {
+//			      matrix.isPainting = false;
+//			    }
+//			  }
 //			});
 		}
 	}

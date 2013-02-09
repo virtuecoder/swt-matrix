@@ -137,6 +137,10 @@ class SectionCore<N extends Number> implements Section<N> {
     return indexClass;
   }
 
+  @Override public Axis<N> getAxis() {
+    return axis;
+  }
+
   /*------------------------------------------------------------------------
    * Collection like
    */

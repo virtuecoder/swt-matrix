@@ -1131,6 +1131,12 @@ public interface Section<N extends Number> {
    */
   boolean hasChildren(N parent);
 
+  /**
+   * Returns the axis that this section belongs to.
+   * @return the axis that this section belongs to
+   */
+  public abstract Axis<N> getAxis();
+
 
 //  /**
 //   * Returns <code>true</code> if the item with the given index in the model is merged be moved by end user.

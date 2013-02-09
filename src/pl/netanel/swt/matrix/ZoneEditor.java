@@ -60,7 +60,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
    * If an editor was created before it will be replace with this new one.
    * @param zone
    */
-  public ZoneEditor(Zone<X, Y> zone) {
+  public ZoneEditor(final Zone<X, Y> zone) {
     super();
     this.zone = ZoneCore.from(zone);
     this.zone.setEditor(this);
@@ -129,7 +129,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
         if (emulation != null &&
             (emulation[0] instanceof Image || emulation[1] instanceof Image)) {
           // Calculate the image bounds
-          Rectangle cellBounds = matrix.getBody().getCellBounds(indexX, indexY);
+          Rectangle cellBounds = zone.getCellBounds(indexX, indexY);
           Rectangle imageBounds = ((Image) emulation[0]).getBounds();
           imageBounds.x = cellBounds.x + (cellBounds.width - imageBounds.width) / 2;
           imageBounds.y = cellBounds.y + (cellBounds.height - imageBounds.height) / 2;

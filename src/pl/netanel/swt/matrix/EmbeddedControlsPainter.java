@@ -127,9 +127,11 @@ class EmbeddedControlsPainter<X extends Number, Y extends Number> extends Painte
 
   @Override
   public void clean() {
-    if (needsPainting && hadFocus) {
-      getMatrix().forceFocus();
+    if (needsPainting) {
       needsPainting = false;
+      if (hadFocus) {
+        getMatrix().forceFocus();
+      }
     }
   }
 

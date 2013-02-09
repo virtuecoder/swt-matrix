@@ -68,6 +68,11 @@ class SectionClient<N extends Number> implements Section<N> {
     return core.getIndexClass();
   };
 
+  @Override
+  public Axis<N> getAxis() {
+    return core.getAxis();
+  }
+
 	/**
 	 * Specifies the number of section items.
 	 *

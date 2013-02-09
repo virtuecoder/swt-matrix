@@ -871,6 +871,17 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
 		// layoutY.start = layoutY.current;
 		// layoutX.start = layoutX.current;
 		layout.compute();
+
+		// If the section with embedded controls becomes hidden, then the painter will not run
+		// the controls will not be removed.
+		for (ZoneCore<X, Y> zone: layout.zones) {
+		  for (Iterator<Painter<X, Y>> it = zone.painters.iterator(); it.hasNext();) {
+		    Painter<X, Y> p = it.next();
+		    if (p instanceof EmbeddedControlsPainter) {
+		      ((EmbeddedControlsPainter<X, Y>) p).clearControls();
+		    }
+		  }
+		}
 		listener.refresh();
 		getParent().layout(true, true);
 		// for (Zone<X, Y> zone: layout.zones) {
