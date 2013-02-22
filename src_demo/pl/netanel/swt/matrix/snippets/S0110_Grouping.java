@@ -24,7 +24,7 @@ public class S0110_Grouping {
       new Node("Dates",                // When collapsed last child will remain visible
         new Node("settlementDate"),
         new Node("expirationDate", REMAIN))
-      ),
+      ).separator(2, Display.getDefault().getSystemColor(SWT.COLOR_RED)),
     new Node("Group2",
       // When collapsed 1st and 3rd child will be visible. This node will be initially collapsed
       new Node("Sub Group 2.1", REMAIN | COLLAPSED,
@@ -32,7 +32,7 @@ public class S0110_Grouping {
         new Node("spot"),
         new Node("fwd", REMAIN),
         new Node("vol")
-      ),
+      ).separator(2, Display.getDefault().getSystemColor(SWT.COLOR_GREEN)),
       new Node("Sub Group 2.2", PERMANENT, // It will be not possible to collapse this node
         new Node("value"),
         new Node("currencies"),
@@ -56,7 +56,7 @@ public class S0110_Grouping {
     /* Create class holding the API and all the logic to achieve grouping effect
        in the given zone and along the given direction */
     Grouping grouping = new Grouping(zone, axisDirection, structure);
-    grouping.getRoot().setCollapsedAll(true);
+    grouping.getRoot().setCollapsedAll(false);
 
     matrix.getAxisX().getBody().setHidden(6, true); // It will be not visible when group is expanded
   }
@@ -87,6 +87,6 @@ public class S0110_Grouping {
     }
   }
 
-  static final String title = "Goruping";
+  static final String title = "Grouping";
   static final String instructions = "";
 }

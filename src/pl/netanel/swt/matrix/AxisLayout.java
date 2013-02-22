@@ -1034,7 +1034,11 @@ class AxisLayout<N extends Number> {
 	}
 
 	public Bound getLineBound(AxisItem<N> item) {
-		Cache cache = getCache(item.section, item.getIndex());
+		N index = item.getIndex();
+		if (math.compare(index, item.section.getCount()) == 0) {
+		  index = math.decrement(index);
+		}
+    Cache cache = getCache(item.section, index);
 		if (cache == null) return null;
 		for (int i = 0, size = cache.lines.size(); i < size; i++) {
 			if (cache.items.get(i).equals(item)) {

@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -22,8 +23,8 @@ import org.eclipse.swt.widgets.Listener;
 import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Extent;
-import pl.netanel.swt.matrix.NumberSet;
 import pl.netanel.swt.matrix.Matrix;
+import pl.netanel.swt.matrix.NumberSet;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
@@ -40,6 +41,8 @@ public class Grouping {
   private static final Boolean TOGGLE_EXPAND = false;
   private static final Boolean TOGGLE_COLLAPSE = true;
   private static final Boolean TOGGLE_NONE = null;
+
+  private static final String SEPARATOR_PAINTER_NAME = "separator";
 
   private final Zone<Integer, Integer> zone;
   private final Matrix<Integer, Integer> matrix;
@@ -81,6 +84,7 @@ public class Grouping {
     this.zone = zone;
     this.axisDirection = axisDirection;
     this.root = root;
+
     matrix = zone.getMatrix();
     if (axisDirection == SWT.HORIZONTAL) {
       axis = matrix.getAxisX();
@@ -116,6 +120,8 @@ public class Grouping {
     cellPainter.style.imageAlignX = SWT.END;
     cellPainter.style.imageAlignY = SWT.CENTER;
     cellPainter.style.imageMarginX = matrix.getAxisX().getResizeOffset();
+
+    zone.addPainter(new SeparatorPainter(axisDirection));
 
     // Create toggle and selection listener
     //zone.unbind(Matrix.CMD_FOCUS_LOCATION, SWT.MouseDown, 1);
@@ -162,8 +168,11 @@ public class Grouping {
    * Disposes the grouping.
    * <ul>
    * <li>Reverts back the old cell painter</li>
+   * <li>Removes the separator painter</li>
+   * <li>Removes cell merging</li>
    * <li>Removes cell merging</li>
    * <li>Sets the number of levels to 1</li>
+   * <li>Sets the line widths to default value</li>
    * <li>Brings back the normal item selection handler</li>
    * </ul>
    */
@@ -175,12 +184,16 @@ public class Grouping {
     matrix.removeListener(SWT.Dispose, disposeListener);
 
     zone.replacePainter(oldCellPainter);
+    zone.removePainter(SEPARATOR_PAINTER_NAME);
     zone.setMerged(0, zone.getSectionX().getCount(), 0, zone.getSectionY().getCount(), false);
 
     final int commandId = axisDirection == SWT.HORIZONTAL ? Matrix.CMD_SELECT_COLUMN : Matrix.CMD_SELECT_ROW;
     zone.bind(commandId, SWT.MouseDown, 1);
     zone.removeListener(SWT.MouseDown, selectItemListener);
 
+    for (int i = 0; i < section.getCount(); i++) {
+      section.setLineWidth(i, section.getDefaultLineWidth());
+    }
     section2.setCount(1);
     section.removeHiddenSet(hidden);
   }
@@ -253,9 +266,6 @@ public class Grouping {
           node.remain.add(child.extent.getStart());
         }
       }
-
-
-
     }.traverse(root.children);
 
     section.setCount(index[0]);
@@ -264,6 +274,15 @@ public class Grouping {
 
     root.grouping = this;
     root.extent = Extent.createUnchecked(0, section.getCount()-1);
+
+    new NodeVisitor() {
+      @Override
+      protected void visitBefore(Node node) {
+        if (node.lineWidth != -1) {
+          section.setLineWidth(node.extent.getEnd() + 1, node.lineWidth);
+        }
+      };
+    }.traverse(root.children);
   }
 
   /**
@@ -525,6 +544,54 @@ public class Grouping {
     }
   }
 
+  public class SeparatorPainter extends Painter<Integer, Integer> {
+    private Color background;
+    private int lineWidth;
+    private final int axisDirection;
+    private Node node;
+    private int contentSize;
+
+    public SeparatorPainter(int axisDirection) {
+      super(SEPARATOR_PAINTER_NAME, Painter.SCOPE_CELLS);
+      this.axisDirection = axisDirection;
+    }
+
+    @Override
+    protected boolean init() {
+      int count = axis2.getViewportItemCount();
+      AxisItem<Integer> lastCell = axis2.getItemByViewportPosition(count-1);
+      int[] bound = axis2.getLineBound(
+          AxisItem.create(lastCell.getSection(), lastCell.getIndex() + 1));
+      contentSize = bound[0] + bound[1];
+      return super.init();
+    }
+
+    @Override
+    public void setup(Integer indexX, Integer indexY) {
+      node = getNodeByCellIndex(indexX, indexY);
+      //TestUtil.log(indexX, indexY, node, node == null ? "" : node.lineColor);
+      background = node.lineColor;
+      lineWidth = node.lineWidth;
+    }
+
+    @Override
+    protected void paint(int x, int y, int width, int height) {
+      if (background == null) return;
+      //TestUtil.log(background);
+      gc.setBackground(background);
+      if (axisDirection == SWT.HORIZONTAL) {
+        x += width;
+        width = lineWidth;
+        height = contentSize - y;
+      } else {
+        y += height;
+        height = lineWidth;
+        width = contentSize - x;
+      }
+      gc.fillRectangle(x, y, width, height);
+    }
+  }
+
   /**
    * Represent a node in the grouping hierarchy.
    * Implements Builder pattern.
@@ -560,6 +627,8 @@ public class Grouping {
     private boolean isRemain;
     private boolean isPermanent;
     private boolean isSummary;
+    private int lineWidth = -1;
+    private Color lineColor;
 
     public Node(String caption, Node ...children) {
       this.caption = caption;
@@ -735,6 +804,18 @@ public class Grouping {
       }
       /*&& node.parent.collapsed == false*/
       return isCollapsed ? TOGGLE_EXPAND : TOGGLE_COLLAPSE;
+    }
+
+    /**
+     * Defines the line at the end of the current node
+     * @param lineWidth
+     * @param lineColor
+     * @return this node
+     */
+    public Node separator(int lineWidth, Color lineColor) {
+      this.lineWidth = lineWidth;
+      this.lineColor = lineColor;
+      return this;
     }
 
   }

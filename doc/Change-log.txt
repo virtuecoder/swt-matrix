@@ -1,4 +1,13 @@
 -------------------------------------------------------------------------------
+Version 0.7.32
+
+Features
+- Change color and width of the separating lines in the grouping headers
+
+API changes:
+- Added Grouping.separator(int, Color)
+
+-------------------------------------------------------------------------------
 Version 0.7.31
 
 Bug fixes
