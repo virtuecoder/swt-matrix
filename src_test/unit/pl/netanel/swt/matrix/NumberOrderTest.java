@@ -1,6 +1,7 @@
 package pl.netanel.swt.matrix;
 
 import static org.junit.Assert.*;
+import static pl.netanel.swt.matrix.TestUtil.numberSet;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -19,6 +20,14 @@ import pl.netanel.swt.matrix.NumberOrder.ForwardExtentFirstLastSequence;
 //
 //		assertEquals("3, 1, 4, 6, 7", order.getModelIndexes(indexes(1,2,3,5,6)).toString());
 //	}
+
+  @Test
+  public void copy() throws Exception {
+    NumberSetCore list = numberOrder(5);
+    assertEquals(5, list.getCount().intValue());
+    NumberSetCore copy = list.copy();
+    assertEquals(5, copy.getCount().intValue());
+  }
 
 	@Test
 	public void moveEmpty() throws Exception {

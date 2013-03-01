@@ -133,9 +133,11 @@ class MutableExtent<N extends Number> {
 	  return toRemove;
 	}
 
-	static <N extends Number> void insert(Math<N> math, ArrayList<MutableExtent<N>> list, N target, N count) {
-		for (int i = 0, imax = list.size(); i < imax; i++) {
-			MutableExtent<N> e = list.get(i);
+	static <N extends Number> void insert(
+	    Math<N> math, ArrayList<MutableExtent<N>> items, N target, N count)
+	{
+		for (int i = 0, imax = items.size(); i < imax; i++) {
+			MutableExtent<N> e = items.get(i);
 
 			if (math.compare(target, e.start()) <= 0) {
 				e.start.add(count);

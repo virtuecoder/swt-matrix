@@ -66,6 +66,8 @@ public class AxisItem<N extends Number> {
 	 * @throws IndexOutOfBoundsException if index is out of 0 ... {@link #getMutableCount()}-1 bounds
 	 */
 	private AxisItem(SectionCore<N> section, N index) {
+	  assert section != null : "Section cannot be null";
+	  assert index != null : "Index cannot be null";
 	  this.section = section;
 	  this.index = index;
 	}

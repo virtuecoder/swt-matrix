@@ -7,6 +7,7 @@
 		
 	<property name="output.dir" location="dist" />
 	<property name="project.dir" location="${output.dir}/project" />
+	<property name="stack.trace" location="build/stack_trace.txt" /> 
 	
 	<!--  Conditions -->
 	<condition property="javadoc.exclude" value="pl.netanel.swt, pl.netanel.util, pl.netanel.swt.matrix.reloaded, pl.netanel.swt.matrix.reloaded.ints">
@@ -18,7 +19,7 @@
 	<condition property="distro" value="Public">
 	    <isset property="public"/>
 	</condition>
-	<property name="distro" location="Retail" />
+	<property name="distro" value="Retail" />
 	
 	
 

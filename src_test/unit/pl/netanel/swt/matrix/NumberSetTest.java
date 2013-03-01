@@ -39,6 +39,24 @@ import pl.netanel.swt.matrix.NumberSetCore.NumberSequence3;
 	}
 
 	@Test
+	public void isEmpty() throws Exception {
+	  NumberSetCore list = numberSet();
+	  assertTrue(list.isEmpty());
+	  list.add(1);
+	  assertFalse(list.isEmpty());
+	  list.clear();
+	  assertTrue(list.isEmpty());
+	}
+
+	@Test
+	public void copy() throws Exception {
+	  NumberSetCore list = numberSet(0, 4);
+	  assertEquals(5, list.getCount().intValue());
+	  NumberSetCore copy = list.copy();
+	  assertEquals(5, copy.getCount().intValue());
+	}
+
+	@Test
 	public void addNotOverlap() throws Exception {
 		NumberSetCore set = numberSet();
 		assertEquals("", set.toString());

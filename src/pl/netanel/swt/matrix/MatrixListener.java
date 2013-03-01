@@ -541,8 +541,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       }
 
       if (!ctrlSelection) {
-        axis.setSelected(false, false, false);
-        //				matrix.model.setSelected(false);
+        //axis.setSelected(false, false, false);
+        matrix.layout.setSelected(false, false);
       }
 
       axis.setSelected(start, end, selectState, skipHidden);

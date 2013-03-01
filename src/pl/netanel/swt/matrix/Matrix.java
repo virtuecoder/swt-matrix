@@ -613,7 +613,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
     if (isDuringResize)
       return;
     try {
-      area = getClientArea();
+      area = getBounds();
       for (int i = 0; i<2; i++) {
         layoutX.setViewportSize(area.width);
         layoutX.compute();

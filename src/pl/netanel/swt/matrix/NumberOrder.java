@@ -250,6 +250,7 @@ class NumberOrder<N extends Number> extends NumberSetCore<N> {
     for (MutableExtent<N> e: items) {
       copy.items.add(new MutableExtent<N>(math.create(e.start()), math.create(e.end())));
     }
+    copy.count.set(count);
     return copy;
   }
 

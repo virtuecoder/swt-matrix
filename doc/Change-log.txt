@@ -1,4 +1,12 @@
 -------------------------------------------------------------------------------
+Version 0.7.33
+
+Bug fixes:
+- Matrix setSize was not considering scrollbars in some cases
+- User selection on one axis did not clear selection state on the other axis.
+- NumberList.copy() did not initialize count of items in the copied object correctly.
+
+-------------------------------------------------------------------------------
 Version 0.7.32
 
 Features
