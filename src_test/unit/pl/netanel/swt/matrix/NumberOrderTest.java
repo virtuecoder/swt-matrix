@@ -1,7 +1,6 @@
 package pl.netanel.swt.matrix;
 
 import static org.junit.Assert.*;
-import static pl.netanel.swt.matrix.TestUtil.numberSet;
 
 import org.junit.Ignore;
 import org.junit.Test;

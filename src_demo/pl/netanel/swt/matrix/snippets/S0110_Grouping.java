@@ -20,7 +20,8 @@ public class S0110_Grouping {
       new Node("Pricing",              // When collapsed to the first child will remain visible by default
         new Node("strike"),
         new Node("barier"),
-        new Node("summary", SUMMARY)), // It will be hidden when expanded and show only when collapsed
+        new Node("summary", SUMMARY)). // It will be hidden when expanded and show only when collapsed
+      separator(5, null), 
       new Node("Dates",                // When collapsed last child will remain visible
         new Node("settlementDate"),
         new Node("expirationDate", REMAIN))

@@ -1,4 +1,11 @@
 -------------------------------------------------------------------------------
+Version 0.7.34
+
+Bug fixes:
+- Grouping separator was incorrect with line sizes different then default.
+- Axis.getViewportItemCount() was incorrect when frozenhead was set
+
+-------------------------------------------------------------------------------
 Version 0.7.33
 
 Bug fixes:

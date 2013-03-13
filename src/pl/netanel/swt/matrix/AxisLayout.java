@@ -1161,13 +1161,15 @@ class AxisLayout<N extends Number> {
 	public Bound getBound(SectionCore<N> section, MutableExtent<N>span, int distance) {
 	  N start = span.start.getValue();
     spanSeq.set(AxisItem.createInternal(section, start), span.end.getValue());
-    int w = 0;
+    int w = section.isHidden(start) ? 0 : - section.getLineWidth(start);
 	  for (spanSeq.init(); spanSeq.next();) {
 	    N index = spanSeq.index.getValue();
-	    w += section.getLineWidth(index) + section.getCellWidth(index);
+	    int lineWidth = section.getLineWidth(index);
+	    if (w == 0) w -= lineWidth;
+      w += lineWidth + section.getCellWidth(index);
     }
 
-    return new Bound(distance, java.lang.Math.max(w - section.getLineWidth(start), 0));
+    return new Bound(distance, java.lang.Math.max(w, 0));
   }
 
   public int computeSize(int viewportSize) {

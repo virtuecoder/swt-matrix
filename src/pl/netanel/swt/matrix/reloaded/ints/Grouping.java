@@ -7,6 +7,7 @@
  ******************************************************************************/
 package pl.netanel.swt.matrix.reloaded.ints;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -62,6 +63,7 @@ public class Grouping {
   private boolean isBulkCollapse;
   private AxisItem<Integer> focusItem;
   private Listener disposeListener;
+  private int[] backupLineWidths;
 
 
   /**
@@ -198,6 +200,8 @@ public class Grouping {
     section.removeHiddenSet(hidden);
   }
 
+//  Separator separator;
+//  Node parent;
   private void initNodes() {
     final int[] maxLevel = new int[] {0};
     final int[] index = new int[] {0};
@@ -263,7 +267,13 @@ public class Grouping {
           node.remain.addAll(child.remain);
         }
         else {
-          node.remain.add(child.extent.getStart());
+          Integer index = child.extent.getStart();
+          node.remain.add(index);
+          Node node2 = node.parent;
+          while (node2 != root) {
+            node2.remain.add(index);
+            node2 = node2.parent;
+          }
         }
       }
     }.traverse(root.children);
@@ -271,15 +281,48 @@ public class Grouping {
     section.setCount(index[0]);
     section2.setCount(levelCount = maxLevel[0]);
     selectLevel = index[0];
+    backupLineWidths = new int[index[0] + 1];
+    for (int i = 0; i < backupLineWidths.length; i++) {
+      backupLineWidths[i] = section.getLineWidth(i);
+    }
 
     root.grouping = this;
     root.extent = Extent.createUnchecked(0, section.getCount()-1);
 
+    setSeparatorLines();
+  }
+
+  private void setSeparatorLines() {
+    for (int i = 0; i <= section.getCount(); i++) {
+      section.setLineWidth(i, backupLineWidths[i]);
+    }
     new NodeVisitor() {
       @Override
       protected void visitBefore(Node node) {
-        if (node.lineWidth != -1) {
-          section.setLineWidth(node.extent.getEnd() + 1, node.lineWidth);
+        if (node.separatorLineWidth != -1) {
+          int lineIndex = node.extent.getEnd() + 1;
+
+          // Set separator line width in the first visible child of the next node
+          int nodeIndex = node.parent.children.indexOf(node);
+          if (nodeIndex < node.parent.children.size() - 1) {
+            Node nextNode = node.parent.children.get(nodeIndex + 1);
+            for (int i = nextNode.extent.getStart(); i <= nextNode.extent.getEnd(); i++) {
+              if (!section.isHidden(i)) {
+                lineIndex = i;
+                break;
+              }
+            }
+          }
+          section.setLineWidth(lineIndex, node.separatorLineWidth);
+        }
+        for (int i = node.children.size(); i-- > 0;) {
+          Node child = node.children.get(i);
+          for (int j = child.extent.getEnd(); j >= child.extent.getStart(); j--) {
+            if (!section.isHidden(j) && child.separatorLineWidth != -1) {
+              section.setLineWidth(j + 1, child.separatorLineWidth);
+              break;
+            }
+          }
         }
       };
     }.traverse(root.children);
@@ -559,25 +602,25 @@ public class Grouping {
     @Override
     protected boolean init() {
       int count = axis2.getViewportItemCount();
-      AxisItem<Integer> lastCell = axis2.getItemByViewportPosition(count-1);
-      int[] bound = axis2.getLineBound(
-          AxisItem.create(lastCell.getSection(), lastCell.getIndex() + 1));
-      contentSize = bound[0] + bound[1];
+      if (count == 0) contentSize = 0; else {
+        AxisItem<Integer> lastCell = axis2.getItemByViewportPosition(count-1);
+        int[] bound = axis2.getLineBound(
+            AxisItem.create(lastCell.getSection(), lastCell.getIndex() + 1));
+        contentSize = bound[0] + bound[1];
+      }
       return super.init();
     }
 
     @Override
     public void setup(Integer indexX, Integer indexY) {
       node = getNodeByCellIndex(indexX, indexY);
-      //TestUtil.log(indexX, indexY, node, node == null ? "" : node.lineColor);
       background = node.lineColor;
-      lineWidth = node.lineWidth;
+      lineWidth = node.separatorLineWidth;
     }
 
     @Override
     protected void paint(int x, int y, int width, int height) {
       if (background == null) return;
-      //TestUtil.log(background);
       gc.setBackground(background);
       if (axisDirection == SWT.HORIZONTAL) {
         x += width;
@@ -627,12 +670,13 @@ public class Grouping {
     private boolean isRemain;
     private boolean isPermanent;
     private boolean isSummary;
-    private int lineWidth = -1;
-    private Color lineColor;
+    protected int separatorLineWidth = -1;
+    protected Color lineColor;
 
     public Node(String caption, Node ...children) {
       this.caption = caption;
-      this.children = Arrays.asList(children);
+      this.children = new ArrayList<Node>();
+      this.children.addAll(Arrays.asList(children));
     }
 
     public Node(String caption, int options, Node ...children) {
@@ -650,7 +694,8 @@ public class Grouping {
       if ((options & COLLAPSED) != 0 ) isCollapsed = true;
 
       this.caption = caption;
-      this.children = Arrays.asList(children);
+      this.children = new ArrayList<Node>();
+      this.children.addAll(Arrays.asList(children));
     }
 
     @Override
@@ -757,6 +802,9 @@ public class Grouping {
           @Override
           protected void visitBefore(Node node) {
             node.isCollapsed = false;
+            if (grouping != null && node.isSummary) {
+              grouping.hidden.add(node.extent);
+            }
           }
         }.traverse(this);
       }
@@ -813,12 +861,12 @@ public class Grouping {
      * @return this node
      */
     public Node separator(int lineWidth, Color lineColor) {
-      this.lineWidth = lineWidth;
+      this.separatorLineWidth = lineWidth;
       this.lineColor = lineColor;
       return this;
     }
-
   }
+
 
   /**
    * Traverses the given node or array of nodes and all the related nodes at the lower levels.
@@ -907,6 +955,7 @@ public class Grouping {
 
   void restoreFocusItem() {
     if (!isBulkCollapse) {
+      setSeparatorLines();
       matrix.refresh();
       if(focusItem != null) {
         axis.setFocusItem(focusItem);
