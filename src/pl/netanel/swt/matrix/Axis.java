@@ -188,8 +188,7 @@ public class Axis<N extends Number> {
 	 */
 	public int getViewportItemCount() {
 		layout.computeIfRequired();
-		return layout.head.count + layout.tail.count + layout.main.cells.size(); // -
-																																							// layout.trim;
+		return layout.head.cells.size() + layout.tail.cells.size() + layout.main.cells.size();
 	}
 
 	/**

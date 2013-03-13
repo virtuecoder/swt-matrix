@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------
+Version 0.7.35
+
+Bug fixes:
+- Axis.getViewportItemCount() was incorrect when frozenhead was set
+
+-------------------------------------------------------------------------------
 Version 0.7.34
 
 Bug fixes:
