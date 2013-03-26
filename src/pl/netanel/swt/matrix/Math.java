@@ -10,11 +10,13 @@ package pl.netanel.swt.matrix;
 import java.math.BigInteger;
 import java.text.MessageFormat;
 
+import pl.netanel.util.NotNull;
 import pl.netanel.util.Preconditions;
 
 /**
  * Abstracts arithmetics on integer types including BigInteger.
  */
+@NotNull
 abstract class Math<N extends Number> {
 
 	public static final int BEFORE = 1;

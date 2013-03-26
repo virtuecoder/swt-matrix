@@ -13,6 +13,7 @@ import java.util.List;
 
 import pl.netanel.swt.matrix.AxisSequence.Backward;
 import pl.netanel.swt.matrix.AxisSequence.Forward;
+import pl.netanel.util.Nullable;
 import pl.netanel.util.Util;
 
 
@@ -29,8 +30,9 @@ class AxisLayout<N extends Number> {
 
 	MutableNumber<N> total, maxInteger, maxScroll, scrollTotal;
 	MutableNumber<N> scrollPosition; // for head and tail it stores min and max scroll position
-	AxisItem<N> start, end, endNoTrim, current, zeroItem;
-	boolean isTrimmed;
+	AxisItem<N> start, end, endNoTrim, zeroItem;
+  @Nullable AxisItem<N> current;
+  boolean isTrimmed;
 	int trim;
 	int autoScrollOffset, resizeOffset, minimalCellWidth = 5;
 
@@ -151,8 +153,6 @@ class AxisLayout<N extends Number> {
 
 	/**
 	 * Computes the layout.
-	 * @param origin
-	 * @param sign
 	 */
 	protected void compute(AxisItem<N> start, AxisSequence<N> AxisSequence) {
 //		Preconditions.checkState(viewportSize > 0, "Cannot compute for viewport size 0");
@@ -513,6 +513,8 @@ class AxisLayout<N extends Number> {
 //		if (axis.symbol == 'X') {
 //		  System.out.println("is required " + (compare(start, forward.min) != 0 || compare(endNoTrim, backward.min) != 0));
 //		}
+
+		//new Exception().printStackTrace();
 		return compare(start, forward.min) != 0 || compare(endNoTrim, backward.min) != 0;
 	}
 
@@ -543,18 +545,18 @@ class AxisLayout<N extends Number> {
 		return 0;
 	}
 
-	AxisItem<N> nextItem(AxisItem<N> item, AxisSequence<N> AxisSequence) {
-		if (item == null) item = AxisSequence.first();
+	AxisItem<N> nextItem(AxisItem<N> item, AxisSequence<N> axisSequence) {
+		if (item == null) item = axisSequence.first();
 		if (item == null) return null;
-		AxisSequence.setHasMore(item);
-		return AxisSequence.nextItem();
+		axisSequence.setHasMore(item);
+		return axisSequence.nextItem();
 	}
 
 	AxisItem<N> nextItem(AxisItem<N> item, MutableNumber<N> itemCount, AxisSequence<N> seq) {
 	  MutableNumber<N> counter = math.create(0);
 	  seq.init(item);
 	  for (seq.init(); seq.next();) {
-	    itemCount.increment();
+	    counter.increment();
 	    if (math.compare(counter, itemCount) >= 0) break;
 	  }
 	  return seq.getItem();
@@ -655,7 +657,7 @@ class AxisLayout<N extends Number> {
 
 		/**
 		 *
-		 * @param cache
+		 * @param dir
 		 * @param maxWidth
 		 * @param count if count <= 0 then it is ignored in the loop
 		 * @param canTrim
@@ -863,7 +865,7 @@ class AxisLayout<N extends Number> {
 //			   distance > tail.distance && !tail.isEmpty() ? tail : main;
 	}
 
-	private Cache getCache(Section<N> section, N index) {
+	Cache getCache(SectionCore<N> section, N index) {
 		for (Cache cache: caches) {
 			int len = cache.cells.size();
 			for (int i = 0; i < len; i++) {
@@ -1137,24 +1139,32 @@ class AxisLayout<N extends Number> {
 	public boolean reorder(AxisItem<N> source, AxisItem<N> target) {
 		SectionCore<N> sourceSection = SectionCore.from(source);
 		SectionCore<N> targetSection = SectionCore.from(target);
-    if (!sourceSection.equals(targetSection)) return false;
 
-		int position = compare(target, start);
+		if (targetSection.index < sourceSection.index) {
+		  target = AxisItem.createInternal(source.section,
+		      source.section.nextNotHiddenIndex(math.ZERO_VALUE(), Matrix.FORWARD));
+		}
+		else if (targetSection.index > sourceSection.index)  {
+		  target = AxisItem.createInternal(source.section,
+		      source.section.nextNotHiddenIndex(source.section.getCount(), Matrix.BACKWARD));
+		}
+
+		//int position = comparePosition(start, target);
 
 		if (!sourceSection.moveSelected(source.getIndex(), target.getIndex())) return false;
 
-		// Adjust the scroll position if moving before the start
-		if (position <= 0) {
-			NumberSequence2<N> selected = sourceSection.getSelectedSequence();
-			selected.init(); selected.next();
-			start = AxisItem.createInternal(sourceSection, selected.index());
-		}
-		// Adjust the scroll position if moving the start
-		else if (sourceSection.isSelected(start.getIndex())) {
-			start = AxisItem.createInternal(sourceSection, target.getIndex());
-		}
-
-		compute();
+//		// Adjust the scroll position if moving before the start
+//		if (position <= 0) {
+//			NumberSequence2<N> selected = sourceSection.getSelectedSequence();
+//			selected.init(); selected.next();
+//			start = AxisItem.createInternal(sourceSection, selected.index());
+//		}
+//		// Adjust the scroll position if moving the start
+//		else if (sourceSection.isSelected(start.getIndex())) {
+//			start = AxisItem.createInternal(sourceSection, target.getIndex());
+//		}
+//
+		show(source);
 		return true;
 	}
 

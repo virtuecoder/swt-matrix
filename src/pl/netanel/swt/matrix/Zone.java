@@ -563,7 +563,7 @@ public interface Zone<X extends Number, Y extends Number> {
    * Removes a painter with the specified name from this list,
    * if it is present (optional operation). If this list does not contain
    * the element, it is unchanged.
-   * @param painter element to be removed from this list, if present
+   * @param name the name of the painter to be removed from this list, if present
    * @return <tt>true</tt> if this list contained the specified element
    * @throws ClassCastException if the type of the specified element
    *         is incompatible with this list (optional)

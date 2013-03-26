@@ -15,8 +15,9 @@ import org.junit.runners.JUnit4;
 
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Painter;
+import pl.netanel.swt.matrix.SwtTestCase;
 
-@RunWith(JUnit4.class) public class  MatrixPerformance {
+@RunWith(JUnit4.class) public class  MatrixPerformance extends SwtTestCase {
 	ArrayList<Long> time = new ArrayList<Long>();
 	protected long t;
 
@@ -126,6 +127,7 @@ import pl.netanel.swt.matrix.Painter;
      * @param key
      * @param type SWT.KeyDown or SWT.KeyUp
      */
+    @Override
     public void postKey(int key, int type) {
         Event event = new Event();
         event.type = type;
@@ -138,6 +140,7 @@ import pl.netanel.swt.matrix.Painter;
      * @param ch
      * @param type SWT.KeyDown or SWT.KeyUp
      */
+    @Override
     public void postChar(char ch, int type) {
         Event event = new Event();
         event.type = type;
@@ -151,6 +154,7 @@ import pl.netanel.swt.matrix.Painter;
      * @param event
      * @return
      */
+    @Override
     public boolean postEvent(final Event event) {
     	Display display = Display.getCurrent();
     	if (Thread.currentThread() != display.getThread()) {
@@ -169,6 +173,7 @@ import pl.netanel.swt.matrix.Painter;
      * Imitates pressing a key that is not a character
      * @param key
      */
+    @Override
     public void press(final int key) {
 		postKey(key, SWT.KeyDown);
 		postKey(key, SWT.KeyUp);
@@ -181,6 +186,7 @@ import pl.netanel.swt.matrix.Painter;
      * @param stateMask
      * @param keyCode
      */
+    @Override
     public void press(final int stateMask, final int keyCode) {
     	Display display = Display.getCurrent();
     	if (Thread.currentThread() != display.getThread()) {
@@ -206,21 +212,6 @@ import pl.netanel.swt.matrix.Painter;
 
     }
 
-    /**
-     * Process all the pending events in system event queue
-     */
-    public void processEvents() {
-    	Display display = Display.getCurrent();
-    	if (Thread.currentThread() != display.getThread()) {
-    		display.asyncExec(new Runnable() {
-    			@Override public void run() {
-    				processEvents();
-    			}
-    		});
-    		return;
-    	}
-		//while (!display.isDisposed() && display.readAndDispatch());
-    	while (display.readAndDispatch());
-    }
+
 
 }

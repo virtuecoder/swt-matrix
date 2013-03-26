@@ -57,7 +57,7 @@ public class MergeGuiTest extends SwtTestCase {
     assertTrue(body.isSelected(3, 3));
     assertFalse(body.isSelected(3, 0));
   }
-  
+
   @Test public void mergeHidden() throws Exception {
     Matrix matrix = createMatrix();
     shell.setBounds(100, 100, 800, 600);
@@ -108,7 +108,7 @@ public class MergeGuiTest extends SwtTestCase {
       assertNotColor(color, bounds.x + 8, bounds.y + 8);
     }
     finally {
-      color.dispose();
+      if (color != null) color.dispose();
     }
   }
 }

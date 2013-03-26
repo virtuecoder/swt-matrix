@@ -78,11 +78,9 @@ public class S0456_TraverseCells_Shift__TabAndEnter_TraverseMatrixWith_Shift__Ct
 
     // Change the traversing from matrix to (Shift+) Ctrl+Tab
     matrix.unbind(Matrix.CMD_TRAVERSE_TAB_NEXT, SWT.KeyDown, SWT.TAB);
-    matrix.unbind(Matrix.CMD_TRAVERSE_TAB_PREVIOUS, SWT.KeyDown, SWT.MOD2
-      | SWT.TAB);
+    matrix.unbind(Matrix.CMD_TRAVERSE_TAB_PREVIOUS, SWT.KeyDown, SWT.MOD2 | SWT.TAB);
     matrix.bind(Matrix.CMD_TRAVERSE_TAB_NEXT, SWT.KeyDown, SWT.MOD1 | SWT.TAB);
-    matrix.bind(Matrix.CMD_TRAVERSE_TAB_PREVIOUS, SWT.KeyDown, SWT.MOD1
-      | SWT.MOD2 | SWT.TAB);
+    matrix.bind(Matrix.CMD_TRAVERSE_TAB_PREVIOUS, SWT.KeyDown, SWT.MOD1 | SWT.MOD2 | SWT.TAB);
 
     // (Shift+) Tab traverses the cells
     matrix.addListener(SWT.KeyDown, cellTraverser);

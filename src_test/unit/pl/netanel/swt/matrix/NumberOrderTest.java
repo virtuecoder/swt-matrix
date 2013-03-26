@@ -318,59 +318,73 @@ import pl.netanel.swt.matrix.NumberOrder.ForwardExtentFirstLastSequence;
 
 	@Ignore
 	@Test
-  public void getIndexByOfftset_simple_backward() throws Exception {
-    NumberOrder order = numberOrder(5);
-    assertEquals(3, order.getIndexByOffset(3, 0));
-    assertEquals(2, order.getIndexByOffset(3, -1));
-    assertEquals(1, order.getIndexByOffset(3, -2));
-    assertEquals(0, order.getIndexByOffset(3, -3));
-    assertEquals(null, order.getIndexByOffset(3, -4));
-    assertEquals(null, order.getIndexByOffset(3, -10));
+	public void getIndexByOfftset_simple_backward() throws Exception {
+	  NumberOrder order = numberOrder(5);
+	  assertEquals(3, order.getIndexByOffset(3, 0));
+	  assertEquals(2, order.getIndexByOffset(3, -1));
+	  assertEquals(1, order.getIndexByOffset(3, -2));
+	  assertEquals(0, order.getIndexByOffset(3, -3));
+	  assertEquals(null, order.getIndexByOffset(3, -4));
+	  assertEquals(null, order.getIndexByOffset(3, -10));
+	}
+
+	@Ignore
+	@Test
+	public void getIndexByOffset_backward() throws Exception {
+	  NumberOrder order = numberOrder(5);
+	  order.move(3, 3, 0);
+	  assertEquals("3, 0-2, 4", order.toString());
+	  assertEquals(4, order.getIndexByOffset(4, 0));
+	  assertEquals(2, order.getIndexByOffset(4, -1));
+	  assertEquals(1, order.getIndexByOffset(4, -2));
+	  assertEquals(0, order.getIndexByOffset(4, -3));
+	  assertEquals(3, order.getIndexByOffset(4, -4));
+	  assertEquals(null, order.getIndexByOffset(4, -5));
+	  assertEquals(null, order.getIndexByOffset(4, -10));
+	}
+
+	@Test
+	public void forwardExtentOriginLimitSequence() throws Exception {
+	  NumberOrder<Integer> order = numberOrder(5);
+	  ExtentOriginLimitSequence seq = order.countForward;
+
+	  order.move(3, 3, 2);
+	  assertEquals("0-1, 3, 2, 4", order.toString());
+	  seq.init(1, 3);
+	  assertStep(seq, true, 1, 1);
+	  assertStep(seq, true, 3, 3);
+	  assertStep(seq, true, 2, 2);
+	  assertFalse(seq.next());
+	}
+
+	@Test
+	public void forwardExtentFirstLastSequence() throws Exception {
+	  NumberOrder<Integer> order = numberOrder(5);
+	  ForwardExtentFirstLastSequence seq = order.untilForward;
+
+	  order.move(3, 3, 2);
+	  assertEquals("0-1, 3, 2, 4", order.toString());
+	  seq.init(1, 2);
+	  assertStep(seq, true, 1, 1);
+	  assertStep(seq, true, 3, 3);
+	  assertStep(seq, true, 2, 2);
+	  assertFalse(seq.next());
+	}
+
+  @Test
+  public void removeCount() throws Exception {
+    NumberOrder<Integer> order = numberOrder(5);
+    assertEquals(5, order.getCount().intValue());
+    order.remove(0);
+    assertEquals(4, order.getCount().intValue());
   }
-
-	 @Ignore
-	 @Test
-   public void getIndexByOffset_backward() throws Exception {
-	    NumberOrder order = numberOrder(5);
-	    order.move(3, 3, 0);
-	    assertEquals("3, 0-2, 4", order.toString());
-	    assertEquals(4, order.getIndexByOffset(4, 0));
-	    assertEquals(2, order.getIndexByOffset(4, -1));
-	    assertEquals(1, order.getIndexByOffset(4, -2));
-	    assertEquals(0, order.getIndexByOffset(4, -3));
-	    assertEquals(3, order.getIndexByOffset(4, -4));
-	    assertEquals(null, order.getIndexByOffset(4, -5));
-	    assertEquals(null, order.getIndexByOffset(4, -10));
-	  }
-
-	 @Test
-	 public void forwardExtentOriginLimitSequence() throws Exception {
-     NumberOrder<Integer> order = numberOrder(5);
-     ExtentOriginLimitSequence seq = order.countForward;
-
-     order.move(3, 3, 2);
-     assertEquals("0-1, 3, 2, 4", order.toString());
-     seq.init(1, 3);
-     assertStep(seq, true, 1, 1);
-     assertStep(seq, true, 3, 3);
-     assertStep(seq, true, 2, 2);
-     assertFalse(seq.next());
-	 }
-
-	 @Test
-	 public void forwardExtentFirstLastSequence() throws Exception {
-	   NumberOrder<Integer> order = numberOrder(5);
-	   ForwardExtentFirstLastSequence seq = order.untilForward;
-
-	   order.move(3, 3, 2);
-	   assertEquals("0-1, 3, 2, 4", order.toString());
-	   seq.init(1, 2);
-	   assertStep(seq, true, 1, 1);
-	   assertStep(seq, true, 3, 3);
-	   assertStep(seq, true, 2, 2);
-	   assertFalse(seq.next());
-	 }
-
+  @Test
+  public void addCount() throws Exception {
+    NumberOrder<Integer> order = numberOrder(5);
+    assertEquals(5, order.getCount().intValue());
+    order.add(5);
+    assertEquals(6, order.getCount().intValue());
+  }
 
   // Helper test methods
 

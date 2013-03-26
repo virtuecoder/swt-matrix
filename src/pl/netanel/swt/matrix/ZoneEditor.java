@@ -323,7 +323,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     }
     else if (control instanceof Button && (control.getStyle() & SWT.CHECK) != 0) {
       Button button = (Button) control;
-      button.setSelection((Boolean) value);
+      button.setSelection(value == null ? false : (Boolean) value);
     }
     else if (control instanceof DateTime) {
       //      if (value != null && !(value instanceof Date)) {

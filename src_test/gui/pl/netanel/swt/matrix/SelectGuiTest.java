@@ -8,6 +8,7 @@ import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -184,6 +185,30 @@ public class SelectGuiTest extends SwtTestCase {
 
     // Two body cells should be selected
     assertEquals(2, body.getSelectedCount().intValue());
+  }
+
+  @Test
+  public void selectBodyAfterMove() throws Exception {
+    Matrix matrix = createMatrix();
+    matrix.getAxisX().getBody().setDefaultMoveable(true);
+    Zone body = matrix.getBody();
+
+    Rectangle r1 = matrix.getHeaderX().getCellBounds(0, 0);
+    Rectangle r2 = matrix.getHeaderX().getCellBounds(2, 0);
+    Point p1 = middle(r1);
+    Point p2 = middle(r2);
+    click(r1);
+    dragAndDrop(SWT.BUTTON1, p1, p2);
+
+    Rectangle bounds = body.getCellBounds(0, 2);
+    click(matrix, bounds, SWT.MOD2 | SWT.BUTTON1);
+
+    // Body cell should be highlighted
+    Color selectionBackground = body.getPainter(Painter.NAME_CELLS).style.selectionBackground;
+    assertColor(selectionBackground, bounds.x + 2, bounds.y + 2);
+
+    // Two body cells should be selected
+    assertEquals(3, body.getSelectedCount().intValue());
   }
 
   @Test

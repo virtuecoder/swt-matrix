@@ -314,13 +314,13 @@ public class Grouping {
             }
           }
           section.setLineWidth(lineIndex, node.separatorLineWidth);
-        }
-        for (int i = node.children.size(); i-- > 0;) {
-          Node child = node.children.get(i);
-          for (int j = child.extent.getEnd(); j >= child.extent.getStart(); j--) {
-            if (!section.isHidden(j) && child.separatorLineWidth != -1) {
-              section.setLineWidth(j + 1, child.separatorLineWidth);
-              break;
+          for (int i = node.children.size(); i-- > 0;) {
+            Node child = node.children.get(i);
+            for (int j = child.extent.getEnd(); j >= child.extent.getStart(); j--) {
+              if (!section.isHidden(j) && child.separatorLineWidth != -1) {
+                section.setLineWidth(j + 1, child.separatorLineWidth);
+                break;
+              }
             }
           }
         }
@@ -606,7 +606,7 @@ public class Grouping {
         AxisItem<Integer> lastCell = axis2.getItemByViewportPosition(count-1);
         int[] bound = axis2.getLineBound(
             AxisItem.create(lastCell.getSection(), lastCell.getIndex() + 1));
-        contentSize = bound[0] + bound[1];
+        contentSize = bound == null ? 0 : bound[0] + bound[1];
       }
       return super.init();
     }

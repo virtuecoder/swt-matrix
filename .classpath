@@ -8,5 +8,6 @@
 	<classpathentry kind="var" path="ECLIPSE_SWT" sourcepath="/ECLIPSE_HOME/plugins/org.eclipse.swt.win32.win32.x86.source_3.7.1.v3738a.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/org.eclipse.swt.win32.win32.x86_3.7.2.v3740f"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

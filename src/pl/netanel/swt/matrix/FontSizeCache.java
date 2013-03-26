@@ -43,7 +43,7 @@ class FontSizeCache {
 			  extent = gc.stringExtent(Character.toString((char) ch));
 				data.x[ch] = extent.x;
 			}
-			data.y = extent.y;
+			if (extent != null) data.y = extent.y;
 			cache.put(fontData, data);
 		}
 		return data;

@@ -172,7 +172,7 @@ class SectionCore<N extends Number> implements Section<N> {
   }
 
   @Override public N getIndex(N position) {
-    if (math.compare(position, getVisibleCount()) >= 0) return null;
+    if (math.compare(position, getVisibleCount()) > 0) return null;
 
     MutableNumber<N> pos1 = math.create(0);
     MutableNumber<N> pos2 = math.create(0);
@@ -187,7 +187,7 @@ class SectionCore<N extends Number> implements Section<N> {
       pos2.increment();
       pos1.set(pos2);
     }
-    return null;
+    return math.compare(pos2, position) == 0 ? pos2.getValue() : null;
   }
 
   @Override
@@ -642,6 +642,7 @@ class SectionCore<N extends Number> implements Section<N> {
     N index = compareRank < 0 ? target :
       math.compare(targetRank, math.decrement(count)) == 0 ? count :
         getIndex(math.increment(targetRank));
+    if (index == null) return false;
 
     order.move(selection, index);
 

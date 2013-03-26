@@ -124,7 +124,7 @@ import org.junit.runners.JUnit4;
       matrix.setPainter(0, new Painter("test"));              
       fail("Expected " + IllegalArgumentException.class.getName());
     } catch (IllegalArgumentException e) {
-      assertEquals("A painter with 'test' name already exist in this collection", e.getMessage());
+      assertEquals("The receiver already has a painter with name: test", e.getMessage());
     }
   }
   

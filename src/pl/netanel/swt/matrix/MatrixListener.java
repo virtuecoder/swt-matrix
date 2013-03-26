@@ -263,6 +263,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         }
       }
       else if (e.type == SWT.MouseMove) {
+//        if (axis.symbol == 'X')
+//          System.out.print(item + " -> ");
         distance = axis.symbol == 'X' ? e.x : e.y;
         mouseOverItem = autoScroll.future != null && autoScroll.item != null
             ? autoScroll.item
@@ -277,6 +279,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
           if (last == null) last = mouseOverItem;
         }
         mouseMoveEvent = e;
+//        if (axis.symbol == 'X')
+//          System.out.println(item);
       }
     }
 
@@ -566,7 +570,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         // Adjust cursor location if moving smaller to bigger
         Bound r1 = axisLayout.getCellBound(last);
         Bound r2 = axisLayout.getCellBound(item);
-        if (r1.width < r2.width) {
+        if (r1 != null && r2 != null && r1.width < r2.width) {
           Display display = matrix.getDisplay();
           Point p = display.getCursorLocation();
           if (axis.symbol == 'X') {
@@ -581,9 +585,9 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         addEvent(SectionCore.from(item), SWT.Move, item);
         axis.scroll();
         item = last;
-        //				return true;
       }
     }
+
 
     public void pack() {
       if (resizeItem == null) return;
@@ -1128,7 +1132,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
   class DragItemPainter extends Painter<X, Y> {
     ZoneCore<X, Y> header;
     Painter<X, Y> painter;
-    Rectangle bounds, bounds2;
+    Rectangle bounds;
     protected int x2, y2;
     private boolean highlight;
     private boolean advanced;
@@ -1224,6 +1228,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       if (!instantMoving) {
         Rectangle area = matrix.getClientArea();
         AxisItem<X> item = stateX.item;
+        if (item == null) return;
         int x3 = 0;
         Object d = getData();
         if (d instanceof DropTargetEvent) {
@@ -1246,15 +1251,18 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
               header.getBounds(Frozen.NONE, Frozen.NONE).width;
         }
         else {
-          bounds2 = header.getCellBounds(item.index, stateY.axis.math.ZERO_VALUE());
-          boolean before = x3 < bounds2.x + bounds2.width / 2;
-          x3 = bounds2.x + (before ? -1 : bounds2.width);
-          if (before && (stateX.item == null || stateX.axisLayout.compare(stateX.item, stateX.last) > 0)) {
-            stateX.item = stateX.axisLayout.nextItem(item, stateX.axisLayout.backwardNavigator);
-          }
-          else if (!before && (stateX.item == null || stateX.axisLayout.compare(stateX.item, stateX.last) < 0)) {
-            stateX.item = stateX.axisLayout.nextItem(item, stateX.axisLayout.forwardNavigator);
-          }
+          Bound bound = stateX.axis.layout.getCellBound(item);
+          if (bound == null) return;
+          boolean before = x3 < bound.distance + bound.width / 2;
+          x3 = bound.distance + (before ? -1 : bound.width);
+//          if (before && (stateX.item == null || stateX.axisLayout.compare(stateX.item, stateX.last) > 0)) {
+//            stateX.item = stateX.axisLayout.nextItem(item, stateX.axisLayout.backwardNavigator);
+//            TestUtil.log("indicator " + stateX.item);
+//          }
+//          else if (!before && (stateX.item == null || stateX.axisLayout.compare(stateX.item, stateX.last) < 0)) {
+//            stateX.item = stateX.axisLayout.nextItem(item, stateX.axisLayout.forwardNavigator);
+//            TestUtil.log("indicator " + stateX.item);
+//          }
           //          feedback = before ? DND.FEEDBACK_INSERT_BEFORE : DND.FEEDBACK_INSERT_AFTER;
         }
         gc.setLineWidth(2);
@@ -1280,6 +1288,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       if (!instantMoving) {
         Rectangle area = matrix.getClientArea();
         AxisItem<Y> item = stateY.item;
+        if (item == null) return;
         int y3 = 0;
         Object d = getData();
         if (d instanceof DropTargetEvent) {
@@ -1302,9 +1311,10 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
               header.getBounds(Frozen.NONE, Frozen.NONE).height;
         }
         else {
-          bounds2 = header.getCellBounds(stateX.axis.math.ZERO_VALUE(), item.index);
-          boolean before = y3 < bounds2.y + bounds2.height / 2;
-          y3 = bounds2.y + (before ? -1 : bounds2.height);
+          Bound bound = stateY.axis.layout.getCellBound(item);
+          if (bound == null) return;
+          boolean before = y3 < bound.distance + bound.width / 2;
+          y3 = bound.distance + (before ? -1 : bound.width);
           //          feedback = before ? DND.FEEDBACK_INSERT_BEFORE : DND.FEEDBACK_INSERT_AFTER;
           if (before && (stateY.item == null || stateY.axisLayout.compare(stateY.item, stateY.last) > 0)) {
             stateY.item = stateY.axisLayout.nextItem(item, stateY.axisLayout.backwardNavigator);

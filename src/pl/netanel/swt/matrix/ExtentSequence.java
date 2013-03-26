@@ -61,7 +61,7 @@ abstract class ExtentSequence<N extends Number> implements Sequence, Iterable<Ex
       firstExtentIndex();
       do {
         extent = set.items.get(i);
-        if (math.compare(extent.end.getValue(), origin) >= 0) {
+        if (math.contains(extent, origin)) {
           originIndex = i;
           break;
         }

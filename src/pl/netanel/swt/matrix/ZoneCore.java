@@ -726,7 +726,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
   }
 
 	@Override public int indexOfPainter(String name) {
-		return painters.indexOfPainter(name);
+		return painters.indexOf(name);
 	}
 
 	@Override public Painter<X, Y> getPainter(String name) {
@@ -744,7 +744,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 	}
 
 	void replaceOrAddFirst(Painter<X, Y> painter) {
-    int indexOf = painters.indexOfPainter(painter.name);
+    int indexOf = painters.indexOf(painter.name);
     if (indexOf != -1) {
       painters.set(indexOf, painter);
     } else {

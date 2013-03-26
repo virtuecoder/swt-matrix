@@ -20,12 +20,13 @@ public class S0110_Grouping {
       new Node("Pricing",              // When collapsed to the first child will remain visible by default
         new Node("strike"),
         new Node("barier"),
-        new Node("summary", SUMMARY)). // It will be hidden when expanded and show only when collapsed
-      separator(5, null), 
+        new Node("summary", SUMMARY)) // It will be hidden when expanded and show only when collapsed
+      .separator(5, null),
       new Node("Dates",                // When collapsed last child will remain visible
         new Node("settlementDate"),
         new Node("expirationDate", REMAIN))
-      ).separator(2, Display.getDefault().getSystemColor(SWT.COLOR_RED)),
+      )
+    .separator(2, Display.getDefault().getSystemColor(SWT.COLOR_RED)),
     new Node("Group2",
       // When collapsed 1st and 3rd child will be visible. This node will be initially collapsed
       new Node("Sub Group 2.1", REMAIN | COLLAPSED,
@@ -33,7 +34,8 @@ public class S0110_Grouping {
         new Node("spot"),
         new Node("fwd", REMAIN),
         new Node("vol")
-      ).separator(2, Display.getDefault().getSystemColor(SWT.COLOR_GREEN)),
+      )
+      .separator(2, Display.getDefault().getSystemColor(SWT.COLOR_GREEN)),
       new Node("Sub Group 2.2", PERMANENT, // It will be not possible to collapse this node
         new Node("value"),
         new Node("currencies"),

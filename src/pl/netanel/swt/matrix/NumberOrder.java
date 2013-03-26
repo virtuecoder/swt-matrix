@@ -62,10 +62,12 @@ class NumberOrder<N extends Number> extends NumberSetCore<N> {
 	    MutableExtent<N> e = items.get(items.size() - 1);
 	    if (math.compare(index, math.increment(e.end())) == 0) {
 	      e.end.set(index);
+	      count.increment();
 	      return true;
 	    }
 	  }
     items.add(new MutableExtent<N>(math.create(index), math.create(index)));
+    count.increment();
 	  return true;
 	}
 
@@ -75,8 +77,16 @@ class NumberOrder<N extends Number> extends NumberSetCore<N> {
 	@Override
 	public boolean add(N start, N end) {
 	  items.add(new MutableExtent<N>(math.create(start), math.create(end)));
+	  count.add(end).subtract(start).increment();
 	  return true;
 	}
+
+	@Override
+  public boolean remove(N start, N end) {
+    boolean result = super.remove(start, end);
+    if (result) count.subtract(end).add(start).decrement();
+	  return result;
+	};
 
 	public void move(N start, N end, N target) {
 		// Adjust the target if subject contains it
@@ -88,7 +98,7 @@ class NumberOrder<N extends Number> extends NumberSetCore<N> {
 //			target = math.create(target);
 //		}
 
-		remove(start, end);
+		super.remove(start, end);
 
 		// Find the position i to insert
 		int i = 0;

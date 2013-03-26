@@ -1,4 +1,40 @@
 -------------------------------------------------------------------------------
+Version 0.7.39
+
+Feature changes:
+- Section.getIndex(N position) returns the count when position is count instead of null 
+
+Bug fixes:
+- Seciton.getOrder().geCount() was incorrect after add/remove operations
+- Computing of required space with scroll bars was incorrect (last row not visible)
+- Auto-scrolling did not work correctly
+- Moving column with mouse over row header did not work
+- Grouping separator line width was incorrect in some cases
+
+API changes:
+- Axis.isItemInViewport(Section, Number): boolean
+
+-------------------------------------------------------------------------------
+Version 0.7.38
+
+Bug fixes:
+- NLP in grouping separator painter when the size was too small to show the body
+
+-------------------------------------------------------------------------------
+Version 0.7.37
+
+Bug fixes:
+- Range cell selection was incorrect after column dragging.
+
+-------------------------------------------------------------------------------
+Version 0.7.36
+
+Bug fixes:
+- NPE when moving item to the end when the last item is hidden
+- NPE when moving column down after auto scroll 
+- Auto scroll executor dod not stop on matrix dispose.
+
+-------------------------------------------------------------------------------
 Version 0.7.35
 
 Bug fixes:
@@ -9,13 +45,13 @@ Version 0.7.34
 
 Bug fixes:
 - Grouping separator was incorrect with line sizes different then default.
-- Axis.getViewportItemCount() was incorrect when frozenhead was set
+- Axis.getViewportItemCount() was incorrect when frozen head was set
 
 -------------------------------------------------------------------------------
 Version 0.7.33
 
 Bug fixes:
-- Matrix setSize was not considering scrollbars in some cases
+- Matrix setSize was not considering scroll bars in some cases
 - User selection on one axis did not clear selection state on the other axis.
 - NumberList.copy() did not initialize count of items in the copied object correctly.
 

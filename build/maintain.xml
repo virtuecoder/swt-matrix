@@ -235,7 +235,6 @@
   	<echo>The new version:
   	  http://www.netanel.pl/swt-matrix/872533850/swt-matrix-${version}.zip
   	  http://www.netanel.pl/swt-matrix/872533850/swt-matrix-src-${version}.zip</echo>
-  	
 	</target>
 	
   <target name="build-126999091" description="Fico">
@@ -255,7 +254,25 @@
   	<echo>The new version:
   	  http://www.netanel.pl/swt-matrix/126999091/swt-matrix-${version}.zip
   	</echo>
-  	
+	</target>
+	
+	<target name="build-112929821" description="Vanguard">
+    <ant antfile="build\build.xml" target="dist">
+      <property name="retail" value="true"/>
+    </ant>
+    <ftp 
+       server="${ftp.server}"
+       remotedir="${ftp.remote.dir}/swt-matrix/112929821"
+       userid="${ftp.username}"
+       password="${ftp.password}"
+       depends="true"
+       verbose="yes"
+     >
+       <fileset file="${output.dir}/swt-matrix-${version}.zip"/>
+    </ftp>
+    <echo>The new version:
+      http://www.netanel.pl/swt-matrix/112929821/swt-matrix-${version}.zip
+    </echo>
 	</target>
 	
 	<target name="dump-database">  
