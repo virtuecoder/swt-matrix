@@ -98,9 +98,11 @@ public class S0910_DragAndDropFilesFromExternalWindow {
             }
             else {
               int[] bound = axisY.getCellBound(item);
-              position = axisY.getBody().getOrder(item.getIndex());
-              if (p.y > bound[0] + bound[1] / 2) {
-                position++;
+              if (bound != null) {
+                position = axisY.getBody().getOrder(item.getIndex());
+                if (p.y > bound[0] + bound[1] / 2) {
+                  position++;
+                }
               }
             }
           }

@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TypedListener;
 
 import pl.netanel.util.ImmutableIterator;
+import pl.netanel.util.Nullable;
 
 
 /**
@@ -160,6 +161,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
     }
 	}
 
+  @Nullable
 	@Override public Rectangle getCellBounds(X indexX, Y indexY) {
 	  Rectangle bounds = matrix.layout.getMergedBounds(this, indexX, indexY);
 	  if (bounds != null) {

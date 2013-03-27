@@ -143,6 +143,7 @@ public class S0410_SeparateZoneToInsertNewItems {
       @Override
       protected void setBounds(Integer indexX, Integer indexY, Control control) {
         Rectangle bounds = insertHeader.getCellBounds(indexX, indexY);
+        if (bounds == null) return;
         bounds.y -= 2;
         bounds.height += 4;
         control.setBounds(bounds);

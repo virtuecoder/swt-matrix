@@ -293,8 +293,7 @@ public class S1001_CompoundExample {
         super.setup(indexX, indexY);
         merge = indexX == 4;
         int position = axisX.getViewportPosition(AxisItem.create(bodyX, 2));
-        AxisItem<Integer> nextItem = axisX
-          .getItemByViewportPosition(position + 1);
+        AxisItem<Integer> nextItem = axisX.getItemByViewportPosition(position + 1);
         dotted = indexX == 2 || nextItem != null
           && indexX == nextItem.getIndex();
       }
@@ -417,6 +416,7 @@ public class S1001_CompoundExample {
         Control control) {
         if (indexX == 4 && indexY.equals(indexYY[10])) {
           Rectangle bounds = body.getCellBounds(indexX, indexY);
+          if (bounds == null) return;
           bounds.x++;
           bounds.y++;
           bounds.width -= 2;
@@ -500,7 +500,7 @@ public class S1001_CompoundExample {
          * without offset.
          */
         Rectangle bounds = totalBody.getCellBounds(indexX, indexY);
-        control.setBounds(bounds);
+        if (bounds != null) control.setBounds(bounds);
       }
     };
   }

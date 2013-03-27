@@ -18,6 +18,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
 
 import pl.netanel.util.Arrays;
+import pl.netanel.util.Nullable;
 import pl.netanel.util.Preconditions;
 
 class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
@@ -74,7 +75,7 @@ class ZoneClient<X extends Number, Y extends Number> implements Zone<X, Y> {
     return core.getBounds(frozenX, frozenY);
   }
 
-  @Override
+  @Override @Nullable
   public Rectangle getCellBounds(X indexX, Y indexY) {
     sectionY.checkCellIndex(indexY, "indexY");
     sectionX.checkCellIndex(indexX, "indexX");

@@ -34,8 +34,8 @@ public class S0904_Tooltip {
       @Override
       public void handleEvent(Event e) {
         // If cell is different
-        AxisItem<Integer> itemX = matrix.getAxisX().getItemByViewportDistance(e.x);
-        AxisItem<Integer> itemY = matrix.getAxisY().getItemByViewportDistance(e.y);
+        AxisItem<Integer> itemX = matrix.getAxisX().getMouseItem();
+        AxisItem<Integer> itemY = matrix.getAxisY().getMouseItem();
         if (itemX == null || itemY == null) {
           matrix.setToolTipText(null);
         }

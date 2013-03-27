@@ -100,7 +100,7 @@ public class S0055_SortingByColumns {
       });
 
     // Paint text and sorting image in the column headers zone
-    Painter<Integer, Integer> columnHeaderPainter = new Painter<Integer, Integer>( 
+    Painter<Integer, Integer> columnHeaderPainter = new Painter<Integer, Integer>(
       Painter.NAME_CELLS) {
       @Override
       public void setupSpatial(Integer indexX, Integer indexY) {
@@ -123,8 +123,8 @@ public class S0055_SortingByColumns {
       @Override
       public void handleEvent(Event e) {
         // AxisItem<Y> item0 = matrix.getAxisY().getItemByDistance(e.y);
-        AxisItem<Integer> itemX = matrix.getAxisX().getItemByViewportDistance(
-          e.x);
+        AxisItem<Integer> itemX = matrix.getAxisX().getMouseItem();
+        if (itemX == null) return;
         final int column = itemX.getIndex().intValue();
 
         int previousDirection = direction[column];

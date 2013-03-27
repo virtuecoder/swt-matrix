@@ -163,6 +163,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
           // Calculate the image bounds
           Rectangle cellBounds = matrix.getBody().getCellBounds(indexX, indexY);
           Rectangle imageBounds = ((Image) emulation[0]).getBounds();
+          if (cellBounds == null || imageBounds == null) return false;
           imageBounds.x = cellBounds.x + (cellBounds.width - imageBounds.width) / 2;
           imageBounds.y = cellBounds.y + (cellBounds.height - imageBounds.height) / 2;
           return !imageBounds.contains(e.x, e.y);
@@ -555,6 +556,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
    */
   protected void setBounds(X indexX, Y indexY, Control control) {
     Rectangle bounds = zone.getCellBounds(indexX, indexY);
+    if (bounds == null) return;
     Painter.offsetRectangle(bounds, 1);
 
     Point size  = null;

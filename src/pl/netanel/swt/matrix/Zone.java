@@ -18,6 +18,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Listener;
 
+import pl.netanel.util.Nullable;
+
 
 /**
  * Constitutes a region of a matrix where a section from the vertical axis
@@ -73,6 +75,7 @@ public interface Zone<X extends Number, Y extends Number> {
    * @throws IndexOutOfBoundsException if <code>indexX</code> is out of
    *         0 ... this.getSectionY().getCount() bounds
    */
+  @Nullable
   Rectangle getCellBounds(X indexX, Y indexY);
 
   /**

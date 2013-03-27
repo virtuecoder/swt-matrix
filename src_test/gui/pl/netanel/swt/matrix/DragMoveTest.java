@@ -21,7 +21,13 @@ public class  DragMoveTest extends SwtTestCase {
     matrix.getAxisX().getBody().setCount(5);
     matrix.getAxisX().getBody().setDefaultMoveable(true);
 
+//    listenToAll(shell);
     shell.open();
+//    while (!shell.isDisposed()) {
+//      if (!display.readAndDispatch()) {
+//        display.sleep();
+//      }
+//    }
 
     processEvents();
     Rectangle bounds1 = matrix.getHeaderX().getCellBounds(0, 0);
@@ -112,6 +118,7 @@ public class  DragMoveTest extends SwtTestCase {
     matrix.getAxisX().getHeader().setVisible(true);
     matrix.getAxisY().getHeader().setVisible(true);
 
+//    listenToAll(matrix);
     shell.open();
 
     Rectangle bounds1 = matrix.getHeaderX().getCellBounds(1, 0);

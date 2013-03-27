@@ -72,8 +72,8 @@ public class ButtonCellBehavior<X extends Number, Y extends Number>
     switch (e.type) {
 
     case SWT.MouseDown:
-      pushedX = zone.getMatrix().getAxisX().getItemByViewportDistance(e.x);
-      pushedY = zone.getMatrix().getAxisY().getItemByViewportDistance(e.y);
+      pushedX = zone.getMatrix().getAxisX().getMouseItem();
+      pushedY = zone.getMatrix().getAxisY().getMouseItem();
       break;
 
     case SWT.MouseUp:

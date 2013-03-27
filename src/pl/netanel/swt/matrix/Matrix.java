@@ -441,8 +441,10 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
       @Override
       public void paint(int x, int y, int width, int height) {
         if (axisX.getFrozenHead() > 0) {
-          int[] bound = axisX.getLineBound(axisX
-                  .getItemByViewportPosition(axisX.getFrozenHead()));
+          AxisItem<X> item = axisX.getItemByViewportPosition(axisX.getFrozenHead());
+          if (item == null) return;
+          int[] bound = axisX.getLineBound(item);
+          if (bound == null) return;
           gc.fillRectangle(bound[0], y, bound[1], height);
         }
         // gc.setBackground(background);
@@ -455,8 +457,10 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
       @Override
       public void paint(int x, int y, int width, int height) {
         if (axisY.getFrozenHead() > 0) {
-          int[] bound = axisY.getLineBound(axisY
-                  .getItemByViewportPosition(axisY.getFrozenHead()));
+          AxisItem<Y> item = axisY.getItemByViewportPosition(axisY.getFrozenHead());
+          if (item == null) return;
+          int[] bound = axisY.getLineBound(item);
+          if (bound == null) return;
           gc.fillRectangle(x, bound[0], width, bound[1]);
         }
       }
@@ -469,9 +473,11 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
       public void paint(int x, int y, int width, int height) {
         int viewportItemCount = axisX.getViewportItemCount();
         if (axisX.getFrozenTail() > 0) {
-          int[] bound = axisX.getLineBound(axisX
-                  .getItemByViewportPosition(viewportItemCount
-                          - axisX.getFrozenTail()));
+          AxisItem<X> item = axisX.getItemByViewportPosition(
+              viewportItemCount - axisX.getFrozenTail());
+          if (item == null) return;
+          int[] bound = axisX.getLineBound(item);
+          if (bound == null) return;
           gc.fillRectangle(bound[0], y, bound[1], height);
         }
       }
@@ -484,9 +490,11 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
       public void paint(int x, int y, int width, int height) {
         int viewportItemCount = axisY.getViewportItemCount();
         if (axisY.getFrozenTail() > 0) {
-          int[] bound = axisY.getLineBound(axisY
-                  .getItemByViewportPosition(viewportItemCount
-                          - axisY.getFrozenTail()));
+          AxisItem<Y> item = axisY.getItemByViewportPosition(
+              viewportItemCount - axisY.getFrozenTail());
+          if (item == null) return;
+          int[] bound = axisY.getLineBound(item);
+          if (bound == null) return;
           gc.fillRectangle(x, bound[0], width, bound[1]);
         }
       }
@@ -607,20 +615,33 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
       return;
     try {
       area = getBounds();
+      isDuringResize = true;
+
+      boolean isScrollbarVisibleX = false, isScrollbarVisibleY = false;
+      if (axisX.scrollBar != null) axisX.scrollBar.setVisible(false);
+      if (axisY.scrollBar != null) axisY.scrollBar.setVisible(false);
       for (int i = 0; i < 2; i++) {
         layoutX.setViewportSize(area.width);
         layoutX.compute();
         if (axisX.scrollBar != null) {
           boolean isRequired = layoutX.isScrollRequired();
-          axisX.scrollBar.setVisible(isRequired);
-          if (isRequired) area.height -= axisX.scrollBar.getSize().y;
+          if (isScrollbarVisibleX != isRequired) {
+            axisX.scrollBar.setVisible(isScrollbarVisibleX = isRequired);
+            if (isRequired) {
+              area.height = java.lang.Math.max(0, area.height - axisX.scrollBar.getSize().y);
+            }
+          }
         }
         layoutY.setViewportSize(area.height);
         layoutY.compute();
         if (axisY.scrollBar != null) {
           boolean isRequired = layoutY.isScrollRequired();
-          axisY.scrollBar.setVisible(isRequired);
-          if (isRequired) area.width -= axisY.scrollBar.getSize().x;
+          if (isScrollbarVisibleY != isRequired) {
+            axisY.scrollBar.setVisible(isScrollbarVisibleY = isRequired);
+            if (isRequired) {
+              area.width = java.lang.Math.max(0, area.width - axisY.scrollBar.getSize().x);
+            }
+          }
           i = isRequired ? 2 : i; // no need to repeat, because axisX state does not change
         }
       }

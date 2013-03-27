@@ -327,6 +327,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
               // Remember image offset for dragging
               int x, y; //, w, h;
               Bound b = axisLayout.getCellBound(item);
+              if (b == null) break;
               if (axis.symbol == 'X') {
                 x = b.distance - 1;
                 y = 0;
@@ -1315,13 +1316,13 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
           if (bound == null) return;
           boolean before = y3 < bound.distance + bound.width / 2;
           y3 = bound.distance + (before ? -1 : bound.width);
-          //          feedback = before ? DND.FEEDBACK_INSERT_BEFORE : DND.FEEDBACK_INSERT_AFTER;
-          if (before && (stateY.item == null || stateY.axisLayout.compare(stateY.item, stateY.last) > 0)) {
-            stateY.item = stateY.axisLayout.nextItem(item, stateY.axisLayout.backwardNavigator);
-          }
-          else if (!before && (stateY.item == null || stateY.axisLayout.compare(stateY.item, stateY.last) < 0)) {
-            stateY.item = stateY.axisLayout.nextItem(item, stateY.axisLayout.forwardNavigator);
-          }
+//          //          feedback = before ? DND.FEEDBACK_INSERT_BEFORE : DND.FEEDBACK_INSERT_AFTER;
+//          if (before && (stateY.item == null || stateY.axisLayout.compare(stateY.item, stateY.last) > 0)) {
+//            stateY.item = stateY.axisLayout.nextItem(item, stateY.axisLayout.backwardNavigator);
+//          }
+//          else if (!before && (stateY.item == null || stateY.axisLayout.compare(stateY.item, stateY.last) < 0)) {
+//            stateY.item = stateY.axisLayout.nextItem(item, stateY.axisLayout.forwardNavigator);
+//          }
         }
         gc.setLineWidth(2);
         gc.drawLine(area.x, y3, area.width, y3);

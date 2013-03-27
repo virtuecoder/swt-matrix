@@ -31,11 +31,11 @@ public class S0903_IdentifyingItemsByDistance {
     matrix.addMouseMoveListener(new MouseMoveListener() {
       @Override
       public void mouseMove(MouseEvent e) {
-        AxisItem<Integer> itemX = matrix.getAxisX().getItemByViewportDistance(
-          e.x);
-        AxisItem<Integer> itemY = matrix.getAxisY().getItemByViewportDistance(
-          e.y);
-        System.out.println(itemX.toString() + ":" + itemY.toString());
+        AxisItem<Integer> itemX = matrix.getAxisX().getMouseItem();
+        AxisItem<Integer> itemY = matrix.getAxisY().getMouseItem();
+        System.out.println(
+            (itemX == null ? "" : itemX.toString()) + ":" +
+            (itemY == null ? "" : itemY.toString()));
       }
     });
 

@@ -17,6 +17,7 @@ import org.eclipse.swt.graphics.Region;
 
 import pl.netanel.swt.matrix.Frozen.PairSequence;
 import pl.netanel.util.ImmutableIterator;
+import pl.netanel.util.Nullable;
 
 class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneCore<X, Y>> {
 
@@ -470,7 +471,7 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
     }
   }
 
-
+  @Nullable
   Rectangle getMergedBounds(ZoneCore<X, Y> zone, X indexX, Y indexY) {
     int spanIndex = zone.cellMerging.indexOf(indexX, indexY);
     if (spanIndex == -1) return null;

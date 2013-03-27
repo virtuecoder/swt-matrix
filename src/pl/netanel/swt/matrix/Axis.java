@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 
+import pl.netanel.util.Nullable;
 import pl.netanel.util.Preconditions;
 
 /**
@@ -208,6 +209,7 @@ public class Axis<N extends Number> {
    * @param position the position the get the item for
    * @return the item visible at the specified position in the viewport
    */
+  @Nullable
   public AxisItem<N> getItemByViewportPosition(int position) {
     AxisItem<N> item = layout.getIndexAt(position);
     return item == null ? null : item;
@@ -276,6 +278,7 @@ public class Axis<N extends Number> {
    * @param position the position the line bound the item for
    * @return the cell bound at the specified position in the viewport
    */
+  @Nullable
   public int[] getCellBound(AxisItem<N> item) {
     Bound bound = layout.getCellBound(item);
     return bound == null ? null : new int[] { bound.distance, bound.width };
@@ -365,6 +368,7 @@ public class Axis<N extends Number> {
    *
    * @return the focus item
    */
+  @Nullable
   public AxisItem<N> getFocusItem() {
     layout.computeIfRequired();
     return layout.current;
@@ -889,6 +893,7 @@ public class Axis<N extends Number> {
     }
   }
 
+  @Nullable
   Bound getCellBound(SectionCore<N> section, N index) {
     if (section == null || index == null)
       return null;
@@ -896,6 +901,7 @@ public class Axis<N extends Number> {
     return bound == null ? null : bound.copy();
   }
 
+  @Nullable
   Bound getLineBound(SectionCore<N> section, N index) {
     if (section == null || index == null)
       return null;

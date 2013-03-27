@@ -1,4 +1,11 @@
 -------------------------------------------------------------------------------
+Version 0.7.40
+
+Bug fixes:
+- Resizing of matrix with two scrollbars could cause endless loop of resize events.
+- Checks against null in many places
+
+-------------------------------------------------------------------------------
 Version 0.7.39
 
 Feature changes:

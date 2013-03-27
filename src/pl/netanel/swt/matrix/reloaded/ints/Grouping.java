@@ -577,7 +577,8 @@ public class Grouping {
     @Override
     public void setup(Integer indexX, Integer indexY) {
       super.setup(indexX, indexY);
-      AxisItem<Integer> item = axis2.getMouseItem();
+      AxisItem<Integer> item = axis2.getItemByViewportDistance(
+          axisDirection == SWT.HORIZONTAL ? indexY : indexX);
       if (item != null) {
         Node node = getNodeByCellIndex(indexX, indexY);
         if (node.level < selectLevel && isFirstItem(node, indexX, indexY)) {
@@ -604,9 +605,12 @@ public class Grouping {
       int count = axis2.getViewportItemCount();
       if (count == 0) contentSize = 0; else {
         AxisItem<Integer> lastCell = axis2.getItemByViewportPosition(count-1);
-        int[] bound = axis2.getLineBound(
-            AxisItem.create(lastCell.getSection(), lastCell.getIndex() + 1));
-        contentSize = bound == null ? 0 : bound[0] + bound[1];
+        if (lastCell == null) contentSize = 0;
+        else {
+          int[] bound = axis2.getLineBound(
+              AxisItem.create(lastCell.getSection(), lastCell.getIndex() + 1));
+          contentSize = bound == null ? 0 : bound[0] + bound[1];
+        }
       }
       return super.init();
     }

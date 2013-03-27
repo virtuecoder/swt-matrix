@@ -26,8 +26,7 @@ public class S0211_DrawCustomFocusCellMarker {
     matrix.getAxisX().getBody().setCount(40);
     matrix.getAxisY().getBody().setCount(1000);
 
-    matrix
-      .replacePainterPreserveStyle(new Painter<Integer, Integer>(Painter.NAME_FOCUS_CELL) {
+    matrix.replacePainterPreserveStyle(new Painter<Integer, Integer>(Painter.NAME_FOCUS_CELL) {
         @Override
         public void paint(int x, int y, int width, int height) {
           // Get bounds of the focus cell
@@ -39,11 +38,11 @@ public class S0211_DrawCustomFocusCellMarker {
             itemY.getSection());
           if (zone == null) return;
           Rectangle r = zone.getCellBounds(itemX.getIndex(), itemY.getIndex());
+          if (r == null) return;
 
           // Draw rounded rectangle with a changed color
           gc.setForeground(display.getSystemColor(SWT.COLOR_LIST_SELECTION));
-          gc.drawRoundRectangle(r.x - 1, r.y - 1, r.width + 1, r.height + 1, 5,
-            5);
+          gc.drawRoundRectangle(r.x - 1, r.y - 1, r.width + 1, r.height + 1, 5, 5);
         }
       });
 

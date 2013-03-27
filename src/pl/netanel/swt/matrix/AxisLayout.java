@@ -1110,6 +1110,7 @@ class AxisLayout<N extends Number> {
 		return -1;
 	}
 
+	@Nullable
 	public AxisItem<N> getIndexAt(int index) {
 		if (index < head.count) return head.items.get(index);
 		index -= head.count;
@@ -1119,6 +1120,7 @@ class AxisLayout<N extends Number> {
 		return null;
 	}
 
+	@Nullable
 	public Bound getCellBound(int index) {
 		if (index < head.count) return head.cells.get(index);
 		index -= head.count;
@@ -1127,6 +1129,8 @@ class AxisLayout<N extends Number> {
 		if (index < tail.count) return tail.cells.get(index);
 		return null;
 	}
+
+	@Nullable
 	public Bound getLineBound(int index) {
 		if (index < head.count) return head.lines.get(index);
 		index -= head.count;

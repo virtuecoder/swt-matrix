@@ -62,14 +62,16 @@ public class MatrixTest {
 
     assertFalse(matrix.getAxisX().layout.isScrollRequired());
     assertFalse(matrix.getAxisY().layout.isScrollRequired());
+  }
 
-//    Shell shell = matrix.getShell();
-//    matrix.getShell().open();
-//    while (!shell.isDisposed()) {
-//      if (!shell.getDisplay().readAndDispatch()) {
-//        shell.getDisplay().sleep();
-//      }
-//    }
+  @Test
+  public void setFitSizeWithoutScrollBar() throws Exception {
+    matrix = new Matrix<Integer, Integer>(new Shell(), SWT.V_SCROLL | SWT.H_SCROLL);
+    matrix.getAxisX().getBody().setCount(10);
+    matrix.getAxisY().getBody().setCount(10);
+
+    matrix.setSize(200, 188);
+    assertEquals(171, matrix.axisY.layout.getViewportSize());
   }
 
   void assertSize(int viewportX, int viewportY, int wHint, int hHint, int matrixX, int matrixY) {

@@ -128,7 +128,7 @@ public class S0056_SortingByMultipleColumns {
       @Override
       public void handleEvent(Event e) {
         // AxisItem<Y> item0 = matrix.getAxisY().getItemByDistance(e.y);
-        AxisItem<Integer> itemX = matrix.getAxisX().getItemByViewportDistance(e.x);
+        AxisItem<Integer> itemX = matrix.getAxisX().getMouseItem();
         final int column = itemX.getIndex().intValue();
 
         int previousDirection = sortDirections[column];

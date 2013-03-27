@@ -60,8 +60,8 @@ public class SwtTestCase {
   protected int remedyCommandIndex = -1;
 
   @Before public void setUp() throws Exception {
-    display = Display.getDefault();
-    shell = new Shell(display);
+    shell = new Shell();
+    display = shell.getDisplay();
     shell.setLayout(new FillLayout());
     shell.setBounds(new Rectangle(600, 400, 400, 400));
     // Main.setUpShell(shell, MockSession.INSTANCE);
@@ -1034,6 +1034,13 @@ public class SwtTestCase {
     return null;
   }
 
+  public void open() {
+    shell.open();
+//    shell
+//    Activate 0
+//    Dispose 0
+  }
+
   public void pause() {
     if (Thread.currentThread() != display.getThread()) {
       display.syncExec(new Runnable() {
@@ -1115,6 +1122,7 @@ public class SwtTestCase {
     gc.copyArea(image, p.x, p.y);
 
     ImageData data = image.getImageData();
+//    saveImage(image);
 //    ImageLoader loader = new ImageLoader();
 //    loader.data = new ImageData[] { data };
 //    loader.save(new File("image.png").getAbsolutePath(), SWT.IMAGE_PNG);

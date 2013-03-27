@@ -113,11 +113,12 @@ public class CellImageButtonPainter<X extends Number, Y extends Number> extends 
   public boolean isOverImage(int x, int y) {
     // Get cell bounds
     Zone<X, Y> zone = getZone();
-    AxisItem<X> itemX = zone.getMatrix().getAxisX().getMouseItem();
+    AxisItem<X> itemX = zone.getMatrix().getAxisX().getItemByViewportDistance(x);
     if (itemX == null) return false;
-    AxisItem<Y> itemY = zone.getMatrix().getAxisY().getMouseItem();
+    AxisItem<Y> itemY = zone.getMatrix().getAxisY().getItemByViewportDistance(y);
     if (itemY == null) return false;
     Rectangle cellBounds = zone.getCellBounds(itemX.getIndex(), itemY.getIndex());
+    if (cellBounds == null) return false;
 
     // Compute image position
     int imageX = align(style.imageAlignX, style.imageMarginX, imageBounds.width, cellBounds.width);

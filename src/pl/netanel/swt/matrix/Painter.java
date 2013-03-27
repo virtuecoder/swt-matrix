@@ -783,8 +783,8 @@ public class Painter<X extends Number, Y extends Number> {
 	 * @return
 	 */
 	boolean isOverNodeIcon(int x, int y) {
-	  AxisItem<X> itemX = matrix.getAxisX().getMouseItem();
-	  AxisItem<Y> itemY = matrix.getAxisY().getMouseItem();
+	  AxisItem<X> itemX = matrix.getAxisX().getItemByViewportDistance(x);
+	  AxisItem<Y> itemY = matrix.getAxisY().getItemByViewportDistance(y);
     if (itemX == null || itemY == null ||
         !itemX.getIndex().equals(bodyX.getIndex(bodyX.math.ZERO_VALUE())) ||
         !bodyY.hasChildren(itemY.getIndex()))
@@ -793,8 +793,10 @@ public class Painter<X extends Number, Y extends Number> {
     int level = bodyY.getLevelInTree(itemY.getIndex()).intValue();
     int indent = (level+1) * style.textMarginX + level * nodeImageSize.x;
     int[] bound = matrix.axisX.getCellBound(itemX);
+    if (bound == null) return false;
     int x0 = bound[0] + indent;
     bound = matrix.axisY.getCellBound(itemY);
+    if (bound == null) return false;
     int y0 = bound[0] + (bound[1] - nodeImageSize.y) / 2;
 
     return x0 <= x && x <= x0 + nodeImageSize.x &&
@@ -997,7 +999,7 @@ public class Painter<X extends Number, Y extends Number> {
       @Override
       public void handleEvent(Event e) {
         if (isTreeEnabled && isOverNodeIcon(e.x, e.y)) {
-          AxisItem<Y> itemY = matrix.axisY.getMouseItem();
+          AxisItem<Y> itemY = matrix.axisY.getItemByViewportDistance(e.y);
           if (itemY == null) return;
           Y indexY = itemY.getIndex();
           bodyY.setExpanded(indexY, !bodyY.isExpanded(indexY));
