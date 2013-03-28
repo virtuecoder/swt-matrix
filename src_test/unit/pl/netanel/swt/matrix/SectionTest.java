@@ -12,7 +12,7 @@ import org.junit.runners.JUnit4;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 @RunWith(JUnit4.class)
-public class SectionCoreTest {
+public class SectionTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void createIllegalNumber() throws Exception {
@@ -305,6 +305,13 @@ public class SectionCoreTest {
     section.delete(0, 4);
     section.insert(0, 2);
     section.setOrder(Arrays.asList(new Integer[] {0,1}).iterator());
+  }
+
+  @Test
+  public void setOrderInClient() throws Exception {
+    Section section = new SectionClient(new SectionCore(int.class));
+    section.setCount(3);
+    section.setOrder(Arrays.asList(new Integer[] {0,1,2}).iterator());
   }
 
   @Test

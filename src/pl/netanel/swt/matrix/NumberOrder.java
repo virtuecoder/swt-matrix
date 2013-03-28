@@ -156,6 +156,18 @@ class NumberOrder<N extends Number> extends NumberSetCore<N> {
 		mergeAdjacentExtents();
 	}
 
+	@Override
+	public void clear() {
+	  super.clear();
+	  count.set(math.ZERO_VALUE());
+	}
+
+	@Override
+	public void replace(NumberSetCore<N> set) {
+	  super.replace(set);
+	  count.set(set.getCount());
+	}
+
 	private void mergeAdjacentExtents() {
 		for (int i = items.size(); i-- > 1;) {
 			MutableExtent<N> e1 = items.get(i-1);

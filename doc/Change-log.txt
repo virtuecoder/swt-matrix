@@ -1,4 +1,15 @@
 -------------------------------------------------------------------------------
+Version 0.7.41
+
+Features changes:
+- ZoneEditor.setModelValue has re-entry guard to prevent validation message dialog 
+  causing second apply by editor control loosing focus
+
+Bug fixes:
+- Section.setOrder(Iterator) was throwing item count exception incorrectly.
+- ZoneEditor.cancel was causing isDisposed execption when called manually during ZonEditor.apply.
+
+-------------------------------------------------------------------------------
 Version 0.7.40
 
 Bug fixes:

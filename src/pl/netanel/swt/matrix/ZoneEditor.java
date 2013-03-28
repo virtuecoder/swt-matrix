@@ -53,6 +53,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
   private int historyLength;
   private int historyIndex;
   private boolean isBulkEditAtomic;
+  private boolean isDuringApply;
 
   /**
    * Default constructor, facilitates editing of the specified zone.
@@ -372,13 +373,19 @@ public class ZoneEditor<X extends Number, Y extends Number> {
    * @param control editor control to apply the data from.
    */
   public void apply(Control control) {
-    if (control == null) return;
-    ZoneEditorData<X, Y> data = getData(control);
-    if (data == null) return;
-    Object newValue = getEditorValue(control);
-    if (setModelValueAndLog(data.indexX, data.indexY, data.value, newValue)) {
-      cancel(control);
-      getMatrix().redraw();
+    if (isDuringApply) return;
+    isDuringApply = true;
+    try {
+      if (control == null) return;
+      ZoneEditorData<X, Y> data = getData(control);
+      if (data == null) return;
+      Object newValue = getEditorValue(control);
+      if (setModelValueAndLog(data.indexX, data.indexY, data.value, newValue)) {
+        cancel(control);
+        getMatrix().redraw();
+      }
+    } finally {
+      isDuringApply = false;
     }
   }
 
@@ -419,8 +426,9 @@ public class ZoneEditor<X extends Number, Y extends Number> {
    * @param control
    */
   public void cancel(Control control) {
+    if (control == null || control.isDisposed()) return;
     ZoneEditorData<X, Y> data = getData(control);
-    if (control != null && data != null && data.isEmbedded == false) {
+    if (data != null && data.isEmbedded == false) {
       removeControl(control);
     }
     getMatrix().forceFocus();
@@ -537,7 +545,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
    * @see #createControl(Number, Number)
    */
   protected void removeControl(Control control) {
-    if (control != null) {
+    if (control != null && !control.isDisposed()) {
       control.dispose();
     }
   }
