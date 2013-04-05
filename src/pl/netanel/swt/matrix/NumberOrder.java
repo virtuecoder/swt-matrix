@@ -131,7 +131,9 @@ class NumberOrder<N extends Number> extends NumberSetCore<N> {
 		N target2 = set.firstExcluded(target, Matrix.FORWARD);
 		assert !set.contains(target2);
 
-		removeAll(set);
+		for (MutableExtent<N> e: set.items) {
+      super.remove(e.start(), e.end());
+    }
 
 		// Find the position i to insert
 		int i = 0;

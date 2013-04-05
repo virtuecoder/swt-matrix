@@ -476,7 +476,7 @@ public class Painter<X extends Number, Y extends Number> {
 			Rectangle bounds = image.getBounds();
 			switch (style.imageAlignX) {
 			case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP:
-				x2 += style.imageMarginX; x3 += bounds.width; break;
+				x2 += style.imageMarginX; x3 = x2 + bounds.width; break;
 			case SWT.CENTER:
 				x2 += (width - bounds.width) / 2; break;
 			case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:

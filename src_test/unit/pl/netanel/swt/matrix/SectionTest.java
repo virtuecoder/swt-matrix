@@ -29,6 +29,7 @@ public class SectionTest {
     assertEquals(3, section.getCount().intValue());
   }
 
+  @Test
   public void setCountDecrease() throws Exception {
     SectionCore section = new SectionCore(int.class);
     section.setCount(10);
@@ -298,6 +299,22 @@ public class SectionTest {
     // assertEquals(2, section.getCount());
   }
 
+  @Test
+  public void moveSelected() throws Exception {
+    SectionCore<Integer> section = new SectionCore<Integer>(int.class);
+    section.setCount(2);
+    section.setSelected(1, true);
+    section.moveSelected(1, 0);
+    section.setCount(0);
+    assertEquals("", section.getOrder().toString());
+  }
+
+  @Test
+  public void getOrder() throws Exception {
+    SectionCore section = new SectionCore(int.class);
+    section.setCount(2);
+    section.setOrder(Arrays.asList(new Integer[] {0,1}).iterator());
+  }
   @Test
   public void setOrder() throws Exception {
     SectionCore section = new SectionCore(int.class);

@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------
+Version 0.7.42
+
+Bug fixes:
+- Section.moveSelected was decreasing count of order items incorrectly.
+
+-------------------------------------------------------------------------------
 Version 0.7.41
 
 Features changes:

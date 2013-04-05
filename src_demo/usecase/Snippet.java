@@ -6,7 +6,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Matrix;
-import pl.netanel.swt.matrix.SwtTestCase;
 
 public class Snippet {
   public static void main(String[] args) throws InterruptedException {
@@ -22,8 +21,6 @@ public class Snippet {
     matrix.getAxisY().getHeader().setVisible(true);
 
     shell.setBounds(400, 200, 600, 400);
-
-    SwtTestCase.listenToAll(shell);
     shell.open();
 
     while (!shell.isDisposed()) {
