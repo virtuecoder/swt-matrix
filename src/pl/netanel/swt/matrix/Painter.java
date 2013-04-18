@@ -248,7 +248,6 @@ public class Painter<X extends Number, Y extends Number> {
 
 	protected Point textSize;
 
-	private Display display;
 	private Color lastForeground, lastBackground, defaultForeground;
 
 	private Font lastFont;
@@ -565,7 +564,7 @@ public class Painter<X extends Number, Y extends Number> {
     extent = gc.stringExtent(text);
     if (style.hasWordWraping) {
       int spacing = textLayout.getSpacing();
-      int lineCount = (textSize.y + spacing) / (extent.y + spacing) ;
+      int lineCount = java.lang.Math.max(1, textSize.y + spacing) / (extent.y + spacing);
       text = fontSizeCache.shortenTextMiddle(text, textSize.x, lineCount, extent);
 
       textLayout.setText(text);
@@ -745,7 +744,9 @@ public class Painter<X extends Number, Y extends Number> {
 	 */
 	public void setTreeVisible(boolean state) {
 	  isTreeEnabled = state;
-	  createDefaultNodeIcons();
+	  if (collapsedImage == null || expandedImage == null) {
+	    createDefaultNodeIcons();
+	  }
 	}
 
 
@@ -893,6 +894,7 @@ public class Painter<X extends Number, Y extends Number> {
    * Creates default node icons
    */
   private void createDefaultNodeIcons() {
+    Display display = Display.getCurrent();
     Image image1 = new Image(display, 9, 9);
     gc = new GC(image1);
     gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));

@@ -581,7 +581,7 @@ public class Grouping {
           axisDirection == SWT.HORIZONTAL ? indexY : indexX);
       if (item != null) {
         Node node = getNodeByCellIndex(indexX, indexY);
-        if (node.level < selectLevel && isFirstItem(node, indexX, indexY)) {
+        if (node != null && node.level < selectLevel && isFirstItem(node, indexX, indexY)) {
           isSelected = false;
         }
       }
@@ -618,6 +618,10 @@ public class Grouping {
     @Override
     public void setup(Integer indexX, Integer indexY) {
       node = getNodeByCellIndex(indexX, indexY);
+      if (node == null) {
+        background = null;
+        return;
+      }
       background = node.lineColor;
       lineWidth = node.separatorLineWidth;
     }

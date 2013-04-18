@@ -1,4 +1,11 @@
 -------------------------------------------------------------------------------
+Version 0.7.43
+
+Bug fixes:
+- Better protection against null values in grouping painters
+- Line wrapping for grouping headers on Windows 7 had incorrect number off lines
+
+-------------------------------------------------------------------------------
 Version 0.7.42
 
 Bug fixes:
