@@ -26,9 +26,13 @@ class FontSizeCache {
 
 	static HashMap<FontData, FontSizeCache> cache = new HashMap<FontData, FontSizeCache>();
 
-	int[] x; int y;
+	int[] cw;  // character widths
+	int ch;    // character height
+	int dot;   // width of dot
+	int dot2;  // width of two dots
+
 	FontSizeCache() {
-	  x = new int[0xffff];
+	  cw = new int[0xffff];
 	}
 
 
@@ -41,21 +45,23 @@ class FontSizeCache {
 			gc.setFont(font);
 			for (int ch: PRINTABLE_CHARS) {
 			  extent = gc.stringExtent(Character.toString((char) ch));
-				data.x[ch] = extent.x;
+				data.cw[ch] = extent.x;
 			}
-			if (extent != null) data.y = extent.y;
+			if (extent != null) data.ch = extent.y;
+			data.dot = data.cw['.'];
+			data.dot2 = 2 * data.dot;
 			cache.put(fontData, data);
 		}
 		return data;
 	}
 
 	public int getHeight(String s) {
-	  return y;
+	  return ch;
 	}
 	public int getWidth(String s) {
 		int extent = 0;
 		for (int i = 0; i < s.length(); i++) {
-			extent += x[s.charAt(i)];
+			extent += cw[s.charAt(i)];
 		}
 		return extent;
 	}
@@ -64,7 +70,7 @@ class FontSizeCache {
 	public String shortenTextMiddle(String s, int width, Point extent) {
 		if (s == null) return s;
 
-		int[] cache = x;
+		int[] cache = cw;
 		int len = s.length();
 		int w = 0;
 		int i = 0;
@@ -103,10 +109,18 @@ class FontSizeCache {
 		return s;
 	}
 
-	public  String shortenTextMiddle(String s, int width, int lineCount, Point extent) {
+	/**
+	 * Shortens multi-line text in the middle.
+	 * @param s
+	 * @param width
+	 * @param lineCount
+	 * @param extent
+	 * @return
+	 */
+	public String shortenTextMiddle(String s, int width, int lineCount, Point extent) {
+	  //TestUtil.log(s, width, lineCount);
 	  if (s == null) return s;
 
-	  int[] cache = x;
 	  int len = s.length();
 	  boolean isEven = lineCount % 2 == 0;
 	  int dotLine = (lineCount - 1) / 2;
@@ -118,7 +132,7 @@ class FontSizeCache {
 	    int w = 0;
 	    while (iBefore < len) {
 	      char c = s.charAt(iBefore);
-	      int w2 = w + cache[c];
+	      int w2 = w + cw[c];
 	      if (w2 > width) break;
         w = w2;
         iBefore++;
@@ -131,7 +145,7 @@ class FontSizeCache {
       int w = 0;
       while (iAfter > iBefore) {
         char c = s.charAt(iAfter);
-        int w2 = w + cache[c];
+        int w2 = w + cw[c];
         if (w2 > width) break;
         w = w2;
         iAfter--;
@@ -144,7 +158,7 @@ class FontSizeCache {
 
       if (isEven) {
         sb.append(shortenTextEnd(s.substring(iBefore, iAfter), width, extent));
-        sb.append("\n");
+        //sb.append("\n");
       }
       else {
         sb.append(shortenTextMiddle(s.substring(iBefore, iAfter), width, extent));
@@ -158,30 +172,45 @@ class FontSizeCache {
     }
 	}
 
+	public String shortenTextEnd(String s, int width, int lineCount, Point extent) {
+	  if (s == null) return s;
+	  if (lineCount < 2) return shortenTextEnd(s, width, extent);
+	  int len = s.length();
+	  int i = 0;
+	  for (int line = 0; line < lineCount - 1; line++) {
+	    int w = 0;
+	    while (i < len) {
+	      int w2 = w + cw[s.charAt(i)];
+	      if (w2 >= width) break;
+	      w = w2; i++;
+	    }
+	  }
+	  if (i < len) {
+	    s = s.substring(0, i) + shortenTextEnd(s.substring(i), width, extent);
+	  }
+	  return s;
+	}
+
 	public String shortenTextEnd(String s, int width, Point extent) {
-	  int[] cache = x;
 		int len = s.length();
-		if (len < 2) return s;
-		int w = 0;
-		int i = 0;
-		while (i < len && w <= width) {
-			w += cache[s.charAt(i++)];
-		}
-		if (i < len || w > width) {
-		  int dot = cache['.'];
-      int dot2 = 2 * dot;
-      int w2 = width - dot2;
-      while(i-- >= 0) {
-        w -= cache[s.charAt(i)];
-        if (w <= w2) break;
-      }
+		int w = 0, i = 0;
 
-      s = s.substring(0, i) + (
-//          w + dot3 <= width ? "..." :
-          w >= 0 ? ".." :
-          w + dot >= 0 ? "." : "");
+		while (i < len) {
+		  int cwi = cw[s.charAt(i)];
+			w += cwi;
+			if (w > width) { w -= cwi; break;}
+			i++;
 		}
 
+		if (i < len) {
+		  String end = "..";
+	    while (w > 0 && i > 0) {
+	      if (w + dot2 <= width) break;
+	      w -= cw[s.charAt(--i)];
+	    }
+		  if (i <= 0 && dot2 > width) end = ".";
+		  s = s.substring(0, i) + end;
+		}
 		extent.x = w;
 		return s;
 	}

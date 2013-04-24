@@ -1,4 +1,21 @@
 -------------------------------------------------------------------------------
+Version 0.7.45
+
+Bug fixes:
+- Grouping separator was drawn incorrectly when cell were frozen
+- Tree column auto sizing was incorrect
+
+-------------------------------------------------------------------------------
+Version 0.7.44
+
+Feature changes:
+- When the text is wrapped the default is end truncation method rather than truncate in the middle, because TextLayout does not cooperate well with middle truncation.
+
+Bug fixes:
+- Text wrapping was causing StringIndexOutOfBoundsException
+- Drag resize in Grouping was causing item selection
+
+-------------------------------------------------------------------------------
 Version 0.7.43
 
 Bug fixes:
@@ -14,7 +31,7 @@ Bug fixes:
 -------------------------------------------------------------------------------
 Version 0.7.41
 
-Features changes:
+Feature changes:
 - ZoneEditor.setModelValue has re-entry guard to prevent validation message dialog 
   causing second apply by editor control loosing focus
 
@@ -317,7 +334,7 @@ Bug fixes:
 -------------------------------------------------------------------------------
 Version 0.7.14
 
-Features changes:
+Feature changes:
 - SWT.MouseEnter and SWT.MouseExit supported in Zone.addListener
 - Image painting optimized to avoid setClipping when not neccessary
 
@@ -328,7 +345,7 @@ Bug fixes:
 -------------------------------------------------------------------------------
 Version 0.7.13
 
-Features changes:
+Feature changes:
 - CellImageButtonPainter can work with single image to emulate image buttons. 
 
 API changes:

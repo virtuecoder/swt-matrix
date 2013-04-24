@@ -1172,12 +1172,15 @@ class AxisLayout<N extends Number> {
 		return true;
 	}
 
-	public Bound getBound(SectionCore<N> section, MutableExtent<N>span, int distance) {
+	public Bound getBound(SectionCore<N> section, MutableExtent<N>span, Cache cache, int i) {
+	  int distance = cache.cells.get(i).distance;
+	  N origin = cache.items.get(i).getIndex();
 	  N start = span.start.getValue();
     spanSeq.set(AxisItem.createInternal(section, start), span.end.getValue());
     int w = section.isHidden(start) ? 0 : - section.getLineWidth(start);
 	  for (spanSeq.init(); spanSeq.next();) {
 	    N index = spanSeq.index.getValue();
+	    if (math.compare(index, origin) < 0) continue;
 	    int lineWidth = section.getLineWidth(index);
 	    if (w == 0) w -= lineWidth;
       w += lineWidth + section.getCellWidth(index);

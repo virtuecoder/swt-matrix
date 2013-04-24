@@ -459,8 +459,8 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
 
           // Otherwise compute the merged bounds
           if (!cache.contains(zone, spanIndex)) {
-            boundX = layoutX.getBound(itemX.section, zone.cellMerging.itemsX.get(spanIndex), cacheX.cells.get(i).distance);
-            boundY = layoutY.getBound(itemY.section, zone.cellMerging.itemsY.get(spanIndex), cacheY.cells.get(j).distance);
+            boundX = layoutX.getBound(itemX.section, zone.cellMerging.itemsX.get(spanIndex), cacheX, i);
+            boundY = layoutY.getBound(itemY.section, zone.cellMerging.itemsY.get(spanIndex), cacheY, j);
             cache.add(zone, spanIndex, itemX, itemY, boundX, boundY);
             region.subtract(
                 java.lang.Math.max(boundX.distance, 0),

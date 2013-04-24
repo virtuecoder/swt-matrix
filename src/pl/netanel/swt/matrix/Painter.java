@@ -564,12 +564,18 @@ public class Painter<X extends Number, Y extends Number> {
     extent = gc.stringExtent(text);
     if (style.hasWordWraping) {
       int spacing = textLayout.getSpacing();
-      int lineCount = java.lang.Math.max(1, textSize.y + spacing) / (extent.y + spacing);
-      text = fontSizeCache.shortenTextMiddle(text, textSize.x, lineCount, extent);
+      int lineCount = java.lang.Math.max(1, (textSize.y + spacing) / (extent.y + spacing));
+      text = fontSizeCache.shortenTextEnd(text, textSize.x, lineCount, extent);
 
       textLayout.setText(text);
       textLayout.setAlignment(style.textAlignX);
       textLayout.setWidth(textSize.x < 1 ? 1 : textSize.x);
+
+      int i = text.lastIndexOf("..");
+      while (i >= 0 && textLayout.getLineCount() > lineCount) {
+        text = text.substring(0, --i) + "..";
+        textLayout.setText(text);
+      }
 
       Rectangle lastLineBounds = textLayout.getLineBounds(textLayout.getLineCount() - 1);
       extent.y = lastLineBounds.y + lastLineBounds.height;
@@ -883,7 +889,7 @@ public class Painter<X extends Number, Y extends Number> {
     }
 //    x += indent;
 
-    return new Point(max(x, wHint), max(y, hHint));
+    return new Point(max(x + indent, wHint), max(y, hHint));
   }
 
   private Font getCurrentFont() {

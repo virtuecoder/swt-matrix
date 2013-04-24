@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -153,6 +154,10 @@ public class Grouping {
           node.setCollapsed(!node.isCollapsed);
         }
         else {
+          Cursor cursor = matrix.getCursor();
+          if (cursor != null && (
+              cursor.equals(matrix.getDisplay().getSystemCursor(SWT.CURSOR_SIZENS)) ||
+              cursor.equals(matrix.getDisplay().getSystemCursor(SWT.CURSOR_SIZEWE)))) return;
           AxisItem<Integer> item = axis2.getMouseItem();
           selectLevel = item == null ? levelCount : item.getIndex();
 //          section.setSelected(false);

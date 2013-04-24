@@ -1106,7 +1106,7 @@ public class SwtTestCase {
     if (color.getBlue() == rgb.blue &&
         color.getGreen() == rgb.green &&
         color.getRed() == rgb.red) {
-      fail(String.format("Wrong color, expected not %s", color.toString()));
+      fail(String.format("Expected not %s at point (%d, %d)", color.toString(), x, y));
     }
   }
 

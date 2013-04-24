@@ -1,12 +1,14 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,5 +79,32 @@ public class PainterTest {
     painter.clean();
     gc.dispose();
     font.dispose();
+  }
+
+  @Test
+  public void treeAutoSizing() throws Exception {
+    Matrix matrix = new Matrix(new Shell(), SWT.NONE);
+    matrix.getAxisX().getBody().setCount(1);
+    matrix.getAxisY().getHeader().setVisible(true);
+    Section bodyY = matrix.getAxisY().getBody();
+    bodyY.setCount(5);
+    bodyY.setParent(1, 0);
+    Painter painter = new Painter(Painter.NAME_CELLS) {
+      @Override
+      public void setupSpatial(Number indexX, Number indexY) {
+        super.setupSpatial(indexX, indexY);
+        text = indexX + " " + indexY;
+      }
+    };
+    matrix.getBody().replacePainterPreserveStyle(painter);
+    painter.setTreeVisible(true);
+    GC gc = new GC(matrix.getDisplay());
+    painter.init(gc, Frozen.NONE, Frozen.NONE);
+    try {
+      assertEquals(36, painter.computeSize(0, 0, SWT.DEFAULT, SWT.DEFAULT).x);
+    }
+    finally {
+      gc.dispose();
+    }
   }
 }
