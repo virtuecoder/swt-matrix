@@ -37,9 +37,9 @@ public class S0120_Tree {
     bodyY.setParent(12, 11);
     bodyY.setParent(13, 15);
 
+    matrix.getBody().getPainter(Painter.NAME_CELLS).setTreeVisible(true);
     bodyY.setExpanded(null, false);
 
-    matrix.getBody().getPainter(Painter.NAME_CELLS).setTreeVisible(true);
 
     matrix.addKeyListener(new KeyAdapter() {
       @Override

@@ -51,16 +51,16 @@ public class SnippetCopyPaste {
       }
       @Override
       public boolean setModelValue(Integer indexX, Integer indexY, Object value) {
-        if (indexX == 3) {
-          System.err.println("Not valid");
-          return false;
-        }
+//        if (indexX == 3) {
+//          System.err.println("Not valid");
+//          return false;
+//        }
         data.get(indexY).set(indexX, (String) value);
         return true;
       }
     };
     editor.setBulkEditAtomic(true);
-    editor.setEditHistoryLength(Integer.MAX_VALUE);
+    editor.setEditHistoryLimit(Integer.MAX_VALUE);
 
 //    matrix.setSelectSkipHidden(true);
 

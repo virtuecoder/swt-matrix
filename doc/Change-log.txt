@@ -1,3 +1,19 @@
+Version 0.7.47
+
+New API:
+- Added ZoneEditor.clearEditHistory
+- Added ZoneEditor.addEditHistory
+- Added ZoneEditor.setBulkEdit
+- Renamed ZoneEditor.setEditHistoryLength to ZoneEditor.setEditHistoryLimit
+- Renamed ZoneEditor.getEditHistoryLength to ZoneEditor.getEditHistoryLimit
+
+-------------------------------------------------------------------------------
+
+Version 0.7.46
+
+Bug fixes:
+- Undo and redo where executing twice
+
 -------------------------------------------------------------------------------
 Version 0.7.45
 

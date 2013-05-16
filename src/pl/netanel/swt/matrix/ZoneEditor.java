@@ -9,6 +9,7 @@ package pl.netanel.swt.matrix;
 
 import static pl.netanel.swt.matrix.Matrix.*;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -49,11 +50,6 @@ public class ZoneEditor<X extends Number, Y extends Number> {
   Painter<X, Y> cellsPainter;
   private GestureBinding mouseDownActivation;
   private GestureBinding mouseDobleClickActivation;
-  private ArrayList<EditLogEntry<X, Y>> history;
-  private int historyLength;
-  private int historyIndex;
-  private boolean isBulkEditAtomic;
-  private boolean isDuringApply;
 
   /**
    * Default constructor, facilitates editing of the specified zone.
@@ -212,6 +208,9 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     zone.unbind(CMD_COPY, SWT.KeyDown, SWT.MOD1 | 'c');
     zone.unbind(CMD_PASTE, SWT.KeyDown, SWT.MOD1 | 'v');
     zone.unbind(CMD_DELETE, SWT.KeyDown, SWT.DEL);
+    zone.unbind(CMD_UNDO, SWT.KeyDown, SWT.MOD1 | 'z');
+    zone.unbind(CMD_REDO, SWT.KeyDown, SWT.MOD1 | 'y');
+
     zone.unbind(CMD_EDIT_ACTIVATE, SWT.KeyUp, SWT.F2);
     //    zone.bind(CMD_EDIT_ACTIVATE, SWT.MouseDoubleClick, 1);
     zone.unbind(CMD_EDIT_ACTIVATE, SWT.KeyDown, Matrix.PRINTABLE_CHARS);
@@ -222,7 +221,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 
 
   /**
-   * Returns value from the model.
+   * Returns value from the model referring to the given cell coordinates.
    * <p>
    * This method is usually overridden, since the default implementation returns
    * the {@link Painter#text} after calling {@link Painter#setupSpatial(Number, Number)} method of the
@@ -231,6 +230,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
    * If the Painter.NAME_CELLS painter does not exist in the zone it always returns null.
    * @param indexX cell index on the horizontal axis
    * @param indexY cell index on the vertical axis
+   * @return value from the model referring to the given cell coordinates
    */
   public Object getModelValue(X indexX, Y indexY) {
     if (cellsPainter == null) return null;
@@ -351,9 +351,9 @@ public class ZoneEditor<X extends Number, Y extends Number> {
    * does not have editor control created, which may happen when it is not visible or
    * the editor has not been activated.
    *
-   * @param indexX
-   * @param indexY
-   * @return
+   * @param indexX cell index on the horizontal axis
+   * @param indexY cell index on the vertical axis
+   * @return editor control associated with the given cell
    */
   public Control getControl(X indexX, Y indexY) {
     for (Control control: zone.getMatrix().getChildren()) {
@@ -389,35 +389,6 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     }
   }
 
-  private boolean setModelValueAndLog(X indexX, Y indexY, Object oldValue, Object newValue) {
-    boolean valid = setModelValue(indexX, indexY, newValue);
-    if (valid) {
-      logEditHistory(indexX, indexY, oldValue, newValue);
-    }
-    return valid;
-  }
-
-  private void logEditHistory(X indexX, Y indexY, Object oldValue, Object newValue) {
-    if (++historyIndex == historyLength) historyIndex = 0;
-    history.add(historyIndex, new EditLogEntry<X, Y>(indexX, indexY, oldValue, newValue));
-  }
-
-  private void logEditHistory(ArrayList<EditLogEntry<X, Y>> log) {
-    if (++historyIndex == historyLength) historyIndex = 0;
-    history.add(historyIndex, new EditLogEntry<X, Y>(log));
-  }
-
-
-
-  private boolean setModelValueAndLog(X indexX, Y indexY, Object newValue, ArrayList<EditLogEntry<X, Y>> log) {
-    Object oldValue = getModelValue(indexX, indexY);
-    boolean isValid = setModelValue(indexX, indexY, newValue);
-    if (log != null && isValid) {
-      log.add(new EditLogEntry<X, Y>(indexX, indexY, oldValue, newValue));
-    }
-    return isValid;
-  }
-
   /**
    * Deactivates the editor control. If the control is not embedded then it
    * calls {@link #removeControl(Control)}. Regardless of that is sets the
@@ -433,7 +404,6 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     }
     getMatrix().forceFocus();
   }
-
 
   /**
    * Shows a control to edit the value of the specified cell.
@@ -490,7 +460,7 @@ public class ZoneEditor<X extends Number, Y extends Number> {
   private boolean toggleBooleanValue(X indexX, Y indexY) {
     boolean value = !Boolean.TRUE.equals(getModelValue(indexX, indexY));
     if (setModelValue(indexX, indexY, value)) {
-      logEditHistory(indexX, indexY, !value, value);
+      addEditHistory(indexX, indexY, !value, value);
       getMatrix().redraw();
     }
     return value;
@@ -629,39 +599,56 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 
   /**
    * Sets the <code>null</code> value to the selected cells.
+   * <p>
+   * Atomicity: Model changes done with the method will be rolled back when
+   * <code>isBulkEditAtomic</code> returns <code>true</code> and:<ul>
+   * <li>one of the cells does not accept null value (<code>setModelValue</code> returning false)
+   * <li>the number of changes during the bulk operation exceeds the value of
+   * <code>getEditHistoryLimit()</code>. A runtime exception is thrown is such case as well.
+   * <li>there is an exception during the process
+   * </ul>
+   *
+   * @see #isBulkEditAtomic
+   * @see #setBulkEdit(boolean)
+   * @see #setModelValue(Number, Number, Object)
+   * @see #getEditHistoryLimit()
    */
-  void delete() {
+  public void delete() {
     Iterator<Cell<X, Y>> it = zone.getSelectedBoundsIterator();
-    ArrayList<EditLogEntry<X, Y>> log = null;
-    if (isBulkEditAtomic) log = new ArrayList<EditLogEntry<X, Y>>();
     try {
+      setBulkEdit(true);
       while (it.hasNext()) {
         Cell<X, Y> next = it.next();
         X indexX = next.getIndexX();
         Y indexY = next.getIndexY();
         if (zone.isSelected(indexX, indexY) ) {
-          if (!setModelValueAndLog(indexX, indexY, null, log) && isBulkEditAtomic) {
-            undo(log);
+          Object oldValue = getModelValue(indexX, indexY);
+          if (!setModelValueAndLog(indexX, indexY, oldValue, null) && isBulkEditAtomic) {
+            undo();
             return;
           }
         }
       }
-      logEditHistory(log);
       embedded.needsPainting = true;
       getMatrix().redraw();
     }
     catch (Exception e) {
       if (isBulkEditAtomic) {
-        undo(log);
+        undo();
       }
       throw new RuntimeException(e);
+    }
+    finally {
+      setBulkEdit(false);
     }
   }
 
   /**
    * Copies selected cells to the clipboard.
    * <p>
-   * Only rectangular area can be copied.
+   * Only rectangular area can be copied, i.e. it copies the smallest rectangle including all the
+   * selected cells. The values are formatted with {@link ZoneEditor#format(Number, Number)} method
+   * and separated with '\t', while lines are separated with System.getProperty("line.separator").
    */
   public void copy()
   {
@@ -737,7 +724,21 @@ public class ZoneEditor<X extends Number, Y extends Number> {
   /**
    * Pastes from the clipboard to the zone starting from the focus cell.
    * <p>
-   * The items in the clipboard exceeding the section item count will be ignored.
+   * Values in the clipboard exceeding the existing zone capacity are ignored.
+   * <p>
+   * Atomicity: Model changes done with the method will be rolled back when
+   * <code>isBulkEditAtomic</code> returns <code>true</code> and:<ul>
+   * <li>one of the cells does not accept
+   * the pasted value (<code>setModelValue</code> returning false)
+   * <li>the number of changes during the bulk operation exceeds the value of
+   * <code>getEditHistoryLimit()</code>. A runtime exception is thrown is such case as well.
+   * <li>there is an exception during the process
+   * </ul>
+   *
+   * @see #isBulkEditAtomic
+   * @see #setBulkEdit(boolean)
+   * @see #setModelValue(Number, Number, Object)
+   * @see #getEditHistoryLimit()
    */
   public void paste()
   {
@@ -761,18 +762,18 @@ public class ZoneEditor<X extends Number, Y extends Number> {
     X countX = axisX.getBody().getCount();
     Y countY = axisY.getBody().getCount();
 
-    ArrayList<EditLogEntry<X, Y>> log = null;
-    if (isBulkEditAtomic) log = new ArrayList<EditLogEntry<X, Y>>();
     try {
       String[] rows = contents.toString().split(NEW_LINE);
+      setBulkEdit(true);
       for (int i = 0; i < rows.length && mathY.compare(indexY, countY) < 0; i++) {
         String[] cells = split(rows[i], "\t");
         indexX = startX;
         for (int j = 0; j < cells.length && mathX.compare(indexX, countX) < 0; j++) {
-          Object value = parse(indexX, indexY, cells[j]);
-          if (value != null) {
-            if (!setModelValueAndLog(indexX, indexY, value, log)) {
-              undo(log);
+          Object newValue = parse(indexX, indexY, cells[j]);
+          if (newValue != null) {
+            Object oldValue = getModelValue(indexX, indexY);
+            if (!setModelValueAndLog(indexX, indexY, oldValue, newValue) && isBulkEditAtomic) {
+              undo();
               return;
             }
           }
@@ -782,16 +783,18 @@ public class ZoneEditor<X extends Number, Y extends Number> {
         indexY = zone.sectionY.nextNotHiddenIndex(mathY.increment(indexY), Matrix.FORWARD);
         if (indexY == null) break;
       }
-      logEditHistory(log);
 
       embedded.needsPainting = true;
       getMatrix().redraw();
     }
     catch (Exception e) {
       if (isBulkEditAtomic) {
-        undo(log);
+        undo();
       }
       throw new RuntimeException(e);
+    }
+    finally {
+      setBulkEdit(false);
     }
   }
 
@@ -799,9 +802,11 @@ public class ZoneEditor<X extends Number, Y extends Number> {
    * Cuts the selected cells by copying them to the clipboard
    * and setting <code>null</code> value to them.
    * <p>
-   * Only rectangular area can be copied.
+   * Invokes <code>copy</code> and <code>delete</code>, so all the rules for those methods apply
+   * here.
    *
    * @see #copy()
+   * @see #delete()
    */
   public void cut() {
     copy();
@@ -818,6 +823,8 @@ public class ZoneEditor<X extends Number, Y extends Number> {
    *
    * @return the label for the specified cell to be included
    * in the clipboard copying
+   *
+   * @see #copy()
    */
   protected String format(X indexX, Y indexY) {
     if (cellsPainter == null) return null;
@@ -837,101 +844,13 @@ public class ZoneEditor<X extends Number, Y extends Number> {
    * @param s text to parse from
    *
    * @return parsed text of specified cell during paste operation
+   *
+   * @see #paste()
    */
   protected Object parse(X indexX, Y indexY, String s) {
     return s;
   }
 
-  /**
-   * If set to <code>true</code> and #setModelValue for any cell returns
-   * <code>false</code> then all the previous changes during bulk edit will be
-   * rolled back. Bulk edit operations are paste, cut, delete of selection or
-   * regular bulk edit to apply a value from a control to a set of cells.
-   *
-   * @param state new bulk edit atomicity state to set
-   */
-  public void setBulkEditAtomic(boolean state) {
-    isBulkEditAtomic = state;
-  }
-
-  /**
-   * Returns <code>true</code> if bulk editor operation should be atomic and
-   * all failing if one cell change fails. Otherwise the bulk edit should continue
-   * in chance of single cell not successful to chance the value in the model.
-   * @return
-   */
-  public boolean isBulkEditAtomic() {
-    return isBulkEditAtomic;
-  }
-
-  /**
-   * Sets the length of the history of modifications to the model done with this
-   * editor.
-   * <p>
-   * Default is 0.
-   *
-   * @param length
-   */
-  public void setEditHistoryLength(int length) {
-    historyLength = length;
-  }
-
-  /**
-   * Returns the length of the history of modifications to the model done with
-   * this editor.
-   *
-   * @return the length of the history of modifications to the model done with
-   * this editor
-   */
-  public int getEditHistoryLength() {
-    return historyLength;
-  }
-
-  /**
-   * Undo the latest model change operation.
-   */
-  public void undo() {
-    if (historyIndex >= 0) {
-      EditLogEntry<X, Y> entry = history.get(historyIndex--);
-      if (entry.newValue instanceof ArrayList) {
-        @SuppressWarnings("unchecked")
-        ArrayList<EditLogEntry<X, Y>> list = (ArrayList<EditLogEntry<X, Y>>) entry.newValue;
-        undo(list);
-      }
-      else {
-        setModelValue(entry.indexX, entry.indexY, entry.oldValue);
-      }
-      embedded.needsPainting = true;
-      getMatrix().redraw();
-    }
-  }
-
-  private void undo(ArrayList<EditLogEntry<X, Y>> list) {
-    for (EditLogEntry<X, Y> entry2: list) {
-      setModelValue(entry2.indexX, entry2.indexY, entry2.oldValue);
-    }
-  }
-
-  /**
-   * Redo the latest model change operation that was undone.
-   */
-  public void redo() {
-    if (historyIndex < history.size() - 1) {
-      EditLogEntry<X, Y> entry = history.get(++historyIndex);
-      if (entry.newValue instanceof ArrayList) {
-        @SuppressWarnings("unchecked")
-        ArrayList<EditLogEntry<X, Y>> list = (ArrayList<EditLogEntry<X, Y>>) entry.newValue;
-        for (EditLogEntry<X, Y> entry2: list) {
-          setModelValue(entry2.indexX, entry2.indexY, entry2.newValue);
-        }
-      }
-      else {
-        setModelValue(entry.indexX, entry.indexY, entry.newValue);
-      }
-      embedded.needsPainting = true;
-      getMatrix().redraw();
-    }
-  }
 
   /**
    * Overcomes the limitation of the String split method needed to parse
@@ -1159,19 +1078,222 @@ public class ZoneEditor<X extends Number, Y extends Number> {
   }
 
 
+  /*------------------------------------------------------------------------
+   * Edit history
+   */
+
+  private ArrayList<EditLogEntry<X, Y>> history;
+  private int bulk;
+  private int historyLimit;
+  private int historyIndex;
+  private boolean isBulkEditAtomic;
+  private boolean isDuringApply;
+
+
+  /**
+   * Starts bulk edit if the <code>state</code> is <code>true</code>, or stops
+   * it otherwise.
+   * <p>
+   * All the changes recorded in the edit history between starting the bulk edit and stopping it
+   * can be reverted or applied again (undo/redo) only together as one operation.
+   *
+   * @param state the new bulk edit state
+   *
+   * @see #undo()
+   * @see #redo()
+   */
+  public void setBulkEdit(boolean state) {
+    bulk = state ? (int) System.currentTimeMillis() : 0;
+  }
+
+  /**
+   * Makes all the bulk edit operations atomic.
+   * <p>
+   * If set to <code>true</code> and <code>setModelValue</code> for any cell
+   * returns <code>false</code> then all the previous changes during bulk edit operation
+   * will be rolled back. Bulk edit operations are paste, cut, delete of cell selection.
+   *
+   * @param state new bulk edit atomicity state to set
+   */
+  public void setBulkEditAtomic(boolean state) {
+    isBulkEditAtomic = state;
+  }
+
+  /**
+   * Returns <code>true</code> if bulk editor operation should be atomic
+   *
+   * @return bulk edit atomicity state
+   *
+   * @see #setBulkEditAtomic(boolean)
+   */
+  public boolean isBulkEditAtomic() {
+    return isBulkEditAtomic;
+  }
+
+  /**
+   * Sets the limit of the history of modifications to the model done with this
+   * editor. In case of the need to put more entries in the history than the limit the oldest
+   * entries will be removed to make place for the new ones.
+   * <p>
+   * Default is 0 and makes the number of entries limited only by available memory.
+   *
+   * @param limit maximum number of entries in the history of edit modifications
+   */
+  public void setEditHistoryLimit(int limit) {
+    historyLimit = limit;
+  }
+
+  /**
+   * @deprecated Use {@link #setEditHistoryLimit(int)} instead
+   */
+  @Deprecated
+  public void setEditHistoryLength(int length) {
+    historyLimit = length;
+  }
+
+  /**
+   * Returns the limit of the history of modifications to the model done with
+   * this editor.
+   *
+   * @return the length of the history of modifications to the model done with
+   * this editor
+   */
+  public int getEditHistoryLimit() {
+    return historyLimit;
+  }
+
+  /**
+   * @deprecated Use {@link #getEditHistoryLimit()} instead
+   */
+  @Deprecated
+  public void getEditHistoryLength(int length) {
+    historyLimit = length;
+  }
+
+
+  /**
+   * Reverts the latest change done with this editor.
+   * <p>
+   * If the latest change was done in bulk mode than all the adjacent bulk changes are reverted
+   * as well. If there is nothing to revert the method does nothing.
+   *
+   * @see #isBulkEditAtomic
+   */
+  public void undo() {
+    boolean moved = false;
+    int bulk = 0;
+    while (historyIndex >= 0) {
+      EditLogEntry<X, Y> entry = history.get(historyIndex);
+      if (!moved || bulk != 0 && bulk == entry.bulk) {
+        moved = true;
+        bulk = entry.bulk;
+        setModelValue(entry.indexX, entry.indexY, entry.oldValue);
+        historyIndex--;
+      }
+      else break;
+    }
+    if (moved) {
+      embedded.needsPainting = true;
+      getMatrix().redraw();
+    }
+  }
+
+  /**
+   * Applies again the latest change done with this editor that was reverted with {@link #undo()}.
+   * <p>
+   * If the latest reverted change was done in bulk mode than all the adjacent bulk changes will
+   * be applied again too. If there is nothing to apply again the method does nothing.
+   *
+   * @see #isBulkEditAtomic
+   */
+  public void redo() {
+    boolean moved = false;
+    int bulk = 0;
+    while (historyIndex < history.size() - 1) {
+      EditLogEntry<X, Y> entry = history.get(historyIndex+1);
+      if (!moved || bulk != 0 && bulk == entry.bulk) {
+        moved = true;
+        bulk = entry.bulk;
+        setModelValue(entry.indexX, entry.indexY, entry.newValue);
+        historyIndex++;
+      }
+      else break;
+    }
+    if (moved) {
+      embedded.needsPainting = true;
+      getMatrix().redraw();
+    }
+  }
+
+  /**
+   * Adds an entry to the history of model changes done with this editor.
+   * <p>
+   * If <code>isBulkEditAtomic</code> returns <code>true</code> and the number of changes during
+   * the bulk operation exceeds the value of <code>getEditHistoryLimit()</code> than all the changes
+   * will be rolled back. A runtime exception is thrown is such case as well.
+   *
+   * @param indexX cell index on the horizontal axis
+   * @param indexY cell index on the vertical axis
+   * @param oldValue value of the cell before modification
+   * @param newValue value of the cell after modification
+   */
+  public void addEditHistory(X indexX, Y indexY, Object oldValue, Object newValue) {
+    if (historyLimit > 0 && historyIndex == historyLimit - 1) {
+      if (isBulkEditAtomic && bulk == history.get(0).bulk) {
+        setModelValue(indexX, indexY, oldValue);
+        undo();
+        throw new RuntimeException(MessageFormat.format(
+            "Number of changes in atomic bulk edit operation exceeds the history limit: {0}",
+            historyLimit ));
+      }
+      history.remove(0);
+    }
+    else historyIndex++;
+    history.add(historyIndex, new EditLogEntry<X, Y>(indexX, indexY, oldValue, newValue, bulk));
+  }
+
+  /**
+   * Removes all entries from the history of model modifications.
+   * <p>
+   * It can be useful for preventing undo in case when it does no makes, for example after
+   * changing the source of model data.
+   */
+  public void clearEditHistory() {
+    historyIndex = -1;
+    history.clear();
+  }
+
+  private boolean setModelValueAndLog(X indexX, Y indexY, Object oldValue, Object newValue) {
+    boolean valid = setModelValue(indexX, indexY, newValue);
+    if (valid) {
+      addEditHistory(indexX, indexY, oldValue, newValue);
+    }
+    return valid;
+  }
+
+//  private void logEditHistory(ArrayList<EditLogEntry<X, Y>> log) {
+//    if (++historyIndex == historyLimit) historyIndex = 0;
+//    history.add(historyIndex, new EditLogEntry<X, Y>(log));
+//  }
+
   static class EditLogEntry<X extends Number, Y extends Number> {
     X indexX;
     Y indexY;
     Object oldValue, newValue;
-    public EditLogEntry(X indexX, Y indexY, Object oldValue, Object newValue) {
-      super();
+    int bulk;
+    public EditLogEntry(X indexX, Y indexY, Object oldValue, Object newValue, int bulk) {
       this.indexX = indexX;
       this.indexY = indexY;
       this.oldValue = oldValue;
       this.newValue = newValue;
+      this.bulk = bulk;
     }
     public EditLogEntry(ArrayList<EditLogEntry<X, Y>> log) {
       newValue = log;
+    }
+    @Override
+    public String toString() {
+      return indexX + ", " + indexY + ", " + oldValue + ", " + newValue + ", " + bulk;
     }
   }
 }

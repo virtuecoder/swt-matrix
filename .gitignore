@@ -10,3 +10,4 @@ build/matrix.zip
 .~*
 tmp/*
 img/*
+.idea/*
