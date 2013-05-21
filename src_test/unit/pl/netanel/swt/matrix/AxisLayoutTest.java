@@ -277,6 +277,27 @@ public class AxisLayoutTest {
 	  assertEquals("2, 3, 4, 0, 1", indexes(layout.cellSequence(Frozen.NONE, body)));
 	}
 
+	@Test
+	public void reorderAfterLastHidden() throws Exception {
+	  AxisLayout layout = new AxisLayout();
+	  layout.setViewportSize(1000);
+
+	  SectionCore header = layout.header;
+	  header.setCount(5);
+	  header.setDefaultCellWidth(100);
+	  header.setSelected(0, 0, true);
+	  header.setHidden(4, 4, true);
+	  header.setVisible(true);
+
+	  layout.header.setCount(5);
+
+	  layout.compute();
+	  assertEquals("0, 1, 2, 3", indexes(layout.cellSequence(Frozen.NONE, header)));
+
+	  layout.reorder(item(header, 0), item(layout.body, 0));
+	  assertEquals("1, 2, 3, 0", indexes(layout.cellSequence(Frozen.NONE, header)));
+	}
+
 
 
 	@Test

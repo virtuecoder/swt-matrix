@@ -223,6 +223,7 @@ public class Axis<N extends Number> {
    * @param position the position the get the item for
    * @return the item visible at the specified distance
    */
+  @Nullable
   public AxisItem<N> getItemByViewportDistance(int distance) {
     return layout.getItemByDistance(distance);
   }
@@ -293,6 +294,7 @@ public class Axis<N extends Number> {
    * @param position the position the line bound the item for
    * @return the line bound at the specified position in the viewport
    */
+  @Nullable
   public int[] getLineBound(AxisItem<N> item) {
     Bound bound = layout.getLineBound(item);
     return bound == null ? null : new int[] { bound.distance, bound.width };

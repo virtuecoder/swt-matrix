@@ -1,3 +1,10 @@
+-------------------------------------------------------------------------------
+Version 0.7.48
+
+Bug fixes:
+- NullPointerException during drag and drop
+
+-------------------------------------------------------------------------------
 Version 0.7.47
 
 New API:
@@ -8,7 +15,6 @@ New API:
 - Renamed ZoneEditor.getEditHistoryLength to ZoneEditor.getEditHistoryLimit
 
 -------------------------------------------------------------------------------
-
 Version 0.7.46
 
 Bug fixes:

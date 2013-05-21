@@ -383,6 +383,7 @@ class AxisLayout<N extends Number> {
 		return false;
 	}
 
+	@Nullable
 	AxisItem<N> scroll(MutableNumber<N> itemCount, AxisSequence<N> AxisSequence) {
 		computeIfRequired();
 		AxisItem<N> start2 = nextItem(start, itemCount, AxisSequence);
@@ -545,6 +546,7 @@ class AxisLayout<N extends Number> {
 		return 0;
 	}
 
+	@Nullable
 	AxisItem<N> nextItem(AxisItem<N> item, AxisSequence<N> axisSequence) {
 		if (item == null) item = axisSequence.first();
 		if (item == null) return null;
@@ -562,6 +564,7 @@ class AxisLayout<N extends Number> {
 	  return seq.getItem();
 	}
 
+	@Nullable
 	private AxisItem<N> nextPage(AxisItem<N> item, AxisSequence<N> dir) {
 		if (item == null) item = dir.first();
 		if (item == null) return null;
@@ -604,6 +607,7 @@ class AxisLayout<N extends Number> {
 	 * @param distance
 	 * @return
 	 */
+	@Nullable
 	public AxisItem<N> getResizeItem(int distance) {
 		Cache cache = getCache(distance - resizeOffset);
 
@@ -878,6 +882,7 @@ class AxisLayout<N extends Number> {
 		return null;
 	}
 
+	@Nullable
 	MutableNumber<N> getItemPosition(AxisItem<N> item) {
 		MutableNumber<N> position = math.create(0);
 		for (int i = 0, size = sections.size(); i < size; i++) {
@@ -893,6 +898,7 @@ class AxisLayout<N extends Number> {
 		return null;
 	}
 
+	@Nullable
 	AxisItem<N> getItemByPosition(MutableNumber<N> position) {
 		MutableNumber<N> pos1 = math.create(0);
 		MutableNumber<N> pos2 = math.create(0);
@@ -915,6 +921,7 @@ class AxisLayout<N extends Number> {
 	 * @param distance in the viewport
 	 * @return
 	 */
+	@Nullable
 	AxisItem<N> getItemByDistance(int distance) {
 		Cache cache = getCache(distance);
 		if (cache.cells.isEmpty()) return null;
@@ -1024,6 +1031,7 @@ class AxisLayout<N extends Number> {
 		}
 	}
 
+	@Nullable
 	public Bound getCellBound(AxisItem<N> item) {
 		Cache cache = getCache(item.section, item.getIndex());
 		if (cache == null) return null;
@@ -1035,6 +1043,7 @@ class AxisLayout<N extends Number> {
 		return null;
 	}
 
+	@Nullable
 	public Bound getLineBound(AxisItem<N> item) {
 		N index = item.getIndex();
 		if (math.compare(index, item.section.getCount()) == 0) {
@@ -1145,12 +1154,15 @@ class AxisLayout<N extends Number> {
 		SectionCore<N> targetSection = SectionCore.from(target);
 
 		if (targetSection.index < sourceSection.index) {
-		  target = AxisItem.createInternal(source.section,
-		      source.section.nextNotHiddenIndex(math.ZERO_VALUE(), Matrix.FORWARD));
+		  N next = source.section.nextNotHiddenIndex(math.ZERO_VALUE(), Matrix.FORWARD);
+		  if (next == null) return false;
+      target = AxisItem.createInternal(source.section, next);
 		}
 		else if (targetSection.index > sourceSection.index)  {
-		  target = AxisItem.createInternal(source.section,
-		      source.section.nextNotHiddenIndex(source.section.getCount(), Matrix.BACKWARD));
+		  N last = math.decrement(source.section.getCount());
+      N next = source.section.nextNotHiddenIndex(last, Matrix.BACKWARD);
+		  if (next == null) return false;
+      target = AxisItem.createInternal(source.section, next);
 		}
 
 		//int position = comparePosition(start, target);

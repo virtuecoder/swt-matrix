@@ -7,6 +7,7 @@
  ******************************************************************************/
 package pl.netanel.swt.matrix.reloaded.ints;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +32,7 @@ import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
 import pl.netanel.swt.matrix.reloaded.CellImageButtonPainter;
+import pl.netanel.util.NotNull;
 import pl.netanel.util.Preconditions;
 
 /**
@@ -139,7 +141,7 @@ public class Grouping {
 
         Integer indexX = itemX.getIndex();
         Integer indexY = itemY.getIndex();
-        Node node = getNodeByCellIndex(indexX, indexY);
+        Node node = getNode(indexX, indexY);
         if (node == null) return;
 
         // toggle
@@ -342,7 +344,7 @@ public class Grouping {
    * @return the text of the cell at the given indexes
    */
   public String getText(Integer indexX, Integer indexY) {
-    Node node = getNodeByCellIndex(indexX, indexY);
+    Node node = getNode(indexX, indexY);
     return node != null  ?
         node.caption : null;
   }
@@ -503,12 +505,14 @@ public class Grouping {
   }
 
   /**
-   * Returns the grouping node in the given cell.
+   * Returns the grouping node of the given cell.
    * @param indexX cell index on the horizontal axis
    * @param indexY cell index on the vertical axis
    * @return grouping node in the given cell
+   * @throws
    */
-  public Node getNodeByCellIndex(int indexX, int indexY) {
+  @NotNull
+  private Node getNode(int indexX, int indexY) {
     int level, index;
     if (axisDirection == SWT.HORIZONTAL) {
       level = indexY;
@@ -524,16 +528,26 @@ public class Grouping {
           if (child.level == level) {
             return child;
           }
-          else if (child.children == null) {
-            return null;
-          }
           else {
             node = child;
           }
         }
       }
     }
-    return null;
+    throw new IndexOutOfBoundsException(MessageFormat.format(
+        "There is no node for cell ({0}, {1})", indexX, indexY));
+  }
+
+  @NotNull
+  public Node getNodeByCellIndex(int indexX, int indexY) {
+    if (axisDirection == SWT.HORIZONTAL) {
+      Preconditions.checkElementIndex(indexX, section.getCount());
+      Preconditions.checkElementIndex(indexY, levelCount);
+    } else {
+      Preconditions.checkElementIndex(indexY, section.getCount());
+      Preconditions.checkElementIndex(indexX, levelCount);
+    }
+    return getNode(indexX, indexY);
   }
 
   public Node getNodeByTreeIndex(final int ...index) {
@@ -566,7 +580,7 @@ public class Grouping {
     @Override
     public Boolean getToggleState(Integer indexX, Integer indexY) {
       // Return true if is expanded
-      Node node = getNodeByCellIndex(indexX, indexY);
+      Node node = getNode(indexX, indexY);
       return node == null ? null : node.getToggleState();
 //      return node.collapseDirection != SWT.NONE && isFirstItem(node, indexX, indexY) &&
 //          node.children.size() > 1 /*&& node.parent.collapsed == false*/ ?
@@ -585,7 +599,7 @@ public class Grouping {
       AxisItem<Integer> item = axis2.getItemByViewportDistance(
           axisDirection == SWT.HORIZONTAL ? indexY : indexX);
       if (item != null) {
-        Node node = getNodeByCellIndex(indexX, indexY);
+        Node node = getNode(indexX, indexY);
         if (node != null && node.level < selectLevel && isFirstItem(node, indexX, indexY)) {
           isSelected = false;
         }
@@ -622,7 +636,7 @@ public class Grouping {
 
     @Override
     public void setup(Integer indexX, Integer indexY) {
-      node = getNodeByCellIndex(indexX, indexY);
+      node = getNode(indexX, indexY);
       if (node == null) {
         background = null;
         return;

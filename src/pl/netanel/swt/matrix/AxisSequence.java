@@ -10,6 +10,8 @@ package pl.netanel.swt.matrix;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.netanel.util.Nullable;
+
 /**
  * Iterates over items of axis, according to order of sections and items,
  * skipping the ones hidden or collapsed in three.
@@ -134,11 +136,13 @@ abstract class AxisSequence<N extends Number> implements Sequence {
     return moved ? index.getValue() : null;
   }
 
+  @Nullable
   public AxisItem<N> nextItem() {
     if (!next()) return null;
     return getItem();
   }
 
+  @Nullable
   public AxisItem<N> nextItem(AxisItem<N> item) {
     init(item);
     if (!next()) return null;

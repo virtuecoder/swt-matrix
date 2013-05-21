@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.TypedListener;
 import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
 import pl.netanel.swt.matrix.NumberSetCore.ContentChangeListener;
 import pl.netanel.util.ImmutableIterator;
+import pl.netanel.util.Nullable;
 import pl.netanel.util.Preconditions;
 
 /**
@@ -788,6 +789,7 @@ class SectionCore<N extends Number> implements Section<N> {
     return math.create(count).subtract(hidden.getMutableCount()).getValue();
   }
 
+  @Nullable
   N nextNotHiddenIndex(N index, int direction) {
     for (MutableExtent<N> e: hidden.items) {
       if (math.contains(e, index)) {

@@ -62,6 +62,13 @@ public class S0110_Grouping {
     grouping.getRoot().setCollapsedAll(false);
 
     matrix.getAxisX().getBody().setHidden(6, true); // It will be not visible when group is expanded
+    if (axisDirection == SWT.HORIZONTAL) {
+      matrix.getAxisX().setFrozenHead(1);
+      matrix.getAxisY().setFrozenHead(3);
+    } else {
+      matrix.getAxisX().setFrozenHead(3);
+      matrix.getAxisY().setFrozenHead(1);
+    }
   }
 
   void pack() {
