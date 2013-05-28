@@ -1,4 +1,11 @@
 -------------------------------------------------------------------------------
+Version 0.7.49
+
+API changes:
+- Added Painter.trackPosition(Image)
+- Added Painter.getImageAt(int, int)
+
+-------------------------------------------------------------------------------
 Version 0.7.48
 
 Bug fixes:

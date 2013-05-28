@@ -9,6 +9,11 @@ package pl.netanel.swt.matrix;
 
 import static java.lang.Math.max;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.DisposeEvent;
@@ -25,6 +30,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import pl.netanel.swt.matrix.Frozen.PairSequence;
+import pl.netanel.util.Nullable;
 import pl.netanel.util.Preconditions;
 
 
@@ -273,7 +280,6 @@ public class Painter<X extends Number, Y extends Number> {
   protected Frozen frozenY;
   private Listener treeMouseListener;
 
-
   /**
 	 * Constructs a painter with the given name.
 	 * <p>
@@ -311,6 +317,7 @@ public class Painter<X extends Number, Y extends Number> {
 		this.scope = scope;
 		this.style = new Style();
 		nodeImageSize = new Point(0, 0);
+		imageCache = new ImageCache();
 	}
 
 	/**
@@ -341,6 +348,7 @@ public class Painter<X extends Number, Y extends Number> {
 		this.gc = gc;
     this.frozenX = frozenX;
     this.frozenY = frozenY;
+    imageCache.init();
 		return init();
 	};
 
@@ -402,6 +410,7 @@ public class Painter<X extends Number, Y extends Number> {
 	 */
 	public void clean() {
 	  if (textLayout != null) textLayout.dispose();
+	  imageCache.isReset = false;
 	  //gc.setClipping(clipping);
 	}
 
@@ -471,6 +480,7 @@ public class Painter<X extends Number, Y extends Number> {
 		int x2 = x, y2 = y;
 		int x3 = x, y3 = y;
 
+		imageCache.iterate();
 		if (image != null) {
 			Rectangle bounds = image.getBounds();
 			switch (style.imageAlignX) {
@@ -495,6 +505,7 @@ public class Painter<X extends Number, Y extends Number> {
 			  gc.setClipping(x, y, width, height);
 			}
 			gc.drawImage(image, x2, y2);
+			imageCache.store(image, x2, y2);
 			width -= bounds.width;
 		}
 
@@ -976,7 +987,7 @@ public class Painter<X extends Number, Y extends Number> {
 
 	void setMatrix(Matrix<X, Y> matrix) {
 		this.matrix = matrix;
-
+		imageCache.addCallback();
 	}
 
 	/**
@@ -1018,7 +1029,116 @@ public class Painter<X extends Number, Y extends Number> {
     zone.addListener(SWT.MouseDown, treeMouseListener);
   }
 
+  ImageCache imageCache;
 
+  class ImageCache {
+    PairSequence frozenSeq = new Frozen.PairSequence();
+    // List indexed by frozenSeq index
+    ArrayList<Map<Image, Point[][]>> data = new ArrayList<Map<Image, Point[][]>>(9);
+    int[] sizeY = new int[9];
+    ArrayList<Image> images = new ArrayList<Image>();
+    boolean isReset = true;
+    boolean isOn;
+    int ix, iy;
+    int frozenIndex;
+    Runnable callback;
+
+    public void reset() {
+      if (!isOn) return;
+      for (frozenSeq.init(); frozenSeq.next();) {
+        int sizeX = matrix.layoutX.getCache(frozenSeq.frozenX).cells.size();
+        int sizeY = matrix.layoutY.getCache(frozenSeq.frozenY).cells.size();
+        this.sizeY[frozenSeq.index] = sizeY;
+        HashMap<Image, Point[][]> map = new HashMap<Image, Point[][]>();
+        for (Image image: images) {
+          map.put(image, new Point[sizeX][sizeY]);
+        }
+        data.add(map);
+        isReset = true;
+      }
+    }
+
+    public void iterate() {
+      if (!isReset || !isOn) return;
+      if (++iy == sizeY[frozenIndex]) {
+        iy = 0;
+        ++ix;
+      }
+    }
+
+    public void addCallback() {
+      if (callback == null && matrix != null && !images.isEmpty()) {
+        callback = new Runnable() {
+          @Override
+          public void run() {
+            reset();
+          }
+        };
+        matrix.layout.callbacks.add(callback);
+      }
+    }
+
+    void init() {
+      ix = 0;
+      iy = -1;
+      frozenIndex = Frozen.getIndex(frozenX, frozenY);
+    }
+
+    void store(Image image, int x, int y) {
+      if (!isReset) return;
+      if (!images.contains(image)) return;
+      Point[][] locations = data.get(frozenIndex).get(image);
+      locations[ix][iy] = new Point(x, y);
+    }
+
+    void track(Image image) {
+      images.add(image);
+      isOn = true;
+      addCallback();
+      if (matrix != null) reset();
+    }
+
+    @Nullable
+    Image get(int x, int y) {
+      if (images.isEmpty()) return null;
+      Map<Image, Point[][]> map = data.get(frozenIndex);
+      int ix = matrix.layoutX.getCache(frozenX).getIndexByDistance(x);
+      int iy = matrix.layoutY.getCache(frozenY).getIndexByDistance(y);
+      for (Entry<Image, Point[][]> entry: map.entrySet()) {
+        Image image = entry.getKey();
+        Rectangle bounds = image.getBounds();
+        Point p = entry.getValue()[ix][iy];
+        if (p == null) return null;
+        bounds.x = p.x;
+        bounds.y = p.y;
+        if (bounds.contains(x, y)) return image;
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Tracking image positions during painting allows to refer to its position later with
+   * #getImageAt(int, int).
+   *
+   * @param image image to track the positions for
+   */
+  public void trackPosition(Image image) {
+    imageCache.track(image);
+  }
+
+  /**
+   * Returns an image which bounds contain the given point or null otherwise.
+   * The image tracking must be set before in order to be returned by this method.
+   *
+   * @param x the x screen coordinate in the zone to check for the image at
+   * @param y the y screen coordinate in the zone to check for the image at
+   * @return an image which bounds contain the given point
+   * @see #getImageAt(int, int)
+   */
+  public Image getImageAt(int x, int y) {
+    return imageCache.get(x, y);
+  }
 
   static void printGC(GC gc) {
     System.out.println("getForeground() " +  gc.getForeground());

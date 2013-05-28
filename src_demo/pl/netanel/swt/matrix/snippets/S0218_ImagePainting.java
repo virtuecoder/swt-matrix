@@ -58,17 +58,27 @@ public class S0218_ImagePainting {
 
     matrix.getAxisY().getBody().setCount(ROW_COUNT);
 
-    matrix.getBody().replacePainterPreserveStyle(
-      new Painter<Integer, Integer>(Painter.NAME_CELLS) {
-        @Override
-        public void setup(Integer indexX, Integer indexY) {
-          super.setup(indexX, indexY);
-          text = indexY.toString() + ", " + indexX;
-          Image[] row = images[indexY.intValue()];
-          image = row == null ? null : row[indexX.intValue()];
-          style.imageAlignX = indexX.intValue() == 1 ? SWT.RIGHT : SWT.LEFT;
+    final Painter<Integer, Integer> painter = new Painter<Integer, Integer>(Painter.NAME_CELLS) {
+      @Override
+      public void setup(Integer indexX, Integer indexY) {
+        super.setup(indexX, indexY);
+        text = indexY.toString() + ", " + indexX;
+        Image[] row = images[indexY.intValue()];
+        image = row == null ? null : row[indexX.intValue()];
+        style.imageAlignX = indexX.intValue() == 1 ? SWT.RIGHT : SWT.LEFT;
+      }
+    };
+    painter.trackPosition(image);
+    matrix.getBody().replacePainterPreserveStyle(painter);
+
+    matrix.getBody().addListener(SWT.MouseDown, new Listener() {
+      @Override
+      public void handleEvent(Event e) {
+        if (painter.getImageAt(e.x, e.y) == image) {
+          System.out.println("image");
         }
-      });
+      }
+    });
 
     shell.setBounds(400, 200, 600, 400);
     shell.open();

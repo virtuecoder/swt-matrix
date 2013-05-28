@@ -32,6 +32,7 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
 //  List<Rectangle> mergingCacheLineX;
 //  List<Rectangle> mergingCacheLineY;
   Region region;
+  final ArrayList<Runnable> callbacks;
 
   private PairSequence frozenSeq;
 
@@ -53,6 +54,8 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
     for (frozenSeq.init(); frozenSeq.next();) {
       mergeCache.add(new MergeCache<X, Y>());
     }
+
+    callbacks = new ArrayList<Runnable>();
   }
 
   void setMatrix(Matrix<X, Y> matrix) {
@@ -391,15 +394,16 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
   }
 
   public void compute() {
-    layoutX.compute();
-    layoutY.compute();
-    computeMerging();
+    compute(true, true);
   }
 
   public void compute(boolean includeX, boolean includeY) {
     if (includeX) layoutX.compute();
     if (includeY) layoutY.compute();
     computeMerging();
+    for (Runnable r: callbacks) {
+      r.run();
+    }
   }
 
   public void computeIfRequired() {
@@ -411,6 +415,9 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
         computeMerging();
         break;
       }
+    }
+    for (Runnable r: callbacks) {
+      r.run();
     }
   }
 

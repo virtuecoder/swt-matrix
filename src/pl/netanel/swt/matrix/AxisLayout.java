@@ -775,6 +775,19 @@ class AxisLayout<N extends Number> {
 
 		protected boolean condition() { return true; }
 		boolean isEmpty() { return cells.isEmpty(); }
+
+		int getIndexByDistance(int distance) {
+	    if (cells.isEmpty()) return -1;
+
+      for (int i = 0; i < cells.size(); i++) {
+        Bound bounds = cells.get(i);
+        item = items.get(i);
+        if (distance <= bounds.distance + bounds.width) {
+          return i;
+        }
+      }
+      return -1;
+		}
 	}
 
 	/**
@@ -924,20 +937,41 @@ class AxisLayout<N extends Number> {
 	@Nullable
 	AxisItem<N> getItemByDistance(int distance) {
 		Cache cache = getCache(distance);
-		if (cache.cells.isEmpty()) return null;
+		int index = cache.getIndexByDistance(distance);
+		return index == -1 ? null: cache.items.get(index);
+//		if (cache.cells.isEmpty()) return null;
+////		if (distance < cache.cells.get(0).distance) return null; //cache.items.get(0);
+//
+//		AxisItem<N> item = null;
+//		for (int i = 0; i < cache.cells.size(); i++) {
+//			Bound bounds = cache.cells.get(i);
+//			item = cache.items.get(i);
+//			if (distance <= bounds.distance + bounds.width) {
+////			  if (bounds.distance <= distance) {
+//			    return item;
+////			  }
+//			}
+//		}
+//		return null; //item;
+////		return getBeyond && !cache.isEmpty() ? cache.items.get(cache.items.size() - 2) : null;
+	}
+
+	AxisItem<N> getChacheIndexByDistance(int distance) {
+	  Cache cache = getCache(distance);
+	  if (cache.cells.isEmpty()) return null;
 //		if (distance < cache.cells.get(0).distance) return null; //cache.items.get(0);
 
-		AxisItem<N> item = null;
-		for (int i = 0; i < cache.cells.size(); i++) {
-			Bound bounds = cache.cells.get(i);
-			item = cache.items.get(i);
-			if (distance <= bounds.distance + bounds.width) {
+	  AxisItem<N> item = null;
+	  for (int i = 0; i < cache.cells.size(); i++) {
+	    Bound bounds = cache.cells.get(i);
+	    item = cache.items.get(i);
+	    if (distance <= bounds.distance + bounds.width) {
 //			  if (bounds.distance <= distance) {
-			    return item;
+	      return item;
 //			  }
-			}
-		}
-		return null; //item;
+	    }
+	  }
+	  return null; //item;
 //		return getBeyond && !cache.isEmpty() ? cache.items.get(cache.items.size() - 2) : null;
 	}
 
