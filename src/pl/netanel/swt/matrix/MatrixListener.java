@@ -289,14 +289,17 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       this.distance = distance;
       if (item == null) item = last = axisLayout.current;
 
+      boolean noModifiers = (e.stateMask & SWT.MOD1) == 0 && (e.stateMask & SWT.MOD2) == 0
+          && (e.stateMask & SWT.MOD3) == 0;
+
       switch (e.type) {
       case SWT.MouseMove:
         if (mouseDown) {
           handleDrag(e);
         }
         else {
-          if (isInHeader() && (resizeItem = axisLayout.getResizeItem(distance)) != null &&
-              !isOverMergedLine()) {
+          if (noModifiers && isInHeader() &&
+              (resizeItem = axisLayout.getResizeItem(distance)) != null && !isOverMergedLine()) {
             if (cursor != resizeCursor) {
               matrix.setCursor(cursor = resizeCursor);
             }
@@ -310,10 +313,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         lastFocus = axis.getFocusItem();
         lastDistance = distance;
         prev = null;
-        boolean noModifiers = (e.stateMask & SWT.MOD1) == 0 && (e.stateMask & SWT.MOD2) == 0
-            && (e.stateMask & SWT.MOD3) == 0;
-        if (mouseDown && isInHeader() && noModifiers) {
-          if (resizeItem != null) {
+        if (mouseDown && isInHeader()) {
+          if (resizeItem != null && noModifiers) {
             resizing = true;
             resizeStartDistance = distance;
             resizeCellWidth = resizeItem.section.getCellWidth(resizeItem.getIndex());
@@ -1148,6 +1149,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     @Override protected boolean init() {
       painter = header.getPainter(Painter.NAME_CELLS);
       if (painter != null) {
+        painter.init();
         highlight = painter.selectionHighlight;
         painter.selectionHighlight = false;
       }
@@ -1157,6 +1159,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     @Override public void clean() {
       super.clean();
       if (painter != null) {
+        painter.clean();
         painter.selectionHighlight = highlight;
       }
       gc.setLineWidth(1);

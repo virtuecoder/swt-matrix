@@ -11,6 +11,7 @@ import static java.lang.Math.max;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -205,64 +206,78 @@ public class Painter<X extends Number, Y extends Number> {
    */
   public static final String NAME_FREEZE_TAIL_LINE_Y = "freeze tail line y";
 
-	//private static int[] EXTENT_ALIGN = {SWT.RIGHT, SWT.END, SWT.BOTTOM, SWT.CENTER};
-	static enum TextClipMethod {DOTS_IN_THE_MIDDLE, DOTS_AT_THE_END, CUT, NONE};
+  //private static int[] EXTENT_ALIGN = {SWT.RIGHT, SWT.END, SWT.BOTTOM, SWT.CENTER};
+  static enum TextClipMethod {DOTS_IN_THE_MIDDLE, DOTS_AT_THE_END, CUT, NONE};
 
-	/**
-	 * Provides graphic to the {@link #init()}, {@link #clean()},
-	 * {@link #paint(int, int, int, int)} methods.
-	 * It is not safe to use it inside of other methods.
-	 */
-	protected GC gc;
+  private static final Image[] emptyImageArray =  new Image[0];
 
-	/**
-	 * Expresses the selected state of the cell to paint set by default
-	 * by the {@link #setup(Number, Number)} method.
-	 */
-	protected boolean isSelected = false;
+  /**
+   * Provides graphic to the {@link #init()}, {@link #clean()},
+   * {@link #paint(int, int, int, int)} methods.
+   * It is not safe to use it inside of other methods.
+   */
+  protected GC gc;
 
-	int scope;
-	final String name;
-	private boolean enabled = true;
+  /**
+   * Expresses the selected state of the cell to paint set by default
+   * by the {@link #setup(Number, Number)} method.
+   */
+  protected boolean isSelected = false;
 
-	/**
-	 * Text to be painted. The placement of the text depends on the {@link Style#textAlignX},
-	 * {@link Style#textAlignY}, {@link Style#textMarginX}, {@link Style#textMarginY} properties.
-	 */
-	public String text;
-	/**
-	 * Image to be painted. The placement of the image depends on the {@link Style#imageAlignX},
-	 * {@link Style#imageAlignY}, {@link Style#imageMarginX}, {@link Style#imageMarginY} properties.
-	 */
-	public Image image;
+  int scope;
+  final String name;
+  private boolean enabled = true;
+
+  /**
+   * Text to be painted. The placement of the text depends on the {@link Style#textAlignX},
+   * {@link Style#textAlignY}, {@link Style#textMarginX}, {@link Style#textMarginY} properties.
+   */
+  public String text;
+  /**
+   * Image to be painted. The placement of the image depends on the {@link Style#imageAlignX},
+   * {@link Style#imageAlignY}, {@link Style#imageMarginX}, {@link Style#imageMarginY} properties.
+   */
+  public Image image;
+
+  /**
+   * Contains images that will be displayed before the text starting from the most distant one.
+   * @see #imagesAfter
+   */
+  public Image[] imagesBefore;
+
+  /**
+   * Contains images that will be displayed after the text starting from the closest one.
+   * @see #imagesBefore
+   */
+  public Image[] imagesAfter;
+
+  /**
+   * Selected cells will be highlighted if <tt>true</tt>. Otherwise cell selection
+   * will be ignored. Default value is <tt>true</true>.
+   */
+  public boolean selectionHighlight = true;
+
+  /**
+   * Painter style properties.
+   */
+  public Style style;
 
 
-	/**
-	 * Selected cells will be highlighted if <tt>true</tt>. Otherwise cell selection
-	 * will be ignored. Default value is <tt>true</true>.
-	 */
-	public boolean selectionHighlight = true;
+  Matrix<X, Y> matrix;
+  ZoneCore<X, Y> zone;
+  Rectangle zoneBounds;
 
-	/**
-	 * Painter style properties.
-	 */
-	public Style style;
+  protected Point textSize;
 
+  private Color lastForeground, lastBackground, defaultForeground;
 
-	Matrix<X, Y> matrix;
-	ZoneCore<X, Y> zone;
-	Rectangle zoneBounds;
-
-	protected Point textSize;
-
-	private Color lastForeground, lastBackground, defaultForeground;
-
-	private Font lastFont;
-	private FontSizeCache fontSizeCache;
-	private Point extent;
+  private Font lastFont;
+  private FontSizeCache fontSizeCache;
+  private Point extent;
   protected TextLayout textLayout;
   Rectangle clipping;
   private Object data;
+  //  private final Stack<Rectangle> clippingStack;
 
   private boolean isTreeEnabled;
   private boolean hasTreeLinesVisible;
@@ -318,6 +333,9 @@ public class Painter<X extends Number, Y extends Number> {
 		this.style = new Style();
 		nodeImageSize = new Point(0, 0);
 		imageCache = new ImageCache();
+		imagesBefore = emptyImageArray;
+    imagesAfter = emptyImageArray;
+    nodeImageSize = new Point(0, 0);
 	}
 
 	/**
@@ -339,20 +357,19 @@ public class Painter<X extends Number, Y extends Number> {
   }
 
   /**
-	 * Initializes the GC property of the receiver to be used by its other methods.
-	 * To change the painter initialization behavior override its protected {@link #init()} method.
-	 * @param gc
-	 * @return true if the initialization succeeded or false otherwise.
-	 */
-	final boolean init(GC gc, Frozen frozenX, Frozen frozenY) {
-		this.gc = gc;
+   * Initializes the GC property of the receiver to be used by its other methods.
+   * To change the painter initialization behavior override its protected {@link #init()} method.
+   * @param gc
+   * @return true if the initialization succeeded or false otherwise.
+   */
+  final boolean init(GC gc, Frozen frozenX, Frozen frozenY) {
+    this.gc = gc;
     this.frozenX = frozenX;
     this.frozenY = frozenY;
-    imageCache.init();
-		return init();
+    return init();
 	};
 
-	/**
+  /**
    * Allows graphic optimization by performing operation that can be taken out
    * of the cell painting loop.
    * <p>
@@ -363,27 +380,27 @@ public class Painter<X extends Number, Y extends Number> {
    * @return true if the initialization succeeded or false otherwise.
    * @see <code>clean()</code>
    */
-	protected boolean init() {
-		if (scope < SCOPE_CELLS) return true;
+  protected boolean init() {
+    if (scope < SCOPE_CELLS) return true;
 
-		// Set default value if foreground is null, background is not painted if null
-		if (style.foreground == null) {
-		  style.foreground = Resources.getColor(SWT.COLOR_LIST_FOREGROUND);
-		}
-		defaultForeground = style.foreground;
-		if (defaultForeground == null) {
-		  defaultForeground = matrix.getForeground();
-		}
-		lastForeground = defaultForeground;
-		lastBackground = style.background;
+    // Set default value if foreground is null, background is not painted if null
+    if (style.foreground == null) {
+      style.foreground = Resources.getColor(SWT.COLOR_LIST_FOREGROUND);
+    }
+    defaultForeground = style.foreground;
+    if (defaultForeground == null) {
+      defaultForeground = matrix.getForeground();
+    }
+    lastForeground = defaultForeground;
+    lastBackground = style.background;
 
-		gc.setForeground(lastForeground);
-		if (style.background != null) {
-			gc.setBackground(lastBackground);
-//			gc.fillRectangle(zone.bounds);
-		}
+    gc.setForeground(lastForeground);
+    if (style.background != null) {
+      gc.setBackground(lastBackground);
+      //			gc.fillRectangle(zone.bounds);
+    }
 
-		Font font = lastFont = getCurrentFont();
+    Font font = lastFont = getCurrentFont();
     gc.setFont(font);
 		fontSizeCache = FontSizeCache.get(gc, font);
 		extent = new Point(-1, gc.stringExtent("ty").y);
@@ -399,9 +416,9 @@ public class Painter<X extends Number, Y extends Number> {
 		  }
 		  indent = 0;
 		}
+		imageCache.init();
 		return true;
 	}
-
 
 	/**
 	 * Restores the default {@link GC} settings modified by modified by in {@link #init()}
@@ -410,7 +427,7 @@ public class Painter<X extends Number, Y extends Number> {
 	 */
 	public void clean() {
 	  if (textLayout != null) textLayout.dispose();
-	  imageCache.isReset = false;
+	  //imageCache.isReset = false;
 	  //gc.setClipping(clipping);
 	}
 
@@ -423,429 +440,14 @@ public class Painter<X extends Number, Y extends Number> {
   }
 
 
-	/**
-	 * Draws on the canvas within the given boundaries according to the given indexes.
-	 * <p>
-	 * @param x the x coordinate of the painting boundaries
-	 * @param y the y coordinate of the painting boundaries
-	 * @param width the width of the painting boundaries
-	 * @param height the height of the painting boundaries
-	 */
-	protected void paint(int x, int y, int width, int height) {
-//	  setup(indexX, indexY);
-	  Rectangle clipping2 = null;
-	  if (style.hasWordWraping) {
-      clipping2 = gc.getClipping();
-	    gc.setClipping(x, y, width, height);
-	  }
-
-		Color foreground2, background2;
-		if (isSelected) {
-			// TODO Revise and maybe optimize the background / foreground color setting algorithm
-			foreground2 = style.selectionForeground;
-			background2 = style.selectionBackground;
-		} else {
-		  foreground2 = style.foreground;
-		  background2 = style.background;
-		}
-
-		if (foreground2 == null) {
-		  if (defaultForeground == null) {
-		    defaultForeground = matrix.getForeground();
-		  }
-		  foreground2 = defaultForeground;
-		}
-		// Only set color if there is a change
-		if (!foreground2.equals(lastForeground)) {
-			gc.setForeground(lastForeground = foreground2);
-		}
-		if (background2 != null) {
-			if (!background2.equals(lastBackground)) {
-				gc.setBackground(lastBackground = background2);
-			}
-			// Needed in calculated background scenario
-			//if (!background2.equals(defaultBackground)) {
-				gc.fillRectangle(x, y, width, height);
-			//}
-		}
-
-		x += indent;
-		width -= indent;
-		if (hasChildren) {
-		  gc.drawImage(expanded ? expandedImage : collapsedImage,
-		      x - nodeImageSize.x,
-		      y + (height - nodeImageSize.y)/2);
-		}
-
-		int x2 = x, y2 = y;
-		int x3 = x, y3 = y;
-
-		imageCache.iterate();
-		if (image != null) {
-			Rectangle bounds = image.getBounds();
-			switch (style.imageAlignX) {
-			case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP:
-				x2 += style.imageMarginX; x3 = x2 + bounds.width; break;
-			case SWT.CENTER:
-				x2 += (width - bounds.width) / 2; break;
-			case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
-				x2 += width - bounds.width - style.imageMarginX; break;
-			}
-			switch (style.imageAlignY) {
-			case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
-				y2 += style.imageMarginY; break;
-			case SWT.CENTER:
-				y2 += (height - bounds.height) / 2; break;
-			case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
-				y2 += height - bounds.height - style.imageMarginY; break;
-			}
-			if (clipping2 == null && width < bounds.width + 2 * style.imageMarginX ||
-			    height < bounds.height + 2 * style.imageMarginY) {
-			  clipping2 = gc.getClipping();
-			  gc.setClipping(x, y, width, height);
-			}
-			gc.drawImage(image, x2, y2);
-			imageCache.store(image, x2, y2);
-			width -= bounds.width;
-		}
-
-
-		if (text != null) {
-		  boolean fontChange = style.font != lastFont;
-		  if (fontChange) {
-		    Font font = style.font == null ? matrix.getDisplay().getSystemFont() : style.font;
-        gc.setFont(font);
-        if (style.hasWordWraping) {
-          textLayout.setFont(gc.getFont());
-        }
-		    fontSizeCache = FontSizeCache.get(gc, font);
-		    lastFont = font;
-		  }
-
-		  textSize.x = width - 2 * style.textMarginX;
-		  textSize.y = height - 2 * style.textMarginY;
-		  clipText();
-
-		  switch (style.textAlignX) {
-      case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP:
-        x3 += style.textMarginX; break;
-      case SWT.CENTER:
-        x3 += (width - textSize.x) / 2; break;
-      case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
-        x3 += width - textSize.x - style.textMarginX; break;
-      }
-      switch (style.textAlignY) {
-      case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
-        y3 += style.textMarginY; break;
-      case SWT.CENTER:
-        y3 += (height - extent.y) / 2; break;
-      case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
-        y3 += height - textSize.y - style.textMarginY; break;
-      }
-
-
-	    if (style.hasWordWraping) {
-//		    Rectangle clipping2 = gc.getClipping();
-		    textLayout.draw(gc, x3, y3);
-		  }
-		  else {
-//			if (width < 4 || height < 4) return;
-	      if (clipping2 == null && height < extent.y + 2 * style.textMarginY) {
-	        clipping2 = gc.getClipping();
-	        gc.setClipping(x, y, width, height);
-	      }
-
-		    gc.drawString(text, x3, y3, true);
-		  }
-		}
-		if (clipping2 != null) {
-		  gc.setClipping(clipping2);
-		}
-	}
-
-	/**
-  * Called by paint method to adjust the text to be painted
-  * in case the text does not fit the allotted area.
-  * <p>
-  * The size of allotted area for text is contained in <code>textSize</code>field.
-  * After the method determines new text to display it should modify the textSize properties
-  * to match the size of the new text. It is needed for text alignment other then {@link SWT#LEFT}.
-  */
-  protected void clipText() {
-    extent = gc.stringExtent(text);
-    if (style.hasWordWraping) {
-      int spacing = textLayout.getSpacing();
-      int lineCount = java.lang.Math.max(1, (textSize.y + spacing) / (extent.y + spacing));
-      text = fontSizeCache.shortenTextEnd(text, textSize.x, lineCount, extent);
-
-      textLayout.setText(text);
-      textLayout.setAlignment(style.textAlignX);
-      textLayout.setWidth(textSize.x < 1 ? 1 : textSize.x);
-
-      int i = text.lastIndexOf("..");
-      while (i >= 0 && textLayout.getLineCount() > lineCount) {
-        text = text.substring(0, --i) + "..";
-        textLayout.setText(text);
-      }
-
-      Rectangle lastLineBounds = textLayout.getLineBounds(textLayout.getLineCount() - 1);
-      extent.y = lastLineBounds.y + lastLineBounds.height;
-
-    } else {
-      // Compute extent only when font changes or text horizontal align is center or right
-//		    if (fontChange ||
-//          Arrays.contains(EXTENT_ALIGN, style.textAlignX)) {
-//          extent = gc.stringExtent(text);
-//        }
-
-      if (style.textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
-//		      text = shortenTextMiddle(text, width - style.textMarginX * 2);
-        text = fontSizeCache.shortenTextMiddle(text, textSize.x, extent);
-      }
-      textSize.x = extent.x;
-//		    else if (style.textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
-//		      text = FontSizeCache.shortenTextEnd(
-//		        text, width - style.textMarginX * 2, extent, extentCache);
-//		    }
-    }
-  }
-
-//	public String shortenTextMiddle(String s, int width) {
-//    if (s == null) return s;
-//
-//    int len = s.length();
-//    int w = 0;
-//    int i = 0;
-//    if (extent.x > width) {
-//      int dot = gc.stringExtent(".").x;
-//      int dot2 = gc.stringExtent("..").x;
-//      int pivot = i / 2;
-//      int pos1 = pivot;
-//      int pos2 = len - pivot;
-//      int len1 = gc.stringExtent(s.substring(0, pos1)).x;
-//      int len2 = gc.stringExtent(s.substring(pos2, len)).x;
-//      int last = len - 1;
-//      while (pos1 > 0 && pos2 < last) {
-//        if ((w = len1 + dot2 + len2) <= width) break;
-//        else if (pos1 <= 1 && (w = len1 + dot2) <= width) {
-//          pos2 = len; break;
-//        }
-//        int w2 = gc.stringExtent(Character.toString(s.charAt(--pos1))).x;
-//        len1 -= w2;
-//        if (w - w2 > width) {
-//          len2 -= gc.stringExtent(Character.toString(s.charAt(++pos2))).x;
-//        }
-//      }
-//      if (w <= width) {
-//        s = s.substring(0, pos1) + ".." + s.substring(pos2, len);
-//      }
-//      else {
-//        w = dot2 <= width ? dot2 : dot <= width ? dot : 0;
-//        s = dot2 <= width ? ".." : dot <= width ? "." : "";
-//      }
-//    }
-//    extent.x = w;
-//    return s;
-//  }
-
-
-	/**
-   * Configures the painter properties according to the given indexes.
-   * <p>
-   * Default implementation invokes {@link #setupSpatial(Number, Number)}
-   * and determines if the cell is selected, therefore when overridden should
-   * call <code>super.setup</code>.
-   *
-   * @param indexX cell index on the horizontal axis
-   * @param indexY cell index on the vertical axis
-   */
-	public void setup(X indexX, Y indexY) {
-	  setupSpatial(indexX, indexY);
-    isSelected = selectionHighlight && zone != null && zone.isSelected(indexX, indexY);
-	}
-
   /**
-   * Sets the spatial properties for this painter.
-   * Spatial properties are the ones that effect the space of the cell and
-   * include: text, image, text and image margins, text wrapping.
-   * <p>
-   * Default implementation computes space of in first column when tree is enabled,
-   * therefore when overridden should call <code>super.setupSpatial</code>.
-   * <p>
-   * It is utilized by both painting mechanism as well as
-   * {@link #computeSize(Number, Number, int, int)} routine.
-   * The reason to separate it from {@link #setup(Number, Number)} method
-   * is to improve performance of size computing by eliminating unnecessary
-   * processing, like setting colors, determining whether the cell is selected, etc.
-   * <p>
-   * The most common usage is to set the text to display:
-   * <pre>  public void setupSpatial(Integer indexX, Integer indexY){
-      text = data[indexY][indexX];
-  }
-   * </pre>
-   *
+   * Returns the preferred size of the receiver.
    * @param indexX cell index on the horizontal axis
    * @param indexY cell index on the vertical axis
+   * @param wHint the width hint (can be <code>SWT.DEFAULT</code>)
+   * @param hHint the height hint (can be <code>SWT.DEFAULT</code>)
+   * @return the preferred size of the control
    */
-	public void setupSpatial(X indexX, Y indexY) {
-    if (isTreeEnabled) {
-      if (indexX.equals(firstIndexX)) {
-        hasChildren = bodyY.hasChildren(indexY);
-        expanded = hasChildren ? zone.sectionY.isExpanded(indexY) : false;
-        level = bodyY.getLevelInTree(indexY).intValue() + 1;
-        indent = level * (style.textMarginX + nodeImageSize.x);
-      }
-      else {
-        hasChildren = false;
-        expanded = false;
-        level = 0;
-        indent = style.textMarginX + nodeImageSize.x;
-      }
-    }
-	}
-
- 	/**
-   * Sets custom data for this painter.
-   * <p>
-   * Painters {@link #NAME_DRAG_ITEM_X} and {@link #NAME_DRAG_ITEM_Y} use it to
-   * get mouse coordinates and draw drag feedback indicator if supplied with
-   * {@link DropTargetEvent} object with this method. Example:
-   * <pre>dropTarget.addDropListener(new DropTargetAdapter() {
-   *   &#64;Override public void dragOver(DropTargetEvent event) {
-   *     dragPainterY.setData(event);
-   *   }
-   * });</pre>
-   *
-   * @param data data to set
-   */
-	public void setData(Object data) {
-    this.data = data;
-	}
-
-	/**
-	 * Returns custom data of this painter.
-	 * @return custom data of this painter
-	 */
-	public Object getData() {
-    return data;
-  }
-
-	/**
-	 * Sets the enabled state of the receiver.
-	 * <p>
-	 * Allows to skip the receiver in the painting sequence.
-	 * It can be used to hide/show the lines for example.
-	 *
-	 * @param enabled the new enabled state
-	 */
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
-	/**
-	 * Returns true if the painter is enabled, or false otherwise.
-	 * <p>
-	 * Communicates to the client to skip this painter in the painting sequence.
-	 * It can be used to hide/show the lines for example.
-	 *
-	 * @return the enabled state
-	 */
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	/**
-	 * Enables a vertical tree in the first column with node icons indicating
-	 * expanded/collapsed state. The icons are created if are null.
-	 * @param state <code>true</code> to enable tree painting or <code>false</code> to disable it.
-	 */
-	public void setTreeVisible(boolean state) {
-	  isTreeEnabled = state;
-	  if (collapsedImage == null || expandedImage == null) {
-	    createDefaultNodeIcons();
-	  }
-	}
-
-
-	/**
-	 * Returns <code>true</code> if the tree painting is enabled, or
-	 * <code>false</code> otherwise.
-	 * @return <code>true</code> if the tree painting is enabled, or
-   * <code>false</code> otherwise
-	 */
-	public boolean isTreeEnabled() {
-	  return isTreeEnabled;
-	}
-
-	/**
-	 * Makes the tree lines connecting nodes visible if set to <code>true</code>,
-	 * or hidden otherwise.
-	 * @param state <code>true</code> to make the tree lines visible,
-	 * or <code>false</code> otherwise.
-	 */
-	public void setTreeLinesVisible(boolean state) {
-	  this.hasTreeLinesVisible = state;
-	}
-
-  /**
-   * Returns <code>true</code> if the tree lines are visible, or
-   * <code>false</code> otherwise.
-   * @param state
-   */
-	public boolean hasTreeLinesVisible() {
-	  return hasTreeLinesVisible;
-	}
-
-	/**
-	 * Returns true if the given coordinates are within the node icon bounds.
-	 * @return
-	 */
-	boolean isOverNodeIcon(int x, int y) {
-	  AxisItem<X> itemX = matrix.getAxisX().getItemByViewportDistance(x);
-	  AxisItem<Y> itemY = matrix.getAxisY().getItemByViewportDistance(y);
-    if (itemX == null || itemY == null ||
-        !itemX.getIndex().equals(bodyX.getIndex(bodyX.math.ZERO_VALUE())) ||
-        !bodyY.hasChildren(itemY.getIndex()))
-        return false;
-
-    int level = bodyY.getLevelInTree(itemY.getIndex()).intValue();
-    int indent = (level+1) * style.textMarginX + level * nodeImageSize.x;
-    int[] bound = matrix.axisX.getCellBound(itemX);
-    if (bound == null) return false;
-    int x0 = bound[0] + indent;
-    bound = matrix.axisY.getCellBound(itemY);
-    if (bound == null) return false;
-    int y0 = bound[0] + (bound[1] - nodeImageSize.y) / 2;
-
-    return x0 <= x && x <= x0 + nodeImageSize.x &&
-        y0 <= y && y < y0 + nodeImageSize.y;
-	}
-
-	/**
-   * Sets the icons to represent collapsed/expanded state of a tree node.
-   * <p>
-   * The image can be null and then no icon is displayed.
-   * @param collapsedImage image representing collapsed state.
-   * @param expandedImage image representing expanded state.
-   */
-  public void setNodeImages(Image collapsedImage, Image expandedImage) {
-    this.collapsedImage = collapsedImage;
-    this.expandedImage = expandedImage;
-
-     Rectangle r1 = collapsedImage.getBounds();
-     Rectangle r2 = expandedImage.getBounds();
-     nodeImageSize.x = java.lang.Math.max(r1.width, r2.width);
-     nodeImageSize.y = java.lang.Math.max(r1.height, r2.height);
-  }
-
-	/**
-	 * Returns the preferred size of the receiver.
-   * @param indexX cell index on the horizontal axis
-   * @param indexY cell index on the vertical axis
-	 * @param wHint the width hint (can be <code>SWT.DEFAULT</code>)
-	 * @param hHint the height hint (can be <code>SWT.DEFAULT</code>)
-	 * @return the preferred size of the control
-	 */
   protected Point computeSize(X indexX, Y indexY, int wHint, int hHint) {
     setupSpatial(indexX, indexY);
 
@@ -869,8 +471,8 @@ public class Painter<X extends Number, Y extends Number> {
       if (style.hasWordWraping) {
         if (wHint == SWT.DEFAULT) {
           return new Point(
-            zone.getSectionX().getCellWidth(indexX),
-            zone.getSectionY().getCellWidth(indexY));
+              zone.getSectionX().getCellWidth(indexX),
+              zone.getSectionY().getCellWidth(indexY));
         }
         int x2 = wHint == SWT.DEFAULT ?  zone.getSectionX().getCellWidth(indexX) : wHint;
         int y2 = 0; // = wHint == SWT.DEFAULT ?  zone.getSectionY().getCellWidth(indexY) : wHint;
@@ -898,16 +500,513 @@ public class Painter<X extends Number, Y extends Number> {
         y = max(y, fontSizeCache.getHeight(text)) + 2 * style.textMarginY;
       }
     }
-//    x += indent;
+
+    if (imagesAfter != null) {
+      for (int i = imagesAfter.length; i-- > 0;) {
+        Rectangle bounds = imagesAfter[i].getBounds();
+        x += bounds.width + style.imageMarginX;
+        if (bounds.height > y) y = bounds.height;
+      }
+    }
+    if (imagesBefore != null) {
+      for (int i = imagesBefore.length; i-- > 0;) {
+        Rectangle bounds = imagesBefore[i].getBounds();
+        x += bounds.width + style.imageMarginX;
+        if (bounds.height > y) y = bounds.height;
+      }
+    }
 
     return new Point(max(x + indent, wHint), max(y, hHint));
   }
 
-  private Font getCurrentFont() {
-    return style.font == null ? Display.getCurrent().getSystemFont() : style.font;
+
+  // share current remaining painting space with the helper methods
+  int _x, _y, _width, _height;
+  Rectangle _clipping;
+
+  /**
+   * Draws on the canvas within the given boundaries according to the given indexes.
+   * <p>
+   * @param x the x coordinate of the painting boundaries
+   * @param y the y coordinate of the painting boundaries
+   * @param width the width of the painting boundaries
+   * @param height the height of the painting boundaries
+   */
+  protected void paint(int x, int y, int width, int height) {
+    _x = x; _y = y; _width = width; _height = height;
+
+    // Compute clip requirement
+    _clipping = null;
+    clip(style.hasWordWraping);
+
+    Color foreground2, background2;
+    if (isSelected) {
+      // TODO Revise and maybe optimize the background / foreground color setting algorithm
+      foreground2 = style.selectionForeground;
+      background2 = style.selectionBackground;
+    } else {
+      foreground2 = style.foreground;
+      background2 = style.background;
+    }
+
+    if (foreground2 == null) {
+      if (defaultForeground == null) {
+        defaultForeground = matrix.getForeground();
+      }
+      foreground2 = defaultForeground;
+    }
+    // Only set color if there is a change
+    if (!foreground2.equals(lastForeground)) {
+      gc.setForeground(lastForeground = foreground2);
+    }
+    if (background2 != null) {
+      if (!background2.equals(lastBackground)) {
+        gc.setBackground(lastBackground = background2);
+      }
+      // Needed in calculated background scenario
+      //if (!background2.equals(defaultBackground)) {
+      gc.fillRectangle(_x, _y, _width, _height);
+      //}
+    }
+
+    // paint tree
+    _x += indent;
+    _width -= indent;
+    if (hasChildren) {
+      gc.drawImage(expanded ? expandedImage : collapsedImage,
+          _x - nodeImageSize.x,
+          _y + (_height - nodeImageSize.y)/2);
+    }
+
+    imageCache.iterate();
+
+    paintImage(image, style.imageAlignX);
+    if (imagesBefore != null) {
+      for (int i = 0; i < imagesBefore.length; i++) {
+        paintImage(imagesBefore[i], SWT.LEFT);
+      }
+    }
+    int imagesWidth = imagesWidth(imagesAfter);
+    paintText(_width - imagesWidth);
+    _x = java.lang.Math.max(_x, x + width - imagesWidth - style.imageMarginX);
+    if (imagesAfter != null) {
+      for (int i = 0; i < imagesAfter.length; i++) {
+        paintImage(imagesAfter[i], SWT.LEFT);
+      }
+    }
+
+    if (_clipping != null) {
+      gc.setClipping(_clipping);
+    }
   }
 
-	/**
+  private void clip(boolean condition) {
+    if (_clipping != null || condition == false) return;
+    _clipping = gc.getClipping();
+//    gc.drawRectangle(_x, _y, _width, _height);
+    gc.setClipping(_x, _y, _width, _height);
+  }
+
+  private int imagesWidth(Image[] images) {
+    int w = 0;
+    if (images != null) {
+      for (int i = images.length; i-- > 0;) {
+        w += images[i].getBounds().width + style.imageMarginX;
+      }
+    }
+    return w;
+  }
+
+  private void paintText(int w) {
+    if (text == null) return;
+    textSize.x = w - 2 * style.textMarginX;
+    if (textSize.x < 0) return;
+    textSize.y = _height - 2 * style.textMarginY;
+
+    boolean fontChange = style.font != lastFont;
+    if (fontChange) {
+      Font font = style.font == null ? matrix.getDisplay().getSystemFont() : style.font;
+      gc.setFont(font);
+      if (style.hasWordWraping) {
+        textLayout.setFont(gc.getFont());
+      }
+      fontSizeCache = FontSizeCache.get(gc, font);
+      lastFont = font;
+    }
+
+    clipText();
+
+    int x2 = _x, y2 = _y;
+    switch (style.textAlignX) {
+    case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP:
+      x2 += style.textMarginX; break;
+    case SWT.CENTER:
+      x2 += (w - textSize.x) / 2; break;
+    case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
+      x2 += w - textSize.x - style.textMarginX; break;
+    }
+    switch (style.textAlignY) {
+    case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
+      y2 += style.textMarginY; break;
+    case SWT.CENTER:
+      y2 += (_height - extent.y) / 2; break;
+    case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
+      y2 += _height - textSize.y - style.textMarginY; break;
+    }
+
+    if (style.hasWordWraping) {
+      //        Rectangle clipping2 = gc.getClipping();
+      textLayout.draw(gc, x2, y2);
+    }
+    else {
+      //      if (w < 4 || _height < 4) return;
+      clip(_height < extent.y + 2 * style.textMarginY);
+      gc.drawString(text, x2, y2, true);
+      _x += textSize.x + style.textMarginX;
+      _width -= textSize.x + 2 * style.textMarginX;
+    }
+  }
+
+  private void paintImage(Image image, int imageAlingX) {
+    if (image == null || _width <= 0 || _height <= 0 ) return;
+    int x2 = _x, y2 = _y;
+    Rectangle bounds = image.getBounds();
+    int w = bounds.width + style.imageMarginX;
+    int h = bounds.height + style.imageMarginY;
+    int dx = 0;
+    switch (imageAlingX) {
+    case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP:
+      x2 += style.imageMarginX; dx = w; break;
+    case SWT.CENTER:
+      x2 += (_width - bounds.width) / 2; break;
+    case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
+      x2 += _width - w; break;
+    }
+    switch (style.imageAlignY) {
+    case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
+      y2 += style.imageMarginY; break;
+    case SWT.CENTER:
+      y2 += (_height - bounds.height) / 2; break;
+    case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
+      y2 += _height - h; break;
+    }
+//    if (_width <= 0) return;
+
+    clip(_width < w || _height < h);
+    gc.drawImage(image, x2, y2);
+    imageCache.store(image, x2, y2);
+
+    _x += dx;
+    _width -= w;
+  }
+
+  /**
+   * Called by paint method to adjust the text to be painted
+   * in case the text does not fit the allotted area.
+   * <p>
+   * The size of allotted area for text is contained in <code>textSize</code>field.
+   * After the method determines new text to display it should modify the textSize properties
+   * to match the size of the new text. It is needed for text alignment other then {@link SWT#LEFT}.
+   */
+  protected void clipText() {
+    extent = gc.stringExtent(text);
+    if (style.hasWordWraping) {
+      int spacing = textLayout.getSpacing();
+      int lineCount = java.lang.Math.max(1, (textSize.y + spacing) / (extent.y + spacing));
+      text = fontSizeCache.shortenTextEnd(text, textSize.x, lineCount, extent);
+
+      textLayout.setText(text);
+      textLayout.setAlignment(style.textAlignX);
+      textLayout.setWidth(textSize.x < 1 ? 1 : textSize.x);
+
+      int i = text.lastIndexOf("..");
+      while (i >= 0 && textLayout.getLineCount() > lineCount) {
+        text = text.substring(0, --i) + "..";
+        textLayout.setText(text);
+      }
+
+      Rectangle lastLineBounds = textLayout.getLineBounds(textLayout.getLineCount() - 1);
+      extent.y = lastLineBounds.y + lastLineBounds.height;
+
+    } else {
+      // Compute extent only when font changes or text horizontal align is center or right
+      //		    if (fontChange ||
+      //          Arrays.contains(EXTENT_ALIGN, style.textAlignX)) {
+      //          extent = gc.stringExtent(text);
+      //        }
+
+      if (style.textClipMethod == TextClipMethod.DOTS_IN_THE_MIDDLE) {
+        //		      text = shortenTextMiddle(text, width - style.textMarginX * 2);
+        text = fontSizeCache.shortenTextMiddle(text, textSize.x, extent);
+      }
+      textSize.x = extent.x;
+      //		    else if (style.textClipMethod == TextClipMethod.DOTS_AT_THE_END) {
+      //		      text = FontSizeCache.shortenTextEnd(
+      //		        text, width - style.textMarginX * 2, extent, extentCache);
+      //		    }
+    }
+  }
+
+  //	public String shortenTextMiddle(String s, int width) {
+  //    if (s == null) return s;
+  //
+  //    int len = s.length();
+  //    int w = 0;
+  //    int i = 0;
+  //    if (extent.x > width) {
+  //      int dot = gc.stringExtent(".").x;
+  //      int dot2 = gc.stringExtent("..").x;
+  //      int pivot = i / 2;
+  //      int pos1 = pivot;
+  //      int pos2 = len - pivot;
+  //      int len1 = gc.stringExtent(s.substring(0, pos1)).x;
+  //      int len2 = gc.stringExtent(s.substring(pos2, len)).x;
+  //      int last = len - 1;
+  //      while (pos1 > 0 && pos2 < last) {
+  //        if ((w = len1 + dot2 + len2) <= width) break;
+  //        else if (pos1 <= 1 && (w = len1 + dot2) <= width) {
+  //          pos2 = len; break;
+  //        }
+  //        int w2 = gc.stringExtent(Character.toString(s.charAt(--pos1))).x;
+  //        len1 -= w2;
+  //        if (w - w2 > width) {
+  //          len2 -= gc.stringExtent(Character.toString(s.charAt(++pos2))).x;
+  //        }
+  //      }
+  //      if (w <= width) {
+  //        s = s.substring(0, pos1) + ".." + s.substring(pos2, len);
+  //      }
+  //      else {
+  //        w = dot2 <= width ? dot2 : dot <= width ? dot : 0;
+  //        s = dot2 <= width ? ".." : dot <= width ? "." : "";
+  //      }
+  //    }
+  //    extent.x = w;
+  //    return s;
+  //  }
+
+
+  /**
+   * Configures the painter properties according to the given indexes.
+   * <p>
+   * Default implementation invokes {@link #setupSpatial(Number, Number)}
+   * and determines if the cell is selected, therefore when overridden should
+   * call <code>super.setup</code>.
+   *
+   * @param indexX cell index on the horizontal axis
+   * @param indexY cell index on the vertical axis
+   */
+  public void setup(X indexX, Y indexY) {
+    setupSpatial(indexX, indexY);
+    isSelected = selectionHighlight && zone != null && zone.isSelected(indexX, indexY);
+  }
+
+  /**
+   * Sets the spatial properties for this painter.
+   * Spatial properties are the ones that effect the space of the cell and
+   * include: text, image, text and image margins, text wrapping.
+   * <p>
+   * Default implementation computes space of in first column when tree is enabled,
+   * therefore when overridden should call <code>super.setupSpatial</code>.
+   * <p>
+   * It is utilized by both painting mechanism as well as
+   * {@link #computeSize(Number, Number, int, int)} routine.
+   * The reason to separate it from {@link #setup(Number, Number)} method
+   * is to improve performance of size computing by eliminating unnecessary
+   * processing, like setting colors, determining whether the cell is selected, etc.
+   * <p>
+   * The most common usage is to set the text to display:
+   * <pre>  public void setupSpatial(Integer indexX, Integer indexY){
+      text = data[indexY][indexX];
+  }
+   * </pre>
+   *
+   * @param indexX cell index on the horizontal axis
+   * @param indexY cell index on the vertical axis
+   */
+  public void setupSpatial(X indexX, Y indexY) {
+    if (isTreeEnabled) {
+      if (indexX.equals(firstIndexX)) {
+        hasChildren = bodyY.hasChildren(indexY);
+        expanded = hasChildren ? zone.sectionY.isExpanded(indexY) : false;
+        level = bodyY.getLevelInTree(indexY).intValue() + 1;
+        indent = level * (style.textMarginX + nodeImageSize.x);
+      }
+      else {
+        hasChildren = false;
+        expanded = false;
+        level = 0;
+        indent = style.textMarginX + nodeImageSize.x;
+      }
+    }
+  }
+
+
+//  /**
+//   * Adds the given painter to the list of sub-painters of this painter.
+//   * <p>
+//   * Allows painter plug-able composition.
+//   * Sub-painters are painted first and the parent painter next.
+//   * Neither parent nor children painter don't overlap each other.
+//   *
+//   * @param painter sub-painter to add
+//   * @see #removePainter(Painter)
+//   */
+//  public void addPainter(Painter<X, Y> painter) {
+//    Preconditions.checkNotNullWithName(painter, "painter");
+//  }
+//
+//  /**
+//   * Removes the given sub-painter painter from this painter.
+//   *
+//   * @param painter sub-painter to remove
+//   * @see #addPainter(Painter)
+//   */
+//  public void removePainter(Painter<X, Y> painter) {
+//    Preconditions.checkNotNullWithName(painter, "painter");
+//  }
+
+
+
+  /**
+   * Sets custom data for this painter.
+   * <p>
+   * Painters {@link #NAME_DRAG_ITEM_X} and {@link #NAME_DRAG_ITEM_Y} use it to
+   * get mouse coordinates and draw drag feedback indicator if supplied with
+   * {@link DropTargetEvent} object with this method. Example:
+   * <pre>dropTarget.addDropListener(new DropTargetAdapter() {
+   *   &#64;Override public void dragOver(DropTargetEvent event) {
+   *     dragPainterY.setData(event);
+   *   }
+   * });</pre>
+   *
+   * @param data data to set
+   */
+  public void setData(Object data) {
+    this.data = data;
+  }
+
+  /**
+   * Returns custom data of this painter.
+   * @return custom data of this painter
+   */
+  public Object getData() {
+    return data;
+  }
+
+  /**
+   * Sets the enabled state of the receiver.
+   * <p>
+   * Allows to skip the receiver in the painting sequence.
+   * It can be used to hide/show the lines for example.
+   *
+   * @param enabled the new enabled state
+   */
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+  }
+
+  /**
+   * Returns true if the painter is enabled, or false otherwise.
+   * <p>
+   * Communicates to the client to skip this painter in the painting sequence.
+   * It can be used to hide/show the lines for example.
+   *
+   * @return the enabled state
+   */
+  public boolean isEnabled() {
+    return enabled;
+  }
+
+  /**
+   * Enables a vertical tree in the first column with node icons indicating
+   * expanded/collapsed state. The icons are created if are null.
+   * @param state <code>true</code> to enable tree painting or <code>false</code> to disable it.
+   */
+  public void setTreeVisible(boolean state) {
+    isTreeEnabled = state;
+    if (collapsedImage == null || expandedImage == null) {
+      createDefaultNodeIcons();
+    }
+  }
+
+
+  /**
+   * Returns <code>true</code> if the tree painting is enabled, or
+   * <code>false</code> otherwise.
+   * @return <code>true</code> if the tree painting is enabled, or
+   * <code>false</code> otherwise
+   */
+  public boolean isTreeEnabled() {
+    return isTreeEnabled;
+  }
+
+  /**
+   * Makes the tree lines connecting nodes visible if set to <code>true</code>,
+   * or hidden otherwise.
+   * @param state <code>true</code> to make the tree lines visible,
+   * or <code>false</code> otherwise.
+   */
+  public void setTreeLinesVisible(boolean state) {
+    this.hasTreeLinesVisible = state;
+  }
+
+  /**
+   * Returns <code>true</code> if the tree lines are visible, or
+   * <code>false</code> otherwise.
+   * @param state
+   */
+  public boolean hasTreeLinesVisible() {
+    return hasTreeLinesVisible;
+  }
+
+  /**
+   * Returns true if the given coordinates are within the node icon bounds.
+   * @return
+   */
+  boolean isOverNodeIcon(int x, int y) {
+    AxisItem<X> itemX = matrix.getAxisX().getItemByViewportDistance(x);
+    AxisItem<Y> itemY = matrix.getAxisY().getItemByViewportDistance(y);
+    if (itemX == null || itemY == null ||
+        !itemX.getIndex().equals(bodyX.getIndex(bodyX.math.ZERO_VALUE())) ||
+        !bodyY.hasChildren(itemY.getIndex()))
+      return false;
+
+    int level = bodyY.getLevelInTree(itemY.getIndex()).intValue();
+    int indent = (level+1) * style.textMarginX + level * nodeImageSize.x;
+    int[] bound = matrix.axisX.getCellBound(itemX);
+    if (bound == null) return false;
+    int x0 = bound[0] + indent;
+    bound = matrix.axisY.getCellBound(itemY);
+    if (bound == null) return false;
+    int y0 = bound[0] + (bound[1] - nodeImageSize.y) / 2;
+
+    return x0 <= x && x <= x0 + nodeImageSize.x &&
+        y0 <= y && y < y0 + nodeImageSize.y;
+  }
+
+  /**
+   * Sets the icons to represent collapsed/expanded state of a tree node.
+   * <p>
+   * The image can be null and then no icon is displayed.
+   * @param collapsedImage image representing collapsed state.
+   * @param expandedImage image representing expanded state.
+   */
+  public void setNodeImages(Image collapsedImage, Image expandedImage) {
+    this.collapsedImage = collapsedImage;
+    this.expandedImage = expandedImage;
+
+    Rectangle r1 = collapsedImage.getBounds();
+    Rectangle r2 = expandedImage.getBounds();
+    nodeImageSize.x = java.lang.Math.max(r1.width, r2.width);
+    nodeImageSize.y = java.lang.Math.max(r1.height, r2.height);
+  }
+
+  private Font getCurrentFont() {
+    return style.font == null ? Display.getDefault().getSystemFont() : style.font;
+  }
+
+  /**
    * Creates default node icons
    */
   private void createDefaultNodeIcons() {
@@ -987,7 +1086,7 @@ public class Painter<X extends Number, Y extends Number> {
 
 	void setMatrix(Matrix<X, Y> matrix) {
 		this.matrix = matrix;
-		imageCache.addCallback();
+		imageCache.setCallback();
 	}
 
 	/**
@@ -1008,7 +1107,7 @@ public class Painter<X extends Number, Y extends Number> {
 	 * @return the zone to which the painter is attached or null if it is attached to matrix
 	 */
   public Zone<X, Y> getZone() {
-    return zone;
+    return matrix.getZone(zone.getSectionX(), zone.getSectionY());
   }
 
   void setZone(ZoneCore<X, Y> zone) {
@@ -1036,7 +1135,7 @@ public class Painter<X extends Number, Y extends Number> {
     // List indexed by frozenSeq index
     ArrayList<Map<Image, Point[][]>> data = new ArrayList<Map<Image, Point[][]>>(9);
     int[] sizeY = new int[9];
-    ArrayList<Image> images = new ArrayList<Image>();
+    HashSet<Image> images = new HashSet<Image>();
     boolean isReset = true;
     boolean isOn;
     int ix, iy;
@@ -1045,17 +1144,18 @@ public class Painter<X extends Number, Y extends Number> {
 
     public void reset() {
       if (!isOn) return;
+      data.clear();
       for (frozenSeq.init(); frozenSeq.next();) {
-        int sizeX = matrix.layoutX.getCache(frozenSeq.frozenX).cells.size();
-        int sizeY = matrix.layoutY.getCache(frozenSeq.frozenY).cells.size();
+        int sizeX = matrix.layoutX.getCache(frozenSeq.frozenX).getItemCount(zone.sectionX);
+        int sizeY = matrix.layoutY.getCache(frozenSeq.frozenY).getItemCount(zone.sectionY);
         this.sizeY[frozenSeq.index] = sizeY;
         HashMap<Image, Point[][]> map = new HashMap<Image, Point[][]>();
         for (Image image: images) {
           map.put(image, new Point[sizeX][sizeY]);
         }
-        data.add(map);
-        isReset = true;
+        data.add(frozenSeq.index, map);
       }
+      isReset = true;
     }
 
     public void iterate() {
@@ -1066,8 +1166,9 @@ public class Painter<X extends Number, Y extends Number> {
       }
     }
 
-    public void addCallback() {
-      if (callback == null && matrix != null && !images.isEmpty()) {
+    public void setCallback() {
+      if (matrix == null) return;
+      if (callback == null && isOn) {
         callback = new Runnable() {
           @Override
           public void run() {
@@ -1075,6 +1176,9 @@ public class Painter<X extends Number, Y extends Number> {
           }
         };
         matrix.layout.callbacks.add(callback);
+      }
+      else if (callback != null && !isOn) {
+        matrix.layout.callbacks.remove(callback);
       }
     }
 
@@ -1091,27 +1195,41 @@ public class Painter<X extends Number, Y extends Number> {
       locations[ix][iy] = new Point(x, y);
     }
 
-    void track(Image image) {
-      images.add(image);
-      isOn = true;
-      addCallback();
-      if (matrix != null) reset();
+    void track(Image image, boolean state) {
+      boolean change = false;
+      if (state == true) {
+        change = images.add(image);
+      }
+      else {
+        change = images.remove(image);
+      }
+      if (change) {
+        isOn = !images.isEmpty();
+        setCallback();
+        if (matrix != null) reset();
+      }
     }
 
     @Nullable
     Image get(int x, int y) {
       if (images.isEmpty()) return null;
+      Frozen frozenX = matrix.layoutX.getFrozenByDistance(x);
+      Frozen frozenY = matrix.layoutY.getFrozenByDistance(y);
+      int frozenIndex = Frozen.getIndex(frozenX, frozenY);
       Map<Image, Point[][]> map = data.get(frozenIndex);
-      int ix = matrix.layoutX.getCache(frozenX).getIndexByDistance(x);
-      int iy = matrix.layoutY.getCache(frozenY).getIndexByDistance(y);
+      int ix = matrix.layoutX.getCache(x).getIndexByDistance(zone.sectionX, x);
+      if (ix == -1) return null;
+      int iy = matrix.layoutY.getCache(y).getIndexByDistance(zone.sectionY, y);
+      if (iy == -1) return null;
       for (Entry<Image, Point[][]> entry: map.entrySet()) {
         Image image = entry.getKey();
         Rectangle bounds = image.getBounds();
         Point p = entry.getValue()[ix][iy];
-        if (p == null) return null;
-        bounds.x = p.x;
-        bounds.y = p.y;
-        if (bounds.contains(x, y)) return image;
+        if (p != null) {
+          bounds.x = p.x;
+          bounds.y = p.y;
+          if (bounds.contains(x, y)) return image;
+        }
       }
       return null;
     }
@@ -1123,8 +1241,8 @@ public class Painter<X extends Number, Y extends Number> {
    *
    * @param image image to track the positions for
    */
-  public void trackPosition(Image image) {
-    imageCache.track(image);
+  public void trackPosition(Image image, boolean state) {
+    imageCache.track(image, state);
   }
 
   /**
@@ -1140,7 +1258,7 @@ public class Painter<X extends Number, Y extends Number> {
     return imageCache.get(x, y);
   }
 
-  static void printGC(GC gc) {
+  static void debugGC(GC gc) {
     System.out.println("getForeground() " +  gc.getForeground());
     System.out.println("getBackground() " +  gc.getBackground());
     System.out.println("getForegroundPattern() " +  gc.getForegroundPattern());

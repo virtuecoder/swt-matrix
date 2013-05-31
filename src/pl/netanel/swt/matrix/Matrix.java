@@ -1170,15 +1170,29 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
   }
 
   @SuppressWarnings("unchecked")
-  <N extends Number> void pack(char axisSymbol, SectionCore<N> section, N index) {
+  <N extends Number> int computeSize(char axisSymbol, SectionCore<N> section, N index) {
     if (axisSymbol == 'X') {
-      packX((SectionCore<X>) section, (X) index);
+      return computeSizeX((SectionCore<X>) section, (X) index);
     } else {
-      packY((SectionCore<Y>) section, (Y) index);
+      return computeSizeY((SectionCore<Y>) section, (Y) index);
+    }
+  }
+  @SuppressWarnings("unchecked")
+  <N extends Number> void pack(char axisSymbol, SectionCore<N> section, N index) {
+    int w = 0;
+    if (axisSymbol == 'X') {
+      w = computeSizeX((SectionCore<X>) section, (X) index);
+    } else {
+      w = computeSizeY((SectionCore<Y>) section, (Y) index);
+    }
+    if (w != 0) {
+      section.setCellWidth(index, w);
+      layout.compute(true, false);
+      redraw();
     }
   }
 
-  void packX(SectionCore<X> section, X index) {
+  int computeSizeX(SectionCore<X> section, X index) {
     Cursor cursor = getCursor();
     GC gc = new GC(this);
     try {
@@ -1204,18 +1218,15 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
           painter.clean();
         }
       }
-
-      if (w != 0)
-        section.setCellWidth(index, w);
-    } finally {
+      return w;
+    }
+    finally {
       gc.dispose();
       setCursor(cursor);
     }
-    layout.compute(true, false);
-    redraw();
   }
 
-  void packY(SectionCore<Y> section, Y index) {
+  int computeSizeY(SectionCore<Y> section, Y index) {
     Cursor cursor = getCursor();
     GC gc = new GC(this);
     try {
@@ -1240,15 +1251,12 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
           }
         }
       }
-
-      if (w != 0)
-        section.setCellWidth(index, w);
-    } finally {
+      return w;
+    }
+    finally {
       gc.dispose();
       setCursor(cursor);
     }
-    layout.compute(false, true);
-    redraw();
   }
 
   @Override

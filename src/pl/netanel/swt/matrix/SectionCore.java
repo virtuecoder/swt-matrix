@@ -392,6 +392,12 @@ class SectionCore<N extends Number> implements Section<N> {
   }
 
   @Override
+  public int computeSize(N index) {
+    return axis == null ? getCellWidth(index) :
+      axis.matrix.computeSize(axis.symbol, this, index);
+  }
+
+  @Override
   public void setCellWidth() {
     if (axis != null) {
       NumberSequence<N> seq = order.numberSequence(null);
@@ -509,7 +515,7 @@ class SectionCore<N extends Number> implements Section<N> {
 
 
   @Override public void setSelected(N index, boolean state) {
-    setSelected(index, index, true);
+    setSelected(index, index, state);
   }
 
 

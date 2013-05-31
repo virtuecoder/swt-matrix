@@ -1,9 +1,16 @@
 -------------------------------------------------------------------------------
 Version 0.7.49
 
+Bug fixes:
+- Section.setSelected(Number, boolean) was always setting selection to true
+- Resize cursor does not show up when modifier keys are on
+
 API changes:
-- Added Painter.trackPosition(Image)
+- Added Painter.trackPosition(Image, boolean)
 - Added Painter.getImageAt(int, int)
+- Added Painter.imagesBefore
+- Added Painter.imagesAfter
+- Added Section.computeSize(Number)
 
 -------------------------------------------------------------------------------
 Version 0.7.48

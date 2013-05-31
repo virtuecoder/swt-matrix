@@ -291,7 +291,7 @@ public interface Section<N extends Number> {
   void setCellWidth(N index, int width);
 
   /**
-   * Sets the cell width that best fits its content. <br>
+   * Sets the optimal cell width that fits its content. <br>
    * Warning: for a large number of items it may take a long time to compute,
    * because of the necessity to iterate over all items.
    * <p>
@@ -309,6 +309,27 @@ public interface Section<N extends Number> {
    *         {@link #getCount()}-1 bounds
    */
   void setCellWidth(N index);
+
+  /**
+   * Computes the optimal cell width that fits its content. <br>
+   * Warning: for a large number of items it may take a long time to compute,
+   * because of the necessity to iterate over all items.
+   * <p>
+   * <code>index</code> is the item index in the model,
+   * not the visual position of the item on the screen
+   * which can be altered by move and hide operations.
+   * <p>
+   * The width is calculated by {@link Painter#computeSize(Number, Number, int, int)}
+   * of the zones to which the section belongs.
+   *
+   * @param index index of the item to set the cell width for
+   * @return the optimal width
+   *
+   * @throws IllegalArgumentException if index is <code>null</code>
+   * @throws IndexOutOfBoundsException if index is out of 0 ...
+   *         {@link #getCount()}-1 bounds
+   */
+  int computeSize(N index);
 
   /**
    * Sets the cell width that best fits its content for all items in this section. <br>

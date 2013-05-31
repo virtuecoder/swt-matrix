@@ -240,6 +240,11 @@ class SectionClient<N extends Number> implements Section<N> {
     core.setCellWidth(index);
   }
 
+	@Override public int computeSize(N index) {
+	  checkCellIndex(index, "index");
+	  return core.computeSize(index);
+	}
+
 	@Override public void setCellWidth() {
 	  core.setCellWidth();
 	}

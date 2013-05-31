@@ -781,12 +781,36 @@ class AxisLayout<N extends Number> {
 
       for (int i = 0; i < cells.size(); i++) {
         Bound bounds = cells.get(i);
-        item = items.get(i);
         if (distance <= bounds.distance + bounds.width) {
           return i;
         }
       }
       return -1;
+		}
+
+		int getIndexByDistance(SectionCore<N> section, int distance) {
+		  if (cells.isEmpty()) return -1;
+
+		  // Skip other sections
+		  int start = 0;
+		  while (start < cells.size() && !items.get(start).section.equals(section)) start++;
+
+		  for (int i = start; i < cells.size(); i++) {
+		    Bound bounds = cells.get(i);
+		    if (distance <= bounds.distance + bounds.width) {
+		      return i - start;
+		    }
+		  }
+		  return -1;
+		}
+
+		int getItemCount(SectionCore<N> section) {
+		  int count = 0;
+		  for (int i = 0; i < cells.size(); i++) {
+		    if (items.get(i).section.equals(section)) count++;
+		    // else if (count > 0) break;
+		  }
+		  return count;
 		}
 	}
 
@@ -871,7 +895,7 @@ class AxisLayout<N extends Number> {
 				frozen == Frozen.HEAD ? head : tail;
 	}
 
-	private Cache getCache(int distance) {
+	Cache getCache(int distance) {
 		return
 		    main.distance <= distance ?
 		        (distance <= tail.distance ?
@@ -894,6 +918,16 @@ class AxisLayout<N extends Number> {
 		}
 		return null;
 	}
+
+  Frozen getFrozenByDistance(int distance) {
+    return
+        main.distance <= distance ?
+            (distance <= tail.distance ?
+                Frozen.NONE :
+                Frozen.TAIL) :
+            Frozen.HEAD;
+  }
+
 
 	@Nullable
 	MutableNumber<N> getItemPosition(AxisItem<N> item) {
