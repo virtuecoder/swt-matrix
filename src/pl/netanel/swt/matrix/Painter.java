@@ -400,7 +400,7 @@ public class Painter<X extends Number, Y extends Number> {
       //			gc.fillRectangle(zone.bounds);
     }
 
-    Font font = lastFont = getCurrentFont();
+    Font font = getCurrentFont();
     gc.setFont(font);
 		fontSizeCache = FontSizeCache.get(gc, font);
 		extent = new Point(-1, gc.stringExtent("ty").y);

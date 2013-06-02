@@ -49,7 +49,6 @@ import pl.netanel.swt.matrix.SwtTestCase;
 		  @Override
 		  public void setupSpatial(Integer indexX, Integer indexY) {
 		    text = indexY.toString() + ", " + indexX;
-		    style.hasWordWraping = true;
 		  }
 		});
 
