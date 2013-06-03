@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
@@ -29,6 +30,8 @@ import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
+
+import pl.netanel.util.Preconditions;
 
 
 /**
@@ -881,6 +884,61 @@ public class ZoneEditor<X extends Number, Y extends Number> {
   }
 
 
+  public void deleteX(X start, X end) {
+    // Delete from history
+    ListIterator<EditLogEntry<X, Y>> it = history.listIterator();
+    while (it.hasNext()) {
+      EditLogEntry<X, Y> entry = it.next();
+      if (zone.sectionX.math.compare(start, entry.indexX) <= 0 &&
+          zone.sectionX.math.compare(entry.indexX, end) <= 0) {
+        it.remove();
+        if (historyIndex >= it.nextIndex()) historyIndex--;
+      } else if (zone.sectionX.math.compare(entry.indexX, end) > 0) {
+        entry.indexX = zone.sectionX.math.decrement(entry.indexX);
+      }
+    }
+  }
+
+  public void deleteY(Y start, Y end) {
+    // Delete from history
+    ListIterator<EditLogEntry<X, Y>> it = history.listIterator();
+    while (it.hasNext()) {
+      EditLogEntry<X, Y> entry = it.next();
+      if (zone.sectionY.math.compare(start, entry.indexY) <= 0 &&
+          zone.sectionY.math.compare(entry.indexY, end) <= 0) {
+        it.remove();
+        if (historyIndex >= it.nextIndex()) historyIndex--;
+      } else if (zone.sectionY.math.compare(entry.indexY, end) > 0) {
+        entry.indexY = zone.sectionY.math.decrement(entry.indexY);
+      }
+    }
+  }
+
+  public void insertX(X target, X count) {
+    // Delete from history
+    ListIterator<EditLogEntry<X, Y>> it = history.listIterator();
+    while (it.hasNext()) {
+      EditLogEntry<X, Y> entry = it.next();
+      if (zone.sectionX.math.compare(target, entry.indexX) <= 0) {
+        entry.indexX = zone.sectionX.math.add(entry.indexX, count);
+        if (historyIndex >= it.nextIndex()) historyIndex += count.intValue();
+      }
+    }
+  }
+
+  public void insertY(Y target, Y count) {
+    // Delete from history
+    ListIterator<EditLogEntry<X, Y>> it = history.listIterator();
+    while (it.hasNext()) {
+      EditLogEntry<X, Y> entry = it.next();
+      if (zone.sectionY.math.compare(target, entry.indexY) <= 0) {
+        entry.indexY = zone.sectionY.math.add(entry.indexY, count);
+        if (historyIndex >= it.nextIndex()) historyIndex += count.intValue();
+      }
+    }
+  }
+
+
 
   Matrix<X, Y> getMatrix() {
     return zone.getMatrix();
@@ -1253,14 +1311,40 @@ public class ZoneEditor<X extends Number, Y extends Number> {
   }
 
   /**
-   * Removes all entries from the history of model modifications.
+   * Removes all the entries between <code>fromIndex</code> (inclusive) and
+   * {@link #getEditHistorySize()} (exclusive) from the history of model modifications.
    * <p>
    * It can be useful for preventing undo in case when it does no makes, for example after
    * changing the source of model data.
+   *
+   * @param fromIndex index from which the edit history should be cleared forward.
    */
-  public void clearEditHistory() {
-    historyIndex = -1;
-    history.clear();
+  public void clearEditHistory(int fromIndex) {
+    Preconditions.checkPositionIndex(fromIndex, history.size());
+    historyIndex = fromIndex-1;
+    if (fromIndex == 0) history.clear();
+    else {
+      for (int i = history.size(); i-- > 0;) {
+        history.remove(i);
+      }
+    }
+  }
+
+  /**
+   * Returns the number of entries in the edit history log.
+   * @return the number of entries in the edit history log
+   */
+  public int getEditHistorySize() {
+    return history.size();
+  }
+
+  /**
+   * Returns the current index of the edit history log pointing at the entry
+   * that will be used for the next {@link #undo()} operation.
+   * @return current index in the edit history log
+   */
+  public int getEditHistoryIndex() {
+    return historyIndex;
   }
 
   private boolean setModelValueAndLog(X indexX, Y indexY, Object oldValue, Object newValue) {

@@ -1,4 +1,16 @@
 -------------------------------------------------------------------------------
+Version 0.7.50
+
+Bug fixes:
+- ZoneEditor edit history had corrupted indexes after inserting or deleting section items.
+
+API changes:
+- Removed ZoneEditor.clearEditHistory()
+- Added ZoneEditor.clearEditHistory(int)
+- Added ZoneEditor.getEditHistorySize(int)
+- Added ZoneEditor.getEditHistoryIndex(int)
+
+-------------------------------------------------------------------------------
 Version 0.7.49
 
 Bug fixes:

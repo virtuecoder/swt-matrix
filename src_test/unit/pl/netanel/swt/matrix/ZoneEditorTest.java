@@ -20,6 +20,7 @@ public class ZoneEditorTest {
   String[][] model = new String[][] {
       new String[] {"", "" ,""}, new String[]{"", "" ,""}, new String[]{"", "" ,""}};
   private ZoneEditor editor;
+  private Matrix matrix;
 
   /**
    * Default history limit of 0 should not limit the undo log
@@ -110,10 +111,55 @@ public class ZoneEditorTest {
     }
   }
 
+  @Test
+  public void undoAfterDelete() throws Exception {
+    setup();
+    edit(0, 0, "a");
+    edit(0, 1, "b");
+    matrix.getAxisY().getBody().delete(1, 1);
+    editor.undo();
+    assertEquals("", model[0][0]);
+    assertEquals("", model[0][1]);
+  }
+
+  @Test
+  public void undoAfterDelete2() throws Exception {
+    setup();
+    edit(0, 0, "a");
+    edit(0, 1, "b");
+    edit(0, 2, "c");
+    editor.undo();
+    editor.undo();
+    matrix.getAxisY().getBody().delete(1, 1);
+    editor.redo();
+    editor.redo();
+    assertEquals("a", model[0][0]);
+    assertEquals("c", model[1][0]);
+    assertEquals("", model[2][0]);
+  }
+
+  @Test
+  public void undoAfterInsert() throws Exception {
+    setup();
+    edit(0, 0, "a");
+    edit(0, 1, "b");
+    matrix.getAxisY().getBody().insert(1, 1);
+    model[1][0] = "";
+    model[2][0] = "b";
+    edit(0, 1, "c");
+    assertEquals("c", model[1][0]);
+    assertEquals("b", model[2][0]);
+    editor.undo();
+    assertEquals("", model[1][0]);
+    assertEquals("b", model[2][0]);
+    editor.undo();
+    assertEquals("", model[2][0]);
+  }
+
   private void setup() {
-    Matrix matrix = new Matrix(new Shell(), SWT.NONE);
-    matrix.getAxisX().getBody().setCount(5);
-    matrix.getAxisY().getBody().setCount(5);
+    matrix = new Matrix(new Shell(), SWT.NONE);
+    matrix.getAxisX().getBody().setCount(3);
+    matrix.getAxisY().getBody().setCount(3);
     editor = new ZoneEditor(matrix.getBody()) {
       @Override
       public boolean setModelValue(Number indexX, Number indexY, Object value) {

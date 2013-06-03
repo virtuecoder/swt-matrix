@@ -1412,49 +1412,57 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
   // }
 
   @SuppressWarnings("unchecked")
-  <N extends Number> void insertInZonesX(SectionCore<N> section, N target,
-                                         N count) {
+  <N extends Number> void insertInZonesX(SectionCore<N> section, N target, N count) {
     for (ZoneCore<X, Y> zone : layout.zones) {
       if (zone.sectionX.equals(section)) {
-        zone.cellSelection.insertX((X) target, (X) count);
-        zone.lastSelection.insertX((X) target, (X) count);
-        zone.cellMerging.insertX((X) target, (X) count);
+        X targetX = (X) target;
+        X countX = (X) count;
+        zone.cellSelection.insertX(targetX, countX);
+        zone.lastSelection.insertX(targetX, countX);
+        zone.cellMerging.insertX(targetX, countX);
+        if (zone.editor != null) zone.editor.insertX(targetX, countX);
       }
     }
   }
 
   @SuppressWarnings("unchecked")
-  <N extends Number> void insertInZonesY(SectionCore<N> section, N target,
-                                         N count) {
+  <N extends Number> void insertInZonesY(SectionCore<N> section, N target, N count) {
     for (ZoneCore<X, Y> zone : layout.zones) {
       if (zone.sectionY.equals(section)) {
-        zone.cellSelection.insertY((Y) target, (Y) count);
-        zone.lastSelection.insertY((Y) target, (Y) count);
-        zone.cellMerging.insertY((Y) target, (Y) count);
+        Y targetY = (Y) target;
+        Y countY = (Y) count;
+        zone.cellSelection.insertY(targetY, countY);
+        zone.lastSelection.insertY(targetY, countY);
+        zone.cellMerging.insertY(targetY, countY);
+        if (zone.editor != null) zone.editor.insertY(targetY, countY);
       }
     }
   }
 
   @SuppressWarnings("unchecked")
-  <N extends Number> void deleteInZonesX(SectionCore<N> section, N target,
-                                         N count) {
+  <N extends Number> void deleteInZonesX(SectionCore<N> section, N start, N end) {
     for (ZoneCore<X, Y> zone : layout.zones) {
       if (zone.sectionX.equals(section)) {
-        zone.cellSelection.deleteX((X) target, (X) count);
-        zone.lastSelection.deleteX((X) target, (X) count);
-        zone.cellMerging.deleteX((X) target, (X) count);
+        X startX = (X) start;
+        X endX = (X) end;
+        zone.cellSelection.deleteX(startX, endX);
+        zone.lastSelection.deleteX(startX, endX);
+        zone.cellMerging.deleteX(startX, endX);
+        if (zone.editor != null) zone.editor.deleteX(startX, endX);
       }
     }
   }
 
   @SuppressWarnings("unchecked")
-  <N extends Number> void deleteInZonesY(SectionCore<N> section, N target,
-                                         N count) {
+  <N extends Number> void deleteInZonesY(SectionCore<N> section, N start, N end) {
     for (ZoneCore<X, Y> zone : layout.zones) {
       if (zone.sectionY.equals(section)) {
-        zone.cellSelection.deleteY((Y) target, (Y) count);
-        zone.lastSelection.deleteY((Y) target, (Y) count);
-        zone.cellMerging.deleteY((Y) target, (Y) count);
+        Y startY = (Y) start;
+        Y endY = (Y) end;
+        zone.cellSelection.deleteY(startY, endY);
+        zone.lastSelection.deleteY(startY, endY);
+        zone.cellMerging.deleteY(startY, endY);
+        if (zone.editor != null) zone.editor.deleteY(startY, endY);
       }
     }
   }
