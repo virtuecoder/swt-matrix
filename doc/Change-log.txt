@@ -1,4 +1,23 @@
 -------------------------------------------------------------------------------
+Version 0.7.51
+
+Feature changes
+- Edit history externalized into sample: S0440_EditHistory_Undo_Redo
+
+API changes
+- Removed ZoneEditor.undo
+- Removed ZoneEditor.redo
+- Removed ZoneEditor.setBulkEdit(boolean)
+- Removed ZoneEditor.setBulkEditAtomic(boolean)
+- Removed ZoneEditor.isBulkEditAtomic()
+- Removed ZoneEditor.setEditHistoryLimit
+- Removed ZoneEditor.getEditHistoryLimit
+- Removed ZoneEditor.addEditHistory
+- Removed ZoneEditor.clearEditHistory(int)
+- Removed ZoneEditor.getEditHistorySize(int)
+- Removed ZoneEditor.getEditHistoryIndex(int)
+
+-------------------------------------------------------------------------------
 Version 0.7.50
 
 Bug fixes:

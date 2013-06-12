@@ -44,7 +44,7 @@ public class SnippetCopyPaste {
       }
     });
 
-    ZoneEditor<Integer, Integer> editor = new ZoneEditor<Integer, Integer>(matrix.getBody()) {
+    new ZoneEditor<Integer, Integer>(matrix.getBody()) {
       @Override
       public Object getModelValue(Integer indexX, Integer indexY) {
         return data.get(indexY).get(indexX);
@@ -59,8 +59,6 @@ public class SnippetCopyPaste {
         return true;
       }
     };
-    editor.setBulkEditAtomic(true);
-    editor.setEditHistoryLimit(Integer.MAX_VALUE);
 
 //    matrix.setSelectSkipHidden(true);
 

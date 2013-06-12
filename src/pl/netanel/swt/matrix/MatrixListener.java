@@ -848,8 +848,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     case CMD_COPY:				         copy(); return;
     case CMD_PASTE:				         paste(); return;
     case CMD_DELETE:			         if (zone.editor != null) zone.editor.delete(); return;
-    case CMD_UNDO:			           if (zone.editor != null) zone.editor.undo(); return;
-    case CMD_REDO:			           if (zone.editor != null) zone.editor.redo(); return;
+//    case CMD_UNDO:			           if (zone.editor != null) zone.editor.undo(); return;
+//    case CMD_REDO:			           if (zone.editor != null) zone.editor.redo(); return;
     case CMD_TRAVERSE_TAB_NEXT:			matrix.traverse(SWT.TRAVERSE_TAB_NEXT); return;
     case CMD_TRAVERSE_TAB_PREVIOUS: matrix.traverse(SWT.TRAVERSE_TAB_PREVIOUS); return;
     }

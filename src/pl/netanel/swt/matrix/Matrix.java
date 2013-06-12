@@ -144,8 +144,8 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
   public static final int CMD_CUT = 200; // binding = SWT.MOD2 + SWT.DEL
   public static final int CMD_COPY = 201; // binding = SWT.MOD1 + SWT.INSERT;
   public static final int CMD_PASTE = 202; // binding = SWT.MOD2 + SWT.INSERT ;
-  public static final int CMD_UNDO = 203; // binding = SWT.MOD2 + SWT.INSERT ;
-  public static final int CMD_REDO = 204; // binding = SWT.MOD2 + SWT.INSERT ;
+//  public static final int CMD_UNDO = 203; // binding = SWT.MOD2 + SWT.INSERT ;
+//  public static final int CMD_REDO = 204; // binding = SWT.MOD2 + SWT.INSERT ;
 
   /**
    * Command to activate the editor control by setting focus on it.
@@ -1420,7 +1420,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
         zone.cellSelection.insertX(targetX, countX);
         zone.lastSelection.insertX(targetX, countX);
         zone.cellMerging.insertX(targetX, countX);
-        if (zone.editor != null) zone.editor.insertX(targetX, countX);
+//        if (zone.editor != null) zone.editor.insertX(targetX, countX);
       }
     }
   }
@@ -1434,7 +1434,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
         zone.cellSelection.insertY(targetY, countY);
         zone.lastSelection.insertY(targetY, countY);
         zone.cellMerging.insertY(targetY, countY);
-        if (zone.editor != null) zone.editor.insertY(targetY, countY);
+//        if (zone.editor != null) zone.editor.insertY(targetY, countY);
       }
     }
   }
@@ -1448,7 +1448,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
         zone.cellSelection.deleteX(startX, endX);
         zone.lastSelection.deleteX(startX, endX);
         zone.cellMerging.deleteX(startX, endX);
-        if (zone.editor != null) zone.editor.deleteX(startX, endX);
+//        if (zone.editor != null) zone.editor.deleteX(startX, endX);
       }
     }
   }
@@ -1462,7 +1462,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
         zone.cellSelection.deleteY(startY, endY);
         zone.lastSelection.deleteY(startY, endY);
         zone.cellMerging.deleteY(startY, endY);
-        if (zone.editor != null) zone.editor.deleteY(startY, endY);
+//        if (zone.editor != null) zone.editor.deleteY(startY, endY);
       }
     }
   }

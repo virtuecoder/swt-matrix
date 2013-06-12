@@ -142,16 +142,16 @@ public class S0490_CustomCopy_Paste {
       }
 
       @Override
-      public void paste() {
+      public boolean paste() {
         Clipboard clipboard = new Clipboard(display);
         Object contents = clipboard.getContents(TextTransfer.getInstance());
         clipboard.dispose();
 
-        if (contents == null) return;
+        if (contents == null) return true;
 
         AxisItem<Integer> focusItemX = matrix.getAxisX().getFocusItem();
         AxisItem<Integer> focusItemY = matrix.getAxisY().getFocusItem();
-        if (focusItemX == null || focusItemY == null) return;
+        if (focusItemX == null || focusItemY == null) return true;
 
         int startY = focusItemY.getIndex().intValue();
         int startX = focusItemX.getIndex().intValue();
@@ -168,6 +168,7 @@ public class S0490_CustomCopy_Paste {
 
         matrix.redraw();
         matrix.setFocus();
+        return true;
       }
     };
 

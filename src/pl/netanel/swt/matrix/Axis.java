@@ -632,6 +632,16 @@ public class Axis<N extends Number> {
     return new NumberSetCore<N>(math, true);
   }
 
+//  /**
+//   * Compares two numbers of type N that parameterizes Axis class.
+//   * @param n1 the first number to compare
+//   * @param n2 the second number to compare
+//   * @return 1 if n1 > n2, 0 if n n2, -1 if n1 < n2
+//   */
+//  public int compare(N n1, N n2) {
+//    return math.compare(n1, n2);
+//  }
+
   /*------------------------------------------------------------------------
    * Non public
    */
