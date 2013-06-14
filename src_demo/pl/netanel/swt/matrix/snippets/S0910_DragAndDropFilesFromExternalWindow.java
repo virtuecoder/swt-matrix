@@ -15,6 +15,8 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import pl.netanel.swt.matrix.Axis;
@@ -78,7 +80,7 @@ public class S0910_DragAndDropFilesFromExternalWindow {
     final Painter<Integer, Integer> dragPainterY = matrix
       .getPainter(Painter.NAME_DRAG_ITEM_Y);
 
-    DropTarget dt = new DropTarget(matrix, DND.DROP_DEFAULT | DND.DROP_MOVE);
+    final DropTarget dt = new DropTarget(matrix, DND.DROP_DEFAULT | DND.DROP_MOVE);
     dt.setTransfer(new Transfer[] { FileTransfer.getInstance() });
     dt.addDropListener(new DropTargetAdapter() {
       @Override
@@ -133,6 +135,13 @@ public class S0910_DragAndDropFilesFromExternalWindow {
       @Override
       public void dragOver(DropTargetEvent event) {
         dragPainterY.setData(event);
+      }
+    });
+
+    shell.addListener(SWT.Dispose, new Listener() {
+      @Override
+      public void handleEvent(Event event) {
+        dt.dispose();
       }
     });
 

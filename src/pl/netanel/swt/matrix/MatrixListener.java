@@ -56,6 +56,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 		SWT.SetData, SWT.MouseWheel, SWT.Settings, SWT.EraseItem, SWT.MeasureItem,
 		SWT.PaintItem, SWT.ImeComposition */
   };
+  private enum DropPosition { OUT_BEFORE, BEFORE, AFTER, OUT_AFTER, NONE }
 
   Matrix<X, Y> matrix;
   //	ArrayList<GestureBinding> bindings;
@@ -243,6 +244,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     private boolean selectState;
     AxisItem<N> mouseOverItem;
     MutableNumber<N> tmp;
+    private Frozen frozen;
 
     public AxisListener(Axis<N> axis) {
       this.axis = axis;
@@ -276,9 +278,14 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
           }
           //					last = item;
           item = mouseOverItem;
-          if (last == null) last = mouseOverItem;
+          if (last == null) {
+//            if (axis.symbol == 'X') TestUtil.log("null");
+//            last = mouseOverItem;
+            last = item;
+          }
         }
         mouseMoveEvent = e;
+        frozen = axisLayout.getFrozenByDistance(distance);
 //        if (axis.symbol == 'X')
 //          System.out.println(item);
       }
@@ -289,16 +296,13 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       this.distance = distance;
       if (item == null) item = last = axisLayout.current;
 
-      boolean noModifiers = (e.stateMask & SWT.MOD1) == 0 && (e.stateMask & SWT.MOD2) == 0
-          && (e.stateMask & SWT.MOD3) == 0;
-
       switch (e.type) {
       case SWT.MouseMove:
         if (mouseDown) {
           handleDrag(e);
         }
         else {
-          if (noModifiers && isInHeader() &&
+          if (isInHeader() &&
               (resizeItem = axisLayout.getResizeItem(distance)) != null && !isOverMergedLine()) {
             if (cursor != resizeCursor) {
               matrix.setCursor(cursor = resizeCursor);
@@ -314,7 +318,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         lastDistance = distance;
         prev = null;
         if (mouseDown && isInHeader()) {
-          if (resizeItem != null && noModifiers) {
+          if (resizeItem != null) {
             resizing = true;
             resizeStartDistance = distance;
             resizeCellWidth = resizeItem.section.getCellWidth(resizeItem.getIndex());
@@ -567,7 +571,17 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     }
 
     void reorder() {
-      if (axisLayout.reorder(last, item)) {
+      AxisItem<N> subject = last, target = item;
+      DropPosition dp = getDropPosition(target, distance);
+      boolean dropBefore = dp == DropPosition.BEFORE || dp == DropPosition.OUT_BEFORE;
+      if (dropBefore && (target == null || axisLayout.compare(target, subject) > 0)) {
+        target = axisLayout.nextItem(target, axisLayout.backwardNavigator);
+      }
+      else if (!dropBefore && (target == null || axisLayout.compare(target, subject) < 0)) {
+        target = axisLayout.nextItem(target, axisLayout.forwardNavigator);
+      }
+
+      if (axisLayout.reorder(subject, target)) {
 
         // Adjust cursor location if moving smaller to bigger
         Bound r1 = axisLayout.getCellBound(last);
@@ -700,6 +714,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     }
 
     public void refresh() {
+      item = last = null;
       if (item == null) return;
       N count = item.section.getCount();
       if (axis.math.compare(item.getIndex(), count) >= 0) {
@@ -711,6 +726,43 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     public void sendEvents() {
       for (SectionCore<N> section: axisLayout.sections) {
         section.listeners.sendEvents();
+      }
+    }
+
+    Bound getBodyBound() {
+      return axisLayout.getBound(frozen, axisLayout.body);
+    }
+
+
+    Bound getCellBound(AxisItem<N> item) {
+      Bound bound = axisLayout.getCellBound(item);
+      return bound == null ? Bound.empty : bound;
+    }
+
+    Bound getLineBound(AxisItem<N> item) {
+      Bound bound = axisLayout.getLineBound(item);
+      return bound == null ? Bound.empty : bound;
+    }
+
+    DropPosition getDropPosition(AxisItem<N> target, int distance) {
+      if (target == null) return DropPosition.NONE;
+      if (target.section.index < axisLayout.body.index) return DropPosition.OUT_BEFORE;
+      if (target.section.index > axisLayout.body.index) return DropPosition.OUT_AFTER;
+//      if (distance < 0) return DropPosition.OUT_BEFORE;
+      Bound bound = getCellBound(target);
+      return distance < bound.distance + bound.width / 2 ? DropPosition.BEFORE : DropPosition.AFTER;
+    }
+
+    int getDropIndicatorDistance(AxisItem<N> item, int distance) {
+//      if (distance > 200)
+//        System.out.println(getDropPosition(item, distance) + " " + distance + " " + (item == null ? "null" : item));
+      switch (getDropPosition(item, distance)) {
+      case NONE: return -1;
+      case OUT_BEFORE: return getBodyBound().distance;
+      case OUT_AFTER: return getBodyBound().endDistance();
+      case BEFORE: return getLineBound(item).distance;
+      case AFTER: return getCellBound(item).endDistance();
+      default: return -1;
       }
     }
   }
@@ -1149,7 +1201,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     @Override protected boolean init() {
       painter = header.getPainter(Painter.NAME_CELLS);
       if (painter != null) {
-        painter.init();
+        painter.init(gc, frozenX, frozenY);
         highlight = painter.selectionHighlight;
         painter.selectionHighlight = false;
       }
@@ -1223,8 +1275,9 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     }
 
     @Override public void paint(int x, int y, int width, int height) {
-      if (mouseMoveEvent == null) return;
-      x2 = mouseMoveEvent.x - imageOffset.x;
+      if (mouseMoveEvent == null ) return;
+      // imageOffset can be null when dragging from outside of the widget
+      x2 = mouseMoveEvent.x - (imageOffset == null ? 0 : imageOffset.x);
       y2 = 1;
       if (stateX.last != null) {
         bounds = header.getCellBounds(stateX.last.getIndex(), stateY.axis.math.ZERO_VALUE());
@@ -1243,34 +1296,12 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         else {
           x3 = mouseMoveEvent.x;
         }
-        //        feedback = DND.FEEDBACK_INSERT_BEFORE;
-        if (item == null) {
-          x3 = 0;
+
+        int distance = stateX.getDropIndicatorDistance(item, x3);
+        if (distance >= 0) {
+          gc.setLineWidth(2);
+          gc.drawLine(distance, area.y, distance, area.height);
         }
-        else if (item.section.index < matrix.layoutX.body.index) {
-          x3 = matrix.getBody().getBounds(Frozen.NONE, Frozen.NONE).x;
-        }
-        else if (item.section.index > matrix.layoutX.body.index) {
-          x3 = matrix.getBody().getBounds(Frozen.NONE, Frozen.NONE).x +
-              header.getBounds(Frozen.NONE, Frozen.NONE).width;
-        }
-        else {
-          Bound bound = stateX.axis.layout.getCellBound(item);
-          if (bound == null) return;
-          boolean before = x3 < bound.distance + bound.width / 2;
-          x3 = bound.distance + (before ? -1 : bound.width);
-//          if (before && (stateX.item == null || stateX.axisLayout.compare(stateX.item, stateX.last) > 0)) {
-//            stateX.item = stateX.axisLayout.nextItem(item, stateX.axisLayout.backwardNavigator);
-//            TestUtil.log("indicator " + stateX.item);
-//          }
-//          else if (!before && (stateX.item == null || stateX.axisLayout.compare(stateX.item, stateX.last) < 0)) {
-//            stateX.item = stateX.axisLayout.nextItem(item, stateX.axisLayout.forwardNavigator);
-//            TestUtil.log("indicator " + stateX.item);
-//          }
-          //          feedback = before ? DND.FEEDBACK_INSERT_BEFORE : DND.FEEDBACK_INSERT_AFTER;
-        }
-        gc.setLineWidth(2);
-        gc.drawLine(x3, area.y, x3, area.height);
       }
       super.paint(x, y, width, height);
     }
@@ -1298,42 +1329,21 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         if (d instanceof DropTargetEvent) {
           DropTargetEvent event = (DropTargetEvent) d;
           y3 = matrix.toControl(event.x, event.y).y;
-          item = matrix.axisY.getItemByViewportDistance(y3);
+          item = stateY.axisLayout.getItemByDistanceNotNullIfNotEmpty(y3);
         }
         else {
           y3 = mouseMoveEvent.y;
         }
         //          feedback = DND.FEEDBACK_INSERT_BEFORE;
-        if (item == null) {
-          y3 = 0;
+        int distance = stateY.getDropIndicatorDistance(item, y3);
+        if (distance >= 0) {
+          gc.setLineWidth(2);
+          gc.drawLine(area.x, distance, area.width, distance);
         }
-        else if (item.section.index < matrix.layoutY.body.index) {
-          y3 = matrix.getBody().getBounds(Frozen.NONE, Frozen.NONE).y;
-        }
-        else if (item.section.index > matrix.layoutY.body.index) {
-          y3 = matrix.getBody().getBounds(Frozen.NONE, Frozen.NONE).y +
-              header.getBounds(Frozen.NONE, Frozen.NONE).height;
-        }
-        else {
-          Bound bound = stateY.axis.layout.getCellBound(item);
-          if (bound == null) return;
-          boolean before = y3 < bound.distance + bound.width / 2;
-          y3 = bound.distance + (before ? -1 : bound.width);
-//          //          feedback = before ? DND.FEEDBACK_INSERT_BEFORE : DND.FEEDBACK_INSERT_AFTER;
-//          if (before && (stateY.item == null || stateY.axisLayout.compare(stateY.item, stateY.last) > 0)) {
-//            stateY.item = stateY.axisLayout.nextItem(item, stateY.axisLayout.backwardNavigator);
-//          }
-//          else if (!before && (stateY.item == null || stateY.axisLayout.compare(stateY.item, stateY.last) < 0)) {
-//            stateY.item = stateY.axisLayout.nextItem(item, stateY.axisLayout.forwardNavigator);
-//          }
-        }
-        gc.setLineWidth(2);
-        gc.drawLine(area.x, y3, area.width, y3);
       }
       super.paint(x, y, width, height);
     }
   }
-
 
   @SuppressWarnings("rawtypes")
   public AxisListener getAxisState(char symbol) {

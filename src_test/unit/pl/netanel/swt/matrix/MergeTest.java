@@ -19,6 +19,7 @@ public class MergeTest {
     sectionX.setCount(10);
     sectionY.setCount(10);
     zone = new ZoneCore<Integer, Integer>(sectionX, sectionY);
+
   }
 
   @Test

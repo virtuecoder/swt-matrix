@@ -205,6 +205,7 @@ class AxisLayout<N extends Number> {
 		int mainMaxWidth = viewportSize - head.innerWidth - tail.innerWidth;
 		main.compute(dir, mainMaxWidth);
 		AxisSequence<N> opposite = opposite(dir);
+		//TestUtil.log(main.outerWidth, mainMaxWidth, dir.min, dir.start);
 		if (main.outerWidth < mainMaxWidth && (dir.min == null || !dir.start.equals(dir.min)))
 		{
 			AxisItem<N> origin2 = opposite.start;
@@ -220,7 +221,7 @@ class AxisLayout<N extends Number> {
 //		tail.setDistances(main.outerWidth > mainMaxWidth ?
 		tail.setDistances(isScrollRequired() ?
 				viewportSize - tail.outerWidth :
-				head.innerWidth + main.outerWidth - tail.lastLineWidth
+				head.innerWidth + main.innerWidth // outerWidth - tail.lastLineWidth
 		);
 	}
 
@@ -673,19 +674,23 @@ class AxisLayout<N extends Number> {
 
 			this.seq = dir;
 			innerWidth = 0;
+			int lastLineWidth = 0;
 			Bound bound1, bound2;
 
 			if (dir instanceof Backward) {
-				lastLine(dir.section, dir.getIndex());
+				bound1 = lastLine(dir.section, dir.getIndex());
+				lastLineWidth = bound1.width;
 			}
 			while (condition() && item != null) {
 				bound1 = new Bound(0, dir.section.getLineWidth(dir.getIndex()));
 				bound2 = new Bound(0, dir.section.getCellWidth(dir.getIndex()));
 				int width = bound1.width + bound2.width;
 
-				if (!canTrim && innerWidth + width > maxWidth || innerWidth == maxWidth) break;
+				if (!canTrim && innerWidth + width + lastLineWidth > maxWidth || innerWidth == maxWidth) {
+				  break;
+				}
 
-				innerWidth += bound1.width + bound2.width;
+				innerWidth += width;
 				items.add(item); // = dir.getItem());
 				lines.add(bound1);
 				cells.add(bound2);
@@ -897,18 +902,24 @@ class AxisLayout<N extends Number> {
 
 	Cache getCache(int distance) {
 		return
-		    main.distance <= distance ?
-		        (distance <= tail.distance ?
-		            main :
-		            tail) :
-		        head;
-//		    distance < main.distance && !head.isEmpty() ? head :
-//			   distance > tail.distance && !tail.isEmpty() ? tail : main;
+	      distance < 0 ||
+	      main.distance <= distance && distance <= tail.distance ||
+	      distance > tail.distance + tail.outerWidth ? main :
+
+	      distance < main.distance ? head : tail;
+
+//		    main.distance <= distance ?
+//		        (distance <= tail.distance ?
+//		            main :
+//		            tail) :
+//		        head;
+////		    distance < main.distance && !head.isEmpty() ? head :
+////			   distance > tail.distance && !tail.isEmpty() ? tail : main;
 	}
 
 	Cache getCache(SectionCore<N> section, N index) {
 		for (Cache cache: caches) {
-			int len = cache.cells.size();
+			int len = cache.items.size() - 1;
 			for (int i = 0; i < len; i++) {
 				AxisItem<N> item = cache.items.get(i);
 				if (item.section.equals(section) && math.compare(item.getIndex(), index) == 0) {
@@ -920,12 +931,8 @@ class AxisLayout<N extends Number> {
 	}
 
   Frozen getFrozenByDistance(int distance) {
-    return
-        main.distance <= distance ?
-            (distance <= tail.distance ?
-                Frozen.NONE :
-                Frozen.TAIL) :
-            Frozen.HEAD;
+    Cache cache = getCache(distance);
+    return cache == main ? Frozen.NONE : cache == head ? Frozen.HEAD : Frozen.TAIL;
   }
 
 
@@ -988,6 +995,25 @@ class AxisLayout<N extends Number> {
 //		}
 //		return null; //item;
 ////		return getBeyond && !cache.isEmpty() ? cache.items.get(cache.items.size() - 2) : null;
+	}
+
+	@Nullable
+	AxisItem<N> getItemByDistanceNotNullIfNotEmpty(int distance) {
+	  AxisItem<N> item = getItemByDistance(distance);
+	  if (item != null) return item;
+	  if (isEmpty()) return null;
+	  return (distance < 0) ?
+	    getItemByPosition(math.create(0)) :
+	    last();
+	}
+
+	@Nullable
+	AxisItem<N> last() {
+	  for (int i = caches.size(); i-- > 0;) {
+	    Cache cache = caches.get(i);
+      if (!cache.isEmpty()) return cache.items.get(cache.cells.size() - 1);
+    }
+	  return null;
 	}
 
 	AxisItem<N> getChacheIndexByDistance(int distance) {
@@ -1199,22 +1225,24 @@ class AxisLayout<N extends Number> {
 
 	@Nullable
 	public Bound getCellBound(int index) {
+	  assert index >= 0 && index < head.cells.size() + main.cells.size() + tail.cells.size();
 		if (index < head.count) return head.cells.get(index);
 		index -= head.count;
 		if (index < main.cells.size()) return main.cells.get(index);
 		index -= main.cells.size();
 		if (index < tail.count) return tail.cells.get(index);
-		return null;
+		return Bound.empty;
 	}
 
-	@Nullable
+
 	public Bound getLineBound(int index) {
-		if (index < head.count) return head.lines.get(index);
+	  assert index >= 0 && index <= head.cells.size() + main.cells.size() + tail.cells.size();
+		if (index <= head.count) return head.lines.get(index);
 		index -= head.count;
 		if (index < main.lines.size()) return main.lines.get(index);
 		index -= main.cells.size();
-		if (index < tail.count) return tail.lines.get(index);
-		return null;
+		if (index <= tail.count) return tail.lines.get(index);
+		return Bound.empty;
 	}
 
 	public boolean reorder(AxisItem<N> source, AxisItem<N> target) {
@@ -1222,12 +1250,13 @@ class AxisLayout<N extends Number> {
 		SectionCore<N> targetSection = SectionCore.from(target);
 
 		if (targetSection.index < sourceSection.index) {
-		  N next = source.section.nextNotHiddenIndex(math.ZERO_VALUE(), Matrix.FORWARD);
+		  N first = source.section.getIndex(math.ZERO_VALUE());
+		  N next = source.section.nextNotHiddenIndex(first, Matrix.FORWARD);
 		  if (next == null) return false;
       target = AxisItem.createInternal(source.section, next);
 		}
 		else if (targetSection.index > sourceSection.index)  {
-		  N last = math.decrement(source.section.getCount());
+		  N last = source.section.getIndex(math.decrement(source.section.getCount()));
       N next = source.section.nextNotHiddenIndex(last, Matrix.BACKWARD);
 		  if (next == null) return false;
       target = AxisItem.createInternal(source.section, next);
@@ -1257,7 +1286,9 @@ class AxisLayout<N extends Number> {
 	  N origin = cache.items.get(i).getIndex();
 	  N start = span.start.getValue();
     spanSeq.set(AxisItem.createInternal(section, start), span.end.getValue());
-    int w = section.isHidden(start) ? 0 : - section.getLineWidth(start);
+    int w = 0;
+//    int w = section.isHidden(start) || math.compare(start, origin) > 0 ? 0 :
+//      -section.getLineWidth(start);
 	  for (spanSeq.init(); spanSeq.next();) {
 	    N index = spanSeq.index.getValue();
 	    if (math.compare(index, origin) < 0) continue;

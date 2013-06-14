@@ -1,10 +1,18 @@
 -------------------------------------------------------------------------------
 Version 0.7.51
 
-Feature changes
+Bug fixes:
+- Position of grouping separators was incorrect in some corner cases
+- Scrollbar did not scroll down if only the last line was not visible
+- Item was moved when drop indicator was adjacent to the item being moved
+
+-------------------------------------------------------------------------------
+Version 0.7.50
+
+Feature changes:
 - Edit history externalized into sample: S0440_EditHistory_Undo_Redo
 
-API changes
+API changes:
 - Removed ZoneEditor.undo
 - Removed ZoneEditor.redo
 - Removed ZoneEditor.setBulkEdit(boolean)

@@ -501,9 +501,6 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
    * <p>
    * If a value in the bounds is null it should be skipped in the sequence,
    * because the cell is part of merged cell and it's area has been draw already.
-   *
-   * @author jacek.p.kolodziejczyk@gmail.com
-   * @created 25-06-2012
    */
   static class MergeCache<X extends Number, Y extends Number> {
     ArrayList<AxisItem<X>> itemsX = new ArrayList<AxisItem<X>>();

@@ -14,313 +14,312 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class AxisLayoutTest {
 
-	@Test
-	public void empty() throws Exception {
-		AxisLayout layout = new AxisLayout();
-		layout.setViewportSize(1000);
-		layout.compute();
-	}
+  @Test
+  public void empty() throws Exception {
+    AxisLayout layout = new AxisLayout();
+    layout.setViewportSize(1000);
+    layout.compute();
+  }
 
-	@Test
-	public void cellSequenceIndexSimple() throws Exception {
-		AxisLayout layout = new AxisLayout();
-		layout.setViewportSize(350);
+  @Test
+  public void cellSequenceIndexSimple() throws Exception {
+    AxisLayout layout = new AxisLayout();
+    layout.setViewportSize(350);
 
-		SectionCore body = layout.body;
-		body.setCount(5);
-		body.setDefaultCellWidth(100);
+    SectionCore body = layout.body;
+    body.setCount(5);
+    body.setDefaultCellWidth(100);
 
-		layout.compute();
-		assertEquals("", indexes(layout.cellSequence(Frozen.HEAD, body)));
-		assertEquals("0, 1, 2, 3", indexes(layout.cellSequence(Frozen.NONE, body)));
-		assertEquals("", indexes(layout.cellSequence(Frozen.TAIL, body)));
+    layout.compute();
+    assertEquals("", indexes(layout.cellSequence(Frozen.HEAD, body)));
+    assertEquals("0, 1, 2, 3", indexes(layout.cellSequence(Frozen.NONE, body)));
+    assertEquals("", indexes(layout.cellSequence(Frozen.TAIL, body)));
 
-		layout.setViewportSize(1000);
-		layout.compute();
-		assertEquals("", indexes(layout.cellSequence(Frozen.HEAD, body)));
-		assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Frozen.NONE, body)));
-		assertEquals("", indexes(layout.cellSequence(Frozen.TAIL, body)));
+    layout.setViewportSize(1000);
+    layout.compute();
+    assertEquals("", indexes(layout.cellSequence(Frozen.HEAD, body)));
+    assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Frozen.NONE, body)));
+    assertEquals("", indexes(layout.cellSequence(Frozen.TAIL, body)));
 
-		// Empty
-		layout = new AxisLayout();
-		layout.setViewportSize(350);
-		layout.compute();
-		assertEquals("", indexes(layout.cellSequence(Frozen.NONE, body)));
-	}
+    // Empty
+    layout = new AxisLayout();
+    layout.setViewportSize(350);
+    layout.compute();
+    assertEquals("", indexes(layout.cellSequence(Frozen.NONE, body)));
+  }
 
-	@Test
-	public void cellSequenceIndexManySections() throws Exception {
-		AxisLayout layout = new AxisLayout(Integer.class, 3, 0, 1);
-		SectionCore section0 = layout.getSection(0);
-		SectionCore section1 = layout.getSection(1);
-		SectionCore section2 = layout.getSection(2);
-		section0.setCount(1); // header
-		section1.setCount(5); // body
-		section2.setCount(1); // footer
+  @Test
+  public void cellSequenceIndexManySections() throws Exception {
+    AxisLayout layout = new AxisLayout(Integer.class, 3, 0, 1);
+    SectionCore section0 = layout.getSection(0);
+    SectionCore section1 = layout.getSection(1);
+    SectionCore section2 = layout.getSection(2);
+    section0.setCount(1); // header
+    section1.setCount(5); // body
+    section2.setCount(1); // footer
 
-		section1.setDefaultCellWidth(100);
+    section1.setDefaultCellWidth(100);
 
-		layout.setViewportSize(1000);
+    layout.setViewportSize(1000);
 
-		layout.compute();
-		assertEquals("", indexes(layout.cellSequence(Frozen.HEAD, section1)));
-		assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Frozen.NONE, section1)));
-		assertEquals("0", indexes(layout.cellSequence(Frozen.NONE, section2)));
-	}
+    layout.compute();
+    assertEquals("", indexes(layout.cellSequence(Frozen.HEAD, section1)));
+    assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Frozen.NONE, section1)));
+    assertEquals("0", indexes(layout.cellSequence(Frozen.NONE, section2)));
+  }
 
-	@Test
-	public void freezeIndexes() throws Exception {
-		AxisLayout layout = new AxisLayout();
-		SectionCore body = layout.body;
-		body.setCount(5);
-		body.setDefaultCellWidth(100);
+  @Test
+  public void freezeIndexes() throws Exception {
+    AxisLayout layout = new AxisLayout();
+    SectionCore body = layout.body;
+    body.setCount(5);
+    body.setDefaultCellWidth(100);
 
-		layout.setViewportSize(350);
-		layout.freezeHead(1);
-		layout.freezeTail(1);
-		layout.compute();
+    layout.setViewportSize(350);
+    layout.freezeHead(1);
+    layout.freezeTail(1);
+    layout.compute();
 
-//		showMatrix(layout);
+    //		showMatrix(layout);
 
-		assertEquals("0", indexes(layout.cellSequence(Frozen.HEAD, body)));
-		assertEquals("1, 2", indexes(layout.cellSequence(Frozen.NONE, body)));
-		assertEquals("4", indexes(layout.cellSequence(Frozen.TAIL, body)));
-		assertEquals("0, 1", indexes(layout.lineSequence(Frozen.HEAD, body)));
-		assertEquals("1, 2, 3", indexes(layout.lineSequence(Frozen.NONE, body)));
-		assertEquals("4, 5", indexes(layout.lineSequence(Frozen.TAIL, body)));
-		assertEquals("100", widths(layout.cellSequence(Frozen.TAIL, body)));
+    assertEquals("0", indexes(layout.cellSequence(Frozen.HEAD, body)));
+    assertEquals("1, 2", indexes(layout.cellSequence(Frozen.NONE, body)));
+    assertEquals("4", indexes(layout.cellSequence(Frozen.TAIL, body)));
+    assertEquals("0, 1", indexes(layout.lineSequence(Frozen.HEAD, body)));
+    assertEquals("1, 2, 3", indexes(layout.lineSequence(Frozen.NONE, body)));
+    assertEquals("4, 5", indexes(layout.lineSequence(Frozen.TAIL, body)));
+    assertEquals("100", widths(layout.cellSequence(Frozen.TAIL, body)));
 
-		layout.freezeTail(2);
-		layout.compute();
+    layout.freezeTail(2);
+    layout.compute();
 
-		assertEquals("0", indexes(layout.cellSequence(Frozen.HEAD, body)));
-		assertEquals("1", indexes(layout.cellSequence(Frozen.NONE, body)));
-		assertEquals("3, 4", indexes(layout.cellSequence(Frozen.TAIL, body)));
+    assertEquals("0", indexes(layout.cellSequence(Frozen.HEAD, body)));
+    assertEquals("1", indexes(layout.cellSequence(Frozen.NONE, body)));
+    assertEquals("3, 4", indexes(layout.cellSequence(Frozen.TAIL, body)));
 
-		layout.freezeTail(3);
-		layout.compute();
-		assertEquals("0", indexes(layout.cellSequence(Frozen.HEAD, body)));
-		assertEquals("1", indexes(layout.cellSequence(Frozen.NONE, body)));
-		assertEquals("3, 4", indexes(layout.cellSequence(Frozen.TAIL, body)));
+    layout.freezeTail(3);
+    layout.compute();
+    assertEquals("0", indexes(layout.cellSequence(Frozen.HEAD, body)));
+    assertEquals("1", indexes(layout.cellSequence(Frozen.NONE, body)));
+    assertEquals("3, 4", indexes(layout.cellSequence(Frozen.TAIL, body)));
 
-		// Freeze head takes precedence over freeze tail
-		layout.freezeTail(4);
-		layout.compute();
-		assertEquals("0", indexes(layout.cellSequence(Frozen.HEAD, body)));
-		assertEquals("1", indexes(layout.cellSequence(Frozen.NONE, body)));
-		assertEquals("3, 4", indexes(layout.cellSequence(Frozen.TAIL, body)));
+    // Freeze head takes precedence over freeze tail
+    layout.freezeTail(4);
+    layout.compute();
+    assertEquals("0", indexes(layout.cellSequence(Frozen.HEAD, body)));
+    assertEquals("1", indexes(layout.cellSequence(Frozen.NONE, body)));
+    assertEquals("3, 4", indexes(layout.cellSequence(Frozen.TAIL, body)));
 
-		layout.freezeHead(10);
-		layout.freezeTail(10);
-		layout.compute();
-		assertEquals("0, 1, 2", indexes(layout.cellSequence(Frozen.HEAD, body)));
-		assertEquals("3", indexes(layout.cellSequence(Frozen.NONE, body)));
-		assertEquals("", indexes(layout.cellSequence(Frozen.TAIL, body)));
+    layout.freezeHead(10);
+    layout.freezeTail(10);
+    layout.compute();
+    assertEquals("0, 1, 2", indexes(layout.cellSequence(Frozen.HEAD, body)));
+    assertEquals("3", indexes(layout.cellSequence(Frozen.NONE, body)));
+    assertEquals("", indexes(layout.cellSequence(Frozen.TAIL, body)));
 
-		layout.setViewportSize(1000);
-		layout.freezeHead(1);
-		layout.freezeTail(1);
-		layout.compute();
-		assertEquals("0", indexes(layout.cellSequence(Frozen.HEAD, body)));
-		assertEquals("1, 2, 3", indexes(layout.cellSequence(Frozen.NONE, body)));
-		assertEquals("4", indexes(layout.cellSequence(Frozen.TAIL, body)));
-	}
+    layout.setViewportSize(1000);
+    layout.freezeHead(1);
+    layout.freezeTail(1);
+    layout.compute();
+    assertEquals("0", indexes(layout.cellSequence(Frozen.HEAD, body)));
+    assertEquals("1, 2, 3", indexes(layout.cellSequence(Frozen.NONE, body)));
+    assertEquals("4", indexes(layout.cellSequence(Frozen.TAIL, body)));
+  }
 
-	@Test
-	public void freezeDistances() throws Exception {
-		AxisLayout layout = new AxisLayout();
-		SectionCore body = layout.body;
-		body.setCount(5);
-		body.setDefaultCellWidth(100);
+  @Test
+  public void freezeDistances() throws Exception {
+    AxisLayout layout = new AxisLayout();
+    SectionCore body = layout.body;
+    body.setCount(5);
+    body.setDefaultCellWidth(100);
 
-		layout.setViewportSize(350);
-		layout.freezeHead(1);
-		layout.freezeTail(1);
-		layout.compute();
-		assertEquals("1", distances(layout.cellSequence(Frozen.HEAD, body)));
-		assertEquals("102, 203", distances(layout.cellSequence(Frozen.NONE, body)));
-		assertEquals("100, 100", widths(layout.cellSequence(Frozen.NONE, body)));
-		assertEquals("249", distances(layout.cellSequence(Frozen.TAIL, body)));
+    layout.setViewportSize(350);
+    layout.freezeHead(1);
+    layout.freezeTail(1);
+    layout.compute();
+    assertEquals("1", distances(layout.cellSequence(Frozen.HEAD, body)));
+    assertEquals("102, 203", distances(layout.cellSequence(Frozen.NONE, body)));
+    assertEquals("100, 100", widths(layout.cellSequence(Frozen.NONE, body)));
+    assertEquals("249", distances(layout.cellSequence(Frozen.TAIL, body)));
 
-		assertEquals("0, 101", distances(layout.lineSequence(Frozen.HEAD, body)));
-		assertEquals("101, 202, 303", distances(layout.lineSequence(Frozen.NONE, body)));
-		assertEquals("1, 1, 1", widths(layout.lineSequence(Frozen.NONE, body)));
-		assertEquals("248, 349", distances(layout.lineSequence(Frozen.TAIL, body)));
+    assertEquals("0, 101", distances(layout.lineSequence(Frozen.HEAD, body)));
+    assertEquals("101, 202, 303", distances(layout.lineSequence(Frozen.NONE, body)));
+    assertEquals("1, 1, 1", widths(layout.lineSequence(Frozen.NONE, body)));
+    assertEquals("248, 349", distances(layout.lineSequence(Frozen.TAIL, body)));
 
-		// Tail should follow main
-		layout.setViewportSize(1000);
-		layout.compute();
-		assertEquals("1", distances(layout.cellSequence(Frozen.HEAD, body)));
-		assertEquals("102, 203, 304", distances(layout.cellSequence(Frozen.NONE, body)));
-		assertEquals("405", distances(layout.cellSequence(Frozen.TAIL, body)));
-		assertEquals("404, 505", distances(layout.lineSequence(Frozen.TAIL, body)));
-
-
-		layout.freezeHead(0);
-		layout.compute();
-		assertEquals("", distances(layout.cellSequence(Frozen.HEAD, body)));
-
-		// TODO alternate cell and line widths
-   	}
-
-	@Test
-	public void freezeLineWidth() throws Exception {
-		AxisLayout layout = new AxisLayout();
-		SectionCore body = layout.body;
-		body.setCount(5);
-		body.setDefaultCellWidth(100);
-		layout.head.freezeLineWidth = 10;
-		layout.tail.freezeLineWidth = 10;
-		layout.freezeHead(1);
-		layout.freezeTail(1);
-		layout.setViewportSize(1000);
-		layout.compute();
-
-		assertEquals("1, 10", widths(layout.lineSequence(Frozen.HEAD, body)));
-		assertEquals("0, 101", distances(layout.lineSequence(Frozen.HEAD, body)));
-		assertEquals("111, 212, 313", distances(layout.cellSequence(Frozen.NONE, body)));
-		assertEquals("10, 1", widths(layout.lineSequence(Frozen.TAIL, body)));
-		assertEquals("413, 523", distances(layout.lineSequence(Frozen.TAIL, body)));
-
-		layout.setViewportSize(450);
-		layout.compute();
-
-		assertEquals("339, 449", distances(layout.lineSequence(Frozen.TAIL, body)));
-
-	}
-
-	@Test
-	public void getItemByDistance() throws Exception {
-		AxisLayout layout = new AxisLayout();
-		layout.setViewportSize(450);
-
-		Section body = layout.body;
-		body.setCount(10);
-		body.setCellWidth(0, 0, 50);
-		body.setDefaultCellWidth(100);
-
-		body.setOrder(6, 9, 3);
-		body.setHidden(2, 4, true);
-		// 0, 1, 6, 7, 8, 9, 5
-
-		layout.freezeHead(1);
-		layout.freezeTail(1);
-		layout.compute();
-//		assertEquals("1, 6, 7", indexes(layout.cellSequence(Dock.MAIN, body)));
-//		showMatrix(layout);
-
-//		assertEquals(null, layout.getItemByDistance(-50));
-		assertEquals("0", layout.getItemByDistance(50).getIndex().toString());
-		assertEquals("1", layout.getItemByDistance(101).getIndex().toString());
-		assertEquals("1", layout.getItemByDistance(102).getIndex().toString());
-		assertEquals("6", layout.getItemByDistance(250).getIndex().toString());
-		assertEquals("7", layout.getItemByDistance(348).getIndex().toString());
-		assertEquals("5", layout.getItemByDistance(349).getIndex().toString());
-		assertEquals("5", layout.getItemByDistance(449).getIndex().toString());
-		assertEquals(null, layout.getItemByDistance(1000));
-
-	}
-
-//	@Test
-//	public void navigationDisabled() throws Exception {
-//		Layout layout = new Layout(new Axis());
-//		layout.setViewportSize(1000);
-//
-//		layout.axis.getHeader().setNavigationEnabled(false);
-//		layout.compute();
-//		assertEquals(layout.body, layout.current.section);
-//	}
-
-	@Test
-	public void reorderBeforeFirst() throws Exception {
-		AxisLayout layout = new AxisLayout();
-		layout.setViewportSize(1000);
-
-		Section body = layout.body;
-		body.setCount(10);
-		body.setDefaultCellWidth(100);
-		body.setSelected(1, 1, true);
-
-		layout.compute();
-
-		assertEquals(0, layout.start.getIndex());
-
-		layout.reorder(item(body, 1), item(body, 0));
-		assertEquals(1, layout.start.getIndex());
-
-//		layout.reorder(item(body, 1), item(body, 0));
-//		assertEquals(0, layout.start.getIndex());
-//
-//		layout.reorder(item(body, 1), item(body, 9));
-//		assertEquals(0, layout.start.getIndex());
-	}
-
-	@Test
-	public void reorderAfterLast() throws Exception {
-	  AxisLayout layout = new AxisLayout();
-	  layout.setViewportSize(1000);
-
-	  SectionCore body = layout.body;
-	  body.setCount(5);
-	  body.setDefaultCellWidth(100);
-	  body.setSelected(0, 0, true);
-
-	  layout.compute();
-	  assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Frozen.NONE, body)));
-
-	  layout.reorder(item(body, 0), item(body, 4));
-	  assertEquals("1, 2, 3, 4, 0", indexes(layout.cellSequence(Frozen.NONE, body)));
-
-	  body.setSelected(false);
-	  body.setSelected(1, 1, true);
-	  layout.reorder(item(body, 1), item(body, 0));
-	  assertEquals("2, 3, 4, 0, 1", indexes(layout.cellSequence(Frozen.NONE, body)));
-	}
-
-	@Test
-	public void reorderAfterLastHidden() throws Exception {
-	  AxisLayout layout = new AxisLayout();
-	  layout.setViewportSize(1000);
-
-	  SectionCore header = layout.header;
-	  header.setCount(5);
-	  header.setDefaultCellWidth(100);
-	  header.setSelected(0, 0, true);
-	  header.setHidden(4, 4, true);
-	  header.setVisible(true);
-
-	  layout.header.setCount(5);
-
-	  layout.compute();
-	  assertEquals("0, 1, 2, 3", indexes(layout.cellSequence(Frozen.NONE, header)));
-
-	  layout.reorder(item(header, 0), item(layout.body, 0));
-	  assertEquals("1, 2, 3, 0", indexes(layout.cellSequence(Frozen.NONE, header)));
-	}
+    // Tail should follow main
+    layout.setViewportSize(1000);
+    layout.compute();
+    assertEquals("1", distances(layout.cellSequence(Frozen.HEAD, body)));
+    assertEquals("102, 203, 304", distances(layout.cellSequence(Frozen.NONE, body)));
+    assertEquals("405", distances(layout.cellSequence(Frozen.TAIL, body)));
+    assertEquals("404, 505", distances(layout.lineSequence(Frozen.TAIL, body)));
 
 
+    layout.freezeHead(0);
+    layout.compute();
+    assertEquals("", distances(layout.cellSequence(Frozen.HEAD, body)));
 
-	@Test
-	public void reorderScattered() throws Exception {
-		AxisLayout layout = new AxisLayout();
-		layout.setViewportSize(1000);
+    // TODO alternate cell and line widths
+  }
 
-		SectionCore body = layout.body;
-		body.setCount(5);
-		body.setDefaultCellWidth(100);
-		body.setSelected(1, 1, true);
-		body.setSelected(3, 3, true);
+  @Test
+  public void freezeLineWidth() throws Exception {
+    AxisLayout layout = new AxisLayout();
+    SectionCore body = layout.body;
+    body.setCount(5);
+    body.setDefaultCellWidth(100);
+    layout.head.freezeLineWidth = 10;
+    layout.tail.freezeLineWidth = 10;
+    layout.freezeHead(1);
+    layout.freezeTail(1);
+    layout.setViewportSize(1000);
+    layout.compute();
 
-		layout.compute();
+    assertEquals("1, 10", widths(layout.lineSequence(Frozen.HEAD, body)));
+    assertEquals("0, 101", distances(layout.lineSequence(Frozen.HEAD, body)));
+    assertEquals("111, 212, 313", distances(layout.cellSequence(Frozen.NONE, body)));
+    assertEquals("10, 1", widths(layout.lineSequence(Frozen.TAIL, body)));
+    assertEquals("413, 523", distances(layout.lineSequence(Frozen.TAIL, body)));
 
-		layout.reorder(item(body, 1), item(body, 2));
-		assertEquals("0, 2, 1, 3, 4", indexes(layout.cellSequence(Frozen.NONE, body)));
-	}
+    layout.setViewportSize(450);
+    layout.compute();
+
+    assertEquals("339, 449", distances(layout.lineSequence(Frozen.TAIL, body)));
+
+  }
+
+  @Test
+  public void getItemByDistance() throws Exception {
+    AxisLayout layout = new AxisLayout();
+    layout.setViewportSize(450);
+
+    Section body = layout.body;
+    body.setCount(10);
+    body.setCellWidth(0, 0, 50);
+    body.setDefaultCellWidth(100);
+
+    body.setOrder(6, 9, 3);
+    body.setHidden(2, 4, true);
+    // 0, 1, 6, 7, 8, 9, 5
+
+    layout.freezeHead(1);
+    layout.freezeTail(1);
+    layout.compute();
+    //		assertEquals("1, 6, 7", indexes(layout.cellSequence(Dock.MAIN, body)));
+
+    //		assertEquals(null, layout.getItemByDistance(-50));
+    assertEquals("0", layout.getItemByDistance(50).getIndex().toString());
+    assertEquals("1", layout.getItemByDistance(101).getIndex().toString());
+    assertEquals("1", layout.getItemByDistance(102).getIndex().toString());
+    assertEquals("6", layout.getItemByDistance(250).getIndex().toString());
+    assertEquals("7", layout.getItemByDistance(348).getIndex().toString());
+    assertEquals("5", layout.getItemByDistance(349).getIndex().toString());
+    assertEquals("5", layout.getItemByDistance(449).getIndex().toString());
+    assertEquals(null, layout.getItemByDistance(1000));
+
+  }
+
+  //	@Test
+  //	public void navigationDisabled() throws Exception {
+  //		Layout layout = new Layout(new Axis());
+  //		layout.setViewportSize(1000);
+  //
+  //		layout.axis.getHeader().setNavigationEnabled(false);
+  //		layout.compute();
+  //		assertEquals(layout.body, layout.current.section);
+  //	}
+
+  @Test
+  public void reorderBeforeFirst() throws Exception {
+    AxisLayout layout = new AxisLayout();
+    layout.setViewportSize(1000);
+
+    Section body = layout.body;
+    body.setCount(10);
+    body.setDefaultCellWidth(100);
+    body.setSelected(1, 1, true);
+
+    layout.compute();
+
+    assertEquals(0, layout.start.getIndex());
+
+    layout.reorder(item(body, 1), item(body, 0));
+    assertEquals(1, layout.start.getIndex());
+
+    //		layout.reorder(item(body, 1), item(body, 0));
+    //		assertEquals(0, layout.start.getIndex());
+    //
+    //		layout.reorder(item(body, 1), item(body, 9));
+    //		assertEquals(0, layout.start.getIndex());
+  }
+
+  @Test
+  public void reorderAfterLast() throws Exception {
+    AxisLayout layout = new AxisLayout();
+    layout.setViewportSize(1000);
+
+    SectionCore body = layout.body;
+    body.setCount(5);
+    body.setDefaultCellWidth(100);
+    body.setSelected(0, 0, true);
+
+    layout.compute();
+    assertEquals("0, 1, 2, 3, 4", indexes(layout.cellSequence(Frozen.NONE, body)));
+
+    layout.reorder(item(body, 0), item(body, 4));
+    assertEquals("1, 2, 3, 4, 0", indexes(layout.cellSequence(Frozen.NONE, body)));
+
+    body.setSelected(false);
+    body.setSelected(1, 1, true);
+    layout.reorder(item(body, 1), item(body, 0));
+    assertEquals("2, 3, 4, 0, 1", indexes(layout.cellSequence(Frozen.NONE, body)));
+  }
+
+  @Test
+  public void reorderAfterLastHidden() throws Exception {
+    AxisLayout layout = new AxisLayout();
+    layout.setViewportSize(1000);
+
+    SectionCore header = layout.header;
+    header.setCount(5);
+    header.setDefaultCellWidth(100);
+    header.setSelected(0, 0, true);
+    header.setHidden(4, 4, true);
+    header.setVisible(true);
+
+    layout.header.setCount(5);
+
+    layout.compute();
+    assertEquals("0, 1, 2, 3", indexes(layout.cellSequence(Frozen.NONE, header)));
+
+    layout.reorder(item(header, 0), item(layout.body, 0));
+    assertEquals("1, 2, 3, 0", indexes(layout.cellSequence(Frozen.NONE, header)));
+  }
 
 
-	@Test
+
+  @Test
+  public void reorderScattered() throws Exception {
+    AxisLayout layout = new AxisLayout();
+    layout.setViewportSize(1000);
+
+    SectionCore body = layout.body;
+    body.setCount(5);
+    body.setDefaultCellWidth(100);
+    body.setSelected(1, 1, true);
+    body.setSelected(3, 3, true);
+
+    layout.compute();
+
+    layout.reorder(item(body, 1), item(body, 2));
+    assertEquals("0, 2, 1, 3, 4", indexes(layout.cellSequence(Frozen.NONE, body)));
+  }
+
+
+  @Test
   public void head2bodyAllHidden() throws Exception {
-	  AxisLayout layout = new AxisLayout();
+    AxisLayout layout = new AxisLayout();
     layout.setViewportSize(1000);
 
     layout.header.setVisible(true);
@@ -336,6 +335,56 @@ public class AxisLayoutTest {
     assertEquals(23, bound.width);
     bound = layout.getBound(Frozen.NONE, layout.body);
     assertEquals(22, bound.distance);
+  }
+
+  @Test
+  public void getFrozenByDistanceEmpty() {
+    AxisLayout layout = new AxisLayout();
+    layout.setViewportSize(1000);
+    layout.compute();
+
+    assertEquals(Frozen.NONE, layout.getFrozenByDistance(-10));
+    assertEquals(Frozen.NONE, layout.getFrozenByDistance(0));
+    assertEquals(Frozen.NONE, layout.getFrozenByDistance(10));
+  }
+
+  @Test
+  public void getFrozenByDistance() {
+    AxisLayout layout = new AxisLayout();
+    layout.header.setCount(1);
+    layout.body.setCount(3);
+    layout.freezeHead(1);
+    layout.freezeTail(1);
+    layout.setViewportSize(1000);
+    layout.compute();
+
+    assertEquals(Frozen.NONE, layout.getFrozenByDistance(-10));
+    assertEquals(Frozen.HEAD, layout.getFrozenByDistance(0));
+    assertEquals(Frozen.HEAD, layout.getFrozenByDistance(layout.getCellBound(0).endDistance() - 1));
+    assertEquals(Frozen.NONE, layout.getFrozenByDistance(layout.getLineBound(1).distance));
+    assertEquals(Frozen.NONE, layout.getFrozenByDistance(layout.getLineBound(2).distance));
+    assertEquals(Frozen.TAIL, layout.getFrozenByDistance(layout.getCellBound(2).distance));
+    assertEquals(Frozen.TAIL, layout.getFrozenByDistance(layout.getLineBound(3).distance));
+    assertEquals(Frozen.NONE, layout.getFrozenByDistance(1000));
+  }
+
+  @Test
+  public void getCacheSectionIndex() {
+    AxisLayout layout = new AxisLayout();
+    layout.header.setVisible(true);
+    layout.header.setCount(1);
+    layout.body.setCount(3);
+    layout.freezeHead(1);
+    layout.freezeTail(1);
+    layout.setViewportSize(1000);
+    layout.compute();
+
+    assertEquals(null, layout.getCache(layout.body, -10));
+    assertEquals(layout.head, layout.getCache(layout.header, 0));
+    assertEquals(layout.main, layout.getCache(layout.body, 0));
+    assertEquals(layout.main, layout.getCache(layout.body, 1));
+    assertEquals(layout.tail, layout.getCache(layout.body, 2));
+    assertEquals(null, layout.getCache(layout.body, 10));
   }
 
 }

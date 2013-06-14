@@ -215,4 +215,38 @@ public class  DragMoveTest extends SwtTestCase {
     dragAndDrop(SWT.BUTTON1, p1, p2);
     assertTrue(matrix.getAxisX().isItemInViewport(matrix.getAxisX().getBody(), 1));
   }
+
+  @Test public void dragOutsideRigthGoAroundAndDragBack() throws Exception {
+    final Matrix matrix = new Matrix(shell, 0);
+    Section bodyX = matrix.getAxisX().getBody();
+    bodyX.setCount(3);
+    matrix.getAxisY().getBody().setCount(5);
+    bodyX.setDefaultMoveable(true);
+    matrix.getAxisX().getHeader().setVisible(true);
+    matrix.getAxisY().getHeader().setVisible(true);
+
+    shell.setBounds(200, 200, 400, 400);
+    shell.open();
+
+    Point cell0 = middle(matrix.getHeaderX().getCellBounds(0, 0));
+    Point cell2 = middle(matrix.getHeaderX().getCellBounds(2, 0));
+    Point outside = new Point(cell0.x + 200, cell0.y);
+    Point around1 = new Point(outside.x, outside.y - 50);
+    Point around2 = new Point(cell0.x, cell0.y - 50);
+    Point end = new Point(cell2.x - 75, cell2.y);
+    click(cell0);
+    dragAndDrop(SWT.BUTTON1, cell0, cell2, outside);
+
+    Integer count = (Integer) bodyX.getCount();
+    bodyX.delete(0, count - 1);
+    bodyX.insert(0, count);
+    bodyX.setSelected(2, true);
+    matrix.getAxisX().setFocusItem(bodyX, 2);
+    matrix.refresh();
+
+    move(0, outside, around1, around2, cell0, cell2);
+    dragAndDrop(SWT.BUTTON1, cell2, end);
+
+    assertEquals(2, bodyX.getIndex(1).intValue());
+  }
 }

@@ -13,7 +13,7 @@ public class Snippet {
     final Display display = shell.getDisplay();
     shell.setLayout(new FillLayout());
 
-    Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL);
+    Matrix<Integer, Integer> matrix = new Matrix<Integer, Integer>(shell, SWT.H_SCROLL | SWT.V_SCROLL);
 
     matrix.getAxisX().getBody().setCount(10);
     matrix.getAxisY().getBody().setCount(10);

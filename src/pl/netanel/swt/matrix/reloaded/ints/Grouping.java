@@ -626,9 +626,10 @@ public class Grouping {
         AxisItem<Integer> lastCell = axis2.getItemByViewportPosition(count-1);
         if (lastCell == null) contentSize = 0;
         else {
-          int[] bound = axis2.getLineBound(
-              AxisItem.create(lastCell.getSection(), lastCell.getIndex() + 1));
-          contentSize = bound == null ? 0 : bound[0] + bound[1];
+//          int[] bound = axis2.getLineBound(
+//              AxisItem.create(lastCell.getSection(), lastCell.getIndex() + 1));
+//          contentSize = bound == null ? 0 : bound[0] + bound[1];
+          contentSize = axis2.getContentWidth();
         }
       }
       return super.init();

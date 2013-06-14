@@ -201,8 +201,6 @@ public class MatrixLayoutCellSequenceTest {
     assertCell(0, 0, 1, 1, 84, 84);
   }
 
-
-
   private void assertCell(int indexX, int indexY, int distanceX, int distanceY, int widthX, int widthY) {
     try {
       assertEquals(indexX, seq.indexX.intValue());

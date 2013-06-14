@@ -300,6 +300,25 @@ public class Axis<N extends Number> {
     return bound == null ? null : new int[] { bound.distance, bound.width };
   }
 
+  /**
+   * Returns the content bound including all the visible cells and lines.
+   * <p>
+   * If the content is larger then viewport then the viewport size is returned.
+   *
+   * @return the content bound including all the visible cells and lines
+   */
+  @Nullable
+  public int getContentWidth() {
+    for (int i = layout.caches.size(); i-- > 0;) {
+      ArrayList<Bound> lines = layout.caches.get(i).lines;
+      if (lines.size() > 1) {
+        Bound bound = lines.get(lines.size() - 1);
+        return java.lang.Math.min(layout.getViewportSize(), bound.distance + bound.width);
+      }
+    }
+    return 0;
+  }
+
   /*------------------------------------------------------------------------
    * Navigation
    */
