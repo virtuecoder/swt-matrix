@@ -88,7 +88,6 @@ public class S0218_ImagePainting {
         style.imageMarginX = 2;
       }
     };
-    matrix.getBody().replacePainterPreserveStyle(painter);
     painter.trackPosition(image1, true);
     painter.trackPosition(image2, true);
     painter.trackPosition(image3, true);

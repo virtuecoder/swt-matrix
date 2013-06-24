@@ -583,7 +583,8 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 			AxisLayoutSequence<Y> seqY;
       AxisLayoutSequence<X> seqX;
 
-      gc.setClipping((Rectangle) null);
+//      gc.setClipping((Rectangle) null);
+//      TestUtil.log("zone1", gc.getClipping());
       switch (p.scope) {
 
 			case Painter.SCOPE_CELLS_X:
@@ -628,6 +629,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				break;
 
 			case Painter.SCOPE_LINES_X:
+			  Rectangle clipping = gc.getClipping();
 			  gc.setClipping(layout.region);
 				seqY = layoutY.lineSequence(frozenY, sectionY);
 				distance = bounds.x;
@@ -636,9 +638,11 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				  p.setup(sectionX.math.ZERO_VALUE(), seqY.getIndex());
 					p.paint(distance, seqY.getDistance(), width, seqY.getWidth());
 				}
+				gc.setClipping(clipping);
 				break;
 
 			case Painter.SCOPE_LINES_Y:
+			  clipping = gc.getClipping();
 			  gc.setClipping(layout.region);
 				seqX = layoutX.lineSequence(frozenX, sectionX);
 				distance = bounds.y;
@@ -647,6 +651,7 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
 				  p.setup(seqX.getIndex(), sectionY.math.ZERO_VALUE());
 					p.paint(seqX.getDistance(), distance, seqX.getWidth(), width);
 				}
+				gc.setClipping(clipping);
 				break;
 
 			case Painter.SCOPE_ENTIRE:

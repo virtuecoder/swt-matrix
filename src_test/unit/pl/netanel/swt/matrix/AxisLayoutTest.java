@@ -334,8 +334,27 @@ public class AxisLayoutTest {
     Bound bound = layout.getBound(Frozen.HEAD, layout.header);
     assertEquals(23, bound.width);
     bound = layout.getBound(Frozen.NONE, layout.body);
-    assertEquals(22, bound.distance);
+    assertEquals(23, bound.distance);
   }
+
+//  @Test
+//  public void lastHeaderLine() throws Exception {
+//    AxisLayout layout = new AxisLayout();
+//    layout.setViewportSize(1000);
+//
+//    layout.header.setVisible(true);
+//    layout.header.setCount(1);
+//    layout.header.setDefaultCellWidth(50);
+//    layout.header.setLineWidth(1, 5);
+//    layout.body.setDefaultCellWidth(50);
+//    layout.body.setCount(5);
+//
+//    layout.compute();
+//    Bound bound = layout.getBound(Frozen.NONE, layout.header);
+//    assertEquals(56, bound.width);
+//    bound = layout.getBound(Frozen.NONE, layout.body);
+//    assertEquals(55, bound.distance);
+//  }
 
   @Test
   public void getFrozenByDistanceEmpty() {

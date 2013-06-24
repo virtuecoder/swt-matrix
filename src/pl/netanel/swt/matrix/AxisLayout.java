@@ -218,6 +218,12 @@ class AxisLayout<N extends Number> {
 		// Set distances
 		head.setDistances(0);
 		main.setDistances(head.innerWidth);
+		// Handle the case when last line of head is wider then first line of main
+		int w1 = head.isEmpty() ? 0 : head.lines.get(head.lines.size() - 1).width;
+		int w2 = main.isEmpty() ? 0 : main.lines.get(0).width;
+	  int d = w1 - w2;
+	  if (d > 0) main.distance += d;
+
 //		tail.setDistances(main.outerWidth > mainMaxWidth ?
 		tail.setDistances(isScrollRequired() ?
 				viewportSize - tail.outerWidth :
@@ -1118,8 +1124,8 @@ class AxisLayout<N extends Number> {
         return new Bound(bound.distance + bound.width + 1, 0);
 		  }
 		} else {
+		  int distance = cache.lines.get(first).distance;
 			Bound b = cache.lines.get(last == -1 ? cache.items.size() - 1 : last);
-			int distance = cache.lines.get(first).distance;
 			return new Bound(distance, b.distance + b.width - distance);
 
 		}

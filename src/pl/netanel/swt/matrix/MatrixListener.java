@@ -239,7 +239,6 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     Cursor resizeCursor;
     int resizeStartDistance, resizeCellWidth, newCellWidth, distance, lastDistance;
     AutoScroll autoScroll;
-    boolean focusMoved = true;
     private int resizeEvent;
     private boolean selectState;
     AxisItem<N> mouseOverItem;
@@ -327,7 +326,6 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
             if (item.section.isSelected(item.getIndex())) {
               // Start moving
               moving = true;
-              matrix.setCursor(cursor = Resources.getCursor(SWT.CURSOR_HAND));
 
               // Remember image offset for dragging
               int x, y; //, w, h;
@@ -503,7 +501,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
           }
         }
 
-        focusMoved = axisLayout.moveFocusItem(move);
+        boolean focusMoved = axisLayout.moveFocusItem(move);
         item = axisLayout.current;
         if (focusMoved) {
           axis.scroll();
@@ -714,13 +712,10 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     }
 
     public void refresh() {
-      item = last = null;
-      if (item == null) return;
-      N count = item.section.getCount();
-      if (axis.math.compare(item.getIndex(), count) >= 0) {
-        item = axis.math.compare(count, axis.math.ZERO_VALUE()) == 0 ? null :
-          AxisItem.createInternal(item.section, axis.math.decrement(count));
-      }
+      item = last = prev = lastFocus = null;
+      mouseMoveEvent = null;
+      moving = false;
+      resizing = false;
     }
 
     public void sendEvents() {
@@ -1018,8 +1013,6 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 
 
   protected boolean moveCursor(int commandId) {
-    stateY.focusMoved = true;
-    stateX.focusMoved = true;
     mY = null; mX = null;
     switch (commandId) {
 
@@ -1091,7 +1084,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       }
     }
 
-    return stateY.focusMoved && stateX.focusMoved;
+    return true;
   }
 
 
@@ -1181,9 +1174,22 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
   public void refresh() {
     stateY.refresh();
     stateX.refresh();
-  }
 
+    Event e = new Event();
+    e.type = SWT.MouseMove;
+    Display display = matrix.getDisplay();
+    Point p = display.map(null, matrix, display.getCursorLocation());
+    e.x = p.x;
+    e.y = p.y;
+    handleEvent(e);
+    if (stateX.item == null || stateY.item == null ) {
+      e.type = SWT.Activate;
+      handleEvent(e);
+    }
+
+  }
   class DragItemPainter extends Painter<X, Y> {
+
     ZoneCore<X, Y> header;
     Painter<X, Y> painter;
     Rectangle bounds;
@@ -1204,6 +1210,10 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         painter.init(gc, frozenX, frozenY);
         highlight = painter.selectionHighlight;
         painter.selectionHighlight = false;
+      }
+      boolean result = stateX.moving || stateY.moving;
+      if (result) {
+        matrix.setCursor(cursor = Resources.getCursor(SWT.CURSOR_HAND));
       }
       return true;
     }

@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -613,6 +614,7 @@ public class Grouping {
     private final int axisDirection;
     private Node node;
     private int contentSize;
+    private Rectangle clipping;
 
     public SeparatorPainter(int axisDirection) {
       super(SEPARATOR_PAINTER_NAME, Painter.SCOPE_CELLS);
@@ -632,7 +634,22 @@ public class Grouping {
           contentSize = axis2.getContentWidth();
         }
       }
-      return super.init();
+      boolean init = super.init();
+
+
+      /* Otherwise the split line might be displayed when it should not
+       * if first item of a grouped cell is frozen
+       */
+      clipping = gc.getClipping();
+      Rectangle area = matrix.getClientArea();
+      if (axisDirection == SWT.HORIZONTAL) {
+        gc.setClipping(clipping.x, area.y, clipping.width, area.height);
+      }
+      else {
+        gc.setClipping(area.x, clipping.y, area.width, clipping.height);
+      }
+
+      return init;
     }
 
     @Override
@@ -660,6 +677,12 @@ public class Grouping {
         width = contentSize - x;
       }
       gc.fillRectangle(x, y, width, height);
+    }
+
+    @Override
+    public void clean() {
+      gc.setClipping(clipping);
+      super.clean();
     }
   }
 

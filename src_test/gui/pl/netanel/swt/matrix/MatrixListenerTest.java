@@ -65,7 +65,8 @@ public class MatrixListenerTest extends SwtTestCase {
 
 	  matrix.getAxisX().getBody().delete(0, 9);
 	  matrix.refresh();
-	  matrix.execute(Matrix.CMD_DELETE);
+	  press(SWT.DEL);
+	  //matrix.execute(Matrix.CMD_DELETE);
 	}
 
   @Override

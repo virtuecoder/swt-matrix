@@ -19,6 +19,7 @@ import pl.netanel.util.NotNull;
 import pl.netanel.util.Preconditions;
 
 import java.text.MessageFormat;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.Executors;
@@ -436,8 +437,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
     painters.add(new FrozenPainter(Frozen.TAIL, Frozen.TAIL));
     painters.add(new FrozenPainter(Frozen.HEAD, Frozen.HEAD));
 
-    Painter<X, Y> frozenLinePainter = new LinePainter<X, Y>(
-            Painter.NAME_FREEZE_HEAD_LINE_X, Painter.SCOPE_ENTIRE) {
+    Painter<X, Y> frozenLinePainter = new LinePainter<X, Y>(Painter.NAME_FREEZE_HEAD_LINE_X) {
       @Override
       public void paint(int x, int y, int width, int height) {
         if (axisX.getFrozenHead() > 0) {
@@ -446,6 +446,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
           int[] bound = axisX.getLineBound(item);
           if (bound == null) return;
           gc.fillRectangle(bound[0], y, bound[1], height);
+          //TestUtil.log(bound[0], y, bound[1], height);
         }
         // gc.setBackground(background);
       }
@@ -615,6 +616,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
       return;
     try {
       area = getBounds();
+      area.x = 0; area.y = 0;
       isDuringResize = true;
 
       boolean isScrollbarVisibleX = false, isScrollbarVisibleY = false;
@@ -1377,6 +1379,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
     return shouldCopyBoyondBody;
   }
 
+
   // /**
   // * Will allow the matrix to copy not rectangular cell selections when set to
   // * <code>true</code>. Otherwise will throw @link
@@ -1423,6 +1426,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
 //        if (zone.editor != null) zone.editor.insertX(targetX, countX);
       }
     }
+    listener.refresh();
   }
 
   @SuppressWarnings("unchecked")
@@ -1437,6 +1441,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
 //        if (zone.editor != null) zone.editor.insertY(targetY, countY);
       }
     }
+    listener.refresh();
   }
 
   @SuppressWarnings("unchecked")
@@ -1451,6 +1456,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
 //        if (zone.editor != null) zone.editor.deleteX(startX, endX);
       }
     }
+    listener.refresh();
   }
 
   @SuppressWarnings("unchecked")
@@ -1465,5 +1471,6 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
 //        if (zone.editor != null) zone.editor.deleteY(startY, endY);
       }
     }
+    listener.refresh();
   }
 }

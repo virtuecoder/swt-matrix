@@ -1192,7 +1192,9 @@ public class Painter<X extends Number, Y extends Number> {
       if (!isReset) return;
       if (!images.contains(image)) return;
       Point[][] locations = data.get(frozenIndex).get(image);
-      locations[ix][iy] = new Point(x, y);
+      if (ix < locations.length && iy < locations[ix].length) {
+        locations[ix][iy] = new Point(x, y);
+      }
     }
 
     void track(Image image, boolean state) {

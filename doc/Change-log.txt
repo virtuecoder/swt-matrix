@@ -1,4 +1,11 @@
 -------------------------------------------------------------------------------
+Version 0.7.52
+
+Bug fixes:
+- Frozen lines were painted with an offset when matrix layout data had margin > 0
+- Cursor border started to eraly if the last line of header was wider than 1
+
+-------------------------------------------------------------------------------
 Version 0.7.51
 
 Bug fixes:
