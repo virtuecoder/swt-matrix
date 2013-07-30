@@ -496,7 +496,7 @@ public class Painter<X extends Number, Y extends Number> {
         y = max(y, y2 + 2 * style.textMarginY);
       }
       else {
-        x += fontSizeCache.getWidth(text) + 2 * style.textMarginX;
+        x += fontSizeCache.getWidth(text, gc) + 2 * style.textMarginX;
         y = max(y, fontSizeCache.getHeight(text)) + 2 * style.textMarginY;
       }
     }

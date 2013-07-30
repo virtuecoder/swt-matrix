@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Listener;
 class CommandListener implements Listener {
 	ArrayList<GestureBinding> bindings = new ArrayList<GestureBinding>();
 	protected Event event;
-	
+
 	public void attachTo(Control control) {
 		control.addListener(SWT.KeyDown, this);
 		control.addListener(SWT.KeyUp, this);
@@ -34,35 +34,36 @@ class CommandListener implements Listener {
 		control.addListener(SWT.FocusOut, this);
 		control.addListener(SWT.FocusIn, this);
 	}
-	
+
 	public void handleEvent(Event e) {
 		event = e;
+		if (e.widget.isDisposed()) return;
 		for (GestureBinding b: bindings) {
 			if (b.isMatching(e)) {
 				executeCommand(b.commandId);
-				/* does not quit loop because can execute 
+				/* does not quit loop because can execute
 		   	   many both any zone and a specific zone bindings */
 			}
 		}
 	}
-	
+
 	/**
 	 * Binds the command to the user gesture specified by the event type and code.
-	 * Code is a logical <i>OR</i> of key, state mask and mouse button codes. 
+	 * Code is a logical <i>OR</i> of key, state mask and mouse button codes.
 	 */
 	public void bind(int commandId, int eventType, int code) {
 		bindings.add(new GestureBinding(commandId, eventType, code));
 	}
-	
+
 	/**
 	 * Removes the binding the command to the user gesture specified by the event type and code.
-	 * Code is a logical <i>OR</i> of key, state mask and mouse button codes. 
+	 * Code is a logical <i>OR</i> of key, state mask and mouse button codes.
 	 */
 	public void unbind(int commandId, int eventType, int code) {
 		for (int i = bindings.size(); i-- > 0;) {
 			GestureBinding binding = bindings.get(i);
-			if (binding.commandId == commandId 
-					&& binding.eventType == eventType 
+			if (binding.commandId == commandId
+					&& binding.eventType == eventType
 					&& binding.key == code) {
 				bindings.remove(i);
 			};
@@ -71,7 +72,7 @@ class CommandListener implements Listener {
 
 	protected void executeCommand(int commandId) {
 	}
-	
-	
-	
+
+
+
 }

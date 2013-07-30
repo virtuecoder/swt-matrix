@@ -1,9 +1,22 @@
 -------------------------------------------------------------------------------
+Version 0.7.54
+
+Bug fixes:
+- Editor control could try to handle event while being disposed.
+
+-------------------------------------------------------------------------------
+Version 0.7.53
+
+Bug fixes:
+- Autosize was incorrect if text contained some non-ASCII characters
+
+-------------------------------------------------------------------------------
 Version 0.7.52
 
 Bug fixes:
 - Frozen lines were painted with an offset when matrix layout data had margin > 0
-- Cursor border started to eraly if the last line of header was wider than 1
+- Cursor border started to early if the last line of header was wider than 1
+- Scrolling over hidden items could stumble
 
 -------------------------------------------------------------------------------
 Version 0.7.51

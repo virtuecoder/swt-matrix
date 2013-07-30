@@ -1,6 +1,6 @@
 package pl.netanel.swt.matrix;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static pl.netanel.swt.matrix.TestUtil.distances;
 import static pl.netanel.swt.matrix.TestUtil.indexes;
 import static pl.netanel.swt.matrix.TestUtil.item;
@@ -406,4 +406,18 @@ public class AxisLayoutTest {
     assertEquals(null, layout.getCache(layout.body, 10));
   }
 
+  @Test
+  public void getItemByPosition_empty() throws Exception {
+    AxisLayout layout = new AxisLayout();
+    assertEquals(null, layout.getItemByPosition(layout.math.create(0)));
+    assertEquals(null, layout.getItemByPosition(layout.math.create(10)));
+  }
+
+  @Test
+  public void getItemByPosition_hidden() throws Exception {
+    AxisLayout layout = new AxisLayout();
+    layout.body.setCount(10);
+    layout.body.setHidden(0, 4, true);
+    assertEquals(6, layout.getItemByPosition(layout.math.create(2)).index);
+  }
 }

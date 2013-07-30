@@ -24,6 +24,24 @@ class FontSizeCache {
         115,116,117,118,119,120,121,122,123,124,125,126,211,243,260,261,262,
         263,280,281,321,322,323,324,346,347,377,378,379,380,8364,61440,61441};
 
+//  for (int i = 0; i < 65536; i++) {
+//    System.out.println(String.format("%05d %s", i, Character.valueOf((char) i).toString()));
+//  }
+//
+//	int[][] ranges = new int[][] {
+//	    new int[] {32, 126},
+//	    new int[] {160, 879},
+//	    new int[] {884, 885},
+//	    new int[] {890, 894},
+//	    new int[] {900, 1299},
+//	    new int[] {3647, 3647},
+//	    new int[] {7424, 7626},
+//	    new int[] {7678, 9835},
+//	    new int[] {10038, 10111},
+//	    new int[] {11360, 11383},
+//	    new int[] {11799, 11799},
+//	};
+
 	static HashMap<FontData, FontSizeCache> cache = new HashMap<FontData, FontSizeCache>();
 
 	int[] cw;  // character widths
@@ -58,10 +76,16 @@ class FontSizeCache {
 	public int getHeight(String s) {
 	  return ch;
 	}
-	public int getWidth(String s) {
+	public int getWidth(String s, GC gc) {
 		int extent = 0;
 		for (int i = 0; i < s.length(); i++) {
-			extent += cw[s.charAt(i)];
+		  char c = s.charAt(i);
+		  int w = cw[c];
+		  if (w == 0) {
+		    w = gc.stringExtent(Character.toString(c)).x;
+		    cw[c] = w;
+		  }
+			extent += w;
 		}
 		return extent;
 	}

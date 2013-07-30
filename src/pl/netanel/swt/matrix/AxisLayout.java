@@ -960,19 +960,7 @@ class AxisLayout<N extends Number> {
 
 	@Nullable
 	AxisItem<N> getItemByPosition(MutableNumber<N> position) {
-		MutableNumber<N> pos1 = math.create(0);
-		MutableNumber<N> pos2 = math.create(0);
-
-		for (int i = 0, size = sections.size(); i < size; i++) {
-			SectionCore<N> section = sections.get(i);
-			if (!section.isVisible()) continue;
-			pos1.set(pos2);
-			pos2.add(section.getVisibleCount());
-			if (math.compare(pos2, position) > 0) {
-				return AxisItem.createInternal(section, section.getIndex(pos1.subtract(position).negate().getValue()));
-			}
-		}
-		return null;
+	  return nextItem(zeroItem, position, forward);
 	}
 
 	/**

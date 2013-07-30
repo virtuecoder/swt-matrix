@@ -688,10 +688,10 @@ public class Axis<N extends Number> {
                               : newSelection == scrollBar.getMaximum()
                                   - scrollBar.getThumb() ? Move.END : Move.NULL;
 
+//          TestUtil.log(move, newSelection, layout.getScrollPosition());
           if (layout.setScrollPosition(newSelection, move)) {
             scrollBar.setThumb(layout.getScrollThumb());
             scrollBar.setSelection(layout.getScrollPosition());
-            // TestUtil.log(move, newSelection, layout.getScrollPosition(),
             // layout.getScrollThumb());
             matrix.redraw();
           }

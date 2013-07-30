@@ -218,8 +218,8 @@
   
   <target name="build-872533850" description="Morgan Stanley">
   	<ant antfile="build\build.xml" target="dist">
-		<property name="retail" value="true"/>
-	</ant>
+		  <property name="retail" value="true"/>
+	  </ant>
   	<antcall target="export-project" />
     <ftp 
        server="${ftp.server}"
@@ -241,6 +241,7 @@
   	<ant antfile="build\build.xml" target="dist">
   		<property name="retail" value="true"/>
   	</ant>
+  	<antcall target="export-project" />
     <ftp 
        server="${ftp.server}"
        remotedir="${ftp.remote.dir}/swt-matrix/126999091"
@@ -250,9 +251,11 @@
        verbose="yes"
      >
        <fileset file="${output.dir}/swt-matrix-${version}.zip"/>
+    	 <fileset file="${output.dir}/swt-matrix-src-${version}.zip"/>
     </ftp>
   	<echo>The new version:
   	  http://www.netanel.pl/swt-matrix/126999091/swt-matrix-${version}.zip
+  	  http://www.netanel.pl/swt-matrix/126999091/swt-matrix-src-${version}.zip
   	</echo>
 	</target>
 	
