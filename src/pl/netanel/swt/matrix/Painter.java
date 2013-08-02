@@ -623,9 +623,9 @@ public class Painter<X extends Number, Y extends Number> {
     if (textSize.x < 0) return;
     textSize.y = _height - 2 * style.textMarginY;
 
-    boolean fontChange = style.font != lastFont;
+    Font font = style.font == null ? matrix.getDisplay().getSystemFont() : style.font;
+    boolean fontChange = font != lastFont;
     if (fontChange) {
-      Font font = style.font == null ? matrix.getDisplay().getSystemFont() : style.font;
       gc.setFont(font);
       if (style.hasWordWraping) {
         textLayout.setFont(gc.getFont());

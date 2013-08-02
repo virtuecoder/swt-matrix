@@ -406,18 +406,28 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
     }
   }
 
+  boolean isRequired = true;
   public void computeIfRequired() {
+    isRequired = isRequired || layoutX.isComputingRequired || layoutY.isComputingRequired ||
+        layoutX.isComputingFollowupRequired || layoutY.isComputingFollowupRequired;
+    for (ZoneCore<X, Y> zone: zones) {
+      if (zone.isDirty) {
+        isRequired = true;
+        zone.isDirty = false;
+      }
+    }
     layoutX.computeIfRequired();
     layoutY.computeIfRequired();
 
-    for (ZoneCore<X, Y> zone: zones) {
-      if (zone.isDirty) {
-        computeMerging();
-        break;
+//    TestUtil.log(isRequired);
+    if (isRequired) {
+      computeMerging();
+      for (Runnable r: callbacks) {
+        r.run();
       }
-    }
-    for (Runnable r: callbacks) {
-      r.run();
+      layoutX.isComputingFollowupRequired = false;
+      layoutY.isComputingFollowupRequired = false;
+      isRequired = false;
     }
   }
 
@@ -425,6 +435,7 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
    * Each frozen area contains a
    */
   public void computeMerging() {
+//    TestUtil.log("compute merging");
     // Clear region
     if (region != null && !region.isDisposed()) {
       region.dispose();

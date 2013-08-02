@@ -39,6 +39,7 @@ class AxisLayout<N extends Number> {
 	ArrayList<Runnable> callbacks;
 
 	boolean isComputingRequired;
+	boolean isComputingFollowupRequired;
 	boolean isFocusItemEnabled;
 
 	public AxisSequence<N> forward, backward, forwardNavigator, backwardNavigator;
@@ -181,6 +182,7 @@ class AxisLayout<N extends Number> {
 		for (Runnable r: callbacks) {
 			r.run();
 		}
+		isComputingFollowupRequired = true;
 
 	}
 
@@ -355,13 +357,13 @@ class AxisLayout<N extends Number> {
 
   	AxisItem<N> current2 = null;
 		switch (move) {
-		case HOME: 				current2 = forwardNavigator.first(); break;
-		case END: 				current2 = backwardNavigator.first(); break;
-		case NEXT: 				current2 = nextItem(current, forwardNavigator); break;
+		case HOME: 				  current2 = forwardNavigator.first(); break;
+		case END: 				  current2 = backwardNavigator.first(); break;
+		case NEXT: 				  current2 = nextItem(current, forwardNavigator); break;
 		case PREVIOUS: 			current2 = nextItem(current, backwardNavigator); break;
 		case NEXT_PAGE:			show(current); current2 = nextPage(current, forwardNavigator); break;
-		case PREVIOUS_PAGE:		show(current); current2 = nextPage(current, backwardNavigator); break;
-		case NULL: 				break;
+		case PREVIOUS_PAGE:	show(current); current2 = nextPage(current, backwardNavigator); break;
+		case NULL: 				  break;
 		}
 		boolean result = current2 != null && compare(current, current2) != 0;
 		if (current2 != null) {
@@ -404,6 +406,7 @@ class AxisLayout<N extends Number> {
 		if (item.equals(start) || isOutOfBounds(item)) return;
 		if (forward.setHasMore(start = item)) {
 			start = forward.getItem();
+			isComputingRequired = true;
 		}
 //		if (forward.hasNext()) {
 //			start = backward.set(start).getItem();
@@ -1272,6 +1275,7 @@ class AxisLayout<N extends Number> {
 //		}
 //
 		show(source);
+		isComputingRequired = true;
 		return true;
 	}
 

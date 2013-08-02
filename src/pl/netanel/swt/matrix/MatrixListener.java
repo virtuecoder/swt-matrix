@@ -9,7 +9,60 @@ package pl.netanel.swt.matrix;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
-import static pl.netanel.swt.matrix.Matrix.*;
+import static pl.netanel.swt.matrix.Matrix.CMD_COPY;
+import static pl.netanel.swt.matrix.Matrix.CMD_CUT;
+import static pl.netanel.swt.matrix.Matrix.CMD_DELETE;
+import static pl.netanel.swt.matrix.Matrix.CMD_EDIT_ACTIVATE;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_LOCATION_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_DOWN_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_MOST_UP_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_PAGE_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_FOCUS_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_ITEM_HIDE;
+import static pl.netanel.swt.matrix.Matrix.CMD_ITEM_SHOW;
+import static pl.netanel.swt.matrix.Matrix.CMD_PACK_COLUMN;
+import static pl.netanel.swt.matrix.Matrix.CMD_PACK_ROW;
+import static pl.netanel.swt.matrix.Matrix.CMD_PASTE;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ALL;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_COLUMN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_COLUMN_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_DOWN_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_FULL_UP_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_DOWN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_LEFT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_PAGE_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_RIGHT;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ROW;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_ROW_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_COLUMN;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_COLUMN_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_LOCATION_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_TO_ROW_ALTER;
+import static pl.netanel.swt.matrix.Matrix.CMD_SELECT_UP;
+import static pl.netanel.swt.matrix.Matrix.CMD_TRAVERSE_TAB_NEXT;
+import static pl.netanel.swt.matrix.Matrix.CMD_TRAVERSE_TAB_PREVIOUS;
+import static pl.netanel.swt.matrix.Matrix.isBodySelect;
+import static pl.netanel.swt.matrix.Matrix.isExtendingSelect;
 
 import java.math.BigInteger;
 import java.util.concurrent.ScheduledFuture;
@@ -580,6 +633,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
       }
 
       if (axisLayout.reorder(subject, target)) {
+//        TestUtil.log("reorder");
 
         // Adjust cursor location if moving smaller to bigger
         Bound r1 = axisLayout.getCellBound(last);
@@ -1114,6 +1168,8 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
     if (stateY.item == null || stateX.item == null) return;
     if (stateY.last == null) stateY.last = stateY.item;
     if (stateX.last == null) stateX.last = stateX.item;
+
+//    TestUtil.log("select");
 
     boolean skipHidden = matrix.getSelectSkipHidden();
     boolean ctrlSelection = commandId == CMD_FOCUS_LOCATION_ALTER ||
