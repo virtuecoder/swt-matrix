@@ -13,6 +13,7 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.TextLayout;
 import org.eclipse.swt.widgets.*;
 import pl.netanel.util.ImmutableIterator;
 import pl.netanel.util.NotNull;
@@ -251,6 +252,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
   private boolean shouldCopyBoyondBody;
   private boolean isDuringResize;
   private boolean skipHidden;
+  TextLayout textLayout;
 
   /**
    * Calls the {@link #Matrix(Composite, int, Axis, Axis)} constructor with
@@ -317,8 +319,10 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
 
     setAxises(axisX, axisY);
 
+    textLayout = new TextLayout(getDisplay());
     painters = new Painters<X, Y>();
     setDefaultPainters();
+
 
     listener2 = new Listener() {
       @Override
@@ -337,6 +341,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
         }
       }
     };
+
 
     addListener(SWT.Paint, listener2);
     addListener(SWT.Resize, listener2);
@@ -371,6 +376,7 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
       }
     }
     layout.dispose();
+    textLayout.dispose();
   }
 
   @Override

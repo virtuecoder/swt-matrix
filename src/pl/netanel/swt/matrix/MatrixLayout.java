@@ -22,6 +22,7 @@ import pl.netanel.util.Nullable;
 class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneCore<X, Y>> {
 
   final ArrayList<ZoneCore<X, Y>> zones;
+  final ZoneCore<X, Y>[][] zoneArray;
   final AxisLayout<X> layoutX;
   final AxisLayout<Y> layoutY;
 
@@ -41,10 +42,16 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
     this.layoutX = layoutX;
     this.layoutY = layoutY;
     zones = new ArrayList<ZoneCore<X, Y>>(layoutX.sections.size() * layoutY.sections.size());
-    for (SectionCore<X> sectionX: layoutX.sections) {
-      for (SectionCore<Y> sectionY: layoutY.sections) {
+    zoneArray = newZoneCoreArray2D();
+
+    for (int i = 0; i < layoutX.sections.size(); i++) {
+      SectionCore<X> sectionX = layoutX.sections.get(i);
+      ZoneCore<X, Y>[] row = zoneArray[i] = newZoneCoreArray();
+      for (int j = 0; j < layoutY.sections.size(); j++) {
+        SectionCore<Y> sectionY = layoutY.sections.get(j);
         ZoneCore<X, Y> zone = new ZoneCore<X, Y>(sectionX, sectionY);
         zones.add(zone);
+        row[j] = zone;
       }
     }
 
@@ -56,6 +63,15 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
     }
 
     callbacks = new ArrayList<Runnable>();
+  }
+
+  @SuppressWarnings("unchecked")
+  private ZoneCore<X, Y>[][] newZoneCoreArray2D() {
+    return new ZoneCore[layoutX.sections.size()][];
+  }
+  @SuppressWarnings("unchecked")
+  private ZoneCore<X, Y>[] newZoneCoreArray() {
+    return new ZoneCore[layoutY.sections.size()];
   }
 
   void setMatrix(Matrix<X, Y> matrix) {
@@ -140,13 +156,7 @@ class MatrixLayout<X extends Number, Y extends Number> implements Iterable<ZoneC
   }
 
   public ZoneCore<X, Y> getZone(SectionCore<X> sectionX, SectionCore<Y> sectionY) {
-    for (ZoneCore<X, Y> zone: zones) {
-      if (zone.getSectionY().equals(sectionY) &&
-          zone.getSectionX().equals(sectionX) ) {
-        return zone;
-      }
-    }
-    return null;
+    return zoneArray[sectionX.index][sectionY.index];
   }
 
   /**

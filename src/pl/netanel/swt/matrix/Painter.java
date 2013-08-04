@@ -405,7 +405,7 @@ public class Painter<X extends Number, Y extends Number> {
 		fontSizeCache = FontSizeCache.get(gc, font);
 		extent = new Point(-1, gc.stringExtent("ty").y);
 		textSize = new Point(-1, extent.y);
-		textLayout = new TextLayout(gc.getDevice());
+		textLayout = matrix.textLayout;
 		clipping = gc.getClipping();
 
 		if (zone != null) {
@@ -426,7 +426,7 @@ public class Painter<X extends Number, Y extends Number> {
 	 * @see <code>init()</code>
 	 */
 	public void clean() {
-	  if (textLayout != null) textLayout.dispose();
+//	  if (textLayout != null) textLayout.dispose();
 	  //imageCache.isReset = false;
 	  //gc.setClipping(clipping);
 	}

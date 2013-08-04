@@ -63,6 +63,7 @@ public class PainterTest {
         style.font = indexY.intValue() == 1 ? font : null;
       }
     };
+    painter.setMatrix(new Matrix(new Shell(), SWT.NONE));
     GC gc = new GC(display);
     Point extent1 = gc.stringExtent("by");
     gc.setFont(font);
