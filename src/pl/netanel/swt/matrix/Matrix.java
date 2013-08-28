@@ -1205,19 +1205,19 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
     try {
       int w = 0;
       for (ZoneCore<X, Y> zone : layout.zones) {
-        if (!zone.sectionX.equals(section))
-          continue;
+        if (!zone.sectionX.equals(section)) continue;
 
-        CellSet<X, Y> set = new CellSet<X, Y>(zone.sectionX.math,
-                zone.sectionY.math);
+        CellSet<X, Y> set = new CellSet<X, Y>(zone.sectionX.math, zone.sectionY.math);
         set.add(index, index, zone.sectionY.math.ZERO_VALUE(),
                 zone.sectionY.math.decrement(zone.sectionY.getCount()));
         NumberPairSequence2<X, Y> seq = new NumberPairSequence2<X, Y>(set);
         for (Painter<X, Y> painter : zone.painters) {
+          if (painter.scope != Painter.SCOPE_CELLS) continue;
           painter.init(gc, Frozen.NONE, Frozen.NONE);
           for (seq.init(); seq.next(); ) {
             // if (zone.isMerged(seq.indexX.getValue(), seq.indexY.getValue()))
             // continue;
+            if (zone.sectionY.getDefaultHiddenSet().contains(seq.indexY.getValue())) continue;
             w = java.lang.Math.max(w, painter.computeSize(seq.indexX(),
                     seq.indexY(), SWT.DEFAULT,
                     zone.sectionY.getCellWidth(seq.indexY.getValue())).x);
@@ -1240,19 +1240,19 @@ public class Matrix<X extends Number, Y extends Number> extends Canvas implement
       int w = 0;
       for (ZoneCore<X, Y> zone : layout.zones) {
         if (zone.sectionY.equals(section)) {
-          CellSet<X, Y> set = new CellSet<X, Y>(zone.sectionX.math,
-                  zone.sectionY.math);
+          CellSet<X, Y> set = new CellSet<X, Y>(zone.sectionX.math, zone.sectionY.math);
           set.add(zone.sectionX.math.ZERO_VALUE(),
-                  zone.sectionX.math.decrement(zone.sectionX.getCount()), index,
-                  index);
+                  zone.sectionX.math.decrement(zone.sectionX.getCount()), index, index);
           NumberPairSequence2<X, Y> seq = new NumberPairSequence2<X, Y>(set);
           for (Painter<X, Y> painter : zone.painters) {
+            if (painter.scope != Painter.SCOPE_CELLS) continue;
             painter.init(gc, Frozen.NONE, Frozen.NONE);
             for (seq.init(); seq.next(); ) {
+              if (zone.sectionX.getDefaultHiddenSet().contains(seq.indexX.getValue())) continue;
               w = java.lang.Math.max(w, painter.computeSize(seq.indexX(),
-                      seq.indexY(),
-                      zone.sectionX.getCellWidth(seq.indexX.getValue()),
-                      SWT.DEFAULT).y);
+                  seq.indexY(),
+                  zone.sectionX.getCellWidth(seq.indexX.getValue()),
+                  SWT.DEFAULT).y);
             }
             painter.clean();
           }
