@@ -455,8 +455,8 @@ public class Painter<X extends Number, Y extends Number> {
 
     if (image != null) {
       Rectangle bounds = image.getBounds();
-      x = bounds.width + 2 * style.imageMarginX;
-      y = bounds.height + 2 * style.imageMarginY;
+      x = bounds.width + 2 * style.imageMarginX + style.imageMarginLeft + style.imageMarginRight;
+      y = bounds.height + 2 * style.imageMarginY + style.imageMarginTop + style.imageMarginBottom;
     }
 
     if (text != null) {
@@ -467,6 +467,9 @@ public class Painter<X extends Number, Y extends Number> {
         fontSizeCache = FontSizeCache.get(gc, font);
         lastFont = font;
       }
+
+      int marginX = 2 * style.textMarginX + style.textMarginLeft + style.textMarginRight;
+      int marginY = 2 * style.textMarginY + style.textMarginTop + style.textMarginBottom;
 
       if (style.hasWordWraping) {
         if (wHint == SWT.DEFAULT) {
@@ -487,31 +490,31 @@ public class Painter<X extends Number, Y extends Number> {
         textLayout.setFont(gc.getFont());
         textLayout.setText(text);
         textLayout.setAlignment(style.textAlignX);
-        textLayout.setWidth(x2 < 1 ? 1 : x2 - 2 * style.textMarginX);
+        textLayout.setWidth(x2 < 1 ? 1 : x2 - marginX);
 
         for (int i = 0; i < textLayout.getLineCount(); i++)
           y2 += textLayout.getLineBounds(i).height;
 
-        x += wHint == SWT.DEFAULT ? textLayout.getBounds().width + 2 * style.textMarginX: x2;
+        x += wHint == SWT.DEFAULT ? textLayout.getBounds().width + marginX: x2;
         y = max(y, y2 + 2 * style.textMarginY);
       }
       else {
-        x += fontSizeCache.getWidth(text, gc) + 2 * style.textMarginX;
-        y = max(y, fontSizeCache.getHeight(text)) + 2 * style.textMarginY;
+        x += fontSizeCache.getWidth(text, gc) + marginX;
+        y = max(y, fontSizeCache.getHeight(text)) + marginY;
       }
     }
 
     if (imagesAfter != null) {
       for (int i = imagesAfter.length; i-- > 0;) {
         Rectangle bounds = imagesAfter[i].getBounds();
-        x += bounds.width + style.imageMarginX;
+        x += bounds.width + style.imageMarginLeft + style.imageMarginX;
         if (bounds.height > y) y = bounds.height;
       }
     }
     if (imagesBefore != null) {
       for (int i = imagesBefore.length; i-- > 0;) {
         Rectangle bounds = imagesBefore[i].getBounds();
-        x += bounds.width + style.imageMarginX;
+        x += bounds.width + style.imageMarginLeft + style.imageMarginX;
         if (bounds.height > y) y = bounds.height;
       }
     }
@@ -619,9 +622,11 @@ public class Painter<X extends Number, Y extends Number> {
 
   private void paintText(int w) {
     if (text == null) return;
-    textSize.x = w - 2 * style.textMarginX;
+    int textMarginX = 2 * style.textMarginX + style.textMarginLeft + style.textMarginRight;
+    textSize.x = w - textMarginX;
     if (textSize.x < 0) return;
-    textSize.y = _height - 2 * style.textMarginY;
+    int textMarginY = 2 * style.textMarginY + style.textMarginTop + style.textMarginBottom;
+    textSize.y = _height - textMarginY;
 
     Font font = style.font == null ? matrix.getDisplay().getSystemFont() : style.font;
     boolean fontChange = font != lastFont;
@@ -639,19 +644,19 @@ public class Painter<X extends Number, Y extends Number> {
     int x2 = _x, y2 = _y;
     switch (style.textAlignX) {
     case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP:
-      x2 += style.textMarginX; break;
+      x2 += style.textMarginLeft + style.textMarginX; break;
     case SWT.CENTER:
       x2 += (w - textSize.x) / 2; break;
     case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
-      x2 += w - textSize.x - style.textMarginX; break;
+      x2 += w - textSize.x - style.textMarginRight - style.textMarginX; break;
     }
     switch (style.textAlignY) {
     case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
-      y2 += style.textMarginY; break;
+      y2 += style.textMarginTop + style.textMarginY; break;
     case SWT.CENTER:
       y2 += (_height - extent.y) / 2; break;
     case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:
-      y2 += _height - textSize.y - style.textMarginY; break;
+      y2 += _height - textSize.y - style.textMarginBottom - style.textMarginY; break;
     }
 
     if (style.hasWordWraping) {
@@ -662,8 +667,8 @@ public class Painter<X extends Number, Y extends Number> {
       //      if (w < 4 || _height < 4) return;
       clip(_height < extent.y + 2 * style.textMarginY);
       gc.drawString(text, x2, y2, true);
-      _x += textSize.x + style.textMarginX;
-      _width -= textSize.x + 2 * style.textMarginX;
+      _x += textSize.x + style.textMarginX + style.textMarginRight;
+      _width -= textSize.x + textMarginX;
     }
   }
 
@@ -671,12 +676,12 @@ public class Painter<X extends Number, Y extends Number> {
     if (image == null || _width <= 0 || _height <= 0 ) return;
     int x2 = _x, y2 = _y;
     Rectangle bounds = image.getBounds();
-    int w = bounds.width + style.imageMarginX;
-    int h = bounds.height + style.imageMarginY;
+    int w = bounds.width + style.imageMarginRight + style.imageMarginX;
+    int h = bounds.height + style.imageMarginBottom + style.imageMarginY;
     int dx = 0;
     switch (imageAlingX) {
     case SWT.BEGINNING: case SWT.LEFT: case SWT.TOP:
-      x2 += style.imageMarginX; dx = w; break;
+      x2 += style.imageMarginLeft + style.imageMarginX; dx = w; break;
     case SWT.CENTER:
       x2 += (_width - bounds.width) / 2; break;
     case SWT.RIGHT: case SWT.END: case SWT.BOTTOM:
@@ -684,7 +689,7 @@ public class Painter<X extends Number, Y extends Number> {
     }
     switch (style.imageAlignY) {
     case SWT.BEGINNING: case SWT.TOP: case SWT.LEFT:
-      y2 += style.imageMarginY; break;
+      y2 += style.imageMarginTop + style.imageMarginY; break;
     case SWT.CENTER:
       y2 += (_height - bounds.height) / 2; break;
     case SWT.BOTTOM: case SWT.END: case SWT.RIGHT:

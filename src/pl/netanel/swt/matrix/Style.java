@@ -68,15 +68,56 @@ public class Style {
 	 */
 	public int textMarginY;
 	/**
-	 * Horizontal image margin. It is measured from the cell boundaries
-	 * (which don't include dividing lines).
+	 * Left text margin.
+	 * It is measured from the cell boundaries (which don't include dividing lines).
 	 */
-	public int imageMarginX;
+	public int textMarginLeft;
 	/**
-	 * Vertical image margin. It is measured from the cell boundaries
-	 * (which don't include dividing lines).
+	 * Right text margin.
+	 * It is measured from the cell boundaries (which don't include dividing lines).
 	 */
-	public int imageMarginY;
+	public int textMarginRight;
+	/**
+	 * Top text margin.
+	 * It is measured from the cell boundaries (which don't include dividing lines).
+	 */
+	public int textMarginTop;
+	/**
+	 * Bottom text margin.
+	 * It is measured from the cell boundaries (which don't include dividing lines).
+	 */
+	public int textMarginBottom;
+
+	/**
+   * Horizontal image margin. It is measured from the cell boundaries
+   * (which don't include dividing lines).
+   */
+  public int imageMarginX;
+  /**
+   * Vertical image margin. It is measured from the cell boundaries
+   * (which don't include dividing lines).
+   */
+  public int imageMarginY;
+	/**
+	 * Left image margin.
+	 * It is measured from the cell boundaries (which don't include dividing lines).
+	 */
+	public int imageMarginLeft;
+	/**
+	 * Right image margin.
+	 * It is measured from the cell boundaries (which don't include dividing lines).
+	 */
+	public int imageMarginRight;
+	/**
+	 * Top image margin.
+	 * It is measured from the cell boundaries (which don't include dividing lines).
+	 */
+	public int imageMarginTop;
+	/**
+	 * Bottom image margin.
+	 * It is measured from the cell boundaries (which don't include dividing lines).
+	 */
+	public int imageMarginBottom;
 
 	/**
 	 * Font for the text.

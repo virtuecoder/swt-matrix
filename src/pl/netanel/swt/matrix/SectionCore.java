@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TypedListener;
 
 import pl.netanel.swt.matrix.DirectionIndexSequence.Forward;
-import pl.netanel.swt.matrix.NumberSetCore.ContentChangeListener;
 import pl.netanel.util.ImmutableIterator;
 import pl.netanel.util.Nullable;
 import pl.netanel.util.Preconditions;
@@ -754,9 +753,9 @@ class SectionCore<N extends Number> implements Section<N> {
     hidden.addAll(set);
 
     // Listen to content changes in the added set
-    ContentChangeListener<N> listener = new NumberSetCore.ContentChangeListener<N>() {
-      public void handle(NumberSetCore.ContentChangeEvent<N> e) {
-        if (e.operation == NumberSetCore.ContentChangeEvent.ADD) {
+    ContentChangeListener<N> listener = new ContentChangeListener<N>() {
+      public void handle(ContentChangeEvent<N> e) {
+        if (e.operation == ContentChangeEvent.ADD) {
           hidden.add(e.start, e.end);
         }
         else {
@@ -1045,7 +1044,17 @@ class SectionCore<N extends Number> implements Section<N> {
   }
 
 
+  ArrayList<Runnable> focusCellCallbacks = new ArrayList<Runnable>();
+  @Override
+  public void addFocusItemCallback(Runnable callback) {
+    focusCellCallbacks.add(callback);
+  }
 
+
+  @Override
+  public void removeFocusCellCallback(Runnable callback) {
+    focusCellCallbacks.remove(callback);
+  }
 
 
   //	@Override

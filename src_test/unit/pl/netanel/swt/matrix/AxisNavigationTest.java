@@ -109,9 +109,4 @@ public class  AxisNavigationTest {
 		body.setHidden(0, 9, true); layout.compute();
 		assertEquals(null, layout.current);
 	}
-
-	@Test
-	public void name() throws Exception {
-
-	}
 }

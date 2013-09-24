@@ -810,4 +810,5 @@ class ZoneCore<X extends Number, Y extends Number> implements Zone<X, Y> {
     return sectionX.math.contains(cellExtent.startX, cellExtent.getEndX(), indexX) &&
       sectionY.math.contains(cellExtent.startY, cellExtent.getEndY(), indexY);
   }
+
 }

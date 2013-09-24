@@ -11,7 +11,7 @@ import pl.netanel.swt.matrix.AxisItem;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.util.Util;
 
-public class S0904_Tooltip {
+public class S0910_Tooltip {
 
   public static void main(String[] args) {
     final Shell shell = new Shell();

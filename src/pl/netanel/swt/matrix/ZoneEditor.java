@@ -438,18 +438,37 @@ public class ZoneEditor<X extends Number, Y extends Number> {
       }
     } else {
       if (control == null) {
-        control = addControl(indexX, indexY);
-        if (b != null && b.isCharActivated) {
-          if (isCheckbox(control)) {
-            toggleBooleanValue(indexX, indexY);
-          } else {
-            setEditorValue(control, b.character);
-          }
+        control = addControl(indexX, indexY, b);
+        if (control != null) {
+          control.setFocus();
         }
       }
-      if (control != null) {
-        control.setFocus();
+    }
+    return control;
+  }
+
+  Control addControl(X indexX, Y indexY, GestureBinding b) {
+    Control control;
+    Object modelValue = null;
+    control = createControl(indexX, indexY);
+    if (control != null) {
+      if (b != null && b.isCharActivated) {
+        if (isCheckbox(control)) {
+          toggleBooleanValue(indexX, indexY);
+        } else {
+          modelValue = b.character;
+          setEditorValue(control, b.character);
+        }
+      } else {
+        modelValue = getModelValue(indexX, indexY);
+        setEditorValue(control, modelValue);
       }
+      ZoneEditorData<X, Y> data = new ZoneEditorData<X, Y>(indexX, indexY, modelValue,
+          hasEmbeddedControl(indexX, indexY));
+      control.setData(ZONE_EDITOR_DATA, data);
+      setBounds(indexX, indexY, control);
+      control.moveAbove(getMatrix());
+      controlListener.attachTo(control);
     }
     return control;
   }
@@ -465,21 +484,6 @@ public class ZoneEditor<X extends Number, Y extends Number> {
 
   private boolean isCheckbox(Control control) {
     return control instanceof Button && (control.getStyle() & SWT.CHECK) != 0;
-  }
-
-  Control addControl(X indexX, Y indexY) {
-    Control control = createControl(indexX, indexY);
-    if (control != null) {
-      Object modelValue = getModelValue(indexX, indexY);
-      ZoneEditorData<X, Y> data = new ZoneEditorData<X, Y>(indexX, indexY, modelValue,
-          hasEmbeddedControl(indexX, indexY));
-      control.setData(ZONE_EDITOR_DATA, data);
-      setEditorValue(control, modelValue);
-      setBounds(indexX, indexY, control);
-      control.moveAbove(getMatrix());
-      controlListener.attachTo(control);
-    }
-    return control;
   }
 
   /**

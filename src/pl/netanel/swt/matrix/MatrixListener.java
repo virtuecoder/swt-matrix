@@ -531,7 +531,13 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
 
     public boolean setFocusItem() {
       if (item == null) return false;
-      return axisLayout.setFocusItem(item);
+      boolean modified = axisLayout.setFocusItem(item);
+      if (modified) {
+        for (Runnable callback: item.section.focusCellCallbacks) {
+          callback.run();
+        }
+      }
+      return modified;
     }
 
     public void moveFocusItem(Move move, N start, N count) {
@@ -558,6 +564,9 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         item = axisLayout.current;
         if (focusMoved) {
           axis.scroll();
+          for (Runnable callback: item.section.focusCellCallbacks) {
+            callback.run();
+          }
         }
       }
     }

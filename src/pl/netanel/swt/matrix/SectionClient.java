@@ -575,4 +575,15 @@ class SectionClient<N extends Number> implements Section<N> {
     return core.getDefaultHiddenSet();
   }
 
+  @Override
+  public void addFocusItemCallback(Runnable callback) {
+    Preconditions.checkNotNullWithName(callback, "callback");
+    core.addFocusItemCallback(callback);
+  }
+
+  @Override
+  public void removeFocusCellCallback(Runnable callback) {
+    Preconditions.checkNotNullWithName(callback, "callback");
+    core.removeFocusCellCallback(callback);
+  }
 }

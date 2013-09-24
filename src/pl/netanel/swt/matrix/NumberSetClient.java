@@ -9,7 +9,6 @@ package pl.netanel.swt.matrix;
 
 import java.util.Iterator;
 
-import pl.netanel.swt.matrix.NumberSetCore.ContentChangeListener;
 
 class NumberSetClient<N extends Number> implements NumberSet<N> {
   NumberSetCore<N> core;

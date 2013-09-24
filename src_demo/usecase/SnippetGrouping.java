@@ -6,6 +6,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
@@ -14,32 +15,37 @@ import pl.netanel.swt.matrix.reloaded.ints.Grouping.Node;
 
 public class SnippetGrouping {
 
+//  static final Node structure = new Node("root",
+//    new Node("1",
+//        new Node("1.1",
+//          new Node("1.1.1"),
+//          new Node("1.1.2"),
+//          new Node("1.1.3")),
+//        new Node("1.2",
+//          new Node("1.2.1"),
+//          new Node("1.2.2"),
+//          new Node("1.2.3")),
+//        new Node("1.3",
+//          new Node("1.3.1"),
+//          new Node("1.3.2"),
+//          new Node("1.3.3"))
+//        ),
+//    new Node("2",
+//        new Node("2.1",
+//          new Node("2.1.1"),
+//          new Node("2.1.2"),
+//          new Node("2.1.3")),
+//        new Node("2.2",
+//          new Node("2.2.1"),
+//          new Node("2.2.2"),
+//          new Node("2.2.3"))
+//    )
+//  );
   static final Node structure = new Node("root",
-    new Node("1",
-        new Node("1.1",
-          new Node("1.1.1"),
-          new Node("1.1.2"),
-          new Node("1.1.3")),
-        new Node("1.2",
-          new Node("1.2.1"),
-          new Node("1.2.2"),
-          new Node("1.2.3")),
-        new Node("1.3",
-          new Node("1.3.1"),
-          new Node("1.3.2"),
-          new Node("1.3.3"))
-        ),
-    new Node("2",
-        new Node("2.1",
-          new Node("2.1.1"),
-          new Node("2.1.2"),
-          new Node("2.1.3")),
-        new Node("2.2",
-          new Node("2.2.1"),
-          new Node("2.2.2"),
-          new Node("2.2.3"))
-    )
-  );
+      new Node("1",
+          new Node("1.1"),
+          new Node("1.2"))
+      );
 
   private Matrix<Integer, Integer> matrix;
   private final int axisDirection;
@@ -51,6 +57,8 @@ public class SnippetGrouping {
     matrix.getAxisY().getBody().setCount(2);
     matrix.getAxisX().getHeader().setVisible(true);
     matrix.getAxisY().getHeader().setVisible(true);
+    matrix.getAxisX().setFrozenHead(1);
+    matrix.getAxisX().getBody().setDefaultCellWidth(100);
 
     /* Create class holding the API and all the logic to achieve grouping effect
        in the given zone and along the given direction */
@@ -81,9 +89,12 @@ public class SnippetGrouping {
 
     SnippetGrouping snippet = new SnippetGrouping(shell, SWT.HORIZONTAL);
 
-    shell.setBounds(400, 200, 900, 400);
+    shell.setBounds(400, 200, 200, 400);
     shell.open();
-    snippet.pack();
+    Axis<Integer> axisX = snippet.matrix.getAxisX();
+    axisX.showItem(axisX.getBody(), 1);
+
+//    snippet.pack();
     Display display = shell.getDisplay();
     while (!shell.isDisposed()) {
       if (!display.readAndDispatch()) {

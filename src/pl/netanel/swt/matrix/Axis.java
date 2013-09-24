@@ -1016,4 +1016,8 @@ public class Axis<N extends Number> {
     return null;
   }
 
+  public AxisItem<Integer> getScrollItem() {
+    return null;
+  }
+
 }

@@ -1036,6 +1036,44 @@ public interface Section<N extends Number> {
   void addSelectionListener(SelectionListener listener);
 
   /**
+   * Adds the listener to the collection of callbacks who will
+   * be notified when a focus item is modified by the user.
+   * <p>
+   *
+   * @param callback the callback which should be notified when the focus item
+   * is changed by the user
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the callback is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #removeFocusCellCallback
+   */
+  void addFocusItemCallback(Runnable callback);
+
+  /**
+   * Removes the callback from the collection of callbacks who will
+   * be called when the focus item is modified by the user.
+   *
+   * @param callback the callback which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the callback is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #addFocusCellCallback
+   */
+  void removeFocusCellCallback(Runnable callback);
+
+  /**
    * Removes the listener from the collection of listeners who will
    * be notified a section item is moved or resized.
    *

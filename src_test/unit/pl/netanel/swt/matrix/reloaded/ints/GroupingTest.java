@@ -7,10 +7,16 @@
  ******************************************************************************/
 package pl.netanel.swt.matrix.reloaded.ints;
 
-import static org.junit.Assert.*;
-import static pl.netanel.swt.matrix.reloaded.ints.Grouping.Node.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static pl.netanel.swt.matrix.reloaded.ints.Grouping.Node.PERMANENT;
+import static pl.netanel.swt.matrix.reloaded.ints.Grouping.Node.REMAIN;
+import static pl.netanel.swt.matrix.reloaded.ints.Grouping.Node.SUMMARY;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Before;
 import org.junit.Test;
@@ -241,10 +247,30 @@ public class GroupingTest {
   }
 
 
+  // Bug fix for OPTIMUS-3227
   @Test
-  public void hidden() throws Exception {
-    createGrouping3();
+  public void separatorWhenFirstInGroupIsHidden() throws Exception {
+    grouping = new Grouping(matrix.getHeaderX(), SWT.HORIZONTAL,
+        new Node("root",
+            new Node("0", new Node("0.0"), new Node("0.1")).separator(10, null),
+            new Node("1", new Node("1.0"), new Node("1.1"))));
+    matrix.refresh();
+    matrix.getAxisX().getBody().setHidden(2, true);
+    matrix.refresh();
+    assertEquals(10, matrix.getAxisX().getBody().getLineWidth(3));
+  }
 
+  void showMatrix() {
+    Shell shell = matrix.getShell();
+    shell.setLayout(new FillLayout());
+    shell.layout();
+    Display display = matrix.getDisplay();
+    shell.open();
+    while (!shell.isDisposed()) {
+      if (!display.readAndDispatch()) {
+        display.sleep();
+      }
+    }
   }
 
 

@@ -50,7 +50,7 @@ public class S0110_Grouping {
     this.axisDirection = axisDirection;
     matrix = new Matrix<Integer, Integer>(shell, SWT.V_SCROLL | SWT.H_SCROLL);
     matrix.getAxisX().getBody().setCount(2);
-    matrix.getAxisY().getBody().setCount(5);
+    matrix.getAxisY().getBody().setCount(2);
     matrix.getAxisX().getHeader().setVisible(true);
     matrix.getAxisY().getHeader().setVisible(true);
 
@@ -62,8 +62,6 @@ public class S0110_Grouping {
     grouping.getRoot().setCollapsedAll(false);
 
     matrix.getAxisX().getBody().setHidden(6, true); // It will be not visible when group is expanded
-    matrix.getAxisY().getBody().setHidden(2, true); // It will be not visible when group is expanded
-
     if (axisDirection == SWT.HORIZONTAL) {
       matrix.getAxisX().setFrozenHead(1);
       matrix.getAxisY().setFrozenHead(3);

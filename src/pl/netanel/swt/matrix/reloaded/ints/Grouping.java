@@ -18,7 +18,6 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
@@ -27,6 +26,8 @@ import org.eclipse.swt.widgets.Listener;
 
 import pl.netanel.swt.matrix.Axis;
 import pl.netanel.swt.matrix.AxisItem;
+import pl.netanel.swt.matrix.ContentChangeEvent;
+import pl.netanel.swt.matrix.ContentChangeListener;
 import pl.netanel.swt.matrix.Extent;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.NumberSet;
@@ -67,6 +68,7 @@ public class Grouping {
   private NumberSet<Integer> hidden;
   private boolean isBulkCollapse;
   private AxisItem<Integer> focusItem;
+//  private AxisItem<Integer> viewportFirstItem; // In body and not frozen
   private Listener disposeListener;
   private int[] backupLineWidths;
 
@@ -173,6 +175,13 @@ public class Grouping {
       }
     };
     zone.addListener(SWT.MouseDown, selectItemListener);
+
+    section.getHidden().addListener(new ContentChangeListener<Integer>() {
+      @Override
+      public void handle(ContentChangeEvent<Integer> e) {
+        setSeparatorLines();
+      }
+    });
   }
 
   /**
@@ -795,7 +804,7 @@ public class Grouping {
       if (isPermanent || children.size() < 1 || grouping != null && this == grouping.root) return this;
       isCollapsed = newState;
       if (grouping != null) {
-        grouping.saveFocusItem();
+        grouping.saveFocusAndViewportFirstItem();
 
         // Collapse
         if (newState == true) {
@@ -807,7 +816,7 @@ public class Grouping {
           expand();
         }
 
-        grouping.restoreFocusItem();
+        grouping.restoreFocusAndviewportFirstItem();
       }
       return this;
     }
@@ -862,7 +871,7 @@ public class Grouping {
       }
       // Collapse
       else {
-        grouping.saveFocusItem();
+        grouping.saveFocusAndViewportFirstItem();
         grouping.isBulkCollapse = true;
         new NodeVisitor() {
           @Override
@@ -871,7 +880,7 @@ public class Grouping {
           }
         }.traverse(this);
         grouping.isBulkCollapse = false;
-        grouping.restoreFocusItem();
+        grouping.restoreFocusAndviewportFirstItem();
       }
       return this;
     }
@@ -999,19 +1008,20 @@ public class Grouping {
     }
   }
 
-  void saveFocusItem() {
+  void saveFocusAndViewportFirstItem() {
     if (!isBulkCollapse) {
       focusItem = axis.getFocusItem();
+//      viewportFirstItem = axis.getScrollItem();
     }
   }
 
-  void restoreFocusItem() {
+  void restoreFocusAndviewportFirstItem() {
     if (!isBulkCollapse) {
       setSeparatorLines();
-      matrix.refresh();
       if(focusItem != null) {
         axis.setFocusItem(focusItem);
       }
+      matrix.refresh();
     }
 
   }

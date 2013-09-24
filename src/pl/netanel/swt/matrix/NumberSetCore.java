@@ -16,8 +16,6 @@ import static pl.netanel.swt.matrix.Math.CROSS_BEFORE;
 import static pl.netanel.swt.matrix.Math.EQUAL;
 import static pl.netanel.swt.matrix.Math.INSIDE;
 import static pl.netanel.swt.matrix.Math.OVERLAP;
-import static pl.netanel.swt.matrix.NumberSetCore.ContentChangeEvent.ADD;
-import static pl.netanel.swt.matrix.NumberSetCore.ContentChangeEvent.REMOVE;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -168,7 +166,7 @@ class NumberSetCore<N extends Number> implements NumberSet<N> {
 		modCount++;
 
 		if (!listeners.isEmpty()) {
-		  notify(ADD, start, end);
+		  notify(ContentChangeEvent.ADD, start, end);
 		}
 		return true;
 	}
@@ -316,7 +314,7 @@ class NumberSetCore<N extends Number> implements NumberSet<N> {
 		items.clear();
 		modCount++;
 		if (!listeners.isEmpty()) {
-		  notify(REMOVE, math.ZERO_VALUE(), getMutableCount().getValue());
+		  notify(ContentChangeEvent.REMOVE, math.ZERO_VALUE(), getMutableCount().getValue());
 		}
 	}
 
@@ -326,7 +324,7 @@ class NumberSetCore<N extends Number> implements NumberSet<N> {
 		for (MutableExtent<N> e: set.items) {
 			items.add(new MutableExtent<N>(math.create(e.start()), math.create(e.end())));
 			if (isNotifyNeeded) {
-			  notify(ADD, e.start.getValue(), e.end.getValue());
+			  notify(ContentChangeEvent.ADD, e.start.getValue(), e.end.getValue());
 			}
 		}
 	}
@@ -532,29 +530,12 @@ class NumberSetCore<N extends Number> implements NumberSet<N> {
     }
   }
 
-  static interface ContentChangeListener<N> {
-    public void handle(ContentChangeEvent<N> e);
-  }
-
-  static class ContentChangeEvent<N> {
-    public final static int ADD = 0;
-    public final static int REMOVE = 1;
-
-    public N start;
-    public N end;
-    public int operation;
-
-    public ContentChangeEvent(int operation, N start, N end) {
-      this.operation = operation;
-      this.start = start;
-      this.end = end;
-    }
-  }
-
+  @Override
   public void addListener(ContentChangeListener<N> listener) {
     listeners.add(listener);
   }
 
+  @Override
   public void removeListener(ContentChangeListener<N> listener) {
     listeners.remove(listener);
   }
@@ -664,7 +645,7 @@ class NumberSetCore<N extends Number> implements NumberSet<N> {
     if (modified) {
       modCount++;
 
-      notify(REMOVE, start, end);
+      notify(ContentChangeEvent.REMOVE, start, end);
     }
 
     return modified;

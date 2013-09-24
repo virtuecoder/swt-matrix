@@ -1,4 +1,38 @@
 -------------------------------------------------------------------------------
+Version 0.7.59
+
+Bug fixes
+- Character that activated an editor could be not set if typing fast enough
+
+Feature changes:
+- Four separate margins for text and image aside from just two (horizontal and vertical)
+
+API changes:
+- Added Style.textMarginLeft, Style.textMarginRight, Style.textMarginTop, Style.textMarginBottom
+- Added Style.imageMarginLeft, Style.imageMarginRight, Style.imageMarginTop, Style.imageMarginBottom
+
+-------------------------------------------------------------------------------
+Version 0.7.58
+
+Feature changes:
+- Ability to be notified when the focus cell moves. See S0905_FocusCellEventHandling.java sample.
+
+API changes:
+- Added Section.addFocusItemCallback(Runnable) 
+- Added Section.removeFocusItemCallback(Runnable)
+
+-------------------------------------------------------------------------------
+Version 0.7.57
+
+Bug fixes:
+- Separator line width did not take effect when the first item after separator was hidden
+- Content disappeared when the last group was covering the whole area and it was collapsed
+
+API changes:
+- Added ContentChangeListener and ContentChangeEvent
+- Added Axis.getScrollItem()
+
+-------------------------------------------------------------------------------
 Version 0.7.56
 
 Feature changes:

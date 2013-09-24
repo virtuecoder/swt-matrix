@@ -9,6 +9,7 @@ package pl.netanel.swt.matrix;
 
 import java.util.Iterator;
 
+
 /**
  * Set of number extents that don't overlap. They don't have to be sorted.
  */
@@ -223,6 +224,9 @@ public interface NumberSet<N extends Number> {
    */
   NumberSet<N> getUnchecked();
 
+  public abstract void removeListener(ContentChangeListener<N> listener);
+  public abstract void addListener(ContentChangeListener<N> listener);
+
   /**
    * Specifies options for iteration over extent set.
    */
@@ -267,5 +271,6 @@ public interface NumberSet<N extends Number> {
 //    }
 
   }
+
 
 }

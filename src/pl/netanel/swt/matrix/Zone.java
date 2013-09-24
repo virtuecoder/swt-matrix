@@ -349,6 +349,9 @@ public interface Zone<X extends Number, Y extends Number> {
   /**
    * Returns selection index bounds. It's a minimal range covering all the selected cells.
    * It return <code>null<code> if nothing is selected.
+   * <p>
+   * For example: if only two cells (0,0) and (2,1) are selected with Ctrl+Click than this method
+   * will return range of six cells (0-2, 0-1).
    * @return selection index bounds
    */
   CellExtent<X, Y> getSelectedExtent();
@@ -388,8 +391,8 @@ public interface Zone<X extends Number, Y extends Number> {
    * <code>widgetDefaultSelected</code> is not called.
    * </p>
    *
-   * @param listener the listener which should be notified when the axis item
-   * is selected by the user
+   * @param listener the listener which should be notified when the cells are
+   * selected by the user
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
@@ -404,6 +407,7 @@ public interface Zone<X extends Number, Y extends Number> {
    * @see #removeSelectionListener
    */
   void addSelectionListener(SelectionListener listener);
+
 
   /**
    * Removes the listener from the collection of listeners who will
