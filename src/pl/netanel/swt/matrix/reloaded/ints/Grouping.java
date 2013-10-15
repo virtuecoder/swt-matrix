@@ -10,6 +10,7 @@ package pl.netanel.swt.matrix.reloaded.ints;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -31,6 +32,7 @@ import pl.netanel.swt.matrix.ContentChangeListener;
 import pl.netanel.swt.matrix.Extent;
 import pl.netanel.swt.matrix.Matrix;
 import pl.netanel.swt.matrix.NumberSet;
+import pl.netanel.swt.matrix.NumberSet.Query;
 import pl.netanel.swt.matrix.Painter;
 import pl.netanel.swt.matrix.Section;
 import pl.netanel.swt.matrix.Zone;
@@ -211,11 +213,10 @@ public class Grouping {
     zone.bind(commandId, SWT.MouseDown, 1);
     zone.removeListener(SWT.MouseDown, selectItemListener);
 
-    for (int i = 0; i < section.getCount(); i++) {
-      section.setLineWidth(i, section.getDefaultLineWidth());
-    }
     section2.setCount(1);
     section.removeHiddenSet(hidden);
+    section.setLineWidth(0, section.getCount(), section.getDefaultLineWidth());
+    matrix.redraw();
   }
 
 //  Separator separator;
@@ -321,16 +322,18 @@ public class Grouping {
           int lineIndex = node.extent.getEnd() + 1;
 
           // Set separator line width in the first visible child of the next node
-          int nodeIndex = node.parent.children.indexOf(node);
-          if (nodeIndex < node.parent.children.size() - 1) {
-            Node nextNode = node.parent.children.get(nodeIndex + 1);
-            for (int i = nextNode.extent.getStart(); i <= nextNode.extent.getEnd(); i++) {
-              if (!section.isHidden(i)) {
-                lineIndex = i;
-                break;
-              }
+          int count = section.getCount();
+          Iterator<Extent<Integer>> it = section.getHidden().extentIterator(
+              new Query<Integer>().scope(lineIndex, null));
+          if (it.hasNext()) {
+            Extent<Integer> e = it.next();
+            int end = e.getEnd();
+            if (e.getStart() <= lineIndex && lineIndex <= end) {
+              if (end >= count - 1) return;
+              else lineIndex = end + 1;
             }
           }
+
           section.setLineWidth(lineIndex, node.separatorLineWidth);
           for (int i = node.children.size(); i-- > 0;) {
             Node child = node.children.get(i);
@@ -619,12 +622,12 @@ public class Grouping {
   }
 
   public class SeparatorPainter extends Painter<Integer, Integer> {
-    private Color background;
-    private int lineWidth;
-    private final int axisDirection;
-    private Node node;
-    private int contentSize;
-    private Rectangle clipping;
+    protected Color background;
+    protected int lineWidth;
+    protected final int axisDirection;
+    protected Node node;
+    protected int contentSize;
+    protected Rectangle clipping;
 
     public SeparatorPainter(int axisDirection) {
       super(SEPARATOR_PAINTER_NAME, Painter.SCOPE_CELLS);

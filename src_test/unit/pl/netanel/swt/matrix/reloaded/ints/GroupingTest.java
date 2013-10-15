@@ -19,6 +19,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import pl.netanel.swt.matrix.CellExtent;
@@ -113,18 +114,17 @@ public class GroupingTest {
   @Test
   public void ramainLast3Levels() throws Exception {
     grouping = new Grouping(matrix.getBody(), SWT.HORIZONTAL, new Node("root",
-        new Node("0", new Node("0.0"), new Node("0.1", new Node("0.1.0"), new Node("0.1.1", REMAIN))), new Node("1")));
+        new Node("0", new Node("0.0"), new Node("0.1",
+            new Node("0.1.0"), new Node("0.1.1", REMAIN))),
+        new Node("1")));
     assertEquals(4, matrix.getAxisX().getBody().getCount().intValue());
     assertEquals(3, matrix.getAxisY().getBody().getCount().intValue());
 
     grouping.getRoot().setCollapsedAll(true);
-    assertEquals(2, zone.getSectionX().getHiddenCount().intValue());
-    assertTrue(zone.getSectionX().isHidden(1));
-    assertTrue(zone.getSectionX().isHidden(2));
+    assertEquals("0-1", zone.getSectionX().getHidden().toString());
 
     grouping.getNodeByTreeIndex(0).setCollapsed(false);
-    assertEquals(1, zone.getSectionX().getHiddenCount().intValue());
-    assertTrue(zone.getSectionX().isHidden(1));
+    assertEquals("1", zone.getSectionX().getHidden().toString());
   }
 
   @Test
@@ -161,9 +161,7 @@ public class GroupingTest {
     assertEquals(null, grouping.getNodeByTreeIndex(0, 1).getToggleState());
 
     grouping.getRoot().setCollapsedAll(true);
-    assertEquals(2, zone.getSectionX().getHiddenCount().intValue());
-    assertTrue(zone.getSectionX().isHidden(0));
-    assertTrue(zone.getSectionX().isHidden(1));
+    assertEquals("1", zone.getSectionX().getHidden().toString());
   }
 
   @Test
@@ -258,6 +256,37 @@ public class GroupingTest {
     matrix.getAxisX().getBody().setHidden(2, true);
     matrix.refresh();
     assertEquals(10, matrix.getAxisX().getBody().getLineWidth(3));
+  }
+
+  //Bug fix for OPTIMUS-3227
+  @Test
+  public void separatorWhenGroupIsHidden() throws Exception {
+    grouping = new Grouping(matrix.getHeaderX(), SWT.HORIZONTAL,
+        new Node("root",
+            new Node("0", new Node("0.0"), new Node("0.1")).separator(10, null),
+            new Node("1", new Node("1.0"), new Node("1.1")),
+            new Node("2", new Node("2.0"), new Node("2.1")),
+            new Node("3", new Node("3.0"), new Node("3.1")),
+            new Node("4", new Node("4.0"), new Node("4.1"))));
+    matrix.refresh();
+    matrix.getAxisX().getBody().setHidden(2, 5, true);
+    matrix.refresh();
+    assertEquals(10, matrix.getAxisX().getBody().getLineWidth(6));
+  }
+
+  @Ignore
+  @Test
+  public void remainSecondIfFirstHidden() throws Exception {
+    grouping = new Grouping(matrix.getHeaderX(), SWT.HORIZONTAL,
+        new Node("root",
+            new Node("0", new Node("0.0"), new Node("0.1")),
+            new Node("1", new Node("1.0"), new Node("1.1"))));
+    matrix.refresh();
+    matrix.getAxisX().getBody().setHidden(2, true);
+    matrix.refresh();
+    Node node = grouping.getNodeByTreeIndex(1);
+    node.setCollapsed(true);
+    assertFalse(matrix.getAxisX().getBody().isHidden(3));
   }
 
   void showMatrix() {

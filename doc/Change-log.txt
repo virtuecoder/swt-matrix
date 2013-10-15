@@ -1,4 +1,22 @@
 -------------------------------------------------------------------------------
+Version 0.7.62
+
+Bug fixes
+- Reseting of separator lines width was wrong in Grouping.dispose
+
+-------------------------------------------------------------------------------
+Version 0.7.61
+
+Bug fixes
+- Last separator line was not reset in Grouping.dispose
+
+-------------------------------------------------------------------------------
+Version 0.7.60
+
+Bug fixes
+- Separator lines could cover the next group if at least two groups before the next visible one were hidden
+
+-------------------------------------------------------------------------------
 Version 0.7.59
 
 Bug fixes
@@ -10,6 +28,7 @@ Feature changes:
 API changes:
 - Added Style.textMarginLeft, Style.textMarginRight, Style.textMarginTop, Style.textMarginBottom
 - Added Style.imageMarginLeft, Style.imageMarginRight, Style.imageMarginTop, Style.imageMarginBottom
+- Added ZoneEditor.createControl(Number, Number, char)
 
 -------------------------------------------------------------------------------
 Version 0.7.58
