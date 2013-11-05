@@ -1,4 +1,17 @@
 -------------------------------------------------------------------------------
+Version 0.7.64
+
+Bug fixes
+- NPE during reordering items when all cells are selected
+- Scrollbar thumb was jumping during scrolling
+
+-------------------------------------------------------------------------------
+Version 0.7.63
+
+Feature changes:
+- Painter calculates the position of centered text or image position in the area within cell margins. Which means a text or image will never go closer to the top and left borders then the size of the margins.
+
+-------------------------------------------------------------------------------
 Version 0.7.62
 
 Bug fixes

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
@@ -674,6 +675,9 @@ public class Axis<N extends Number> {
     if (scrollBar != null) {
       scrollBar.addListener(SWT.Selection, new Listener() {
 
+        /**
+         * @param e
+         */
         @Override
         public void handleEvent(Event e) {
           int newSelection = scrollBar.getSelection();
@@ -692,8 +696,10 @@ public class Axis<N extends Number> {
           if (layout.setScrollPosition(newSelection, move)) {
             scrollBar.setThumb(layout.getScrollThumb());
             scrollBar.setSelection(layout.getScrollPosition());
-            // layout.getScrollThumb());
-            matrix.redraw();
+//            System.out.println(layout.getScrollPosition() + " " + layout.getScrollThumb());
+//            // layout.getScrollThumb());
+            Rectangle area = matrix.getClientArea();
+            matrix.redraw(area.x, area.y, area.width, area.height, false);
           }
         }
       });

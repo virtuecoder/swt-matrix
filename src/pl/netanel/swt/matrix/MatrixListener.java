@@ -641,7 +641,7 @@ class MatrixListener<X extends Number, Y extends Number> implements Listener {
         target = axisLayout.nextItem(target, axisLayout.forwardNavigator);
       }
 
-      if (axisLayout.reorder(subject, target)) {
+      if (target != null && axisLayout.reorder(subject, target)) {
 //        TestUtil.log("reorder");
 
         // Adjust cursor location if moving smaller to bigger
