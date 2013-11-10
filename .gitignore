@@ -3,7 +3,7 @@ dist/*
 data/*
 javadoc/*
 !javadoc/images
-src_tmp/*
+src_tmp
 build/matrix.zip
 *.jar
 *.zip
@@ -11,3 +11,7 @@ build/matrix.zip
 tmp/*
 img/*
 .idea/*
+website
+doc
+bin
+src/pl/netanel/swt/matrix/reloaded

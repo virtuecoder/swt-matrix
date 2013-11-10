@@ -62,7 +62,7 @@ public class GroupingGuiTest extends SwtTestCase {
     matrix.getAxisX().showItem(matrix.getAxisX().getBody(), 3);
     grouping.getNodeByTreeIndex(1).setCollapsed(true);
     Assert.assertTrue( matrix.getAxisX().getViewportItemCount() > 1);
-    Assert.assertEquals(2, matrix.getAxisX().getItemByViewportPosition(1).getIndex().intValue());
+    Assert.assertEquals(1, matrix.getAxisX().getItemByViewportPosition(1).getIndex().intValue());
   }
 
 }

@@ -33,6 +33,12 @@ import org.eclipse.swt.widgets.Text;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
+
+import org.junit.rules.MethodRule;
+import org.junit.rules.TestWatchman;
+import org.junit.runner.Description;
+import org.junit.runners.model.FrameworkMethod;
 
 import pl.netanel.util.Util;
 
@@ -60,8 +66,8 @@ public class SwtTestCase {
   protected int remedyCommandIndex = -1;
 
   @Before public void setUp() throws Exception {
-    shell = new Shell();
-    display = shell.getDisplay();
+    display = new Display();
+    shell = new Shell(display);
     shell.setLayout(new FillLayout());
     shell.setBounds(new Rectangle(600, 400, 400, 400));
     // Main.setUpShell(shell, MockSession.INSTANCE);
@@ -74,6 +80,17 @@ public class SwtTestCase {
       display.dispose();
     }
   }
+
+//  @Rule
+//  public MethodRule watchman = new TestWatchman() {
+//    @Override
+//    public void failed(Throwable e, FrameworkMethod method) {
+//      System.out.println(Display.getDefault().getFocusControl());
+//    }
+//
+//    @Override
+//    public void succeeded(FrameworkMethod method) {}
+//  };
 
   public void show() {
     // shell.layout();
@@ -259,6 +276,7 @@ public class SwtTestCase {
       return result[0];
     }
 //    log(event);
+    processEvents();
     return display.post(event);
   }
 
@@ -497,9 +515,6 @@ public class SwtTestCase {
    * Imitates double click with given mouse button in the given absolute point
    * of screen.
    *
-   * @param pt
-   * @param button 1-left, 2-middle, 3-right
-   * @param stateMask
    */
   public void postClick(final Point pt, final int code) {
     if (Thread.currentThread() != display.getThread()) {
@@ -718,9 +733,6 @@ public class SwtTestCase {
 
   /**
    * Imitates drag and drop from the start point to the end point.
-   *
-   * @param origin
-   * @param end
    */
   public void dragAndDrop(int code, Point ...p) {
     checkShellVisible();
@@ -756,6 +768,7 @@ public class SwtTestCase {
     event.type = SWT.MouseDown;
     event.x = start.x;
     event.y = start.y;
+    event.stateMask = code;
     event.button = decodedButton;
     postEvent(event);
     processEvents();
@@ -764,8 +777,8 @@ public class SwtTestCase {
     event.type = SWT.DragDetect;
     event.x = start.x;
     event.y = start.y;
-    event.button = decodedButton;
     event.stateMask = code;
+    event.button = decodedButton;
     postEvent(event);
     processEvents();
 
@@ -775,6 +788,7 @@ public class SwtTestCase {
       event.x = p[i].x;
       event.y = p[i].y;
       event.stateMask = code;
+      event.button = decodedButton;
       postEvent(event);
       processEvents();
     }
@@ -783,6 +797,7 @@ public class SwtTestCase {
     event.type = SWT.MouseUp;
     event.x = end.x;
     event.y = end.y;
+    event.stateMask = code;
     event.button = decodedButton;
     postEvent(event);
     processEvents();
@@ -898,7 +913,7 @@ public class SwtTestCase {
     return new Point(p.x + dx, p.y + dy);
   }
 
-  public Point toDisplay(Point p) {
+  public Point toDisplPointay( Point p ) {
     return display.getFocusControl().toDisplay(p);
   }
 
@@ -913,8 +928,6 @@ public class SwtTestCase {
 
   /**
    * Makes the current Thread to sleep delay milliseconds
-   *
-   * @param aDelay
    */
   public void sleep(Integer delay) {
     try {
@@ -1035,7 +1048,9 @@ public class SwtTestCase {
   }
 
   public void open() {
+    processEvents();
     shell.open();
+    processEvents();
 //    shell
 //    Activate 0
 //    Dispose 0

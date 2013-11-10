@@ -64,12 +64,14 @@ public class GroupingTest {
         new Node("root", new Node("A", REMAIN | SUMMARY)));
   }
 
+  @Test
   public void optionsRemain() throws Exception {
     // No exception
     grouping = new Grouping(zone, SWT.HORIZONTAL,
         new Node("root", new Node("A", REMAIN)));
   }
 
+  @Test
   public void optionsSummary() throws Exception {
     // No exception
     grouping = new Grouping(zone, SWT.HORIZONTAL,
@@ -83,7 +85,9 @@ public class GroupingTest {
     assertEquals(3, matrix.getAxisX().getBody().getCount().intValue());
     assertEquals(2, matrix.getAxisY().getBody().getCount().intValue());
     CellExtent<Integer, Integer> merged = zone.getMerged(2, 0);
+
     assertEquals("[2-1, 0-2]", merged.toString());
+    assertEquals("1", grouping.getNodeByCellIndex(2,1).getCaption());
   }
 
   @Test

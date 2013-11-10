@@ -11,23 +11,36 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class  DragMoveTest extends SwtTestCase {
+public class DragMoveTest extends SwtTestCase {
+
+  @Test public void dragAllBetweenBodyAndHeader() throws Exception {
+    final Matrix matrix = new Matrix(shell, 0);
+    matrix.getAxisX().getBody().setCount(5);
+    matrix.getAxisY().getBody().setCount(5);
+    matrix.getAxisX().getBody().setDefaultMoveable(true);
+    matrix.getAxisX().getHeader().setVisible(true);
+    matrix.getAxisY().getHeader().setVisible(true);
+
+    shell.open();
+
+    processEvents();
+    Rectangle bounds1 = matrix.getHeaderXY().getCellBounds(0, 0);
+    Rectangle bounds2 = matrix.getHeaderX().getCellBounds(0, 0);
+    Point p2 = middle(bounds2);
+    Point p3 = new Point(p2.x - 5, p2.y);
+    click(bounds1);
+    click(bounds2);
+    dragAndDrop(SWT.BUTTON1, p2, p3);
+  }
 
   @Test public void dragForthAndBack() throws Exception {
     final Matrix matrix = new Matrix(shell, 0);
-//    listenToAll(matrix);
     matrix.getAxisY().getBody().setCount(5);
     matrix.getAxisY().getHeader().setVisible(true);
     matrix.getAxisX().getBody().setCount(5);
     matrix.getAxisX().getBody().setDefaultMoveable(true);
 
-//    listenToAll(shell);
     shell.open();
-//    while (!shell.isDisposed()) {
-//      if (!display.readAndDispatch()) {
-//        display.sleep();
-//      }
-//    }
 
     processEvents();
     Rectangle bounds1 = matrix.getHeaderX().getCellBounds(0, 0);
